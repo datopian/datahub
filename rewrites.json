@@ -21,7 +21,7 @@
 	},
 	{
 		"to": "_list/csv/all", 
-		"from": "*.csv"
+		"from": "csv"
 	},
 	{
 		"to": "_list/urlencode/headers", 

@@ -11,8 +11,7 @@
   <script type="text/javascript">
     $(function() {
       
-      var name,
-          baseURL = "_rewrite/",
+      var baseURL = "_rewrite/",
           vhost = false;
       
       if (document.location.pathname.indexOf("_design") == -1) {
@@ -32,6 +31,7 @@
       }
       
       function gotDb(dbInfo) {
+                
         render('db', 'stats', dbInfo);
         
         var data = {
