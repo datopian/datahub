@@ -1,0 +1,116 @@
+<!doctype html> 
+<html lang="en"> 
+<head> 
+	<meta charset="utf-8"> 
+	<title>CouchDB Data Import/Export</title> 
+	<link rel="stylesheet" href="style/reset.css" media="screen">
+	<link rel="stylesheet" href="style/demo.css" media="screen">
+	<link rel="stylesheet" href="style/css3buttons.css" media="screen"> 
+	<script type="text/javascript" src="script/jquery-1.5.min.js"></script>
+	<script type="text/javascript" src="script/jquery.mustache.js"></script>
+  <script type="text/javascript">
+    $(function() {
+      
+      var name,
+          baseURL = "_rewrite/",
+          vhost = false;
+      
+      if (document.location.pathname.indexOf("_design") == -1) {
+        // in a vhost
+        vhost = true;
+        baseURL = "";
+      }
+      
+      /** uses $.mustache to render a template out to a target DOM
+       *  template == camelcase ID (minus the word Template) of the DOM object containg your mustache template
+       *  target == ID of the DOM node you wish to render the template into
+       *  data == data object to pass into the mustache template when rendering
+       */
+      function render(template, target, data) {
+        if (!data) var data = {};
+        $( "#" + target ).html( $.mustache( $.trim( $( "#" + template + "Template" ).text() ), data ) );        
+      }
+      
+      function gotDb(dbInfo) {
+        render('db', 'stats', dbInfo);
+        
+        var data = {
+          "db_name": dbInfo.db_name,
+          "host": window.location.host 
+        }
+        
+        if(vhost) data.db_name = 'db';
+        
+        render('url', 'url', data);
+      }
+      
+      $.getJSON(baseURL + 'db', gotDb);
+      
+      $('.csv').click(function(e) {        
+        
+        function gotHeaders(headers) {
+          window.location.href = baseURL + 'csv?headers=' + headers;
+        }        
+        
+        $.get(baseURL + 'headers', gotHeaders);
+        
+        e.preventDefault();
+        
+      })
+      
+    })
+  </script>
+</head> 
+<body>
+	<div class="container">
+		<header>
+			<h1 id="title">CouchDB Data Import/Export</h1>
+		</header>
+		
+		<div id="main">
+			<section class="odd">
+  				
+				<h3>DB Stats</h3>
+				<p class="notice" id="stats"></p>
+		  
+				<article class="example">
+        <p>
+  				<h3>Actions</h3>
+				</p>
+				<p>
+					<a href="javascript:void(false)" class="button csv"><span class="downarrow icon"></span>Download DB as CSV</a>
+				</p>
+				</article>
+		    
+				
+				<h3>Uploading</h3>
+        <p>You can bulk upload an array of JSON objects representing your documents to a remote server via HTTP POST. Make sure that they are formatted one document per line:</p>
+        <p>
+        <pre><code>  {
+    "docs": [
+      {"name": "barry", "type": "human"},
+      {"name": "carl",  "type": "human"},
+      {"name": "ethel", "type": "robot"}
+    ]
+  }</code></pre>
+        </p>
+        <p>POST to the this URL:</p>
+        <pre class="code" id="url"></pre>
+			</section>
+		</div>
+		
+		<footer>
+			<a href='https://github.com/maxogden/removalist'>Fork this project on Github</a>. The <a href="http://github.com/michenriksen/css3buttons">pretty CSS3 Buttons</a> were created by <a href="http://michaelhenriksen.dk" title="Website of Michael Henriksen">Michael Henriksen</a>
+		</footer>
+	</div>
+
+  <script type='text/mustache' id="dbTemplate">
+    name: {{db_name}}, # docs: {{doc_count}},  disk size: {{disk_size}}
+  </script>
+  
+  <script type='text/mustache' id="urlTemplate">
+    http://{{host}}/{{db_name}}/_bulk_docs
+  </script>
+  
+</body>
+</html>

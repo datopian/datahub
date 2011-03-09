@@ -1,0 +1,30 @@
+/**
+ * This is styling for the demo page and is not necessary to include in your projects
+ */
+ body { font-family: Helvetica, Arial, sans-serif; line-height: 1.5em; font-size: 14px; color: #444; background-color: #D5E9F6; }
+ h1#title { font-size: 37px; margin-bottom: 50px; color: #666; }
+ h2 { font-size: 21px; margin-bottom: 20px; }
+ h3 { font-size: 16px }
+ p { margin-bottom: 20px }
+ section { margin-bottom: 20px; padding: 10px; }
+ section.even { background-color: #EEE; -webkit-border-radius: 6px; -moz-border-radius: 6px; border-radius: 6px; }
+ article.example { margin: 20px 0px 20px 0px; padding: 10px 0px 10px 0px; border-top: 1px dotted #CCCCCC; border-bottom: 1px dotted #CCCCCC; }
+ footer { font-size: 11px; color: #666; text-align: center; margin-top: 20px; }
+ footer a { color: #666 }
+ a { color: #980905 }
+ em { font-style: italic }
+ ul,
+ ol { margin: 20px auto 20px auto; padding-left: 30px; }
+ table { margin: 20px auto 20px auto }
+ th { font-weight: bold }
+ th,
+ td { padding: 5px }
+ blockquote { margin: 20px 0px 20px 0px }
+ .container { margin: 50px auto 100px auto; width: 750px; }
+ #main { padding: 10px; background-color: #FFFFFF; -webkit-border-radius: 6px; -moz-border-radius: 6px; border-radius: 6px; }
+ code,
+ blockquote,
+ .code { font-family: Consolas, Menlo, Monaco, 'Lucida Console', 'Liberation Mono', 'DejaVu Sans Mono', 'Bitstream Vera Sans Mono', 'Courier New', monospace, serif }
+ .code { color: #d1d1d1; background-color: #3F3F3F; margin: 0px 0px 20px 0px; padding: 5px; font-size: 13px; -webkit-border-radius: 6px; -moz-border-radius: 6px; border-radius: 6px; }
+ .notice { background-color: #FFF9D8; margin-top: 20px; padding: 10px; -webkit-border-radius: 6px; -moz-border-radius: 6px; border-radius: 6px; }
+ .ribbon { position: absolute; top: 0; right: 0; border: 0; }

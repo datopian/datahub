@@ -1,0 +1,38 @@
+[
+	{
+		"to": "style/*", 
+		"from": "style/*"
+	}, 
+	{
+		"to": "script/*", 
+		"from": "script/*"
+	}, 
+	{
+		"to": "pages/*", 
+		"from": "pages/*"
+	},
+	{
+		"to": "images/*", 
+		"from": "images/*"
+	}, 
+	{
+		"to": "pages/index.html", 
+		"from": ""
+	},
+	{
+		"to": "_list/csv/all", 
+		"from": "*.csv"
+	},
+	{
+		"to": "_list/urlencode/headers", 
+		"from": "headers"
+	},
+	{
+		"to": "../..", 
+		"from": "db"
+	},
+	{
+		"to": "../../*", 
+		"from": "db/*"
+	}
+]
