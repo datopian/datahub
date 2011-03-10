@@ -19,7 +19,7 @@ function(head, req) {
         if (row.value[headers[header]]) {
           if (startedOutput) send(",");
           var value = row.value[headers[header]];
-          if (typeof(value) == "object") value = JSON.stringify(value).replace(/"/g, '\\"');
+          if (typeof(value) == "object") value = JSON.stringify(value).replace(/"/g, "\\\"");
           send("\"" + value + "\"");
         } else {
           if (startedOutput) send(",");

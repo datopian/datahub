@@ -1,7 +1,7 @@
 /**
  * This is styling for the demo page and is not necessary to include in your projects
  */
- body { font-family: Helvetica, Arial, sans-serif; line-height: 1.5em; font-size: 14px; color: #444; background-color: #D5E9F6; }
+ body { font-family: Helvetica, Arial, sans-serif; font-size: 14px; color: #444; background-color: #D5E9F6; }
  h1#title { font-size: 37px; margin-bottom: 50px; color: #666; }
  h2 { font-size: 21px; margin-bottom: 20px; }
  h3 { font-size: 16px }
@@ -45,7 +45,8 @@
  #database .human .actor .name span{color:#888;font-size:90%;}
  #database .human .actor .date{color:#888;font-size:90%;line-height:1em;}
  #database .machine{float:right;width:18em;padding:.8em 0 .8em 1.2em;border-left:1px solid #bedce7;color:#808080;font-family:Monaco,"Courier New","DejaVu Sans Mono","Bitstream Vera Sans Mono",monospace;font-size:.85em;line-height:1.5em;}
- #database .database_oneline{background:#eaf2f5 url(/images/modules/database/bg_gradient.gif) 0 100% repeat-x;}
+ #database .dbInfo {background:#fff url(/images/modules/database/bg_gradient.gif) 0 100% repeat-x;}
+ #database .action {background:#eaf2f5 url(/images/modules/database/bg_gradient.gif) 0 100% repeat-x;}
  #database .database_oneline td{border-bottom:1px solid #bedce7;}
  #database .database_oneline .date{color:#888;width:1%;padding:0 1em 0 .5em;border-left:1px solid #bedce7;}
  #database .database_oneline .author{width:15%;}
