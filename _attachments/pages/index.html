@@ -11,12 +11,16 @@
   <script type="text/javascript">
     $(function() {
       
+
       var baseURL = "_rewrite/",
           vhost = false;
       
-      if ( document.location.pathname.indexOf( "_design" ) == -1 ) {
+      var path = document.location.pathname;
+      if ( path.indexOf( "_design" ) == -1 ) {
         // in a vhost
         vhost = true;
+        baseURL = "";
+      } else if ( path.substr(path.length - 1, path.length) == "/" ) {
         baseURL = "";
       }
       
@@ -51,9 +55,12 @@
       
       $.getJSON( baseURL + 'db', gotDb );
       
-      $( '.csv' ).live('click', ( function( e ) {        
+      $( '.csv' ).live('click', ( function( e ) {      
+
+        $(this).html("<span class='loading icon'></span>Generating CSV...");
         
         function gotHeaders( headers ) {
+          $('.csv').html("<span class='downarrow icon'></span>Download CSV");
           window.location.href = baseURL + 'csv?headers=' + headers;
         }        
         
@@ -74,18 +81,13 @@
 		
 		<div id="main">
 			<section class="odd">
-          
-				<div id="stats"></div>
-	  
-				<article class="example">
-				<h3>Actions</h3>
+        
         <div id="actions"></div>
-				<p>
-					
-				</p>
-				</article>
-		    
 				
+				<p>
+        <div id="stats"></div>
+        </p>
+		    
 				<h3>Uploading</h3>
         <p>You can bulk upload an array of JSON documents to a Couch via HTTP POST. Make sure that they are formatted one document per line:</p>
         <p>
@@ -114,13 +116,13 @@
           <tbody>
             <tr class="database_oneline action">
               <td class="date">
-                <nobr>db:</nobr>
+                <nobr>db</nobr>
               </td>
               <td class="message">
                 <code><a href="http://{{host}}/{{db_name}}">http://{{host}}/<strong>{{db_name}}</strong></a> </code>
               </td>
               <td class="database">
-                size&nbsp;<a href="#" hotkey="c">{{disk_size}}</a>
+                size&nbsp;{{disk_size}}
               </td>
               <td class="tree">
                 docs&nbsp;<a href="http://{{host}}/{{db_name}}/_all_docs?include_docs=true" hotkey="t">{{doc_count}}</a>
@@ -133,7 +135,7 @@
   </script>
   
   <script type='text/mustache' id="actionsTemplate">
-    <a href="javascript:void(false)" class="primary button csv"><span class="downarrow icon"></span>Download DB as CSV</a>
+    <a href="javascript:void(false)" class="primary button csv"><span class="downarrow icon"></span>Download CSV</a>
   </script>
   
   <script type='text/mustache' id="bulkTemplate"> http://{{host}}/{{db_name}}/_bulk_docs</script>
