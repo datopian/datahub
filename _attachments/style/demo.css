@@ -15,10 +15,6 @@
  em { font-style: italic }
  ul,
  ol { margin: 20px auto 20px auto; padding-left: 30px; }
- table { margin: 20px auto 20px auto }
- th { font-weight: bold }
- th,
- td { padding: 5px }
  blockquote { margin: 20px 0px 20px 0px }
  .container { margin: 50px auto 100px auto; width: 750px; }
  #main { padding: 10px; background-color: #FFFFFF; -webkit-border-radius: 6px; -moz-border-radius: 6px; border-radius: 6px; }
@@ -28,3 +24,40 @@
  .code { color: #d1d1d1; background-color: #3F3F3F; margin: 0px 0px 20px 0px; padding: 5px; font-size: 13px; -webkit-border-radius: 6px; -moz-border-radius: 6px; border-radius: 6px; }
  .notice { background-color: #FFF9D8; margin-top: 20px; padding: 10px; -webkit-border-radius: 6px; -moz-border-radius: 6px; border-radius: 6px; }
  .ribbon { position: absolute; top: 0; right: 0; border: 0; }
+ #database{overflow:hidden;}
+ #database h2{margin:0;}
+ #database .group{border-top:1px solid #bedce7;}
+ #database .separator{padding-top:1em;}
+ #database .envelope{border-bottom:1px solid #bedce7;border-left:1px solid #bedce7;border-right:1px solid #bedce7;padding:0 .7em .7em .7em;background:#eaf2f5 url(/images/modules/database/bg_gradient.gif) 0 100% repeat-x;overflow:hidden;}
+ #database .envelope.selected{background:#fffeeb!important;}
+ #database .envelope.selected .machine span{border-bottom:1px dotted #4183c4;}
+ #database.single_database .envelope .machine span{border-bottom:1px dotted #4183c4;}
+ #database .human{padding-top:.7em;float:left;width:50em;}
+ #database .human .refs{font-size:150%;}
+ #database .human .message{font-size:80%;font-family:Monaco,"Courier New","DejaVu Sans Mono","Bitstream Vera Sans Mono",monospace;}
+ #database .human .message pre{white-space:pre-wrap;word-wrap:break-word;width:48em;}
+ #database .human .message a{color:#000;}
+ #database .human .message a.vis{color:#4183c4;}
+ #database .human .actor{clear:left;margin-top:.75em;}
+ #database .human .actor .gravatar{border:1px solid #d0d0d0;padding:2px;background-color:white;float:left;line-height:0;margin-right:.7em;}
+ #database .human .actor .name{line-height:1.5em;}
+ #database .human .actor .name a{color:#000;}
+ #database .human .actor .name span{color:#888;font-size:90%;}
+ #database .human .actor .date{color:#888;font-size:90%;line-height:1em;}
+ #database .machine{float:right;width:18em;padding:.8em 0 .8em 1.2em;border-left:1px solid #bedce7;color:#808080;font-family:Monaco,"Courier New","DejaVu Sans Mono","Bitstream Vera Sans Mono",monospace;font-size:.85em;line-height:1.5em;}
+ #database .database_oneline{background:#eaf2f5 url(/images/modules/database/bg_gradient.gif) 0 100% repeat-x;}
+ #database .database_oneline td{border-bottom:1px solid #bedce7;}
+ #database .database_oneline .date{color:#888;width:1%;padding:0 1em 0 .5em;border-left:1px solid #bedce7;}
+ #database .database_oneline .author{width:15%;}
+ #database .database_oneline .gravatar{width:1%;}
+ #database .database_oneline .gravatar img{border:1px solid #d0d0d0;padding:1px;background-color:white;float:left;margin-right:.4em;}
+ #database .database_oneline .author a{font-weight:bold;color:black;}
+ #database .database_oneline .message{font-size:75%;}
+ #database .database_oneline .message a{color:black;}
+ #database .database_oneline .database,#database .database_oneline .tree{width:1%;font-family:Monaco,"Courier New","DejaVu Sans Mono","Bitstream Vera Sans Mono",monospace;font-size:90%;color:#808080;border-left:1px solid #bedce7;padding:.6em .5em;}
+ #database .database_oneline .tree{border-right:1px solid #bedce7;}
+ 
+
+ a{color:#4183c4;text-decoration:none;}
+ a:hover{text-decoration:underline;}
+ .usingMouse a{outline:none;}

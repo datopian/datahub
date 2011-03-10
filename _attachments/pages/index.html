@@ -14,7 +14,7 @@
       var baseURL = "_rewrite/",
           vhost = false;
       
-      if (document.location.pathname.indexOf("_design") == -1) {
+      if ( document.location.pathname.indexOf( "_design" ) == -1 ) {
         // in a vhost
         vhost = true;
         baseURL = "";
@@ -25,34 +25,39 @@
        *  target == ID of the DOM node you wish to render the template into
        *  data == data object to pass into the mustache template when rendering
        */
-      function render(template, target, data) {
-        if (!data) var data = {};
-        $( "#" + target ).html( $.mustache( $.trim( $( "#" + template + "Template" ).text() ), data ) );        
+      function render( template, target, data ) {
+        if ( !data ) var data = {};
+        $( "#" + target ).html( $.mustache( $( "#" + template + "Template" ).text(), data ) );        
       }
       
-      function gotDb(dbInfo) {
+      function formatDiskSize(bytes) {
+        return (parseFloat(bytes)/1024/1024).toString().substr(0,4) + "MB"
+      }
+      
+      function gotDb( dbInfo ) {
+                        
+        $.extend(dbInfo, {
+          "host": window.location.host,
+          "disk_size": formatDiskSize(dbInfo.disk_size)
+        });
                 
-        render('db', 'stats', dbInfo);
+        if( vhost ) dbInfo.db_name = 'db';
         
-        var data = {
-          "db_name": dbInfo.db_name,
-          "host": window.location.host 
-        }
+        render( 'db', 'stats', dbInfo );
         
-        if(vhost) data.db_name = 'db';
+        render( 'bulk', 'bulk', dbInfo );
         
-        render('url', 'url', data);
       }
       
-      $.getJSON(baseURL + 'db', gotDb);
+      $.getJSON( baseURL + 'db', gotDb );
       
-      $('.csv').click(function(e) {        
+      $( '.csv' ).click( function( e ) {        
         
-        function gotHeaders(headers) {
+        function gotHeaders( headers ) {
           window.location.href = baseURL + 'csv?headers=' + headers;
         }        
         
-        $.get(baseURL + 'headers', gotHeaders);
+        $.get( baseURL + 'headers', gotHeaders );
         
         e.preventDefault();
         
@@ -69,10 +74,9 @@
 		
 		<div id="main">
 			<section class="odd">
-  				
-				<h3>DB Stats</h3>
-				<p class="notice" id="stats"></p>
-		  
+          
+				<div id="stats"></div>
+	  
 				<article class="example">
         <p>
   				<h3>Actions</h3>
@@ -84,7 +88,7 @@
 		    
 				
 				<h3>Uploading</h3>
-        <p>You can bulk upload an array of JSON objects representing your documents to a remote server via HTTP POST. Make sure that they are formatted one document per line:</p>
+        <p>You can bulk upload an array of JSON documents to a Couch via HTTP POST. Make sure that they are formatted one document per line:</p>
         <p>
         <pre><code>  {
     "docs": [
@@ -95,7 +99,7 @@
   }</code></pre>
         </p>
         <p>POST to the this URL:</p>
-        <pre class="code" id="url"></pre>
+        <pre class="code" id="bulk"></pre>
 			</section>
 		</div>
 		
@@ -105,12 +109,34 @@
 	</div>
 
   <script type='text/mustache' id="dbTemplate">
-    name: {{db_name}}, # docs: {{doc_count}},  disk size: {{disk_size}}
+    <div id="database" class="single_database">
+      <div class="group" id="current-head-database">
+        <table width="100%" cellspacing="0" cellpadding="0">
+          <tbody>
+            <tr class="database_oneline">
+              <td class="date">
+                <nobr>DB:</nobr>
+              </td>
+              <td class="author">
+                <a href="#">{{db_name}}</a>
+              </td>
+              <td class="message">
+                <code><a href="http://{{host}}/{{db_name}}">http://{{host}}/{{db_name}}</a> </code>
+              </td>
+              <td class="database">
+                size&nbsp;<a href="#" hotkey="c">{{disk_size}}</a>
+              </td>
+              <td class="tree">
+                docs&nbsp;<a href="http://{{host}}/{{db_name}}/_all_docs?include_docs=true" hotkey="t">{{doc_count}}</a>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
   </script>
   
-  <script type='text/mustache' id="urlTemplate">
-    http://{{host}}/{{db_name}}/_bulk_docs
-  </script>
+  <script type='text/mustache' id="bulkTemplate"> http://{{host}}/{{db_name}}/_bulk_docs</script>
   
 </body>
 </html>
