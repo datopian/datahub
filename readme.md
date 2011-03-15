@@ -6,13 +6,13 @@ A [CouchApp](http://couchapp.org) that lets you export and import data into Couc
 
 * CSV export your entire database for integration with spreadsheets or [Google Refine](http://code.google.com/p/google-refine/)
 
-![screenshot](http://i.imgur.com/ts6T6.png)
+![screenshot](http://i.imgur.com/uCDMA.png)
 
 ## Installation
 
 After you install it, visit this link to open Removalist: 
 
-    http://yourcouch/yourdb/\_design/removalist/\_rewrite
+    http://yourcouch/yourdb/_design/removalist/_rewrite
 
 ### Quick install
 
