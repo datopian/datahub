@@ -10,6 +10,10 @@ A [CouchApp](http://couchapp.org) that lets you export and import data into Couc
 
 ## Installation
 
+After you install it, visit this link to open Removalist: 
+
+    http://yourcouch/yourdb/\_design/removalist/\_rewrite
+
 ### Quick install
 
 * [Get a couch](http://couchone.com/get), make a database and put some data into it.
