@@ -49,4 +49,5 @@
  a:hover{text-decoration:underline;}
  .usingMouse a{outline:none;}
  a.button span.icon.loading { background-image: url(../images/loader.gif); }
+ .loading { background-image: url(../images/loader.gif); background-repeat: no-repeat; padding-left: 15px; background-position: 0px 3px;}
  a.button:hover span.icon.loading { background-image: url(../images/loader-blue.gif); }

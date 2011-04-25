@@ -11,18 +11,30 @@
   <script type="text/javascript">
     $(function() {
       
-
-      var baseURL = "_rewrite/",
-          vhost = false;
-      
-      var path = document.location.pathname;
-      if ( path.indexOf( "_design" ) == -1 ) {
-        // in a vhost
-        vhost = true;
-        baseURL = "";
-      } else if ( path.substr(path.length - 1, path.length) == "/" ) {
-        baseURL = "";
+      function inVhost() {
+        var vhost = false;
+        if ( document.location.pathname.indexOf( "_design" ) === -1 ) {
+          vhost = true;
+        }
+        return vhost;
       }
+      
+      var config = {
+          db: "api" // relative vhost links defined in rewrites.json
+        , design: "ddoc"
+        , vhost: true
+        , baseURL: "/"
+        , host: window.location.href.split( "/" )[ 2 ]
+      }
+      
+      if ( !inVhost() ) {
+        config.vhost = false
+        config.db = document.location.href.split( '/' )[ 3 ];
+        config.design = unescape( document.location.href ).split( '/' )[ 5 ];
+        config.baseURL = "/" + config.db + "/_design/" + config.design + "/_rewrite/";
+      }
+
+      var csvUrl;
       
       /** uses $.mustache to render a template out to a target DOM
        *  template == camelcase ID (minus the word Template) of the DOM object containg your mustache template
@@ -45,29 +57,26 @@
           "disk_size": formatDiskSize(dbInfo.disk_size)
         });
                 
-        if( vhost ) dbInfo.db_name = 'db';
+        if( config.vhost ) dbInfo.db_name = 'db';
         
         render( 'db', 'stats', dbInfo );
-        render( 'actions', 'actions', dbInfo );        
         render( 'bulk', 'bulk', dbInfo );
+        render( 'generating', 'download' );
+        
+        function gotHeaders( headers ) {        
+          csvUrl =  config.baseURL + 'csv?headers=' + headers;
+          render( 'actions', 'actions', $.extend(dbInfo, {url: csvUrl}) );          
+        }        
+
+        $.get( config.baseURL + 'headers', gotHeaders );
         
       }
       
-      $.getJSON( baseURL + 'db', gotDb );
+      $.getJSON( config.baseURL + 'db', gotDb );
       
       $( '.csv' ).live('click', ( function( e ) {      
-
-        $(this).html("<span class='loading icon'></span>Generating CSV...");
-        
-        function gotHeaders( headers ) {
-          $('.csv').html("<span class='downarrow icon'></span>Download CSV");
-          window.location.href = baseURL + 'csv?headers=' + headers;
-        }        
-        
-        $.get( baseURL + 'headers', gotHeaders );
-        
+        window.location.href = csvUrl;
         e.preventDefault();
-        
       }))
       
     })
@@ -81,13 +90,14 @@
 		
 		<div id="main">
 			<section class="odd">
-        
-        <div id="actions"></div>
-				
+        				
 				<p>
         <div id="stats"></div>
         </p>
-		    
+        
+				<h3>Downloading</h3>
+				<div id="actions"><p><div class="loading">Preprocessing CSV - Please wait...</div></p></div>
+				
 				<h3>Uploading</h3>
         <p>You can bulk upload an array of JSON documents to a Couch via HTTP POST. Make sure that they are formatted one document per line:</p>
         <p>
@@ -99,7 +109,7 @@
     ]
   }</code></pre>
         </p>
-        <p>POST to the this URL:</p>
+        <p>POST to this URL:</p>
         <pre class="code" id="bulk"></pre>
 			</section>
 		</div>
@@ -135,10 +145,13 @@
   </script>
   
   <script type='text/mustache' id="actionsTemplate">
-    <a href="javascript:void(false)" class="primary button csv"><span class="downarrow icon"></span>Download CSV</a>
+    <p><a href="javascript:void(false)" class="primary button csv"><span class="downarrow icon"></span>Download CSV</a></p>
+    <p>Or use this URL to get a CSV:</p>
+    <p><pre class="code" id="download">http://{{host}}{{url}}</pre></p>
   </script>
   
-  <script type='text/mustache' id="bulkTemplate"> http://{{host}}/{{db_name}}/_bulk_docs</script>
+  <script type='text/mustache' id="bulkTemplate">http://{{host}}/{{db_name}}/_bulk_docs</script>
+  <script type='text/mustache' id="generatingTemplate"><div class="loading">Precomputing CSV...</div></script>
   
 </body>
 </html>
