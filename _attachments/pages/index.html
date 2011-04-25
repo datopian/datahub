@@ -57,7 +57,7 @@
           "disk_size": formatDiskSize(dbInfo.disk_size)
         });
                 
-        if( config.vhost ) dbInfo.db_name = 'db';
+        if( config.vhost ) dbInfo.db_name = "api";
         
         render( 'db', 'stats', dbInfo );
         render( 'bulk', 'bulk', dbInfo );
@@ -72,7 +72,7 @@
         
       }
       
-      $.getJSON( config.baseURL + 'db', gotDb );
+      $.getJSON( config.baseURL + "api", gotDb );
       
       $( '.csv' ).live('click', ( function( e ) {      
         window.location.href = csvUrl;

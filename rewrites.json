@@ -27,12 +27,24 @@
 		"to": "_list/urlencode/headers", 
 		"from": "headers"
 	},
-	{
-		"to": "../..", 
-		"from": "db"
-	},
-	{
-		"to": "../../*", 
-		"from": "db/*"
-	}
+  {
+    "to": "./",
+    "from": "ddoc"
+  },
+  {
+    "to": "./",
+    "from": "api/_design/ddoc"
+  },
+  {
+    "to": "./*",
+    "from": "api/_design/ddoc/*"
+  },
+  {
+    "to": "../../",
+    "from": "api"
+  },
+  {
+    "to": "../../*",
+    "from": "api/*"
+  }
 ]
