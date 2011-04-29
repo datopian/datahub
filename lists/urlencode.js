@@ -12,9 +12,11 @@ function(head, req) {
 
   if ('callback' in req.query) send(req.query['callback'] + "(");
 
+  var rows = []
   while (row = getRow()) {
-    send(escape(JSON.stringify(row.value)));
+    rows.push(row.value)
   }
+  send(escape(JSON.stringify(rows)));
   
   if ('callback' in req.query) send(")");
 };

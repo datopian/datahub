@@ -9,11 +9,11 @@
  */
 function(head, req) {  
   if ('headers' in req.query) {
-    var headers = eval(unescape(req.query.headers.split(',')));
+    var headers = JSON.parse(unescape(req.query.headers))[0];
     var row, sep = '\n', headerSent = false, startedOutput = false;
     
     start({"headers":{"Content-Type" : "text/x-csv"}});
-    send(headers.join(',') + "\n");
+    send('"' + headers.join('","') + '"\n');
     while (row = getRow()) {
       for (var header in headers) {
         if (row.value[headers[header]]) {
