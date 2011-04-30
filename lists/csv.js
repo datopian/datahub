@@ -12,7 +12,7 @@ function(head, req) {
     var headers = JSON.parse(unescape(req.query.headers))[0];
     var row, sep = '\n', headerSent = false, startedOutput = false;
     
-    start({"headers":{"Content-Type" : "text/x-csv"}});
+    start({"headers":{"Content-Type" : "text/csv; charset=utf-8"}});
     send('"' + headers.join('","') + '"\n');
     while (row = getRow()) {
       for (var header in headers) {
