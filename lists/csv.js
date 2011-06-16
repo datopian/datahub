@@ -19,8 +19,8 @@ function(head, req) {
         if (row.value[headers[header]]) {
           if (startedOutput) send(",");
           var value = row.value[headers[header]];
-          if (typeof(value) == "object") value = JSON.stringify(value).replace(/\"/g, '""');
-          send("\"" + value + "\"");
+          if (typeof(value) == "object") value = JSON.stringify(value);
+          send("\"" + value.replace(/\"/g, '""') + "\"");
         } else {
           if (startedOutput) send(",");
         } 
