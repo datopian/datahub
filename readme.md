@@ -25,6 +25,4 @@ After you install it, visit this link to open Removalist:
 
 You'll have to get yourself a couch. The easiest way is from [the instructions on this page](http://couchone.com/get). Once it's going, open up `http://YOURCOUCH/_utils` and create a new database to store your data.
 
-You can either replicate the couchapp from my couch [max.couchone.com/apps/_design/removalist](http://max.couchone.com/apps/_design/removalist) (quickest option) or, if you want to hack on the removalist source code first, you'll need to install the [CouchApp command line utility](http://couchapp.org/page/installing) and check out this repo.
-
-If you want to hack on removalist, once you have the couchapp utility working, <code>git clone</code> this repo and go into this folder and execute <code>couchapp init</code>. To upload removalist into your couch just run <code>couchapp push http://YOURCOUCH/DATABASENAME</code>. Otherwise see the Quick install section above.
+You can either replicate the couchapp from my couch [max.couchone.com/apps/_design/removalist](http://max.couchone.com/apps/_design/removalist) (quickest option) or, if you want to hack on the removalist source code first, you'll need to install `mikeal/node.couchapp.js` and clone this repo.
