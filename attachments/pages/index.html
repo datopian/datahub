@@ -6,8 +6,9 @@
 	<link rel="stylesheet" href="style/reset.css" media="screen">
 	<link rel="stylesheet" href="style/demo.css" media="screen">
 	<link rel="stylesheet" href="style/css3buttons.css" media="screen"> 
-	<script type="text/javascript" src="script/jquery-1.5.min.js"></script>
+	<script type="text/javascript" src="script/jquery-1.6.1.min.js"></script>
 	<script type="text/javascript" src="script/jquery.mustache.js"></script>
+	<script type="text/javascript" src="script/jquery.request.js"></script>
   <script type="text/javascript">
     $(function() {
       
@@ -33,6 +34,13 @@
         config.design = unescape( document.location.href ).split( '/' )[ 5 ];
         config.baseURL = "/" + config.db + "/_design/" + config.design + "/_rewrite/";
       }
+      
+      var reqOpts = {
+        uri: config.baseURL + "api",
+        method: "GET",
+        headers: {"Content-type": "application/json"},
+        cache: true
+      }
 
       var csvUrl;
       
@@ -50,8 +58,10 @@
         return (parseFloat(bytes)/1024/1024).toString().substr(0,4) + "MB"
       }
       
-      function gotDb( dbInfo ) {
-                        
+      function gotDb( err, resp, body ) {
+        
+        var dbInfo = JSON.parse(body);
+        
         $.extend(dbInfo, {
           "host": window.location.host,
           "disk_size": formatDiskSize(dbInfo.disk_size)
@@ -63,17 +73,17 @@
         render( 'bulk', 'bulk', dbInfo );
         render( 'generating', 'download' );
         
-        function gotHeaders( headers ) {        
-          csvUrl =  config.baseURL + 'csv?headers=' + headers;
-          render( 'actions', 'actions', $.extend(dbInfo, {url: csvUrl}) );          
-        }        
+        function gotHeaders( err, resp, body ) { 
+          csvUrl =  config.baseURL + 'api/csv?headers=' + body;
+          render( 'actions', 'actions', $.extend({}, dbInfo, {url: csvUrl}) );          
+        }
 
-        $.get( config.baseURL + 'headers', gotHeaders );
+        $.request($.extend({}, reqOpts, {uri: config.baseURL + 'api/headers'}), gotHeaders);
         
       }
       
-      $.getJSON( config.baseURL + "api", gotDb );
-      
+      $.request($.extend({}, reqOpts, {uri: config.baseURL + 'api'}), gotDb);
+
       $( '.csv' ).live('click', ( function( e ) {      
         window.location.href = csvUrl;
         e.preventDefault();

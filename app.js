@@ -6,8 +6,8 @@ ddoc =
   { _id:'_design/removalist'
   , rewrites :
     [ {from:"/", to:'pages/index.html'}
-    , {from:"csv", to:'_list/csv/all'}
-    , {from:"headers", to:'_list/urlencode/headers', query: {group: true}}
+    , {from:"/api/csv", to:'_list/csv/all'}
+    , {from:"/api/headers", to:'_list/urlencode/headers', query: {group: true}}
     , {from:"/api", to:'../../'}
     , {from:"/api/*", to:'../../*'}
     , {from:"/*", to:'*'}
@@ -47,7 +47,8 @@ ddoc.lists = {
    */
   csv: function(head, req) {  
     if ('headers' in req.query) {
-      var headers = JSON.parse(unescape(req.query.headers))[0];
+      var headers = JSON.parse(unescape(req.query.headers));
+
       var row, sep = '\n', headerSent = false, startedOutput = false;
 
       start({"headers":{"Content-Type" : "text/csv; charset=utf-8"}});
@@ -69,7 +70,7 @@ ddoc.lists = {
         send('\n');
       }
     } else {
-      send("You must pass in the urlencoded headers you wish to build the CSV from. Query /_list/urlencode/headers");
+      send("You must pass in the urlencoded headers you wish to build the CSV from. Query /_list/urlencode/headers?group=true");
     }
   },
   /**
