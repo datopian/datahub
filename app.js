@@ -7,7 +7,8 @@ ddoc =
   , rewrites :
     [ {from:"/", to:'pages/index.html'}
     , {from:"/api/csv", to:'_list/csv/all'}
-    , {from:"/api/headers", to:'_list/urlencode/headers', query: {group: true}}
+    , {from:"/api/headers", to:'_list/array/headers', query: {group: true}}
+    , {from:"/api/rows", to:'_view/all'}
     , {from:"/api", to:'../../'}
     , {from:"/api/*", to:'../../*'}
     , {from:"/*", to:'*'}
@@ -74,11 +75,11 @@ ddoc.lists = {
     }
   },
   /**
-   * Returns the urlencoded version of the view's keys 
+   * Returns an array of the view keys 
    *
    * @author Max Ogden
    */
-  urlencode: function(head, req) {
+  array: function(head, req) {
     start({"headers":{"Content-Type" : "application/json"}});
     if ('callback' in req.query) send(req.query['callback'] + "(");
 
@@ -86,7 +87,7 @@ ddoc.lists = {
     while (row = getRow()) {
       headers.push(row.key);
     }
-    send(escape(JSON.stringify(headers)));
+    send(JSON.stringify(headers));
 
     if ('callback' in req.query) send(")");
   }

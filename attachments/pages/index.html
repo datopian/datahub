@@ -2,14 +2,16 @@
 <html lang="en"> 
 <head> 
 	<meta charset="utf-8"> 
-	<title>CouchDB Data Import/Export</title> 
+	<title>CouchDB Data Explorer</title> 
 	<link rel="stylesheet" href="style/reset.css" media="screen">
-	<link rel="stylesheet" href="style/demo.css" media="screen">
 	<link rel="stylesheet" href="style/css3buttons.css" media="screen"> 
+	<link rel="stylesheet" href="style/data-table.css" media="screen"> 
+	<link rel="stylesheet" href="style/demo.css" media="screen">
 	<script type="text/javascript" src="script/jquery-1.6.1.min.js"></script>
 	<script type="text/javascript" src="script/jquery.mustache.js"></script>
 	<script type="text/javascript" src="script/jquery.request.js"></script>
   <script type="text/javascript">
+    var config, render;
     $(function() {
       
       function inVhost() {
@@ -20,7 +22,7 @@
         return vhost;
       }
       
-      var config = {
+      config = {
           db: "api" // relative vhost links defined in rewrites.json
         , design: "ddoc"
         , vhost: true
@@ -49,13 +51,36 @@
        *  target == ID of the DOM node you wish to render the template into
        *  data == data object to pass into the mustache template when rendering
        */
-      function render( template, target, data ) {
+      render = function( template, target, data ) {
         if ( !data ) var data = {};
         $( "#" + target ).html( $.mustache( $( "#" + template + "Template" ).text(), data ) );        
       }
       
       function formatDiskSize(bytes) {
         return (parseFloat(bytes)/1024/1024).toString().substr(0,4) + "MB"
+      }
+      
+      function renderRows(err, resp, body) {
+        var response = JSON.parse(body);
+        var rows = [];
+        response.rows.map(function(row) {
+          var cells = [];
+          config.headers.map(function(header) {
+            var value = "";
+            if (row.value[header]) {
+              value = row.value[header];
+              if (typeof(value) == "object") value = JSON.stringify(value);
+              if (typeof(value) == "string") value = value.replace(/\"/g, '""');
+            }
+            cells.push(value);
+          })
+          rows.push({cells: cells});
+        })
+        render('dataTable', 'dataTableContainer', {
+          rows: rows,
+          headers: config.headers
+        })
+        
       }
       
       function gotDb( err, resp, body ) {
@@ -68,16 +93,18 @@
         });
                 
         if( config.vhost ) dbInfo.db_name = "api";
-        
-        render( 'db', 'stats', dbInfo );
-        render( 'bulk', 'bulk', dbInfo );
-        render( 'generating', 'download' );
-        
-        function gotHeaders( err, resp, body ) { 
-          csvUrl =  config.baseURL + 'api/csv?headers=' + body;
-          render( 'actions', 'actions', $.extend({}, dbInfo, {url: csvUrl}) );          
-        }
 
+        render('tableContainer', 'main', dbInfo);
+        render('title', 'project-title', dbInfo);
+        render( 'generating', 'project-controls' );
+        
+        function gotHeaders( err, resp, body ) {
+          csvUrl =  config.baseURL + 'api/csv?headers=' + escape(body);
+          render( 'actions', 'project-controls', $.extend({}, dbInfo, {url: csvUrl}) );          
+          config.headers = JSON.parse(body);
+          $.request($.extend({}, reqOpts, {uri: config.baseURL + 'api/rows?limit=10'}), renderRows);
+        }
+        
         $.request($.extend({}, reqOpts, {uri: config.baseURL + 'api/headers'}), gotHeaders);
         
       }
@@ -94,34 +121,17 @@
 </head> 
 <body>
 	<div class="container">
-		<header>
-			<h1 id="title">CouchDB Data Import/Export</h1>
-		</header>
+    <div id="header">
+      <div id="project-title" style="display: block; ">
+        
+      </div>
+      <div id="project-controls" style="display: block; ">
+
+      </div>
+    </div>
 		
 		<div id="main">
-			<section class="odd">
-        				
-				<p>
-        <div id="stats"></div>
-        </p>
-        
-				<h3>Downloading</h3>
-				<div id="actions"><p><div class="loading">Preprocessing CSV - Please wait...</div></p></div>
-				
-				<h3>Uploading</h3>
-        <p>You can bulk upload an array of JSON documents to a Couch via HTTP POST. Make sure that they are formatted one document per line:</p>
-        <p>
-        <pre><code>  {
-    "docs": [
-      {"name": "barry", "type": "human"},
-      {"name": "carl",  "type": "human"},
-      {"name": "ethel", "type": "robot"}
-    ]
-  }</code></pre>
-        </p>
-        <p>POST to this URL:</p>
-        <pre class="code" id="bulk"></pre>
-			</section>
+			
 		</div>
 		
 		<footer>
@@ -155,13 +165,85 @@
   </script>
   
   <script type='text/mustache' id="actionsTemplate">
-    <p><a href="javascript:void(false)" class="primary button csv"><span class="downarrow icon"></span>Download CSV</a></p>
-    <p>Or use this URL to get a CSV:</p>
-    <p><pre class="code" id="download">http://{{host}}{{url}}</pre></p>
+    <a href="javascript:void(false)" class="button csv"><span class="downarrow icon"></span>Download CSV</a>
   </script>
   
+  <script type='text/mustache' id="titleTemplate"><span id="project-name-button" class="app-path-section">{{db_name}}</span></script>
   <script type='text/mustache' id="bulkTemplate">http://{{host}}/{{db_name}}/_bulk_docs</script>
   <script type='text/mustache' id="generatingTemplate"><div class="loading">Precomputing CSV...</div></script>
   
+  <script type='text/mustache' id="tableContainerTemplate">
+    <div bind="rightPanelDiv" id="right-panel">
+      <div bind="toolPanelDiv" id="tool-panel">
+        <div bind="summaryBarDiv" id="summary-bar">
+          <span>
+            {{doc_count}} rows
+          </span>
+        </div>
+        <div id="download">
+        
+        </div>
+      </div>
+      <div bind="viewPanelDiv" id="view-panel">
+        <div class="viewpanel-header">
+          <div class="viewpanel-pagesize" bind="pageSizeControls">
+            <span>
+              Show:
+            </span>
+            <a href="javascript:{}" class="viewPanel-pagingControls-page action">5</a>
+            <a href="javascript:{}" class="viewPanel-pagingControls-page selected">10</a>
+            <a href="javascript:{}" class="viewPanel-pagingControls-page action">25</a>
+            <a href="javascript:{}" class="viewPanel-pagingControls-page action">50</a>
+            <span>
+              rows
+            </span>
+          </div>
+          <div class="viewpanel-sorting" bind="sortingControls">
+          </div>
+          <div class="viewpanel-paging" bind="pagingControls">
+            <a href="javascript:{}" class="inaction">« first</a>
+            <a href="javascript:{}" class="inaction">‹ previous</a>
+            <span class="viewpanel-pagingcount">
+              1 - 10
+            </span>
+            <a href="javascript:{}" class="action">next ›</a>
+            <a href="javascript:{}" class="action">last »</a>
+          </div>
+        </div>
+        <div id="dataTableContainer" class="data-table-container">
+          
+        </div>
+      </div>
+    </div>
+  </script>
+  
+  <script type='text/mustache' id="dataTableTemplate">
+    <table bind="table" class="data-table" cellspacing="0">
+      <tbody>
+        <tr>
+          {{#headers}}
+          <td class="column-header">
+            <div class="column-header-title">
+              <a class="column-header-menu" bind="dropdownMenu"></a>
+              <span class="column-header-name" bind="nameContainer">{{.}}</span>
+            </div>
+            </div>
+          </td>
+          {{/headers}}
+        </tr>
+        {{#rows}}
+        <tr>
+          {{#cells}}
+          <td>
+            <div class="data-table-cell-content">
+              <span>{{.}}</span>
+            </div>
+          </td>
+          {{/cells}}
+        </tr>
+        {{/rows}}
+      </tbody>
+    </table>
+  </script>
 </body>
 </html>
