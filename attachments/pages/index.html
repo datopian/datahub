@@ -70,7 +70,6 @@
             if (row.value[header]) {
               value = row.value[header];
               if (typeof(value) == "object") value = JSON.stringify(value);
-              if (typeof(value) == "string") value = value.replace(/\"/g, '""');
             }
             cells.push(value);
           })
