@@ -4,10 +4,9 @@ var removalist = function() {
     return (parseFloat(bytes)/1024/1024).toString().substr(0,4) + "MB"
   }
   
-  function renderRows(err, resp, body) {
-    var response = JSON.parse(body);
-    var rows = [];
-    response.rows.map(function(row) {
+  function renderRows(rows) {
+    var tableRows = [];
+    rows.map(function(row) {
       var cells = [];
       app.headers.map(function(header) {
         var value = "";
@@ -17,25 +16,24 @@ var removalist = function() {
         }
         cells.push(value);
       })
-      rows.push({cells: cells});
+      tableRows.push({cells: cells});
     })
     util.render('dataTable', 'dataTableContainer', {
-      rows: rows,
+      rows: tableRows,
       headers: app.headers
     })
     
   }
   
-  function gotHeaders( err, resp, body ) {
-    app.csvUrl = app.baseURL + 'api/csv?headers=' + escape(body);
+  function gotHeaders( headers ) {
+    app.headers = headers;
+    app.csvUrl = app.baseURL + 'api/csv?headers=' + escape(JSON.stringify(headers));
     util.render( 'actions', 'project-controls', $.extend({}, app.dbInfo, {url: app.csvUrl}) );          
-    app.headers = JSON.parse(body);
-    $.request($.extend({}, app.reqOpts, {uri: app.baseURL + 'api/rows?limit=10'}), renderRows);
   }
   
-  function gotDb( err, resp, body ) {
-    
-    app.dbInfo = JSON.parse(body);
+  function gotDb( dbInfo ) {
+
+    app.dbInfo = dbInfo;
     
     $.extend(app.dbInfo, {
       "host": window.location.host,
@@ -46,10 +44,7 @@ var removalist = function() {
     
     util.render('tableContainer', app.container, app.dbInfo);
     util.render('title', 'project-title', app.dbInfo);
-    util.render( 'generating', 'project-controls' );
-    
-    $.request($.extend({}, app.reqOpts, {uri: app.baseURL + 'api/headers'}), gotHeaders);
-    
+    util.render( 'generating', 'project-controls' );    
   }
   
   return {
