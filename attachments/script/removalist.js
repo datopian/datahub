@@ -36,11 +36,9 @@ var removalist = function() {
       "limit" : getPageSize()
     }
     
-    if ( id ) {
-      $.extend( query, {
-        "startkey": '"' + id + '"',
-        "skip": 1
-      })
+    if (id) {
+      $.extend( query, {"startkey": '"' + id + '"'});
+      if (id !== app.newest) $.extend( query, {"skip": 1});
     }
     
     var req = {url: app.baseURL + 'api/rows?' + $.param(query)};
