@@ -10,134 +10,26 @@
 	<script type="text/javascript" src="script/jquery-1.6.1.min.js"></script>
 	<script type="text/javascript" src="script/jquery.mustache.js"></script>
 	<script type="text/javascript" src="script/jquery.request.js"></script>
-  <script type="text/javascript">
-    var config, render;
-    $(function() {
-      
-      function inVhost() {
-        var vhost = false;
-        if ( document.location.pathname.indexOf( "_design" ) === -1 ) {
-          vhost = true;
-        }
-        return vhost;
-      }
-      
-      config = {
-          db: "api" // relative vhost links defined in rewrites.json
-        , design: "ddoc"
-        , vhost: true
-        , baseURL: "/"
-        , host: window.location.href.split( "/" )[ 2 ]
-      }
-      
-      if ( !inVhost() ) {
-        config.vhost = false
-        config.db = document.location.href.split( '/' )[ 3 ];
-        config.design = unescape( document.location.href ).split( '/' )[ 5 ];
-        config.baseURL = "/" + config.db + "/_design/" + config.design + "/_rewrite/";
-      }
-      
-      var reqOpts = {
-        uri: config.baseURL + "api",
-        method: "GET",
-        headers: {"Content-type": "application/json"},
-        cache: true
-      }
-
-      var csvUrl;
-      
-      /** uses $.mustache to render a template out to a target DOM
-       *  template == camelcase ID (minus the word Template) of the DOM object containg your mustache template
-       *  target == ID of the DOM node you wish to render the template into
-       *  data == data object to pass into the mustache template when rendering
-       */
-      render = function( template, target, data ) {
-        if ( !data ) var data = {};
-        $( "#" + target ).html( $.mustache( $( "#" + template + "Template" ).text(), data ) );        
-      }
-      
-      function formatDiskSize(bytes) {
-        return (parseFloat(bytes)/1024/1024).toString().substr(0,4) + "MB"
-      }
-      
-      function renderRows(err, resp, body) {
-        var response = JSON.parse(body);
-        var rows = [];
-        response.rows.map(function(row) {
-          var cells = [];
-          config.headers.map(function(header) {
-            var value = "";
-            if (row.value[header]) {
-              value = row.value[header];
-              if (typeof(value) == "object") value = JSON.stringify(value);
-            }
-            cells.push(value);
-          })
-          rows.push({cells: cells});
-        })
-        render('dataTable', 'dataTableContainer', {
-          rows: rows,
-          headers: config.headers
-        })
-        
-      }
-      
-      function gotDb( err, resp, body ) {
-        
-        var dbInfo = JSON.parse(body);
-        
-        $.extend(dbInfo, {
-          "host": window.location.host,
-          "disk_size": formatDiskSize(dbInfo.disk_size)
-        });
-                
-        if( config.vhost ) dbInfo.db_name = "api";
-
-        render('tableContainer', 'main', dbInfo);
-        render('title', 'project-title', dbInfo);
-        render( 'generating', 'project-controls' );
-        
-        function gotHeaders( err, resp, body ) {
-          csvUrl =  config.baseURL + 'api/csv?headers=' + escape(body);
-          render( 'actions', 'project-controls', $.extend({}, dbInfo, {url: csvUrl}) );          
-          config.headers = JSON.parse(body);
-          $.request($.extend({}, reqOpts, {uri: config.baseURL + 'api/rows?limit=10'}), renderRows);
-        }
-        
-        $.request($.extend({}, reqOpts, {uri: config.baseURL + 'api/headers'}), gotHeaders);
-        
-      }
-      
-      $.request($.extend({}, reqOpts, {uri: config.baseURL + 'api'}), gotDb);
-
-      $( '.csv' ).live('click', ( function( e ) {      
-        window.location.href = csvUrl;
-        e.preventDefault();
-      }))
-      
-    })
-  </script>
+	<script type="text/javascript" src="script/sammy-0.6.3.min.js"></script>
+	<script type="text/javascript" src="script/util.js"></script>
+	<script type="text/javascript" src="script/removalist.js"></script>
+	<script type="text/javascript" src="script/site.js"></script>
 </head> 
 <body>
 	<div class="container">
     <div id="header">
-      <div id="project-title" style="display: block; ">
-        
-      </div>
-      <div id="project-controls" style="display: block; ">
-
-      </div>
+      <div id="project-title" style="display: block; "></div>
+      <div id="project-controls" style="display: block; "></div>
     </div>
-		
-		<div id="main">
-			
-		</div>
-		
+		<div id="main_content"></div>
 		<footer>
 			<a href='https://github.com/maxogden/removalist'>Fork this project on Github</a>. The <a href="http://github.com/michenriksen/css3buttons">pretty CSS3 Buttons</a> were created by <a href="http://michaelhenriksen.dk" title="Website of Michael Henriksen">Michael Henriksen</a>
 		</footer>
 	</div>
 
+  <script type='text/mustache' id="homeTemplate">
+  </script>
+  
   <script type='text/mustache' id="dbTemplate">
     <div id="database" class="single_database">
       <div class="group" id="current-head-database">
