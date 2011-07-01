@@ -22,35 +22,65 @@ var removalist = function() {
       rows: tableRows,
       headers: app.headers
     })
-    
+    app.newest = rows[0].id;
+    app.oldest = rows[rows.length - 1].id;
   }
   
-  function gotHeaders( headers ) {
-    app.headers = headers;
-    app.csvUrl = app.baseURL + 'api/csv?headers=' + escape(JSON.stringify(headers));
-    util.render( 'actions', 'project-controls', $.extend({}, app.dbInfo, {url: app.csvUrl}) );          
+  function getPageSize() {
+    return $(".viewpanel-pagesize .selected").text();
   }
   
-  function gotDb( dbInfo ) {
-
-    app.dbInfo = dbInfo;
+  function fetchRows(id) {
     
-    $.extend(app.dbInfo, {
-      "host": window.location.host,
-      "disk_size": formatDiskSize(app.dbInfo.disk_size)
+    var query = {
+      "limit" : getPageSize()
+    }
+    
+    if ( id ) {
+      $.extend( query, {
+        "startkey_docid": id,
+        "skip": 1
+      })
+    }
+    
+    var req = {url: app.baseURL + 'api/rows?' + $.param(query)};
+    
+    couch.request(req).then(function(response) {
+      removalist.renderRows(response.rows);
     });
-            
-    if( util.inURL("_rewrite", app.baseURL) ) app.dbInfo.db_name = "api";
-    
-    util.render('tableContainer', app.container, app.dbInfo);
-    util.render('title', 'project-title', app.dbInfo);
-    util.render( 'generating', 'project-controls' );    
+
+  }
+  
+  function bootstrap() {
+    couch.request({url: app.baseURL + "api"}).then(function( dbInfo ) {
+
+      app.dbInfo = dbInfo;
+
+      $.extend(app.dbInfo, {
+        "host": window.location.host,
+        "disk_size": formatDiskSize(app.dbInfo.disk_size)
+      });
+
+      if( util.inURL("_rewrite", app.baseURL) ) app.dbInfo.db_name = "api";
+
+      util.render('tableContainer', app.container, app.dbInfo);
+      util.render('title', 'project-title', app.dbInfo);
+      util.render( 'generating', 'project-controls' );    
+      
+      couch.request({url: app.baseURL + 'api/headers'}).then(function ( headers ) {
+        app.headers = headers;
+        app.csvUrl = app.baseURL + 'api/csv?headers=' + escape(JSON.stringify(headers));
+        util.render( 'actions', 'project-controls', $.extend({}, app.dbInfo, {url: app.csvUrl}) );    
+        fetchRows();
+      })
+    })
   }
   
   return {
     formatDiskSize: formatDiskSize,
-    renderRows: renderRows,
-    gotHeaders: gotHeaders,
-    gotDb: gotDb
+    bootstrap: bootstrap,
+    fetchRows: fetchRows,
+    getPageSize: getPageSize,
+    renderRows: renderRows
   };
 }();
