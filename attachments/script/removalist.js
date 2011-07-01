@@ -5,7 +5,9 @@ var removalist = function() {
   }
   
   function renderRows(rows) {
+    
     var tableRows = [];
+    
     rows.map(function(row) {
       var cells = [];
       app.headers.map(function(header) {
@@ -18,19 +20,22 @@ var removalist = function() {
       })
       tableRows.push({cells: cells});
     })
+    
     util.render('dataTable', 'dataTableContainer', {
       rows: tableRows,
       headers: app.headers
     })
+    
     app.newest = rows[0].id;
     app.oldest = rows[rows.length - 1].id;
+    
   }
   
   function getPageSize() {
     return parseInt($(".viewpanel-pagesize .selected").text());
   }
   
-  function fetchRows(id) {
+  function fetchRows(id, skip) {
     
     var query = {
       "limit" : getPageSize()
@@ -40,6 +45,8 @@ var removalist = function() {
       $.extend( query, {"startkey": '"' + id + '"'});
       if (id !== app.newest) $.extend( query, {"skip": 1});
     }
+    
+    if (skip) $.extend( query, {"skip": skip});
     
     var req = {url: app.baseURL + 'api/rows?' + $.param(query)};
     

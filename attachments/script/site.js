@@ -23,7 +23,7 @@ app.routes = {
     
   },
   page: function(id) {
-    removalist.getPageSize()
+    removalist.getPageSize();
   }
 }
 
@@ -35,8 +35,11 @@ app.after = {
       removalist.fetchRows(app.newest);
     });
     $( '.viewpanel-paging a' ).click(function( e ) {
-      // var action = $(e.target).attr('id').split('paging-')[1];
-      removalist.fetchRows(app.oldest);
+      var action = $(e.target);
+      if (action.hasClass("last")) removalist.fetchRows(false, app.dbInfo.doc_count - removalist.getPageSize());
+      if (action.hasClass("next")) removalist.fetchRows(app.oldest);
+      if (action.hasClass("previous")) removalist.fetchRows(app.oldest);
+      if (action.hasClass("first")) removalist.fetchRows();
     });
     
   }
