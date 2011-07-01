@@ -30,7 +30,30 @@ var removalist = function() {
     app.newest = rows[0].id;
     app.oldest = rows[rows.length - 1].id;
     app.offset = response.offset;
+
+    function activate(e) {
+      e.removeClass('inaction').addClass('action');
+    }
     
+    function deactivate(e) {
+      e.removeClass('action').addClass('inaction');
+    }
+        
+    if (app.offset + getPageSize() >= app.dbInfo.doc_count) {
+      deactivate($( '.viewpanel-paging .last'));
+      deactivate($( '.viewpanel-paging .next'));
+    } else {
+      activate($( '.viewpanel-paging .last'));
+      activate($( '.viewpanel-paging .next'));
+    }
+    
+    if (app.offset === 0) {
+      deactivate($( '.viewpanel-paging .previous'));
+      deactivate($( '.viewpanel-paging .first'));
+    } else {
+      activate($( '.viewpanel-paging .previous'));
+      activate($( '.viewpanel-paging .first'));
+    }
   }
   
   function activateControls() {
