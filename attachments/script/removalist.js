@@ -27,7 +27,7 @@ var removalist = function() {
   }
   
   function getPageSize() {
-    return $(".viewpanel-pagesize .selected").text();
+    return parseInt($(".viewpanel-pagesize .selected").text());
   }
   
   function fetchRows(id) {
@@ -38,13 +38,16 @@ var removalist = function() {
     
     if ( id ) {
       $.extend( query, {
-        "startkey": '"' + id + '"'
+        "startkey": '"' + id + '"',
+        "skip": 1
       })
     }
     
     var req = {url: app.baseURL + 'api/rows?' + $.param(query)};
     
     couch.request(req).then(function(response) {
+      var offset = response.offset + 1;
+      $('.viewpanel-pagingcount').text(offset + " - " + ((offset - 1) + getPageSize()));
       removalist.renderRows(response.rows);
     });
 
