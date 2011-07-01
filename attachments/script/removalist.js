@@ -4,7 +4,8 @@ var removalist = function() {
     return (parseFloat(bytes)/1024/1024).toString().substr(0,4) + "MB"
   }
   
-  function renderRows(rows) {
+  function renderRows(response) {
+    var rows = response.rows;
     
     var tableRows = [];
     
@@ -28,7 +29,23 @@ var removalist = function() {
     
     app.newest = rows[0].id;
     app.oldest = rows[rows.length - 1].id;
+    app.offset = response.offset;
     
+  }
+  
+  function activateControls() {
+    $( '.viewPanel-pagingControls-page' ).click(function( e ) {      
+      $(".viewpanel-pagesize .selected").removeClass('selected');
+      $(e.target).addClass('selected');
+      fetchRows(app.newest);
+    });
+    $( '.viewpanel-paging a' ).click(function( e ) {
+      var action = $(e.target);
+      if (action.hasClass("last")) fetchRows(false, app.dbInfo.doc_count - getPageSize());
+      if (action.hasClass("next")) fetchRows(app.oldest);
+      if (action.hasClass("previous")) fetchRows(false, app.offset - getPageSize());
+      if (action.hasClass("first")) fetchRows();
+    });
   }
   
   function getPageSize() {
@@ -36,7 +53,7 @@ var removalist = function() {
   }
   
   function fetchRows(id, skip) {
-    
+
     var query = {
       "limit" : getPageSize()
     }
@@ -53,7 +70,7 @@ var removalist = function() {
     couch.request(req).then(function(response) {
       var offset = response.offset + 1;
       $('.viewpanel-pagingcount').text(offset + " - " + ((offset - 1) + getPageSize()));
-      removalist.renderRows(response.rows);
+      removalist.renderRows(response);
     });
 
   }
@@ -87,6 +104,7 @@ var removalist = function() {
     formatDiskSize: formatDiskSize,
     bootstrap: bootstrap,
     fetchRows: fetchRows,
+    activateControls: activateControls,
     getPageSize: getPageSize,
     renderRows: renderRows
   };

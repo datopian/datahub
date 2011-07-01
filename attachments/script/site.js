@@ -29,19 +29,7 @@ app.routes = {
 
 app.after = {
   tableContainer: function() {
-    $( '.viewPanel-pagingControls-page' ).click(function( e ) {      
-      $(".viewpanel-pagesize .selected").removeClass('selected');
-      $(e.target).addClass('selected');
-      removalist.fetchRows(app.newest);
-    });
-    $( '.viewpanel-paging a' ).click(function( e ) {
-      var action = $(e.target);
-      if (action.hasClass("last")) removalist.fetchRows(false, app.dbInfo.doc_count - removalist.getPageSize());
-      if (action.hasClass("next")) removalist.fetchRows(app.oldest);
-      if (action.hasClass("previous")) removalist.fetchRows(app.oldest);
-      if (action.hasClass("first")) removalist.fetchRows();
-    });
-    
+    removalist.activateControls();
   }
 }
 
