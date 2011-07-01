@@ -38,8 +38,7 @@ var removalist = function() {
     
     if ( id ) {
       $.extend( query, {
-        "startkey_docid": id,
-        "skip": 1
+        "startkey": '"' + id + '"'
       })
     }
     

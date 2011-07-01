@@ -34,6 +34,11 @@ app.after = {
       $(e.target).addClass('selected');
       removalist.fetchRows(app.newest);
     });
+    $( '.viewpanel-paging a' ).click(function( e ) {
+      // var action = $(e.target).attr('id').split('paging-')[1];
+      removalist.fetchRows(app.oldest);
+    });
+    
   }
 }
 

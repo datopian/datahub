@@ -22,7 +22,7 @@ ddoc.views = {
    */
   all: {
     map: function(doc) {
-      emit(doc.id, doc);
+      emit(doc._id, doc);
     }
   },
   headers: {
