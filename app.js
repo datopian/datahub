@@ -7,7 +7,7 @@ ddoc =
   , rewrites :
     [ {from:"/", to:'pages/index.html'}
     , {from:"/api/csv", to:'_list/csv/all'}
-    , {from:"/api/headers", to:'_list/array/headers', query: {group: true}}
+    , {from:"/api/headers", to:'_list/array/headers', query: {group: "true"}}
     , {from:"/api/rows", to:'_view/all'}
     , {from:"/api", to:'../../'}
     , {from:"/api/*", to:'../../*'}
