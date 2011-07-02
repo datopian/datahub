@@ -42,7 +42,7 @@
  a.button span.icon.loading { background-image: url(../images/loader.gif); }
  .loading { background-image: url(../images/loader.gif); background-repeat: no-repeat; padding-left: 15px; background-position: 0px 3px;}
  a.button:hover span.icon.loading { background-image: url(../images/loader-blue.gif); }
-
+ #couchLogo {float: left; margin-right: 5px; margin-top: 3px}
 ul.menu {
   display: none;
   outline-style: none;
