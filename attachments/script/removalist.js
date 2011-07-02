@@ -7,29 +7,21 @@ var removalist = function() {
   function handleMenuClick() {
     $( '.menu li' ).click(function(e) {
       if ($(e.target).hasClass('transform')) {
-        $('.dialog-overlay').show();
-        $('.dialog-container').show();
+        util.show('dialog');
         util.render('bulkEdit', 'dialog-content');
         $('.cancelButton').click(function(e) {
-          $('.dialog-overlay').hide();
-          $('.dialog-container').hide();
+          util.hide('dialog');
         })
-        $('.menu').hide();
-        $('.menu-overlay').hide();
+        util.hide('menu');
       }
       
-      if ($(e.target).hasClass('csv')) {
-        window.location.href = app.csvUrl;
-      }
+      if ($(e.target).hasClass('csv'))  window.location.href = app.csvUrl;
       
-      if ($(e.target).hasClass('json')) {
-        window.location.href = app.csvUrl;
-      }
+      if ($(e.target).hasClass('json')) window.location.href = "_rewrite/api/json";
       
       e.preventDefault();
       
-      $('.menu').hide();
-      $('.menu-overlay').hide();
+      util.hide('menu');
     }) 
   }
   

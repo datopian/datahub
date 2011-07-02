@@ -24,7 +24,17 @@ var util = function() {
     return exists;
   }
   
-  function show( thing, elem, offset ) {
+  function show( thing ) {
+    $('.' + thing ).show();
+    $('.' + thing + '-overlay').show();
+  }
+
+  function hide( thing ) {
+    $('.' + thing ).hide();
+    $('.' + thing + '-overlay').hide();
+  }
+  
+  function position( thing, elem, offset ) {
     var position = $(elem.target).offset();
     if (offset) {
       if (offset.top) position.top += offset.top;
@@ -136,6 +146,8 @@ var util = function() {
   return {
     inURL: inURL,
     show: show,
+    hide: hide,
+    position: position,
     render: render,
     formatMetadata:formatMetadata,
     getBaseURL:getBaseURL,

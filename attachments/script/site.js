@@ -27,13 +27,13 @@ app.after = {
   },
   dataTable: function() {
     $('.column-header-menu').click(function(e) { 
-      util.show('menu', e);
+      util.position('menu', e);
       util.render('columnActions', 'menu');
     });
   },
   actions: function() {
     $('.button').click(function(e) { 
-      util.show('menu', e, {left: -60});
+      util.position('menu', e, {left: -60});
       util.render('exportActions', 'menu');
     });
   },

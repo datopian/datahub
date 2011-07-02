@@ -877,7 +877,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   opacity: 0.5;
 }
 
-.dialog-container {
+.dialog {
   position: fixed;
   left: 0;
   width: 100%;
