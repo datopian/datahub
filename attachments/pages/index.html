@@ -11,14 +11,16 @@
 	<script type="text/javascript" src="script/jquery.mustache.js"></script>
 	<script type="text/javascript" src="script/jquery.couch2.js"></script>
 	<script type="text/javascript" src="script/sammy-0.6.3.min.js"></script>
+	<script type="text/javascript" src="script/underscore.js"></script>
 	<script type="text/javascript" src="script/util.js"></script>
+	<script type="text/javascript" src="script/costco.js"></script>
 	<script type="text/javascript" src="script/removalist.js"></script>
 	<script type="text/javascript" src="script/site.js"></script>
 </head> 
 <body>
 	<div class="container">
     <ul class="menu">
-    	<li><a href="JavaScript:void(0);">yo doods</a></li>
+    	<li><a class="transform" href="JavaScript:void(0);">Transform...</a></li>
     </ul>
     <div id="header">
       <a href="http://github.com/maxogden/removalist"><img id="couchLogo" src="images/couch.png"/></a>
@@ -27,6 +29,21 @@
     </div>
 		<div id="main_content"></div>
 	</div>
+	
+	<div bind="processPanelDiv" id="notification-container">
+  	<div id="notification">
+  		<img src="images/small-spinner.gif" class="notification-loader"><span class="notification-message">Loading...</span>
+  	</div>
+  </div>
+  
+  <div class="dialog-overlay" style="display: none; z-index: 101; ">&nbsp;</div>
+  <div class="dialog-container ui-draggable" style="display: none; z-index: 102; top: 101px; ">
+  	<div class="dialog-frame" style="width: 700px; visibility: visible; ">
+  		<div class="dialog-border">
+  			
+  		</div>
+  	</div>
+  </div>
   
   <script type='text/mustache' id="dbTemplate">
     <div id="database" class="single_database">
@@ -133,5 +150,93 @@
       </tbody>
     </table>
   </script>
+  
+  <script type='text/mustache' id="bulkEditTemplate">
+    <div class="dialog-header" bind="dialogHeader">
+  		Functional transform on column {{name}}
+  	</div>
+  	<div class="dialog-body" bind="dialogBody">
+  		<div class="grid-layout layout-tight layout-full">
+  			<table>
+  			<tbody>
+  			<tr>
+  				<td colspan="4">
+  					<div class="grid-layout layout-tight layout-full">
+  						<table rows="4" cols="4">
+  						<tbody>
+  						<tr style="vertical-align: bottom;">
+  							<td colspan="4">
+  								Expression
+  							</td>
+  						</tr>
+  						<tr>
+  							<td colspan="3">
+  								<div class="input-container">
+  									<textarea class="expression-preview-code" bind="expressionPreviewTextarea"></textarea>
+  								</div>
+  							</td>
+  							<td class="expression-preview-parsing-status" bind="expressionPreviewParsingStatus" width="150" style="vertical-align: top;">
+  								No syntax error.
+  							</td>
+  						</tr>
+  						<tr>
+  							<td colspan="4">
+  								<div id="expression-preview-tabs" class="refine-tabs ui-tabs ui-widget ui-widget-content ui-corner-all">
+  									<span>Preview</span>
+  									<div id="expression-preview-tabs-preview" class="ui-tabs-panel ui-widget-content ui-corner-bottom">
+  										<div class="expression-preview-container" bind="expressionPreviewPreviewContainer" style="width: 652px; ">
+  
+  										</div>
+  									</div>
+  								</div>
+  							</td>
+  						</tr>
+  						</tbody>
+  						</table>
+  					</div>
+  				</td>
+  			</tr>
+  			</tbody>
+  			</table>
+  		</div>
+  	</div>
+  	<div class="dialog-footer" bind="dialogFooter">
+  		<button class="button" bind="okButton">&nbsp;&nbsp;OK&nbsp;&nbsp;</button>
+  		<button class="button" bind="cancelButton">Cancel</button>
+  	</div>
+  </script>
+ 
+  <script type='text/mustache' id="editPreviewTemplate">
+  	<div class="expression-preview-table-wrapper">
+  		<table>
+  		<tbody>
+  		<tr>
+  			<td class="expression-preview-heading">
+  				row
+  			</td>
+  			<td class="expression-preview-heading">
+  				value
+  			</td>
+  			<td class="expression-preview-heading">
+  				value
+  			</td>
+  		</tr>
+  		{{#rows}}
+  		<tr>
+  			<td width="1%">
+  				{{count}}
+  			</td>
+  			<td class="expression-preview-value">
+  				{{before}}
+  			</td>
+  			<td class="expression-preview-value">
+  				{{after}}
+  			</td>
+  		</tr>
+  		{{/rows}}
+  		</tbody>
+  		</table>
+  	</div>
+	</script>
 </body>
 </html>

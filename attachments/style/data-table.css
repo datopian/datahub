@@ -175,9 +175,11 @@ a img {
 }
 
 #notification-container {
+  width: 400px;
+  left: 520px;
+  display: none;
   position: fixed;
   top: 0;
-  width: 100%;
   z-index: 100;
   text-align: center;
 }
@@ -830,4 +832,335 @@ ul.sorting-dialog-blank-error-positions > li {
   -moz-border-radius: 3px;
   -webkit-border-radius: 3px;
   border-radius: 3px;
+}
+
+/*
+
+Copyright 2010, Google Inc.
+All rights reserved.
+
+Redistribution and use in source and binary forms, with or without
+modification, are permitted provided that the following conditions are
+met:
+
+    * Redistributions of source code must retain the above copyright
+notice, this list of conditions and the following disclaimer.
+    * Redistributions in binary form must reproduce the above
+copyright notice, this list of conditions and the following disclaimer
+in the documentation and/or other materials provided with the
+distribution.
+    * Neither the name of Google Inc. nor the names of its
+contributors may be used to endorse or promote products derived from
+this software without specific prior written permission.
+
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+"AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,           
+DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY           
+THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+(INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+*/
+
+.dialog-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: #666;
+  opacity: 0.5;
+}
+
+.dialog-container {
+  position: fixed;
+  left: 0;
+  width: 100%;
+  text-align: center;
+}
+
+.dialog-frame {
+  margin: 0 auto;
+  text-align: left;
+  background: white;
+  border: 1px solid #3a5774;
+}
+
+.dialog-border {
+  border: 4px solid #c1d9ff;
+}
+
+.dialog-header {
+  background: #e0edfe;
+  padding: 10px;
+  font-weight: bold;
+  font-size: 1.6em;
+  color: #000;
+  cursor: move;
+}
+
+.dialog-body {
+  font-size: 1.3em;
+  padding: 15px;
+}
+
+.dialog-instruction {
+  padding: 0 0 7px;
+}
+
+.dialog-footer {
+  font-size: 1.3em;
+  background: #eee;
+  padding: 10px;
+}
+
+.dialog-busy {
+  width: 400px;
+  border: none;
+  -moz-border-radius: 5px;
+  -webkit-border-radius: 5px;
+  border-radius: 5px;
+}
+
+/*
+
+Copyright 2010, Google Inc.
+All rights reserved.
+
+Redistribution and use in source and binary forms, with or without
+modification, are permitted provided that the following conditions are
+met:
+
+    * Redistributions of source code must retain the above copyright
+notice, this list of conditions and the following disclaimer.
+    * Redistributions in binary form must reproduce the above
+copyright notice, this list of conditions and the following disclaimer
+in the documentation and/or other materials provided with the
+distribution.
+    * Neither the name of Google Inc. nor the names of its
+contributors may be used to endorse or promote products derived from
+this software without specific prior written permission.
+
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+"AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,           
+DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY           
+THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+(INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+*/
+
+#expression-preview-tabs .ui-tabs-nav li a {
+  padding: 0.15em 1em;
+}
+
+textarea.expression-preview-code {
+  font-family: monospace;
+  height: 5em;
+  vertical-align: top;
+}
+
+.expression-preview-parsing-status {
+  color: #999;
+}
+
+.expression-preview-parsing-status.error {
+  color: red;
+}
+
+#expression-preview-tabs-preview,
+#expression-preview-tabs-help,
+#expression-preview-tabs-history,
+#expression-preview-tabs-starred {
+  padding: 5px;
+  overflow: hidden;
+}
+
+#expression-preview-tabs-preview > div,
+#expression-preview-tabs-help > div,
+#expression-preview-tabs-history > div,
+#expression-preview-tabs-starred {
+  height: 200px;
+  overflow: auto;
+}
+
+#expression-preview-tabs-preview td, #expression-preview-tabs-preview th,
+#expression-preview-tabs-help td, #expression-preview-tabs-help th,
+#expression-preview-tabs-history td, #expression-preview-tabs-history th,
+#expression-preview-tabs-starred td, #expression-preview-tabs-starred th {
+  padding: 5px;
+}
+
+.expression-preview-table-wrapper {
+  padding: 7px;
+}
+
+.expression-preview-container td {
+  padding: 2px 5px;
+  border-top: 1px solid #ccc;
+}
+
+td.expression-preview-heading {
+  border-top: none;
+  background: #ddd;
+  font-weight: bold;
+}
+
+td.expression-preview-value {
+  max-width: 250px !important;
+  overflow-x: hidden;
+}
+
+.expression-preview-special-value {
+  color: #aaa;
+}
+
+.expression-preview-help-container h3 {
+  margin-top: 15px;
+  margin-bottom: 7px;
+  border-bottom: 1px solid #999;
+}
+
+.expression-preview-doc-item-title {
+  font-weight: bold;
+  text-align: right;
+}
+
+.expression-preview-doc-item-params {
+}
+
+.expression-preview-doc-item-returns {
+}
+
+.expression-preview-doc-item-desc {
+  color: #666;
+}
+
+/*
+
+Copyright 2010, Google Inc.
+All rights reserved.
+
+Redistribution and use in source and binary forms, with or without
+modification, are permitted provided that the following conditions are
+met:
+
+    * Redistributions of source code must retain the above copyright
+notice, this list of conditions and the following disclaimer.
+    * Redistributions in binary form must reproduce the above
+copyright notice, this list of conditions and the following disclaimer
+in the documentation and/or other materials provided with the
+distribution.
+    * Neither the name of Google Inc. nor the names of its
+contributors may be used to endorse or promote products derived from
+this software without specific prior written permission.
+
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+"AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,           
+DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY           
+THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+(INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+*/
+
+.button:hover, a.button:hover {
+  border: 1px solid #666;
+}
+
+.button:active, a.button:active {
+  border: 1px solid #000;
+}
+
+.button-primary, a.button-primary {
+  font-weight: bold;
+  padding: 1px 15px;
+}
+
+.button-pill-left, a.button-pill-left {
+  border-right: 1px solid #bbb;
+  -webkit-border-top-right-radius: 0;
+  -webkit-border-bottom-right-radius: 0;
+  -moz-border-radius-topright: 0;
+  -moz-border-radius-bottomright: 0;
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
+}
+
+.button-pill-right, a.button-pill-right {
+  border-left: 1px solid #fff;
+  -moz-border-radius-topleft: 0;
+  -moz-border-radius-bottomleft: 0;
+  -webkit-border-top-left-radius: 0;
+  -webkit-border-bottom-left-radius: 0;
+  border-top-left-radius: 0;
+  border-bottom-left-radius: 0;
+}
+
+.button-disabled, a.button-disabled, .button.button-disabled, a.button.button-disabled {
+  color: #666;
+  border: 1px solid #ddd;
+  background: #f3f3f3;
+  cursor: default;
+}
+
+.button-disabled:hover, a.button-disabled:hover {
+  color: #666;
+  border: 1px solid #ddd;
+  background: #f3f3f3;
+  cursor: default;
+}
+
+.button img, a.button img {
+  padding-left: 3px;
+}
+
+.button-menu, a.button-menu {
+  background: url(/images/down-arrow.png) no-repeat right 6px;
+  padding-right: 12px;
+}
+
+.button, a.button {
+  display: inline-block;
+  overflow: visible;
+  font-size: 1em;
+  line-height: 1.4;
+  color: #000;
+  text-decoration: none;
+  padding: 1px 6px;
+  border: 1px solid #bbb;
+  cursor: pointer;
+  background: #eee;
+  white-space: nowrap;
+  font-family: Arial, Helvetica, sans-serif;
+  -moz-border-radius: 3px;
+  -webkit-border-radius: 3px;
+  border-radius: 3px;
+}
+
+.button, a.button { 
+  background: -webkit-gradient(linear, left top, left bottom, from(#f9f9f9), to(#e3e3e3));
+  background: -moz-linear-gradient(top,  #f9f9f9,  #e3e3e3);
+  filter:  progid:DXImageTransform.Microsoft.gradient(startColorstr='#f9f9f9', endColorstr='#e3e3e3');
+}
+
+.button:active, a.button:active { 
+  background: -webkit-gradient(linear, left top, left bottom, from(#e3e3e3), to(#f9f9f9));
+  background: -moz-linear-gradient(top,  #e3e3e3,  #f9f9f9);
+  filter:  progid:DXImageTransform.Microsoft.gradient(startColorstr='#e3e3e3', endColorstr='#f9f9f9');
 }
