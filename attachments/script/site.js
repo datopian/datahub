@@ -30,6 +30,12 @@ app.routes = {
 app.after = {
   tableContainer: function() {
     removalist.activateControls();
+  },
+  dataTable: function() {
+    $('.column-header-menu').click(function(e) {
+      var offset = $(e.target).offset();
+      $('.menu').show().css({top: offset.top + 20, left: offset.left});
+    })
   }
 }
 

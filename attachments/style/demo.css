@@ -42,3 +42,34 @@
  a.button span.icon.loading { background-image: url(../images/loader.gif); }
  .loading { background-image: url(../images/loader.gif); background-repeat: no-repeat; padding-left: 15px; background-position: 0px 3px;}
  a.button:hover span.icon.loading { background-image: url(../images/loader-blue.gif); }
+
+ul.menu {
+  display: none;
+  outline-style: none;
+  background: white;
+  color: black;
+  font-size: 12px;
+  height: auto;
+  list-style: none;
+  overflow: hidden;
+  position: absolute;
+  text-align: left;
+  width: 120px;
+  z-index: 666;
+  border: 1px solid #CCC;
+  border-right: 1px solid #666;
+  border-bottom: 1px solid #666;
+  margin: 0; padding: 0; }
+  ul.menu * {
+    margin: 0;
+    padding: 0; }
+  ul.menu a {
+    line-height: 14px;
+    color: black;
+    display: block;
+    padding: 5px 7px;
+    text-decoration: none; }
+  ul.menu li {
+    height: 24px; }
+  ul.menu li:hover {
+    background-color: #DBE8F8 }
