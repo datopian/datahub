@@ -7,6 +7,7 @@ ddoc =
   , rewrites :
     [ {from:"/", to:'pages/index.html'}
     , {from:"/api/csv", to:'_list/csv/all'}
+    , {from:"/api/json", to:'_list/bulkDocs/all'}
     , {from:"/api/headers", to:'_list/array/headers', query: {group: "true"}}
     , {from:"/api/rows", to:'_view/all'}
     , {from:"/api", to:'../../'}
@@ -80,7 +81,7 @@ ddoc.lists = {
    * @author Max Ogden
    */
   array: function(head, req) {
-    start({"headers":{"Content-Type" : "application/json"}});
+    start({"headers":{"Content-Type" : "application/json; charset=utf-8"}});
     if ('callback' in req.query) send(req.query['callback'] + "(");
 
     var headers = [];
@@ -90,6 +91,27 @@ ddoc.lists = {
     send(JSON.stringify(headers));
 
     if ('callback' in req.query) send(")");
+  },
+  /**
+   * A list function that outputs the same format that you use to post into the _bulk_docs API
+   *
+   * @author Max Ogden
+   */
+  bulkDocs: function(head, req) {
+      var row, out, sep = '\n';
+
+      start({"headers":{"Content-Type" : "application/json"}});
+
+      if ('callback' in req.query) send(req.query['callback'] + "(");
+
+      send('{"docs":[');
+      while (row = getRow()) {
+          out = JSON.stringify(row.value);
+          send(sep + out);
+          sep = ',\n';
+      }
+      send("\n]}");
+      if ('callback' in req.query) send(")");
   }
 }
 

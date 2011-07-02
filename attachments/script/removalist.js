@@ -22,6 +22,10 @@ var removalist = function() {
         window.location.href = app.csvUrl;
       }
       
+      if ($(e.target).hasClass('json')) {
+        window.location.href = app.csvUrl;
+      }
+      
       e.preventDefault();
       
       $('.menu').hide();
