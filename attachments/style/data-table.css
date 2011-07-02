@@ -427,7 +427,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 }
 
 #project-controls {
-  margin-top: 1px;
+  margin: 3px 2px 0px 0px;
   display: block;
   float: right;
   font-size: 1.3em;
@@ -1131,7 +1131,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 }
 
 .button-menu, a.button-menu {
-  background: url(/images/down-arrow.png) no-repeat right 6px;
+  background: url(images/down-arrow.png) no-repeat right 6px;
   padding-right: 12px;
 }
 

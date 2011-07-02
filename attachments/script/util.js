@@ -23,6 +23,19 @@ var util = function() {
     }
     return exists;
   }
+  
+  function show( thing, elem, offset ) {
+    var position = $(elem.target).offset();
+    if (offset) {
+      if (offset.top) position.top += offset.top;
+      if (offset.left) position.left += offset.left;
+    }
+    $('.' + thing + '-overlay').show().click(function(e) {
+      $(e.target).hide();
+      $('.' + thing).hide();
+    });
+    $('.' + thing).show().css({top: position.top + $(elem.target).height(), left: position.left});
+  }
 
   function render( template, target, options ) {
     if ( !options ) options = {data: {}};
@@ -122,6 +135,7 @@ var util = function() {
   
   return {
     inURL: inURL,
+    show: show,
     render: render,
     formatMetadata:formatMetadata,
     getBaseURL:getBaseURL,

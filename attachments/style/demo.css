@@ -19,13 +19,13 @@
  #database h2{margin:0;}
  #database .group{border-top:1px solid #bedce7;}
  #database .separator{padding-top:1em;}
- #database .envelope{border-bottom:1px solid #bedce7;border-left:1px solid #bedce7;border-right:1px solid #bedce7;padding:0 .7em .7em .7em;background:#eaf2f5 url(../images/bg_gradient.gif) 0 100% repeat-x;overflow:hidden;}
+ #database .envelope{border-bottom:1px solid #bedce7;border-left:1px solid #bedce7;border-right:1px solid #bedce7;padding:0 .7em .7em .7em;background:#eaf2f5 url(images/bg_gradient.gif) 0 100% repeat-x;overflow:hidden;}
  #database .envelope.selected{background:#fffeeb!important;}
  #database .envelope.selected .machine span{border-bottom:1px dotted #4183c4;}
  #database.single_database .envelope .machine span{border-bottom:1px dotted #4183c4;}
  #database .machine{float:right;width:18em;padding:.8em 0 .8em 1.2em;border-left:1px solid #bedce7;color:#808080;font-family:Monaco,"Courier New","DejaVu Sans Mono","Bitstream Vera Sans Mono",monospace;font-size:.85em;line-height:1.5em;}
- #database .dbInfo {background:#fff url(../images/bg_gradient.gif) 0 100% repeat-x;}
- #database .action {background:#eaf2f5 url(../images/bg_gradient.gif) 0 100% repeat-x;}
+ #database .dbInfo {background:#fff url(images/bg_gradient.gif) 0 100% repeat-x;}
+ #database .action {background:#eaf2f5 url(images/bg_gradient.gif) 0 100% repeat-x;}
  #database .database_oneline td{border-bottom:1px solid #bedce7;}
  #database .database_oneline .date{color:#888;width:1%;padding:0 1em 0 .5em;border-left:1px solid #bedce7;}
  #database .database_oneline .author{width:15%;}
@@ -39,9 +39,9 @@
  a {text-decoration: none;}
  a:hover{text-decoration:underline;}
  .usingMouse a{outline:none;}
- a.button span.icon.loading { background-image: url(../images/loader.gif); }
- .loading { background-image: url(../images/loader.gif); background-repeat: no-repeat; padding-left: 15px; background-position: 0px 3px;}
- a.button:hover span.icon.loading { background-image: url(../images/loader-blue.gif); }
+ a.button span.icon.loading { background-image: url(images/loader.gif); }
+ .loading { background-image: url(images/loader.gif); background-repeat: no-repeat; padding-left: 15px; background-position: 0px 3px;}
+ a.button:hover span.icon.loading { background-image: url(images/loader-blue.gif); }
  #couchLogo {float: left; margin-right: 5px; margin-top: 3px}
 
 .menu-overlay {

@@ -4,7 +4,6 @@
 	<meta charset="utf-8"> 
 	<title>CouchDB Data Explorer</title> 
 	<link rel="stylesheet" href="style/reset.css" media="screen">
-	<link rel="stylesheet" href="style/css3buttons.css" media="screen"> 
 	<link rel="stylesheet" href="style/data-table.css" media="screen"> 
 	<link rel="stylesheet" href="style/demo.css" media="screen">
 	<script type="text/javascript" src="script/jquery-1.6.1.min.js"></script>
@@ -20,7 +19,7 @@
 <body>
 	<div class="container">
 	  <div class="menu-overlay" style="display: none; z-index: 101; ">&nbsp;</div>
-    <ul class="menu">
+    <ul class="menu" id="menu">
     	<li><a class="transform" href="JavaScript:void(0);">Transform...</a></li>
     </ul>
     <div id="header">
@@ -72,12 +71,20 @@
   </script>
   
   <script type='text/mustache' id="actionsTemplate">
-    <a href="javascript:void(false)" class="button csv"><span class="downarrow icon"></span>Download CSV</a>
+    <a class="button" id="export-button" href="javascript:{}"><span class="button-menu">Export</span></a>
   </script>
   
+  <script type='text/mustache' id="exportActionsTemplate">
+    <li><a class="csv" href="JavaScript:void(0);">CSV</a></li>
+  </script>
+  
+  <script type='text/mustache' id="columnActionsTemplate">
+    <li><a class="transform" href="JavaScript:void(0);">Transform...</a></li>
+  </script>
+
   <script type='text/mustache' id="titleTemplate"><span id="project-name-button" class="app-path-section">{{db_name}}</span></script>
   <script type='text/mustache' id="bulkTemplate">http://{{host}}/{{db_name}}/_bulk_docs</script>
-  <script type='text/mustache' id="generatingTemplate"><div class="loading">Precomputing CSV...</div></script>
+  <script type='text/mustache' id="generatingTemplate"><div class="loading">Loading...</div></script>
   
   <script type='text/mustache' id="tableContainerTemplate">
     <div bind="rightPanelDiv" id="right-panel">

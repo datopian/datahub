@@ -15,24 +15,6 @@ app.handler = function(route) {
 app.routes = {
   home: function() {
     removalist.bootstrap();
-    
-    $( '.csv' ).live('click', ( function( e ) {      
-      window.location.href = app.csvUrl;
-      e.preventDefault();
-    }))
-    
-    $( '.transform' ).live('click', ( function( e ) {      
-      $('.dialog-overlay').show();
-      $('.dialog-container').show();
-      util.render('bulkEdit', 'dialog-content');
-      $('.cancelButton').click(function(e) {
-        $('.dialog-overlay').hide();
-        $('.dialog-container').hide();
-      })
-      $('.menu').hide();
-      $('.menu-overlay').hide();
-      e.preventDefault();
-    }))
   },
   page: function(id) {
     removalist.getPageSize();
@@ -44,15 +26,19 @@ app.after = {
     removalist.activateControls();
   },
   dataTable: function() {
-    $('.column-header-menu').click(function(e) {
-      var offset = $(e.target).offset();
-      $('.menu-overlay').show().click(function(e) {
-        $(e.target).hide();
-        $('.menu').hide();
-      });
-      $('.menu').show().css({top: offset.top + 20, left: offset.left});
-    })
-  }
+    $('.column-header-menu').click(function(e) { 
+      util.show('menu', e);
+      util.render('columnActions', 'menu');
+    });
+  },
+  actions: function() {
+    $('.button').click(function(e) { 
+      util.show('menu', e, {left: -60});
+      util.render('exportActions', 'menu');
+    });
+  },
+  exportActions: removalist.handleMenuClick,
+  columnActions: removalist.handleMenuClick
 }
 
 app.sammy = $.sammy(function () {

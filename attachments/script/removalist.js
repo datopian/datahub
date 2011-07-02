@@ -4,6 +4,31 @@ var removalist = function() {
     return (parseFloat(bytes)/1024/1024).toString().substr(0,4) + "MB"
   }
   
+  function handleMenuClick() {
+    $( '.menu .csv' ).click(function( e ) {      
+      window.location.href = app.csvUrl;
+      e.preventDefault();
+    })
+    
+    $( '.menu .transform' ).click(function( e ) {      
+      $('.dialog-overlay').show();
+      $('.dialog-container').show();
+      util.render('bulkEdit', 'dialog-content');
+      $('.cancelButton').click(function(e) {
+        $('.dialog-overlay').hide();
+        $('.dialog-container').hide();
+      })
+      $('.menu').hide();
+      $('.menu-overlay').hide();
+      e.preventDefault();
+    })
+    
+    $( '.menu li' ).click(function() {
+      $('.menu').hide();
+      $('.menu-overlay').hide();
+    })
+  }
+  
   function renderRows(response) {
     var rows = response.rows;
     
@@ -125,6 +150,7 @@ var removalist = function() {
   
   return {
     formatDiskSize: formatDiskSize,
+    handleMenuClick: handleMenuClick,
     bootstrap: bootstrap,
     fetchRows: fetchRows,
     activateControls: activateControls,
