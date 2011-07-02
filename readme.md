@@ -1,12 +1,12 @@
 # Removalist
 
-A [CouchApp](http://couchapp.org) that lets you export and import data into CouchDB. 
+A [CouchApp](http://couchapp.org) based on Google Refine's UI that lets you bulk edit and export your data in CouchDB
 
 ## Features
 
 * CSV export your entire database for integration with spreadsheets or [Google Refine](http://code.google.com/p/google-refine/)
 
-![screenshot](http://i.imgur.com/uCDMA.png)
+![screenshot](http://i.imgur.com/vE3Lr.png)
 
 ## Installation
 
@@ -16,8 +16,10 @@ After you install it, visit this link to open Removalist:
 
 ### Quick install
 
-* [Get a couch](http://couchone.com/get), make a database and put some data into it.
-* Copy these utilities to the new db: 
+[Get a couch](http://couchone.com/get), make a database and put some data into it.
+
+Copy these utilities to the new db:
+
 
     curl -X POST http://user:pass@YOURCOUCH/\_replicate -d '{"source":"http://max.couchone.com/apps","target":"YOURDB", "doc\_ids":["_design/removalist"]}' -H "Content-type: application/json"
 
