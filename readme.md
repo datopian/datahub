@@ -20,8 +20,7 @@ After you install it, visit this link to open Removalist:
 
 Copy these utilities to the new db:
 
-
-    curl -X POST http://user:pass@YOURCOUCH/\_replicate -d '{"source":"http://max.couchone.com/apps","target":"YOURDB", "doc\_ids":["_design/removalist"]}' -H "Content-type: application/json"
+    curl -X POST http://user:pass@YOURCOUCH/_replicate -d '{"source":"http://max.couchone.com/apps","target":"YOURDB", "doc_ids":["_design/removalist"]}' -H "Content-type: application/json"
 
 ### In-depth install
 

@@ -43,6 +43,15 @@
  .loading { background-image: url(../images/loader.gif); background-repeat: no-repeat; padding-left: 15px; background-position: 0px 3px;}
  a.button:hover span.icon.loading { background-image: url(../images/loader-blue.gif); }
  #couchLogo {float: left; margin-right: 5px; margin-top: 3px}
+
+.menu-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+
 ul.menu {
   display: none;
   outline-style: none;

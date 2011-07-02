@@ -19,6 +19,7 @@
 </head> 
 <body>
 	<div class="container">
+	  <div class="menu-overlay" style="display: none; z-index: 101; ">&nbsp;</div>
     <ul class="menu">
     	<li><a class="transform" href="JavaScript:void(0);">Transform...</a></li>
     </ul>
@@ -39,7 +40,7 @@
   <div class="dialog-overlay" style="display: none; z-index: 101; ">&nbsp;</div>
   <div class="dialog-container ui-draggable" style="display: none; z-index: 102; top: 101px; ">
   	<div class="dialog-frame" style="width: 700px; visibility: visible; ">
-  		<div class="dialog-border">
+  		<div id="dialog-content" class="dialog-border">
   			
   		</div>
   	</div>
@@ -200,9 +201,9 @@
   			</table>
   		</div>
   	</div>
-  	<div class="dialog-footer" bind="dialogFooter">
-  		<button class="button" bind="okButton">&nbsp;&nbsp;OK&nbsp;&nbsp;</button>
-  		<button class="button" bind="cancelButton">Cancel</button>
+  	<div class="dialog-footer">
+  		<button class="okButton button">&nbsp;&nbsp;OK&nbsp;&nbsp;</button>
+  		<button class="cancelButton button">Cancel</button>
   	</div>
   </script>
  

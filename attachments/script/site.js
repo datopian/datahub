@@ -21,6 +21,18 @@ app.routes = {
       e.preventDefault();
     }))
     
+    $( '.transform' ).live('click', ( function( e ) {      
+      $('.dialog-overlay').show();
+      $('.dialog-container').show();
+      util.render('bulkEdit', 'dialog-content');
+      $('.cancelButton').click(function(e) {
+        $('.dialog-overlay').hide();
+        $('.dialog-container').hide();
+      })
+      $('.menu').hide();
+      $('.menu-overlay').hide();
+      e.preventDefault();
+    }))
   },
   page: function(id) {
     removalist.getPageSize();
@@ -34,6 +46,10 @@ app.after = {
   dataTable: function() {
     $('.column-header-menu').click(function(e) {
       var offset = $(e.target).offset();
+      $('.menu-overlay').show().click(function(e) {
+        $(e.target).hide();
+        $('.menu').hide();
+      });
       $('.menu').show().css({top: offset.top + 20, left: offset.left});
     })
   }
