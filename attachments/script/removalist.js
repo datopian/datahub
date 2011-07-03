@@ -114,6 +114,7 @@ var removalist = function() {
     couch.request(req).then(function(response) {
       var offset = response.offset + 1;
       $('.viewpanel-pagingcount').text(offset + " - " + ((offset - 1) + getPageSize()));
+      app.cache = response.rows.map(function(row) { return row.value; } );
       removalist.renderRows(response);
     });
 

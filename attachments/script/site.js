@@ -43,11 +43,12 @@ app.after = {
   bulkEdit: function() {
     var editor = $('.expression-preview-code');
     editor.val("function(doc) {\n  doc['"+ app.currentColumn+"'] = doc['"+ app.currentColumn+"'];\n  return doc;\n}");
-    editor.focus().get(0).setSelectionRange(18, 18); 
+    editor.focus().get(0).setSelectionRange(18, 18);
     editor.keydown(function(e) {
       // if you don't setTimeout it won't grab the latest character if you call e.target.value
       window.setTimeout(function(){costco.handleEditorChange(e)}, 1, true);
     });
+    editor.keydown();
   }
 }
 

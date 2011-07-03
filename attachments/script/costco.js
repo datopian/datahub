@@ -5,7 +5,7 @@ var costco = function() {
   var toUpdate = [];
 
   function handleEditorChange(e) {
-    console.log(e.target.value);
+    mapDocs(e.target.value);
   }
   
   function computeChanges() {
@@ -37,47 +37,51 @@ var costco = function() {
   }
 
   function mapDocs(funcString) {
+    var errors = $('.expression-preview-parsing-status');
     try {
       eval("var editFunc = " + funcString);
+      errors.text('No syntax error.');
     } catch(e) {
-      $("#status").html("<span class='error'>error evaluating function: "
-        + e + "</span>");
+      errors.text(e+"");
       return;
     }
 
     toUpdate = [];
     var deleted = 0
       , edited = 0
-      , failed = 0;
-
-    getDocs(function(data) {
-      var rows = data.rows;
-      rows.forEach(function(row) {
-        var doc = row.doc;
-        try {
-          var updated = editFunc(_.clone(doc));
-        } catch(e) {
-          failed++; // ignore if it throws on this doc
-          return;
-        }
-        if(updated === null) {
-          doc._deleted = true;
-          toUpdate.push(doc);
-          deleted++;
-        }
-        else if(updated && !_.isEqual(updated, doc)) {
-          toUpdate.push(updated);
-          edited++;
-        }
-      });
-      // todo: make template for this
-      $("#status").html("<span class='warning'>About to edit " + edited
-              + " docs and delete " + deleted + " docs from "
-              + getDb().name  + "</span>");
-      if(failed)
-        $("#status").append(". Edit function threw on " + failed + " docs");
-      $("#update-container").show();
+      , failed = 0
+      , count = 0
+      , preview = [];
+      
+    _.each(app.cache, function(doc) {
+      try {
+        var updated = editFunc(_.clone(doc));
+      } catch(e) {
+        failed++; // ignore if it throws on this doc
+        return;
+      }
+      if(updated === null) {
+        doc._deleted = true;
+        toUpdate.push(doc);
+        deleted++;
+      }
+      else if(updated && !_.isEqual(updated, doc)) {
+        toUpdate.push(updated);
+        edited++;
+      }
+      preview.push({before: doc[app.currentColumn], after: updated[app.currentColumn]});
+      count++;
     });
+    
+    util.render('editPreview', 'editPreview', {rows: preview});
+        // 
+        // // todo: make template for this
+        // $("#status").html("<span class='warning'>About to edit " + edited
+        //         + " docs and delete " + deleted + " docs from "
+        //         + getDb().name  + "</span>");
+        // if(failed)
+        //   $("#status").append(". Edit function threw on " + failed + " docs");
+        // $("#update-container").show();
   }
 
   function updateDocs(callback) {
@@ -93,22 +97,10 @@ var costco = function() {
     });
   }
 
-  function getDocs(callback) {
-    getDb().allDocs({
-      include_docs : true,
-      success : callback,
-      error: function(req, status, err) {
-        $("#status").html("<span class='error'>error retrieving docs: "
-           + err + "</span>");
-      }
-    });
-  }
-
   return {
     handleEditorChange: handleEditorChange,
     computeChanges: computeChanges,
     mapDocs: mapDocs,
-    updateDocs: updateDocs,
-    getDocs: getDocs
+    updateDocs: updateDocs
   };
 }();

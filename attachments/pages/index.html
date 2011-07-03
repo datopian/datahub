@@ -191,7 +191,7 @@
   								<div id="expression-preview-tabs" class="refine-tabs ui-tabs ui-widget ui-widget-content ui-corner-all">
   									<span>Preview</span>
   									<div id="expression-preview-tabs-preview" class="ui-tabs-panel ui-widget-content ui-corner-bottom">
-  										<div class="expression-preview-container" bind="expressionPreviewPreviewContainer" style="width: 652px; ">
+  										<div id="editPreview" class="expression-preview-container" bind="expressionPreviewPreviewContainer" style="width: 652px; ">
   
   										</div>
   									</div>
@@ -208,7 +208,7 @@
   		</div>
   	</div>
   	<div class="dialog-footer">
-  		<button class="okButton button">&nbsp;&nbsp;OK&nbsp;&nbsp;</button>
+  		<button class="okButton button">&nbsp;&nbsp;Update All&nbsp;&nbsp;</button>
   		<button class="cancelButton button">Cancel</button>
   	</div>
   </script>
@@ -219,20 +219,14 @@
   		<tbody>
   		<tr>
   			<td class="expression-preview-heading">
-  				row
+  				before
   			</td>
   			<td class="expression-preview-heading">
-  				value
-  			</td>
-  			<td class="expression-preview-heading">
-  				value
+  				after
   			</td>
   		</tr>
   		{{#rows}}
   		<tr>
-  			<td width="1%">
-  				{{count}}
-  			</td>
   			<td class="expression-preview-value">
   				{{before}}
   			</td>
