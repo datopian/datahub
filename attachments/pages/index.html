@@ -30,7 +30,7 @@
 		<div id="main_content"></div>
 	</div>
 	
-	<div bind="processPanelDiv" id="notification-container">
+	<div id="notification-container">
   	<div id="notification">
   		<img src="images/small-spinner.gif" class="notification-loader"><span class="notification-message">Loading...</span>
   	</div>
@@ -86,9 +86,9 @@
   <script type='text/mustache' id="generatingTemplate"><div class="loading">Loading...</div></script>
   
   <script type='text/mustache' id="tableContainerTemplate">
-    <div bind="rightPanelDiv" id="right-panel">
-      <div bind="toolPanelDiv" id="tool-panel">
-        <div bind="summaryBarDiv" id="summary-bar">
+    <div id="right-panel">
+      <div id="tool-panel">
+        <div id="summary-bar">
           <span>
             {{doc_count}} documents
           </span>
@@ -96,9 +96,9 @@
         <div id="download">
         </div>
       </div>
-      <div bind="viewPanelDiv" id="view-panel">
+      <div id="view-panel">
         <div class="viewpanel-header">
-          <div class="viewpanel-pagesize" bind="pageSizeControls">
+          <div class="viewpanel-pagesize">
             <span>
               Show:
             </span>
@@ -130,14 +130,14 @@
   </script>
   
   <script type='text/mustache' id="dataTableTemplate">
-    <table bind="table" class="data-table" cellspacing="0">
+    <table class="data-table" cellspacing="0">
       <tbody>
         <tr>
           {{#headers}}
           <td class="column-header">
             <div class="column-header-title">
-              <a class="column-header-menu" bind="dropdownMenu"></a>
-              <span class="column-header-name" bind="nameContainer">{{.}}</span>
+              <a class="column-header-menu"></a>
+              <span class="column-header-name">{{.}}</span>
             </div>
             </div>
           </td>
@@ -159,10 +159,10 @@
   </script>
   
   <script type='text/mustache' id="bulkEditTemplate">
-    <div class="dialog-header" bind="dialogHeader">
+    <div class="dialog-header">
   		Functional transform on column {{name}}
   	</div>
-  	<div class="dialog-body" bind="dialogBody">
+  	<div class="dialog-body">
   		<div class="grid-layout layout-tight layout-full">
   			<table>
   			<tbody>
@@ -179,10 +179,10 @@
   						<tr>
   							<td colspan="3">
   								<div class="input-container">
-  									<textarea class="expression-preview-code" bind="expressionPreviewTextarea"></textarea>
+  									<textarea class="expression-preview-code"></textarea>
   								</div>
   							</td>
-  							<td class="expression-preview-parsing-status" bind="expressionPreviewParsingStatus" width="150" style="vertical-align: top;">
+  							<td class="expression-preview-parsing-status" width="150" style="vertical-align: top;">
   								No syntax error.
   							</td>
   						</tr>
@@ -191,7 +191,7 @@
   								<div id="expression-preview-tabs" class="refine-tabs ui-tabs ui-widget ui-widget-content ui-corner-all">
   									<span>Preview</span>
   									<div id="expression-preview-tabs-preview" class="ui-tabs-panel ui-widget-content ui-corner-bottom">
-  										<div id="editPreview" class="expression-preview-container" bind="expressionPreviewPreviewContainer" style="width: 652px; ">
+  										<div id="editPreview" class="expression-preview-container" style="width: 652px; ">
   
   										</div>
   									</div>
