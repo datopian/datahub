@@ -59,6 +59,15 @@ var util = function() {
     }
     if (template in app.after) app.after[template]();
   }
+  
+  function notify( message, options ) {
+    if (!options) var options = {};
+    $('#notification-container').show();
+    $('#notification-message').text(message);
+    if (!options.loader) $('.notification-loader').hide();
+    if (options.loader) $('.notification-loader').show();
+    if (!options.persist) setTimeout(function() { $('#notification-container').hide() }, 3000);
+  }
 
   function formatMetadata(data) {
     out = '<dl>';
@@ -149,6 +158,7 @@ var util = function() {
     hide: hide,
     position: position,
     render: render,
+    notify: notify,
     formatMetadata:formatMetadata,
     getBaseURL:getBaseURL,
     resetForm: resetForm,

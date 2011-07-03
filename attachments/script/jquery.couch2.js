@@ -13,19 +13,8 @@
   };  
 
   couch.request = function(opts) {
-    var key = JSON.stringify(opts);
-    if (cache[key]) {
-      var dfd = $.Deferred();
-      dfd.resolve(jQuery.extend(true, {}, cache[key]));
-      return dfd.promise();
-    } else {
-      var ajaxOpts = $.extend({}, defaults, opts);
-      ajaxOpts.dataFilter = function (data) {
-        cache[key] = JSON.parse(data);
-        return data;
-      };
-      return $.ajax(ajaxOpts).promise();
-    }
+    var ajaxOpts = $.extend({}, defaults, opts);
+    return $.ajax(ajaxOpts).promise();
   }
 
   couch.clearCache = function() {

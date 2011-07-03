@@ -41,6 +41,22 @@ app.after = {
   exportActions: removalist.handleMenuClick,
   columnActions: removalist.handleMenuClick,
   bulkEdit: function() {
+    $('.cancelButton').click(function(e) {
+      util.hide('dialog');
+    })
+    $('.okButton').click(function(e) {
+      var funcText = $('.expression-preview-code').val();
+      util.hide('dialog');
+      util.notify("Updating documents...", {persist: true, loader: true});
+      couch.request({url: app.baseURL + "api/json"}).then(function(docs) {
+        var toUpdate = costco.mapDocs(docs.docs, funcText);
+        costco.updateDocs(toUpdate, function(msg) { 
+          util.notify(msg.length + " documents updated successfully");
+          removalist.fetchRows(false, app.offset);
+        });
+      });
+    })
+    
     var editor = $('.expression-preview-code');
     editor.val("function(doc) {\n  doc['"+ app.currentColumn+"'] = doc['"+ app.currentColumn+"'];\n  return doc;\n}");
     editor.focus().get(0).setSelectionRange(18, 18);
