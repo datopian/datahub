@@ -2,8 +2,6 @@
 
   window.couch = {};
 
-  var cache = {};
-
   var defaults = {
     headers: {"Accept":"application/json"},
     dataType:"json",
@@ -16,10 +14,6 @@
     var ajaxOpts = $.extend({}, defaults, opts);
     return $.ajax(ajaxOpts).promise();
   }
-
-  couch.clearCache = function() {
-    cache = {};
-  };
 
   couch.get = function(url) {
     return couch.request({url:url, type:'GET'});
