@@ -3,9 +3,9 @@
 var costco = function() {
 
   var toUpdate = [];
-  
-  function getDb() {
-    
+
+  function handleEditorChange(e) {
+    console.log(e.target.value);
   }
   
   function computeChanges() {
@@ -25,8 +25,7 @@ var costco = function() {
         return mapDocs(text);
       }
     }  
-    if(!docs.length)
-      docs = [docs];
+    if(!docs.length) docs = [docs];
     
     toUpdate = docs;
     
@@ -106,7 +105,7 @@ var costco = function() {
   }
 
   return {
-    getDb: getDb,
+    handleEditorChange: handleEditorChange,
     computeChanges: computeChanges,
     mapDocs: mapDocs,
     updateDocs: updateDocs,

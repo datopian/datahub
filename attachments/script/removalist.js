@@ -8,7 +8,7 @@ var removalist = function() {
     $( '.menu li' ).click(function(e) {
       if ($(e.target).hasClass('transform')) {
         util.show('dialog');
-        util.render('bulkEdit', 'dialog-content');
+        util.render('bulkEdit', 'dialog-content', {name: app.currentColumn});
         $('.cancelButton').click(function(e) {
           util.hide('dialog');
         })

@@ -27,6 +27,7 @@ app.after = {
   },
   dataTable: function() {
     $('.column-header-menu').click(function(e) { 
+      app.currentColumn = $(e.target).siblings().text();
       util.position('menu', e);
       util.render('columnActions', 'menu');
     });
@@ -38,7 +39,16 @@ app.after = {
     });
   },
   exportActions: removalist.handleMenuClick,
-  columnActions: removalist.handleMenuClick
+  columnActions: removalist.handleMenuClick,
+  bulkEdit: function() {
+    var editor = $('.expression-preview-code');
+    editor.val("function(doc) {\n  doc['"+ app.currentColumn+"'] = doc['"+ app.currentColumn+"'];\n  return doc;\n}");
+    editor.focus().get(0).setSelectionRange(18, 18); 
+    editor.keydown(function(e) {
+      // if you don't setTimeout it won't grab the latest character if you call e.target.value
+      window.setTimeout(function(){costco.handleEditorChange(e)}, 1, true);
+    });
+  }
 }
 
 app.sammy = $.sammy(function () {
