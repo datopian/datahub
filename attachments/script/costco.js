@@ -40,7 +40,8 @@ var costco = function() {
         toUpdate.push(updated);
         edited++;
       }
-      if(preview) preview.push({before: doc[app.currentColumn], after: updated[app.currentColumn]});
+      
+      if(preview) preview.push({before: JSON.stringify(doc[app.currentColumn]), after: JSON.stringify(updated[app.currentColumn])});
     });
     
     if(preview) util.render('editPreview', 'expression-preview-container', {rows: preview});
