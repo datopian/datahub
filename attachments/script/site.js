@@ -39,6 +39,7 @@ app.after = {
       }
       $(e.target).addClass("hidden");
       var cell = $(e.target).siblings('.data-table-cell-value');
+      cell.data("previousContents", cell.text());
       util.render('cellEditor', cell, {value: cell.text()});
     })
   },
@@ -56,6 +57,10 @@ app.after = {
         util.notify("Row updated successfully");
         removalist.fetchRows(false, app.offset);
       })
+    })
+    $('.data-table-cell-editor .cancelButton').click(function(e) {
+      var cell = $(e.target).parents('.data-table-cell-value');
+      cell.html(cell.data('previousContents')).siblings('.data-table-cell-edit').removeClass("hidden");
     })
   },
   actions: function() {
