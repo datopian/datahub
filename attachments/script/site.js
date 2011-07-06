@@ -72,10 +72,10 @@ app.after = {
   exportActions: removalist.handleMenuClick,
   columnActions: removalist.handleMenuClick,
   bulkEdit: function() {
-    $('.dialog-body .cancelButton').click(function(e) {
+    $('.dialog-content .cancelButton').click(function(e) {
       util.hide('dialog');
     })
-    $('.dialog-body .okButton').click(function(e) {
+    $('.dialog-content .okButton').click(function(e) {
       var funcText = $('.expression-preview-code').val();
       util.hide('dialog');
       util.notify("Updating documents...", {persist: true, loader: true});
