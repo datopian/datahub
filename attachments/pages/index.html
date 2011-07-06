@@ -19,15 +19,15 @@
 <body>
 	<div class="container">
 	  <div class="menu-overlay" style="display: none; z-index: 101; ">&nbsp;</div>
-    <ul class="menu" id="menu">
+    <ul class="menu">
     	<li><a class="transform" href="JavaScript:void(0);">Transform...</a></li>
     </ul>
     <div id="header">
       <a href="http://github.com/maxogden/removalist"><img id="couchLogo" src="images/couch.png"/></a>
-      <div id="project-title"></div>
-      <div id="project-controls"></div>
+      <div class="project-title"></div>
+      <div class="project-controls"></div>
     </div>
-		<div id="main_content"></div>
+		<div class="main_content"></div>
 	</div>
 	
 	<div id="notification-container">
@@ -39,53 +39,28 @@
   <div class="dialog-overlay" style="display: none; z-index: 101; ">&nbsp;</div>
   <div class="dialog ui-draggable" style="display: none; z-index: 102; top: 101px; ">
   	<div class="dialog-frame" style="width: 700px; visibility: visible; ">
-  		<div id="dialog-content" class="dialog-border"></div>
+  		<div class="dialog-content dialog-border"></div>
   	</div>
   </div>
   
-  <script type='text/mustache' id="dbTemplate">
-    <div id="database" class="single_database">
-      <div class="group" id="current-head-database">
-        <table width="100%" cellspacing="0" cellpadding="0">
-          <tbody>
-            <tr class="database_oneline action">
-              <td class="date">
-                <nobr>db</nobr>
-              </td>
-              <td class="message">
-                <code><a href="http://{{host}}/{{db_name}}">http://{{host}}/<strong>{{db_name}}</strong></a> </code>
-              </td>
-              <td class="database">
-                size&nbsp;{{disk_size}}
-              </td>
-              <td class="tree">
-                docs&nbsp;<a href="http://{{host}}/{{db_name}}/_all_docs?include_docs=true" hotkey="t">{{doc_count}}</a>
-              </td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-    </div>
-  </script>
-  
-  <script type='text/mustache' id="actionsTemplate">
+  <script type='text/mustache' class="actionsTemplate">
     <a class="button" id="export-button" href="javascript:{}"><span class="button-menu">Export</span></a>
   </script>
   
-  <script type='text/mustache' id="exportActionsTemplate">
+  <script type='text/mustache' class="exportActionsTemplate">
     <li><a class="csv" href="JavaScript:void(0);">CSV</a></li>
     <li><a class="json" href="JavaScript:void(0);">JSON</a></li>
   </script>
   
-  <script type='text/mustache' id="columnActionsTemplate">
+  <script type='text/mustache' class="columnActionsTemplate">
     <li><a class="transform" href="JavaScript:void(0);">Transform...</a></li>
   </script>
 
-  <script type='text/mustache' id="titleTemplate"><span id="project-name-button" class="app-path-section">{{db_name}}</span></script>
-  <script type='text/mustache' id="bulkTemplate">http://{{host}}/{{db_name}}/_bulk_docs</script>
-  <script type='text/mustache' id="generatingTemplate"><div class="loading">Loading...</div></script>
+  <script type='text/mustache' class="titleTemplate"><span id="project-name-button" class="app-path-section">{{db_name}}</span></script>
+  <script type='text/mustache' class="bulkTemplate">http://{{host}}/{{db_name}}/_bulk_docs</script>
+  <script type='text/mustache' class="generatingTemplate"><div class="loading">Loading...</div></script>
   
-  <script type='text/mustache' id="tableContainerTemplate">
+  <script type='text/mustache' class="tableContainerTemplate">
     <div id="right-panel">
       <div id="tool-panel">
         <div id="summary-bar">
@@ -122,14 +97,14 @@
             <a href="javascript:{}" class="last action">last »</a>
           </div>
         </div>
-        <div id="dataTableContainer" class="data-table-container">
+        <div class="data-table-container">
 
         </div>
       </div>
     </div>
   </script>
   
-  <script type='text/mustache' id="dataTableTemplate">
+  <script type='text/mustache' class="dataTableTemplate">
     <table class="data-table" cellspacing="0">
       <tbody>
         <tr>
@@ -144,11 +119,12 @@
           {{/headers}}
         </tr>
         {{#rows}}
-        <tr>
+        <tr data-id="{{id}}">
           {{#cells}}
-          <td>
+          <td data-header="{{header}}">
             <div class="data-table-cell-content">
-              <span>{{.}}</span>
+              <a href="javascript:{}" class="data-table-cell-edit" title="Edit this cell">&nbsp;</a>
+              <div class="data-table-cell-value">{{value}}</div>
             </div>
           </td>
           {{/cells}}
@@ -158,7 +134,7 @@
     </table>
   </script>
   
-  <script type='text/mustache' id="bulkEditTemplate">
+  <script type='text/mustache' class="bulkEditTemplate">
     <div class="dialog-header">
   		Functional transform on column {{name}}
   	</div>
@@ -191,7 +167,7 @@
   								<div id="expression-preview-tabs" class="refine-tabs ui-tabs ui-widget ui-widget-content ui-corner-all">
   									<span>Preview</span>
   									<div id="expression-preview-tabs-preview" class="ui-tabs-panel ui-widget-content ui-corner-bottom">
-  										<div id="editPreview" class="expression-preview-container" style="width: 652px; ">
+  										<div class="expression-preview-container" style="width: 652px; ">
   										</div>
   									</div>
   								</div>
@@ -211,8 +187,22 @@
   		<button class="cancelButton button">Cancel</button>
   	</div>
   </script>
+  
+  <script type='text/mustache' class="cellEditorTemplate">
+    <div class="menu-container data-table-cell-editor">
+      <textarea class="data-table-cell-editor-editor" bind="textarea">{{value}}</textarea>
+      <div id="data-table-cell-editor-actions">
+        <div class="data-table-cell-editor-action">
+          <button class="okButton button">Update</button>
+        </div>
+        <div class="data-table-cell-editor-action">
+          <button class="cancelButton button">Cancel</button>
+        </div>
+      </div>
+    </div>
+  </script>
  
-  <script type='text/mustache' id="editPreviewTemplate">
+  <script type='text/mustache' class="editPreviewTemplate">
   	<div class="expression-preview-table-wrapper">
   		<table>
   		<tbody>

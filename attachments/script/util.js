@@ -50,8 +50,12 @@ var util = function() {
   function render( template, target, options ) {
     if ( !options ) options = {data: {}};
     if ( !options.data ) options = {data: options};
-    var html = $.mustache( $( "#" + template + "Template" ).html(), options.data ),
-        targetDom = $( "#" + target );
+    var html = $.mustache( $( "." + template + "Template:first" ).html(), options.data );
+    if (target instanceof jQuery) {
+      var targetDom = target;
+    } else {
+      var targetDom = $( "." + target + ":first" );      
+    }
     if( options.append ) {
       targetDom.append( html );
     } else {

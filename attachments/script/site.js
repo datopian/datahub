@@ -31,6 +31,32 @@ app.after = {
       util.position('menu', e);
       util.render('columnActions', 'menu');
     });
+    
+    $('.data-table-cell-edit').click(function(e) {
+      var editing = $('.data-table-cell-editor-editor');
+      if (editing.length > 0) {
+        editing.parents('.data-table-cell-value').html(editing.text()).siblings('.data-table-cell-edit').removeClass("hidden");
+      }
+      $(e.target).addClass("hidden");
+      var cell = $(e.target).siblings('.data-table-cell-value');
+      util.render('cellEditor', cell, {value: cell.text()});
+    })
+  },
+  cellEditor: function() {
+    $('.data-table-cell-editor .okButton').click(function(e) {
+      var cell = $(e.target);
+      var rowId = cell.parents('tr').attr('data-id');
+      var header = cell.parents('td').attr('data-header');
+      var doc = _.find(app.cache, function(cacheDoc) {
+        return cacheDoc._id === rowId;
+      });
+      doc[header] = cell.parents('.data-table-cell-editor').find('.data-table-cell-editor-editor').val();
+      util.notify("Updating row...", {persist: true, loader: true});
+      couch.request({type: "PUT", url: app.baseURL + "api/" + doc._id, data: JSON.stringify(doc)}).then(function(response) {
+        util.notify("Row updated successfully");
+        removalist.fetchRows(false, app.offset);
+      })
+    })
   },
   actions: function() {
     $('.button').click(function(e) { 
@@ -41,10 +67,10 @@ app.after = {
   exportActions: removalist.handleMenuClick,
   columnActions: removalist.handleMenuClick,
   bulkEdit: function() {
-    $('.cancelButton').click(function(e) {
+    $('.dialog-body .cancelButton').click(function(e) {
       util.hide('dialog');
     })
-    $('.okButton').click(function(e) {
+    $('.dialog-body .okButton').click(function(e) {
       var funcText = $('.expression-preview-code').val();
       util.hide('dialog');
       util.notify("Updating documents...", {persist: true, loader: true});

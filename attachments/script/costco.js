@@ -43,7 +43,7 @@ var costco = function() {
       if(preview) preview.push({before: doc[app.currentColumn], after: updated[app.currentColumn]});
     });
     
-    if(preview) util.render('editPreview', 'editPreview', {rows: preview});
+    if(preview) util.render('editPreview', 'expression-preview-container', {rows: preview});
     return toUpdate;
   }
 

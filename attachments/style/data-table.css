@@ -363,6 +363,7 @@ img {
 
 .hidden {
   display: none;
+  visibility: hidden !important;
 }
 
 .fbs-pane, .fbs-flyout-pane {
@@ -420,13 +421,13 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   display: none;
 }
 
-#project-title {
+.project-title {
   float: left;
   padding: 2px 0 0 0;
   font-size: 1.6em;
 }
 
-#project-controls {
+.project-controls {
   margin: 3px 2px 0px 0px;
   display: block;
   float: right;
@@ -596,6 +597,10 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   padding: 2px 5px;
   border-bottom: 1px dotted #ddd;
   border-right: 1px solid #ddd;
+}
+
+.data-table td:hover .data-table-cell-edit {
+  visibility: visible;
 }
 
 table.data-table > tbody > tr.even > td {
@@ -781,6 +786,7 @@ a.data-table-flag-off {
 }
 
 .data-table-cell-editor, .data-table-topic-popup {
+  overflow: auto;
   border: 1px solid #bcf;
   background: #e3e9ff;
   padding: 5px;
@@ -794,6 +800,7 @@ a.data-table-flag-off {
 }
 
 .data-table-cell-editor-editor {
+  overflow: hidden;
   display: block;
   width: 98%;
   height: 3em;

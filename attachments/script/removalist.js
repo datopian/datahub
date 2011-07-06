@@ -35,12 +35,12 @@ var removalist = function() {
           value = row.value[header];
           if (typeof(value) == "object") value = JSON.stringify(value);
         }
-        cells.push(value);
+        cells.push({header: header, value: value});
       })
-      tableRows.push({cells: cells});
+      tableRows.push({id: row.value._id, cells: cells});
     })
     
-    util.render('dataTable', 'dataTableContainer', {
+    util.render('dataTable', 'data-table-container', {
       rows: tableRows,
       headers: app.headers
     })
