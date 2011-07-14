@@ -131,12 +131,22 @@ var removalist = function() {
 
       util.render('tableContainer', app.container, app.dbInfo);
       util.render('title', 'project-title', app.dbInfo);
-      util.render( 'generating', 'project-controls' );    
+      util.render( 'generating', 'project-actions' );    
+      
+      couch.session().then(function(session) {
+        if ( session.userCtx.name ) {
+          var text = "Sign out";
+        } else {
+          var text = "Sign in";
+        }
+        util.render('controls', 'project-controls', {text: text});
+      })
       
       couch.request({url: app.baseURL + 'api/headers'}).then(function ( headers ) {
         app.headers = headers;
         app.csvUrl = app.baseURL + 'api/csv?headers=' + escape(JSON.stringify(headers));
-        util.render( 'actions', 'project-controls', $.extend({}, app.dbInfo, {url: app.csvUrl}) );    
+        
+        util.render( 'actions', 'project-actions', $.extend({}, app.dbInfo, {url: app.csvUrl}) );    
         fetchRows();
       })
     })

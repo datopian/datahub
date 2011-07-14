@@ -11,6 +11,7 @@
   };  
 
   couch.request = function(opts) {
+    if (opts.data && typeof(opts.data === "object")) opts.data = JSON.stringify(opts.data);
     var ajaxOpts = $.extend({}, defaults, opts);
     return $.ajax(ajaxOpts).promise();
   }
@@ -18,6 +19,22 @@
   couch.get = function(url) {
     return couch.request({url:url, type:'GET'});
   };
+  
+  couch.login = function(credentials) {
+    return couch.request({
+      url: "/_session",
+      type: 'POST',
+      data: {name: credentials.username, password: credentials.password}
+    })
+  }
+  
+  couch.logout = function() {
+    return couch.request({url: "/_session", type: 'DELETE'});
+  }
+  
+  couch.session = function() {
+    return couch.request({url: "/_session"});    
+  }
 
   couch.db = function(name, couchRoot) {
     if(!couchRoot) couchRoot = "";

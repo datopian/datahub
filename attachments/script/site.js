@@ -15,9 +15,6 @@ app.handler = function(route) {
 app.routes = {
   home: function() {
     removalist.bootstrap();
-  },
-  page: function(id) {
-    removalist.getPageSize();
   }
 }
 
@@ -53,7 +50,7 @@ app.after = {
       });
       doc[header] = cell.parents('.data-table-cell-editor').find('.data-table-cell-editor-editor').val();
       util.notify("Updating row...", {persist: true, loader: true});
-      couch.request({type: "PUT", url: app.baseURL + "api/" + doc._id, data: JSON.stringify(doc)}).then(function(response) {
+      couch.request({type: "PUT", url: app.baseURL + "api/" + doc._id, data: doc}).then(function(response) {
         util.notify("Row updated successfully");
         removalist.fetchRows(false, app.offset);
       })
@@ -69,8 +66,40 @@ app.after = {
       util.render('exportActions', 'menu');
     });
   },
+  controls: function() {
+    $('#logged-in-status').click(function(e) { 
+      if ($(e.target).text() === "Sign in") {
+        util.show('dialog');
+        util.render('signIn', 'dialog-content');
+      } else if ($(e.target).text() === "Sign out") {
+        util.notify("Signing you out...", {persist: true, loader: true});
+        couch.logout().then(function(response) {
+          util.notify("Signed out");
+          util.render('controls', 'project-controls', {text: "Sign in"});
+        })
+      }
+    });
+  },
   exportActions: removalist.handleMenuClick,
   columnActions: removalist.handleMenuClick,
+  signIn: function() {
+    $('.dialog-content .cancelButton').click(function(e) {
+      util.hide('dialog');
+    })
+    $('.dialog-content .okButton').click(function(e) {
+      util.hide('dialog');
+      util.notify("Signing you in...", {persist: true, loader: true});
+      var form = $(e.target).parents('.dialog-content').find('#sign-in-form');
+      var credentials = {
+        username: form.find('#username-input').val(), 
+        password: form.find('#password-input').val()
+      }
+      couch.login(credentials).then(function(response) {
+        util.notify("Signed in");
+        util.render('controls', 'project-controls', {text: "Sign out"});
+      })
+    })
+  },
   bulkEdit: function() {
     $('.dialog-content .cancelButton').click(function(e) {
       util.hide('dialog');

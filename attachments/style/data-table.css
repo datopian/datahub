@@ -81,7 +81,7 @@ h2 {
   font-weight: bold;
 }
 
-input[type=text] {
+input[type=text], input[type=password]{
   padding: 3px;
   font-size: 1em;
   font-family: inherit;
@@ -427,7 +427,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   font-size: 1.6em;
 }
 
-.project-controls {
+.project-controls, .project-actions {
   margin: 3px 2px 0px 0px;
   display: block;
   float: right;
@@ -445,9 +445,9 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   border-top: 1px solid #aaa;
 }
 
-#project-permalink-button {
+#logged-in-status {
   padding: 0 4px;
-  font-size: 0.7em;
+  font-size: 11px;
 }
 
 #left-panel {
