@@ -83,14 +83,18 @@ app.after = {
   exportActions: removalist.handleMenuClick,
   columnActions: removalist.handleMenuClick,
   signIn: function() {
+    
+    util.observeExit($('.dialog-content'), function() {
+      util.hide('dialog');
+    })
+    
     $('.dialog-content #username-input').focus();
+    
     $('.dialog-content').find('#sign-in-form').submit(function(e) {
       $('.dialog-content .okButton').click();
       return false;
     })
-    $('.dialog-content .cancelButton').click(function(e) {
-      util.hide('dialog');
-    })
+    
     $('.dialog-content .okButton').click(function(e) {
       util.hide('dialog');
       util.notify("Signing you in...", {persist: true, loader: true});
@@ -106,11 +110,14 @@ app.after = {
         if (error.statusText === "error") util.notify(JSON.parse(error.responseText).reason);
       })
     })
+    
   },
   bulkEdit: function() {
-    $('.dialog-content .cancelButton').click(function(e) {
+    
+    util.observeExit($('.dialog-content'), function() {
       util.hide('dialog');
     })
+    
     $('.dialog-content .okButton').click(function(e) {
       var funcText = $('.expression-preview-code').val();
       util.hide('dialog');

@@ -24,6 +24,32 @@ var util = function() {
     return exists;
   }
   
+  function registerEmitter() {
+    var Emitter = function(obj) {
+      this.emit = function(obj, channel) { 
+        if (!channel) var channel = 'data';
+        this.trigger(channel, obj); 
+      };
+    };
+    MicroEvent.mixin(Emitter);
+    app.emitter = new Emitter();
+  }
+  
+  function listenFor(keys) {
+    _.each(keys, function(key) {
+      $(document).bind('keydown', key, function() { app.emitter.emit(key, key) });
+    })
+  }
+  
+  function observeExit(elem, callback) {
+    var cancelButton = elem.find('.cancelButton');
+    app.emitter.on('esc', function() { 
+      cancelButton.click();
+      app.emitter.clear('esc');
+    });
+    cancelButton.click(callback);
+  }
+  
   function show( thing ) {
     $('.' + thing ).show();
     $('.' + thing + '-overlay').show();
@@ -148,11 +174,14 @@ var util = function() {
   
   return {
     inURL: inURL,
+    registerEmitter: registerEmitter,
+    listenFor: listenFor,
     show: show,
     hide: hide,
     position: position,
     render: render,
     notify: notify,
+    observeExit: observeExit,
     formatMetadata:formatMetadata,
     getBaseURL:getBaseURL,
     resetForm: resetForm,

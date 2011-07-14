@@ -118,6 +118,9 @@ var removalist = function() {
   }
   
   function bootstrap() {
+    util.registerEmitter();
+    util.listenFor(["esc"]);
+    
     couch.request({url: app.baseURL + "api"}).then(function( dbInfo ) {
 
       app.dbInfo = dbInfo;
