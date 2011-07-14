@@ -83,6 +83,11 @@ app.after = {
   exportActions: removalist.handleMenuClick,
   columnActions: removalist.handleMenuClick,
   signIn: function() {
+    $('.dialog-content #username-input').focus();
+    $('.dialog-content').find('#sign-in-form').submit(function(e) {
+      $('.dialog-content .okButton').click();
+      return false;
+    })
     $('.dialog-content .cancelButton').click(function(e) {
       util.hide('dialog');
     })
@@ -97,6 +102,8 @@ app.after = {
       couch.login(credentials).then(function(response) {
         util.notify("Signed in");
         util.render('controls', 'project-controls', {text: "Sign out"});
+      }, function(error) {
+        if (error.statusText === "error") util.notify(JSON.parse(error.responseText).reason);
       })
     })
   },

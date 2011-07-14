@@ -144,26 +144,29 @@
   	</div>
   	<div class="dialog-body">
   		<div class="grid-layout layout-tight layout-full">
-        <table id="sign-in-form" class="form-table">
-          <tbody>
-            <tr>
-              <th>
-                <label for="username">Username</label>
-              </th>
-              <td>
-                <input type="text" size="25" id="username-input" name="username">
-              </td>
-            </tr>
-            <tr>
-              <th>
-                <label for="password">Password</label>
-              </th>
-              <td>
-                <input type="password" size="25" id="password-input" name="password">
-              </td>
-            </tr>
-          </tbody>
-        </table>
+        <form name="sign-in-form" id="sign-in-form">
+          <table class="form-table">
+            <tbody>
+              <tr>
+                <th>
+                  <label for="username">Username</label>
+                </th>
+                <td>
+                  <input type="text" size="25" id="username-input" name="username">
+                </td>
+              </tr>
+              <tr>
+                <th>
+                  <label for="password">Password</label>
+                </th>
+                <td>
+                  <input type="password" size="25" id="password-input" name="password">
+                </td>
+              </tr>
+              <input type="submit" style="height: 0px; width: 0px; border: none; padding: 0px;" hidefocus="true" />
+            </tbody>
+          </table>
+        </form>
   		</div>
   	</div>
   	<div class="dialog-footer">
