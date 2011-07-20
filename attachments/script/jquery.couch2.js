@@ -11,7 +11,6 @@
   };  
 
   couch.request = function(opts) {
-    if (opts.data && typeof(opts.data === "object")) opts.data = JSON.stringify(opts.data);
     var ajaxOpts = $.extend({}, defaults, opts);
     return $.ajax(ajaxOpts).promise();
   }
