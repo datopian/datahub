@@ -50,9 +50,16 @@
   </script>
   
   <script type='text/mustache' class="actionsTemplate">
-    <a class="button" id="export-button" href="javascript:{}"><span class="button-menu">Export</span></a>
+    <a class="button" href="javascript:{}"><span data-action="import" class="button-menu">Import</span></a>
+    <a class="button" href="javascript:{}"><span data-action="export" class="button-menu">Export</span></a>
   </script>
-  
+
+  <script type='text/mustache' class="importActionsTemplate">
+    <li><a class="url" href="JavaScript:void(0);">From an API</a></li>
+    <li><a class="paste" href="JavaScript:void(0);">Copy & Paste</a></li>
+    <li><a class="upload" href="JavaScript:void(0);">Upload File</a></li>
+  </script>
+    
   <script type='text/mustache' class="exportActionsTemplate">
     <li><a class="csv" href="JavaScript:void(0);">CSV</a></li>
     <li><a class="json" href="JavaScript:void(0);">JSON</a></li>

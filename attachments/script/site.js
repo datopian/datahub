@@ -62,8 +62,9 @@ app.after = {
   },
   actions: function() {
     $('.button').click(function(e) { 
-      util.position('menu', e, {left: -60});
-      util.render('exportActions', 'menu');
+      var action = $(e.target).attr('data-action');
+      util.position('menu', e, {left: -60, top: 5});
+      util.render(action + 'Actions', 'menu');
     });
   },
   controls: function() {
