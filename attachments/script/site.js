@@ -14,13 +14,13 @@ app.handler = function(route) {
 
 app.routes = {
   home: function() {
-    removalist.bootstrap();
+    recline.bootstrap();
   }
 }
 
 app.after = {
   tableContainer: function() {
-    removalist.activateControls();
+    recline.activateControls();
   },
   dataTable: function() {
     $('.column-header-menu').click(function(e) { 
@@ -52,7 +52,7 @@ app.after = {
       util.notify("Updating row...", {persist: true, loader: true});
       couch.request({type: "PUT", url: app.baseURL + "api/" + doc._id, data: JSON.stringify(doc)}).then(function(response) {
         util.notify("Row updated successfully");
-        removalist.fetchRows(false, app.offset);
+        recline.fetchRows(false, app.offset);
       })
     })
     $('.data-table-cell-editor .cancelButton').click(function(e) {
@@ -80,8 +80,8 @@ app.after = {
       }
     });
   },
-  exportActions: removalist.handleMenuClick,
-  columnActions: removalist.handleMenuClick,
+  exportActions: recline.handleMenuClick,
+  columnActions: recline.handleMenuClick,
   signIn: function() {
     
     util.observeExit($('.dialog-content'), function() {
@@ -126,7 +126,7 @@ app.after = {
         var toUpdate = costco.mapDocs(docs.docs, funcText);
         costco.updateDocs(toUpdate, function(msg) { 
           util.notify(msg.length + " documents updated successfully");
-          removalist.fetchRows(false, app.offset);
+          recline.fetchRows(false, app.offset);
         });
       });
     })

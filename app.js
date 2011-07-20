@@ -3,7 +3,7 @@ var couchapp = require('couchapp')
   ;
 
 ddoc =
-  { _id:'_design/removalist'
+  { _id:'_design/recline'
   , rewrites :
     [ {from:"/", to:'pages/index.html'}
     , {from:"/api/csv", to:'_list/csv/all'}

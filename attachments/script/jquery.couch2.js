@@ -23,7 +23,7 @@
     return couch.request({
       url: "/_session",
       type: 'POST',
-      data: {name: credentials.username, password: credentials.password}
+      data: JSON.stringify({name: credentials.username, password: credentials.password})
     })
   }
   

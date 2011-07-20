@@ -1,4 +1,4 @@
-var removalist = function() {
+var recline = function() {
   
   function formatDiskSize(bytes) {
     return (parseFloat(bytes)/1024/1024).toString().substr(0,4) + "MB"
@@ -112,7 +112,7 @@ var removalist = function() {
       var offset = response.offset + 1;
       $('.viewpanel-pagingcount').text(offset + " - " + ((offset - 1) + getPageSize()));
       app.cache = response.rows.map(function(row) { return row.value; } );
-      removalist.renderRows(response);
+      renderRows(response);
     });
 
   }
