@@ -70,8 +70,7 @@ app.after = {
   controls: function() {
     $('#logged-in-status').click(function(e) { 
       if ($(e.target).text() === "Sign in") {
-        util.show('dialog');
-        util.render('signIn', 'dialog-content');
+        recline.showDialog("signIn");
       } else if ($(e.target).text() === "Sign out") {
         util.notify("Signing you out...", {persist: true, loader: true});
         couch.logout().then(function(response) {
@@ -82,12 +81,9 @@ app.after = {
     });
   },
   exportActions: recline.handleMenuClick,
+  importActions: recline.handleMenuClick,
   columnActions: recline.handleMenuClick,
   signIn: function() {
-    
-    util.observeExit($('.dialog-content'), function() {
-      util.hide('dialog');
-    })
     
     $('.dialog-content #username-input').focus();
     
@@ -114,10 +110,6 @@ app.after = {
     
   },
   bulkEdit: function() {
-    
-    util.observeExit($('.dialog-content'), function() {
-      util.hide('dialog');
-    })
     
     $('.dialog-content .okButton').click(function(e) {
       var funcText = $('.expression-preview-code').val();

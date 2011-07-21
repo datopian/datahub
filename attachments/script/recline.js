@@ -4,21 +4,30 @@ var recline = function() {
     return (parseFloat(bytes)/1024/1024).toString().substr(0,4) + "MB"
   }
   
+  function showDialog(template, data) {
+    if (!data) data = {};
+    util.show('dialog');
+    util.render(template, 'dialog-content', data);
+    util.hide('menu');
+    util.observeExit($('.dialog-content'), function() {
+      util.hide('dialog');
+    })
+  }
+  
   function handleMenuClick() {
     $( '.menu li' ).click(function(e) {
-      if ($(e.target).hasClass('transform')) {
-        util.show('dialog');
-        util.render('bulkEdit', 'dialog-content', {name: app.currentColumn});
-        util.hide('menu');
+      var actions = {
+        bulkEdit: function() { showDialog('bulkEdit', {name: app.currentColumn}) },
+        csv: function() { window.location.href = app.csvUrl },
+        json: function() { window.location.href = "_rewrite/api/json" },
+        url: function() { showDialog('urlImport') },
+        paste: function() { showDialog('pasteImport') },
+        upload: function() { showDialog('uploadImport') }
       }
       
-      if ($(e.target).hasClass('csv'))  window.location.href = app.csvUrl;
-      
-      if ($(e.target).hasClass('json')) window.location.href = "_rewrite/api/json";
+      actions[$(e.target).attr('data-action')]();
       
       e.preventDefault();
-      
-      util.hide('menu');
     }) 
   }
   
@@ -119,7 +128,7 @@ var recline = function() {
   
   function bootstrap() {
     util.registerEmitter();
-    util.listenFor(["esc"]);
+    util.listenFor(['esc', 'return']);
     
     couch.request({url: app.baseURL + "api"}).then(function( dbInfo ) {
 
@@ -158,6 +167,7 @@ var recline = function() {
   return {
     formatDiskSize: formatDiskSize,
     handleMenuClick: handleMenuClick,
+    showDialog: showDialog,
     bootstrap: bootstrap,
     fetchRows: fetchRows,
     activateControls: activateControls,

@@ -22,7 +22,6 @@
 	<div class="container">
 	  <div class="menu-overlay" style="display: none; z-index: 101; ">&nbsp;</div>
     <ul class="menu">
-    	<li><a class="transform" href="JavaScript:void(0);">Transform...</a></li>
     </ul>
     <div id="header">
       <a href="http://github.com/maxogden/recline"><img id="couchLogo" src="images/couch.png"/></a>
@@ -55,18 +54,18 @@
   </script>
 
   <script type='text/mustache' class="importActionsTemplate">
-    <li><a class="url" href="JavaScript:void(0);">From an API</a></li>
-    <li><a class="paste" href="JavaScript:void(0);">Copy & Paste</a></li>
-    <li><a class="upload" href="JavaScript:void(0);">Upload File</a></li>
+    <li><a data-action="url" class="menuAction" href="JavaScript:void(0);">From an API</a></li>
+    <li><a data-action="paste" class="menuAction" href="JavaScript:void(0);">Copy & Paste</a></li>
+    <li><a data-action="upload" class="menuAction" href="JavaScript:void(0);">Upload File</a></li>
   </script>
     
   <script type='text/mustache' class="exportActionsTemplate">
-    <li><a class="csv" href="JavaScript:void(0);">CSV</a></li>
-    <li><a class="json" href="JavaScript:void(0);">JSON</a></li>
+    <li><a data-action="csv" class="menuAction" href="JavaScript:void(0);">CSV</a></li>
+    <li><a data-action="json" class="menuAction" href="JavaScript:void(0);">JSON</a></li>
   </script>
   
   <script type='text/mustache' class="columnActionsTemplate">
-    <li><a class="transform" href="JavaScript:void(0);">Transform...</a></li>
+    <li><a data-action="bulkEdit" class="menuAction" href="JavaScript:void(0);">Transform...</a></li>
   </script>
 
   <script type='text/mustache' class="titleTemplate"><span id="project-name-button" class="app-path-section">{{db_name}}</span></script>
@@ -180,6 +179,67 @@
   	</div>
   	<div class="dialog-footer">
   		<button class="okButton button">&nbsp;&nbsp;Sign in&nbsp;&nbsp;</button>
+  		<button class="cancelButton button">Cancel</button>
+  	</div>
+  </script>
+  
+  <script type='text/mustache' class="urlImportTemplate">
+    <div class="dialog-header">
+  		Download and import from a URL or API
+  	</div>
+  	<div class="dialog-body">
+  		<div class="grid-layout layout-full">
+        <form name="api-import-form" id="sign-in-form">
+          <table class="form-table">
+            <tbody>
+              <tr>
+                <th>
+                  <label for="url">URL</label>
+                </th>
+                <td>
+                  <input type="text" size="65" id="url-input" name="url">
+                </td>
+              </tr>
+              <input type="submit" style="height: 0px; width: 0px; border: none; padding: 0px; display: none;" hidefocus="true" />
+            </tbody>
+          </table>
+        </form>
+  		</div>
+  	</div>
+  	<div class="dialog-footer">
+  		<button class="okButton button">&nbsp;&nbsp;Import&nbsp;&nbsp;</button>
+  		<button class="cancelButton button">Cancel</button>
+  	</div>
+  </script>
+  
+  <script type='text/mustache' class="pasteImportTemplate">
+    <div class="dialog-header">
+  		Import raw copy & pasted data
+  	</div>
+  	<div class="dialog-body">
+  		<div class="grid-layout layout-tight layout-full">
+        <div class="menu-container data-table-cell-editor">
+          <textarea class="data-table-cell-copypaste-editor" bind="textarea">{{value}}</textarea>
+        </div>
+  		</div>
+  	</div>
+  	<div class="dialog-footer">
+  		<button class="okButton button">&nbsp;&nbsp;Import&nbsp;&nbsp;</button>
+  		<button class="cancelButton button">Cancel</button>
+  	</div>
+  </script>
+  
+  <script type='text/mustache' class="uploadImportTemplate">
+    <div class="dialog-header">
+  		Upload and import a file
+  	</div>
+  	<div class="dialog-body">
+  		<div class="grid-layout layout-tight layout-full">
+        IN THE FUTURE I predict the presence of a file upload form here...
+  		</div>
+  	</div>
+  	<div class="dialog-footer">
+  		<button class="okButton button">&nbsp;&nbsp;Import&nbsp;&nbsp;</button>
   		<button class="cancelButton button">Cancel</button>
   	</div>
   </script>

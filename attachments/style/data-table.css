@@ -808,6 +808,15 @@ a.data-table-flag-off {
   margin: 3px 0;
 }
 
+.data-table-cell-copypaste-editor {
+  overflow: hidden;
+  display: block;
+  width: 98%;
+  height: 10em;
+  font-family: monospace;
+  margin: 3px 0;
+}
+
 .data-table-cell-editor-action {
   float: left;
   vertical-align: bottom;
