@@ -135,13 +135,13 @@ app.after = {
   },
   urlImport: function() {
     $('.dialog-content .okButton').click(function(e) {
-      var apiURL = $('#url-input').val();
+      var apiURL = $('#url-input').val().trim();
       util.notify("Fetching data...", {persist: true, loader: true});
       $.getJSON(apiURL + "?callback=?").then(
         function(docs) {
           util.notify("Data fetched successfully!");
           util.render('jsonTree', 'dialog-body');
-          util.renderDoc(docs);
+          util.renderTree(docs);
         },
         function (err) {
           util.hide('dialog');

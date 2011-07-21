@@ -3,10 +3,12 @@
 <head> 
 	<meta charset="utf-8"> 
 	<title>CouchDB Data Explorer</title> 
-	<link rel="stylesheet" href="style/reset.css" media="screen">
+  <link rel="stylesheet" href="style/reset.css" media="screen">
 	<link rel="stylesheet" href="style/data-table.css" media="screen"> 
 	<link rel="stylesheet" href="style/style.css" media="screen">
 	<script type="text/javascript" src="script/lib/jquery-1.6.1.min.js"></script>
+  <!-- only using jqueryui for draggable -- a lighter solution would be nice -->
+	<script type="text/javascript" src="script/lib/jquery-ui-1.8.14.custom.min.js"></script>
 	<script type="text/javascript" src="script/lib/jquery.mustache.js"></script>
 	<script type="text/javascript" src="script/lib/jquery.couch2.js"></script>
 	<script type="text/javascript" src="script/lib/jquery.hotkeys.js"></script>
@@ -19,7 +21,7 @@
 	<script type="text/javascript" src="script/recline.js"></script>
 	<script type="text/javascript" src="script/site.js"></script>
 </head> 
-<body>
+<body class="bod">
 	<div class="container">
 	  <div class="menu-overlay" style="display: none; z-index: 101; ">&nbsp;</div>
     <ul class="menu">
@@ -192,7 +194,9 @@
   		<div class="grid-layout layout-full">
   		  <p class="info">
   		    Currently only <a href="http://en.wikipedia.org/wiki/JSONP">JSONP</a>-enabled APIs are supported, for example:
-  		    <code>https://api.github.com/repos/maxogden/recline/commits</code>
+  		  </p>
+  		  <p class="info">
+    		  <code>https://api.github.com/repos/maxogden/recline/commits</code>
   		  </p>
         <form name="api-import-form" id="sign-in-form">
           <table class="form-table">

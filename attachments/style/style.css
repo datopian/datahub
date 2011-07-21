@@ -87,7 +87,7 @@ div#document-container span#expand-all {
   cursor:pointer; color:#FF0000;
 }
 
-div#document-editor { background: #fff; font-size:14px;}
+div#document-editor { background: #fff; font-size:14px; overflow: auto; max-height: 500px;}
 div#document-editor span.expand {cursor:pointer; color:#FF0000;}
 div#document-editor div.id-space {
   border: none; float: left; margin: 3px 3px 0 3px; padding: 0;
@@ -112,6 +112,14 @@ div#document-editor span.null-type { color: #BD101D; float:left; color: #666666;
 div#document-editor div.array-key {float:left; padding-right:15px; color:#666666;}
 div#document-editor div.object-key {float:left; padding-right:15px; font-weight:bold; }
 div#document-editor div.doc-key-base {float:left; padding-right:15px; font-weight:bold; }
+
+div#document-editor .doc-value.object {
+  max-width: 400px;
+}
+
+div#document-editor .array-type {
+  max-width: 500px;
+}
 
 div#document-editor div.empty {
   float:left;

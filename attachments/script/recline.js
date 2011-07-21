@@ -12,6 +12,7 @@ var recline = function() {
     util.observeExit($('.dialog-content'), function() {
       util.hide('dialog');
     })
+    $('.dialog').draggable({ handle: '.dialog-header', cursor: 'move' });
   }
   
   function handleMenuClick() {

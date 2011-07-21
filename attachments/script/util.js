@@ -208,7 +208,7 @@ var util = function() {
     }
   }
   
-  var createValue = {
+  var createTreeNode = {
     "string": function (obj, key) {
       var val = $('<div class="doc-value string-type"></div>');
       if (obj[key].length > 45) {
@@ -264,7 +264,7 @@ var util = function() {
               n.append(
                 $('<div class="doc-field"></div>')
                   .append('<div class="array-key '+cls+'" >'+i+'</div>')
-                  .append(createValue[getType(obj[key][i])](obj[key], i, indent + 1))
+                  .append(createTreeNode[getType(obj[key][i])](obj[key], i, indent + 1))
                 )
             }
             n.append('<span style="padding-left:'+((indent - 1) * 10)+'px" class="array-type">]</span>')
@@ -287,7 +287,7 @@ var util = function() {
             var di = $('<div class="object-key">'+i+'</div>')
             field.append(p)
               .append(di)
-              .append(createValue[getType(obj[key][i])](obj[key], i, indent + 1))
+              .append(createTreeNode[getType(obj[key][i])](obj[key], i, indent + 1))
             n.append(field)
           }
 
@@ -299,13 +299,13 @@ var util = function() {
     }
   }
 
-  function renderDoc(doc) {
+  function renderTree(doc) {
     var d = $('div#document-editor');
     for (i in doc) {
       var field = $('<div class="doc-field"></div>');
       $('<div class="id-space" />').appendTo(field);    
       field.append('<div class="doc-key doc-key-base">'+i+'</div>')
-      field.append(createValue[getType(doc[i])](doc, i));
+      field.append(createTreeNode[getType(doc[i])](doc, i));
       d.append(field);
     }
 
@@ -328,6 +328,6 @@ var util = function() {
     resetForm: resetForm,
     delay: delay,
     persist: persist,
-    renderDoc: renderDoc
+    renderTree: renderTree
   };
 }();
