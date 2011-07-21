@@ -6,13 +6,13 @@
 	<link rel="stylesheet" href="style/reset.css" media="screen">
 	<link rel="stylesheet" href="style/data-table.css" media="screen"> 
 	<link rel="stylesheet" href="style/style.css" media="screen">
-	<script type="text/javascript" src="script/jquery-1.6.1.min.js"></script>
-	<script type="text/javascript" src="script/jquery.mustache.js"></script>
-	<script type="text/javascript" src="script/jquery.couch2.js"></script>
-	<script type="text/javascript" src="script/jquery.hotkeys.js"></script>
-	<script type="text/javascript" src="script/sammy-0.6.3.min.js"></script>
-	<script type="text/javascript" src="script/underscore.js"></script>
-	<script type="text/javascript" src="script/microevent.js"></script>
+	<script type="text/javascript" src="script/lib/jquery-1.6.1.min.js"></script>
+	<script type="text/javascript" src="script/lib/jquery.mustache.js"></script>
+	<script type="text/javascript" src="script/lib/jquery.couch2.js"></script>
+	<script type="text/javascript" src="script/lib/jquery.hotkeys.js"></script>
+	<script type="text/javascript" src="script/lib/sammy-0.6.3.min.js"></script>
+	<script type="text/javascript" src="script/lib/underscore.js"></script>
+	<script type="text/javascript" src="script/lib/microevent.js"></script>
 	<script type="text/javascript" src="script/util.js"></script>
 	<script type="text/javascript" src="script/costco.js"></script>
 	<script type="text/javascript" src="script/recline.js"></script>
@@ -50,8 +50,8 @@
   </script>
   
   <script type='text/mustache' class="actionsTemplate">
-    <a class="button" href="javascript:{}"><span data-action="import" class="button-menu">Import</span></a>
-    <a class="button" href="javascript:{}"><span data-action="export" class="button-menu">Export</span></a>
+    <a class="button" data-action="import" href="javascript:{}"><span data-action="import" class="button-menu">Import</span></a>
+    <a class="button" data-action="export" href="javascript:{}"><span data-action="export" class="button-menu">Export</span></a>
   </script>
 
   <script type='text/mustache' class="importActionsTemplate">
