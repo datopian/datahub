@@ -182,6 +182,137 @@ var util = function() {
      .removeAttr('selected');
   }
   
+  function largestWidth(selector, min) {
+    var min_width = min || 0;
+    $(selector).each(function(i, n){
+        var this_width = $(n).width();
+        if (this_width > min_width) {
+            min_width = this_width;
+        }
+    });
+    return min_width;
+  }
+  
+  function getType(obj) {
+    if (obj === null) {
+      return 'null';
+    }
+    if (typeof obj === 'object') {
+      if (obj.constructor.toString().indexOf("Array") !== -1) {
+        return 'array';
+      } else {
+        return 'object';
+      }
+    } else {
+      return typeof obj;
+    }
+  }
+  
+  var createValue = {
+    "string": function (obj, key) {
+      var val = $('<div class="doc-value string-type"></div>');
+      if (obj[key].length > 45) {
+        val.append($('<span class="string-type"></span>')
+        .click(function () {  })
+        .text(obj[key].slice(0, 45)))
+        .append(
+          $('<span class="expand">...</span>')
+          .click(function () {
+            val.html('')
+            .append($('<span class="string-type"></span>')
+              .click(function () {  })
+              .text(obj[key].length ? obj[key] : "   ")
+            )
+          })
+        )
+      }
+      else {
+        var val = $('<div class="doc-value string-type"></div>');
+        val.append(
+          $('<span class="string-type"></span>')
+          .click(function () {  })
+          .text(obj[key].length ? obj[key] : "   ")
+        )
+      }
+      return val;
+    }
+    , "number": function (obj, key) {
+      var val = $('<div class="doc-value number"></div>')
+      val.append($('<span class="number-type">' + obj[key] + '</span>').click(function () {  }))
+      return val;
+    }
+    , "null": function (obj, key) {
+      var val = $('<div class="doc-value null"></div>')
+      val.append($('<span class="null-type">' + obj[key] + '</span>').click(function () {  }))
+      return val;
+    }
+    , "boolean": function (obj, key) {
+      var val = $('<div class="doc-value null"></div>')
+      val.append($('<span class="null-type">' + obj[key] + '</span>').click(function () {  }))
+      return val;
+    }
+    , "array": function (obj, key, indent) {
+       if (!indent) indent = 1;
+        var val = $('<div class="doc-value array"></div>')
+        $('<span class="array-type">[</span><span class="expand" style="float:left">...</span><span class="array-type">]</span>')
+          .click(function (i, n) {
+            var n = $(this).parent();
+            var cls = 'sub-'+key+'-'+indent
+            n.html('')
+            n.append('<span style="padding-left:'+((indent - 1) * 10)+'px" class="array-type">[</span>')
+            for (i in obj[key]) {
+              n.append(
+                $('<div class="doc-field"></div>')
+                  .append('<div class="array-key '+cls+'" >'+i+'</div>')
+                  .append(createValue[getType(obj[key][i])](obj[key], i, indent + 1))
+                )
+            }
+            n.append('<span style="padding-left:'+((indent - 1) * 10)+'px" class="array-type">]</span>')
+            $('div.'+cls).width(largestWidth('div.'+cls))
+          })
+          .appendTo($('<div class="array-type"></div>').appendTo(val))
+        return val;
+    }
+    , "object": function (obj, key, indent) {
+      if (!indent) indent = 1;
+      var val = $('<div class="doc-value object"></div>')
+      $('<span class="object-type">{</span><span class="expand" style="float:left">...</span><span class="object-type">}</span>')
+        .click(function (i, n) {
+          var n = $(this).parent();
+          n.html('')
+          n.append('<span style="padding-left:'+((indent - 1) * 10)+'px" class="object-type">{</span>')
+          for (i in obj[key]) {
+            var field = $('<div class="doc-field"></div>')
+            var p = $('<div class="id-space" style="margin-left:'+(indent * 10)+'px"/>')
+            var di = $('<div class="object-key">'+i+'</div>')
+            field.append(p)
+              .append(di)
+              .append(createValue[getType(obj[key][i])](obj[key], i, indent + 1))
+            n.append(field)
+          }
+
+          n.append('<span style="padding-left:'+((indent - 1) * 10)+'px" class="object-type">}</span>')
+          di.width(largestWidth('div.object-key'))
+        })
+        .appendTo($('<div class="object-type"></div>').appendTo(val))
+      return val;
+    }
+  }
+
+  function renderDoc(doc) {
+    var d = $('div#document-editor');
+    for (i in doc) {
+      var field = $('<div class="doc-field"></div>');
+      $('<div class="id-space" />').appendTo(field);    
+      field.append('<div class="doc-key doc-key-base">'+i+'</div>')
+      field.append(createValue[getType(doc[i])](doc, i));
+      d.append(field);
+    }
+
+    $('div.doc-key-base').width(largestWidth('div.doc-key-base'))
+  }
+  
+  
   return {
     inURL: inURL,
     registerEmitter: registerEmitter,
@@ -196,6 +327,7 @@ var util = function() {
     getBaseURL:getBaseURL,
     resetForm: resetForm,
     delay: delay,
-    persist: persist
+    persist: persist,
+    renderDoc: renderDoc
   };
 }();

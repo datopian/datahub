@@ -921,6 +921,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 }
 
 .dialog-body {
+  overflow: auto;
   font-size: 1.3em;
   padding: 15px;
 }

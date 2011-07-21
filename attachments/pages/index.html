@@ -13,6 +13,7 @@
 	<script type="text/javascript" src="script/lib/sammy-0.6.3.min.js"></script>
 	<script type="text/javascript" src="script/lib/underscore.js"></script>
 	<script type="text/javascript" src="script/lib/microevent.js"></script>
+	<script type="text/javascript" src="script/lib/traverse.js"></script>
 	<script type="text/javascript" src="script/util.js"></script>
 	<script type="text/javascript" src="script/costco.js"></script>
 	<script type="text/javascript" src="script/recline.js"></script>
@@ -54,9 +55,9 @@
   </script>
 
   <script type='text/mustache' class="importActionsTemplate">
-    <li><a data-action="url" class="menuAction" href="JavaScript:void(0);">From an API</a></li>
-    <li><a data-action="paste" class="menuAction" href="JavaScript:void(0);">Copy & Paste</a></li>
-    <li><a data-action="upload" class="menuAction" href="JavaScript:void(0);">Upload File</a></li>
+    <li><a data-action="urlImport" class="menuAction" href="JavaScript:void(0);">From an API</a></li>
+    <li><a data-action="pasteImport" class="menuAction" href="JavaScript:void(0);">Copy & Paste</a></li>
+    <li><a data-action="uploadImport" class="menuAction" href="JavaScript:void(0);">Upload File</a></li>
   </script>
     
   <script type='text/mustache' class="exportActionsTemplate">
@@ -189,6 +190,10 @@
   	</div>
   	<div class="dialog-body">
   		<div class="grid-layout layout-full">
+  		  <p class="info">
+  		    Currently only <a href="http://en.wikipedia.org/wiki/JSONP">JSONP</a>-enabled APIs are supported, for example:
+  		    <code>https://api.github.com/repos/maxogden/recline/commits</code>
+  		  </p>
         <form name="api-import-form" id="sign-in-form">
           <table class="form-table">
             <tbody>
@@ -309,6 +314,12 @@
           <button class="cancelButton button">Cancel</button>
         </div>
       </div>
+    </div>
+  </script>
+  
+  <script type='text/mustache' class="jsonTreeTemplate">
+    <div id="document-container">
+      <div id="document-editor"></div>
     </div>
   </script>
  

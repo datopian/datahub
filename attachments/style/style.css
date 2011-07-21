@@ -40,7 +40,7 @@ a.button span.icon.loading { background-image: url(images/loader.gif); }
 .loading { background-image: url(images/loader.gif); background-repeat: no-repeat; padding-left: 15px; background-position: 0px 3px;}
 a.button:hover span.icon.loading { background-image: url(images/loader-blue.gif); }
 #couchLogo {float: left; margin-right: 5px; margin-top: 3px}
-
+.info { padding: 0px 0px 10px 0px}
 .menu-overlay {
   position: fixed;
   top: 0;
@@ -79,3 +79,124 @@ ul.menu {
     height: 24px; }
   ul.menu li:hover {
     background-color: #DBE8F8 }
+
+
+/* Document Editor from CouchDB SammyFuton */
+
+div#document-container span#expand-all {
+  cursor:pointer; color:#FF0000;
+}
+
+div#document-editor { background: #fff; font-size:14px;}
+div#document-editor span.expand {cursor:pointer; color:#FF0000;}
+div#document-editor div.id-space {
+  border: none; float: left; margin: 3px 3px 0 3px; padding: 0;
+  width: 15px; height: 15px;
+}
+div#document-editor div.doc-field {width:100%; padding-bottom:2px;}
+div#document-editor div.doc-field, div.doc-value, div.doc-key {float:left;}
+div#document-editor div.doc-key {padding-right:5px;font-weight:bold;}
+
+div#document-editor div.string-type { white-space: pre-wrap; color:#393;}
+div#document-editor div.string-type:before { color: #ccc; content: "“";
+  left: -4px;
+}
+div#document-editor div.string-type:after { color: #ccc; content: "”"; }
+
+div#document-editor span.number-type { white-space: pre-wrap; color:#339; padding-left:6px;}
+
+div#document-editor span.array-type { color: #BD101D; float:left;}
+div#document-editor span.object-type { color: #BD101D; float:left;}
+div#document-editor span.null-type { color: #BD101D; float:left; color: #666666; padding-left:6px;}
+
+div#document-editor div.array-key {float:left; padding-right:15px; color:#666666;}
+div#document-editor div.object-key {float:left; padding-right:15px; font-weight:bold; }
+div#document-editor div.doc-key-base {float:left; padding-right:15px; font-weight:bold; }
+
+div#document-editor div.empty {
+  float:left;
+}
+
+div#document-editor input {
+  font: normal 90% arial, sans-serif;
+}
+
+div#document-editor span#save-button {
+  cursor:pointer; background-color:#ddd;
+  padding: 2px 5px 2px 5px;
+  -moz-border-radius: 15px;
+  -webkit-border-radius: 15px;
+  border-radius: 15px;
+}
+span#restore {
+  cursor:pointer; background-color:#ddd;
+  padding: 2px 5px 2px 5px;
+  -moz-border-radius: 15px;
+  -webkit-border-radius: 15px;
+  border-radius: 15px;
+}
+
+div#autosave {
+  float:right;
+}
+
+span.revision {
+  padding-right:10px;
+  cursor:pointer;
+  float:left;
+  margin-bottom:10px;
+}
+div#document-revisions {
+  padding-top:20px;
+}
+span#document-revisions-title {
+  padding-right:10px;
+  font-weight:bold;
+  float:left;
+  margin-bottom:80px;
+}
+span.current-revision {
+  font-weight:bold;
+  padding-right:10px;
+  float:left;
+  margin-bottom:10px;
+}
+span.revision {
+  padding-right:10px;
+  cursor:default;
+  float:left;
+  margin-bottom:10px;
+}
+span.revision-status-missing {
+  color:#8C8C8C;
+}
+span.revision-status-disk {
+  cursor:pointer;
+}
+span.revision-status-available {
+  cursor:pointer;
+}
+span.revision-status-deleted {
+  color:#8C8C8C;
+}
+
+.tooltip {
+  position:absolute;
+  font-size:12px;
+  padding:2px;
+  background-color:#B3B3B3;
+  border:checked;
+  color:black;
+  -moz-border-radius: 5px;
+  -webkit-border-radius: 5px;
+}
+span.tooltip-status-title {
+  color:black;
+  font-weight:normal;
+  text-align:center;
+}
+span.tooltip-status {
+  font-weight:bold;
+  color:red;
+  text-align:center;
+}

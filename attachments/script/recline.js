@@ -20,9 +20,9 @@ var recline = function() {
         bulkEdit: function() { showDialog('bulkEdit', {name: app.currentColumn}) },
         csv: function() { window.location.href = app.csvUrl },
         json: function() { window.location.href = "_rewrite/api/json" },
-        url: function() { showDialog('urlImport') },
-        paste: function() { showDialog('pasteImport') },
-        upload: function() { showDialog('uploadImport') }
+        urlImport: function() { showDialog('urlImport') },
+        pasteImport: function() { showDialog('pasteImport') },
+        uploadImport: function() { showDialog('uploadImport') }
       }
       
       actions[$(e.target).attr('data-action')]();

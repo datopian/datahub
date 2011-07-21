@@ -132,6 +132,23 @@ app.after = {
       window.setTimeout(function(){costco.handleEditorChange(e)}, 1, true);
     });
     editor.keydown();
+  },
+  urlImport: function() {
+    $('.dialog-content .okButton').click(function(e) {
+      var apiURL = $('#url-input').val();
+      util.notify("Fetching data...", {persist: true, loader: true});
+      $.getJSON(apiURL + "?callback=?").then(
+        function(docs) {
+          util.notify("Data fetched successfully!");
+          util.render('jsonTree', 'dialog-body');
+          util.renderDoc(docs);
+        },
+        function (err) {
+          util.hide('dialog');
+          util.notify("Data fetch error: " + err.responseText);
+        }
+      );
+    })
   }
 }
 
