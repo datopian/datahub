@@ -113,15 +113,13 @@ app.after = {
     
     $('.dialog-content .okButton').click(function(e) {
       var funcText = $('.expression-preview-code').val();
+      var editFunc = costco.evalFunction(funcText);
+      if (!_.isFunction(editFunc)) {
+        util.notify("Error with function! " + editFunc);
+        return;
+      }
       util.hide('dialog');
-      util.notify("Updating documents...", {persist: true, loader: true});
-      couch.request({url: app.baseURL + "api/json"}).then(function(docs) {
-        var toUpdate = costco.mapDocs(docs.docs, funcText);
-        costco.updateDocs(toUpdate, function(msg) { 
-          util.notify(msg.length + " documents updated successfully");
-          recline.fetchRows(false, app.offset);
-        });
-      });
+      costco.updateDocs(editFunc);
     })
     
     var editor = $('.expression-preview-code');
@@ -160,5 +158,6 @@ app.sammy = $.sammy(function () {
 });
 
 $(function() {
+  util.traverse = require('traverse');
   app.sammy.run();  
 })

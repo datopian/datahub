@@ -23,7 +23,12 @@ var recline = function() {
         json: function() { window.location.href = "_rewrite/api/json" },
         urlImport: function() { showDialog('urlImport') },
         pasteImport: function() { showDialog('pasteImport') },
-        uploadImport: function() { showDialog('uploadImport') }
+        uploadImport: function() { showDialog('uploadImport') },
+        deleteColumn: function() {
+          var msg = "Are you sure? This will delete '" + app.currentColumn + "' from all documents.";
+          if (confirm(msg)) costco.deleteColumn(app.currentColumn);
+          util.hide('menu');
+        }
       }
       
       actions[$(e.target).attr('data-action')]();
