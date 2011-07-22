@@ -1,37 +1,29 @@
 // adapted from https://github.com/harthur/costco. heather rules
 
 var costco = function() {
-
-  function handleEditorChange(e) {
-    var editFunc = evalFunction(e.target.value);
-    var errors = $('.expression-preview-parsing-status');
-    if (_.isFunction(editFunc)) {
-      errors.text('No syntax error.');
-    } else {
-      errors.text(editFunc);
-      return;
-    }
-    previewTransform(app.cache, editFunc);
-  }
   
   function evalFunction(funcString) {
     try {
       eval("var editFunc = " + funcString);
-      return editFunc;
     } catch(e) {
-      return e+"";
+      return {errorMessage: e+""};
     }
+    return editFunc;
   }
   
-  function previewTransform(docs, editFunc) {
+  function previewTransform(docs, editFunc, currentColumn) {
     var preview = [];
-    var updated = mapDocs(docs, editFunc);
+    var updated = mapDocs($.extend(true, {}, docs), editFunc);
     for (var i = 0; i < updated.docs.length; i++) {      
       var before = docs[i]
         , after = updated.docs[i]
         ;
       if (!after) after = {};
-      preview.push({before: JSON.stringify(before[app.currentColumn]), after: JSON.stringify(after[app.currentColumn])});      
+      if (currentColumn) {
+        preview.push({before: JSON.stringify(before[currentColumn]), after: JSON.stringify(after[currentColumn])});      
+      } else {
+        preview.push({before: JSON.stringify(before), after: JSON.stringify(after)});      
+      }
     }
     util.render('editPreview', 'expression-preview-container', {rows: preview});
   }
@@ -108,7 +100,6 @@ var costco = function() {
   }
 
   return {
-    handleEditorChange: handleEditorChange,
     evalFunction: evalFunction,
     previewTransform: previewTransform,
     mapDocs: mapDocs,

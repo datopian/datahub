@@ -53,6 +53,7 @@
   
   <script type='text/mustache' class="actionsTemplate">
     <a class="button" data-action="import" href="javascript:{}"><span data-action="import" class="button-menu">Import</span></a>
+    <a class="button" data-action="edit" href="javascript:{}"><span data-action="transform" class="button-menu">Edit</span></a>
     <a class="button" data-action="export" href="javascript:{}"><span data-action="export" class="button-menu">Export</span></a>
   </script>
 
@@ -65,6 +66,10 @@
   <script type='text/mustache' class="exportActionsTemplate">
     <li><a data-action="csv" class="menuAction" href="JavaScript:void(0);">CSV</a></li>
     <li><a data-action="json" class="menuAction" href="JavaScript:void(0);">JSON</a></li>
+  </script>
+  
+  <script type='text/mustache' class="transformActionsTemplate">
+    <li><a data-action="transform" class="menuAction" href="JavaScript:void(0);">Global transform...</a></li>
   </script>
   
   <script type='text/mustache' class="columnActionsTemplate">
@@ -187,6 +192,61 @@
   	</div>
   </script>
   
+  <script type='text/mustache' class="transformTemplate">
+    <div class="dialog-header">
+  		Recursive transform on all rows
+  	</div>
+  	<div class="dialog-body">
+  		<div class="grid-layout layout-full">
+  		  <p class="info">Traverse and transform objects by visiting every node on a recursive walk using <a href="https://github.com/substack/js-traverse">js-traverse</a>.</p>
+  			<table>
+  			<tbody>
+  			<tr>
+  				<td colspan="4">
+  					<div class="grid-layout layout-tight layout-full">
+  						<table rows="4" cols="4">
+  						<tbody>
+  						<tr style="vertical-align: bottom;">
+  							<td colspan="4">
+  								Expression
+  							</td>
+  						</tr>
+  						<tr>
+  							<td colspan="3">
+  								<div class="input-container">
+  									<textarea class="expression-preview-code"></textarea>
+  								</div>
+  							</td>
+  							<td class="expression-preview-parsing-status" width="150" style="vertical-align: top;">
+  								No syntax error.
+  							</td>
+  						</tr>
+  						<tr>
+  							<td colspan="4">
+  								<div id="expression-preview-tabs" class="refine-tabs ui-tabs ui-widget ui-widget-content ui-corner-all">
+  									<span>Preview</span>
+  									<div id="expression-preview-tabs-preview" class="ui-tabs-panel ui-widget-content ui-corner-bottom">
+  										<div class="expression-preview-container" style="width: 652px; ">
+  										</div>
+  									</div>
+  								</div>
+  							</td>
+  						</tr>
+  						</tbody>
+  						</table>
+  					</div>
+  				</td>
+  			</tr>
+  			</tbody>
+  			</table>
+  		</div>
+  	</div>
+  	<div class="dialog-footer">
+  		<button class="okButton button">&nbsp;&nbsp;Update All&nbsp;&nbsp;</button>
+  		<button class="cancelButton button">Cancel</button>
+  	</div>
+  </script>
+
   <script type='text/mustache' class="urlImportTemplate">
     <div class="dialog-header">
   		Download and import from a URL or API

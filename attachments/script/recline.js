@@ -8,7 +8,6 @@ var recline = function() {
     if (!data) data = {};
     util.show('dialog');
     util.render(template, 'dialog-content', data);
-    util.hide('menu');
     util.observeExit($('.dialog-content'), function() {
       util.hide('dialog');
     })
@@ -19,6 +18,7 @@ var recline = function() {
     $( '.menu li' ).click(function(e) {
       var actions = {
         bulkEdit: function() { showDialog('bulkEdit', {name: app.currentColumn}) },
+        transform: function() { showDialog('transform') },
         csv: function() { window.location.href = app.csvUrl },
         json: function() { window.location.href = "_rewrite/api/json" },
         urlImport: function() { showDialog('urlImport') },
@@ -27,10 +27,10 @@ var recline = function() {
         deleteColumn: function() {
           var msg = "Are you sure? This will delete '" + app.currentColumn + "' from all documents.";
           if (confirm(msg)) costco.deleteColumn(app.currentColumn);
-          util.hide('menu');
         }
       }
       
+      util.hide('menu');
       actions[$(e.target).attr('data-action')]();
       
       e.preventDefault();

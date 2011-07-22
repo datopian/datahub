@@ -65,6 +65,7 @@ app.after = {
       var action = $(e.target).attr('data-action');
       util.position('menu', e, {left: -60, top: 5});
       util.render(action + 'Actions', 'menu');
+      recline.handleMenuClick();
     });
   },
   controls: function() {
@@ -80,9 +81,6 @@ app.after = {
       }
     });
   },
-  exportActions: recline.handleMenuClick,
-  importActions: recline.handleMenuClick,
-  columnActions: recline.handleMenuClick,
   signIn: function() {
     
     $('.dialog-content #username-input').focus();
@@ -110,12 +108,12 @@ app.after = {
     
   },
   bulkEdit: function() {
-    
     $('.dialog-content .okButton').click(function(e) {
       var funcText = $('.expression-preview-code').val();
       var editFunc = costco.evalFunction(funcText);
-      if (!_.isFunction(editFunc)) {
-        util.notify("Error with function! " + editFunc);
+      ;
+      if (editFunc.errorMessage) {
+        util.notify("Error with function! " + editFunc.errorMessage);
         return;
       }
       util.hide('dialog');
@@ -127,7 +125,44 @@ app.after = {
     editor.focus().get(0).setSelectionRange(18, 18);
     editor.keydown(function(e) {
       // if you don't setTimeout it won't grab the latest character if you call e.target.value
-      window.setTimeout(function(){costco.handleEditorChange(e)}, 1, true);
+      window.setTimeout( function() {
+        var errors = $('.expression-preview-parsing-status');
+        var editFunc = costco.evalFunction(e.target.value);
+        if (!editFunc.errorMessage) {
+          errors.text('No syntax error.');
+          costco.previewTransform(app.cache, editFunc, app.currentColumn);
+        } else {
+          errors.text(editFunc.errorMessage);
+        }
+      }, 1, true);
+    });
+    editor.keydown();
+  },
+  transform: function() {
+    $('.dialog-content .okButton').click(function(e) {
+      util.notify("Not implemented yet, sorry! :D");
+      util.hide('dialog');
+    })
+    
+    var editor = $('.expression-preview-code');
+    editor.val("function(val) {\n  if(_.isString(val)) this.update(\"pizza\")\n}");
+    editor.focus().get(0).setSelectionRange(62,62);
+    editor.keydown(function(e) {
+      // if you don't setTimeout it won't grab the latest character if you call e.target.value
+      window.setTimeout( function() {
+        var errors = $('.expression-preview-parsing-status');
+        var editFunc = costco.evalFunction(e.target.value);
+        if (!editFunc.errorMessage) {
+          errors.text('No syntax error.');
+          var traverseFunc = function(doc) {
+            util.traverse(doc).forEach(editFunc);
+            return doc;
+          }
+          costco.previewTransform(app.cache, traverseFunc);
+        } else {
+          errors.text(editFunc.errorMessage);
+        }
+      }, 1, true);
     });
     editor.keydown();
   },
