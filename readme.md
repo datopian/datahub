@@ -4,9 +4,11 @@ A HTML5 port of Google Refine's UI that lets you bulk import, edit and export yo
 
 ## Features
 
-* CSV export your entire database for integration with spreadsheets or [Google Refine](http://code.google.com/p/google-refine/)
+* CSV/JSON export your entire database for integration with spreadsheets or [Google Refine](http://code.google.com/p/google-refine/)
+* Bulk update/clean your data using an easy scripting UI
+* Import by directly downloading from JSON APIs or by uploading files
 
-![screenshot](http://i.imgur.com/vE3Lr.png)
+![screenshot](http://i.imgur.com/XDSRe.png)
 
 ## Installation
 
@@ -16,7 +18,7 @@ After you install it, visit this link to open Recline:
 
 ### Quick install
 
-[Get a couch](http://couchone.com/get), make a database and put some data into it.
+[Get a couch](http://www.iriscouch.com/service), make a database and put some data into it.
 
 Copy these utilities to the new db:
 
