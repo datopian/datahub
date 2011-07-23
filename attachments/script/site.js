@@ -40,6 +40,9 @@ app.after = {
       util.render('cellEditor', cell, {value: cell.text()});
     })
   },
+  columnActions: function() {
+	  recline.handleMenuClick();
+  },
   cellEditor: function() {
     $('.data-table-cell-editor .okButton').click(function(e) {
       var cell = $(e.target);
