@@ -185,6 +185,33 @@ app.after = {
         }
       );
     })
+  },
+  pasteImport: function() {
+    $('.dialog-content .okButton').click(function(e) {
+      util.notify("Uploading documents...", {persist: true, loader: true});
+      try {
+        var docs = JSON.parse($('.data-table-cell-copypaste-editor').val());        
+      } catch(e) {
+        util.notify("JSON parse error: " + e);
+      }
+      if (docs) {
+        if(_.isArray(docs)) {
+          costco.uploadDocs(docs).then(
+            function(docs) {
+              util.notify("Data uploaded successfully!");
+              recline.fetchRows(false, app.offset);
+              util.hide('dialog');
+            },
+            function (err) {
+              util.hide('dialog');
+              util.notify("Error uploading: " + err.responseText);
+            }
+          );        
+        } else {
+          util.notify("Error: JSON must be an array of objects");
+        } 
+      }
+    })
   }
 }
 

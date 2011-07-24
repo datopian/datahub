@@ -40,6 +40,8 @@ var recline = function() {
   function renderRows(response) {
     var rows = response.rows;
     
+    if (rows.length < 1) return;
+    
     var tableRows = [];
     
     rows.map(function(row) {

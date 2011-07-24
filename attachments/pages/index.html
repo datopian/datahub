@@ -284,10 +284,16 @@
   
   <script type='text/mustache' class="pasteImportTemplate">
     <div class="dialog-header">
-  		Import raw copy & pasted data
+  		Import raw copy & pasted JSON
   	</div>
   	<div class="dialog-body">
   		<div class="grid-layout layout-tight layout-full">
+  		  <p class="info">
+  		    Paste in an array of JSON objects representing the documents that you would like to insert into the database.
+  		  </p>
+  		  <p class="info">
+    		  <code>[{woo: pizza}]</code>
+  		  </p>
         <div class="menu-container data-table-cell-editor">
           <textarea class="data-table-cell-copypaste-editor" bind="textarea">{{value}}</textarea>
         </div>
