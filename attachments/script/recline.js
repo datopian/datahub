@@ -40,7 +40,11 @@ var recline = function() {
   function renderRows(response) {
     var rows = response.rows;
     
-    if (rows.length < 1) return;
+    if (rows.length < 1) {
+      util.render('dataTable', 'data-table-container');
+      updateDocCount();
+      return;
+    };
     
     var tableRows = [];
     
@@ -134,6 +138,16 @@ var recline = function() {
 
   }
   
+  function updateDocCount() {
+    return couch.request({url: app.baseURL + 'api/_all_docs?' + $.param({startkey: '"_design/"', endkey: '"_design0"'})}).then(
+      function ( data ) {
+        var ddocCount = data.rows.length;
+        $('#docCount').text(app.dbInfo.doc_count - ddocCount + " documents");
+      }
+    )    
+  }
+
+  
   function bootstrap() {
     util.registerEmitter();
     util.listenFor(['esc', 'return']);
@@ -153,12 +167,7 @@ var recline = function() {
       util.render('title', 'project-title', app.dbInfo);
       util.render( 'generating', 'project-actions' );    
       
-      couch.request({url: app.baseURL + 'api/_all_docs?' + $.param({startkey: '"_design/"', endkey: '"_design0"'})}).then(
-        function ( data ) {
-          var ddocCount = data.rows.length;
-          $('#docCount').text(app.dbInfo.doc_count - ddocCount + " documents");
-        }
-      )
+      updateDocCount();
       
       couch.session().then(function(session) {
         if ( session.userCtx.name ) {
@@ -169,13 +178,17 @@ var recline = function() {
         util.render('controls', 'project-controls', {text: text});
       })
       
-      couch.request({url: app.baseURL + 'api/headers'}).then(function ( headers ) {
-        app.headers = headers;
-        app.csvUrl = app.baseURL + 'api/csv?headers=' + escape(JSON.stringify(headers));
-        
-        util.render( 'actions', 'project-actions', $.extend({}, app.dbInfo, {url: app.csvUrl}) );    
-        fetchRows();
-      })
+      initializeTable();
+    })
+  }
+  
+  function initializeTable(offset) {
+    couch.request({url: app.baseURL + 'api/headers'}).then(function ( headers ) {
+      app.headers = headers;
+      app.csvUrl = app.baseURL + 'api/csv?headers=' + escape(JSON.stringify(headers));
+      
+      util.render( 'actions', 'project-actions', $.extend({}, app.dbInfo, {url: app.csvUrl}) );    
+      fetchRows(false, offset);
     })
   }
   
@@ -183,10 +196,12 @@ var recline = function() {
     formatDiskSize: formatDiskSize,
     handleMenuClick: handleMenuClick,
     showDialog: showDialog,
+    updateDocCount: updateDocCount,
     bootstrap: bootstrap,
     fetchRows: fetchRows,
     activateControls: activateControls,
     getPageSize: getPageSize,
-    renderRows: renderRows
+    renderRows: renderRows,
+    initializeTable: initializeTable
   };
 }();

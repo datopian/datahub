@@ -68,7 +68,8 @@ var costco = function() {
       costco.uploadDocs(toUpdate).then(
         function(updatedDocs) { 
           util.notify(updatedDocs.length + " documents updated successfully");
-          recline.fetchRows(false, app.offset);
+          recline.initializeTable(app.offset);
+          recline.updateDocCount();
           dfd.resolve(updatedDocs);
         },
         function(err) {
@@ -85,10 +86,14 @@ var costco = function() {
     if(!docs.length) dfd.resolve("Failed: No docs specified");
     couch.request({url: app.baseURL + "api/_bulk_docs", type: "POST", data: JSON.stringify({docs: docs})})
       .then(
-        dfd.resolve, 
+        function(resp) {ensureCommit().then(function() { dfd.resolve(resp) })}, 
         function(err) { dfd.reject(err.responseText) }
       );
     return dfd.promise();
+  }
+  
+  function ensureCommit() {
+    return couch.request({url: app.baseURL + "api/_ensure_full_commit", type:'POST', data: "''"});
   }
   
   function deleteColumn(name) {
@@ -105,6 +110,7 @@ var costco = function() {
     mapDocs: mapDocs,
     updateDocs: updateDocs,
     uploadDocs: uploadDocs,
-    deleteColumn: deleteColumn
+    deleteColumn: deleteColumn,
+    ensureCommit: ensureCommit
   };
 }();

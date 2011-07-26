@@ -55,7 +55,7 @@ app.after = {
       util.notify("Updating row...", {persist: true, loader: true});
       couch.request({type: "PUT", url: app.baseURL + "api/" + doc._id, data: JSON.stringify(doc)}).then(function(response) {
         util.notify("Row updated successfully");
-        recline.fetchRows(false, app.offset);
+        recline.initializeTable();
       })
     })
     $('.data-table-cell-editor .cancelButton').click(function(e) {
@@ -193,7 +193,7 @@ app.after = {
       util.notify("Saving documents...", {persist: true, loader: true});
       costco.uploadDocs(util.lookupPath(util.selectedTreePath())).then(function(msg) {
         util.notify("Docs saved successfully!");
-        recline.fetchRows(false, app.offset);
+        recline.initializeTable(app.offset);
       });
     })
   },
@@ -210,7 +210,7 @@ app.after = {
           costco.uploadDocs(docs).then(
             function(docs) {
               util.notify("Data uploaded successfully!");
-              recline.fetchRows(false, app.offset);
+              recline.initializeTable(app.offset);
               util.hide('dialog');
             },
             function (err) {
