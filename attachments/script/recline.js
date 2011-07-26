@@ -149,9 +149,16 @@ var recline = function() {
 
       if( util.inURL("_rewrite", app.baseURL) ) app.dbInfo.db_name = "api";
 
-      util.render('tableContainer', app.container, app.dbInfo);
+      util.render('tableContainer', app.container);
       util.render('title', 'project-title', app.dbInfo);
       util.render( 'generating', 'project-actions' );    
+      
+      couch.request({url: app.baseURL + 'api/_all_docs?' + $.param({startkey: '"_design/"', endkey: '"_design0"'})}).then(
+        function ( data ) {
+          var ddocCount = data.rows.length;
+          $('#docCount').text(app.dbInfo.doc_count - ddocCount + " documents");
+        }
+      )
       
       couch.session().then(function(session) {
         if ( session.userCtx.name ) {
