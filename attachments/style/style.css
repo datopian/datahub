@@ -40,6 +40,7 @@ a.button span.icon.loading { background-image: url(images/loader.gif); }
 .loading { background-image: url(images/loader.gif); background-repeat: no-repeat; padding-left: 15px; background-position: 0px 3px;}
 a.button:hover span.icon.loading { background-image: url(images/loader-blue.gif); }
 #couchLogo {float: left; margin-right: 5px; margin-top: 3px}
+.chosen {border: 1px solid green}
 .info { padding: 0px 0px 10px 0px}
 .menu-overlay {
   position: fixed;
@@ -93,8 +94,8 @@ div#document-editor div.id-space {
   border: none; float: left; margin: 3px 3px 0 3px; padding: 0;
   width: 15px; height: 15px;
 }
-div#document-editor div.doc-field {width:100%; padding-bottom:2px;}
-div#document-editor div.doc-field, div.doc-value, div.doc-key {float:left;}
+div#document-editor div.doc-field {width:99%; padding-bottom:2px;}
+div#document-editor div.doc-field, div.doc-value, div.doc-key {float:left; cursor:pointer; cursor: hand;}
 div#document-editor div.doc-key {padding-right:5px;font-weight:bold;}
 
 div#document-editor div.string-type { white-space: pre-wrap; color:#393;}

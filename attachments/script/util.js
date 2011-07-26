@@ -208,19 +208,32 @@ var util = function() {
     }
   }
   
+  // TODO refactor handlers so that they dont stack up as the tree gets bigger
+  function handleTreeClick(e) {
+    var clicked = $(e.target);
+    if (clicked.children('.array').length > 0) {
+      var field = clicked;
+    } else if (clicked.siblings('.array').length > 0) {
+      var field = clicked.parents('.doc-field:first');
+    } else {
+      var field = clicked.parents('.array').parents('.doc-field:first');
+    }
+    $('.chosen').removeClass('chosen');
+    field.addClass('chosen');
+    return false;
+  }
+  
   var createTreeNode = {
     "string": function (obj, key) {
       var val = $('<div class="doc-value string-type"></div>');
       if (obj[key].length > 45) {
         val.append($('<span class="string-type"></span>')
-        .click(function () {  })
         .text(obj[key].slice(0, 45)))
         .append(
           $('<span class="expand">...</span>')
           .click(function () {
             val.html('')
             .append($('<span class="string-type"></span>')
-              .click(function () {  })
               .text(obj[key].length ? obj[key] : "   ")
             )
           })
@@ -230,7 +243,6 @@ var util = function() {
         var val = $('<div class="doc-value string-type"></div>');
         val.append(
           $('<span class="string-type"></span>')
-          .click(function () {  })
           .text(obj[key].length ? obj[key] : "   ")
         )
       }
@@ -238,31 +250,32 @@ var util = function() {
     }
     , "number": function (obj, key) {
       var val = $('<div class="doc-value number"></div>')
-      val.append($('<span class="number-type">' + obj[key] + '</span>').click(function () {  }))
+      val.append($('<span class="number-type">' + obj[key] + '</span>'))
       return val;
     }
     , "null": function (obj, key) {
       var val = $('<div class="doc-value null"></div>')
-      val.append($('<span class="null-type">' + obj[key] + '</span>').click(function () {  }))
+      val.append($('<span class="null-type">' + obj[key] + '</span>'))
       return val;
     }
     , "boolean": function (obj, key) {
-      var val = $('<div class="doc-value null"></div>')
-      val.append($('<span class="null-type">' + obj[key] + '</span>').click(function () {  }))
+      var val = $('<div class="fue null"></div>')
+      val.append($('<span class="null-type">' + obj[key] + '</span>'))
       return val;
     }
     , "array": function (obj, key, indent) {
        if (!indent) indent = 1;
         var val = $('<div class="doc-value array"></div>')
         $('<span class="array-type">[</span><span class="expand" style="float:left">...</span><span class="array-type">]</span>')
-          .click(function (i, n) {
+          .click(function (e) {
             var n = $(this).parent();
             var cls = 'sub-'+key+'-'+indent
             n.html('')
             n.append('<span style="padding-left:'+((indent - 1) * 10)+'px" class="array-type">[</span>')
             for (i in obj[key]) {
+              var field = $('<div class="doc-field"></div>').click(handleTreeClick);
               n.append(
-                $('<div class="doc-field"></div>')
+                field
                   .append('<div class="array-key '+cls+'" >'+i+'</div>')
                   .append(createTreeNode[getType(obj[key][i])](obj[key], i, indent + 1))
                 )
@@ -277,13 +290,13 @@ var util = function() {
       if (!indent) indent = 1;
       var val = $('<div class="doc-value object"></div>')
       $('<span class="object-type">{</span><span class="expand" style="float:left">...</span><span class="object-type">}</span>')
-        .click(function (i, n) {
+        .click(function (e) {
           var n = $(this).parent();
           n.html('')
           n.append('<span style="padding-left:'+((indent - 1) * 10)+'px" class="object-type">{</span>')
           for (i in obj[key]) {
-            var field = $('<div class="doc-field"></div>')
-            var p = $('<div class="id-space" style="margin-left:'+(indent * 10)+'px"/>')
+            var field = $('<div class="doc-field"></div>').click(handleTreeClick);
+            var p = $('<div class="id-space" style="margin-left:'+(indent * 10)+'px"/>');
             var di = $('<div class="object-key">'+i+'</div>')
             field.append(p)
               .append(di)
@@ -302,7 +315,7 @@ var util = function() {
   function renderTree(doc) {
     var d = $('div#document-editor');
     for (i in doc) {
-      var field = $('<div class="doc-field"></div>');
+      var field = $('<div class="doc-field"></div>').click(handleTreeClick);
       $('<div class="id-space" />').appendTo(field);    
       field.append('<div class="doc-key doc-key-base">'+i+'</div>')
       field.append(createTreeNode[getType(doc[i])](doc, i));

@@ -292,7 +292,7 @@
   		    Paste in an array of JSON objects representing the documents that you would like to insert into the database.
   		  </p>
   		  <p class="info">
-    		  <code>[{woo: pizza}]</code>
+    		  <code>[{woo: pizza}, {tasty: muffins}]</code>
   		  </p>
         <div class="menu-container data-table-cell-editor">
           <textarea class="data-table-cell-copypaste-editor" bind="textarea">{{value}}</textarea>
@@ -389,6 +389,9 @@
   </script>
   
   <script type='text/mustache' class="jsonTreeTemplate">
+    <p class="info">
+      Please highlight the array of JSON objects to convert to documents.
+    </p>
     <div id="document-container">
       <div id="document-editor"></div>
     </div>
