@@ -171,19 +171,30 @@ app.after = {
   },
   urlImport: function() {
     $('.dialog-content .okButton').click(function(e) {
-      var apiURL = $('#url-input').val().trim();
+      app.apiURL = $('#url-input').val().trim();
       util.notify("Fetching data...", {persist: true, loader: true});
-      $.getJSON(apiURL + "?callback=?").then(
+      $.getJSON(app.apiURL + "?callback=?").then(
         function(docs) {
+          app.apiDocs = docs;
           util.notify("Data fetched successfully!");
-          util.render('jsonTree', 'dialog-body');
-          util.renderTree(docs);
+          recline.showDialog('jsonTree');
         },
         function (err) {
           util.hide('dialog');
           util.notify("Data fetch error: " + err.responseText);
         }
       );
+    })
+  },
+  jsonTree: function() {
+    util.renderTree(app.apiDocs);
+    $('.dialog-content .okButton').click(function(e) {
+      util.hide('dialog');
+      util.notify("Saving documents...", {persist: true, loader: true});
+      costco.uploadDocs(util.lookupPath(util.selectedTreePath())).then(function(msg) {
+        util.notify("Docs saved successfully!");
+        recline.fetchRows(false, app.offset);
+      });
     })
   },
   pasteImport: function() {

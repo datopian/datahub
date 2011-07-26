@@ -277,7 +277,7 @@
   		</div>
   	</div>
   	<div class="dialog-footer">
-  		<button class="okButton button">&nbsp;&nbsp;Import&nbsp;&nbsp;</button>
+  		<button class="okButton button">&nbsp;&nbsp;Fetch&nbsp;&nbsp;</button>
   		<button class="cancelButton button">Cancel</button>
   	</div>
   </script>
@@ -389,12 +389,18 @@
   </script>
   
   <script type='text/mustache' class="jsonTreeTemplate">
-    <p class="info">
+    <div class="dialog-header">
       Please highlight the array of JSON objects to convert to documents.
-    </p>
-    <div id="document-container">
-      <div id="document-editor"></div>
-    </div>
+  	</div>
+  	<div class="dialog-body">
+      <div id="document-container">
+        <div id="document-editor"></div>
+      </div>
+  	</div>
+  	<div class="dialog-footer">
+  		<button class="okButton button">&nbsp;&nbsp;Import&nbsp;&nbsp;</button>
+  		<button class="cancelButton button">Cancel</button>
+  	</div>
   </script>
  
   <script type='text/mustache' class="editPreviewTemplate">

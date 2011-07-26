@@ -82,7 +82,7 @@ var costco = function() {
 
   function uploadDocs(docs) {
     var dfd = $.Deferred();
-    if(!docs.length) dfd.resolve("Failed to update");
+    if(!docs.length) dfd.resolve("Failed: No docs specified");
     couch.request({url: app.baseURL + "api/_bulk_docs", type: "POST", data: JSON.stringify({docs: docs})})
       .then(
         dfd.resolve, 

@@ -208,9 +208,40 @@ var util = function() {
     }
   }
   
+  function lookupPath(path) {
+    var docs = app.apiDocs;
+    try {
+      _.each(path, function(node) {
+        docs = docs[node];
+      })
+    } catch(e) {
+      util.notify("Error selecting documents" + e);
+      docs = [];
+    }
+    return docs;
+  }
+  
+  function nodePath(docField) {
+    if (docField.children('.object-key').length > 0) return docField.children('.object-key').text();
+    if (docField.children('.array-key').length > 0) return docField.children('.array-key').text();
+    if (docField.children('.doc-key').length > 0) return docField.children('.doc-key').text();
+    return "";
+  }
+  
+  function selectedTreePath() {
+    var nodes = []
+      , parent = $('.chosen');
+    while (parent.length > 0) {
+      nodes.push(nodePath(parent));
+      parent = parent.parents('.doc-field:first');
+    }
+    return _.compact(nodes).reverse();
+  }
+  
   // TODO refactor handlers so that they dont stack up as the tree gets bigger
   function handleTreeClick(e) {
     var clicked = $(e.target);
+    if(clicked.hasClass('expand')) return;
     if (clicked.children('.array').length > 0) {
       var field = clicked;
     } else if (clicked.siblings('.array').length > 0) {
@@ -341,6 +372,8 @@ var util = function() {
     resetForm: resetForm,
     delay: delay,
     persist: persist,
+    lookupPath: lookupPath,
+    selectedTreePath: selectedTreePath,
     renderTree: renderTree
   };
 }();
