@@ -22,10 +22,10 @@ After you install it, visit this link to open Recline:
 
 Copy these utilities to the new db:
 
-    curl -X POST http://user:pass@YOURCOUCH/_replicate -d '{"source":"http://max.couchone.com/apps","target":"YOURDB", "doc_ids":["_design/recline"]}' -H "Content-type: application/json"
+    curl -X POST http://user:pass@YOURCOUCH/_replicate -d '{"source":"http://max.iriscouch.com/apps","target":"YOURDB", "doc_ids":["_design/recline"]}' -H "Content-type: application/json"
 
 ### In-depth install
 
-You'll have to get yourself a couch. The easiest way is from [the instructions on this page](http://couchone.com/get). Once it's going, open up `http://YOURCOUCH/_utils` and create a new database to store your data.
+You'll have to get yourself a couch. The easiest way is from [the instructions on this page](http://iriscouch.com/service). Once it's going, open up `http://YOURCOUCH/_utils` and create a new database to store your data.
 
-You can either replicate the couchapp from my couch [max.couchone.com/apps/_design/recline](http://max.couchone.com/apps/_design/recline) (quickest option) or, if you want to hack on the recline source code first, you'll need to install `mikeal/node.couchapp.js` and clone this repo.
+You can either replicate the couchapp from my couch [max.iriscouch.com/apps/_design/recline](http://max.iriscouch.com/apps/_design/recline) (quickest option) or, if you want to hack on the recline source code first, you'll need to install `mikeal/node.couchapp.js` and clone this repo.
