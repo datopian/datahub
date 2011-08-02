@@ -186,6 +186,13 @@ app.after = {
       );
     })
   },
+  uploadImport: function() {
+    $('.dialog-content .okButton').click(function(e) {
+      util.hide('dialog');
+      util.notify("Saving documents...", {persist: true, loader: true});
+      costco.uploadCSV();
+    })
+  },
   jsonTree: function() {
     util.renderTree(app.apiDocs);
     $('.dialog-content .okButton').click(function(e) {

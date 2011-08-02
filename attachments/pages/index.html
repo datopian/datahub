@@ -59,7 +59,7 @@
 
   <script type='text/mustache' class="importActionsTemplate">
     <li><a data-action="urlImport" class="menuAction" href="JavaScript:void(0);">JSON API</a></li>
-    <li><a data-action="pasteImport" class="menuAction" href="JavaScript:void(0);">Copy & Paste JSON</a></li>
+    <li><a data-action="pasteImport" class="menuAction" href="JavaScript:void(0);">Paste JSON</a></li>
     <li><a data-action="uploadImport" class="menuAction" href="JavaScript:void(0);">Upload CSV</a></li>
   </script>
     
@@ -290,7 +290,7 @@
   		    Paste in an array of JSON objects representing the documents that you would like to insert into the database.
   		  </p>
   		  <p class="info">
-    		  <code>[{woo: pizza}, {tasty: muffins}]</code>
+    		  <code>[{woo: "pizza"}, {tasty: "muffins"}]</code>
   		  </p>
         <div class="menu-container data-table-cell-editor">
           <textarea class="data-table-cell-copypaste-editor" bind="textarea">{{value}}</textarea>
@@ -311,7 +311,6 @@
   		<div class="grid-layout layout-tight layout-full">
         <strong>Please choose a CSV file to upload:</strong><br />
         <input type="file" id="file" />
-        <input type="button" value="Load file" onclick="costco.uploadCSV()" />
   		</div>
   	</div>
   	<div class="dialog-footer">

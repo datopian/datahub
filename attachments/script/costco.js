@@ -105,13 +105,11 @@ var costco = function() {
   }
   
   function uploadCSV() {
-    util.notify('Upload started.');
     var file = $('#file')[0].files[0];
     if (file) {
       var reader = new FileReader();
       reader.readAsText(file);
       reader.onload = function(event) {
-        util.notify('File loaded.');
         var payload = {
           url: window.location.href + "/api/_bulk_docs", // todo more robust url composition
           data: event.target.result
@@ -119,9 +117,9 @@ var costco = function() {
         var worker = new Worker('script/costco-csv-worker.js');
         worker.onmessage = function(message) {
           if(JSON.parse(message.data).done) {
+            util.hide('dialog');
             util.notify("Data uploaded successfully!");
             recline.initializeTable(app.offset);
-            util.hide('dialog');
           } else {
             util.notify(message.data);
           }
