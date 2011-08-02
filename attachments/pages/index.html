@@ -58,9 +58,9 @@
   </script>
 
   <script type='text/mustache' class="importActionsTemplate">
-    <li><a data-action="urlImport" class="menuAction" href="JavaScript:void(0);">From an API</a></li>
-    <li><a data-action="pasteImport" class="menuAction" href="JavaScript:void(0);">Copy & Paste</a></li>
-    <li><a data-action="uploadImport" class="menuAction" href="JavaScript:void(0);">Upload File</a></li>
+    <li><a data-action="urlImport" class="menuAction" href="JavaScript:void(0);">JSON API</a></li>
+    <li><a data-action="pasteImport" class="menuAction" href="JavaScript:void(0);">Copy & Paste JSON</a></li>
+    <li><a data-action="uploadImport" class="menuAction" href="JavaScript:void(0);">Upload CSV</a></li>
   </script>
     
   <script type='text/mustache' class="exportActionsTemplate">
@@ -305,11 +305,13 @@
   
   <script type='text/mustache' class="uploadImportTemplate">
     <div class="dialog-header">
-  		Upload and import a file
+  		Upload and import a CSV
   	</div>
   	<div class="dialog-body">
   		<div class="grid-layout layout-tight layout-full">
-        IN THE FUTURE I predict the presence of a file upload form here...
+        <strong>Please choose a CSV file to upload:</strong><br />
+        <input type="file" id="file" />
+        <input type="button" value="Load file" onclick="costco.uploadCSV()" />
   		</div>
   	</div>
   	<div class="dialog-footer">

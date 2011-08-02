@@ -103,6 +103,35 @@ var costco = function() {
     }
     return updateDocs(deleteFunc);
   }
+  
+  function uploadCSV() {
+    util.notify('Upload started.');
+    var file = $('#file')[0].files[0];
+    if (file) {
+      var reader = new FileReader();
+      reader.readAsText(file);
+      reader.onload = function(event) {
+        util.notify('File loaded.');
+        var payload = {
+          url: window.location.href + "/api/_bulk_docs", // todo more robust url composition
+          data: event.target.result
+        };
+        var worker = new Worker('script/costco-csv-worker.js');
+        worker.onmessage = function(message) {
+          if(JSON.parse(message.data).done) {
+            util.notify("Data uploaded successfully!");
+            recline.initializeTable(app.offset);
+            util.hide('dialog');
+          } else {
+            util.notify(message.data);
+          }
+        };
+        worker.postMessage(payload);
+      };
+    } else {
+      util.notify('File not selected. Please try again');
+    }
+  };
 
   return {
     evalFunction: evalFunction,
@@ -111,6 +140,7 @@ var costco = function() {
     updateDocs: updateDocs,
     uploadDocs: uploadDocs,
     deleteColumn: deleteColumn,
-    ensureCommit: ensureCommit
+    ensureCommit: ensureCommit,
+    uploadCSV: uploadCSV 
   };
 }();
