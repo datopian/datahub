@@ -73,7 +73,8 @@ var recline = function() {
     
     util.render('dataTable', 'data-table-container', {
       rows: tableRows,
-      headers: app.headers
+      headers: app.headers,
+      notEmpty: function() { return app.headers.length > 0 }
     })
     
     app.newest = rows[0].id;
