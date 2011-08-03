@@ -68,6 +68,7 @@ var util = function() {
   function hide( thing ) {
     $('.' + thing ).hide();
     $('.' + thing + '-overlay').hide();
+    if (thing === "dialog") app.emitter.clear('esc'); // todo more elegant solution
   }
   
   function position( thing, elem, offset ) {
