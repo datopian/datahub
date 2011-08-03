@@ -637,6 +637,21 @@ a.column-header-menu {
   background-repeat: no-repeat;
 }
 
+a.row-header-menu:hover {
+  background-position: -17px 0px;
+  text-decoration: none;
+}
+
+a.row-header-menu {
+  float: left;
+  display: block;
+  margin: 0 0 -2px 0;
+  width: 17px;
+  height: 19px;
+  background-image: url(images/menu-dropdown.png);
+  background-repeat: no-repeat;
+}
+
 a.column-header-menu:hover {
   background-position: -17px 0px;
   text-decoration: none;

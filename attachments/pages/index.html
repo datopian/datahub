@@ -85,6 +85,10 @@
     <li><a data-action="deleteColumn" class="menuAction" href="JavaScript:void(0);">Delete this column</a></li>
   </script>
 
+  <script type='text/mustache' class="rowActionsTemplate">
+    <li><a data-action="deleteRow" class="menuAction" href="JavaScript:void(0);">Delete this row</a></li>
+  </script>
+
   <script type='text/mustache' class="titleTemplate"><span id="project-name-button" class="app-path-section">{{db_name}}</span></script>
   <script type='text/mustache' class="bulkTemplate">http://{{host}}/{{db_name}}/_bulk_docs</script>
   <script type='text/mustache' class="generatingTemplate"><div class="loading">Loading...</div></script>
@@ -135,6 +139,7 @@
     <table class="data-table" cellspacing="0">
       <tbody>
         <tr>
+          <td class="column-header"></td>
           {{#headers}}
           <td class="column-header">
             <div class="column-header-title">
@@ -147,6 +152,7 @@
         </tr>
         {{#rows}}
         <tr data-id="{{id}}">
+          <td><a class="row-header-menu"></a></td>
           {{#cells}}
           <td data-header="{{header}}">
             <div class="data-table-cell-content">

@@ -27,6 +27,17 @@ var recline = function() {
         deleteColumn: function() {
           var msg = "Are you sure? This will delete '" + app.currentColumn + "' from all documents.";
           if (confirm(msg)) costco.deleteColumn(app.currentColumn);
+        },
+        deleteRow: function() {
+          var doc = _.find(app.cache, function(doc) { return doc._id === app.currentRow });
+          doc._deleted = true;
+          costco.uploadDocs([doc]).then(
+            function(updatedDocs) { 
+              util.notify("Row deleted successfully");
+              recline.initializeTable(app.offset);
+            },
+            function(err) { util.notify("Errorz! " + err) }
+          )
         }
       }
       

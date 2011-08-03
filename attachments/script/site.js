@@ -29,6 +29,12 @@ app.after = {
       util.render('columnActions', 'menu');
     });
     
+    $('.row-header-menu').click(function(e) { 
+      app.currentRow = $(e.target).parents('tr:first').attr('data-id');
+      util.position('menu', e);
+      util.render('rowActions', 'menu');
+    });
+    
     $('.data-table-cell-edit').click(function(e) {
       var editing = $('.data-table-cell-editor-editor');
       if (editing.length > 0) {
@@ -40,9 +46,8 @@ app.after = {
       util.render('cellEditor', cell, {value: cell.text()});
     })
   },
-  columnActions: function() {
-	  recline.handleMenuClick();
-  },
+  columnActions: function() { recline.handleMenuClick() },
+  rowActions: function() { recline.handleMenuClick() },
   cellEditor: function() {
     $('.data-table-cell-editor .okButton').click(function(e) {
       var cell = $(e.target);
