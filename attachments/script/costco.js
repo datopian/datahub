@@ -70,7 +70,6 @@ var costco = function() {
         function(updatedDocs) { 
           util.notify(updatedDocs.length + " documents updated successfully");
           recline.initializeTable(app.offset);
-          recline.updateDocCount();
           dfd.resolve(updatedDocs);
         },
         function(err) {

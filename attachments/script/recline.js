@@ -42,7 +42,6 @@ var recline = function() {
     
     if (rows.length < 1) {
       util.render('dataTable', 'data-table-container');
-      updateDocCount();
       return;
     };
     
@@ -138,22 +137,18 @@ var recline = function() {
 
   }
   
-  function updateDocCount() {
+  function updateDocCount(totalDocs) {
     return couch.request({url: app.baseURL + 'api/_all_docs?' + $.param({startkey: '"_design/"', endkey: '"_design0"'})}).then(
       function ( data ) {
         var ddocCount = data.rows.length;
-        $('#docCount').text(app.dbInfo.doc_count - ddocCount + " documents");
+        $('#docCount').text(totalDocs - ddocCount + " documents");
       }
     )    
   }
-
   
-  function bootstrap() {
-    util.registerEmitter();
-    util.listenFor(['esc', 'return']);
-    
-    couch.request({url: app.baseURL + "api"}).then(function( dbInfo ) {
-
+  function getDbInfo() {
+    var dfd = $.Deferred();
+    return couch.request({url: app.baseURL + "api"}).then(function(dbInfo) {
       app.dbInfo = dbInfo;
 
       $.extend(app.dbInfo, {
@@ -162,12 +157,24 @@ var recline = function() {
       });
 
       if( util.inURL("_rewrite", app.baseURL) ) app.dbInfo.db_name = "api";
+      
+      dfd.resolve(dbInfo);
+    });
+    return dfd.promise();
+  }
+
+  
+  function bootstrap() {
+    util.registerEmitter();
+    util.listenFor(['esc', 'return']);
+    
+    getDbInfo().then(function( dbInfo ) {
 
       util.render('tableContainer', app.container);
       util.render('title', 'project-title', app.dbInfo);
       util.render( 'generating', 'project-actions' );    
       
-      updateDocCount();
+      updateDocCount(app.dbInfo.doc_count);
       
       couch.session().then(function(session) {
         if ( session.userCtx.name ) {
@@ -185,10 +192,12 @@ var recline = function() {
   function initializeTable(offset) {
     $('.large-loader').show();
     couch.request({url: app.baseURL + 'api/headers'}).then(function ( headers ) {
-      $('.large-loader').hide();
+      getDbInfo().then(function(dbInfo) { 
+        $('.large-loader').hide();
+        updateDocCount(dbInfo.doc_count);
+      });
       app.headers = headers;
       app.csvUrl = app.baseURL + 'api/csv?headers=' + escape(JSON.stringify(headers));
-      
       util.render( 'actions', 'project-actions', $.extend({}, app.dbInfo, {url: app.csvUrl}) );    
       fetchRows(false, offset);
     })
