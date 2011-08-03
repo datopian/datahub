@@ -62,8 +62,9 @@ var costco = function() {
   
   function updateDocs(editFunc) {
     var dfd = $.Deferred();
-    util.notify("Updating documents...", {persist: true, loader: true});
+    util.notify("Download entire database into Recline. This could take a while...", {persist: true, loader: true});
     couch.request({url: app.baseURL + "api/json"}).then(function(docs) {
+      util.notify("Updating " + docs.docs.length + " documents. This could take a while...", {persist: true, loader: true});
       var toUpdate = costco.mapDocs(docs.docs, editFunc).edited;
       costco.uploadDocs(toUpdate).then(
         function(updatedDocs) { 

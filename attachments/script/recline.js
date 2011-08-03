@@ -183,7 +183,9 @@ var recline = function() {
   }
   
   function initializeTable(offset) {
+    $('.large-loader').show();
     couch.request({url: app.baseURL + 'api/headers'}).then(function ( headers ) {
+      $('.large-loader').hide();
       app.headers = headers;
       app.csvUrl = app.baseURL + 'api/csv?headers=' + escape(JSON.stringify(headers));
       
