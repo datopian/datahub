@@ -40,11 +40,6 @@
   		<img src="images/small-spinner.gif" class="notification-loader"><span id="notification-message">Loading...</span>
   	</div>
   </div>
-  
-  <div class="large-loader" id="loading-message" style="display: none; ">
-    <img src="images/large-spinner.gif"> 
-    Loading...
-  </div>
     
   <div class="dialog-overlay" style="display: none; z-index: 101; ">&nbsp;</div>
   <div class="dialog ui-draggable" style="display: none; z-index: 102; top: 101px; ">
@@ -53,6 +48,13 @@
   	</div>
   </div>
   
+  <script type='text/mustache' class="busyTemplate">
+    <div id="loading-message">
+      <img src="images/large-spinner.gif">
+      <span> Working...</span>
+    </div>
+  </script>
+
   <script type='text/mustache' class="controlsTemplate">
     <a id="logged-in-status" href="JavaScript:void(0);" class="secondary">{{text}}</a>
   </script>

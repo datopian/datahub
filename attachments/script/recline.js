@@ -190,9 +190,9 @@ var recline = function() {
   }
   
   function initializeTable(offset) {
-    $('.large-loader').show();
+    showDialog('busy');
     couch.request({url: app.baseURL + 'api/headers'}).then(function ( headers ) {
-      $('.large-loader').hide();
+      util.hide('dialog');
       getDbInfo().then(function(dbInfo) { 
         updateDocCount(dbInfo.doc_count);
       });
