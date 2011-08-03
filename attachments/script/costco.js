@@ -116,12 +116,15 @@ var costco = function() {
         };
         var worker = new Worker('script/costco-csv-worker.js');
         worker.onmessage = function(message) {
-          if(JSON.parse(message.data).done) {
+          message = JSON.parse(message.data);
+          if(message.done) {
             util.hide('dialog');
             util.notify("Data uploaded successfully!");
             recline.initializeTable(app.offset);
+          } else if (message.size) {
+            util.notify("Processing " + message.size + " rows. This could take a while...", {persist: true, loader: true});            
           } else {
-            util.notify(message.data);
+            util.notify(JSON.stringify(message));
           }
         };
         worker.postMessage(payload);

@@ -5,6 +5,7 @@ onmessage = function(message) {
   var docs = [];
   _.each(rows, function(row) {
     if (row.length == 0) return;
+    postMessage(JSON.stringify({size: rows.length}));
     var doc = {};
     _.each(row.split(','), function(field, index) { doc['field' + index] = field });
     docs.push(doc);
