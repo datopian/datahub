@@ -80,6 +80,10 @@ var costco = function() {
     });
     return dfd.promise();
   }
+  
+  function updateDoc(doc) {
+    return couch.request({type: "PUT", url: app.baseURL + "api/" + doc._id, data: JSON.stringify(doc)})    
+  }
 
   function uploadDocs(docs) {
     var dfd = $.Deferred();
@@ -139,6 +143,7 @@ var costco = function() {
     previewTransform: previewTransform,
     mapDocs: mapDocs,
     updateDocs: updateDocs,
+    updateDoc: updateDoc,
     uploadDocs: uploadDocs,
     deleteColumn: deleteColumn,
     ensureCommit: ensureCommit,

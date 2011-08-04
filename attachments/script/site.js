@@ -58,7 +58,7 @@ app.after = {
       });
       doc[header] = cell.parents('.data-table-cell-editor').find('.data-table-cell-editor-editor').val();
       util.notify("Updating row...", {persist: true, loader: true});
-      couch.request({type: "PUT", url: app.baseURL + "api/" + doc._id, data: JSON.stringify(doc)}).then(function(response) {
+      costco.updateDoc(doc).then(function(response) {
         util.notify("Row updated successfully");
         recline.initializeTable();
       })
