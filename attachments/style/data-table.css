@@ -645,9 +645,9 @@ a.row-header-menu:hover {
 a.row-header-menu {
   float: left;
   display: block;
-  margin: 0 0 -2px 0;
+  margin: -2px 0 -4px 0;
   width: 17px;
-  height: 19px;
+  height: 18px;
   background-image: url(images/menu-dropdown.png);
   background-repeat: no-repeat;
 }
