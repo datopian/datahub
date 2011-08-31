@@ -120,18 +120,24 @@ var costco = function() {
         };
         var worker = new Worker('script/costco-csv-worker.js');
         worker.onmessage = function(message) {
-          message = JSON.parse(message.data);
-          if(message.done) {
-            util.hide('dialog');
-            util.notify("Data uploaded successfully!");
-            recline.initializeTable(app.offset);
-          } else if (message.size) {
-            util.notify("Processing " + message.size + " rows. This could take a while...", {persist: true, loader: true});            
-          } else {
-            util.notify(JSON.stringify(message));
-          }
-        };
-        worker.postMessage(payload);
+           message = JSON.parse(message.data);
+           console.log(message)
+           
+           if (message.done) {
+             util.hide('dialog');
+             util.notify("Data uploaded successfully!");
+             recline.initializeTable(app.offset);
+           } else if (message.percent) {
+             if (message.percent === 100) {
+               util.notify("Waiting for CouchDB...", {persist: true, loader: true})
+             } else {
+               util.notify("Uploading... " + message.percent + "%");            
+             }
+           } else {
+             util.notify(JSON.stringify(message));
+           }
+         };
+         worker.postMessage(payload);
       };
     } else {
       util.notify('File not selected. Please try again');
