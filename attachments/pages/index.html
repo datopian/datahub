@@ -6,16 +6,8 @@
   <link rel="stylesheet" href="style/reset.css" media="screen">
 	<link rel="stylesheet" href="style/data-table.css" media="screen"> 
 	<link rel="stylesheet" href="style/style.css" media="screen">
-	<script type="text/javascript" src="script/lib/jquery-1.6.1.min.js"></script>
   <!-- only using jqueryui for draggable -- a lighter solution would be nice -->
-	<script type="text/javascript" src="script/lib/jquery-ui-1.8.14.custom.min.js"></script>
-	<script type="text/javascript" src="script/lib/jquery.mustache.js"></script>
-	<script type="text/javascript" src="script/lib/jquery.couch2.js"></script>
-	<script type="text/javascript" src="script/lib/jquery.hotkeys.js"></script>
-	<script type="text/javascript" src="script/lib/sammy-0.6.3.min.js"></script>
-	<script type="text/javascript" src="script/lib/underscore.js"></script>
-	<script type="text/javascript" src="script/lib/microevent.js"></script>
-	<script type="text/javascript" src="script/lib/traverse.js"></script>
+	<script type="text/javascript" src="script/deps-min.js"></script>
 	<script type="text/javascript" src="script/util.js"></script>
 	<script type="text/javascript" src="script/costco.js"></script>
 	<script type="text/javascript" src="script/recline.js"></script>
@@ -32,7 +24,10 @@
       <div class="project-actions"></div>
       <div class="project-controls"></div>
     </div>
-		<div class="main_content"></div>
+    <div class="main_content">
+      <div class="left-panel"></div>
+      <div class="right-panel"></div>
+    </div>
 	</div>
 	
 	<div id="notification-container">
@@ -94,43 +89,40 @@
   <script type='text/mustache' class="generatingTemplate"><div class="loading">Loading...</div></script>
   
   <script type='text/mustache' class="tableContainerTemplate">
-    <div id="right-panel">
-      <div id="tool-panel">
-        <div id="summary-bar">
-          <span id="docCount"></span>
+    <div id="tool-panel">
+      <div id="summary-bar">
+        <span id="docCount"></span>
+      </div>
+      <div id="download">
+      </div>
+    </div>
+    <div id="view-panel">
+      <div class="viewpanel-header">
+        <div class="viewpanel-pagesize">
+          <span>
+            Show:
+          </span>
+          <a href="javascript:{}" class="viewPanel-pagingControls-page action">5</a>
+          <a href="javascript:{}" class="viewPanel-pagingControls-page selected">10</a>
+          <a href="javascript:{}" class="viewPanel-pagingControls-page action">25</a>
+          <a href="javascript:{}" class="viewPanel-pagingControls-page action">50</a>
+          <span>
+            rows
+          </span>
         </div>
-        <div id="download">
+        <div class="viewpanel-sorting">
+        </div>
+        <div class="viewpanel-paging">
+          <a href="javascript:{}" class="first inaction">« first</a>
+          <a href="javascript:{}" class="previous inaction">‹ previous</a>
+          <span class="viewpanel-pagingcount">
+            1 - 10
+          </span>
+          <a href="javascript:{}" class="next action">next ›</a>
+          <a href="javascript:{}" class="last action">last »</a>
         </div>
       </div>
-      <div id="view-panel">
-        <div class="viewpanel-header">
-          <div class="viewpanel-pagesize">
-            <span>
-              Show:
-            </span>
-            <a href="javascript:{}" class="viewPanel-pagingControls-page action">5</a>
-            <a href="javascript:{}" class="viewPanel-pagingControls-page selected">10</a>
-            <a href="javascript:{}" class="viewPanel-pagingControls-page action">25</a>
-            <a href="javascript:{}" class="viewPanel-pagingControls-page action">50</a>
-            <span>
-              rows
-            </span>
-          </div>
-          <div class="viewpanel-sorting">
-          </div>
-          <div class="viewpanel-paging">
-            <a href="javascript:{}" class="first inaction">« first</a>
-            <a href="javascript:{}" class="previous inaction">‹ previous</a>
-            <span class="viewpanel-pagingcount">
-              1 - 10
-            </span>
-            <a href="javascript:{}" class="next action">next ›</a>
-            <a href="javascript:{}" class="last action">last »</a>
-          </div>
-        </div>
-        <div class="data-table-container">
-
-        </div>
+      <div class="data-table-container">
       </div>
     </div>
   </script>
@@ -304,7 +296,7 @@
   		    Paste in an array of JSON objects representing the documents that you would like to insert into the database.
   		  </p>
   		  <p class="info">
-    		  <code>[{woo: "pizza"}, {tasty: "muffins"}]</code>
+    		  <code>[{"woo": "pizza"}, {"tasty": "muffins"}]</code>
   		  </p>
         <div class="menu-container data-table-cell-editor">
           <textarea class="data-table-cell-copypaste-editor" bind="textarea">{{value}}</textarea>

@@ -450,7 +450,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   font-size: 11px;
 }
 
-#left-panel {
+.left-panel {
   position: fixed;
   overflow: hidden;
   padding: 0px;
@@ -459,14 +459,14 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   background: #e3e9ff;
 }
 
-#left-panel .ui-tabs .ui-tabs-panel {
+.left-panel .ui-tabs .ui-tabs-panel {
   border-left: none;
   border-right: none;
   border-bottom: none;
   padding: 0;
 }
 
-#right-panel {
+.right-panel {
   position: fixed;
   top: 40px;
   left: 0px;

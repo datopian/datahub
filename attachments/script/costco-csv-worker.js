@@ -45,12 +45,12 @@ onmessage = function(message) {
   var docs = parseCSV(message.data.data);
   
   var req = new XMLHttpRequest();
-  
+
   req.onprogress = req.upload.onprogress = function(e) {
-    if(e.lengthComputable) postMessage(JSON.stringify({ percent: (e.loaded / e.total) * 100 }));
+    if(e.lengthComputable) postMessage({ percent: (e.loaded / e.total) * 100 });
   };
   
-  req.onreadystatechange = function() { if (req.readyState == 4) postMessage(JSON.stringify( {done: true} )) };
+  req.onreadystatechange = function() { if (req.readyState == 4) postMessage({done: true, response: req.responseText}) };
   req.open('POST', message.data.url);
   req.setRequestHeader('Content-Type', 'application/json');
   req.send(JSON.stringify({docs: docs}));

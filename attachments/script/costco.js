@@ -90,7 +90,14 @@ var costco = function() {
     if(!docs.length) dfd.resolve("Failed: No docs specified");
     couch.request({url: app.baseURL + "api/_bulk_docs", type: "POST", data: JSON.stringify({docs: docs})})
       .then(
-        function(resp) {ensureCommit().then(function() { dfd.resolve(resp) })}, 
+        function(resp) {ensureCommit().then(function() { 
+          var error = couch.responseError(resp);
+          if (error) {
+            dfd.reject(error);
+          } else {
+            dfd.resolve(resp);            
+          }
+        })}, 
         function(err) { dfd.reject(err.responseText) }
       );
     return dfd.promise();
@@ -119,25 +126,29 @@ var costco = function() {
           data: event.target.result
         };
         var worker = new Worker('script/costco-csv-worker.js');
-        worker.onmessage = function(message) {
-           message = JSON.parse(message.data);
-           console.log(message)
-           
-           if (message.done) {
-             util.hide('dialog');
-             util.notify("Data uploaded successfully!");
-             recline.initializeTable(app.offset);
-           } else if (message.percent) {
-             if (message.percent === 100) {
-               util.notify("Waiting for CouchDB...", {persist: true, loader: true})
-             } else {
-               util.notify("Uploading... " + message.percent + "%");            
-             }
-           } else {
-             util.notify(JSON.stringify(message));
-           }
-         };
-         worker.postMessage(payload);
+        worker.onmessage = function(event) {
+          var message = event.data;
+          if (message.done) {
+            var error = couch.responseError(JSON.parse(message.response))
+            console.log('e',error)
+            if (error) {
+              app.emitter.emit(error, 'error');
+            } else {
+              util.notify("Data uploaded successfully!");
+              recline.initializeTable(app.offset);
+            }
+            util.hide('dialog');
+          } else if (message.percent) {
+            if (message.percent === 100) {
+              util.notify("Waiting for CouchDB...", {persist: true, loader: true})
+            } else {
+              util.notify("Uploading... " + message.percent + "%");            
+            }
+          } else {
+            util.notify(JSON.stringify(message));
+          }
+        };
+        worker.postMessage(payload);
       };
     } else {
       util.notify('File not selected. Please try again');

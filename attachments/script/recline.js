@@ -122,7 +122,12 @@ var recline = function() {
   }
   
   function getPageSize() {
-    return parseInt($(".viewpanel-pagesize .selected").text());
+    var pagination = $(".viewpanel-pagesize .selected");
+    if (pagination.length > 0) {
+      return parseInt(pagination.text())
+    } else {
+      return 10;
+    }
   }
   
   function fetchRows(id, skip) {
@@ -158,9 +163,9 @@ var recline = function() {
     )    
   }
   
-  function getDbInfo() {
+  function getDbInfo(url) {
     var dfd = $.Deferred();
-    return couch.request({url: app.baseURL + "api"}).then(function(dbInfo) {
+    return couch.request({url: url}).then(function(dbInfo) {
       app.dbInfo = dbInfo;
 
       $.extend(app.dbInfo, {
@@ -176,18 +181,15 @@ var recline = function() {
   }
 
   
-  function bootstrap() {
-    util.registerEmitter();
+  function bootstrap(id) {
+    app.dbPath = app.baseURL + "api/";
+    
     util.listenFor(['esc', 'return']);
     
-    getDbInfo().then(function( dbInfo ) {
-
-      util.render('tableContainer', app.container);
-      util.render('title', 'project-title', app.dbInfo);
+    getDbInfo(app.dbPath).then(function( dbInfo ) {
+      util.render('title', 'project-title', dbInfo);
       util.render( 'generating', 'project-actions' );    
-      
-      updateDocCount(app.dbInfo.doc_count);
-      
+            
       couch.session().then(function(session) {
         if ( session.userCtx.name ) {
           var text = "Sign out";
@@ -196,24 +198,26 @@ var recline = function() {
         }
         util.render('controls', 'project-controls', {text: text});
       })
-      
+
       initializeTable();
     })
   }
   
   function initializeTable(offset) {
+    util.render( 'tableContainer', 'right-panel' );
     showDialog('busy');
-    couch.request({url: app.baseURL + 'api/headers'}).then(function ( headers ) {
+    couch.request({url: app.dbPath + 'headers'}).then(function ( headers ) {
       util.hide('dialog');
-      getDbInfo().then(function(dbInfo) { 
+      getDbInfo(app.dbPath).then(function(dbInfo) { 
         updateDocCount(dbInfo.doc_count);
       });
       app.headers = headers;
-      app.csvUrl = app.baseURL + 'api/csv?headers=' + escape(JSON.stringify(headers));
+      app.csvUrl = app.dbPath + 'csv?headers=' + escape(JSON.stringify(headers));
       util.render( 'actions', 'project-actions', $.extend({}, app.dbInfo, {url: app.csvUrl}) );    
       fetchRows(false, offset);
     })
   }
+
   
   return {
     formatDiskSize: formatDiskSize,

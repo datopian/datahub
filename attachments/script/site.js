@@ -1,6 +1,7 @@
 var app = {
 	baseURL: util.getBaseURL(document.location.pathname),
-	container: 'main_content'
+	container: 'main_content',
+	emitter: util.registerEmitter()
 };
 
 app.handler = function(route) {
@@ -227,7 +228,6 @@ app.after = {
             },
             function (err) {
               util.hide('dialog');
-              util.notify("Error uploading: " + err.responseText);
             }
           );        
         } else {
@@ -246,6 +246,10 @@ app.sammy = $.sammy(function () {
 });
 
 $(function() {
+  app.emitter.on('error', function(error) {
+    util.notify("Server error: " + error);
+  })
+  
   util.traverse = require('traverse');
   app.sammy.run();  
 })

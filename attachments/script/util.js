@@ -32,7 +32,7 @@ var util = function() {
       };
     };
     MicroEvent.mixin(Emitter);
-    app.emitter = new Emitter();
+    return new Emitter();
   }
   
   function listenFor(keys) {

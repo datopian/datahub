@@ -10,9 +10,32 @@
     url: "/"
   };  
 
+  couch.errors = {
+    forbidden: "You aren't allowed to do that."
+  }
+
+  couch.responseError = function(response) {
+    if(_.isArray(response) && (response.length > 0) ) response = response[0];
+    if (response.error) return couch.errors[response.error];
+  }
+
   couch.request = function(opts) {
-    var ajaxOpts = $.extend({}, defaults, opts);
-    return $.ajax(ajaxOpts).promise();
+    var ajaxOpts = $.extend({}, defaults, opts)
+      , dfd = $.Deferred()
+      ;
+      
+    $.ajax(ajaxOpts).then(
+      function(successResponse) {
+        var error = couch.responseError(successResponse);
+        if (error) app.emitter.emit(error, 'error');
+        dfd.resolve(successResponse);
+      }, 
+      function(errorResponse) {
+        app.emitter.emit("Fatal XHR Error", 'error');
+      }
+    )
+    
+    return dfd.promise();
   }
 
   couch.get = function(url) {
