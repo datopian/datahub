@@ -1,9 +1,5 @@
 var recline = function() {
   
-  function formatDiskSize(bytes) {
-    return (parseFloat(bytes)/1024/1024).toString().substr(0,4) + "MB"
-  }
-  
   function showDialog(template, data) {
     if (!data) data = {};
     util.show('dialog');
@@ -141,15 +137,6 @@ var recline = function() {
     });
   }
   
-  function updateDocCount(totalDocs) {
-    return couch.request({url: app.baseURL + 'api/_all_docs?' + $.param({startkey: '"_design/"', endkey: '"_design0"'})}).then(
-      function ( data ) {
-        var ddocCount = data.rows.length;
-        $('#docCount').text(totalDocs - ddocCount + " documents");
-      }
-    )    
-  }
-    
   function bootstrap(dataset) {
     util.listenFor(['esc', 'return']);
     initializeTable(dataset);
@@ -171,10 +158,8 @@ var recline = function() {
   }
   
   return {
-    formatDiskSize: formatDiskSize,
     handleMenuClick: handleMenuClick,
     showDialog: showDialog,
-    updateDocCount: updateDocCount,
     bootstrap: bootstrap,
     fetchRows: fetchRows,
     activateControls: activateControls,
