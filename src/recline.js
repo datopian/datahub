@@ -48,8 +48,8 @@ var recline = function() {
     }) 
   }
   
-  function renderRows(response) {
-    var rows = response.rows;
+  function renderRows(rows) {
+    var rows = rows;
     
     if (rows.length < 1) {
       util.render('dataTable', 'data-table-container');
@@ -62,13 +62,13 @@ var recline = function() {
       var cells = [];
       app.headers.map(function(header) {
         var value = "";
-        if (row.value[header]) {
-          value = row.value[header];
+        if (row[header]) {
+          value = row[header];
           if (typeof(value) == "object") value = JSON.stringify(value);
         }
         cells.push({header: header, value: value});
       })
-      tableRows.push({id: row.value._id, cells: cells});
+      tableRows.push({id: row.id, cells: cells});
     })
     
     util.render('dataTable', 'data-table-container', {
@@ -77,9 +77,8 @@ var recline = function() {
       notEmpty: function() { return app.headers.length > 0 }
     })
     
-    app.newest = rows[0].id;
-    app.oldest = rows[rows.length - 1].id;
-    app.offset = response.offset;
+    // TODO: sort out how we carry around offset info
+    // app.offset = response.offset;
 
     function activate(e) {
       e.removeClass('inaction').addClass('action');
@@ -89,7 +88,7 @@ var recline = function() {
       e.removeClass('action').addClass('inaction');
     }
         
-    if (app.offset + getPageSize() >= app.dbInfo.doc_count) {
+    if (app.offset + getPageSize() >= app.rowCount) {
       deactivate($( '.viewpanel-paging .last'));
       deactivate($( '.viewpanel-paging .next'));
     } else {
@@ -110,14 +109,14 @@ var recline = function() {
     $( '.viewPanel-pagingControls-page' ).click(function( e ) {      
       $(".viewpanel-pagesize .selected").removeClass('selected');
       $(e.target).addClass('selected');
-      fetchRows(app.newest);
+      fetchRows(app.offset);
     });
     $( '.viewpanel-paging a' ).click(function( e ) {
       var action = $(e.target);
-      if (action.hasClass("last")) fetchRows(false, app.dbInfo.doc_count - getPageSize());
-      if (action.hasClass("next")) fetchRows(app.oldest);
-      if (action.hasClass("previous")) fetchRows(false, app.offset - getPageSize());
-      if (action.hasClass("first")) fetchRows();
+      if (action.hasClass("last")) fetchRows(app.rowCount - getPageSize());
+      if (action.hasClass("next")) fetchRows(app.offset + getPageSize());
+      if (action.hasClass("previous")) fetchRows(app.offset - getPageSize());
+      if (action.hasClass("first")) fetchRows(0);
     });
   }
   
@@ -130,28 +129,16 @@ var recline = function() {
     }
   }
   
-  function fetchRows(id, skip) {
-
-    var query = {
-      "limit" : getPageSize()
+  function fetchRows(offset) {
+    if (offset != undefined) {
+      app.offset = offset;
     }
-    
-    if (id) {
-      $.extend( query, {"startkey": '"' + id + '"'});
-      if (id !== app.newest) $.extend( query, {"skip": 1});
-    }
-    
-    if (skip) $.extend( query, {"skip": skip});
-    
-    var req = {url: app.baseURL + 'api/rows?' + $.param(query)};
-    
-    couch.request(req).then(function(response) {
-      var offset = response.offset + 1;
+    var numRows = getPageSize();
+    app.tabularData.getRows(numRows, offset).then(function(rows) {
       $('.viewpanel-pagingcount').text(offset + " - " + ((offset - 1) + getPageSize()));
-      app.cache = response.rows.map(function(row) { return row.value; } );
-      renderRows(response);
+      app.cache = rows;
+      renderRows(rows);
     });
-
   }
   
   function updateDocCount(totalDocs) {
@@ -162,62 +149,26 @@ var recline = function() {
       }
     )    
   }
-  
-  function getDbInfo(url) {
-    var dfd = $.Deferred();
-    return couch.request({url: url}).then(function(dbInfo) {
-      app.dbInfo = dbInfo;
-
-      $.extend(app.dbInfo, {
-        "host": window.location.host,
-        "disk_size": formatDiskSize(app.dbInfo.disk_size)
-      });
-
-      if( util.inURL("_rewrite", app.baseURL) ) app.dbInfo.db_name = "api";
-      
-      dfd.resolve(dbInfo);
-    });
-    return dfd.promise();
-  }
-
-  
-  function bootstrap(id) {
-    app.dbPath = app.baseURL + "api/";
     
+  function bootstrap(dataset) {
     util.listenFor(['esc', 'return']);
-    
-    getDbInfo(app.dbPath).then(function( dbInfo ) {
-      util.render('title', 'project-title', dbInfo);
-      util.render( 'generating', 'project-actions' );    
-            
-      couch.session().then(function(session) {
-        if ( session.userCtx.name ) {
-          var text = "Sign out";
-        } else {
-          var text = "Sign in";
-        }
-        util.render('controls', 'project-controls', {text: text});
-      })
-
-      initializeTable();
-    })
+    initializeTable(dataset);
   }
   
-  function initializeTable(offset) {
+  function initializeTable(dataset) {
     util.render( 'tableContainer', 'right-panel' );
     showDialog('busy');
-    couch.request({url: app.dbPath + 'headers'}).then(function ( headers ) {
+    dataset.getTabularData().then(function ( tabularData ) {
       util.hide('dialog');
-      getDbInfo(app.dbPath).then(function(dbInfo) { 
-        updateDocCount(dbInfo.doc_count);
-      });
-      app.headers = headers;
-      app.csvUrl = app.dbPath + 'csv?headers=' + escape(JSON.stringify(headers));
+      app.headers = tabularData.headers;
+      // TODO: should this be callback like
+      app.rowCount = tabularData.getLength();
       util.render( 'actions', 'project-actions', $.extend({}, app.dbInfo, {url: app.csvUrl}) );    
-      fetchRows(false, offset);
+      var offset = 0;
+      app.tabularData = tabularData;
+      fetchRows(offset);
     })
   }
-
   
   return {
     formatDiskSize: formatDiskSize,
