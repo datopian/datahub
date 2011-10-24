@@ -15,7 +15,36 @@ app.handler = function(route) {
 
 app.routes = {
   home: function() {
-    recline.bootstrap();
+    // HACK: this should be in the html file (and really we need a much simpler example and keep this as recline-full example)
+    var dataset = {
+      getTabularData: function() {
+        var dfd = $.Deferred();
+        dfd.resolve(this.tabularData);
+        return dfd.promise();
+      }
+      , tabularData: {
+          headers: ['x', 'y', 'z']
+        , rows: [
+            {x: 1, y: 2, z: 3}
+          , {x: 2, y: 4, z: 6}
+          , {x: 3, y: 6, z: 9}
+          , {x: 4, y: 8, z: 12}
+          , {x: 5, y: 10, z: 15}
+          , {x: 6, y: 12, z: 18}
+        ]
+        , getLength: function() { return this.rows.length; }
+        , getRows: function(numRows, start) {
+          if (start === undefined) {
+            start = 0;
+          }
+          var dfd = $.Deferred();
+          var results = this.rows.slice(start, start+numRows);
+          dfd.resolve(results);
+          return dfd.promise();
+        }
+      }
+    };
+    recline.bootstrap(dataset);
   }
 }
 
