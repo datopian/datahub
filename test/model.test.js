@@ -23,16 +23,18 @@ test('new Dataset', function () {
   equal(dataset.get('name'), metadata.name);
   expect(6);
   setTimeout(2);
-  dataset.getTabularData().then(function(tabularData) {
-    equal(tabularData.get('headers'), indata.headers);
-    equal(tabularData.getLength(), 6);
-    tabularData.getRows(4, 2).then(function(rows) {
-      equal(rows[0], indata.rows[2]);
-    });
-    tabularData.getRows().then(function(rows) {
-      equal(rows.length, Math.min(10, indata.rows.length));
-      equal(rows[0], indata.rows[0]);
-    });
+  dataset.documentSet.fetch({
+    success: function(documentSet) {
+      equal(documentSet.get('headers'), indata.headers);
+      equal(documentSet.getLength(), 6);
+      documentSet.getRows(4, 2).then(function(rows) {
+        equal(rows[0], indata.rows[2]);
+      });
+      documentSet.getRows().then(function(rows) {
+        equal(rows.length, Math.min(10, indata.rows.length));
+        equal(rows[0], indata.rows[0]);
+        });
+    }
   });
 });
 
