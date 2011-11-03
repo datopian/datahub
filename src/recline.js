@@ -147,9 +147,10 @@ var recline = function() {
     showDialog('busy');
     dataset.getTabularData().then(function ( tabularData ) {
       util.hide('dialog');
-      app.headers = tabularData.headers;
+      app.headers = tabularData.get('headers');
       // TODO: should this be callback like
       app.rowCount = tabularData.getLength();
+      // TODO: delete?
       util.render( 'actions', 'project-actions', $.extend({}, app.dbInfo, {url: app.csvUrl}) );    
       var offset = 0;
       app.tabularData = tabularData;
