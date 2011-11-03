@@ -19,7 +19,7 @@ test('new Dataset', function () {
       , {x: 6, y: 12, z: 18}
     ]
   };
-  var dataset = new RECLINE.Model.Dataset(metadata, indata);
+  var dataset = new recline.Dataset(metadata, indata);
   equal(dataset.get('name'), metadata.name);
   expect(6);
   setTimeout(2);
