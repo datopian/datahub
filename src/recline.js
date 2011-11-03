@@ -35,6 +35,7 @@ recline.DataTable = Backbone.View.extend({
     $(this.el).html(htmls);
     return this;
   }
+<<<<<<< HEAD
 });
 
 // var recline = function() {
@@ -207,3 +208,74 @@ recline.DataTable = Backbone.View.extend({
 //     initializeTable: initializeTable
 //   };
 // }();
+=======
+  
+  function activateControls() {
+    $( '.viewPanel-pagingControls-page' ).click(function( e ) {      
+      $(".viewpanel-pagesize .selected").removeClass('selected');
+      $(e.target).addClass('selected');
+      fetchRows(app.offset);
+    });
+    $( '.viewpanel-paging a' ).click(function( e ) {
+      var action = $(e.target);
+      if (action.hasClass("last")) fetchRows(app.rowCount - getPageSize());
+      if (action.hasClass("next")) fetchRows(app.offset + getPageSize());
+      if (action.hasClass("previous")) fetchRows(app.offset - getPageSize());
+      if (action.hasClass("first")) fetchRows(0);
+    });
+  }
+  
+  function getPageSize() {
+    var pagination = $(".viewpanel-pagesize .selected");
+    if (pagination.length > 0) {
+      return parseInt(pagination.text())
+    } else {
+      return 10;
+    }
+  }
+  
+  function fetchRows(offset) {
+    if (offset != undefined) {
+      app.offset = offset;
+    }
+    var numRows = getPageSize();
+    app.tabularData.getRows(numRows, offset).then(function(rows) {
+      $('.viewpanel-pagingcount').text(offset + " - " + ((offset - 1) + getPageSize()));
+      app.cache = rows;
+      renderRows(rows);
+    });
+  }
+  
+  function bootstrap(dataset) {
+    util.listenFor(['esc', 'return']);
+    initializeTable(dataset);
+  }
+  
+  function initializeTable(dataset) {
+    util.render( 'tableContainer', 'right-panel' );
+    showDialog('busy');
+    dataset.getTabularData().then(function ( tabularData ) {
+      util.hide('dialog');
+      app.headers = tabularData.get('headers');
+      // TODO: should this be callback like
+      app.rowCount = tabularData.getLength();
+      // TODO: delete?
+      util.render( 'actions', 'project-actions', $.extend({}, app.dbInfo, {url: app.csvUrl}) );    
+      var offset = 0;
+      app.tabularData = tabularData;
+      fetchRows(offset);
+    })
+  }
+  
+  return {
+    handleMenuClick: handleMenuClick,
+    showDialog: showDialog,
+    bootstrap: bootstrap,
+    fetchRows: fetchRows,
+    activateControls: activateControls,
+    getPageSize: getPageSize,
+    renderRows: renderRows,
+    initializeTable: initializeTable
+  };
+}();
+>>>>>>> [refactor,demo][s]: refactor demo (and recline.js) to use new Dataset object.
