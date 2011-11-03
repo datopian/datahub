@@ -1,25 +1,21 @@
 <!doctype html> 
 <html lang="en"> 
 <head> 
-	<meta charset="utf-8"> 
-	<title>CouchDB Data Explorer</title> 
+  <meta charset="utf-8"> 
+  <title>CouchDB Data Explorer</title> 
   <link rel="stylesheet" href="style/reset.css" media="screen">
-	<link rel="stylesheet" href="style/data-table.css" media="screen"> 
-	<link rel="stylesheet" href="style/style.css" media="screen">
-  <!-- only using jqueryui for draggable -- a lighter solution would be nice -->
-	<script type="text/javascript" src="../src/deps-min.js"></script>
-  <!-- TODO: move Backbone in deps-min -->
-  <script src="../vendor/backbone/0.5.1/backbone.js"></script>
-
-	<script type="text/javascript" src="../src/util.js"></script>
-	<script type="text/javascript" src="../src/costco.js"></script>
-	<script type="text/javascript" src="../src/dataset.js"></script>
-	<script type="text/javascript" src="../src/recline.js"></script>
-	<script type="text/javascript" src="js/app.js"></script>
+  <link rel="stylesheet" href="style/data-table.css" media="screen"> 
+  <link rel="stylesheet" href="style/style.css" media="screen">
+  <script type="text/javascript" src="../src/deps-min.js"></script>
+  <script type="text/javascript" src="../src/backbone-webstore.js"></script>
+  <script type="text/javascript" src="../src/util.js"></script>
+  <script type="text/javascript" src="../src/costco.js"></script>
+  <script type="text/javascript" src="../src/recline.js"></script>
+  <script type="text/javascript" src="js/app.js"></script>
 </head> 
 <body class="bod">
-	<div class="container">
-	  <div class="menu-overlay" style="display: none; z-index: 101; ">&nbsp;</div>
+  <div class="container">
+    <!-- <div class="menu-overlay" style="display: none; z-index: 101; ">&nbsp;</div>
     <ul class="menu">
     </ul>
     <div id="header">
@@ -31,20 +27,21 @@
     <div class="main_content">
       <div class="left-panel"></div>
       <div class="right-panel"></div>
+    </div> -->
+    <div class="data-table-container"></div>
+  </div>
+  
+  <div id="notification-container">
+    <div id="notification">
+      <img src="images/small-spinner.gif" class="notification-loader"><span id="notification-message">Loading...</span>
     </div>
-	</div>
-	
-	<div id="notification-container">
-  	<div id="notification">
-  		<img src="images/small-spinner.gif" class="notification-loader"><span id="notification-message">Loading...</span>
-  	</div>
   </div>
     
   <div class="dialog-overlay" style="display: none; z-index: 101; ">&nbsp;</div>
   <div class="dialog ui-draggable" style="display: none; z-index: 102; top: 101px; ">
-  	<div class="dialog-frame" style="width: 700px; visibility: visible; ">
-  		<div class="dialog-content dialog-border"></div>
-  	</div>
+    <div class="dialog-frame" style="width: 700px; visibility: visible; ">
+      <div class="dialog-content dialog-border"></div>
+    </div>
   </div>
   
   <script type='text/mustache' class="busyTemplate">
@@ -165,10 +162,10 @@
   
   <script type='text/mustache' class="signInTemplate">
     <div class="dialog-header">
-  		Sign in
-  	</div>
-  	<div class="dialog-body">
-  		<div class="grid-layout layout-tight layout-full">
+      Sign in
+    </div>
+    <div class="dialog-body">
+      <div class="grid-layout layout-tight layout-full">
         <form name="sign-in-form" id="sign-in-form">
           <table class="form-table">
             <tbody>
@@ -192,81 +189,81 @@
             </tbody>
           </table>
         </form>
-  		</div>
-  	</div>
-  	<div class="dialog-footer">
-  		<button class="okButton button">&nbsp;&nbsp;Sign in&nbsp;&nbsp;</button>
-  		<button class="cancelButton button">Cancel</button>
-  	</div>
+      </div>
+    </div>
+    <div class="dialog-footer">
+      <button class="okButton button">&nbsp;&nbsp;Sign in&nbsp;&nbsp;</button>
+      <button class="cancelButton button">Cancel</button>
+    </div>
   </script>
   
   <script type='text/mustache' class="transformTemplate">
     <div class="dialog-header">
-  		Recursive transform on all rows
-  	</div>
-  	<div class="dialog-body">
-  		<div class="grid-layout layout-full">
-  		  <p class="info">Traverse and transform objects by visiting every node on a recursive walk using <a href="https://github.com/substack/js-traverse">js-traverse</a>.</p>
-  			<table>
-  			<tbody>
-  			<tr>
-  				<td colspan="4">
-  					<div class="grid-layout layout-tight layout-full">
-  						<table rows="4" cols="4">
-  						<tbody>
-  						<tr style="vertical-align: bottom;">
-  							<td colspan="4">
-  								Expression
-  							</td>
-  						</tr>
-  						<tr>
-  							<td colspan="3">
-  								<div class="input-container">
-  									<textarea class="expression-preview-code"></textarea>
-  								</div>
-  							</td>
-  							<td class="expression-preview-parsing-status" width="150" style="vertical-align: top;">
-  								No syntax error.
-  							</td>
-  						</tr>
-  						<tr>
-  							<td colspan="4">
-  								<div id="expression-preview-tabs" class="refine-tabs ui-tabs ui-widget ui-widget-content ui-corner-all">
-  									<span>Preview</span>
-  									<div id="expression-preview-tabs-preview" class="ui-tabs-panel ui-widget-content ui-corner-bottom">
-  										<div class="expression-preview-container" style="width: 652px; ">
-  										</div>
-  									</div>
-  								</div>
-  							</td>
-  						</tr>
-  						</tbody>
-  						</table>
-  					</div>
-  				</td>
-  			</tr>
-  			</tbody>
-  			</table>
-  		</div>
-  	</div>
-  	<div class="dialog-footer">
-  		<button class="okButton button">&nbsp;&nbsp;Update All&nbsp;&nbsp;</button>
-  		<button class="cancelButton button">Cancel</button>
-  	</div>
+      Recursive transform on all rows
+    </div>
+    <div class="dialog-body">
+      <div class="grid-layout layout-full">
+        <p class="info">Traverse and transform objects by visiting every node on a recursive walk using <a href="https://github.com/substack/js-traverse">js-traverse</a>.</p>
+        <table>
+        <tbody>
+        <tr>
+          <td colspan="4">
+            <div class="grid-layout layout-tight layout-full">
+              <table rows="4" cols="4">
+              <tbody>
+              <tr style="vertical-align: bottom;">
+                <td colspan="4">
+                  Expression
+                </td>
+              </tr>
+              <tr>
+                <td colspan="3">
+                  <div class="input-container">
+                    <textarea class="expression-preview-code"></textarea>
+                  </div>
+                </td>
+                <td class="expression-preview-parsing-status" width="150" style="vertical-align: top;">
+                  No syntax error.
+                </td>
+              </tr>
+              <tr>
+                <td colspan="4">
+                  <div id="expression-preview-tabs" class="refine-tabs ui-tabs ui-widget ui-widget-content ui-corner-all">
+                    <span>Preview</span>
+                    <div id="expression-preview-tabs-preview" class="ui-tabs-panel ui-widget-content ui-corner-bottom">
+                      <div class="expression-preview-container" style="width: 652px; ">
+                      </div>
+                    </div>
+                  </div>
+                </td>
+              </tr>
+              </tbody>
+              </table>
+            </div>
+          </td>
+        </tr>
+        </tbody>
+        </table>
+      </div>
+    </div>
+    <div class="dialog-footer">
+      <button class="okButton button">&nbsp;&nbsp;Update All&nbsp;&nbsp;</button>
+      <button class="cancelButton button">Cancel</button>
+    </div>
   </script>
 
   <script type='text/mustache' class="urlImportTemplate">
     <div class="dialog-header">
-  		Download and import from a URL or API
-  	</div>
-  	<div class="dialog-body">
-  		<div class="grid-layout layout-full">
-  		  <p class="info">
-  		    Currently only <a href="http://en.wikipedia.org/wiki/JSONP">JSONP</a>-enabled APIs are supported, for example:
-  		  </p>
-  		  <p class="info">
-    		  <code>https://api.github.com/repos/maxogden/recline/commits</code>
-  		  </p>
+      Download and import from a URL or API
+    </div>
+    <div class="dialog-body">
+      <div class="grid-layout layout-full">
+        <p class="info">
+          Currently only <a href="http://en.wikipedia.org/wiki/JSONP">JSONP</a>-enabled APIs are supported, for example:
+        </p>
+        <p class="info">
+          <code>https://api.github.com/repos/maxogden/recline/commits</code>
+        </p>
         <form name="api-import-form" id="sign-in-form">
           <table class="form-table">
             <tbody>
@@ -282,105 +279,105 @@
             </tbody>
           </table>
         </form>
-  		</div>
-  	</div>
-  	<div class="dialog-footer">
-  		<button class="okButton button">&nbsp;&nbsp;Fetch&nbsp;&nbsp;</button>
-  		<button class="cancelButton button">Cancel</button>
-  	</div>
+      </div>
+    </div>
+    <div class="dialog-footer">
+      <button class="okButton button">&nbsp;&nbsp;Fetch&nbsp;&nbsp;</button>
+      <button class="cancelButton button">Cancel</button>
+    </div>
   </script>
   
   <script type='text/mustache' class="pasteImportTemplate">
     <div class="dialog-header">
-  		Import raw copy & pasted JSON
-  	</div>
-  	<div class="dialog-body">
-  		<div class="grid-layout layout-tight layout-full">
-  		  <p class="info">
-  		    Paste in an array of JSON objects representing the documents that you would like to insert into the database.
-  		  </p>
-  		  <p class="info">
-    		  <code>[{"woo": "pizza"}, {"tasty": "muffins"}]</code>
-  		  </p>
+      Import raw copy & pasted JSON
+    </div>
+    <div class="dialog-body">
+      <div class="grid-layout layout-tight layout-full">
+        <p class="info">
+          Paste in an array of JSON objects representing the documents that you would like to insert into the database.
+        </p>
+        <p class="info">
+          <code>[{"woo": "pizza"}, {"tasty": "muffins"}]</code>
+        </p>
         <div class="menu-container data-table-cell-editor">
           <textarea class="data-table-cell-copypaste-editor" bind="textarea">{{value}}</textarea>
         </div>
-  		</div>
-  	</div>
-  	<div class="dialog-footer">
-  		<button class="okButton button">&nbsp;&nbsp;Import&nbsp;&nbsp;</button>
-  		<button class="cancelButton button">Cancel</button>
-  	</div>
+      </div>
+    </div>
+    <div class="dialog-footer">
+      <button class="okButton button">&nbsp;&nbsp;Import&nbsp;&nbsp;</button>
+      <button class="cancelButton button">Cancel</button>
+    </div>
   </script>
   
   <script type='text/mustache' class="uploadImportTemplate">
     <div class="dialog-header">
-  		Upload and import a CSV
-  	</div>
-  	<div class="dialog-body">
-  		<div class="grid-layout layout-tight layout-full">
+      Upload and import a CSV
+    </div>
+    <div class="dialog-body">
+      <div class="grid-layout layout-tight layout-full">
         <strong>Please choose a CSV file to upload:</strong><br />
         <input type="file" id="file" />
-  		</div>
-  	</div>
-  	<div class="dialog-footer">
-  		<button class="okButton button">&nbsp;&nbsp;Import&nbsp;&nbsp;</button>
-  		<button class="cancelButton button">Cancel</button>
-  	</div>
+      </div>
+    </div>
+    <div class="dialog-footer">
+      <button class="okButton button">&nbsp;&nbsp;Import&nbsp;&nbsp;</button>
+      <button class="cancelButton button">Cancel</button>
+    </div>
   </script>
   
   <script type='text/mustache' class="bulkEditTemplate">
     <div class="dialog-header">
-  		Functional transform on column {{name}}
-  	</div>
-  	<div class="dialog-body">
-  		<div class="grid-layout layout-tight layout-full">
-  			<table>
-  			<tbody>
-  			<tr>
-  				<td colspan="4">
-  					<div class="grid-layout layout-tight layout-full">
-  						<table rows="4" cols="4">
-  						<tbody>
-  						<tr style="vertical-align: bottom;">
-  							<td colspan="4">
-  								Expression
-  							</td>
-  						</tr>
-  						<tr>
-  							<td colspan="3">
-  								<div class="input-container">
-  									<textarea class="expression-preview-code"></textarea>
-  								</div>
-  							</td>
-  							<td class="expression-preview-parsing-status" width="150" style="vertical-align: top;">
-  								No syntax error.
-  							</td>
-  						</tr>
-  						<tr>
-  							<td colspan="4">
-  								<div id="expression-preview-tabs" class="refine-tabs ui-tabs ui-widget ui-widget-content ui-corner-all">
-  									<span>Preview</span>
-  									<div id="expression-preview-tabs-preview" class="ui-tabs-panel ui-widget-content ui-corner-bottom">
-  										<div class="expression-preview-container" style="width: 652px; ">
-  										</div>
-  									</div>
-  								</div>
-  							</td>
-  						</tr>
-  						</tbody>
-  						</table>
-  					</div>
-  				</td>
-  			</tr>
-  			</tbody>
-  			</table>
-  		</div>
-  	</div>
-  	<div class="dialog-footer">
-  		<button class="okButton button">&nbsp;&nbsp;Update All&nbsp;&nbsp;</button>
-  		<button class="cancelButton button">Cancel</button>
-  	</div>
+      Functional transform on column {{name}}
+    </div>
+    <div class="dialog-body">
+      <div class="grid-layout layout-tight layout-full">
+        <table>
+        <tbody>
+        <tr>
+          <td colspan="4">
+            <div class="grid-layout layout-tight layout-full">
+              <table rows="4" cols="4">
+              <tbody>
+              <tr style="vertical-align: bottom;">
+                <td colspan="4">
+                  Expression
+                </td>
+              </tr>
+              <tr>
+                <td colspan="3">
+                  <div class="input-container">
+                    <textarea class="expression-preview-code"></textarea>
+                  </div>
+                </td>
+                <td class="expression-preview-parsing-status" width="150" style="vertical-align: top;">
+                  No syntax error.
+                </td>
+              </tr>
+              <tr>
+                <td colspan="4">
+                  <div id="expression-preview-tabs" class="refine-tabs ui-tabs ui-widget ui-widget-content ui-corner-all">
+                    <span>Preview</span>
+                    <div id="expression-preview-tabs-preview" class="ui-tabs-panel ui-widget-content ui-corner-bottom">
+                      <div class="expression-preview-container" style="width: 652px; ">
+                      </div>
+                    </div>
+                  </div>
+                </td>
+              </tr>
+              </tbody>
+              </table>
+            </div>
+          </td>
+        </tr>
+        </tbody>
+        </table>
+      </div>
+    </div>
+    <div class="dialog-footer">
+      <button class="okButton button">&nbsp;&nbsp;Update All&nbsp;&nbsp;</button>
+      <button class="cancelButton button">Cancel</button>
+    </div>
   </script>
   
   <script type='text/mustache' class="cellEditorTemplate">
@@ -400,43 +397,43 @@
   <script type='text/mustache' class="jsonTreeTemplate">
     <div class="dialog-header">
       Please highlight the array of JSON objects to convert to documents.
-  	</div>
-  	<div class="dialog-body">
+    </div>
+    <div class="dialog-body">
       <div id="document-container">
         <div id="document-editor"></div>
       </div>
-  	</div>
-  	<div class="dialog-footer">
-  		<button class="okButton button">&nbsp;&nbsp;Import&nbsp;&nbsp;</button>
-  		<button class="cancelButton button">Cancel</button>
-  	</div>
+    </div>
+    <div class="dialog-footer">
+      <button class="okButton button">&nbsp;&nbsp;Import&nbsp;&nbsp;</button>
+      <button class="cancelButton button">Cancel</button>
+    </div>
   </script>
  
   <script type='text/mustache' class="editPreviewTemplate">
-  	<div class="expression-preview-table-wrapper">
-  		<table>
-  		<tbody>
-  		<tr>
-  			<td class="expression-preview-heading">
-  				before
-  			</td>
-  			<td class="expression-preview-heading">
-  				after
-  			</td>
-  		</tr>
-  		{{#rows}}
-  		<tr>
-  			<td class="expression-preview-value">
-  				{{before}}
-  			</td>
-  			<td class="expression-preview-value">
-  				{{after}}
-  			</td>
-  		</tr>
-  		{{/rows}}
-  		</tbody>
-  		</table>
-  	</div>
-	</script>
+    <div class="expression-preview-table-wrapper">
+      <table>
+      <tbody>
+      <tr>
+        <td class="expression-preview-heading">
+          before
+        </td>
+        <td class="expression-preview-heading">
+          after
+        </td>
+      </tr>
+      {{#rows}}
+      <tr>
+        <td class="expression-preview-value">
+          {{before}}
+        </td>
+        <td class="expression-preview-value">
+          {{after}}
+        </td>
+      </tr>
+      {{/rows}}
+      </tbody>
+      </table>
+    </div>
+  </script>
 </body>
 </html>
