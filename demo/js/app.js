@@ -262,7 +262,30 @@ app.sammy = $.sammy(function () {
 });
 
 $(function() {
-  window.app = new recline.DataTable({url: "awesome.com/webstore.json"});
+  var metadata = {
+    title: 'My Test Dataset'
+    , name: '1-my-test-dataset' 
+    , id: 1
+  };
+  var indata = {
+      headers: ['x', 'y', 'z']
+    , rows: [
+        {x: 1, y: 2, z: 3}
+      , {x: 2, y: 4, z: 6}
+      , {x: 3, y: 6, z: 9}
+      , {x: 4, y: 8, z: 12}
+      , {x: 5, y: 10, z: 15}
+      , {x: 6, y: 12, z: 18}
+    ]
+  };
+  var dataset = new recline.Dataset(metadata, indata);
+  
+  var dataTable = new recline.DataTable({
+    model: dataset.documentSet,
+    url: "awesome.com/webstore.json"
+  })
+  
+  $('.container').append(dataTable.el)
 })
 
 // app.after = {

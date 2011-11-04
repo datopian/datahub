@@ -5,7 +5,6 @@ recline.Dataset = Backbone.Model.extend({
   initialize: function(data, rawDocumentSet) {
     this.documentSet = new recline.DocumentSet(rawDocumentSet);
   }
-
 });
 
 recline.Document = Backbone.Model.extend({});
@@ -34,5 +33,5 @@ recline.DocumentSet = Backbone.Model.extend({
     dfd.resolve(results);
     return dfd.promise();
   }
-  
 });
+
