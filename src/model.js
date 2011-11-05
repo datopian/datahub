@@ -2,7 +2,15 @@ this.recline = this.recline || {};
 
 // A Dataset model.
 recline.Dataset = Backbone.Model.extend({
-  __type__: 'Dataset'
+  __type__: 'Dataset',
+  getLength: function() { 
+    return this.rowCount;
+  },
+  // this does not fit very well with Backbone setup. Backbone really expects you to know the ids of objects your are fetching (which you do in classic RESTful ajax-y world). But this paradigm does not fill well with data set up we have here.
+  // This also illustrates the limitations of separating the Dataset and the Backend
+  getRows: function(numRows, start) {
+    return this.backend.getRows(this.id, numRows, start);
+  }
 });
 
 recline.Document = Backbone.Model.extend({});
@@ -11,25 +19,6 @@ recline.DocumentList = Backbone.Collection.extend({
   // webStore: new WebStore(this.url),
   model: recline.Document
 })
-
-recline.DocumentSet = Backbone.Model.extend({
-  __type__: 'DocumentSet',
-  getLength: function() { 
-    return this.get('rows').length;
-  },
-  getRows: function(numRows, start) {
-    if (start === undefined) {
-      start = 0;
-    }
-    if (numRows === undefined) {
-      numRows = 10;
-    }
-    var dfd = $.Deferred();
-    var results = this.get('rows').slice(start, start+numRows);
-    dfd.resolve(results);
-    return dfd.promise();
-  }
-});
 
 // Backend which just caches in memory
 // 
@@ -59,15 +48,29 @@ recline.BackendMemory = Backbone.Model.extend({
         var dataset = this;
         var rawDataset = this.backend._datasetCache[model.id];
         dataset.set(rawDataset.metadata);
-        dataset.documentSet = new recline.DocumentSet(rawDataset.data);
-        dataset.documentSet.dataset = dataset;
+        // here we munge it all onto Dataset
+        dataset.set({
+          headers: rawDataset.data.headers
+          });
+        dataset.rowCount = rawDataset.data.rows.length;
         dfd.resolve(dataset);
-      } else if (this.__type__ == 'DocumentSet') {
-        dfd.resolve(this);
       }
       return dfd.promise();
     }
-  }
+  },
+  getRows: function(datasetId, numRows, start) {
+    if (start === undefined) {
+      start = 0;
+    }
+    if (numRows === undefined) {
+      numRows = 10;
+    }
+    var dfd = $.Deferred();
+    rows = this._datasetCache[datasetId].data.rows;
+    var results = rows.slice(start, start+numRows);
+    dfd.resolve(results);
+    return dfd.promise();
+ }
 });
 
 recline.setBackend = function(backend) {

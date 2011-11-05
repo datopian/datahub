@@ -14,12 +14,15 @@ recline.DataTable = Backbone.View.extend({
   initialize: function() {
     var that = this;
     this.model.fetch().then(function() {
-      that.render()
+      that.model.getRows().then(function(rows) {
+        that._currentRows = rows;
+        that.render()
+      });
     })
   },
   toTemplateJSON: function() {
     var modelData = this.model.toJSON()
-    modelData.rows = _.map(modelData.rows, function(row) {
+    modelData.rows = _.map(this._currentRows, function(row) {
       var cellData = _.map(modelData.headers, function(header) {
         return {header: header, value: row[header]}
       })
