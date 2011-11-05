@@ -31,19 +31,16 @@ test('new Dataset', function () {
   expect(6);
   dataset.fetch().then(function(dataset) {
     equal(dataset.get('name'), metadata.name);
-    dataset.documentSet.fetch().then(testDS);
-  });
-  function testDS(documentSet) {
-    equal(documentSet.get('headers'), indata.headers);
-    equal(documentSet.getLength(), 6);
-    documentSet.getRows(4, 2).then(function(rows) {
+    equal(dataset.get('headers'), indata.headers);
+    equal(dataset.getLength(), 6);
+    dataset.getRows(4, 2).then(function(rows) {
       equal(rows[0], indata.rows[2]);
     });
-    documentSet.getRows().then(function(rows) {
+    dataset.getRows().then(function(rows) {
       equal(rows.length, Math.min(10, indata.rows.length));
       equal(rows[0], indata.rows[0]);
       });
-  }
+  });
 });
 
 test('Local Data Sync', function() {
