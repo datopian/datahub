@@ -3,10 +3,11 @@
 module("Dataset");
 
 test('new Dataset', function () {
+  var datasetId = 'test-dataset';
   var metadata = {
     title: 'My Test Dataset'
     , name: '1-my-test-dataset' 
-    , id: 1
+    , id: datasetId
   };
   var indata = {
       headers: ['x', 'y', 'z']
@@ -19,23 +20,33 @@ test('new Dataset', function () {
       , {x: 6, y: 12, z: 18}
     ]
   };
-  var dataset = new recline.Dataset(metadata, indata);
-  equal(dataset.get('name'), metadata.name);
+  // this is all rather artificial here but would make more sense with more complex backend
+  backend = new recline.BackendMemory();
+  backend.addDataset({
+    metadata: metadata,
+    data: indata
+    });
+  recline.setBackend(backend);
+  var dataset = backend.getDataset(datasetId);
   expect(6);
-  setTimeout(2);
-  dataset.documentSet.fetch({
-    success: function(documentSet) {
-      equal(documentSet.get('headers'), indata.headers);
-      equal(documentSet.getLength(), 6);
-      documentSet.getRows(4, 2).then(function(rows) {
-        equal(rows[0], indata.rows[2]);
-      });
-      documentSet.getRows().then(function(rows) {
-        equal(rows.length, Math.min(10, indata.rows.length));
-        equal(rows[0], indata.rows[0]);
-        });
-    }
+  dataset.fetch().then(function(dataset) {
+    equal(dataset.get('name'), metadata.name);
+    dataset.documentSet.fetch().then(testDS);
   });
+  function testDS(documentSet) {
+    equal(documentSet.get('headers'), indata.headers);
+    equal(documentSet.getLength(), 6);
+    documentSet.getRows(4, 2).then(function(rows) {
+      equal(rows[0], indata.rows[2]);
+    });
+    documentSet.getRows().then(function(rows) {
+      equal(rows.length, Math.min(10, indata.rows.length));
+      equal(rows[0], indata.rows[0]);
+      });
+  }
+});
+
+test('Local Data Sync', function() {
 });
 
 })(this.jQuery);

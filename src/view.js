@@ -13,10 +13,8 @@ recline.DataTable = Backbone.View.extend({
 
   initialize: function() {
     var that = this;
-    this.model.fetch({
-      success: function(collection, resp) {
-        that.render()
-      }
+    this.model.fetch().then(function() {
+      that.render()
     })
   },
   toTemplateJSON: function() {
