@@ -1,8 +1,9 @@
 $(function() {
+  var datasetId = 'test-dataset';
   var metadata = {
     title: 'My Test Dataset'
     , name: '1-my-test-dataset' 
-    , id: 1
+    , id: datasetId
   };
   var indata = {
       headers: ['x', 'y', 'z']
@@ -15,14 +16,23 @@ $(function() {
       , {x: 6, y: 12, z: 18}
     ]
   };
-  var dataset = new recline.Dataset(metadata, indata);
-  
-  var dataTable = new recline.DataTable({
-    model: dataset.documentSet,
-    url: "awesome.com/webstore.json"
-  })
-  
-  $('.container').append(dataTable.el)
+  // this is all rather artificial here but would make more sense with more complex backend
+  backend = new recline.BackendMemory();
+  backend.addDataset({
+    metadata: metadata,
+    data: indata
+    });
+  recline.setBackend(backend);
+  var dataset = backend.getDataset(datasetId);
+  dataset.fetch().then(function() {
+    console.log(dataset.documentSet);
+    var dataTable = new recline.DataTable({
+      model: dataset.documentSet,
+      url: "awesome.com/webstore.json"
+    })
+    
+    $('.container').append(dataTable.el)
+  });
 })
 
 // app.after = {
