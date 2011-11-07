@@ -43,7 +43,109 @@ test('new Dataset', function () {
   });
 });
 
-test('Local Data Sync', function() {
+// TODO: move to fixtures
+var webstoreSchema = {
+  "count": 3, 
+  "data": [
+    {
+      "name": "__id__", 
+      "type": "integer", 
+      "values_url": "/rufuspollock/demo/data/distinct/__id__"
+    }, 
+    {
+      "name": "date", 
+      "type": "text", 
+      "values_url": "/rufuspollock/demo/data/distinct/date"
+    }, 
+    {
+      "name": "geometry", 
+      "type": "text", 
+      "values_url": "/rufuspollock/demo/data/distinct/geometry"
+    }, 
+    {
+      "name": "amount", 
+      "type": "text", 
+      "values_url": "/rufuspollock/demo/data/distinct/amount"
+    }
+  ], 
+  "fields": [
+    {
+      "name": "type"
+    }, 
+    {
+      "name": "name"
+    }, 
+    {
+      "name": "values_url"
+    }
+  ]
+};
+
+webstoreData = {
+  "count": null, 
+  "data": [
+    {
+      "__id__": 1, 
+      "amount": "100", 
+      "date": "2009-01-01", 
+      "geometry": null
+    }, 
+    {
+      "__id__": 2, 
+      "amount": "200", 
+      "date": "2010-01-01", 
+      "geometry": null
+    }, 
+    {
+      "__id__": 3, 
+      "amount": "300", 
+      "date": "2011-01-01", 
+      "geometry": null
+    }
+  ], 
+  "fields": [
+    {
+      "name": "__id__"
+    }, 
+    {
+      "name": "date"
+    }, 
+    {
+      "name": "geometry"
+    }, 
+    {
+      "name": "amount"
+    }
+  ]
+};
+ 
+test('Webstore Backend', function() {
+  stop();
+  var backend = new recline.BackendWebstore({
+    url: 'http://webstore.test.ckan.org/rufuspollock/demo/data'
+  });
+  recline.setBackend(backend);
+  dataset = backend.getDataset();
+
+  var stub = sinon.stub($, 'ajax', function(options) {
+    return {
+      then: function(callback) {
+        callback(webstoreSchema);
+      }
+    }
+  });
+
+  dataset.fetch().then(function(dataset) {
+    equal(['__id__', 'date', 'geometry', 'amount'], dataset.get('headers'));
+    equal(3, dataset.rowCount)
+    // restore mocked method
+    $.ajax.restore();
+    dataset.getRows().then(function(rows) {
+      start();
+      equal(3,rows.length)
+      equal("2009-01-01", rows[0].date);
+    });
+  });
 });
 
 })(this.jQuery);
