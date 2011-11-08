@@ -101,6 +101,7 @@ recline.BackendWebstore = Backbone.Model.extend({
       // this switching on object type is rather horrible
       // think may make more sense to do work in individual objects rather than in central Backbone.sync
       if (this.__type__ == 'Dataset') {
+        var dataset = this;
         // get the schema and return
         var base = this.backend.get('url');
         var schemaUrl = base + '/schema.json';

@@ -1,4 +1,6 @@
 $(function() {
+  var demoUrl = 'http://webstore.test.ckan.org/rufuspollock/demo/data';
+  $('.dataexplorer-tableview-nav form input[name="source"]').val(demoUrl);
   var datasetId = 'test-dataset';
   var metadata = {
     title: 'My Test Dataset'
@@ -17,7 +19,7 @@ $(function() {
     ]
   };
   // this is all rather artificial here but would make more sense with more complex backend
-  backend = new recline.BackendMemory();
+  var backend = new recline.BackendMemory();
   backend.addDataset({
     metadata: metadata,
     data: indata
@@ -30,6 +32,20 @@ $(function() {
       url: "awesome.com/webstore.json"
     })
     
+    $('.container').append(dataTable.el)
+  });
+  $('.dataexplorer-tableview-nav form').submit(function(e) {
+    e.preventDefault();
+    var $form = $(e.target);
+    var source = $form.find('input[name="source"]').val();
+    var backend = new recline.BackendWebstore({
+      url: source
+    });
+    recline.setBackend(backend);
+    var dataset = backend.getDataset();
+    var dataTable = new recline.DataTable({
+      model: dataset
+    })
     $('.container').append(dataTable.el)
   });
 })
