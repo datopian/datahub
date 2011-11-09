@@ -1,6 +1,17 @@
 $(function() {
   var demoUrl = 'http://webstore.test.ckan.org/rufuspollock/demo/data';
   $('.dataexplorer-tableview-nav form input[name="source"]').val(demoUrl);
+  var dataset = demoDataset();
+  dataset.fetch().then(function() {
+    var dataTable = new recline.DataTable({
+      model: dataset
+    })
+    $('.container').append(dataTable.el)
+  });
+  setupLoadFromWebstore();
+})
+
+function demoDataset() {
   var datasetId = 'test-dataset';
   var metadata = {
     title: 'My Test Dataset'
@@ -26,13 +37,10 @@ $(function() {
     });
   recline.setBackend(backend);
   var dataset = backend.getDataset(datasetId);
-  dataset.fetch().then(function() {
-    var dataTable = new recline.DataTable({
-      model: dataset
-    })
-    
-    $('.container').append(dataTable.el)
-  });
+  return dataset;
+}
+
+function setupLoadFromWebstore() {
   $('.dataexplorer-tableview-nav form').submit(function(e) {
     e.preventDefault();
     var $form = $(e.target);
@@ -47,7 +55,7 @@ $(function() {
     })
     $('.container').append(dataTable.el)
   });
-})
+}
 
 // app.after = {
 //   tableContainer: function() {
