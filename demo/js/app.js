@@ -28,8 +28,7 @@ $(function() {
   var dataset = backend.getDataset(datasetId);
   dataset.fetch().then(function() {
     var dataTable = new recline.DataTable({
-      model: dataset,
-      url: "awesome.com/webstore.json"
+      model: dataset
     })
     
     $('.container').append(dataTable.el)
