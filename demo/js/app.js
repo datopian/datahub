@@ -1,14 +1,19 @@
 $(function() {
-  var demoUrl = 'http://webstore.test.ckan.org/rufuspollock/demo/data';
-  $('.dataexplorer-tableview-nav form input[name="source"]').val(demoUrl);
+  // do not like all these window globals ...
+  window.$container = $('.container');
   var dataset = demoDataset();
-  dataset.fetch().then(function() {
-    var dataTable = new recline.DataTable({
-      model: dataset
-    })
-    $('.container').append(dataTable.el)
+  window.dataExplorer = new recline.DataExplorer({
+    model: dataset
   });
-  setupLoadFromWebstore();
+  window.$container.append(window.dataExplorer.el);
+  setupLoadFromWebstore(function(dataset) {
+    window.dataExplorer.remove();
+    window.dataExplorer = null;
+    window.dataExplorer = new recline.DataExplorer({
+      model: dataset,
+    });
+    window.$container.append(window.dataExplorer.el);
+  });
 })
 
 function demoDataset() {
@@ -40,8 +45,11 @@ function demoDataset() {
   return dataset;
 }
 
-function setupLoadFromWebstore() {
-  $('.dataexplorer-tableview-nav form').submit(function(e) {
+function setupLoadFromWebstore(callback) {
+  // pre-populate webstore load form with an example url
+  var demoUrl = 'http://webstore.test.ckan.org/rufuspollock/demo/data';
+  $('form.webstore-load input[name="source"]').val(demoUrl);
+  $('form.webstore-load').submit(function(e) {
     e.preventDefault();
     var $form = $(e.target);
     var source = $form.find('input[name="source"]').val();
@@ -50,10 +58,7 @@ function setupLoadFromWebstore() {
     });
     recline.setBackend(backend);
     var dataset = backend.getDataset();
-    var dataTable = new recline.DataTable({
-      model: dataset
-    })
-    $('.container').append(dataTable.el)
+    callback(dataset);
   });
 }
 
