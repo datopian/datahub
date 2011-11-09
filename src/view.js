@@ -21,16 +21,21 @@ recline.DataExplorer = Backbone.View.extend({
   initialize: function() {
     this.el = $(this.el);
     this.render();
-    // initialize of dataTable calls render
-    this.dataTable = new recline.DataTable({
-      model: this.model
+    var self = this;
+    // retrieve basic data like headers etc
+    // note this.model and dataset returned are the same
+    this.model.fetch().then(function(dataset) {
+      // initialize of dataTable calls render
+      self.dataTable = new recline.DataTable({
+        model: dataset
+      });
+      self.flotGraph = new recline.FlotGraph({
+        model: dataset
+      });
+      self.flotGraph.el.hide();
+      self.el.append(self.dataTable.el)
+      self.el.append(self.flotGraph.el);
     });
-    this.flotGraph = new recline.FlotGraph({
-      model: this.model
-    });
-    this.flotGraph.el.hide();
-    this.el.append(this.dataTable.el)
-    this.el.append(this.flotGraph.el);
   },
 
   render: function() {
@@ -46,6 +51,11 @@ recline.DataExplorer = Backbone.View.extend({
     } else if (widgetToShow == 'graph') {
       this.flotGraph.el.show();
       this.dataTable.el.hide();
+      // Have to call this here
+      // If you attempt to render with flot when graph is hidden / invisible flot will complain with 
+      // Invalid dimensions for plot, width = 0, height = 0
+      // (Could hack this by moving plot left -1000 or similar ...)
+      this.flotGraph.createPlot();
     }
   }
 });
@@ -63,12 +73,10 @@ recline.DataTable = Backbone.View.extend({
   initialize: function() {
     this.el = $(this.el);
     var that = this;
-    this.model.fetch().then(function() {
-      that.model.getRows().then(function(rows) {
-        that._currentRows = rows;
-        that.render()
-      });
-    })
+    this.model.getRows().then(function(rows) {
+      that._currentRows = rows;
+      that.render()
+    });
   },
   toTemplateJSON: function() {
     var modelData = this.model.toJSON()
@@ -115,11 +123,19 @@ recline.FlotGraph = Backbone.View.extend({
         </li> \
         <li class="editor-group"> \
           <label>Group Column (x-axis)</label> \
-          <select></select> \
+          <select> \
+          {{#headers}} \
+          <option value="{{.}}">{{.}}</option> \
+          {{/headers}} \
+          </select> \
         </li> \
         <li class="editor-series"> \
           <label>Series <span>A (y-axis)</span></label> \
-          <select></select> \
+          <select> \
+          {{#headers}} \
+          <option value="{{.}}">{{.}}</option> \
+          {{/headers}} \
+          </select> \
         </li> \
       </ul> \
       <div class="editor-buttons"> \
@@ -135,17 +151,52 @@ recline.FlotGraph = Backbone.View.extend({
 ',
 
   events: {
+    'change select': 'onEditorSubmit'
   },
 
-  initialize: function() {
+  onEditorSubmit: function(e) {
+    var select = this.el.find('.editor-group select');
+  },
+
+  initialize: function(options, chart) {
     this.el = $(this.el);
+    this.chart = chart;
+    this.render();
   },
   toTemplateJSON: function() {
-    return {};
+    return this.model.toJSON();
   },
   render: function() {
     htmls = $.mustache(this.template, this.toTemplateJSON());
     $(this.el).html(htmls);
+    this.$graph = this.el.find('.panel.graph');
     return this;
+  },
+  createPlot: function () {
+    // only lines for the present
+    options = {
+      id: 'line',
+      name: 'Line Chart'
+    };
+    this.plot = $.plot(this.$graph, this.createSeries(), options);
+    return this;
+  },
+
+  createSeries: function () {
+    var series = [], view = this;
+    if (this.chart) {
+      $.each(this.chart.series, function (seriesIndex, field) {
+        var points = [];
+        $.each(view.data, function (index) {
+          var x = this[view.chart.groups], y = this[field];
+          if (typeof x === 'string') {
+            x = index;
+          }
+          points.push([x, y]);
+        });
+        series.push({data: points, label: field});
+      });
+    }
+    return series;
   }
 });
