@@ -119,7 +119,9 @@ recline.FlotGraph = Backbone.View.extend({
       <ul> \
         <li class="editor-type"> \
           <label>Graph Type</label> \
-          <select></select> \
+          <select> \
+          <option value="line">Line</option> \
+          </select> \
         </li> \
         <li class="editor-group"> \
           <label>Group Column (x-axis)</label> \
@@ -150,28 +152,61 @@ recline.FlotGraph = Backbone.View.extend({
 </div> \
 ',
 
+  initialize: function(options, chart) {
+    this.el = $(this.el);
+    this.chart = chart;
+    this.chartConfig = {
+      group: null,
+      series: [],
+      graphType: 'line'
+    };
+    var self = this;
+    this.model.getRows().then(function(rows) {
+      self._currentRows = rows;
+      self.render()
+    });
+  },
+
   events: {
-    'change select': 'onEditorSubmit'
+    // 'change select': 'onEditorSubmit'
   },
 
   onEditorSubmit: function(e) {
     var select = this.el.find('.editor-group select');
+    this._getEditorData();
+    this.plot.setData(this.createSeries());
+    this.plot.resize();
+    this.plot.setupGrid();
+    this.plot.draw();
+  },
+  _getEditorData: function() {
+    $editor = this
+    var series = this.$series.map(function () {
+      return $(this).val();
+    });
+    this.chartConfig.series = $.makeArray(series)
+    this.chartConfig.group = this.el.find('.editor-group select').val();
   },
 
-  initialize: function(options, chart) {
-    this.el = $(this.el);
-    this.chart = chart;
-    this.render();
-  },
   toTemplateJSON: function() {
     return this.model.toJSON();
   },
+
   render: function() {
     htmls = $.mustache(this.template, this.toTemplateJSON());
     $(this.el).html(htmls);
+    // now set a load of stuff up
     this.$graph = this.el.find('.panel.graph');
+    // event approach did not seem to work
+    this.$series  = this.el.find('.editor-series select');
+    this.$seriesClone = this.$series.parent().clone();
+    var self = this;
+    this.el.find('form select').change(function() {
+      self.onEditorSubmit.apply(self, arguments)
+    });
     return this;
   },
+
   createPlot: function () {
     // only lines for the present
     options = {
@@ -183,12 +218,13 @@ recline.FlotGraph = Backbone.View.extend({
   },
 
   createSeries: function () {
-    var series = [], view = this;
-    if (this.chart) {
-      $.each(this.chart.series, function (seriesIndex, field) {
+    var self = this;
+    var series = [];
+    if (this.chartConfig) {
+      $.each(this.chartConfig.series, function (seriesIndex, field) {
         var points = [];
-        $.each(view.data, function (index) {
-          var x = this[view.chart.groups], y = this[field];
+        $.each(self._currentRows, function (index) {
+          var x = this[self.chartConfig.group], y = this[field];
           if (typeof x === 'string') {
             x = index;
           }
@@ -198,5 +234,20 @@ recline.FlotGraph = Backbone.View.extend({
       });
     }
     return series;
+  },
+
+  // TODO: finish porting this function
+  addSeries: function () {
+    var element = this.seriesClone.clone(),
+        label   = element.find('label'),
+        index   = this.series.length;
+
+    this.el.$series.parent().find('ul').append(element);
+    this.updateSeries();
+
+    label.append('<a href="#remove">Remove</a>');
+    label.find('span').text(String.fromCharCode(this.series.length + 64));
+
+    return this;
   }
 });
