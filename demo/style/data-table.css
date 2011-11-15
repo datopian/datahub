@@ -63,7 +63,6 @@ table {
 }
 
 input, select {
-  vertical-align: middle;
 }
 
 body {
@@ -428,7 +427,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 }
 
 .project-controls, .project-actions {
-  margin: 3px 2px 0px 0px;
+  margin: 0px 2px 0px 0px;
   display: block;
   float: right;
   font-size: 1.3em;
@@ -571,19 +570,6 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .viewpanel-pagingcount {
   font-weight: bold
   
-}
-
-.data-table-container {
-  display: block;
-  border-top: 1px solid #BCF;
-  overflow: auto;
-  position: absolute;
-  top: 73px;
-  bottom: 0px;
-  left: 5px;
-  right: 0px;
-  background: white;
-  }
 }
 
 .data-table {
