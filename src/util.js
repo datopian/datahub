@@ -53,10 +53,11 @@ var util = function() {
   
   function observeExit(elem, callback) {
     var cancelButton = elem.find('.cancelButton');
-    app.emitter.on('esc', function() { 
-      cancelButton.click();
-      app.emitter.clear('esc');
-    });
+    // TODO: remove (commented out as part of Backbon-i-fication
+    // app.emitter.on('esc', function() { 
+    //  cancelButton.click();
+    //  app.emitter.clear('esc');
+    // });
     cancelButton.click(callback);
   }
   
@@ -68,7 +69,8 @@ var util = function() {
   function hide( thing ) {
     $('.' + thing ).hide();
     $('.' + thing + '-overlay').hide();
-    if (thing === "dialog") app.emitter.clear('esc'); // todo more elegant solution
+    // TODO: remove or replace (commented out as part of Backbon-i-fication
+    // if (thing === "dialog") app.emitter.clear('esc'); // todo more elegant solution
   }
   
   function position( thing, elem, offset ) {
@@ -98,7 +100,8 @@ var util = function() {
     } else {
       targetDom.html( html );
     }
-    if (template in app.after) app.after[template]();
+    // TODO: remove (commented out as part of Backbon-i-fication
+    // if (template in app.after) app.after[template]();
   }
   
   function notify( message, options ) {
