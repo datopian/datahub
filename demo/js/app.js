@@ -1,5 +1,6 @@
 $(function() {
   // do not like all these window globals ...
+  // window.$container = $('.container .right-panel');
   window.$container = $('.container');
   var dataset = demoDataset();
   window.dataExplorer = new recline.DataExplorer({

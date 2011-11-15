@@ -12,6 +12,7 @@ recline.DataExplorer = Backbone.View.extend({
         <label for="nav-graph">Graph</label> \
       </span> \
     </div> \
+    <div class="data-view-container"></div> \
   ',
 
   events: {
@@ -21,6 +22,7 @@ recline.DataExplorer = Backbone.View.extend({
   initialize: function() {
     this.el = $(this.el);
     this.render();
+    this.$dataViewContainer = this.el.find('.data-view-container');
     var self = this;
     // retrieve basic data like headers etc
     // note this.model and dataset returned are the same
@@ -33,8 +35,8 @@ recline.DataExplorer = Backbone.View.extend({
         model: dataset
       });
       self.flotGraph.el.hide();
-      self.el.append(self.dataTable.el)
-      self.el.append(self.flotGraph.el);
+      self.$dataViewContainer.append(self.dataTable.el)
+      self.$dataViewContainer.append(self.flotGraph.el);
     });
   },
 
@@ -61,23 +63,140 @@ recline.DataExplorer = Backbone.View.extend({
 });
 
 recline.DataTable = Backbone.View.extend({
-
   tagName:  "div",
   className: "data-table-container",
 
-  // template: TODO ???
-
-  events: {
-  },
-
   initialize: function() {
     this.el = $(this.el);
-    var that = this;
+    var self = this;
     this.model.getRows().then(function(rows) {
-      that._currentRows = rows;
-      that.render()
+      self._currentRows = rows;
+      self.render()
+    });
+    this.state = {};
+    // this is nasty. Due to fact that .menu element is not inside this view but is elsewhere in DOM
+    $('.menu li a').live('click', function(e) {
+      // self.onMenuClick(e).apply(self);
+      self.onMenuClick(e);
     });
   },
+
+  events: {
+    // see initialize
+    // 'click .menu li': 'onMenuClick',
+    'click .column-header-menu': 'onColumnHeaderClick',
+    'click .row-header-menu': 'onRowHeaderClick',
+    'click .data-table-cell-edit': 'onEditClick',
+    // cell editor
+    'click .data-table-cell-editor .okButton': 'onEditorOK',
+    'click .data-table-cell-editor .cancelButton': 'onEditorCancel'
+  },
+
+  showDialog: function(template, data) {
+    if (!data) data = {};
+    util.show('dialog');
+    util.render(template, 'dialog-content', data);
+    util.observeExit($('.dialog-content'), function() {
+      util.hide('dialog');
+    })
+    $('.dialog').draggable({ handle: '.dialog-header', cursor: 'move' });
+  },
+
+
+  // ======================================================
+  // Column and row menus
+
+  onColumnHeaderClick: function(e) {
+    this.state.currentColumn = $(e.target).siblings().text();
+    util.position('menu', e);
+    util.render('columnActions', 'menu');
+  },
+
+  onRowHeaderClick: function(e) {
+    this.state.currentRow = $(e.target).parents('tr:first').attr('data-id');
+    util.position('menu', e);
+    util.render('rowActions', 'menu');
+  },
+
+  onMenuClick: function(e) {
+    var self = this;
+    e.preventDefault();
+    var actions = {
+      bulkEdit: function() { self.showDialog('bulkEdit', {name: self.state.currentColumn}) },
+      transform: function() { showDialog('transform') },
+      csv: function() { window.location.href = app.csvUrl },
+      json: function() { window.location.href = "_rewrite/api/json" },
+      urlImport: function() { showDialog('urlImport') },
+      pasteImport: function() { showDialog('pasteImport') },
+      uploadImport: function() { showDialog('uploadImport') },
+      deleteColumn: function() {
+        var msg = "Are you sure? This will delete '" + self.state.currentColumn + "' from all documents.";
+        // TODO:
+        alert('This function needs to be re-implemented');
+        return;
+        if (confirm(msg)) costco.deleteColumn(self.state.currentColumn);
+      },
+      deleteRow: function() {
+        // TODO:
+        alert('This function needs to be re-implemented');
+        return;
+        var doc = _.find(app.cache, function(doc) { return doc._id === app.currentRow });
+        doc._deleted = true;
+        costco.uploadDocs([doc]).then(
+          function(updatedDocs) { 
+            util.notify("Row deleted successfully");
+            recline.initializeTable(app.offset);
+          },
+          function(err) { util.notify("Errorz! " + err) }
+        )
+      }
+    }
+    
+    util.hide('menu');
+    actions[$(e.target).attr('data-action')]();
+  },
+
+  // ======================================================
+  // Cell Editor
+
+  onEditClick: function(e) {
+    var editing = this.el.find('.data-table-cell-editor-editor');
+    if (editing.length > 0) {
+      editing.parents('.data-table-cell-value').html(editing.text()).siblings('.data-table-cell-edit').removeClass("hidden");
+    }
+    $(e.target).addClass("hidden");
+    var cell = $(e.target).siblings('.data-table-cell-value');
+    cell.data("previousContents", cell.text());
+    util.render('cellEditor', cell, {value: cell.text()});
+  },
+
+  onEditorOK: function(e) {
+    var cell = $(e.target);
+    var rowId = cell.parents('tr').attr('data-id');
+    var header = cell.parents('td').attr('data-header');
+    var newValue = cell.parents('.data-table-cell-editor').find('.data-table-cell-editor-editor)').val();
+    // TODO:
+    alert('Update: ' + header + ' with value ' + newValue + '(But no save as not yet operational');
+    return;
+    var doc = _.find(app.cache, function(cacheDoc) {
+      return cacheDoc._id === rowId;
+    });
+    doc[header] = newValue;
+    util.notify("Updating row...", {persist: true, loader: true});
+    costco.updateDoc(doc).then(function(response) {
+      util.notify("Row updated successfully");
+      recline.initializeTable();
+    })
+  },
+
+  onEditorCancel: function(e) {
+    var cell = $(e.target).parents('.data-table-cell-value');
+    cell.html(cell.data('previousContents')).siblings('.data-table-cell-edit').removeClass("hidden");
+  },
+
+  // ======================================================
+  // Core Templating
+
   toTemplateJSON: function() {
     var modelData = this.model.toJSON()
     modelData.rows = _.map(this._currentRows, function(row) {
