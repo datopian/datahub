@@ -12,6 +12,7 @@ recline.DataExplorer = Backbone.View.extend({
         <label for="nav-graph">Graph</label> \
       </span> \
     </div> \
+    <div class="data-view-container"></div> \
   ',
 
   events: {
@@ -21,6 +22,7 @@ recline.DataExplorer = Backbone.View.extend({
   initialize: function() {
     this.el = $(this.el);
     this.render();
+    this.$dataViewContainer = this.el.find('.data-view-container');
     var self = this;
     // retrieve basic data like headers etc
     // note this.model and dataset returned are the same
@@ -33,8 +35,8 @@ recline.DataExplorer = Backbone.View.extend({
         model: dataset
       });
       self.flotGraph.el.hide();
-      self.el.append(self.dataTable.el)
-      self.el.append(self.flotGraph.el);
+      self.$dataViewContainer.append(self.dataTable.el)
+      self.$dataViewContainer.append(self.flotGraph.el);
     });
   },
 

@@ -210,3 +210,32 @@ span.tooltip-status {
   color:red;
   text-align:center;
 }
+
+/* rgrp added mods */
+
+.data-explorer .nav {
+  border-top: 15px solid #BCF;
+  border-left: 5px solid #BCF;
+  display: block;
+  overflow: auto;
+  position: absolute;
+  top: 35px;
+  bottom: 0px;
+  left: 0px;
+  right: 0px;
+  background: white;
+  padding-top: 3px;
+}
+
+.data-view-container {
+  display: block;
+  border-top: 1px solid #BCF;
+  border-left: 5px solid #BCF;
+  overflow: auto;
+  position: absolute;
+  top: 83px;
+  bottom: 0px;
+  left: 0px;
+  right: 0px;
+  background: white;
+}

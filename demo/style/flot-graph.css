@@ -1,12 +1,14 @@
 .data-graph-container .graph {
-  width: 650px;
-  height: 400px;
-  float: left;
+	position: absolute;
+	left: 0;
+	right: 220px;
+	bottom: 0;
+  height: 100%;
 }
 
 .data-graph-container .editor {
-	z-index: 1;
 	background-color: #efefef;
+  position: absolute;
 	right: 0;
 	left: auto;
 	width: 198px;
