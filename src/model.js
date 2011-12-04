@@ -6,10 +6,23 @@ recline.Dataset = Backbone.Model.extend({
   getLength: function() { 
     return this.rowCount;
   },
+
+  // Get rows (documents) from the backend returning a recline.DocumentList
+  //
+  // TODO: ? rename to getDocuments?
+  //
   // this does not fit very well with Backbone setup. Backbone really expects you to know the ids of objects your are fetching (which you do in classic RESTful ajax-y world). But this paradigm does not fill well with data set up we have here.
   // This also illustrates the limitations of separating the Dataset and the Backend
   getRows: function(numRows, start) {
-    return this.backend.getRows(this.id, numRows, start);
+    var dfd = $.Deferred();
+    this.backend.getRows(this.id, numRows, start).then(function(rows) {
+      var docs = _.map(rows, function(row) {
+        return new recline.Document(row);
+      });
+      var docList = new recline.DocumentList(docs);
+      dfd.resolve(docList);
+    });
+    return dfd.promise();
   }
 });
 
