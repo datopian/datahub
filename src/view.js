@@ -62,6 +62,9 @@ recline.DataExplorer = Backbone.View.extend({
   }
 });
 
+// DataTable provides a tabular view on a Dataset.
+//
+// Initialize it with a recline.Dataset object.
 recline.DataTable = Backbone.View.extend({
   tagName:  "div",
   className: "data-table-container",
@@ -69,8 +72,8 @@ recline.DataTable = Backbone.View.extend({
   initialize: function() {
     this.el = $(this.el);
     var self = this;
-    this.model.getRows().then(function(rows) {
-      self._currentRows = rows;
+    this.model.getRows().then(function(documentList) {
+      self._currentDocuments = documentList;
       self.render()
     });
     this.state = {};
@@ -199,9 +202,9 @@ recline.DataTable = Backbone.View.extend({
 
   toTemplateJSON: function() {
     var modelData = this.model.toJSON()
-    modelData.rows = _.map(this._currentRows, function(row) {
+    modelData.rows = _.map(this._currentDocuments.models, function(doc) {
       var cellData = _.map(modelData.headers, function(header) {
-        return {header: header, value: row[header]}
+        return {header: header, value: doc.get(header)}
       })
       return { id: 'xxx', cells: cellData }
     })
@@ -280,8 +283,8 @@ recline.FlotGraph = Backbone.View.extend({
       graphType: 'line'
     };
     var self = this;
-    this.model.getRows().then(function(rows) {
-      self._currentRows = rows;
+    this.model.getRows().then(function(documentList) {
+      self._currentDocuments = documentList;
       self.render()
     });
   },
@@ -342,8 +345,9 @@ recline.FlotGraph = Backbone.View.extend({
     if (this.chartConfig) {
       $.each(this.chartConfig.series, function (seriesIndex, field) {
         var points = [];
-        $.each(self._currentRows, function (index) {
-          var x = this[self.chartConfig.group], y = this[field];
+        $.each(self._currentDocuments.models, function (index, doc) {
+          var x = doc.get(self.chartConfig.group);
+          var y = doc.get(field);
           if (typeof x === 'string') {
             x = index;
           }

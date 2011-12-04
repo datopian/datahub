@@ -33,12 +33,12 @@ test('new Dataset', function () {
     equal(dataset.get('name'), metadata.name);
     equal(dataset.get('headers'), indata.headers);
     equal(dataset.getLength(), 6);
-    dataset.getRows(4, 2).then(function(rows) {
-      equal(rows[0], indata.rows[2]);
+    dataset.getRows(4, 2).then(function(documentList) {
+      deepEqual(indata.rows[2], documentList.models[0].toJSON());
     });
-    dataset.getRows().then(function(rows) {
-      equal(rows.length, Math.min(10, indata.rows.length));
-      equal(rows[0], indata.rows[0]);
+    dataset.getRows().then(function(docList) {
+      equal(docList.length, Math.min(10, indata.rows.length));
+      deepEqual(docList.models[0].toJSON(), indata.rows[0]);
       });
   });
 });
@@ -136,14 +136,14 @@ test('Webstore Backend', function() {
   });
 
   dataset.fetch().then(function(dataset) {
-    equal(['__id__', 'date', 'geometry', 'amount'], dataset.get('headers'));
+    deepEqual(['__id__', 'date', 'geometry', 'amount'], dataset.get('headers'));
     equal(3, dataset.rowCount)
     // restore mocked method
     $.ajax.restore();
-    dataset.getRows().then(function(rows) {
+    dataset.getRows().then(function(docList) {
       start();
-      equal(3,rows.length)
-      equal("2009-01-01", rows[0].date);
+      equal(3, docList.length)
+      equal("2009-01-01", docList.models[0].get('date'));
     });
   });
 });
