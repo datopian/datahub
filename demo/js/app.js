@@ -3,14 +3,14 @@ $(function() {
   // window.$container = $('.container .right-panel');
   window.$container = $('.container');
   var dataset = demoDataset();
-  window.dataExplorer = new recline.DataExplorer({
+  window.dataExplorer = new recline.View.DataExplorer({
     model: dataset
   });
   window.$container.append(window.dataExplorer.el);
   setupLoadFromWebstore(function(dataset) {
     window.dataExplorer.remove();
     window.dataExplorer = null;
-    window.dataExplorer = new recline.DataExplorer({
+    window.dataExplorer = new recline.View.DataExplorer({
       model: dataset,
     });
     window.$container.append(window.dataExplorer.el);
@@ -36,12 +36,12 @@ function demoDataset() {
     ]
   };
   // this is all rather artificial here but would make more sense with more complex backend
-  var backend = new recline.BackendMemory();
+  var backend = new recline.Model.BackendMemory();
   backend.addDataset({
     metadata: metadata,
     data: indata
     });
-  recline.setBackend(backend);
+  recline.Model.setBackend(backend);
   var dataset = backend.getDataset(datasetId);
   return dataset;
 }
@@ -54,10 +54,10 @@ function setupLoadFromWebstore(callback) {
     e.preventDefault();
     var $form = $(e.target);
     var source = $form.find('input[name="source"]').val();
-    var backend = new recline.BackendWebstore({
+    var backend = new recline.Model.BackendWebstore({
       url: source
     });
-    recline.setBackend(backend);
+    recline.Model.setBackend(backend);
     var dataset = backend.getDataset();
     callback(dataset);
   });
