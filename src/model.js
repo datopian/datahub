@@ -1,7 +1,12 @@
 this.recline = this.recline || {};
 
+// Models module following classic module pattern
+recline.Model = function($) {
+
+var my = {};
+
 // A Dataset model.
-recline.Dataset = Backbone.Model.extend({
+my.Dataset = Backbone.Model.extend({
   __type__: 'Dataset',
   getLength: function() { 
     return this.rowCount;
@@ -17,33 +22,33 @@ recline.Dataset = Backbone.Model.extend({
     var dfd = $.Deferred();
     this.backend.getRows(this.id, numRows, start).then(function(rows) {
       var docs = _.map(rows, function(row) {
-        return new recline.Document(row);
+        return new my.Document(row);
       });
-      var docList = new recline.DocumentList(docs);
+      var docList = new my.DocumentList(docs);
       dfd.resolve(docList);
     });
     return dfd.promise();
   }
 });
 
-recline.Document = Backbone.Model.extend({});
+my.Document = Backbone.Model.extend({});
 
-recline.DocumentList = Backbone.Collection.extend({
+my.DocumentList = Backbone.Collection.extend({
   // webStore: new WebStore(this.url),
-  model: recline.Document
+  model: my.Document
 })
 
 // Backends section
 // ================
 
-recline.setBackend = function(backend) {
+my.setBackend = function(backend) {
   Backbone.sync = backend.sync;
 };
 
 // Backend which just caches in memory
 // 
 // Does not need to be a backbone model but provides some conveience
-recline.BackendMemory = Backbone.Model.extend({
+my.BackendMemory = Backbone.Model.extend({
   initialize: function() {
     this._datasetCache = {}
   }, 
@@ -52,7 +57,7 @@ recline.BackendMemory = Backbone.Model.extend({
     this._datasetCache[dataset.metadata.id] = dataset;
   },
   getDataset: function(id) {
-    var dataset = new recline.Dataset({
+    var dataset = new my.Dataset({
       id: id
     });
     // this is a bit weird but problem is in sync this is set to parent model object so need to give dataset a reference to backend explicitly
@@ -97,13 +102,13 @@ recline.BackendMemory = Backbone.Model.extend({
 //
 // Designed to only attached to only dataset and one dataset only ...
 // Could generalize to support attaching to different datasets
-recline.BackendWebstore = Backbone.Model.extend({
+my.BackendWebstore = Backbone.Model.extend({
   // require url attribute in initialization data
   initialize: function() {
     this.webstoreTableUrl = this.get('url');
   }, 
   getDataset: function(id) {
-    var dataset = new recline.Dataset({
+    var dataset = new my.Dataset({
       id: id
     });
     dataset.backend = this;
@@ -159,3 +164,8 @@ recline.BackendWebstore = Backbone.Model.extend({
     return dfd.promise();
  }
 });
+
+return my;
+
+}(jQuery);
+

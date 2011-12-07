@@ -21,12 +21,12 @@ test('new Dataset', function () {
     ]
   };
   // this is all rather artificial here but would make more sense with more complex backend
-  backend = new recline.BackendMemory();
+  backend = new recline.Model.BackendMemory();
   backend.addDataset({
     metadata: metadata,
     data: indata
     });
-  recline.setBackend(backend);
+  recline.Model.setBackend(backend);
   var dataset = backend.getDataset(datasetId);
   expect(6);
   dataset.fetch().then(function(dataset) {
@@ -121,10 +121,10 @@ webstoreData = {
  
 test('Webstore Backend', function() {
   stop();
-  var backend = new recline.BackendWebstore({
+  var backend = new recline.Model.BackendWebstore({
     url: 'http://webstore.test.ckan.org/rufuspollock/demo/data'
   });
-  recline.setBackend(backend);
+  recline.Model.setBackend(backend);
   dataset = backend.getDataset();
 
   var stub = sinon.stub($, 'ajax', function(options) {

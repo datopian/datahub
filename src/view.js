@@ -1,6 +1,11 @@
 this.recline = this.recline || {};
 
-recline.DataExplorer = Backbone.View.extend({
+// Views module following classic module pattern
+recline.View = function($) {
+
+var my = {};
+
+my.DataExplorer = Backbone.View.extend({
   tagName: 'div',
   className: 'data-explorer',
   template: ' \
@@ -28,10 +33,10 @@ recline.DataExplorer = Backbone.View.extend({
     // note this.model and dataset returned are the same
     this.model.fetch().then(function(dataset) {
       // initialize of dataTable calls render
-      self.dataTable = new recline.DataTable({
+      self.dataTable = new my.DataTable({
         model: dataset
       });
-      self.flotGraph = new recline.FlotGraph({
+      self.flotGraph = new my.FlotGraph({
         model: dataset
       });
       self.flotGraph.el.hide();
@@ -65,7 +70,7 @@ recline.DataExplorer = Backbone.View.extend({
 // DataTable provides a tabular view on a Dataset.
 //
 // Initialize it with a recline.Dataset object.
-recline.DataTable = Backbone.View.extend({
+my.DataTable = Backbone.View.extend({
   tagName:  "div",
   className: "data-table-container",
 
@@ -224,7 +229,7 @@ recline.DataTable = Backbone.View.extend({
 //
 // Since we want this to update in place it is up to creator to provider the element to attach to.
 // In addition you must pass in a headers in the constructor options. This should be list of headers for the DataTable.
-recline.DataTableRow = Backbone.View.extend({
+my.DataTableRow = Backbone.View.extend({
   initialize: function(options) {
     this._headers = options.headers;
     this.el = $(this.el);
@@ -257,7 +262,7 @@ recline.DataTableRow = Backbone.View.extend({
   }
 });
 
-recline.FlotGraph = Backbone.View.extend({
+my.FlotGraph = Backbone.View.extend({
 
   tagName:  "div",
   className: "data-graph-container",
@@ -411,3 +416,8 @@ recline.FlotGraph = Backbone.View.extend({
     return this;
   }
 });
+
+return my;
+
+}(jQuery);
+
