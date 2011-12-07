@@ -220,6 +220,43 @@ recline.DataTable = Backbone.View.extend({
   }
 });
 
+// DataTableRow View for rendering an individual document.
+//
+// Since we want this to update in place it is up to creator to provider the element to attach to.
+// In addition you must pass in a headers in the constructor options. This should be list of headers for the DataTable.
+recline.DataTableRow = Backbone.View.extend({
+  initialize: function(options) {
+    this._headers = options.headers;
+    this.el = $(this.el);
+  },
+  template: ' \
+      <td><a class="row-header-menu"></a></td> \
+      {{#cells}} \
+      <td data-header="{{header}}"> \
+        <div class="data-table-cell-content"> \
+          <a href="javascript:{}" class="data-table-cell-edit" title="Edit this cell">&nbsp;</a> \
+          <div class="data-table-cell-value">{{value}}</div> \
+        </div> \
+      </td> \
+      {{/cells}} \
+    ',
+  
+  toTemplateJSON: function() {
+    var doc = this.model;
+    var cellData = _.map(this._headers, function(header) {
+      return {header: header, value: doc.get(header)}
+    })
+    return { id: this.id, cells: cellData }
+  },
+
+  render: function() {
+    this.el.attr('data-id', this.model.id);
+    var html = $.mustache(this.template, this.toTemplateJSON());
+    $(this.el).html(html);
+    return this;
+  }
+});
+
 recline.FlotGraph = Backbone.View.extend({
 
   tagName:  "div",
