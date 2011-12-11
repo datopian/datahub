@@ -35,7 +35,7 @@ note: make sure underscore.js goes in at the top of the file as a few deps curre
 
 ## Copyright and License
 
-Copyright 2010-2011 Open Knowledge Foundation.
+Copyright 2011 Max Ogden and Rufus Pollock.
 
 Licensed under the MIT license:
 
