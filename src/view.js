@@ -206,7 +206,7 @@ my.DataTable = Backbone.View.extend({
   // Core Templating
   template: ' \
     <table class="data-table" cellspacing="0"> \
-      <tbody> \
+      <thead> \
         <tr> \
           {{#notEmpty}}<td class="column-header"></td>{{/notEmpty}} \
           {{#headers}} \
@@ -219,39 +219,32 @@ my.DataTable = Backbone.View.extend({
             </td> \
           {{/headers}} \
         </tr> \
-        {{#rows}} \
-        <tr data-id="{{id}}"> \
-          <td><a class="row-header-menu"></a></td> \
-          {{#cells}} \
-          <td data-header="{{header}}"> \
-            <div class="data-table-cell-content"> \
-              <a href="javascript:{}" class="data-table-cell-edit" title="Edit this cell">&nbsp;</a> \
-              <div class="data-table-cell-value">{{value}}</div> \
-            </div> \
-          </td> \
-          {{/cells}} \
-        </tr> \
-        {{/rows}} \
-      </tbody> \
+      </thead> \
+      <tbody></tbody> \
     </table> \
   ',
 
   toTemplateJSON: function() {
     var modelData = this.model.toJSON()
-    modelData.rows = _.map(this._currentDocuments.models, function(doc) {
-      var cellData = _.map(modelData.headers, function(header) {
-        return {header: header, value: doc.get(header)}
-      })
-      return { id: 'xxx', cells: cellData }
-    })
     modelData.notEmpty = ( modelData.headers.length > 0 )
     return modelData;
   },
   render: function() {
+    var self = this;
     var template = $( ".dataTableTemplate:first" ).html()
       , htmls = $.mustache(template, this.toTemplateJSON())
       ;
-    $(this.el).html(htmls);
+    this.el.html(htmls);
+    this._currentDocuments.forEach(function(doc) {
+      var tr = $('<tr />');
+      self.el.find('tbody').append(tr);
+      var newView = new my.DataTableRow({
+          model: doc,
+          el: tr,
+          headers: self.model.get('headers')
+        });
+      newView.render();
+    });
     return this;
   }
 });
@@ -264,6 +257,7 @@ my.DataTableRow = Backbone.View.extend({
   initialize: function(options) {
     this._headers = options.headers;
     this.el = $(this.el);
+    this.model.bind('change', this.render);
   },
   template: ' \
       <td><a class="row-header-menu"></a></td> \
