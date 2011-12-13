@@ -204,6 +204,37 @@ my.DataTable = Backbone.View.extend({
 
   // ======================================================
   // Core Templating
+  template: ' \
+    <table class="data-table" cellspacing="0"> \
+      <tbody> \
+        <tr> \
+          {{#notEmpty}}<td class="column-header"></td>{{/notEmpty}} \
+          {{#headers}} \
+            <td class="column-header"> \
+              <div class="column-header-title"> \
+                <a class="column-header-menu"></a> \
+                <span class="column-header-name">{{.}}</span> \
+              </div> \
+              </div> \
+            </td> \
+          {{/headers}} \
+        </tr> \
+        {{#rows}} \
+        <tr data-id="{{id}}"> \
+          <td><a class="row-header-menu"></a></td> \
+          {{#cells}} \
+          <td data-header="{{header}}"> \
+            <div class="data-table-cell-content"> \
+              <a href="javascript:{}" class="data-table-cell-edit" title="Edit this cell">&nbsp;</a> \
+              <div class="data-table-cell-value">{{value}}</div> \
+            </div> \
+          </td> \
+          {{/cells}} \
+        </tr> \
+        {{/rows}} \
+      </tbody> \
+    </table> \
+  ',
 
   toTemplateJSON: function() {
     var modelData = this.model.toJSON()
