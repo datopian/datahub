@@ -239,3 +239,13 @@ span.tooltip-status {
   right: 0px;
   background: white;
 }
+
+.nav-pagination {
+  display: inline;
+  float: right;
+  list-style-type: none;
+}
+
+.nav-pagination input {
+  width: 40px;
+}
