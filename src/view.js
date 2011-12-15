@@ -16,19 +16,38 @@ my.DataExplorer = Backbone.View.extend({
         <input type="radio" id="nav-graph" name="nav-toggle" value="graph" /> \
         <label for="nav-graph">Graph</label> \
       </span> \
+      <ul class="nav-pagination"> \
+        <li><form class="display-count"><label for="per-page">Display count</label> <input name="displayCount" type="text" value="{{displayCount}}" /></form></li> \
+      </ul> \
     </div> \
     <div class="data-view-container"></div> \
   ',
 
   events: {
-    'change input[name="nav-toggle"]': 'navChange'
+    'change input[name="nav-toggle"]': 'navChange',
+    'submit form.display-count': 'displayCountUpdate'
   },
 
-  initialize: function() {
+  initialize: function(options) {
     this.el = $(this.el);
+    this.config = options.config || {};
+    _.extend(this.config, {
+      displayCount: 10
+    });
+    this.draw();
+  },
+
+  displayCountUpdate: function(e) {
+    e.preventDefault();
+    this.config.displayCount = parseInt(this.el.find('input[name="displayCount"]').val());
+    this.draw();
+  },
+
+  draw: function() {
+    var self = this;
+    this.el.empty();
     this.render();
     this.$dataViewContainer = this.el.find('.data-view-container');
-    var self = this;
     // retrieve basic data like headers etc
     // note this.model and dataset returned are the same
     this.model.fetch().then(function(dataset) {
@@ -42,11 +61,13 @@ my.DataExplorer = Backbone.View.extend({
       self.flotGraph.el.hide();
       self.$dataViewContainer.append(self.dataTable.el)
       self.$dataViewContainer.append(self.flotGraph.el);
+      self.model.getRows(self.config.displayCount);
     });
   },
 
   render: function() {
-    $(this.el).html($(this.template));
+    var template = $.mustache(this.template, this.config);
+    $(this.el).html(template);
   },
 
   navChange: function(e) {
@@ -75,12 +96,11 @@ my.DataTable = Backbone.View.extend({
   className: "data-table-container",
 
   initialize: function() {
-    this.el = $(this.el);
     var self = this;
-    this.model.getRows().then(function(documentList) {
-      self._currentDocuments = documentList;
-      self.render()
-    });
+    this.el = $(this.el);
+    _.bindAll(this, 'render');
+    this.model.currentDocuments.bind('add', this.render);
+    this.model.currentDocuments.bind('reset', this.render);
     this.state = {};
     // this is nasty. Due to fact that .menu element is not inside this view but is elsewhere in DOM
     $('.menu li a').live('click', function(e) {
@@ -235,7 +255,7 @@ my.DataTable = Backbone.View.extend({
       , htmls = $.mustache(template, this.toTemplateJSON())
       ;
     this.el.html(htmls);
-    this._currentDocuments.forEach(function(doc) {
+    this.model.currentDocuments.forEach(function(doc) {
       var tr = $('<tr />');
       self.el.find('tbody').append(tr);
       var newView = new my.DataTableRow({
@@ -342,18 +362,17 @@ my.FlotGraph = Backbone.View.extend({
 ',
 
   initialize: function(options, chart) {
+    var self = this;
     this.el = $(this.el);
+    _.bindAll(this, 'render');
+    this.model.currentDocuments.bind('add', this.render);
+    this.model.currentDocuments.bind('reset', this.render);
     this.chart = chart;
     this.chartConfig = {
       group: null,
       series: [],
       graphType: 'line'
     };
-    var self = this;
-    this.model.getRows().then(function(documentList) {
-      self._currentDocuments = documentList;
-      self.render()
-    });
   },
 
   events: {
@@ -412,7 +431,7 @@ my.FlotGraph = Backbone.View.extend({
     if (this.chartConfig) {
       $.each(this.chartConfig.series, function (seriesIndex, field) {
         var points = [];
-        $.each(self._currentDocuments.models, function (index, doc) {
+        $.each(self.model.currentDocuments.models, function (index, doc) {
           var x = doc.get(self.chartConfig.group);
           var y = doc.get(field);
           if (typeof x === 'string') {
