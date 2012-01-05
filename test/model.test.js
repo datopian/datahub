@@ -119,7 +119,6 @@ webstoreData = {
 };
  
 test('Webstore Backend', function() {
-  stop();
   var backend = new recline.Model.BackendWebstore({
     url: 'http://webstore.test.ckan.org/rufuspollock/demo/data'
   });
@@ -127,9 +126,18 @@ test('Webstore Backend', function() {
   dataset = backend.getDataset();
 
   var stub = sinon.stub($, 'ajax', function(options) {
-    return {
-      then: function(callback) {
-        callback(webstoreSchema);
+    if (options.url.indexOf('schema.json') != -1) {
+      return {
+        then: function(callback) {
+          callback(webstoreSchema);
+        }
+      }
+    } else {
+      console.log('here');
+      return {
+        then: function(callback) {
+          callback(webstoreData);
+        }
       }
     }
   });
@@ -137,10 +145,7 @@ test('Webstore Backend', function() {
   dataset.fetch().then(function(dataset) {
     deepEqual(['__id__', 'date', 'geometry', 'amount'], dataset.get('headers'));
     equal(3, dataset.rowCount)
-    // restore mocked method
-    $.ajax.restore();
     dataset.getRows().then(function(docList) {
-      start();
       equal(3, docList.length)
       equal("2009-01-01", docList.models[0].get('date'));
     });
