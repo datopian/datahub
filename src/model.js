@@ -54,16 +54,33 @@ my.setBackend = function(backend) {
 // 
 // Does not need to be a backbone model but provides some conveience
 my.BackendMemory = Backbone.Model.extend({
-  initialize: function() {
-    this._datasetCache = {}
+  // Initialize a Backend with a local in-memory dataset.
+  // 
+  // NB: We can handle one and only one dataset at a time.
+  //
+  // :param dataset: the data for a dataset on which operations will be
+  // performed. In the form of a hash with metadata and data attributes.
+  // - metadata: hash of key/value attributes of any kind (but usually with title attribute)
+  // - data: hash with 2 keys:
+  //  - headers: list of header names/labels
+  //  - rows: list of hashes, each hash being one row. A row *must* have an id attribute which is unique.
+  //
+  //  Example of data:
+  // 
+  //    {
+  //        headers: ['x', 'y', 'z']
+  //      , rows: [
+  //          {id: 0, x: 1, y: 2, z: 3}
+  //        , {id: 1, x: 2, y: 4, z: 6}
+  //      ]
+  //    };
+  initialize: function(dataset) {
+    // deep copy
+    this._datasetAsData = _.extend({}, dataset);
   }, 
-  // dataset is object with metadata and data attributes
-  addDataset: function(dataset) {
-    this._datasetCache[dataset.metadata.id] = dataset;
-  },
-  getDataset: function(id) {
+  getDataset: function() {
     var dataset = new my.Dataset({
-      id: id
+      id: this._datasetAsData.metadata.id
     });
     // this is a bit weird but problem is in sync this is set to parent model object so need to give dataset a reference to backend explicitly
     dataset.backend = this;
@@ -76,9 +93,8 @@ my.BackendMemory = Backbone.Model.extend({
       // think may make more sense to do work in individual objects rather than in central Backbone.sync
       if (this.__type__ == 'Dataset') {
         var dataset = this;
-        var rawDataset = this.backend._datasetCache[model.id];
+        var rawDataset = this.backend._datasetAsData;
         dataset.set(rawDataset.metadata);
-        // here we munge it all onto Dataset
         dataset.set({
           headers: rawDataset.data.headers
           });
@@ -96,7 +112,7 @@ my.BackendMemory = Backbone.Model.extend({
       numRows = 10;
     }
     var dfd = $.Deferred();
-    rows = this._datasetCache[datasetId].data.rows;
+    rows = this._datasetAsData.data.rows;
     var results = rows.slice(start, start+numRows);
     dfd.resolve(results);
     return dfd.promise();
@@ -105,7 +121,7 @@ my.BackendMemory = Backbone.Model.extend({
 
 // Webstore Backend for connecting to the Webstore
 //
-// Designed to only attached to only dataset and one dataset only ...
+// Designed to only attach to one dataset and one dataset only ...
 // Could generalize to support attaching to different datasets
 my.BackendWebstore = Backbone.Model.extend({
   // require url attribute in initialization data

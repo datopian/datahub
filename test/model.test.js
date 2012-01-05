@@ -21,8 +21,7 @@ test('new Dataset', function () {
     ]
   };
   // this is all rather artificial here but would make more sense with more complex backend
-  backend = new recline.Model.BackendMemory();
-  backend.addDataset({
+  backend = new recline.Model.BackendMemory({
     metadata: metadata,
     data: indata
     });
