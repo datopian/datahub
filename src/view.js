@@ -101,6 +101,7 @@ my.DataTable = Backbone.View.extend({
     _.bindAll(this, 'render');
     this.model.currentDocuments.bind('add', this.render);
     this.model.currentDocuments.bind('reset', this.render);
+    this.model.currentDocuments.bind('remove', this.render);
     this.state = {};
     // this is nasty. Due to fact that .menu element is not inside this view but is elsewhere in DOM
     $('.menu li a').live('click', function(e) {
@@ -161,21 +162,20 @@ my.DataTable = Backbone.View.extend({
         if (confirm(msg)) costco.deleteColumn(self.state.currentColumn);
       },
       deleteRow: function() {
-        // TODO:
-        alert('This function needs to be re-implemented');
-        return;
-        var doc = _.find(app.cache, function(doc) { return doc._id === app.currentRow });
-        doc._deleted = true;
-        costco.uploadDocs([doc]).then(
-          function(updatedDocs) { 
+        var doc = _.find(self.model.currentDocuments.models, function(doc) {
+          // important this is == as the currentRow will be string (as comes
+          // from DOM) while id may be int
+          return doc.id == self.state.currentRow
+        });
+        doc.destroy().then(function() { 
+            self.model.currentDocuments.remove(doc);
             util.notify("Row deleted successfully");
-            recline.initializeTable(app.offset);
-          },
-          function(err) { util.notify("Errorz! " + err) }
-        )
+          })
+          .fail(function(err) {
+            util.notify("Errorz! " + err)
+          })
       }
     }
-    
     util.hide('menu');
     actions[$(e.target).attr('data-action')]();
   },
