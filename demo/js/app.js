@@ -27,12 +27,12 @@ function demoDataset() {
   var indata = {
       headers: ['x', 'y', 'z']
     , rows: [
-        {x: 1, y: 2, z: 3}
-      , {x: 2, y: 4, z: 6}
-      , {x: 3, y: 6, z: 9}
-      , {x: 4, y: 8, z: 12}
-      , {x: 5, y: 10, z: 15}
-      , {x: 6, y: 12, z: 18}
+        {id: 0, x: 1, y: 2, z: 3}
+      , {id: 1, x: 2, y: 4, z: 6}
+      , {id: 2, x: 3, y: 6, z: 9}
+      , {id: 3, x: 4, y: 8, z: 12}
+      , {id: 4, x: 5, y: 10, z: 15}
+      , {id: 5, x: 6, y: 12, z: 18}
     ]
   };
   // this is all rather artificial here but would make more sense with more complex backend
