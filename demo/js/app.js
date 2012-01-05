@@ -36,8 +36,7 @@ function demoDataset() {
     ]
   };
   // this is all rather artificial here but would make more sense with more complex backend
-  var backend = new recline.Model.BackendMemory();
-  backend.addDataset({
+  var backend = new recline.Model.BackendMemory({
     metadata: metadata,
     data: indata
     });
