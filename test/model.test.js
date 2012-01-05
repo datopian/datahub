@@ -27,23 +27,32 @@ test('new Dataset', function () {
     });
   recline.Model.setBackend(backend);
   var dataset = backend.getDataset(datasetId);
-  expect(7);
+  expect(9);
   dataset.fetch().then(function(dataset) {
     equal(dataset.get('name'), metadata.name);
-    equal(dataset.get('headers'), indata.headers);
+    deepEqual(dataset.get('headers'), indata.headers);
     equal(dataset.getLength(), 6);
     dataset.getRows(4, 2).then(function(documentList) {
       deepEqual(indata.rows[2], documentList.models[0].toJSON());
     });
     dataset.getRows().then(function(docList) {
+      // Test getRows
       equal(docList.length, Math.min(10, indata.rows.length));
       var doc1 = docList.models[0];
       deepEqual(doc1.toJSON(), indata.rows[0]);
+
+      // Test UPDATA
       var newVal = 10;
       doc1.set({x: newVal});
       doc1.save().then(function() {
         equal(backend._datasetAsData.data.rows[0].x, newVal);
       })
+      
+      // Test Delete
+      doc1.destroy().then(function() {
+        equal(backend._datasetAsData.data.rows.length, 5);
+        equal(backend._datasetAsData.data.rows[0].x, indata.rows[1].x);
+      });
     });
   });
 });
@@ -139,7 +148,6 @@ test('Webstore Backend', function() {
         }
       }
     } else {
-      console.log('here');
       return {
         then: function(callback) {
           callback(webstoreData);

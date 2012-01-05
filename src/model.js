@@ -79,7 +79,7 @@ my.BackendMemory = Backbone.Model.extend({
   //    };
   initialize: function(dataset) {
     // deep copy
-    this._datasetAsData = _.extend({}, dataset);
+    this._datasetAsData = $.extend(true, {}, dataset);
     _.bindAll(this, 'sync');
   }, 
   getDataset: function() {
@@ -114,6 +114,15 @@ my.BackendMemory = Backbone.Model.extend({
           if(row.id === model.id) {
             self._datasetAsData.data.rows[idx] = model.toJSON();
           }
+        });
+        dfd.resolve(model);
+      }
+      return dfd.promise();
+    } else if (method === 'delete') {
+      var dfd = $.Deferred();
+      if (model.__type__ == 'Document') {
+        this._datasetAsData.data.rows = _.reject(this._datasetAsData.data.rows, function(row) {
+          return (row.id === model.id);
         });
         dfd.resolve(model);
       }
