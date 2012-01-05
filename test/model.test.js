@@ -27,7 +27,7 @@ test('new Dataset', function () {
     });
   recline.Model.setBackend(backend);
   var dataset = backend.getDataset(datasetId);
-  expect(6);
+  expect(7);
   dataset.fetch().then(function(dataset) {
     equal(dataset.get('name'), metadata.name);
     equal(dataset.get('headers'), indata.headers);
@@ -37,8 +37,14 @@ test('new Dataset', function () {
     });
     dataset.getRows().then(function(docList) {
       equal(docList.length, Math.min(10, indata.rows.length));
-      deepEqual(docList.models[0].toJSON(), indata.rows[0]);
-      });
+      var doc1 = docList.models[0];
+      deepEqual(doc1.toJSON(), indata.rows[0]);
+      var newVal = 10;
+      doc1.set({x: newVal});
+      doc1.save().then(function() {
+        equal(backend._datasetAsData.data.rows[0].x, newVal);
+      })
+    });
   });
 });
 

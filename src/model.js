@@ -36,12 +36,15 @@ my.Dataset = Backbone.Model.extend({
   }
 });
 
-my.Document = Backbone.Model.extend({});
+my.Document = Backbone.Model.extend({
+  __type__: 'Document'
+});
 
 my.DocumentList = Backbone.Collection.extend({
+  __type__: 'DocumentList',
   // webStore: new WebStore(this.url),
   model: my.Document
-})
+});
 
 // Backends section
 // ================
@@ -77,6 +80,7 @@ my.BackendMemory = Backbone.Model.extend({
   initialize: function(dataset) {
     // deep copy
     this._datasetAsData = _.extend({}, dataset);
+    _.bindAll(this, 'sync');
   }, 
   getDataset: function() {
     var dataset = new my.Dataset({
@@ -87,13 +91,14 @@ my.BackendMemory = Backbone.Model.extend({
     return dataset;
   },
   sync: function(method, model, options) {
+    var self = this;
     if (method === "read") {
       var dfd = $.Deferred();
       // this switching on object type is rather horrible
       // think may make more sense to do work in individual objects rather than in central Backbone.sync
-      if (this.__type__ == 'Dataset') {
-        var dataset = this;
-        var rawDataset = this.backend._datasetAsData;
+      if (model.__type__ == 'Dataset') {
+        var dataset = model;
+        var rawDataset = this._datasetAsData;
         dataset.set(rawDataset.metadata);
         dataset.set({
           headers: rawDataset.data.headers
@@ -102,6 +107,19 @@ my.BackendMemory = Backbone.Model.extend({
         dfd.resolve(dataset);
       }
       return dfd.promise();
+    } else if (method === 'update') {
+      var dfd = $.Deferred();
+      if (model.__type__ == 'Document') {
+        _.each(this._datasetAsData.data.rows, function(row, idx) {
+          if(row.id === model.id) {
+            self._datasetAsData.data.rows[idx] = model.toJSON();
+          }
+        });
+        dfd.resolve(model);
+      }
+      return dfd.promise();
+    } else {
+      alert('Not supported: sync on BackendMemory with method ' + method + ' and model ' + model);
     }
   },
   getRows: function(datasetId, numRows, start) {
