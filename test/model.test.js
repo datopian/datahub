@@ -12,34 +12,48 @@ test('new Dataset', function () {
   var indata = {
       headers: ['x', 'y', 'z']
     , rows: [
-        {x: 1, y: 2, z: 3}
-      , {x: 2, y: 4, z: 6}
-      , {x: 3, y: 6, z: 9}
-      , {x: 4, y: 8, z: 12}
-      , {x: 5, y: 10, z: 15}
-      , {x: 6, y: 12, z: 18}
+        {id: 0, x: 1, y: 2, z: 3}
+      , {id: 1, x: 2, y: 4, z: 6}
+      , {id: 2, x: 3, y: 6, z: 9}
+      , {id: 3, x: 4, y: 8, z: 12}
+      , {id: 4, x: 5, y: 10, z: 15}
+      , {id: 5, x: 6, y: 12, z: 18}
     ]
   };
   // this is all rather artificial here but would make more sense with more complex backend
-  backend = new recline.BackendMemory();
-  backend.addDataset({
+  backend = new recline.Model.BackendMemory({
     metadata: metadata,
     data: indata
     });
-  recline.setBackend(backend);
+  recline.Model.setBackend(backend);
   var dataset = backend.getDataset(datasetId);
-  expect(6);
+  expect(9);
   dataset.fetch().then(function(dataset) {
     equal(dataset.get('name'), metadata.name);
-    equal(dataset.get('headers'), indata.headers);
+    deepEqual(dataset.get('headers'), indata.headers);
     equal(dataset.getLength(), 6);
-    dataset.getRows(4, 2).then(function(rows) {
-      equal(rows[0], indata.rows[2]);
+    dataset.getRows(4, 2).then(function(documentList) {
+      deepEqual(indata.rows[2], documentList.models[0].toJSON());
     });
-    dataset.getRows().then(function(rows) {
-      equal(rows.length, Math.min(10, indata.rows.length));
-      equal(rows[0], indata.rows[0]);
+    dataset.getRows().then(function(docList) {
+      // Test getRows
+      equal(docList.length, Math.min(10, indata.rows.length));
+      var doc1 = docList.models[0];
+      deepEqual(doc1.toJSON(), indata.rows[0]);
+
+      // Test UPDATA
+      var newVal = 10;
+      doc1.set({x: newVal});
+      doc1.save().then(function() {
+        equal(backend._datasetAsData.data.rows[0].x, newVal);
+      })
+      
+      // Test Delete
+      doc1.destroy().then(function() {
+        equal(backend._datasetAsData.data.rows.length, 5);
+        equal(backend._datasetAsData.data.rows[0].x, indata.rows[1].x);
       });
+    });
   });
 });
 
@@ -120,30 +134,34 @@ webstoreData = {
 };
  
 test('Webstore Backend', function() {
-  stop();
-  var backend = new recline.BackendWebstore({
+  var backend = new recline.Model.BackendWebstore({
     url: 'http://webstore.test.ckan.org/rufuspollock/demo/data'
   });
-  recline.setBackend(backend);
+  recline.Model.setBackend(backend);
   dataset = backend.getDataset();
 
   var stub = sinon.stub($, 'ajax', function(options) {
-    return {
-      then: function(callback) {
-        callback(webstoreSchema);
+    if (options.url.indexOf('schema.json') != -1) {
+      return {
+        then: function(callback) {
+          callback(webstoreSchema);
+        }
+      }
+    } else {
+      return {
+        then: function(callback) {
+          callback(webstoreData);
+        }
       }
     }
   });
 
   dataset.fetch().then(function(dataset) {
-    equal(['__id__', 'date', 'geometry', 'amount'], dataset.get('headers'));
+    deepEqual(['__id__', 'date', 'geometry', 'amount'], dataset.get('headers'));
     equal(3, dataset.rowCount)
-    // restore mocked method
-    $.ajax.restore();
-    dataset.getRows().then(function(rows) {
-      start();
-      equal(3,rows.length)
-      equal("2009-01-01", rows[0].date);
+    dataset.getRows().then(function(docList) {
+      equal(3, docList.length)
+      equal("2009-01-01", docList.models[0].get('date'));
     });
   });
 });
