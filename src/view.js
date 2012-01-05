@@ -113,11 +113,7 @@ my.DataTable = Backbone.View.extend({
     // see initialize
     // 'click .menu li': 'onMenuClick',
     'click .column-header-menu': 'onColumnHeaderClick',
-    'click .row-header-menu': 'onRowHeaderClick',
-    'click .data-table-cell-edit': 'onEditClick',
-    // cell editor
-    'click .data-table-cell-editor .okButton': 'onEditorOK',
-    'click .data-table-cell-editor .cancelButton': 'onEditorCancel'
+    'click .row-header-menu': 'onRowHeaderClick'
   },
 
   showDialog: function(template, data) {
@@ -185,44 +181,6 @@ my.DataTable = Backbone.View.extend({
   },
 
   // ======================================================
-  // Cell Editor
-
-  onEditClick: function(e) {
-    var editing = this.el.find('.data-table-cell-editor-editor');
-    if (editing.length > 0) {
-      editing.parents('.data-table-cell-value').html(editing.text()).siblings('.data-table-cell-edit').removeClass("hidden");
-    }
-    $(e.target).addClass("hidden");
-    var cell = $(e.target).siblings('.data-table-cell-value');
-    cell.data("previousContents", cell.text());
-    util.render('cellEditor', cell, {value: cell.text()});
-  },
-
-  onEditorOK: function(e) {
-    var cell = $(e.target);
-    var rowId = cell.parents('tr').attr('data-id');
-    var header = cell.parents('td').attr('data-header');
-    var newValue = cell.parents('.data-table-cell-editor').find('.data-table-cell-editor-editor)').val();
-    // TODO:
-    alert('Update: ' + header + ' with value ' + newValue + '(But no save as not yet operational');
-    return;
-    var doc = _.find(app.cache, function(cacheDoc) {
-      return cacheDoc._id === rowId;
-    });
-    doc[header] = newValue;
-    util.notify("Updating row...", {persist: true, loader: true});
-    costco.updateDoc(doc).then(function(response) {
-      util.notify("Row updated successfully");
-      recline.initializeTable();
-    })
-  },
-
-  onEditorCancel: function(e) {
-    var cell = $(e.target).parents('.data-table-cell-value');
-    cell.html(cell.data('previousContents')).siblings('.data-table-cell-edit').removeClass("hidden");
-  },
-
-  // ======================================================
   // Core Templating
   template: ' \
     <table class="data-table" cellspacing="0"> \
@@ -275,6 +233,7 @@ my.DataTable = Backbone.View.extend({
 // In addition you must pass in a headers in the constructor options. This should be list of headers for the DataTable.
 my.DataTableRow = Backbone.View.extend({
   initialize: function(options) {
+    _.bindAll(this, 'render');
     this._headers = options.headers;
     this.el = $(this.el);
     this.model.bind('change', this.render);
@@ -290,6 +249,12 @@ my.DataTableRow = Backbone.View.extend({
       </td> \
       {{/cells}} \
     ',
+  events: {
+    'click .data-table-cell-edit': 'onEditClick',
+    // cell editor
+    'click .data-table-cell-editor .okButton': 'onEditorOK',
+    'click .data-table-cell-editor .cancelButton': 'onEditorCancel'
+  },
   
   toTemplateJSON: function() {
     var doc = this.model;
@@ -304,6 +269,42 @@ my.DataTableRow = Backbone.View.extend({
     var html = $.mustache(this.template, this.toTemplateJSON());
     $(this.el).html(html);
     return this;
+  },
+
+  // ======================================================
+  // Cell Editor
+
+  onEditClick: function(e) {
+    var editing = this.el.find('.data-table-cell-editor-editor');
+    if (editing.length > 0) {
+      editing.parents('.data-table-cell-value').html(editing.text()).siblings('.data-table-cell-edit').removeClass("hidden");
+    }
+    $(e.target).addClass("hidden");
+    var cell = $(e.target).siblings('.data-table-cell-value');
+    cell.data("previousContents", cell.text());
+    util.render('cellEditor', cell, {value: cell.text()});
+  },
+
+  onEditorOK: function(e) {
+    var cell = $(e.target);
+    var rowId = cell.parents('tr').attr('data-id');
+    var header = cell.parents('td').attr('data-header');
+    var newValue = cell.parents('.data-table-cell-editor').find('.data-table-cell-editor-editor').val();
+    var newData = {};
+    newData[header] = newValue;
+    this.model.set(newData);
+    util.notify("Updating row...", {persist: true, loader: true});
+    this.model.save().then(function(response) {
+        util.notify("Row updated successfully");
+      })
+      .fail(function() {
+        alert('error saving');
+      });
+  },
+
+  onEditorCancel: function(e) {
+    var cell = $(e.target).parents('.data-table-cell-value');
+    cell.html(cell.data('previousContents')).siblings('.data-table-cell-edit').removeClass("hidden");
   }
 });
 
