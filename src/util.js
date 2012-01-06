@@ -1,4 +1,51 @@
 var util = function() {
+  var templates = {
+    transformActions: '<li><a data-action="transform" class="menuAction" href="JavaScript:void(0);">Global transform...</a></li>'
+    , columnActions: ' \
+      <li><a data-action="bulkEdit" class="menuAction" href="JavaScript:void(0);">Transform...</a></li> \
+      <li><a data-action="deleteColumn" class="menuAction" href="JavaScript:void(0);">Delete this column</a></li> \
+    '
+    , rowActions: '<li><a data-action="deleteRow" class="menuAction" href="JavaScript:void(0);">Delete this row</a></li>'
+    , cellEditor: ' \
+      <div class="menu-container data-table-cell-editor"> \
+        <textarea class="data-table-cell-editor-editor" bind="textarea">{{value}}</textarea> \
+        <div id="data-table-cell-editor-actions"> \
+          <div class="data-table-cell-editor-action"> \
+            <button class="okButton button">Update</button> \
+          </div> \
+          <div class="data-table-cell-editor-action"> \
+            <button class="cancelButton button">Cancel</button> \
+          </div> \
+        </div> \
+      </div> \
+    '
+    , editPreview: ' \
+      <div class="expression-preview-table-wrapper"> \
+        <table> \
+        <tbody> \
+        <tr> \
+          <td class="expression-preview-heading"> \
+            before \
+          </td> \
+          <td class="expression-preview-heading"> \
+            after \
+          </td> \
+        </tr> \
+        {{#rows}} \
+        <tr> \
+          <td class="expression-preview-value"> \
+            {{before}} \
+          </td> \
+          <td class="expression-preview-value"> \
+            {{after}} \
+          </td> \
+        </tr> \
+        {{/rows}} \
+        </tbody> \
+        </table> \
+      </div> \
+    '
+  };
 
   $.fn.serializeObject = function() {
     var o = {};
@@ -89,7 +136,7 @@ var util = function() {
   function render( template, target, options ) {
     if ( !options ) options = {data: {}};
     if ( !options.data ) options = {data: options};
-    var html = $.mustache( $( "." + template + "Template:first" ).html(), options.data );
+    var html = $.mustache( templates[template], options.data );
     if (target instanceof jQuery) {
       var targetDom = target;
     } else {

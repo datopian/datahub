@@ -85,19 +85,6 @@
     <li><a data-action="json" class="menuAction" href="JavaScript:void(0);">JSON</a></li>
   </script>
   
-  <script type='text/mustache' class="transformActionsTemplate">
-    <li><a data-action="transform" class="menuAction" href="JavaScript:void(0);">Global transform...</a></li>
-  </script>
-  
-  <script type='text/mustache' class="columnActionsTemplate">
-    <li><a data-action="bulkEdit" class="menuAction" href="JavaScript:void(0);">Transform...</a></li>
-    <li><a data-action="deleteColumn" class="menuAction" href="JavaScript:void(0);">Delete this column</a></li>
-  </script>
-
-  <script type='text/mustache' class="rowActionsTemplate">
-    <li><a data-action="deleteRow" class="menuAction" href="JavaScript:void(0);">Delete this row</a></li>
-  </script>
-
   <script type='text/mustache' class="titleTemplate"><span id="project-name-button" class="app-path-section">{{db_name}}</span></script>
   <script type='text/mustache' class="bulkTemplate">http://{{host}}/{{db_name}}/_bulk_docs</script>
   <script type='text/mustache' class="generatingTemplate"><div class="loading">Loading...</div></script>
@@ -393,20 +380,6 @@
     </div>
   </script>
   
-  <script type='text/mustache' class="cellEditorTemplate">
-    <div class="menu-container data-table-cell-editor">
-      <textarea class="data-table-cell-editor-editor" bind="textarea">{{value}}</textarea>
-      <div id="data-table-cell-editor-actions">
-        <div class="data-table-cell-editor-action">
-          <button class="okButton button">Update</button>
-        </div>
-        <div class="data-table-cell-editor-action">
-          <button class="cancelButton button">Cancel</button>
-        </div>
-      </div>
-    </div>
-  </script>
-  
   <script type='text/mustache' class="jsonTreeTemplate">
     <div class="dialog-header">
       Please highlight the array of JSON objects to convert to documents.
@@ -419,33 +392,6 @@
     <div class="dialog-footer">
       <button class="okButton button">&nbsp;&nbsp;Import&nbsp;&nbsp;</button>
       <button class="cancelButton button">Cancel</button>
-    </div>
-  </script>
- 
-  <script type='text/mustache' class="editPreviewTemplate">
-    <div class="expression-preview-table-wrapper">
-      <table>
-      <tbody>
-      <tr>
-        <td class="expression-preview-heading">
-          before
-        </td>
-        <td class="expression-preview-heading">
-          after
-        </td>
-      </tr>
-      {{#rows}}
-      <tr>
-        <td class="expression-preview-value">
-          {{before}}
-        </td>
-        <td class="expression-preview-value">
-          {{after}}
-        </td>
-      </tr>
-      {{/rows}}
-      </tbody>
-      </table>
     </div>
   </script>
 </body>
