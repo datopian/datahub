@@ -469,7 +469,8 @@ my.ColumnTransform = Backbone.View.extend({
         var docs = self.model.currentDocuments.map(function(doc) {
           return doc.toJSON();
         });
-        costco.previewTransform(docs, editFunc, self.state.currentColumn);
+        var previewData = costco.previewTransform(docs, editFunc, self.state.currentColumn);
+        util.render('editPreview', 'expression-preview-container', {rows: previewData});
       } else {
         errors.text(editFunc.errorMessage);
       }
