@@ -65,7 +65,7 @@ my.DataExplorer = Backbone.View.extend({
       self.flotGraph.el.hide();
       self.$dataViewContainer.append(self.dataTable.el)
       self.$dataViewContainer.append(self.flotGraph.el);
-      self.model.getRows(self.config.displayCount);
+      self.model.getDocuments(self.config.displayCount);
     });
   },
 
