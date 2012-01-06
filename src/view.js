@@ -109,18 +109,12 @@ my.DataTable = Backbone.View.extend({
     this.model.currentDocuments.bind('reset', this.render);
     this.model.currentDocuments.bind('remove', this.render);
     this.state = {};
-    // this is nasty. Due to fact that .menu element is not inside this view but is elsewhere in DOM
-    $('.menu li a').live('click', function(e) {
-      // self.onMenuClick(e).apply(self);
-      self.onMenuClick(e);
-    });
   },
 
   events: {
-    // see initialize
-    // 'click .menu li': 'onMenuClick',
-    'click .column-header-menu': 'onColumnHeaderClick',
-    'click .row-header-menu': 'onRowHeaderClick'
+    'click .column-header-menu': 'onColumnHeaderClick'
+    , 'click .row-header-menu': 'onRowHeaderClick'
+    , 'click .data-table-menu li a': 'onMenuClick'
   },
 
   // TODO: delete or re-enable (currently this code is not used from anywhere except deprecated or disabled methods (see above)).
@@ -140,14 +134,14 @@ my.DataTable = Backbone.View.extend({
 
   onColumnHeaderClick: function(e) {
     this.state.currentColumn = $(e.target).siblings().text();
-    util.position('menu', e);
-    util.render('columnActions', 'menu');
+    util.position('data-table-menu', e);
+    util.render('columnActions', 'data-table-menu');
   },
 
   onRowHeaderClick: function(e) {
     this.state.currentRow = $(e.target).parents('tr:first').attr('data-id');
-    util.position('menu', e);
-    util.render('rowActions', 'menu');
+    util.position('data-table-menu', e);
+    util.render('rowActions', 'data-table-menu');
   },
 
   onMenuClick: function(e) {
@@ -185,7 +179,7 @@ my.DataTable = Backbone.View.extend({
           })
       }
     }
-    util.hide('menu');
+    util.hide('data-table-menu');
     actions[$(e.target).attr('data-action')]();
   },
 
@@ -223,6 +217,8 @@ my.DataTable = Backbone.View.extend({
   // ======================================================
   // Core Templating
   template: ' \
+    <div class="data-table-menu-overlay" style="display: none; z-index: 101; ">&nbsp;</div> \
+    <ul class="data-table-menu"></ul> \
     <table class="data-table" cellspacing="0"> \
       <thead> \
         <tr> \

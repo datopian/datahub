@@ -121,7 +121,7 @@ var util = function() {
   }
   
   function position( thing, elem, offset ) {
-    var position = $(elem.target).offset();
+    var position = $(elem.target).position();
     if (offset) {
       if (offset.top) position.top += offset.top;
       if (offset.left) position.left += offset.left;
