@@ -25,8 +25,7 @@ var costco = function() {
         preview.push({before: JSON.stringify(before), after: JSON.stringify(after)});      
       }
     }
-    // TODO: 2012-01-05 Move this out of this function and up into (view) functions that call this
-    util.render('editPreview', 'expression-preview-container', {rows: preview});
+    return preview;
   }
 
   function mapDocs(docs, editFunc) {
