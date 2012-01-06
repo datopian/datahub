@@ -223,15 +223,15 @@ my.DataTable = Backbone.View.extend({
     <table class="data-table" cellspacing="0"> \
       <thead> \
         <tr> \
-          {{#notEmpty}}<td class="column-header"></td>{{/notEmpty}} \
+          {{#notEmpty}}<th class="column-header"></th>{{/notEmpty}} \
           {{#headers}} \
-            <td class="column-header"> \
+            <th class="column-header"> \
               <div class="column-header-title"> \
                 <a class="column-header-menu"></a> \
                 <span class="column-header-name">{{.}}</span> \
               </div> \
               </div> \
-            </td> \
+            </th> \
           {{/headers}} \
         </tr> \
       </thead> \
@@ -246,9 +246,7 @@ my.DataTable = Backbone.View.extend({
   },
   render: function() {
     var self = this;
-    var template = $( ".dataTableTemplate:first" ).html()
-      , htmls = $.mustache(template, this.toTemplateJSON())
-      ;
+    var htmls = $.mustache(this.template, this.toTemplateJSON());
     this.el.html(htmls);
     this.model.currentDocuments.forEach(function(doc) {
       var tr = $('<tr />');
