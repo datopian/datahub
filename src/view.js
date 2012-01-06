@@ -25,6 +25,17 @@ my.DataExplorer = Backbone.View.extend({
       </ul> \
     </div> \
     <div class="data-view-container"></div> \
+    <div class="dialog-overlay" style="display: none; z-index: 101; ">&nbsp;</div> \
+    <div class="dialog ui-draggable" style="display: none; z-index: 102; top: 101px; "> \
+      <div class="dialog-frame" style="width: 700px; visibility: visible; "> \
+        <div class="dialog-content dialog-border"></div> \
+      </div> \
+    </div> \
+    <div class="notification-container"> \
+      <div class="notification"> \
+        <img src="images/small-spinner.gif" class="notification-loader"><span class="notification-message">Loading...</span> \
+      </div> \
+    </div> \
   ',
 
   events: {

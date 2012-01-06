@@ -173,7 +173,7 @@ a img {
   top: -4px;
 }
 
-#notification-container {
+.notification-container {
   width: 400px;
   left: 520px;
   display: none;
@@ -183,7 +183,7 @@ a img {
   text-align: center;
 }
 
-#notification {
+.notification {
   display: inline-block;
   margin: 0 auto;
   padding: 5px 8px 4px;

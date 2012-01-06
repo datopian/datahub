@@ -153,11 +153,11 @@ var util = function() {
   
   function notify( message, options ) {
     if (!options) var options = {};
-    $('#notification-container').show();
-    $('#notification-message').text(message);
-    if (!options.loader) $('.notification-loader').hide();
-    if (options.loader) $('.notification-loader').show();
-    if (!options.persist) setTimeout(function() { $('#notification-container').hide() }, 3000);
+    $('.data-explorer .notification-container').show();
+    $('.data-explorer .notification-message').text(message);
+    if (!options.loader) $('.data-explorer .notification-loader').hide();
+    if (options.loader) $('.data-explorer .notification-loader').show();
+    if (!options.persist) setTimeout(function() { $('.data-explorer .notification-container').hide() }, 3000);
   }
 
   function formatMetadata(data) {
