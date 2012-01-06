@@ -6,14 +6,16 @@ recline.Model = function($) {
 var my = {};
 
 // A Dataset model.
+//
+// Other than standard list of Backbone attributes it has two important attributes:
+//
+// * currentDocuments: a DocumentList containing the Documents we have currently loaded for viewing (you update currentDocuments by calling getRows)
+// * docCount: total number of documents in this dataset (obtained on a fetch for this Dataset)
 my.Dataset = Backbone.Model.extend({
   __type__: 'Dataset',
   initialize: function() {
     this.currentDocuments = new my.DocumentList();
-  },
-
-  getLength: function() { 
-    return this.rowCount;
+    this.docCount = null;
   },
 
   // Get rows (documents) from the backend returning a recline.DocumentList
@@ -103,7 +105,7 @@ my.BackendMemory = Backbone.Model.extend({
         dataset.set({
           headers: rawDataset.data.headers
           });
-        dataset.rowCount = rawDataset.data.rows.length;
+        dataset.docCount = rawDataset.data.rows.length;
         dfd.resolve(dataset);
       }
       return dfd.promise();
@@ -184,7 +186,7 @@ my.BackendWebstore = Backbone.Model.extend({
           dataset.set({
             headers: headers
           });
-          dataset.rowCount = schema.count;
+          dataset.docCount = schema.count;
           dfd.resolve(dataset, jqxhr);
         });
         return dfd.promise();
