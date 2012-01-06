@@ -213,7 +213,7 @@ span.tooltip-status {
 
 /* rgrp added mods */
 
-.data-explorer .nav {
+.data-explorer .header {
   border-top: 15px solid #BCF;
   border-left: 5px solid #BCF;
   display: block;
@@ -225,6 +225,27 @@ span.tooltip-status {
   right: 0px;
   background: white;
   padding-top: 3px;
+}
+
+.header .navigation,
+.header .navigation li,
+.header .pagination,
+.header .pagination form
+{
+  display: inline;
+}
+
+.header .pagination {
+  float: right;
+}
+
+.header .pagination input {
+  width: 40px;
+}
+
+.doc-count {
+  font-weight: bold;
+  font-size: 120%;
 }
 
 .data-view-container {
@@ -239,23 +260,3 @@ span.tooltip-status {
   right: 0px;
   background: white;
 }
-
-.nav-pagination {
-  display: inline;
-  float: right;
-  list-style-type: none;
-}
-
-.nav-pagination li {
-  display: inline-block;
-}
-
-.nav-pagination input {
-  width: 40px;
-}
-
-.doc-count {
-  font-weight: bold;
-  font-size: 120%;
-}
-

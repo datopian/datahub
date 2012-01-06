@@ -12,17 +12,17 @@ my.DataExplorer = Backbone.View.extend({
   tagName: 'div',
   className: 'data-explorer',
   template: ' \
-    <div class="nav"> \
-      <span class="nav-toggle"> \
-        <input type="radio" id="datatable" name="nav-toggle" value="datatable" checked="checked" /> \
-        <label for="nav-datatable">Data Table</label> \
-        <input type="radio" id="nav-graph" name="nav-toggle" value="graph" /> \
-        <label for="nav-graph">Graph</label> \
-      </span> \
-      <ul class="nav-pagination"> \
-        <li>Total documents: <span class="doc-count">{{docCount}}</span></li> \
-        <li><form class="display-count"><label for="per-page">Items to show</label> <input name="displayCount" type="text" value="{{displayCount}}" /></form></li> \
+    <div class="header"> \
+      <ul class="navigation tabs"> \
+        <li class="active"><a href="#datatable">Grid</a> \
+        <li><a href="#graph">Graph</a></li> \
       </ul> \
+      <div class="pagination"> \
+        Total: <span class="doc-count">{{docCount}}</span> \
+        <form class="display-count"> \
+          <label for="per-page">Per page</label> <input name="displayCount" type="text" value="{{displayCount}}" /> \
+        </form> \
+      </div> \
     </div> \
     <div class="data-view-container"></div> \
     <div class="dialog-overlay" style="display: none; z-index: 101; ">&nbsp;</div> \
@@ -39,7 +39,7 @@ my.DataExplorer = Backbone.View.extend({
   ',
 
   events: {
-    'change input[name="nav-toggle"]': 'navChange',
+    'click .navigation li a': 'navChange',
     'submit form.display-count': 'displayCountUpdate'
   },
 
@@ -89,7 +89,7 @@ my.DataExplorer = Backbone.View.extend({
 
   navChange: function(e) {
     // TODO: really ugly and will not scale to more widgets ...
-    var widgetToShow = $(e.target).val();
+    var widgetToShow = $(e.target).attr('href').slice(1);
     if (widgetToShow == 'datatable') {
       this.flotGraph.el.hide();
       this.dataTable.el.show();
