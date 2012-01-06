@@ -123,15 +123,16 @@ my.DataTable = Backbone.View.extend({
     'click .row-header-menu': 'onRowHeaderClick'
   },
 
-  showDialog: function(template, data) {
-    if (!data) data = {};
-    util.show('dialog');
-    util.render(template, 'dialog-content', data);
-    util.observeExit($('.dialog-content'), function() {
-      util.hide('dialog');
-    })
-    $('.dialog').draggable({ handle: '.dialog-header', cursor: 'move' });
-  },
+  // TODO: delete or re-enable (currently this code is not used from anywhere except deprecated or disabled methods (see above)).
+  // showDialog: function(template, data) {
+  //   if (!data) data = {};
+  //   util.show('dialog');
+  //   util.render(template, 'dialog-content', data);
+  //   util.observeExit($('.dialog-content'), function() {
+  //     util.hide('dialog');
+  //   })
+  //   $('.dialog').draggable({ handle: '.dialog-header', cursor: 'move' });
+  // },
 
 
   // ======================================================
@@ -155,11 +156,13 @@ my.DataTable = Backbone.View.extend({
     var actions = {
       bulkEdit: function() { self.showTransformColumnDialog('bulkEdit', {name: self.state.currentColumn}) },
       transform: function() { self.showTransformDialog('transform') },
+      // TODO: Delete or re-implement ...
       csv: function() { window.location.href = app.csvUrl },
       json: function() { window.location.href = "_rewrite/api/json" },
       urlImport: function() { showDialog('urlImport') },
       pasteImport: function() { showDialog('pasteImport') },
       uploadImport: function() { showDialog('uploadImport') },
+      // END TODO
       deleteColumn: function() {
         var msg = "Are you sure? This will delete '" + self.state.currentColumn + "' from all documents.";
         // TODO:
