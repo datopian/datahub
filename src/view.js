@@ -5,6 +5,9 @@ recline.View = function($) {
 
 var my = {};
 
+// The primary view for the entire application.
+// 
+// All other views as contained in this one.
 my.DataExplorer = Backbone.View.extend({
   tagName: 'div',
   className: 'data-explorer',
@@ -17,7 +20,8 @@ my.DataExplorer = Backbone.View.extend({
         <label for="nav-graph">Graph</label> \
       </span> \
       <ul class="nav-pagination"> \
-        <li><form class="display-count"><label for="per-page">Display count</label> <input name="displayCount" type="text" value="{{displayCount}}" /></form></li> \
+        <li>Total documents: <span class="doc-count">{{docCount}}</span></li> \
+        <li><form class="display-count"><label for="per-page">Items to show</label> <input name="displayCount" type="text" value="{{displayCount}}" /></form></li> \
       </ul> \
     </div> \
     <div class="data-view-container"></div> \
@@ -46,11 +50,11 @@ my.DataExplorer = Backbone.View.extend({
   draw: function() {
     var self = this;
     this.el.empty();
-    this.render();
-    this.$dataViewContainer = this.el.find('.data-view-container');
     // retrieve basic data like headers etc
     // note this.model and dataset returned are the same
     this.model.fetch().then(function(dataset) {
+      self.render();
+      self.$dataViewContainer = self.el.find('.data-view-container');
       // initialize of dataTable calls render
       self.dataTable = new my.DataTable({
         model: dataset
@@ -66,7 +70,9 @@ my.DataExplorer = Backbone.View.extend({
   },
 
   render: function() {
-    var template = $.mustache(this.template, this.config);
+    var tmplData = this.model.toTemplateJSON();
+    tmplData.displayCount = this.config.displayCount;
+    var template = $.mustache(this.template, tmplData);
     $(this.el).html(template);
   },
 

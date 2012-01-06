@@ -35,6 +35,12 @@ my.Dataset = Backbone.Model.extend({
       dfd.resolve(self.currentDocuments);
     });
     return dfd.promise();
+  },
+
+  toTemplateJSON: function() {
+    var data = this.toJSON();
+    data.docCount = this.docCount;
+    return data;
   }
 });
 
