@@ -32,11 +32,11 @@ test('new Dataset', function () {
     equal(dataset.get('name'), metadata.name);
     deepEqual(dataset.get('headers'), indata.headers);
     equal(dataset.docCount, 6);
-    dataset.getRows(4, 2).then(function(documentList) {
+    dataset.getDocuments(4, 2).then(function(documentList) {
       deepEqual(indata.rows[2], documentList.models[0].toJSON());
     });
-    dataset.getRows().then(function(docList) {
-      // Test getRows
+    dataset.getDocuments().then(function(docList) {
+      // Test getDocuments
       equal(docList.length, Math.min(10, indata.rows.length));
       var doc1 = docList.models[0];
       deepEqual(doc1.toJSON(), indata.rows[0]);
@@ -159,7 +159,7 @@ test('Webstore Backend', function() {
   dataset.fetch().then(function(dataset) {
     deepEqual(['__id__', 'date', 'geometry', 'amount'], dataset.get('headers'));
     equal(3, dataset.docCount)
-    dataset.getRows().then(function(docList) {
+    dataset.getDocuments().then(function(docList) {
       equal(3, docList.length)
       equal("2009-01-01", docList.models[0].get('date'));
     });
