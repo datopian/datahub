@@ -246,6 +246,16 @@ span.tooltip-status {
   list-style-type: none;
 }
 
+.nav-pagination li {
+  display: inline-block;
+}
+
 .nav-pagination input {
   width: 40px;
 }
+
+.doc-count {
+  font-weight: bold;
+  font-size: 120%;
+}
+
