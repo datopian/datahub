@@ -132,20 +132,6 @@
   width: 20px;
 }
 
-/********* read-only mode **********/
-
-.read-only .data-table tr td:first-child,
-.read-only .data-table tr th:first-child
-{
-  display: none;
-}
-
-.read-only .column-header-menu,
-.read-only .row-header-menu
-{
-  display: none;
-}
-
 /**********************************************************
   * Data Table Menus
   *********************************************************/
@@ -226,6 +212,10 @@ a.data-table-cell-edit {
 
 a.data-table-cell-edit:hover {
   background-position: -25px 0px;
+}
+
+.data-table td:hover .data-table-cell-edit {
+  visibility: visible;
 }
 
 div.data-table-cell-content-numeric > a.data-table-cell-edit {
@@ -500,5 +490,23 @@ td.expression-preview-value {
 
 .expression-preview-doc-item-desc {
   color: #666;
+}
+
+
+/**********************************************************
+  * Read-only mode
+  *********************************************************/
+
+.read-only .data-table tr td:first-child,
+.read-only .data-table tr th:first-child
+{
+  display: none;
+}
+
+.read-only .column-header-menu,
+.read-only .row-header-menu,
+.read-only a.data-table-cell-edit
+{
+  display: none;
 }
 
