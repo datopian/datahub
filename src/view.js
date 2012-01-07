@@ -13,14 +13,13 @@ my.DataExplorer = Backbone.View.extend({
   className: 'data-explorer',
   template: ' \
     <div class="header"> \
-      <ul class="navigation tabs"> \
-        <li class="active"><a href="#datatable">Grid</a> \
-        <li><a href="#graph">Graph</a></li> \
+      <ul class="navigation"> \
+        <li class="active"><a href="#datatable" class="btn">Grid</a> \
+        <li><a href="#graph" class="btn">Graph</a></li> \
       </ul> \
       <div class="pagination"> \
-        Total: <span class="doc-count">{{docCount}}</span> \
         <form class="display-count"> \
-          <label for="per-page">Per page</label> <input name="displayCount" type="text" value="{{displayCount}}" /> \
+          Showing 0 to <input name="displayCount" type="text" value="{{displayCount}}" /> of  <span class="doc-count">{{docCount}}</span> \
         </form> \
       </div> \
     </div> \
@@ -90,6 +89,8 @@ my.DataExplorer = Backbone.View.extend({
   navChange: function(e) {
     // TODO: really ugly and will not scale to more widgets ...
     var widgetToShow = $(e.target).attr('href').slice(1);
+    this.el.find('.navigation li').removeClass('active');
+    $(e.target).parent().addClass('active');
     if (widgetToShow == 'datatable') {
       this.flotGraph.el.hide();
       this.dataTable.el.show();
@@ -560,50 +561,50 @@ my.FlotGraph = Backbone.View.extend({
 
   // TODO: normalize css
   template: ' \
-  <div class="panel graph"></div> \
   <div class="editor"> \
     <div class="editor-info editor-hide-info"> \
-      <h1><span></span>Help</h1> \
+      <h3>Help</h3> \
       <p>To create a chart select a column (group) to use as the x-axis \
          then another column (Series A) to plot against it.</p> \
       <p>You can add add \
          additional series by clicking the "Add series" button</p> \
       <p>Please note you must be logged in to save charts.</p> \
     </div> \
-    <form> \
-      <ul> \
-        <li class="editor-type"> \
-          <label>Graph Type</label> \
+    <form class="form-stacked"> \
+      <div class="clearfix"> \
+        <label>Graph Type</label> \
+        <div class="input editor-type"> \
           <select> \
           <option value="line">Line</option> \
           </select> \
-        </li> \
-        <li class="editor-group"> \
-          <label>Group Column (x-axis)</label> \
+        </div> \
+        <label>Group Column (x-axis)</label> \
+        <div class="input editor-group"> \
           <select> \
           {{#headers}} \
           <option value="{{.}}">{{.}}</option> \
           {{/headers}} \
           </select> \
-        </li> \
-        <li class="editor-series"> \
-          <label>Series <span>A (y-axis)</span></label> \
+        </div> \
+        <label>Series <span>A (y-axis)</span></label> \
+        <div class="input editor-series"> \
           <select> \
           {{#headers}} \
           <option value="{{.}}">{{.}}</option> \
           {{/headers}} \
           </select> \
-        </li> \
-      </ul> \
-      <div class="editor-buttons"> \
-        <button class="editor-add">Add Series</button> \
+        </div> \
       </div> \
-      <div class="editor-buttons editor-submit"> \
+      <div class="editor-buttons"> \
+        <button class="btn editor-add">Add Series</button> \
+      </div> \
+      <div class="editor-buttons editor-submit" comment="hidden temporarily" style="display: none;"> \
         <button class="editor-save">Save</button> \
         <input type="hidden" class="editor-id" value="chart-1" /> \
       </div> \
     </form> \
   </div> \
+  <div class="panel graph"></div> \
 </div> \
 ',
 
