@@ -7,6 +7,19 @@ var my = {};
 
 // The primary view for the entire application.
 // 
+// To pass in configuration options use the config key in initialization hash
+// e.g.
+//
+//      var explorer = new DataExplorer({
+//        config: {...}
+//      })
+//
+// Config options:
+//
+// * displayCount: how many documents to display initially (default: 10)
+// * readOnly: true/false (default: false) value indicating whether to
+//   operate in read-only mode (hiding all editing options).
+//
 // All other views as contained in this one.
 my.DataExplorer = Backbone.View.extend({
   tagName: 'div',
@@ -47,7 +60,11 @@ my.DataExplorer = Backbone.View.extend({
     this.config = options.config || {};
     _.extend(this.config, {
       displayCount: 10
+      , readOnly: false
     });
+    if (this.config.readOnly) {
+      this.setReadOnly();
+    }
     this.draw();
   },
 
@@ -77,6 +94,10 @@ my.DataExplorer = Backbone.View.extend({
       self.$dataViewContainer.append(self.flotGraph.el);
       self.model.getDocuments(self.config.displayCount);
     });
+  },
+
+  setReadOnly: function() {
+    this.el.addClass('read-only');
   },
 
   render: function() {

@@ -132,6 +132,19 @@
   width: 20px;
 }
 
+/********* read-only mode **********/
+
+.read-only .data-table tr td:first-child,
+.read-only .data-table tr th:first-child
+{
+  display: none;
+}
+
+.read-only .column-header-menu,
+.read-only .row-header-menu
+{
+  display: none;
+}
 
 /**********************************************************
   * Data Table Menus
