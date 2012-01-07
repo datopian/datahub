@@ -278,6 +278,10 @@ $(function() {
     });
     window.$container.append(window.dataExplorer.el);
   });
+  $('a.set-read-only').click(function() {
+    window.dataExplorer.setReadOnly();
+    alert('Read-only mode set');
+  });
 })
 
 function demoDataset() {
