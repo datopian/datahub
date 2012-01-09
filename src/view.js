@@ -583,12 +583,11 @@ my.FlotGraph = Backbone.View.extend({
   template: ' \
   <div class="editor"> \
     <div class="editor-info editor-hide-info"> \
-      <h3>Help</h3> \
+      <h3 class="action-toggle-help">Help &raquo;</h3> \
       <p>To create a chart select a column (group) to use as the x-axis \
          then another column (Series A) to plot against it.</p> \
       <p>You can add add \
          additional series by clicking the "Add series" button</p> \
-      <p>Please note you must be logged in to save charts.</p> \
     </div> \
     <form class="form-stacked"> \
       <div class="clearfix"> \
@@ -636,6 +635,7 @@ my.FlotGraph = Backbone.View.extend({
     'change form select': 'onEditorSubmit'
     , 'click .editor-add': 'addSeries'
     , 'click .action-remove-series': 'removeSeries'
+    , 'click .action-toggle-help': 'toggleHelp'
   },
 
   initialize: function(options, chart) {
@@ -750,6 +750,10 @@ my.FlotGraph = Backbone.View.extend({
       }
     });
     this.onEditorSubmit();
+  },
+
+  toggleHelp: function() {
+    this.el.find('.editor-info').toggleClass('editor-hide-info');
   },
 
   // Private: Resets the series property to reference the select elements.
