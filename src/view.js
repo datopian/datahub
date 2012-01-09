@@ -52,7 +52,7 @@ my.DataExplorer = Backbone.View.extend({
 
   events: {
     'click .navigation li a': 'navChange',
-    'submit form.display-count': 'displayCountUpdate'
+    'submit form.display-count': 'onDisplayCountUpdate'
   },
 
   initialize: function(options) {
@@ -68,7 +68,7 @@ my.DataExplorer = Backbone.View.extend({
     this.draw();
   },
 
-  displayCountUpdate: function(e) {
+  onDisplayCountUpdate: function(e) {
     e.preventDefault();
     this.config.displayCount = parseInt(this.el.find('input[name="displayCount"]').val());
     this.draw();
