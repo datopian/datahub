@@ -629,6 +629,10 @@ my.FlotGraph = Backbone.View.extend({
 </div> \
 ',
 
+  events: {
+    'change form select': 'onEditorSubmit'
+  },
+
   initialize: function(options, chart) {
     var self = this;
     this.el = $(this.el);
@@ -641,27 +645,6 @@ my.FlotGraph = Backbone.View.extend({
       series: [],
       graphType: 'line'
     };
-  },
-
-  events: {
-    // 'change select': 'onEditorSubmit'
-  },
-
-  onEditorSubmit: function(e) {
-    var select = this.el.find('.editor-group select');
-    this._getEditorData();
-    this.plot.setData(this.createSeries());
-    this.plot.resize();
-    this.plot.setupGrid();
-    this.plot.draw();
-  },
-  _getEditorData: function() {
-    $editor = this
-    var series = this.$series.map(function () {
-      return $(this).val();
-    });
-    this.chartConfig.series = $.makeArray(series)
-    this.chartConfig.group = this.el.find('.editor-group select').val();
   },
 
   toTemplateJSON: function() {
@@ -677,10 +660,25 @@ my.FlotGraph = Backbone.View.extend({
     this.$series  = this.el.find('.editor-series select');
     this.$seriesClone = this.$series.parent().clone();
     var self = this;
-    this.el.find('form select').change(function() {
-      self.onEditorSubmit.apply(self, arguments)
-    });
     return this;
+  },
+
+  onEditorSubmit: function(e) {
+    var select = this.el.find('.editor-group select');
+    this._getEditorData();
+    this.plot.setData(this.createSeries());
+    this.plot.resize();
+    this.plot.setupGrid();
+    this.plot.draw();
+  },
+
+  _getEditorData: function() {
+    $editor = this
+    var series = this.$series.map(function () {
+      return $(this).val();
+    });
+    this.chartConfig.series = $.makeArray(series)
+    this.chartConfig.group = this.el.find('.editor-group select').val();
   },
 
   createPlot: function () {
