@@ -20,8 +20,12 @@
   border-top: solid 2px #000;
 }
 
-.data-graph-container .editor .editor-info {
+.data-graph-container .editor-info {
   padding-left: 4px;
+}
+
+.data-graph-container .editor-info {
+	cursor: pointer;
 }
 
 .data-graph-container .editor form {
@@ -37,14 +41,7 @@
 	margin-bottom: 10px;
 }
 
-.data-graph-container .editor-hide-info h1 span {
-	background-position: -36px -18px;
-}
-
 .data-graph-container .editor-hide-info p {
 	display: none;
 }
 
-.dataexplorer-tableview-hide-editor .data-graph-container .editor {
-	display: none;
-}
