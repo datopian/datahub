@@ -580,7 +580,6 @@ my.FlotGraph = Backbone.View.extend({
   tagName:  "div",
   className: "data-graph-container",
 
-  // TODO: normalize css
   template: ' \
   <div class="editor"> \
     <div class="editor-info editor-hide-info"> \
@@ -607,13 +606,17 @@ my.FlotGraph = Backbone.View.extend({
           {{/headers}} \
           </select> \
         </div> \
-        <label>Series <span>A (y-axis)</span></label> \
-        <div class="input editor-series"> \
-          <select> \
-          {{#headers}} \
-          <option value="{{.}}">{{.}}</option> \
-          {{/headers}} \
-          </select> \
+        <div class="editor-series-group"> \
+          <div class="editor-series"> \
+            <label>Series <span>A (y-axis)</span></label> \
+            <div class="input"> \
+              <select> \
+              {{#headers}} \
+              <option value="{{.}}">{{.}}</option> \
+              {{/headers}} \
+              </select> \
+            </div> \
+          </div> \
         </div> \
       </div> \
       <div class="editor-buttons"> \
@@ -631,6 +634,8 @@ my.FlotGraph = Backbone.View.extend({
 
   events: {
     'change form select': 'onEditorSubmit'
+    , 'click .editor-add': 'addSeries'
+    , 'click .action-remove-series': 'removeSeries'
   },
 
   initialize: function(options, chart) {
@@ -656,10 +661,10 @@ my.FlotGraph = Backbone.View.extend({
     $(this.el).html(htmls);
     // now set a load of stuff up
     this.$graph = this.el.find('.panel.graph');
-    // event approach did not seem to work
-    this.$series  = this.el.find('.editor-series select');
-    this.$seriesClone = this.$series.parent().clone();
-    var self = this;
+    // for use later when adding additional series
+    // could be simpler just to have a common template!
+    this.$seriesClone = this.el.find('.editor-series').clone();
+    this._updateSeries();
     return this;
   },
 
@@ -711,19 +716,47 @@ my.FlotGraph = Backbone.View.extend({
     return series;
   },
 
-  // TODO: finish porting this function
-  addSeries: function () {
-    var element = this.seriesClone.clone(),
+  // Public: Adds a new empty series select box to the editor.
+  //
+  // All but the first select box will have a remove button that allows them
+  // to be removed.
+  //
+  // Returns itself.
+  addSeries: function (e) {
+    e.preventDefault();
+    var element = this.$seriesClone.clone(),
         label   = element.find('label'),
-        index   = this.series.length;
+        index   = this.$series.length;
 
-    this.el.$series.parent().find('ul').append(element);
-    this.updateSeries();
-
-    label.append('<a href="#remove">Remove</a>');
-    label.find('span').text(String.fromCharCode(this.series.length + 64));
-
+    this.el.find('.editor-series-group').append(element);
+    this._updateSeries();
+    label.append(' [<a href="#remove" class="action-remove-series">Remove</a>]');
+    label.find('span').text(String.fromCharCode(this.$series.length + 64));
     return this;
+  },
+
+  // Public: Removes a series list item from the editor.
+  //
+  // Also updates the labels of the remaining series elements.
+  removeSeries: function (e) {
+    e.preventDefault();
+    var $el = $(e.target);
+    $el.parent().parent().remove();
+    this._updateSeries();
+    this.$series.each(function (index) {
+      if (index > 0) {
+        var labelSpan = $(this).prev().find('span');
+        labelSpan.text(String.fromCharCode(index + 65));
+      }
+    });
+    this.onEditorSubmit();
+  },
+
+  // Private: Resets the series property to reference the select elements.
+  //
+  // Returns itself.
+  _updateSeries: function () {
+    this.$series  = this.el.find('.editor-series select');
   }
 });
 
