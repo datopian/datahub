@@ -11,10 +11,8 @@ var util = function() {
         <textarea class="data-table-cell-editor-editor" bind="textarea">{{value}}</textarea> \
         <div id="data-table-cell-editor-actions"> \
           <div class="data-table-cell-editor-action"> \
-            <button class="okButton button">Update</button> \
-          </div> \
-          <div class="data-table-cell-editor-action"> \
-            <button class="cancelButton button">Cancel</button> \
+            <button class="okButton btn primary">Update</button> \
+            <button class="cancelButton btn danger">Cancel</button> \
           </div> \
         </div> \
       </div> \
@@ -22,15 +20,17 @@ var util = function() {
     , editPreview: ' \
       <div class="expression-preview-table-wrapper"> \
         <table> \
-        <tbody> \
+        <thead> \
         <tr> \
-          <td class="expression-preview-heading"> \
+          <th class="expression-preview-heading"> \
             before \
-          </td> \
-          <td class="expression-preview-heading"> \
+          </th> \
+          <th class="expression-preview-heading"> \
             after \
-          </td> \
+          </th> \
         </tr> \
+        </thead> \
+        <tbody> \
         {{#rows}} \
         <tr> \
           <td class="expression-preview-value"> \
