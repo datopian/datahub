@@ -470,8 +470,8 @@ my.ColumnTransform = Backbone.View.extend({
       </div> \
     </div> \
     <div class="dialog-footer"> \
-      <button class="okButton button">&nbsp;&nbsp;Update All&nbsp;&nbsp;</button> \
-      <button class="cancelButton button">Cancel</button> \
+      <button class="okButton btn primary">&nbsp;&nbsp;Update All&nbsp;&nbsp;</button> \
+      <button class="cancelButton btn danger">Cancel</button> \
     </div> \
   ',
 

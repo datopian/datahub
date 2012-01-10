@@ -91,7 +91,9 @@
   *********************************************************/
 
 /* direct borrowing from twitter buttons */
-.data-table th {
+.data-table th,
+.transform-column-view .expression-preview-table-wrapper th
+{
   background-color: #e6e6e6;
   background-repeat: no-repeat;
   background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#ffffff), color-stop(25%, #ffffff), to(#e6e6e6));
