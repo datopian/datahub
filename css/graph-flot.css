@@ -8,6 +8,10 @@
   margin-bottom: 0;
 }
 
+.data-graph-container .legend td {
+  padding: 5px;
+  line-height: 13px;
+}
 
 /**********************************************************
   * Editor
