@@ -5,6 +5,24 @@ recline.View = function($) {
 
 var my = {};
 
+// Parse a URL query string (?xyz=abc...) into a dictionary.
+function parseQueryString(q) {
+  var urlParams = {},
+    e, d = function (s) {
+      return unescape(s.replace(/\+/g, " "));
+    },
+    r = /([^&=]+)=?([^&]*)/g;
+
+  if (q && q.length && q[0] === '?') {
+    q = q.slice(1);
+  }
+  while (e = r.exec(q)) {
+    // TODO: have values be array as query string allow repetition of keys
+    urlParams[d(e[1])] = d(e[2]);
+  }
+  return urlParams;
+}
+
 // The primary view for the entire application.
 //
 // It should be initialized with a recline.Model.Dataset object and an existing
@@ -119,18 +137,23 @@ my.DataExplorer = Backbone.View.extend({
     this.router.route('', 'grid', function() {
       self.updateNav('grid');
     });
-    this.router.route('grid', 'grid', function() {
-      self.updateNav('grid');
+    this.router.route(/grid(\?.*)?/, 'view', function(queryString) {
+      self.updateNav('grid', queryString);
     });
-    this.router.route('graph', 'graph', function() {
-      self.updateNav('graph');
-      // we have to call here due to fact plot cannot draw if hidden
-      // see comments in FlotGraph.redraw
+    this.router.route(/graph(\?.*)?/, 'graph', function(queryString) {
+      self.updateNav('graph', queryString);
+      // we have to call here due to fact plot may not have been able to draw
+      // if it was hidden until now - see comments in FlotGraph.redraw
+      qsParsed = parseQueryString(queryString);
+      if ('graph' in qsParsed) {
+        var chartConfig = JSON.parse(qsParsed['graph']);
+        _.extend(self.pageViews['graph'].chartConfig, chartConfig);
+      }
       self.pageViews['graph'].redraw();
     });
   },
 
-  updateNav: function(pageName) {
+  updateNav: function(pageName, queryString) {
     this.el.find('.navigation li').removeClass('active');
     var $el = this.el.find('.navigation li a[href=#' + pageName + ']');
     $el.parent().addClass('active');
@@ -593,6 +616,21 @@ my.DataTransform = Backbone.View.extend({
 });
 
 
+// Graph view for a Dataset using Flot graphing library.
+//
+// Initialization arguments:
+//
+// * model: recline.Model.Dataset
+// * config: (optional) graph configuration hash of form:
+//
+//        { 
+//          group: {column name for x-axis},
+//          series: [{column name for series A}, {column name series B}, ... ],
+//          graphType: 'line'
+//        }
+//
+// NB: should *not* provide an el argument to the view but must let the view
+// generate the element itself (you can then append view.el to the DOM.
 my.FlotGraph = Backbone.View.extend({
 
   tagName:  "div",
@@ -656,7 +694,7 @@ my.FlotGraph = Backbone.View.extend({
     , 'click .action-toggle-help': 'toggleHelp'
   },
 
-  initialize: function(options, chart) {
+  initialize: function(options, config) {
     var self = this;
     this.el = $(this.el);
     _.bindAll(this, 'render', 'redraw');
@@ -664,12 +702,12 @@ my.FlotGraph = Backbone.View.extend({
     this.model.bind('change', this.render);
     this.model.currentDocuments.bind('add', this.redraw);
     this.model.currentDocuments.bind('reset', this.redraw);
-    this.chart = chart;
-    this.chartConfig = {
-      group: null,
-      series: [],
-      graphType: 'line'
-    };
+    this.chartConfig = _.extend({
+        group: null,
+        series: [],
+        graphType: 'line'
+      },
+      config)
     this.render();
   },
 
@@ -692,6 +730,10 @@ my.FlotGraph = Backbone.View.extend({
   onEditorSubmit: function(e) {
     var select = this.el.find('.editor-group select');
     this._getEditorData();
+    // update navigation
+    // TODO: make this less invasive (e.g. preserve other keys in query string)
+    window.location.hash = window.location.hash.split('?')[0] +
+        '?graph=' + JSON.stringify(this.chartConfig);
     this.redraw();
   },
 
