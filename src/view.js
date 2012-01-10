@@ -6,6 +6,10 @@ recline.View = function($) {
 var my = {};
 
 // The primary view for the entire application.
+//
+// It should be initialized with a recline.Model.Dataset object and an existing
+// dom element to attach to (the existing DOM element is important for
+// rendering of FlotGraph subview).
 // 
 // To pass in configuration options use the config key in initialization hash
 // e.g.
@@ -22,12 +26,11 @@ var my = {};
 //
 // All other views as contained in this one.
 my.DataExplorer = Backbone.View.extend({
-  tagName: 'div',
-  className: 'data-explorer',
   template: ' \
+  <div class="data-explorer"> \
     <div class="header"> \
       <ul class="navigation"> \
-        <li class="active"><a href="#datatable" class="btn">Grid</a> \
+        <li class="active"><a href="#grid" class="btn">Grid</a> \
         <li><a href="#graph" class="btn">Graph</a></li> \
       </ul> \
       <div class="pagination"> \
@@ -48,14 +51,15 @@ my.DataExplorer = Backbone.View.extend({
         <img src="images/small-spinner.gif" class="notification-loader"><span class="notification-message">Loading...</span> \
       </div> \
     </div> \
+  </div> \
   ',
 
   events: {
-    'click .navigation li a': 'navChange',
     'submit form.display-count': 'onDisplayCountUpdate'
   },
 
   initialize: function(options) {
+    var self = this;
     this.el = $(this.el);
     this.config = options.config || {};
     _.extend(this.config, {
@@ -65,35 +69,34 @@ my.DataExplorer = Backbone.View.extend({
     if (this.config.readOnly) {
       this.setReadOnly();
     }
-    this.draw();
+    // Hash of 'page' views (i.e. those for whole page) keyed by page name
+    this.pageViews = {
+      grid: new my.DataTable({
+          model: this.model
+        })
+      , graph: new my.FlotGraph({
+          model: this.model
+        })
+    };
+    // this must be called after pageViews are created
+    this.render();
+
+    this.router = new Backbone.Router();
+    this.setupRouting();
+    Backbone.history.start();
+
+    // retrieve basic data like headers etc
+    // note this.model and dataset returned are the same
+    this.model.fetch().then(function(dataset) {
+      // initialize of dataTable calls render
+      self.model.getDocuments(self.config.displayCount);
+    });
   },
 
   onDisplayCountUpdate: function(e) {
     e.preventDefault();
     this.config.displayCount = parseInt(this.el.find('input[name="displayCount"]').val());
-    this.draw();
-  },
-
-  draw: function() {
-    var self = this;
-    this.el.empty();
-    // retrieve basic data like headers etc
-    // note this.model and dataset returned are the same
-    this.model.fetch().then(function(dataset) {
-      self.render();
-      self.$dataViewContainer = self.el.find('.data-view-container');
-      // initialize of dataTable calls render
-      self.dataTable = new my.DataTable({
-        model: dataset
-      });
-      self.flotGraph = new my.FlotGraph({
-        model: dataset
-      });
-      self.flotGraph.el.hide();
-      self.$dataViewContainer.append(self.dataTable.el)
-      self.$dataViewContainer.append(self.flotGraph.el);
-      self.model.getDocuments(self.config.displayCount);
-    });
+    this.model.getDocuments(this.config.displayCount);
   },
 
   setReadOnly: function() {
@@ -105,25 +108,40 @@ my.DataExplorer = Backbone.View.extend({
     tmplData.displayCount = this.config.displayCount;
     var template = $.mustache(this.template, tmplData);
     $(this.el).html(template);
+    var $dataViewContainer = this.el.find('.data-view-container');
+    _.each(this.pageViews, function(view, pageName) {
+      $dataViewContainer.append(view.el)
+    });
   },
 
-  navChange: function(e) {
-    // TODO: really ugly and will not scale to more widgets ...
-    var widgetToShow = $(e.target).attr('href').slice(1);
+  setupRouting: function() {
+    var self = this;
+    this.router.route('', 'grid', function() {
+      self.updateNav('grid');
+    });
+    this.router.route('grid', 'grid', function() {
+      self.updateNav('grid');
+    });
+    this.router.route('graph', 'graph', function() {
+      self.updateNav('graph');
+      // we have to call here due to fact plot cannot draw if hidden
+      // see comments in FlotGraph.redraw
+      self.pageViews['graph'].redraw();
+    });
+  },
+
+  updateNav: function(pageName) {
     this.el.find('.navigation li').removeClass('active');
-    $(e.target).parent().addClass('active');
-    if (widgetToShow == 'datatable') {
-      this.flotGraph.el.hide();
-      this.dataTable.el.show();
-    } else if (widgetToShow == 'graph') {
-      this.flotGraph.el.show();
-      this.dataTable.el.hide();
-      // Have to call this here
-      // If you attempt to render with flot when graph is hidden / invisible flot will complain with 
-      // Invalid dimensions for plot, width = 0, height = 0
-      // (Could hack this by moving plot left -1000 or similar ...)
-      this.flotGraph.createPlot();
-    }
+    var $el = this.el.find('.navigation li a[href=#' + pageName + ']');
+    $el.parent().addClass('active');
+    // show the specific page
+    _.each(this.pageViews, function(view, pageViewName) {
+      if (pageViewName === pageName) {
+        view.el.show();
+      } else {
+        view.el.hide();
+      }
+    });
   }
 });
 
@@ -641,15 +659,18 @@ my.FlotGraph = Backbone.View.extend({
   initialize: function(options, chart) {
     var self = this;
     this.el = $(this.el);
-    _.bindAll(this, 'render');
-    this.model.currentDocuments.bind('add', this.render);
-    this.model.currentDocuments.bind('reset', this.render);
+    _.bindAll(this, 'render', 'redraw');
+    // we need the model.headers to render properly
+    this.model.bind('change', this.render);
+    this.model.currentDocuments.bind('add', this.redraw);
+    this.model.currentDocuments.bind('reset', this.redraw);
     this.chart = chart;
     this.chartConfig = {
       group: null,
       series: [],
       graphType: 'line'
     };
+    this.render();
   },
 
   toTemplateJSON: function() {
@@ -671,6 +692,29 @@ my.FlotGraph = Backbone.View.extend({
   onEditorSubmit: function(e) {
     var select = this.el.find('.editor-group select');
     this._getEditorData();
+    this.redraw();
+  },
+
+  redraw: function() {
+    // There appear to be issues generating a Flot graph if either:
+
+    // * The relevant div that graph attaches to his hidden at the moment of creating the plot -- Flot will complain with
+    //
+    //   Uncaught Invalid dimensions for plot, width = 0, height = 0
+    // * There is no data for the plot -- either same error or may have issues later with errors like 'non-existent node-value' 
+    var areWeVisible = !jQuery.expr.filters.hidden(this.el[0]);
+    if (!this.plot && (!areWeVisible || this.model.currentDocuments.length == 0)) {
+      return
+    }
+    // create this.plot and cache it
+    if (!this.plot) {
+      // only lines for the present
+      options = {
+        id: 'line',
+        name: 'Line Chart'
+      };
+      this.plot = $.plot(this.$graph, this.createSeries(), options);
+    } 
     this.plot.setData(this.createSeries());
     this.plot.resize();
     this.plot.setupGrid();
@@ -684,16 +728,6 @@ my.FlotGraph = Backbone.View.extend({
     });
     this.chartConfig.series = $.makeArray(series)
     this.chartConfig.group = this.el.find('.editor-group select').val();
-  },
-
-  createPlot: function () {
-    // only lines for the present
-    options = {
-      id: 'line',
-      name: 'Line Chart'
-    };
-    this.plot = $.plot(this.$graph, this.createSeries(), options);
-    return this;
   },
 
   createSeries: function () {

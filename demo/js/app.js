@@ -267,9 +267,9 @@ $(function() {
   window.$container = $('.data-explorer-here');
   var dataset = demoDataset();
   window.dataExplorer = new recline.View.DataExplorer({
-    model: dataset
+    el: window.$container
+    , model: dataset
   });
-  window.$container.append(window.dataExplorer.el);
   setupLoadFromWebstore(function(dataset) {
     window.dataExplorer.remove();
     window.dataExplorer = null;
