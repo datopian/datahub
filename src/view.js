@@ -46,6 +46,8 @@ function parseQueryString(q) {
 my.DataExplorer = Backbone.View.extend({
   template: ' \
   <div class="data-explorer"> \
+    <div class="alert-messages"></div> \
+    \
     <div class="header"> \
       <ul class="navigation"> \
         <li class="active"><a href="#grid" class="btn">Grid</a> \
@@ -62,11 +64,6 @@ my.DataExplorer = Backbone.View.extend({
     <div class="dialog ui-draggable" style="display: none; z-index: 102; top: 101px; "> \
       <div class="dialog-frame" style="width: 700px; visibility: visible; "> \
         <div class="dialog-content dialog-border"></div> \
-      </div> \
-    </div> \
-    <div class="notification-container"> \
-      <div class="notification"> \
-        <img src="images/small-spinner.gif" class="notification-loader"><span class="notification-message">Loading...</span> \
       </div> \
     </div> \
   </div> \
@@ -402,12 +399,15 @@ my.DataTableRow = Backbone.View.extend({
     var newData = {};
     newData[header] = newValue;
     this.model.set(newData);
-    util.notify("Updating row...", {persist: true, loader: true});
+    util.notify("Updating row...", {loader: true});
     this.model.save().then(function(response) {
-        util.notify("Row updated successfully");
+        util.notify("Row updated successfully", {category: 'success'});
       })
       .fail(function() {
-        alert('error saving');
+        util.notify('Error saving row', {
+          category: 'error',
+          persist: true
+        });
       });
   },
 

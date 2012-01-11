@@ -150,16 +150,31 @@ var util = function() {
     // TODO: remove (commented out as part of Backbon-i-fication
     // if (template in app.after) app.after[template]();
   }
-  
-  function notify( message, options ) {
-    if (!options) var options = {};
-    $('.data-explorer .notification-container').show();
-    $('.data-explorer .notification-message').text(message);
-    if (!options.loader) $('.data-explorer .notification-loader').hide();
-    if (options.loader) $('.data-explorer .notification-loader').show();
-    if (!options.persist) setTimeout(function() { $('.data-explorer .notification-container').hide() }, 3000);
-  }
 
+  function notify(message, options) {
+    if (!options) var options = {};
+    var tmplData = _.extend({
+      msg: message,
+      category: 'warning'
+      },
+      options);
+    var _template = ' \
+      <div class="alert-message {{category}} fade in" data-alert="alert"><a class="close" href="#">×</a> \
+        <p>{{msg}} \
+          {{#loader}} \
+          <img src="images/small-spinner.gif" class="notification-loader"> \
+          {{/loader}} \
+        </p> \
+      </div>';
+    var _templated = $.mustache(_template, tmplData); 
+    _templated = $(_templated).appendTo($('.data-explorer .alert-messages'));
+    if (!options.persist) {
+      setTimeout(function() {
+        $(_templated).remove();
+      }, 3000);
+    }
+  }
+  
   function formatMetadata(data) {
     out = '<dl>';
     $.each(data, function(key, val) {
