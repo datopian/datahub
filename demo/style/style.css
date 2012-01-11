@@ -43,7 +43,7 @@ a.button:hover span.icon.loading { background-image: url(images/loader-blue.gif)
 .chosen {border: 1px solid green}
 .info { padding: 0px 0px 10px 0px}
 .large-loader { position: relative; }
-.menu-overlay {
+.data-table-menu-overlay {
   position: fixed;
   top: 0;
   left: 0;
@@ -51,7 +51,7 @@ a.button:hover span.icon.loading { background-image: url(images/loader-blue.gif)
   height: 100%;
 }
 
-ul.menu {
+ul.data-table-menu {
   display: none;
   outline-style: none;
   background: white;
@@ -68,18 +68,18 @@ ul.menu {
   border-right: 1px solid #666;
   border-bottom: 1px solid #666;
   margin: 0; padding: 0; }
-  ul.menu * {
+  ul.data-table-menu * {
     margin: 0;
     padding: 0; }
-  ul.menu a {
+  ul.data-table-menu a {
     line-height: 14px;
     color: black;
     display: block;
     padding: 5px 7px;
     text-decoration: none; }
-  ul.menu li {
+  ul.data-table-menu li {
     height: 24px; }
-  ul.menu li:hover {
+  ul.data-table-menu li:hover {
     background-color: #DBE8F8 }
 
 
@@ -213,7 +213,7 @@ span.tooltip-status {
 
 /* rgrp added mods */
 
-.data-explorer .nav {
+.data-explorer .header {
   border-top: 15px solid #BCF;
   border-left: 5px solid #BCF;
   display: block;
@@ -227,6 +227,27 @@ span.tooltip-status {
   padding-top: 3px;
 }
 
+.header .navigation,
+.header .navigation li,
+.header .pagination,
+.header .pagination form
+{
+  display: inline;
+}
+
+.header .pagination {
+  float: right;
+}
+
+.header .pagination input {
+  width: 40px;
+}
+
+.doc-count {
+  font-weight: bold;
+  font-size: 120%;
+}
+
 .data-view-container {
   display: block;
   border-top: 1px solid #BCF;
@@ -238,14 +259,4 @@ span.tooltip-status {
   left: 0px;
   right: 0px;
   background: white;
-}
-
-.nav-pagination {
-  display: inline;
-  float: right;
-  list-style-type: none;
-}
-
-.nav-pagination input {
-  width: 40px;
 }

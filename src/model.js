@@ -6,26 +6,32 @@ recline.Model = function($) {
 var my = {};
 
 // A Dataset model.
+//
+// Other than standard list of Backbone attributes it has two important attributes:
+//
+// * currentDocuments: a DocumentList containing the Documents we have currently loaded for viewing (you update currentDocuments by calling getRows)
+// * docCount: total number of documents in this dataset (obtained on a fetch for this Dataset)
 my.Dataset = Backbone.Model.extend({
   __type__: 'Dataset',
   initialize: function() {
     this.currentDocuments = new my.DocumentList();
+    this.docCount = null;
   },
 
-  getLength: function() { 
-    return this.rowCount;
-  },
-
-  // Get rows (documents) from the backend returning a recline.DocumentList
+  // AJAX method with promise API to get rows (documents) from the backend.
   //
-  // TODO: ? rename to getDocuments?
+  // Resulting DocumentList are used to reset this.currentDocuments and are
+  // also returned.
+  //
+  // :param numRows: passed onto backend getDocuments.
+  // :param start: passed onto backend getDocuments.
   //
   // this does not fit very well with Backbone setup. Backbone really expects you to know the ids of objects your are fetching (which you do in classic RESTful ajax-y world). But this paradigm does not fill well with data set up we have here.
   // This also illustrates the limitations of separating the Dataset and the Backend
-  getRows: function(numRows, start) {
+  getDocuments: function(numRows, start) {
     var self = this;
     var dfd = $.Deferred();
-    this.backend.getRows(this.id, numRows, start).then(function(rows) {
+    this.backend.getDocuments(this.id, numRows, start).then(function(rows) {
       var docs = _.map(rows, function(row) {
         return new my.Document(row);
       });
@@ -33,6 +39,12 @@ my.Dataset = Backbone.Model.extend({
       dfd.resolve(self.currentDocuments);
     });
     return dfd.promise();
+  },
+
+  toTemplateJSON: function() {
+    var data = this.toJSON();
+    data.docCount = this.docCount;
+    return data;
   }
 });
 
@@ -55,14 +67,16 @@ my.setBackend = function(backend) {
 
 // Backend which just caches in memory
 // 
-// Does not need to be a backbone model but provides some conveience
+// Does not need to be a backbone model but provides some conveniences
 my.BackendMemory = Backbone.Model.extend({
   // Initialize a Backend with a local in-memory dataset.
   // 
   // NB: We can handle one and only one dataset at a time.
   //
   // :param dataset: the data for a dataset on which operations will be
-  // performed. In the form of a hash with metadata and data attributes.
+  // performed. Its form should be a hash with metadata and data
+  // attributes.
+  //
   // - metadata: hash of key/value attributes of any kind (but usually with title attribute)
   // - data: hash with 2 keys:
   //  - headers: list of header names/labels
@@ -70,13 +84,13 @@ my.BackendMemory = Backbone.Model.extend({
   //
   //  Example of data:
   // 
-  //    {
-  //        headers: ['x', 'y', 'z']
-  //      , rows: [
-  //          {id: 0, x: 1, y: 2, z: 3}
-  //        , {id: 1, x: 2, y: 4, z: 6}
-  //      ]
-  //    };
+  //        {
+  //            headers: ['x', 'y', 'z']
+  //          , rows: [
+  //              {id: 0, x: 1, y: 2, z: 3}
+  //            , {id: 1, x: 2, y: 4, z: 6}
+  //          ]
+  //        };
   initialize: function(dataset) {
     // deep copy
     this._datasetAsData = $.extend(true, {}, dataset);
@@ -103,7 +117,7 @@ my.BackendMemory = Backbone.Model.extend({
         dataset.set({
           headers: rawDataset.data.headers
           });
-        dataset.rowCount = rawDataset.data.rows.length;
+        dataset.docCount = rawDataset.data.rows.length;
         dfd.resolve(dataset);
       }
       return dfd.promise();
@@ -131,7 +145,7 @@ my.BackendMemory = Backbone.Model.extend({
       alert('Not supported: sync on BackendMemory with method ' + method + ' and model ' + model);
     }
   },
-  getRows: function(datasetId, numRows, start) {
+  getDocuments: function(datasetId, numRows, start) {
     if (start === undefined) {
       start = 0;
     }
@@ -184,14 +198,14 @@ my.BackendWebstore = Backbone.Model.extend({
           dataset.set({
             headers: headers
           });
-          dataset.rowCount = schema.count;
+          dataset.docCount = schema.count;
           dfd.resolve(dataset, jqxhr);
         });
         return dfd.promise();
       }
     }
   },
-  getRows: function(datasetId, numRows, start) {
+  getDocuments: function(datasetId, numRows, start) {
     if (start === undefined) {
       start = 0;
     }

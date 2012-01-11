@@ -5,86 +5,164 @@ recline.View = function($) {
 
 var my = {};
 
+// Parse a URL query string (?xyz=abc...) into a dictionary.
+function parseQueryString(q) {
+  var urlParams = {},
+    e, d = function (s) {
+      return unescape(s.replace(/\+/g, " "));
+    },
+    r = /([^&=]+)=?([^&]*)/g;
+
+  if (q && q.length && q[0] === '?') {
+    q = q.slice(1);
+  }
+  while (e = r.exec(q)) {
+    // TODO: have values be array as query string allow repetition of keys
+    urlParams[d(e[1])] = d(e[2]);
+  }
+  return urlParams;
+}
+
+// The primary view for the entire application.
+//
+// It should be initialized with a recline.Model.Dataset object and an existing
+// dom element to attach to (the existing DOM element is important for
+// rendering of FlotGraph subview).
+// 
+// To pass in configuration options use the config key in initialization hash
+// e.g.
+//
+//      var explorer = new DataExplorer({
+//        config: {...}
+//      })
+//
+// Config options:
+//
+// * displayCount: how many documents to display initially (default: 10)
+// * readOnly: true/false (default: false) value indicating whether to
+//   operate in read-only mode (hiding all editing options).
+//
+// All other views as contained in this one.
 my.DataExplorer = Backbone.View.extend({
-  tagName: 'div',
-  className: 'data-explorer',
   template: ' \
-    <div class="nav"> \
-      <span class="nav-toggle"> \
-        <input type="radio" id="datatable" name="nav-toggle" value="datatable" checked="checked" /> \
-        <label for="nav-datatable">Data Table</label> \
-        <input type="radio" id="nav-graph" name="nav-toggle" value="graph" /> \
-        <label for="nav-graph">Graph</label> \
-      </span> \
-      <ul class="nav-pagination"> \
-        <li><form class="display-count"><label for="per-page">Display count</label> <input name="displayCount" type="text" value="{{displayCount}}" /></form></li> \
+  <div class="data-explorer"> \
+    <div class="alert-messages"></div> \
+    \
+    <div class="header"> \
+      <ul class="navigation"> \
+        <li class="active"><a href="#grid" class="btn">Grid</a> \
+        <li><a href="#graph" class="btn">Graph</a></li> \
       </ul> \
+      <div class="pagination"> \
+        <form class="display-count"> \
+          Showing 0 to <input name="displayCount" type="text" value="{{displayCount}}" /> of  <span class="doc-count">{{docCount}}</span> \
+        </form> \
+      </div> \
     </div> \
     <div class="data-view-container"></div> \
+    <div class="dialog-overlay" style="display: none; z-index: 101; ">&nbsp;</div> \
+    <div class="dialog ui-draggable" style="display: none; z-index: 102; top: 101px; "> \
+      <div class="dialog-frame" style="width: 700px; visibility: visible; "> \
+        <div class="dialog-content dialog-border"></div> \
+      </div> \
+    </div> \
+  </div> \
   ',
 
   events: {
-    'change input[name="nav-toggle"]': 'navChange',
-    'submit form.display-count': 'displayCountUpdate'
+    'submit form.display-count': 'onDisplayCountUpdate'
   },
 
   initialize: function(options) {
+    var self = this;
     this.el = $(this.el);
     this.config = options.config || {};
     _.extend(this.config, {
       displayCount: 10
+      , readOnly: false
     });
-    this.draw();
-  },
-
-  displayCountUpdate: function(e) {
-    e.preventDefault();
-    this.config.displayCount = parseInt(this.el.find('input[name="displayCount"]').val());
-    this.draw();
-  },
-
-  draw: function() {
-    var self = this;
-    this.el.empty();
+    if (this.config.readOnly) {
+      this.setReadOnly();
+    }
+    // Hash of 'page' views (i.e. those for whole page) keyed by page name
+    this.pageViews = {
+      grid: new my.DataTable({
+          model: this.model
+        })
+      , graph: new my.FlotGraph({
+          model: this.model
+        })
+    };
+    // this must be called after pageViews are created
     this.render();
-    this.$dataViewContainer = this.el.find('.data-view-container');
+
+    this.router = new Backbone.Router();
+    this.setupRouting();
+    Backbone.history.start();
+
     // retrieve basic data like headers etc
     // note this.model and dataset returned are the same
     this.model.fetch().then(function(dataset) {
+      self.el.find('.doc-count').text(self.model.docCount);
       // initialize of dataTable calls render
-      self.dataTable = new my.DataTable({
-        model: dataset
-      });
-      self.flotGraph = new my.FlotGraph({
-        model: dataset
-      });
-      self.flotGraph.el.hide();
-      self.$dataViewContainer.append(self.dataTable.el)
-      self.$dataViewContainer.append(self.flotGraph.el);
-      self.model.getRows(self.config.displayCount);
+      self.model.getDocuments(self.config.displayCount);
     });
   },
 
-  render: function() {
-    var template = $.mustache(this.template, this.config);
-    $(this.el).html(template);
+  onDisplayCountUpdate: function(e) {
+    e.preventDefault();
+    this.config.displayCount = parseInt(this.el.find('input[name="displayCount"]').val());
+    this.model.getDocuments(this.config.displayCount);
   },
 
-  navChange: function(e) {
-    // TODO: really ugly and will not scale to more widgets ...
-    var widgetToShow = $(e.target).val();
-    if (widgetToShow == 'datatable') {
-      this.flotGraph.el.hide();
-      this.dataTable.el.show();
-    } else if (widgetToShow == 'graph') {
-      this.flotGraph.el.show();
-      this.dataTable.el.hide();
-      // Have to call this here
-      // If you attempt to render with flot when graph is hidden / invisible flot will complain with 
-      // Invalid dimensions for plot, width = 0, height = 0
-      // (Could hack this by moving plot left -1000 or similar ...)
-      this.flotGraph.createPlot();
-    }
+  setReadOnly: function() {
+    this.el.addClass('read-only');
+  },
+
+  render: function() {
+    var tmplData = this.model.toTemplateJSON();
+    tmplData.displayCount = this.config.displayCount;
+    var template = $.mustache(this.template, tmplData);
+    $(this.el).html(template);
+    var $dataViewContainer = this.el.find('.data-view-container');
+    _.each(this.pageViews, function(view, pageName) {
+      $dataViewContainer.append(view.el)
+    });
+  },
+
+  setupRouting: function() {
+    var self = this;
+    this.router.route('', 'grid', function() {
+      self.updateNav('grid');
+    });
+    this.router.route(/grid(\?.*)?/, 'view', function(queryString) {
+      self.updateNav('grid', queryString);
+    });
+    this.router.route(/graph(\?.*)?/, 'graph', function(queryString) {
+      self.updateNav('graph', queryString);
+      // we have to call here due to fact plot may not have been able to draw
+      // if it was hidden until now - see comments in FlotGraph.redraw
+      qsParsed = parseQueryString(queryString);
+      if ('graph' in qsParsed) {
+        var chartConfig = JSON.parse(qsParsed['graph']);
+        _.extend(self.pageViews['graph'].chartConfig, chartConfig);
+      }
+      self.pageViews['graph'].redraw();
+    });
+  },
+
+  updateNav: function(pageName, queryString) {
+    this.el.find('.navigation li').removeClass('active');
+    var $el = this.el.find('.navigation li a[href=#' + pageName + ']');
+    $el.parent().addClass('active');
+    // show the specific page
+    _.each(this.pageViews, function(view, pageViewName) {
+      if (pageViewName === pageName) {
+        view.el.show();
+      } else {
+        view.el.hide();
+      }
+    });
   }
 });
 
@@ -103,29 +181,24 @@ my.DataTable = Backbone.View.extend({
     this.model.currentDocuments.bind('reset', this.render);
     this.model.currentDocuments.bind('remove', this.render);
     this.state = {};
-    // this is nasty. Due to fact that .menu element is not inside this view but is elsewhere in DOM
-    $('.menu li a').live('click', function(e) {
-      // self.onMenuClick(e).apply(self);
-      self.onMenuClick(e);
-    });
   },
 
   events: {
-    // see initialize
-    // 'click .menu li': 'onMenuClick',
-    'click .column-header-menu': 'onColumnHeaderClick',
-    'click .row-header-menu': 'onRowHeaderClick'
+    'click .column-header-menu': 'onColumnHeaderClick'
+    , 'click .row-header-menu': 'onRowHeaderClick'
+    , 'click .data-table-menu li a': 'onMenuClick'
   },
 
-  showDialog: function(template, data) {
-    if (!data) data = {};
-    util.show('dialog');
-    util.render(template, 'dialog-content', data);
-    util.observeExit($('.dialog-content'), function() {
-      util.hide('dialog');
-    })
-    $('.dialog').draggable({ handle: '.dialog-header', cursor: 'move' });
-  },
+  // TODO: delete or re-enable (currently this code is not used from anywhere except deprecated or disabled methods (see above)).
+  // showDialog: function(template, data) {
+  //   if (!data) data = {};
+  //   util.show('dialog');
+  //   util.render(template, 'dialog-content', data);
+  //   util.observeExit($('.dialog-content'), function() {
+  //     util.hide('dialog');
+  //   })
+  //   $('.dialog').draggable({ handle: '.dialog-header', cursor: 'move' });
+  // },
 
 
   // ======================================================
@@ -133,14 +206,14 @@ my.DataTable = Backbone.View.extend({
 
   onColumnHeaderClick: function(e) {
     this.state.currentColumn = $(e.target).siblings().text();
-    util.position('menu', e);
-    util.render('columnActions', 'menu');
+    util.position('data-table-menu', e);
+    util.render('columnActions', 'data-table-menu');
   },
 
   onRowHeaderClick: function(e) {
     this.state.currentRow = $(e.target).parents('tr:first').attr('data-id');
-    util.position('menu', e);
-    util.render('rowActions', 'menu');
+    util.position('data-table-menu', e);
+    util.render('rowActions', 'data-table-menu');
   },
 
   onMenuClick: function(e) {
@@ -149,11 +222,13 @@ my.DataTable = Backbone.View.extend({
     var actions = {
       bulkEdit: function() { self.showTransformColumnDialog('bulkEdit', {name: self.state.currentColumn}) },
       transform: function() { self.showTransformDialog('transform') },
+      // TODO: Delete or re-implement ...
       csv: function() { window.location.href = app.csvUrl },
       json: function() { window.location.href = "_rewrite/api/json" },
       urlImport: function() { showDialog('urlImport') },
       pasteImport: function() { showDialog('pasteImport') },
       uploadImport: function() { showDialog('uploadImport') },
+      // END TODO
       deleteColumn: function() {
         var msg = "Are you sure? This will delete '" + self.state.currentColumn + "' from all documents.";
         // TODO:
@@ -176,7 +251,7 @@ my.DataTable = Backbone.View.extend({
           })
       }
     }
-    util.hide('menu');
+    util.hide('data-table-menu');
     actions[$(e.target).attr('data-action')]();
   },
 
@@ -214,18 +289,20 @@ my.DataTable = Backbone.View.extend({
   // ======================================================
   // Core Templating
   template: ' \
+    <div class="data-table-menu-overlay" style="display: none; z-index: 101; ">&nbsp;</div> \
+    <ul class="data-table-menu"></ul> \
     <table class="data-table" cellspacing="0"> \
       <thead> \
         <tr> \
-          {{#notEmpty}}<td class="column-header"></td>{{/notEmpty}} \
+          {{#notEmpty}}<th class="column-header"></th>{{/notEmpty}} \
           {{#headers}} \
-            <td class="column-header"> \
+            <th class="column-header"> \
               <div class="column-header-title"> \
                 <a class="column-header-menu"></a> \
                 <span class="column-header-name">{{.}}</span> \
               </div> \
               </div> \
-            </td> \
+            </th> \
           {{/headers}} \
         </tr> \
       </thead> \
@@ -240,9 +317,7 @@ my.DataTable = Backbone.View.extend({
   },
   render: function() {
     var self = this;
-    var template = $( ".dataTableTemplate:first" ).html()
-      , htmls = $.mustache(template, this.toTemplateJSON())
-      ;
+    var htmls = $.mustache(this.template, this.toTemplateJSON());
     this.el.html(htmls);
     this.model.currentDocuments.forEach(function(doc) {
       var tr = $('<tr />');
@@ -324,12 +399,15 @@ my.DataTableRow = Backbone.View.extend({
     var newData = {};
     newData[header] = newValue;
     this.model.set(newData);
-    util.notify("Updating row...", {persist: true, loader: true});
+    util.notify("Updating row...", {loader: true});
     this.model.save().then(function(response) {
-        util.notify("Row updated successfully");
+        util.notify("Row updated successfully", {category: 'success'});
       })
       .fail(function() {
-        alert('error saving');
+        util.notify('Error saving row', {
+          category: 'error',
+          persist: true
+        });
       });
   },
 
@@ -392,8 +470,8 @@ my.ColumnTransform = Backbone.View.extend({
       </div> \
     </div> \
     <div class="dialog-footer"> \
-      <button class="okButton button">&nbsp;&nbsp;Update All&nbsp;&nbsp;</button> \
-      <button class="cancelButton button">Cancel</button> \
+      <button class="okButton btn primary">&nbsp;&nbsp;Update All&nbsp;&nbsp;</button> \
+      <button class="cancelButton btn danger">Cancel</button> \
     </div> \
   ',
 
@@ -462,7 +540,8 @@ my.ColumnTransform = Backbone.View.extend({
         var docs = self.model.currentDocuments.map(function(doc) {
           return doc.toJSON();
         });
-        costco.previewTransform(docs, editFunc, self.state.currentColumn);
+        var previewData = costco.previewTransform(docs, editFunc, self.state.currentColumn);
+        util.render('editPreview', 'expression-preview-container', {rows: previewData});
       } else {
         errors.text(editFunc.errorMessage);
       }
@@ -538,93 +617,99 @@ my.DataTransform = Backbone.View.extend({
 });
 
 
+// Graph view for a Dataset using Flot graphing library.
+//
+// Initialization arguments:
+//
+// * model: recline.Model.Dataset
+// * config: (optional) graph configuration hash of form:
+//
+//        { 
+//          group: {column name for x-axis},
+//          series: [{column name for series A}, {column name series B}, ... ],
+//          graphType: 'line'
+//        }
+//
+// NB: should *not* provide an el argument to the view but must let the view
+// generate the element itself (you can then append view.el to the DOM.
 my.FlotGraph = Backbone.View.extend({
 
   tagName:  "div",
   className: "data-graph-container",
 
-  // TODO: normalize css
   template: ' \
-  <div class="panel graph"></div> \
   <div class="editor"> \
     <div class="editor-info editor-hide-info"> \
-      <h1><span></span>Help</h1> \
+      <h3 class="action-toggle-help">Help &raquo;</h3> \
       <p>To create a chart select a column (group) to use as the x-axis \
          then another column (Series A) to plot against it.</p> \
       <p>You can add add \
          additional series by clicking the "Add series" button</p> \
-      <p>Please note you must be logged in to save charts.</p> \
     </div> \
-    <form> \
-      <ul> \
-        <li class="editor-type"> \
-          <label>Graph Type</label> \
+    <form class="form-stacked"> \
+      <div class="clearfix"> \
+        <label>Graph Type</label> \
+        <div class="input editor-type"> \
           <select> \
           <option value="line">Line</option> \
           </select> \
-        </li> \
-        <li class="editor-group"> \
-          <label>Group Column (x-axis)</label> \
+        </div> \
+        <label>Group Column (x-axis)</label> \
+        <div class="input editor-group"> \
           <select> \
           {{#headers}} \
           <option value="{{.}}">{{.}}</option> \
           {{/headers}} \
           </select> \
-        </li> \
-        <li class="editor-series"> \
-          <label>Series <span>A (y-axis)</span></label> \
-          <select> \
-          {{#headers}} \
-          <option value="{{.}}">{{.}}</option> \
-          {{/headers}} \
-          </select> \
-        </li> \
-      </ul> \
-      <div class="editor-buttons"> \
-        <button class="editor-add">Add Series</button> \
+        </div> \
+        <div class="editor-series-group"> \
+          <div class="editor-series"> \
+            <label>Series <span>A (y-axis)</span></label> \
+            <div class="input"> \
+              <select> \
+              {{#headers}} \
+              <option value="{{.}}">{{.}}</option> \
+              {{/headers}} \
+              </select> \
+            </div> \
+          </div> \
+        </div> \
       </div> \
-      <div class="editor-buttons editor-submit"> \
+      <div class="editor-buttons"> \
+        <button class="btn editor-add">Add Series</button> \
+      </div> \
+      <div class="editor-buttons editor-submit" comment="hidden temporarily" style="display: none;"> \
         <button class="editor-save">Save</button> \
         <input type="hidden" class="editor-id" value="chart-1" /> \
       </div> \
     </form> \
   </div> \
+  <div class="panel graph"></div> \
 </div> \
 ',
 
-  initialize: function(options, chart) {
+  events: {
+    'change form select': 'onEditorSubmit'
+    , 'click .editor-add': 'addSeries'
+    , 'click .action-remove-series': 'removeSeries'
+    , 'click .action-toggle-help': 'toggleHelp'
+  },
+
+  initialize: function(options, config) {
     var self = this;
     this.el = $(this.el);
-    _.bindAll(this, 'render');
-    this.model.currentDocuments.bind('add', this.render);
-    this.model.currentDocuments.bind('reset', this.render);
-    this.chart = chart;
-    this.chartConfig = {
-      group: null,
-      series: [],
-      graphType: 'line'
-    };
-  },
-
-  events: {
-    // 'change select': 'onEditorSubmit'
-  },
-
-  onEditorSubmit: function(e) {
-    var select = this.el.find('.editor-group select');
-    this._getEditorData();
-    this.plot.setData(this.createSeries());
-    this.plot.resize();
-    this.plot.setupGrid();
-    this.plot.draw();
-  },
-  _getEditorData: function() {
-    $editor = this
-    var series = this.$series.map(function () {
-      return $(this).val();
-    });
-    this.chartConfig.series = $.makeArray(series)
-    this.chartConfig.group = this.el.find('.editor-group select').val();
+    _.bindAll(this, 'render', 'redraw');
+    // we need the model.headers to render properly
+    this.model.bind('change', this.render);
+    this.model.currentDocuments.bind('add', this.redraw);
+    this.model.currentDocuments.bind('reset', this.redraw);
+    this.chartConfig = _.extend({
+        group: null,
+        series: [],
+        graphType: 'line'
+      },
+      config)
+    this.render();
   },
 
   toTemplateJSON: function() {
@@ -636,24 +721,56 @@ my.FlotGraph = Backbone.View.extend({
     $(this.el).html(htmls);
     // now set a load of stuff up
     this.$graph = this.el.find('.panel.graph');
-    // event approach did not seem to work
-    this.$series  = this.el.find('.editor-series select');
-    this.$seriesClone = this.$series.parent().clone();
-    var self = this;
-    this.el.find('form select').change(function() {
-      self.onEditorSubmit.apply(self, arguments)
-    });
+    // for use later when adding additional series
+    // could be simpler just to have a common template!
+    this.$seriesClone = this.el.find('.editor-series').clone();
+    this._updateSeries();
     return this;
   },
 
-  createPlot: function () {
-    // only lines for the present
-    options = {
-      id: 'line',
-      name: 'Line Chart'
-    };
-    this.plot = $.plot(this.$graph, this.createSeries(), options);
-    return this;
+  onEditorSubmit: function(e) {
+    var select = this.el.find('.editor-group select');
+    this._getEditorData();
+    // update navigation
+    // TODO: make this less invasive (e.g. preserve other keys in query string)
+    window.location.hash = window.location.hash.split('?')[0] +
+        '?graph=' + JSON.stringify(this.chartConfig);
+    this.redraw();
+  },
+
+  redraw: function() {
+    // There appear to be issues generating a Flot graph if either:
+
+    // * The relevant div that graph attaches to his hidden at the moment of creating the plot -- Flot will complain with
+    //
+    //   Uncaught Invalid dimensions for plot, width = 0, height = 0
+    // * There is no data for the plot -- either same error or may have issues later with errors like 'non-existent node-value' 
+    var areWeVisible = !jQuery.expr.filters.hidden(this.el[0]);
+    if (!this.plot && (!areWeVisible || this.model.currentDocuments.length == 0)) {
+      return
+    }
+    // create this.plot and cache it
+    if (!this.plot) {
+      // only lines for the present
+      options = {
+        id: 'line',
+        name: 'Line Chart'
+      };
+      this.plot = $.plot(this.$graph, this.createSeries(), options);
+    } 
+    this.plot.setData(this.createSeries());
+    this.plot.resize();
+    this.plot.setupGrid();
+    this.plot.draw();
+  },
+
+  _getEditorData: function() {
+    $editor = this
+    var series = this.$series.map(function () {
+      return $(this).val();
+    });
+    this.chartConfig.series = $.makeArray(series)
+    this.chartConfig.group = this.el.find('.editor-group select').val();
   },
 
   createSeries: function () {
@@ -676,19 +793,51 @@ my.FlotGraph = Backbone.View.extend({
     return series;
   },
 
-  // TODO: finish porting this function
-  addSeries: function () {
-    var element = this.seriesClone.clone(),
+  // Public: Adds a new empty series select box to the editor.
+  //
+  // All but the first select box will have a remove button that allows them
+  // to be removed.
+  //
+  // Returns itself.
+  addSeries: function (e) {
+    e.preventDefault();
+    var element = this.$seriesClone.clone(),
         label   = element.find('label'),
-        index   = this.series.length;
+        index   = this.$series.length;
 
-    this.el.$series.parent().find('ul').append(element);
-    this.updateSeries();
-
-    label.append('<a href="#remove">Remove</a>');
-    label.find('span').text(String.fromCharCode(this.series.length + 64));
-
+    this.el.find('.editor-series-group').append(element);
+    this._updateSeries();
+    label.append(' [<a href="#remove" class="action-remove-series">Remove</a>]');
+    label.find('span').text(String.fromCharCode(this.$series.length + 64));
     return this;
+  },
+
+  // Public: Removes a series list item from the editor.
+  //
+  // Also updates the labels of the remaining series elements.
+  removeSeries: function (e) {
+    e.preventDefault();
+    var $el = $(e.target);
+    $el.parent().parent().remove();
+    this._updateSeries();
+    this.$series.each(function (index) {
+      if (index > 0) {
+        var labelSpan = $(this).prev().find('span');
+        labelSpan.text(String.fromCharCode(index + 65));
+      }
+    });
+    this.onEditorSubmit();
+  },
+
+  toggleHelp: function() {
+    this.el.find('.editor-info').toggleClass('editor-hide-info');
+  },
+
+  // Private: Resets the series property to reference the select elements.
+  //
+  // Returns itself.
+  _updateSeries: function () {
+    this.$series  = this.el.find('.editor-series select');
   }
 });
 
