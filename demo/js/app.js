@@ -7,6 +7,7 @@ $(function() {
     el: window.$container
     , model: dataset
   });
+  Backbone.history.start();
   setupLoadFromWebstore(function(dataset) {
     window.dataExplorer.remove();
     window.dataExplorer = null;
