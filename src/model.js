@@ -214,7 +214,7 @@ my.BackendWebstore = Backbone.Model.extend({
     }
     var base = this.get('url');
     var jqxhr = $.ajax({
-      url: base + '.json',
+      url: base + '.json?_limit=' + numRows,
       dataType: 'jsonp',
       jsonp: '_callback',
       cache: true
