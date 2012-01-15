@@ -262,22 +262,23 @@ app.sammy = $.sammy(function () {
 });
 
 $(function() {
-  // do not like all these window globals ...
-  // window.$container = $('.container .right-panel');
-  window.$container = $('.data-explorer-here');
+  var $el = $('<div />');
+  $el.appendTo($('.data-explorer-here'));
   var dataset = demoDataset();
   window.dataExplorer = new recline.View.DataExplorer({
-    el: window.$container
+    el: $el
     , model: dataset
   });
   Backbone.history.start();
   setupLoadFromWebstore(function(dataset) {
     window.dataExplorer.remove();
+    var $el = $('<div />');
+    $el.appendTo($('.data-explorer-here'));
     window.dataExplorer = null;
     window.dataExplorer = new recline.View.DataExplorer({
-      model: dataset,
+      el: $el
+      , model: dataset
     });
-    window.$container.append(window.dataExplorer.el);
   });
   $('a.set-read-only').click(function() {
     window.dataExplorer.setReadOnly();
