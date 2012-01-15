@@ -98,7 +98,6 @@ my.DataExplorer = Backbone.View.extend({
 
     this.router = new Backbone.Router();
     this.setupRouting();
-    Backbone.history.start();
 
     // retrieve basic data like headers etc
     // note this.model and dataset returned are the same
