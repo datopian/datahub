@@ -4,6 +4,8 @@ toolkit, all in pure javascript and html.
 
 Designed for standalone use or as a library to integrate into your own app.
 
+Live demo: http://okfnlabs.org/recline/demo/
+
 
 ## Features
 
