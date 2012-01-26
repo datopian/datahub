@@ -102,7 +102,7 @@ my.DataExplorer = Backbone.View.extend({
     // retrieve basic data like headers etc
     // note this.model and dataset returned are the same
     this.model.fetch().then(function(dataset) {
-      self.el.find('.doc-count').text(self.model.docCount);
+      self.el.find('.doc-count').text(self.model.docCount || 'Unknown');
       // initialize of dataTable calls render
       self.model.getDocuments(self.config.displayCount);
     });
