@@ -1,4 +1,4 @@
-importScripts('lib/underscore.js'); 
+// importScripts('lib/underscore.js'); 
 
 onmessage = function(message) {
   
