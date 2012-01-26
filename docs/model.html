@@ -1,0 +1,281 @@
+<!DOCTYPE html>  <html> <head>   <title>model.js</title>   <meta http-equiv="content-type" content="text/html; charset=UTF-8">   <link rel="stylesheet" media="all" href="docco.css" /> </head> <body>   <div id="container">     <div id="background"></div>            <div id="jump_to">         Jump To &hellip;         <div id="jump_wrapper">           <div id="jump_page">                                           <a class="source" href="costco-csv-worker.html">                 costco-csv-worker.js               </a>                                           <a class="source" href="costco.html">                 costco.js               </a>                                           <a class="source" href="model.html">                 model.js               </a>                                           <a class="source" href="util.html">                 util.js               </a>                                           <a class="source" href="view.html">                 view.js               </a>                        </div>         </div>       </div>          <table cellpadding="0" cellspacing="0">       <thead>         <tr>           <th class="docs">             <h1>               model.js             </h1>           </th>           <th class="code">           </th>         </tr>       </thead>       <tbody>                               <tr id="section-1">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-1">&#182;</a>               </div>                            </td>             <td class="code">               <div class="highlight"><pre><span class="k">this</span><span class="p">.</span><span class="nx">recline</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">recline</span> <span class="o">||</span> <span class="p">{};</span></pre></div>             </td>           </tr>                               <tr id="section-2">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-2">&#182;</a>               </div>               <p>Models module following classic module pattern</p>             </td>             <td class="code">               <div class="highlight"><pre><span class="nx">recline</span><span class="p">.</span><span class="nx">Model</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">$</span><span class="p">)</span> <span class="p">{</span>
+
+<span class="kd">var</span> <span class="nx">my</span> <span class="o">=</span> <span class="p">{};</span></pre></div>             </td>           </tr>                               <tr id="section-3">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-3">&#182;</a>               </div>               <p>A Dataset model.</p>
+
+<p>Other than standard list of Backbone attributes it has two important attributes:</p>
+
+<ul>
+<li>currentDocuments: a DocumentList containing the Documents we have currently loaded for viewing (you update currentDocuments by calling getRows)</li>
+<li>docCount: total number of documents in this dataset (obtained on a fetch for this Dataset)</li>
+</ul>             </td>             <td class="code">               <div class="highlight"><pre><span class="nx">my</span><span class="p">.</span><span class="nx">Dataset</span> <span class="o">=</span> <span class="nx">Backbone</span><span class="p">.</span><span class="nx">Model</span><span class="p">.</span><span class="nx">extend</span><span class="p">({</span>
+  <span class="nx">__type__</span><span class="o">:</span> <span class="s1">&#39;Dataset&#39;</span><span class="p">,</span>
+  <span class="nx">initialize</span><span class="o">:</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">currentDocuments</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">my</span><span class="p">.</span><span class="nx">DocumentList</span><span class="p">();</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">docCount</span> <span class="o">=</span> <span class="kc">null</span><span class="p">;</span>
+  <span class="p">},</span></pre></div>             </td>           </tr>                               <tr id="section-4">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-4">&#182;</a>               </div>               <p>AJAX method with promise API to get rows (documents) from the backend.</p>
+
+<p>Resulting DocumentList are used to reset this.currentDocuments and are
+also returned.</p>
+
+<p>:param numRows: passed onto backend getDocuments.
+:param start: passed onto backend getDocuments.</p>
+
+<p>this does not fit very well with Backbone setup. Backbone really expects you to know the ids of objects your are fetching (which you do in classic RESTful ajax-y world). But this paradigm does not fill well with data set up we have here.
+This also illustrates the limitations of separating the Dataset and the Backend</p>             </td>             <td class="code">               <div class="highlight"><pre>  <span class="nx">getDocuments</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">numRows</span><span class="p">,</span> <span class="nx">start</span><span class="p">)</span> <span class="p">{</span>
+    <span class="kd">var</span> <span class="nx">self</span> <span class="o">=</span> <span class="k">this</span><span class="p">;</span>
+    <span class="kd">var</span> <span class="nx">dfd</span> <span class="o">=</span> <span class="nx">$</span><span class="p">.</span><span class="nx">Deferred</span><span class="p">();</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">backend</span><span class="p">.</span><span class="nx">getDocuments</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">id</span><span class="p">,</span> <span class="nx">numRows</span><span class="p">,</span> <span class="nx">start</span><span class="p">).</span><span class="nx">then</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">rows</span><span class="p">)</span> <span class="p">{</span>
+      <span class="kd">var</span> <span class="nx">docs</span> <span class="o">=</span> <span class="nx">_</span><span class="p">.</span><span class="nx">map</span><span class="p">(</span><span class="nx">rows</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">row</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">return</span> <span class="k">new</span> <span class="nx">my</span><span class="p">.</span><span class="nx">Document</span><span class="p">(</span><span class="nx">row</span><span class="p">);</span>
+      <span class="p">});</span>
+      <span class="nx">self</span><span class="p">.</span><span class="nx">currentDocuments</span><span class="p">.</span><span class="nx">reset</span><span class="p">(</span><span class="nx">docs</span><span class="p">);</span>
+      <span class="nx">dfd</span><span class="p">.</span><span class="nx">resolve</span><span class="p">(</span><span class="nx">self</span><span class="p">.</span><span class="nx">currentDocuments</span><span class="p">);</span>
+    <span class="p">});</span>
+    <span class="k">return</span> <span class="nx">dfd</span><span class="p">.</span><span class="nx">promise</span><span class="p">();</span>
+  <span class="p">},</span>
+
+  <span class="nx">toTemplateJSON</span><span class="o">:</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+    <span class="kd">var</span> <span class="nx">data</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">toJSON</span><span class="p">();</span>
+    <span class="nx">data</span><span class="p">.</span><span class="nx">docCount</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">docCount</span><span class="p">;</span>
+    <span class="k">return</span> <span class="nx">data</span><span class="p">;</span>
+  <span class="p">}</span>
+<span class="p">});</span>
+
+<span class="nx">my</span><span class="p">.</span><span class="nx">Document</span> <span class="o">=</span> <span class="nx">Backbone</span><span class="p">.</span><span class="nx">Model</span><span class="p">.</span><span class="nx">extend</span><span class="p">({</span>
+  <span class="nx">__type__</span><span class="o">:</span> <span class="s1">&#39;Document&#39;</span>
+<span class="p">});</span>
+
+<span class="nx">my</span><span class="p">.</span><span class="nx">DocumentList</span> <span class="o">=</span> <span class="nx">Backbone</span><span class="p">.</span><span class="nx">Collection</span><span class="p">.</span><span class="nx">extend</span><span class="p">({</span>
+  <span class="nx">__type__</span><span class="o">:</span> <span class="s1">&#39;DocumentList&#39;</span><span class="p">,</span></pre></div>             </td>           </tr>                               <tr id="section-5">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-5">&#182;</a>               </div>               <p>webStore: new WebStore(this.url),</p>             </td>             <td class="code">               <div class="highlight"><pre>  <span class="nx">model</span><span class="o">:</span> <span class="nx">my</span><span class="p">.</span><span class="nx">Document</span>
+<span class="p">});</span></pre></div>             </td>           </tr>                               <tr id="section-6">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-6">&#182;</a>               </div>               <h1>Backends section</h1>             </td>             <td class="code">               <div class="highlight"><pre><span class="nx">my</span><span class="p">.</span><span class="nx">setBackend</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">backend</span><span class="p">)</span> <span class="p">{</span>
+  <span class="nx">Backbone</span><span class="p">.</span><span class="nx">sync</span> <span class="o">=</span> <span class="nx">backend</span><span class="p">.</span><span class="nx">sync</span><span class="p">;</span>
+<span class="p">};</span></pre></div>             </td>           </tr>                               <tr id="section-7">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-7">&#182;</a>               </div>               <p>Backend which just caches in memory</p>
+
+<p>Does not need to be a backbone model but provides some conveniences</p>             </td>             <td class="code">               <div class="highlight"><pre><span class="nx">my</span><span class="p">.</span><span class="nx">BackendMemory</span> <span class="o">=</span> <span class="nx">Backbone</span><span class="p">.</span><span class="nx">Model</span><span class="p">.</span><span class="nx">extend</span><span class="p">({</span></pre></div>             </td>           </tr>                               <tr id="section-8">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-8">&#182;</a>               </div>               <p>Initialize a Backend with a local in-memory dataset.</p>
+
+<p>NB: We can handle one and only one dataset at a time.</p>
+
+<p>:param dataset: the data for a dataset on which operations will be
+performed. Its form should be a hash with metadata and data
+attributes.</p>
+
+<ul>
+<li>metadata: hash of key/value attributes of any kind (but usually with title attribute)</li>
+<li><p>data: hash with 2 keys:</p>
+
+<ul><li>headers: list of header names/labels</li>
+<li>rows: list of hashes, each hash being one row. A row <em>must</em> have an id attribute which is unique.</li></ul>
+
+<p>Example of data:</p>
+
+<p>{
+       headers: ['x', 'y', 'z']
+     , rows: [
+         {id: 0, x: 1, y: 2, z: 3}
+       , {id: 1, x: 2, y: 4, z: 6}
+     ]
+   };</p></li>
+</ul>             </td>             <td class="code">               <div class="highlight"><pre>  <span class="nx">initialize</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">dataset</span><span class="p">)</span> <span class="p">{</span></pre></div>             </td>           </tr>                               <tr id="section-9">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-9">&#182;</a>               </div>               <p>deep copy</p>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="k">this</span><span class="p">.</span><span class="nx">_datasetAsData</span> <span class="o">=</span> <span class="nx">$</span><span class="p">.</span><span class="nx">extend</span><span class="p">(</span><span class="kc">true</span><span class="p">,</span> <span class="p">{},</span> <span class="nx">dataset</span><span class="p">);</span>
+    <span class="nx">_</span><span class="p">.</span><span class="nx">bindAll</span><span class="p">(</span><span class="k">this</span><span class="p">,</span> <span class="s1">&#39;sync&#39;</span><span class="p">);</span>
+  <span class="p">},</span> 
+  <span class="nx">getDataset</span><span class="o">:</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+    <span class="kd">var</span> <span class="nx">dataset</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">my</span><span class="p">.</span><span class="nx">Dataset</span><span class="p">({</span>
+      <span class="nx">id</span><span class="o">:</span> <span class="k">this</span><span class="p">.</span><span class="nx">_datasetAsData</span><span class="p">.</span><span class="nx">metadata</span><span class="p">.</span><span class="nx">id</span>
+    <span class="p">});</span></pre></div>             </td>           </tr>                               <tr id="section-10">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-10">&#182;</a>               </div>               <p>this is a bit weird but problem is in sync this is set to parent model object so need to give dataset a reference to backend explicitly</p>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="nx">dataset</span><span class="p">.</span><span class="nx">backend</span> <span class="o">=</span> <span class="k">this</span><span class="p">;</span>
+    <span class="k">return</span> <span class="nx">dataset</span><span class="p">;</span>
+  <span class="p">},</span>
+  <span class="nx">sync</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">method</span><span class="p">,</span> <span class="nx">model</span><span class="p">,</span> <span class="nx">options</span><span class="p">)</span> <span class="p">{</span>
+    <span class="kd">var</span> <span class="nx">self</span> <span class="o">=</span> <span class="k">this</span><span class="p">;</span>
+    <span class="k">if</span> <span class="p">(</span><span class="nx">method</span> <span class="o">===</span> <span class="s2">&quot;read&quot;</span><span class="p">)</span> <span class="p">{</span>
+      <span class="kd">var</span> <span class="nx">dfd</span> <span class="o">=</span> <span class="nx">$</span><span class="p">.</span><span class="nx">Deferred</span><span class="p">();</span></pre></div>             </td>           </tr>                               <tr id="section-11">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-11">&#182;</a>               </div>               <p>this switching on object type is rather horrible
+think may make more sense to do work in individual objects rather than in central Backbone.sync</p>             </td>             <td class="code">               <div class="highlight"><pre>      <span class="k">if</span> <span class="p">(</span><span class="nx">model</span><span class="p">.</span><span class="nx">__type__</span> <span class="o">==</span> <span class="s1">&#39;Dataset&#39;</span><span class="p">)</span> <span class="p">{</span>
+        <span class="kd">var</span> <span class="nx">dataset</span> <span class="o">=</span> <span class="nx">model</span><span class="p">;</span>
+        <span class="kd">var</span> <span class="nx">rawDataset</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">_datasetAsData</span><span class="p">;</span>
+        <span class="nx">dataset</span><span class="p">.</span><span class="nx">set</span><span class="p">(</span><span class="nx">rawDataset</span><span class="p">.</span><span class="nx">metadata</span><span class="p">);</span>
+        <span class="nx">dataset</span><span class="p">.</span><span class="nx">set</span><span class="p">({</span>
+          <span class="nx">headers</span><span class="o">:</span> <span class="nx">rawDataset</span><span class="p">.</span><span class="nx">data</span><span class="p">.</span><span class="nx">headers</span>
+          <span class="p">});</span>
+        <span class="nx">dataset</span><span class="p">.</span><span class="nx">docCount</span> <span class="o">=</span> <span class="nx">rawDataset</span><span class="p">.</span><span class="nx">data</span><span class="p">.</span><span class="nx">rows</span><span class="p">.</span><span class="nx">length</span><span class="p">;</span>
+        <span class="nx">dfd</span><span class="p">.</span><span class="nx">resolve</span><span class="p">(</span><span class="nx">dataset</span><span class="p">);</span>
+      <span class="p">}</span>
+      <span class="k">return</span> <span class="nx">dfd</span><span class="p">.</span><span class="nx">promise</span><span class="p">();</span>
+    <span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="nx">method</span> <span class="o">===</span> <span class="s1">&#39;update&#39;</span><span class="p">)</span> <span class="p">{</span>
+      <span class="kd">var</span> <span class="nx">dfd</span> <span class="o">=</span> <span class="nx">$</span><span class="p">.</span><span class="nx">Deferred</span><span class="p">();</span>
+      <span class="k">if</span> <span class="p">(</span><span class="nx">model</span><span class="p">.</span><span class="nx">__type__</span> <span class="o">==</span> <span class="s1">&#39;Document&#39;</span><span class="p">)</span> <span class="p">{</span>
+        <span class="nx">_</span><span class="p">.</span><span class="nx">each</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">_datasetAsData</span><span class="p">.</span><span class="nx">data</span><span class="p">.</span><span class="nx">rows</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">row</span><span class="p">,</span> <span class="nx">idx</span><span class="p">)</span> <span class="p">{</span>
+          <span class="k">if</span><span class="p">(</span><span class="nx">row</span><span class="p">.</span><span class="nx">id</span> <span class="o">===</span> <span class="nx">model</span><span class="p">.</span><span class="nx">id</span><span class="p">)</span> <span class="p">{</span>
+            <span class="nx">self</span><span class="p">.</span><span class="nx">_datasetAsData</span><span class="p">.</span><span class="nx">data</span><span class="p">.</span><span class="nx">rows</span><span class="p">[</span><span class="nx">idx</span><span class="p">]</span> <span class="o">=</span> <span class="nx">model</span><span class="p">.</span><span class="nx">toJSON</span><span class="p">();</span>
+          <span class="p">}</span>
+        <span class="p">});</span>
+        <span class="nx">dfd</span><span class="p">.</span><span class="nx">resolve</span><span class="p">(</span><span class="nx">model</span><span class="p">);</span>
+      <span class="p">}</span>
+      <span class="k">return</span> <span class="nx">dfd</span><span class="p">.</span><span class="nx">promise</span><span class="p">();</span>
+    <span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="nx">method</span> <span class="o">===</span> <span class="s1">&#39;delete&#39;</span><span class="p">)</span> <span class="p">{</span>
+      <span class="kd">var</span> <span class="nx">dfd</span> <span class="o">=</span> <span class="nx">$</span><span class="p">.</span><span class="nx">Deferred</span><span class="p">();</span>
+      <span class="k">if</span> <span class="p">(</span><span class="nx">model</span><span class="p">.</span><span class="nx">__type__</span> <span class="o">==</span> <span class="s1">&#39;Document&#39;</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">this</span><span class="p">.</span><span class="nx">_datasetAsData</span><span class="p">.</span><span class="nx">data</span><span class="p">.</span><span class="nx">rows</span> <span class="o">=</span> <span class="nx">_</span><span class="p">.</span><span class="nx">reject</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">_datasetAsData</span><span class="p">.</span><span class="nx">data</span><span class="p">.</span><span class="nx">rows</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">row</span><span class="p">)</span> <span class="p">{</span>
+          <span class="k">return</span> <span class="p">(</span><span class="nx">row</span><span class="p">.</span><span class="nx">id</span> <span class="o">===</span> <span class="nx">model</span><span class="p">.</span><span class="nx">id</span><span class="p">);</span>
+        <span class="p">});</span>
+        <span class="nx">dfd</span><span class="p">.</span><span class="nx">resolve</span><span class="p">(</span><span class="nx">model</span><span class="p">);</span>
+      <span class="p">}</span>
+      <span class="k">return</span> <span class="nx">dfd</span><span class="p">.</span><span class="nx">promise</span><span class="p">();</span>
+    <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+      <span class="nx">alert</span><span class="p">(</span><span class="s1">&#39;Not supported: sync on BackendMemory with method &#39;</span> <span class="o">+</span> <span class="nx">method</span> <span class="o">+</span> <span class="s1">&#39; and model &#39;</span> <span class="o">+</span> <span class="nx">model</span><span class="p">);</span>
+    <span class="p">}</span>
+  <span class="p">},</span>
+  <span class="nx">getDocuments</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">datasetId</span><span class="p">,</span> <span class="nx">numRows</span><span class="p">,</span> <span class="nx">start</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">if</span> <span class="p">(</span><span class="nx">start</span> <span class="o">===</span> <span class="kc">undefined</span><span class="p">)</span> <span class="p">{</span>
+      <span class="nx">start</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+    <span class="p">}</span>
+    <span class="k">if</span> <span class="p">(</span><span class="nx">numRows</span> <span class="o">===</span> <span class="kc">undefined</span><span class="p">)</span> <span class="p">{</span>
+      <span class="nx">numRows</span> <span class="o">=</span> <span class="mi">10</span><span class="p">;</span>
+    <span class="p">}</span>
+    <span class="kd">var</span> <span class="nx">dfd</span> <span class="o">=</span> <span class="nx">$</span><span class="p">.</span><span class="nx">Deferred</span><span class="p">();</span>
+    <span class="nx">rows</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">_datasetAsData</span><span class="p">.</span><span class="nx">data</span><span class="p">.</span><span class="nx">rows</span><span class="p">;</span>
+    <span class="kd">var</span> <span class="nx">results</span> <span class="o">=</span> <span class="nx">rows</span><span class="p">.</span><span class="nx">slice</span><span class="p">(</span><span class="nx">start</span><span class="p">,</span> <span class="nx">start</span><span class="o">+</span><span class="nx">numRows</span><span class="p">);</span>
+    <span class="nx">dfd</span><span class="p">.</span><span class="nx">resolve</span><span class="p">(</span><span class="nx">results</span><span class="p">);</span>
+    <span class="k">return</span> <span class="nx">dfd</span><span class="p">.</span><span class="nx">promise</span><span class="p">();</span>
+ <span class="p">}</span>
+<span class="p">});</span></pre></div>             </td>           </tr>                               <tr id="section-12">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-12">&#182;</a>               </div>               <p>Webstore Backend for connecting to the Webstore</p>
+
+<p>Initializing model argument must contain a url attribute pointing to
+relevant Webstore table.</p>
+
+<p>Designed to only attach to one dataset and one dataset only ...
+Could generalize to support attaching to different datasets</p>             </td>             <td class="code">               <div class="highlight"><pre><span class="nx">my</span><span class="p">.</span><span class="nx">BackendWebstore</span> <span class="o">=</span> <span class="nx">Backbone</span><span class="p">.</span><span class="nx">Model</span><span class="p">.</span><span class="nx">extend</span><span class="p">({</span>
+  <span class="nx">getDataset</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">id</span><span class="p">)</span> <span class="p">{</span>
+    <span class="kd">var</span> <span class="nx">dataset</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">my</span><span class="p">.</span><span class="nx">Dataset</span><span class="p">({</span>
+      <span class="nx">id</span><span class="o">:</span> <span class="nx">id</span>
+    <span class="p">});</span>
+    <span class="nx">dataset</span><span class="p">.</span><span class="nx">backend</span> <span class="o">=</span> <span class="k">this</span><span class="p">;</span>
+    <span class="k">return</span> <span class="nx">dataset</span><span class="p">;</span>
+  <span class="p">},</span>
+  <span class="nx">sync</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">method</span><span class="p">,</span> <span class="nx">model</span><span class="p">,</span> <span class="nx">options</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">if</span> <span class="p">(</span><span class="nx">method</span> <span class="o">===</span> <span class="s2">&quot;read&quot;</span><span class="p">)</span> <span class="p">{</span></pre></div>             </td>           </tr>                               <tr id="section-13">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-13">&#182;</a>               </div>               <p>this switching on object type is rather horrible
+think may make more sense to do work in individual objects rather than in central Backbone.sync</p>             </td>             <td class="code">               <div class="highlight"><pre>      <span class="k">if</span> <span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">__type__</span> <span class="o">==</span> <span class="s1">&#39;Dataset&#39;</span><span class="p">)</span> <span class="p">{</span>
+        <span class="kd">var</span> <span class="nx">dataset</span> <span class="o">=</span> <span class="k">this</span><span class="p">;</span></pre></div>             </td>           </tr>                               <tr id="section-14">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-14">&#182;</a>               </div>               <p>get the schema and return</p>             </td>             <td class="code">               <div class="highlight"><pre>        <span class="kd">var</span> <span class="nx">base</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">backend</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s1">&#39;url&#39;</span><span class="p">);</span>
+        <span class="kd">var</span> <span class="nx">schemaUrl</span> <span class="o">=</span> <span class="nx">base</span> <span class="o">+</span> <span class="s1">&#39;/schema.json&#39;</span><span class="p">;</span>
+        <span class="kd">var</span> <span class="nx">jqxhr</span> <span class="o">=</span> <span class="nx">$</span><span class="p">.</span><span class="nx">ajax</span><span class="p">({</span>
+          <span class="nx">url</span><span class="o">:</span> <span class="nx">schemaUrl</span><span class="p">,</span>
+          <span class="nx">dataType</span><span class="o">:</span> <span class="s1">&#39;jsonp&#39;</span><span class="p">,</span>
+          <span class="nx">jsonp</span><span class="o">:</span> <span class="s1">&#39;_callback&#39;</span>
+          <span class="p">});</span>
+        <span class="kd">var</span> <span class="nx">dfd</span> <span class="o">=</span> <span class="nx">$</span><span class="p">.</span><span class="nx">Deferred</span><span class="p">();</span>
+        <span class="nx">jqxhr</span><span class="p">.</span><span class="nx">then</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">schema</span><span class="p">)</span> <span class="p">{</span>
+          <span class="nx">headers</span> <span class="o">=</span> <span class="nx">_</span><span class="p">.</span><span class="nx">map</span><span class="p">(</span><span class="nx">schema</span><span class="p">.</span><span class="nx">data</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">item</span><span class="p">)</span> <span class="p">{</span>
+            <span class="k">return</span> <span class="nx">item</span><span class="p">.</span><span class="nx">name</span><span class="p">;</span>
+          <span class="p">});</span>
+          <span class="nx">dataset</span><span class="p">.</span><span class="nx">set</span><span class="p">({</span>
+            <span class="nx">headers</span><span class="o">:</span> <span class="nx">headers</span>
+          <span class="p">});</span>
+          <span class="nx">dataset</span><span class="p">.</span><span class="nx">docCount</span> <span class="o">=</span> <span class="nx">schema</span><span class="p">.</span><span class="nx">count</span><span class="p">;</span>
+          <span class="nx">dfd</span><span class="p">.</span><span class="nx">resolve</span><span class="p">(</span><span class="nx">dataset</span><span class="p">,</span> <span class="nx">jqxhr</span><span class="p">);</span>
+        <span class="p">});</span>
+        <span class="k">return</span> <span class="nx">dfd</span><span class="p">.</span><span class="nx">promise</span><span class="p">();</span>
+      <span class="p">}</span>
+    <span class="p">}</span>
+  <span class="p">},</span>
+  <span class="nx">getDocuments</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">datasetId</span><span class="p">,</span> <span class="nx">numRows</span><span class="p">,</span> <span class="nx">start</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">if</span> <span class="p">(</span><span class="nx">start</span> <span class="o">===</span> <span class="kc">undefined</span><span class="p">)</span> <span class="p">{</span>
+      <span class="nx">start</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+    <span class="p">}</span>
+    <span class="k">if</span> <span class="p">(</span><span class="nx">numRows</span> <span class="o">===</span> <span class="kc">undefined</span><span class="p">)</span> <span class="p">{</span>
+      <span class="nx">numRows</span> <span class="o">=</span> <span class="mi">10</span><span class="p">;</span>
+    <span class="p">}</span>
+    <span class="kd">var</span> <span class="nx">base</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s1">&#39;url&#39;</span><span class="p">);</span>
+    <span class="kd">var</span> <span class="nx">jqxhr</span> <span class="o">=</span> <span class="nx">$</span><span class="p">.</span><span class="nx">ajax</span><span class="p">({</span>
+      <span class="nx">url</span><span class="o">:</span> <span class="nx">base</span> <span class="o">+</span> <span class="s1">&#39;.json?_limit=&#39;</span> <span class="o">+</span> <span class="nx">numRows</span><span class="p">,</span>
+      <span class="nx">dataType</span><span class="o">:</span> <span class="s1">&#39;jsonp&#39;</span><span class="p">,</span>
+      <span class="nx">jsonp</span><span class="o">:</span> <span class="s1">&#39;_callback&#39;</span><span class="p">,</span>
+      <span class="nx">cache</span><span class="o">:</span> <span class="kc">true</span>
+      <span class="p">});</span>
+    <span class="kd">var</span> <span class="nx">dfd</span> <span class="o">=</span> <span class="nx">$</span><span class="p">.</span><span class="nx">Deferred</span><span class="p">();</span>
+    <span class="nx">jqxhr</span><span class="p">.</span><span class="nx">then</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">results</span><span class="p">)</span> <span class="p">{</span>
+      <span class="nx">dfd</span><span class="p">.</span><span class="nx">resolve</span><span class="p">(</span><span class="nx">results</span><span class="p">.</span><span class="nx">data</span><span class="p">);</span>
+    <span class="p">});</span>
+    <span class="k">return</span> <span class="nx">dfd</span><span class="p">.</span><span class="nx">promise</span><span class="p">();</span>
+ <span class="p">}</span>
+<span class="p">});</span></pre></div>             </td>           </tr>                               <tr id="section-15">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-15">&#182;</a>               </div>               <p>DataProxy Backend for connecting to the DataProxy</p>
+
+<p>Example initialization:</p>
+
+<pre><code>BackendDataProxy({
+  model: {
+    url: {url-of-data-to-proxy},
+    type: xls || csv,
+    format: json || jsonp # return format (defaults to jsonp)
+    dataproxy: {url-to-proxy} # defaults to http://jsonpdataproxy.appspot.com
+  }
+})
+</code></pre>             </td>             <td class="code">               <div class="highlight"><pre><span class="nx">my</span><span class="p">.</span><span class="nx">BackendDataProxy</span> <span class="o">=</span> <span class="nx">Backbone</span><span class="p">.</span><span class="nx">Model</span><span class="p">.</span><span class="nx">extend</span><span class="p">({</span>
+  <span class="nx">defaults</span><span class="o">:</span> <span class="p">{</span>
+    <span class="nx">dataproxy</span><span class="o">:</span> <span class="s1">&#39;http://jsonpdataproxy.appspot.com&#39;</span>
+    <span class="p">,</span> <span class="nx">type</span><span class="o">:</span> <span class="s1">&#39;csv&#39;</span>
+    <span class="p">,</span> <span class="nx">format</span><span class="o">:</span> <span class="s1">&#39;jsonp&#39;</span>
+  <span class="p">},</span>
+  <span class="nx">getDataset</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">id</span><span class="p">)</span> <span class="p">{</span>
+    <span class="kd">var</span> <span class="nx">dataset</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">my</span><span class="p">.</span><span class="nx">Dataset</span><span class="p">({</span>
+      <span class="nx">id</span><span class="o">:</span> <span class="nx">id</span>
+    <span class="p">});</span>
+    <span class="nx">dataset</span><span class="p">.</span><span class="nx">backend</span> <span class="o">=</span> <span class="k">this</span><span class="p">;</span>
+    <span class="k">return</span> <span class="nx">dataset</span><span class="p">;</span>
+  <span class="p">},</span>
+  <span class="nx">sync</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">method</span><span class="p">,</span> <span class="nx">model</span><span class="p">,</span> <span class="nx">options</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">if</span> <span class="p">(</span><span class="nx">method</span> <span class="o">===</span> <span class="s2">&quot;read&quot;</span><span class="p">)</span> <span class="p">{</span></pre></div>             </td>           </tr>                               <tr id="section-16">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-16">&#182;</a>               </div>               <p>this switching on object type is rather horrible
+think may make more sense to do work in individual objects rather than in central Backbone.sync</p>             </td>             <td class="code">               <div class="highlight"><pre>      <span class="k">if</span> <span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">__type__</span> <span class="o">==</span> <span class="s1">&#39;Dataset&#39;</span><span class="p">)</span> <span class="p">{</span>
+        <span class="kd">var</span> <span class="nx">dataset</span> <span class="o">=</span> <span class="k">this</span><span class="p">;</span></pre></div>             </td>           </tr>                               <tr id="section-17">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-17">&#182;</a>               </div>               <p>get the schema and return</p>             </td>             <td class="code">               <div class="highlight"><pre>        <span class="kd">var</span> <span class="nx">base</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">backend</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s1">&#39;dataproxy&#39;</span><span class="p">);</span>
+        <span class="kd">var</span> <span class="nx">data</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">backend</span><span class="p">.</span><span class="nx">toJSON</span><span class="p">();</span>
+        <span class="k">delete</span> <span class="nx">data</span><span class="p">[</span><span class="s1">&#39;dataproxy&#39;</span><span class="p">];</span></pre></div>             </td>           </tr>                               <tr id="section-18">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-18">&#182;</a>               </div>               <p>TODO: should we cache for extra efficiency</p>             </td>             <td class="code">               <div class="highlight"><pre>        <span class="nx">data</span><span class="p">[</span><span class="s1">&#39;max-results&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
+        <span class="kd">var</span> <span class="nx">jqxhr</span> <span class="o">=</span> <span class="nx">$</span><span class="p">.</span><span class="nx">ajax</span><span class="p">({</span>
+          <span class="nx">url</span><span class="o">:</span> <span class="nx">base</span>
+          <span class="p">,</span> <span class="nx">data</span><span class="o">:</span> <span class="nx">data</span>
+          <span class="p">,</span> <span class="nx">dataType</span><span class="o">:</span> <span class="s1">&#39;jsonp&#39;</span>
+        <span class="p">});</span>
+        <span class="kd">var</span> <span class="nx">dfd</span> <span class="o">=</span> <span class="nx">$</span><span class="p">.</span><span class="nx">Deferred</span><span class="p">();</span>
+        <span class="nx">jqxhr</span><span class="p">.</span><span class="nx">then</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">results</span><span class="p">)</span> <span class="p">{</span>
+          <span class="nx">dataset</span><span class="p">.</span><span class="nx">set</span><span class="p">({</span>
+            <span class="nx">headers</span><span class="o">:</span> <span class="nx">results</span><span class="p">.</span><span class="nx">fields</span>
+          <span class="p">});</span>
+          <span class="nx">dfd</span><span class="p">.</span><span class="nx">resolve</span><span class="p">(</span><span class="nx">dataset</span><span class="p">,</span> <span class="nx">jqxhr</span><span class="p">);</span>
+        <span class="p">});</span>
+        <span class="k">return</span> <span class="nx">dfd</span><span class="p">.</span><span class="nx">promise</span><span class="p">();</span>
+      <span class="p">}</span>
+    <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+      <span class="nx">alert</span><span class="p">(</span><span class="s1">&#39;This backend only supports read operations&#39;</span><span class="p">);</span>
+    <span class="p">}</span>
+  <span class="p">},</span>
+  <span class="nx">getDocuments</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">datasetId</span><span class="p">,</span> <span class="nx">numRows</span><span class="p">,</span> <span class="nx">start</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">if</span> <span class="p">(</span><span class="nx">start</span> <span class="o">===</span> <span class="kc">undefined</span><span class="p">)</span> <span class="p">{</span>
+      <span class="nx">start</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+    <span class="p">}</span>
+    <span class="k">if</span> <span class="p">(</span><span class="nx">numRows</span> <span class="o">===</span> <span class="kc">undefined</span><span class="p">)</span> <span class="p">{</span>
+      <span class="nx">numRows</span> <span class="o">=</span> <span class="mi">10</span><span class="p">;</span>
+    <span class="p">}</span>
+    <span class="kd">var</span> <span class="nx">base</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s1">&#39;dataproxy&#39;</span><span class="p">);</span>
+    <span class="kd">var</span> <span class="nx">data</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">toJSON</span><span class="p">();</span>
+    <span class="k">delete</span> <span class="nx">data</span><span class="p">[</span><span class="s1">&#39;dataproxy&#39;</span><span class="p">];</span>
+    <span class="nx">data</span><span class="p">[</span><span class="s1">&#39;max-results&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nx">numRows</span><span class="p">;</span>
+    <span class="kd">var</span> <span class="nx">jqxhr</span> <span class="o">=</span> <span class="nx">$</span><span class="p">.</span><span class="nx">ajax</span><span class="p">({</span>
+      <span class="nx">url</span><span class="o">:</span> <span class="nx">base</span>
+      <span class="p">,</span> <span class="nx">data</span><span class="o">:</span> <span class="nx">data</span>
+      <span class="p">,</span> <span class="nx">dataType</span><span class="o">:</span> <span class="s1">&#39;jsonp&#39;</span></pre></div>             </td>           </tr>                               <tr id="section-19">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-19">&#182;</a>               </div>               <p>, cache: true</p>             </td>             <td class="code">               <div class="highlight"><pre>      <span class="p">});</span>
+    <span class="kd">var</span> <span class="nx">dfd</span> <span class="o">=</span> <span class="nx">$</span><span class="p">.</span><span class="nx">Deferred</span><span class="p">();</span>
+    <span class="nx">jqxhr</span><span class="p">.</span><span class="nx">then</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">results</span><span class="p">)</span> <span class="p">{</span>
+      <span class="kd">var</span> <span class="nx">_out</span> <span class="o">=</span> <span class="nx">_</span><span class="p">.</span><span class="nx">map</span><span class="p">(</span><span class="nx">results</span><span class="p">.</span><span class="nx">data</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">row</span><span class="p">)</span> <span class="p">{</span>
+        <span class="kd">var</span> <span class="nx">tmp</span> <span class="o">=</span> <span class="p">{};</span>
+        <span class="nx">_</span><span class="p">.</span><span class="nx">each</span><span class="p">(</span><span class="nx">results</span><span class="p">.</span><span class="nx">fields</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">key</span><span class="p">,</span> <span class="nx">idx</span><span class="p">)</span> <span class="p">{</span>
+          <span class="nx">tmp</span><span class="p">[</span><span class="nx">key</span><span class="p">]</span> <span class="o">=</span> <span class="nx">row</span><span class="p">[</span><span class="nx">idx</span><span class="p">];</span>
+        <span class="p">});</span>
+        <span class="k">return</span> <span class="nx">tmp</span><span class="p">;</span>
+      <span class="p">});</span>
+      <span class="nx">dfd</span><span class="p">.</span><span class="nx">resolve</span><span class="p">(</span><span class="nx">_out</span><span class="p">);</span>
+    <span class="p">});</span>
+    <span class="k">return</span> <span class="nx">dfd</span><span class="p">.</span><span class="nx">promise</span><span class="p">();</span>
+ <span class="p">}</span>
+<span class="p">});</span>
+
+<span class="k">return</span> <span class="nx">my</span><span class="p">;</span>
+
+<span class="p">}(</span><span class="nx">jQuery</span><span class="p">);</span>
+
+</pre></div>             </td>           </tr>                </tbody>     </table>   </div> </body> </html> 
