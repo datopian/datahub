@@ -164,6 +164,104 @@ test('Webstore Backend', function() {
       equal("2009-01-01", docList.models[0].get('date'));
     });
   });
+  $.ajax.restore();
+});
+
+
+var dataProxyData = {
+  "data": [
+    [
+      "1", 
+      "1950-01", 
+      "34.73"
+    ], 
+    [
+      "2", 
+      "1950-02", 
+      "34.73"
+    ], 
+    [
+      "3", 
+      "1950-03", 
+      "34.73"
+    ], 
+    [
+      "4", 
+      "1950-04", 
+      "34.73"
+    ], 
+    [
+      "5", 
+      "1950-05", 
+      "34.73"
+    ], 
+    [
+      "6", 
+      "1950-06", 
+      "34.73"
+    ], 
+    [
+      "7", 
+      "1950-07", 
+      "34.73"
+    ], 
+    [
+      "8", 
+      "1950-08", 
+      "34.73"
+    ], 
+    [
+      "9", 
+      "1950-09", 
+      "34.73"
+    ], 
+    [
+      "10", 
+      "1950-10", 
+      "34.73"
+    ]
+  ], 
+  "fields": [
+    "__id__", 
+    "date", 
+    "price"
+  ], 
+  "length": null, 
+  "max_results": 10, 
+  "url": "http://webstore.thedatahub.org/rufuspollock/gold_prices/data.csv"
+};
+
+test('DataProxy Backend', function() {
+  // needed only if not stubbing
+  // stop();
+  var backend = new recline.Model.BackendDataProxy({
+    url: 'http://webstore.thedatahub.org/rufuspollock/gold_prices/data.csv'
+  });
+  recline.Model.setBackend(backend);
+  dataset = backend.getDataset();
+
+  var stub = sinon.stub($, 'ajax', function(options) {
+    var partialUrl = 'jsonpdataproxy.appspot.com';
+    if (options.url.indexOf(partialUrl) != -1) {
+      return {
+        then: function(callback) {
+          callback(dataProxyData);
+        }
+      }
+    }
+  });
+
+  dataset.fetch().then(function(dataset) {
+    deepEqual(['__id__', 'date', 'price'], dataset.get('headers'));
+    equal(null, dataset.docCount)
+    dataset.getDocuments().then(function(docList) {
+      equal(10, docList.length)
+      equal("1950-01", docList.models[0].get('date'));
+      // needed only if not stubbing
+      start();
+    });
+  });
+  $.ajax.restore();
 });
 
 })(this.jQuery);

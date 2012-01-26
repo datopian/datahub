@@ -162,13 +162,12 @@ my.BackendMemory = Backbone.Model.extend({
 
 // Webstore Backend for connecting to the Webstore
 //
+// Initializing model argument must contain a url attribute pointing to
+// relevant Webstore table.
+//
 // Designed to only attach to one dataset and one dataset only ...
 // Could generalize to support attaching to different datasets
 my.BackendWebstore = Backbone.Model.extend({
-  // require url attribute in initialization data
-  initialize: function() {
-    this.webstoreTableUrl = this.get('url');
-  }, 
   getDataset: function(id) {
     var dataset = new my.Dataset({
       id: id
@@ -222,6 +221,93 @@ my.BackendWebstore = Backbone.Model.extend({
     var dfd = $.Deferred();
     jqxhr.then(function(results) {
       dfd.resolve(results.data);
+    });
+    return dfd.promise();
+ }
+});
+
+// DataProxy Backend for connecting to the DataProxy
+//
+// Example initialization:
+//
+//     BackendDataProxy({
+//       model: {
+//         url: {url-of-data-to-proxy},
+//         type: xls || csv,
+//         format: json || jsonp # return format (defaults to jsonp)
+//         dataproxy: {url-to-proxy} # defaults to http://jsonpdataproxy.appspot.com
+//       }
+//     })
+my.BackendDataProxy = Backbone.Model.extend({
+  defaults: {
+    dataproxy: 'http://jsonpdataproxy.appspot.com'
+    , type: 'csv'
+    , format: 'jsonp'
+  },
+  getDataset: function(id) {
+    var dataset = new my.Dataset({
+      id: id
+    });
+    dataset.backend = this;
+    return dataset;
+  },
+  sync: function(method, model, options) {
+    if (method === "read") {
+      // this switching on object type is rather horrible
+      // think may make more sense to do work in individual objects rather than in central Backbone.sync
+      if (this.__type__ == 'Dataset') {
+        var dataset = this;
+        // get the schema and return
+        var base = this.backend.get('dataproxy');
+        var data = this.backend.toJSON();
+        delete data['dataproxy'];
+        // TODO: should we cache for extra efficiency
+        data['max-results'] = 1;
+        var jqxhr = $.ajax({
+          url: base
+          , data: data
+          , dataType: 'jsonp'
+        });
+        var dfd = $.Deferred();
+        jqxhr.then(function(results) {
+          dataset.set({
+            headers: results.fields
+          });
+          dfd.resolve(dataset, jqxhr);
+        });
+        return dfd.promise();
+      }
+    } else {
+      alert('This backend only supports read operations');
+    }
+  },
+  getDocuments: function(datasetId, numRows, start) {
+    if (start === undefined) {
+      start = 0;
+    }
+    if (numRows === undefined) {
+      numRows = 10;
+    }
+    var base = this.get('dataproxy');
+    var data = this.toJSON();
+    delete data['dataproxy'];
+    data['max-results'] = numRows;
+    var jqxhr = $.ajax({
+      url: base
+      , data: data
+      , dataType: 'jsonp'
+      // , cache: true
+      });
+    var dfd = $.Deferred();
+    jqxhr.then(function(results) {
+      var _out = _.map(results.data, function(row) {
+        var tmp = {};
+        _.each(results.fields, function(key, idx) {
+          tmp[key] = row[idx];
+        });
+        return tmp;
+      });
+      dfd.resolve(_out);
     });
     return dfd.promise();
  }
