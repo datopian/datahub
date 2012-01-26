@@ -4,6 +4,8 @@ toolkit, all in pure javascript and html.
 
 Designed for standalone use or as a library to integrate into your own app.
 
+Live demo: http://okfnlabs.org/recline/demo/
+
 
 ## Features
 
@@ -24,13 +26,8 @@ Open demo/index.html in your favourite browser.
 
 ## Developer Notes
 
-### Minifying dependencies
+Running the tests by opening `test/index.html` in your browser.
 
-    npm install -g uglify
-    cd vendor
-    cat *.js | uglifyjs -o ../src/deps-min.js
-    
-note: make sure underscore.js goes in at the top of the file as a few deps currently depend on it
 
 
 ## Copyright and License
