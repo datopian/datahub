@@ -76,11 +76,11 @@ my.DataExplorer = Backbone.View.extend({
   initialize: function(options) {
     var self = this;
     this.el = $(this.el);
-    this.config = options.config || {};
-    _.extend(this.config, {
-      displayCount: 10
-      , readOnly: false
-    });
+    this.config = _.extend({
+        displayCount: 10
+        , readOnly: false
+      },
+      options.config);
     if (this.config.readOnly) {
       this.setReadOnly();
     }
