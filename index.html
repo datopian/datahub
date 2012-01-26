@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <title>Recline DataExplorer</title>
-  <link rel="stylesheet" href="http://twitter.github.com/bootstrap/1.3.0/bootstrap.min.css">
+  <link rel="stylesheet" href="http://twitter.github.com/bootstrap/1.4.0/bootstrap.min.css">
   <style type="text/css">
     html, body {
       background-color: #eee;
@@ -29,30 +29,66 @@
       padding: 20px 20px 10px;
       margin: -20px -20px 20px;
     }
+
+    .nav-logo img {
+      margin-top: 4px;
+    }
   </style>
 </head>
 <body>
+<a href="http://github.com/okfn/recline"><img style="position: absolute; top: 0; right: 0; border: 0; z-index: 100000;" src="https://a248.e.akamai.net/assets.github.com/img/7afbc8b248c68eb468279e8c17986ad46549fb71/687474703a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f6461726b626c75655f3132313632312e706e67" alt="Fork me on GitHub"></a>
+<div class="topbar">
+  <div class="fill">
+    <div class="container">
+      <a class="brand" href="#">Recline Data Explorer</a>
+      <ul class="nav">
+        <li><a href="demo/">Demo</a></li>
+        <li><a href="http://github.com/okfn/recline/">Code</a></li>
+        <li><a href="http://github.com/okfn/recline/issues">Issues</a></li>
+        <li><a href="http://twitter.com/maxogden">@maxogden</a></li>
+        <li><a href="http://twitter.com/rufuspollock">@rufuspollock</a></li>
+      </ul>
+      <a class="nav-logo pull-right" href="http://okfn.org/" title="An Open Knowledge Foundation Project">
+        <img src="http://assets.okfn.org/p/okfn/img/logo_28x30.png" alt="Open Knowledge Foundation logo" />
+      </a>
+    </div>
+  </div>
+</div>
 <div class="container"> 
   <div class="content">
     <div class="page-header">
       <h1>
-        Recline DataExplorer <small>Data explorer and refinery in pure Javascript</small>
+        Recline Data Explorer <small>Data explorer and refinery all in pure Javascript</small>
       </h1>
     </div>
-    <h4>Recline DataExplorer is a spreadsheet plus Google Refine plus
-      visualization toolkit, all in pure javascript and html.</h4>
-    <h4>Designed for standalone use or as a library to integrate into your own
-      app.</h4>
-    <h4>More information can be found in the project README on <a
-        href="http://github.com/okfn/recline">Recline DataExplorer GitHub
-        project page</a>.</h4>
-    <h2>Demos</h2>
+    <h4>Recline combines a data grid, Google Refine-style data transforms
+      and visualizations all in lightweight javascript and html.</h4>
+    <p>Designed for standalone use or as a library to integrate into your own
+    app.</p>
+
+    <h2>Main Features</h2>
+    <ul>
+      <li>Open-source (and heavy reuser of existing open-source libraries like Backbone)</li>
+      <li>Pure javascript (no Flash) and designed for integration -- so it is easy to embed in other sites and applications</li>
+      <li>View and edit your data in a clean grid interface</li>
+      <li>Bulk update/clean your data using an easy scripting UI</li>
+      <li>Easily extensible with new Backends so you can connect to your database or storage layer</li>
+      <li>Visualize data</li>
+    </ul>
+
+    <h2>Demo</h2>
     <ul>
       <li><a href="demo/index.html">Demo with local data</a></li>
     </ul>
 
     <h2>Docs</h2>
     <p>Coming soon!</p>
+
+    <h2>History</h2>
+    <p>Max Ogden was developing Recline as the frontend data browser and editor his <a href="http://datacouch.com/">http://datacouch.com/</a> project. Meanwhile, Rufus Pollock and the <a href="http://ckan.org/">CKAN team</a> at the <a href="http://okfn.org/">Open Knowledge Foundation</a> had been working on a <a href="http://github.com/okfn/dataexplorer">Data Explorer</a> for use in <a href="http://thedatahub.org">the DataHub</a> and <a href="http://ckan.org/">CKAN software</a>.</p>
+    <p>When they met up, they realized that they were pretty much working on the same thing and so decided to join forces to produce the new Recline Data Explorer.</p>
+    <p>The new project forked off <a href="https://github.com/maxogden/recline">Max's original recline codebase</a> combining some portions of the <a href="http://github.com/okfn/dataexplorer">original Data Explorer</a>. However, it was rapidly rewritten from the ground up using Backbone.</p>
+
   </div>
 </div>
 </body>
