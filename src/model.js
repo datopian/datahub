@@ -313,7 +313,114 @@ my.BackendDataProxy = Backbone.Model.extend({
  }
 });
 
+
+// Google spreadsheet backend
+my.BackendGDoc = Backbone.Model.extend({
+  getDataset: function(id) {
+    var dataset = new my.Dataset({
+      id: id
+    });
+    dataset.backend = this;
+    return dataset;
+  }, 
+  sync: function(method, model, options) {
+    if (method === "read") { 
+        console.log('fetching data from url', model.backend.get('url')); 
+        var dfd = $.Deferred(); 
+        var dataset = this;
+        
+        $.getJSON(model.backend.get('url'), function(d) {
+            result = model.backend.gdocsToJavascript(d);
+            model.set({'headers': result.header});
+            model.backend.set({'data': result.data, 'headers': result.header});
+            dfd.resolve(model);
+        })
+
+    return dfd.promise(); }
+  },
+
+  getDocuments: function(datasetId, start, numRows) { 
+        var dfd = $.Deferred();
+        var fields = this.get('headers');
+        
+        // zip the field headers with the data rows to produce js objs
+        // TODO: factor this out as a common method with other backends
+        var objs = _.map(this.get('data'), function (d) { 
+            var obj = {};
+            _.each(_.zip(fields, d), function (x) { obj[x[0]] = x[1]; })
+            return obj;
+        });
+        dfd.resolve(objs);
+        return dfd;
+    },
+  gdocsToJavascript:  function(gdocsSpreadsheet) {
+/*
+	:options: (optional) optional argument dictionary:
+		columnsToUse: list of columns to use (specified by header names)
+		colTypes: dictionary (with column names as keys) specifying types (e.g. range, percent for use in conversion).
+	:return: tabular data object (hash with keys: header and data).
+	  
+	Issues: seems google docs return columns in rows in random order and not even sure whether consistent across rows.
+	*/
+  var options = {};
+  if (arguments.length > 1) {
+    options = arguments[1];
+  }
+  var results = {
+    'header': [],
+    'data': []
+  };
+  // default is no special info on type of columns
+  var colTypes = {};
+  if (options.colTypes) {
+    colTypes = options.colTypes;
+  }
+  // either extract column headings from spreadsheet directly, or used supplied ones
+  if (options.columnsToUse) {
+    // columns set to subset supplied
+    results.header = options.columnsToUse;
+  } else {
+    // set columns to use to be all available
+    if (gdocsSpreadsheet.feed.entry.length > 0) {
+      for (var k in gdocsSpreadsheet.feed.entry[0]) {
+        if (k.substr(0, 3) == 'gsx') {
+          var col = k.substr(4)
+          results.header.push(col);
+        }
+      }
+    }
+  }
+
+  // converts non numberical values that should be numerical (22.3%[string] -> 0.223[float])
+  var rep = /^([\d\.\-]+)\%$/;
+  $.each(gdocsSpreadsheet.feed.entry, function (i, entry) {
+    var row = [];
+    for (var k in results.header) {
+      var col = results.header[k];
+      var _keyname = 'gsx$' + col;
+      var value = entry[_keyname]['$t'];
+      // if labelled as % and value contains %, convert
+      if (colTypes[col] == 'percent') {
+        if (rep.test(value)) {
+          var value2 = rep.exec(value);
+          var value3 = parseFloat(value2);
+          value = value3 / 100;
+        }
+      }
+      row.push(value);
+    }
+    results.data.push(row);
+  });
+  return results;
+}
+
+});
+
 return my;
 
 }(jQuery);
+
+
+
+
 

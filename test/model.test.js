@@ -264,4 +264,209 @@ test('DataProxy Backend', function() {
   $.ajax.restore();
 });
 
+
+var sample_gdocs_spreadsheet_data = {
+  "feed": {
+    "category": [
+      {
+        "term": "http://schemas.google.com/spreadsheets/2006#list", 
+        "scheme": "http://schemas.google.com/spreadsheets/2006"
+      }
+    ], 
+    "updated": {
+      "$t": "2010-07-12T18:32:16.200Z"
+    }, 
+    "xmlns": "http://www.w3.org/2005/Atom", 
+    "xmlns$gsx": "http://schemas.google.com/spreadsheets/2006/extended", 
+    "title": {
+      "$t": "Sheet1", 
+      "type": "text"
+    }, 
+    "author": [
+      {
+        "name": {
+          "$t": "okfn.rufus.pollock"
+        }, 
+        "email": {
+          "$t": "okfn.rufus.pollock@gmail.com"
+        }
+      }
+    ], 
+    "openSearch$startIndex": {
+      "$t": "1"
+    }, 
+    "link": [
+      {
+        "href": "http://spreadsheets.google.com/pub?key=0Aon3JiuouxLUdDQwZE1JdV94cUd6NWtuZ0IyWTBjLWc", 
+        "type": "text/html", 
+        "rel": "alternate"
+      }, 
+      {
+        "href": "http://spreadsheets.google.com/feeds/list/0Aon3JiuouxLUdDQwZE1JdV94cUd6NWtuZ0IyWTBjLWc/od6/public/values", 
+        "type": "application/atom+xml", 
+        "rel": "http://schemas.google.com/g/2005#feed"
+      }, 
+      {
+        "href": "http://spreadsheets.google.com/feeds/list/0Aon3JiuouxLUdDQwZE1JdV94cUd6NWtuZ0IyWTBjLWc/od6/public/values?alt=json-in-script", 
+        "type": "application/atom+xml", 
+        "rel": "self"
+      }
+    ], 
+    "xmlns$openSearch": "http://a9.com/-/spec/opensearchrss/1.0/", 
+    "entry": [
+      {
+        "category": [
+          {
+            "term": "http://schemas.google.com/spreadsheets/2006#list", 
+            "scheme": "http://schemas.google.com/spreadsheets/2006"
+          }
+        ], 
+        "updated": {
+          "$t": "2010-07-12T18:32:16.200Z"
+        }, 
+        "gsx$column-2": {
+          "$t": "1"
+        }, 
+        "gsx$column-1": {
+          "$t": "A"
+        }, 
+        "title": {
+          "$t": "A", 
+          "type": "text"
+        }, 
+        "content": {
+          "$t": "column-2: 1", 
+          "type": "text"
+        }, 
+        "link": [
+          {
+            "href": "http://spreadsheets.google.com/feeds/list/0Aon3JiuouxLUdDQwZE1JdV94cUd6NWtuZ0IyWTBjLWc/od6/public/values/cokwr", 
+            "type": "application/atom+xml", 
+            "rel": "self"
+          }
+        ], 
+        "id": {
+          "$t": "http://spreadsheets.google.com/feeds/list/0Aon3JiuouxLUdDQwZE1JdV94cUd6NWtuZ0IyWTBjLWc/od6/public/values/cokwr"
+        }
+      }, 
+      {
+        "category": [
+          {
+            "term": "http://schemas.google.com/spreadsheets/2006#list", 
+            "scheme": "http://schemas.google.com/spreadsheets/2006"
+          }
+        ], 
+        "updated": {
+          "$t": "2010-07-12T18:32:16.200Z"
+        }, 
+        "gsx$column-2": {
+          "$t": "2"
+        }, 
+        "gsx$column-1": {
+          "$t": "b"
+        }, 
+        "title": {
+          "$t": "b", 
+          "type": "text"
+        }, 
+        "content": {
+          "$t": "column-2: 2", 
+          "type": "text"
+        }, 
+        "link": [
+          {
+            "href": "http://spreadsheets.google.com/feeds/list/0Aon3JiuouxLUdDQwZE1JdV94cUd6NWtuZ0IyWTBjLWc/od6/public/values/cpzh4", 
+            "type": "application/atom+xml", 
+            "rel": "self"
+          }
+        ], 
+        "id": {
+          "$t": "http://spreadsheets.google.com/feeds/list/0Aon3JiuouxLUdDQwZE1JdV94cUd6NWtuZ0IyWTBjLWc/od6/public/values/cpzh4"
+        }
+      }, 
+      {
+        "category": [
+          {
+            "term": "http://schemas.google.com/spreadsheets/2006#list", 
+            "scheme": "http://schemas.google.com/spreadsheets/2006"
+          }
+        ], 
+        "updated": {
+          "$t": "2010-07-12T18:32:16.200Z"
+        }, 
+        "gsx$column-2": {
+          "$t": "3"
+        }, 
+        "gsx$column-1": {
+          "$t": "c"
+        }, 
+        "title": {
+          "$t": "c", 
+          "type": "text"
+        }, 
+        "content": {
+          "$t": "column-2: 3", 
+          "type": "text"
+        }, 
+        "link": [
+          {
+            "href": "http://spreadsheets.google.com/feeds/list/0Aon3JiuouxLUdDQwZE1JdV94cUd6NWtuZ0IyWTBjLWc/od6/public/values/cre1l", 
+            "type": "application/atom+xml", 
+            "rel": "self"
+          }
+        ], 
+        "id": {
+          "$t": "http://spreadsheets.google.com/feeds/list/0Aon3JiuouxLUdDQwZE1JdV94cUd6NWtuZ0IyWTBjLWc/od6/public/values/cre1l"
+        }
+      }
+    ], 
+    "openSearch$totalResults": {
+      "$t": "3"
+    }, 
+    "id": {
+      "$t": "http://spreadsheets.google.com/feeds/list/0Aon3JiuouxLUdDQwZE1JdV94cUd6NWtuZ0IyWTBjLWc/od6/public/values"
+    }
+  }, 
+  "version": "1.0", 
+  "encoding": "UTF-8"
+}
+
+
+
+
+test("GDoc Backend", function() { 
+  var backend = new recline.Model.BackendGDoc({url: 'https://spreadsheets.google.com/feeds/list/0Aon3JiuouxLUdDQwZE1JdV94cUd6NWtuZ0IyWTBjLWc/od6/public/values?alt=json'
+});
+  recline.Model.setBackend(backend);
+  dataset = backend.getDataset();
+
+  console.log('got gdoc dataset', dataset);
+
+  var stub = sinon.stub($, 'getJSON', function(options, cb) {
+      console.log('options are', options, cb);
+    var partialUrl = 'spreadsheets.google.com';
+    if (options.indexOf(partialUrl) != -1) {
+           cb(sample_gdocs_spreadsheet_data)
+        
+    }
+  });
+
+  dataset.fetch().then(function(dataset) {
+    console.log('inside dataset:', dataset, dataset.get('headers'), dataset.get('data'));
+    deepEqual(['column-2', 'column-1'], dataset.get('headers'));
+    //equal(null, dataset.docCount)
+    dataset.getDocuments().then(function(docList) {
+      equal(3, docList.length);
+      console.log(docList.models[0]);
+      equal("A", docList.models[0].get('column-1'));
+      // needed only if not stubbing
+      start();
+    });
+  });
+  $.getJSON.restore();
+    
+
+});
+
+
 })(this.jQuery);
