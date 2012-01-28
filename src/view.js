@@ -77,7 +77,7 @@ my.DataExplorer = Backbone.View.extend({
     var self = this;
     this.el = $(this.el);
     this.config = _.extend({
-        displayCount: 10
+        displayCount: 50
         , readOnly: false
       },
       options.config);
