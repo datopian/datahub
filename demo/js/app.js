@@ -279,6 +279,10 @@ $(function() {
       el: $el
       , model: dataset
     });
+    // HACK (a bit). Issue is that Backbone will not trigger the route
+    // if you are already at that location so we have to make sure we genuinely switch
+    window.dataExplorer.router.navigate('graph');
+    window.dataExplorer.router.navigate('', true);
   });
   $('a.set-read-only').click(function() {
     window.dataExplorer.setReadOnly();
@@ -316,7 +320,7 @@ function demoDataset() {
 
 function setupLoadFromWebstore(callback) {
   // pre-populate webstore load form with an example url
-  var demoUrl = 'http://webstore.test.ckan.org/rufuspollock/demo/data';
+  var demoUrl = 'http://webstore.thedatahub.org/rufuspollock/gold_prices/data';
   $('form.webstore-load input[name="source"]').val(demoUrl);
   $('form.webstore-load').submit(function(e) {
     e.preventDefault();
