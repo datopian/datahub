@@ -12,21 +12,20 @@
     var indata = {
       headers: ['x', 'y', 'z']
     , rows: [
-  {id: 0, x: 1, y: 2, z: 3}
-  , {id: 1, x: 2, y: 4, z: 6}
-  , {id: 2, x: 3, y: 6, z: 9}
-  , {id: 3, x: 4, y: 8, z: 12}
-  , {id: 4, x: 5, y: 10, z: 15}
-  , {id: 5, x: 6, y: 12, z: 18}
-  ]
+      {id: 0, x: 1, y: 2, z: 3}
+      , {id: 1, x: 2, y: 4, z: 6}
+      , {id: 2, x: 3, y: 6, z: 9}
+      , {id: 3, x: 4, y: 8, z: 12}
+      , {id: 4, x: 5, y: 10, z: 15}
+      , {id: 5, x: 6, y: 12, z: 18}
+      ]
     };
-    // this is all rather artificial here but would make more sense with more complex backend
-    backend = new recline.Model.BackendMemory({
-      metadata: metadata,
-            data: indata
-    });
-    recline.Model.setBackend(backend);
-    var dataset = backend.getDataset(datasetId);
+    var dataset = new recline.Model.Dataset(metadata);
+    dataset.backendConfig = { 
+      type: 'memory'
+      // deep copy so we do not touch original data ...
+      , data: $.extend(true, {}, indata)
+    };
     expect(9);
     dataset.fetch().then(function(dataset) {
       equal(dataset.get('name'), metadata.name);
@@ -45,13 +44,13 @@
         var newVal = 10;
         doc1.set({x: newVal});
         doc1.save().then(function() {
-          equal(backend._datasetAsData.data.rows[0].x, newVal);
+          equal(dataset.backendConfig.data.rows[0].x, newVal);
         })
 
         // Test Delete
         doc1.destroy().then(function() {
-          equal(backend._datasetAsData.data.rows.length, 5);
-          equal(backend._datasetAsData.data.rows[0].x, indata.rows[1].x);
+          equal(dataset.backendConfig.data.rows.length, 5);
+          equal(dataset.backendConfig.data.rows[0].x, indata.rows[1].x);
         });
       });
     });
@@ -134,11 +133,11 @@
   };
 
   test('Webstore Backend', function() {
-    var backend = new recline.Model.BackendWebstore({
+    var dataset = new recline.Model.Dataset();
+    dataset.backendConfig = {
+      type: 'webstore',
       url: 'http://webstore.test.ckan.org/rufuspollock/demo/data'
-    });
-    recline.Model.setBackend(backend);
-    dataset = backend.getDataset();
+    };
 
     var stub = sinon.stub($, 'ajax', function(options) {
       if (options.url.indexOf('schema.json') != -1) {
@@ -234,11 +233,11 @@
   test('DataProxy Backend', function() {
     // needed only if not stubbing
     // stop();
-    var backend = new recline.Model.BackendDataProxy({
+    var dataset = new recline.Model.Dataset();
+    dataset.backendConfig = {
+      type: 'dataproxy',
       url: 'http://webstore.thedatahub.org/rufuspollock/gold_prices/data.csv'
-    });
-    recline.Model.setBackend(backend);
-    dataset = backend.getDataset();
+    };
 
     var stub = sinon.stub($, 'ajax', function(options) {
       var partialUrl = 'jsonpdataproxy.appspot.com';
@@ -435,10 +434,11 @@
 
 
   test("GDoc Backend", function() { 
-    var backend = new recline.Model.BackendGDoc({url: 'https://spreadsheets.google.com/feeds/list/0Aon3JiuouxLUdDQwZE1JdV94cUd6NWtuZ0IyWTBjLWc/od6/public/values?alt=json'
-    });
-    recline.Model.setBackend(backend);
-    dataset = backend.getDataset();
+    var dataset = new recline.Model.Dataset();
+    dataset.backendConfig = {
+      type: 'gdocs',
+      url: 'https://spreadsheets.google.com/feeds/list/0Aon3JiuouxLUdDQwZE1JdV94cUd6NWtuZ0IyWTBjLWc/od6/public/values?alt=json'
+    };
 
     console.log('got gdoc dataset', dataset);
 

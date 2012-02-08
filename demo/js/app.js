@@ -45,13 +45,12 @@ function demoDataset() {
       , {id: 5, x: 6, y: 12, z: 18}
     ]
   };
-  // this is all rather artificial here but would make more sense with more complex backend
-  var backend = new recline.Model.BackendMemory({
-    metadata: metadata,
-    data: indata
-    });
-  recline.Model.setBackend(backend);
-  var dataset = backend.getDataset(datasetId);
+  var dataset = new recline.Model.Dataset(metadata);
+  dataset.backendConfig = { 
+    type: 'memory'
+    // deep copy so we do not touch original data ...
+    , data: $.extend(true, {}, indata)
+  };
   return dataset;
 }
 
@@ -63,11 +62,11 @@ function setupLoadFromWebstore(callback) {
     e.preventDefault();
     var $form = $(e.target);
     var source = $form.find('input[name="source"]').val();
-    var backend = new recline.Model.BackendWebstore({
+    var dataset = new recline.Model.Dataset();
+    dataset.backendConfig = {
+      type: 'webstore',
       url: source
-    });
-    recline.Model.setBackend(backend);
-    var dataset = backend.getDataset();
+    };
     callback(dataset);
   });
 }

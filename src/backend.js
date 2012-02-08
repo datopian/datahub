@@ -9,71 +9,57 @@ this.recline = this.recline || {};
 this.recline.Model = this.recline.Model || {};
 
 (function($, my) {
-  // ## Convenience function
-  my.setBackend = function(backend) {
-    Backbone.sync = backend.sync;
-  };
+  my.backends = {};
+
+  Backbone.sync = function(method, model, options) {
+    return my.backends[model.backendConfig.type].sync(method, model, options);
+  }
 
   // ## BackendMemory - uses in-memory data
+  //
+  // To use you should:
+  // 
+  // A. provide metadata as model data to the Dataset
+  //
+  // B. Set backendConfig on your dataset with attributes:
+  //
+  //   - type: 'memory'
+  //   - data: hash with 2 keys:
+  //
+  //     * headers: list of header names/labels
+  //     * rows: list of hashes, each hash being one row. A row *must* have an id attribute which is unique.
+  //
+  //  Example of data:
+  // 
+  //  <pre>
+  //        {
+  //            headers: ['x', 'y', 'z']
+  //          , rows: [
+  //              {id: 0, x: 1, y: 2, z: 3}
+  //            , {id: 1, x: 2, y: 4, z: 6}
+  //          ]
+  //        };
+  //  </pre>
   my.BackendMemory = Backbone.Model.extend({
-    // Initialize a Backend with a local in-memory dataset.
-    // 
-    // NB: We can handle one and only one dataset at a time.
-    //
-    // :param dataset: the data for a dataset on which operations will be
-    // performed. Its form should be a hash with metadata and data
-    // attributes.
-    //
-    // - metadata: hash of key/value attributes of any kind (but usually with title attribute)
-    // - data: hash with 2 keys:
-    //  - headers: list of header names/labels
-    //  - rows: list of hashes, each hash being one row. A row *must* have an id attribute which is unique.
-    //
-    //  Example of data:
-    // 
-    //        {
-    //            headers: ['x', 'y', 'z']
-    //          , rows: [
-    //              {id: 0, x: 1, y: 2, z: 3}
-    //            , {id: 1, x: 2, y: 4, z: 6}
-    //          ]
-    //        };
-    initialize: function(dataset) {
-      // deep copy
-      this._datasetAsData = $.extend(true, {}, dataset);
-      _.bindAll(this, 'sync');
-    }, 
-      getDataset: function() {
-        var dataset = new my.Dataset({
-          id: this._datasetAsData.metadata.id
-        });
-        // this is a bit weird but problem is in sync this is set to parent model object so need to give dataset a reference to backend explicitly
-        dataset.backend = this;
-        return dataset;
-      },
       sync: function(method, model, options) {
         var self = this;
         if (method === "read") {
           var dfd = $.Deferred();
-          // this switching on object type is rather horrible
-          // think may make more sense to do work in individual objects rather than in central Backbone.sync
           if (model.__type__ == 'Dataset') {
             var dataset = model;
-            var rawDataset = this._datasetAsData;
-            dataset.set(rawDataset.metadata);
             dataset.set({
-              headers: rawDataset.data.headers
+              headers: dataset.backendConfig.data.headers
             });
-            dataset.docCount = rawDataset.data.rows.length;
+            dataset.docCount = dataset.backendConfig.data.rows.length;
             dfd.resolve(dataset);
           }
           return dfd.promise();
         } else if (method === 'update') {
           var dfd = $.Deferred();
           if (model.__type__ == 'Document') {
-            _.each(this._datasetAsData.data.rows, function(row, idx) {
+            _.each(model.backendConfig.data.rows, function(row, idx) {
               if(row.id === model.id) {
-                self._datasetAsData.data.rows[idx] = model.toJSON();
+                model.backendConfig.data.rows[idx] = model.toJSON();
               }
             });
             dfd.resolve(model);
@@ -82,7 +68,7 @@ this.recline.Model = this.recline.Model || {};
         } else if (method === 'delete') {
           var dfd = $.Deferred();
           if (model.__type__ == 'Document') {
-            this._datasetAsData.data.rows = _.reject(this._datasetAsData.data.rows, function(row) {
+            model.backendConfig.data.rows = _.reject(model.backendConfig.data.rows, function(row) {
               return (row.id === model.id);
             });
             dfd.resolve(model);
@@ -92,7 +78,7 @@ this.recline.Model = this.recline.Model || {};
           alert('Not supported: sync on BackendMemory with method ' + method + ' and model ' + model);
         }
       },
-      getDocuments: function(datasetId, numRows, start) {
+      getDocuments: function(model, numRows, start) {
         if (start === undefined) {
           start = 0;
         }
@@ -100,36 +86,32 @@ this.recline.Model = this.recline.Model || {};
           numRows = 10;
         }
         var dfd = $.Deferred();
-        rows = this._datasetAsData.data.rows;
+        rows = model.backendConfig.data.rows;
         var results = rows.slice(start, start+numRows);
         dfd.resolve(results);
         return dfd.promise();
       }
   });
+  my.backends['memory'] = new my.BackendMemory();
 
-  // ## Webstore Backend for connecting to the Webstore
+  // ## BackendWebstore
   //
-  // Initializing model argument must contain a url attribute pointing to
-  // relevant Webstore table.
+  // Connecting to [Webstores](http://github.com/okfn/webstore)
   //
-  // Designed to only attach to one dataset and one dataset only ...
-  // Could generalize to support attaching to different datasets
+  // To use this backend set backendConfig on your Dataset as:
+  //
+  // <pre>
+  // {
+  //   'type': 'webstore',
+  //   'url': url to relevant Webstore table
+  // }
+  // </pre>
   my.BackendWebstore = Backbone.Model.extend({
-    getDataset: function(id) {
-      var dataset = new my.Dataset({
-        id: id
-      });
-      dataset.backend = this;
-      return dataset;
-    },
     sync: function(method, model, options) {
       if (method === "read") {
-        // this switching on object type is rather horrible
-        // think may make more sense to do work in individual objects rather than in central Backbone.sync
-        if (this.__type__ == 'Dataset') {
-          var dataset = this;
-          // get the schema and return
-          var base = this.backend.get('url');
+        if (model.__type__ == 'Dataset') {
+          var dataset = model;
+          var base = dataset.backendConfig.url;
           var schemaUrl = base + '/schema.json';
           var jqxhr = $.ajax({
             url: schemaUrl,
@@ -151,14 +133,14 @@ this.recline.Model = this.recline.Model || {};
         }
       }
     },
-    getDocuments: function(datasetId, numRows, start) {
+    getDocuments: function(model, numRows, start) {
       if (start === undefined) {
         start = 0;
       }
       if (numRows === undefined) {
         numRows = 10;
       }
-      var base = this.get('url');
+      var base = model.backendConfig.url;
       var jqxhr = $.ajax({
         url: base + '.json?_limit=' + numRows,
           dataType: 'jsonp',
@@ -172,44 +154,40 @@ this.recline.Model = this.recline.Model || {};
       return dfd.promise();
     }
   });
+  my.backends['webstore'] = new my.BackendWebstore();
 
-  // ## DataProxy Backend for connecting to the DataProxy
+  // ## BackendDataProxy
+  // 
+  // For connecting to [DataProxy-s](http://github.com/okfn/dataproxy).
   //
-  // Example initialization:
+  // Set a Dataset to use this backend:
   //
-  //     BackendDataProxy({
-  //       model: {
-  //         url: {url-of-data-to-proxy},
-  //         type: xls || csv,
-  //         format: json || jsonp # return format (defaults to jsonp)
-  //         dataproxy: {url-to-proxy} # defaults to http://jsonpdataproxy.appspot.com
-  //       }
-  //     })
+  //     dataset.backendConfig = {
+  //       // required
+  //       url: {url-of-data-to-proxy},
+  //       format: csv | xls,
+  //     }
+  //
+  // When initializing the DataProxy backend you can set the following attributes:
+  //
+  // * dataproxy: {url-to-proxy} (optional). Defaults to http://jsonpdataproxy.appspot.com
+  //
+  // Note that this is a **read-only** backend.
   my.BackendDataProxy = Backbone.Model.extend({
     defaults: {
       dataproxy: 'http://jsonpdataproxy.appspot.com'
-    , type: 'csv'
-    , format: 'jsonp'
-    },
-    getDataset: function(id) {
-      var dataset = new my.Dataset({
-        id: id
-      });
-      dataset.backend = this;
-      return dataset;
     },
     sync: function(method, model, options) {
       if (method === "read") {
-        // this switching on object type is rather horrible
-        // think may make more sense to do work in individual objects rather than in central Backbone.sync
-        if (this.__type__ == 'Dataset') {
-          var dataset = this;
-          // get the schema and return
-          var base = this.backend.get('dataproxy');
-          var data = this.backend.toJSON();
-          delete data['dataproxy'];
+        if (model.__type__ == 'Dataset') {
+          var dataset = model;
+          var base = my.backends['dataproxy'].get('dataproxy');
           // TODO: should we cache for extra efficiency
-          data['max-results'] = 1;
+          var data = {
+            url: dataset.backendConfig.url
+            , 'max-results':  1
+            , type: dataset.backendConfig.format
+          };
           var jqxhr = $.ajax({
             url: base
             , data: data
@@ -228,17 +206,19 @@ this.recline.Model = this.recline.Model || {};
         alert('This backend only supports read operations');
       }
     },
-    getDocuments: function(datasetId, numRows, start) {
+    getDocuments: function(dataset, numRows, start) {
       if (start === undefined) {
         start = 0;
       }
       if (numRows === undefined) {
         numRows = 10;
       }
-      var base = this.get('dataproxy');
-      var data = this.toJSON();
-      delete data['dataproxy'];
-      data['max-results'] = numRows;
+      var base = my.backends['dataproxy'].get('dataproxy');
+      var data = {
+        url: dataset.backendConfig.url
+        , 'max-results':  numRows
+        , type: dataset.backendConfig.format
+      };
       var jqxhr = $.ajax({
         url: base
         , data: data
@@ -258,42 +238,35 @@ this.recline.Model = this.recline.Model || {};
       return dfd.promise();
     }
   });
+  my.backends['dataproxy'] = new my.BackendDataProxy();
 
 
   // ## Google spreadsheet backend
   // 
-  //
+  // Connect to Google Docs spreadsheet. For write operations
   my.BackendGDoc = Backbone.Model.extend({
-    getDataset: function(id) {
-      var dataset = new my.Dataset({
-        id: id
-      });
-      dataset.backend = this;
-      return dataset;
-    }, 
     sync: function(method, model, options) {
       if (method === "read") { 
-        console.log('fetching data from url', model.backend.get('url')); 
         var dfd = $.Deferred(); 
-        var dataset = this;
+        var dataset = model;
 
-        $.getJSON(model.backend.get('url'), function(d) {
-          result = model.backend.gdocsToJavascript(d);
+        $.getJSON(model.backendConfig.url, function(d) {
+          result = my.backends['gdocs'].gdocsToJavascript(d);
           model.set({'headers': result.header});
-          model.backend.set({'data': result.data, 'headers': result.header});
+          // cache data onto dataset (we have loaded whole gdoc it seems!)
+          model._dataCache = result.data;
           dfd.resolve(model);
         })
-
         return dfd.promise(); }
     },
 
-    getDocuments: function(datasetId, start, numRows) { 
+    getDocuments: function(dataset, start, numRows) { 
       var dfd = $.Deferred();
-      var fields = this.get('headers');
+      var fields = dataset.get('headers');
 
       // zip the field headers with the data rows to produce js objs
       // TODO: factor this out as a common method with other backends
-      var objs = _.map(this.get('data'), function (d) { 
+      var objs = _.map(dataset._dataCache, function (d) { 
         var obj = {};
         _.each(_.zip(fields, d), function (x) { obj[x[0]] = x[1]; })
         return obj;
@@ -361,6 +334,7 @@ this.recline.Model = this.recline.Model || {};
       });
       return results;
     }
-
   });
+  my.backends['gdocs'] = new my.BackendGDoc();
+
 }(jQuery, this.recline.Model));

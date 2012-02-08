@@ -11,9 +11,10 @@ this.recline.Model = this.recline.Model || {};
   // * docCount: total number of documents in this dataset (obtained on a fetch for this Dataset)
   my.Dataset = Backbone.Model.extend({
     __type__: 'Dataset',
-    initialize: function() {
+    initialize: function(options) {
       this.currentDocuments = new my.DocumentList();
       this.docCount = null;
+      this.backend = null;
     },
 
     // ### getDocuments
@@ -30,10 +31,14 @@ this.recline.Model = this.recline.Model || {};
     // This also illustrates the limitations of separating the Dataset and the Backend
     getDocuments: function(numRows, start) {
       var self = this;
+      var backend = my.backends[this.backendConfig.type];
       var dfd = $.Deferred();
-      this.backend.getDocuments(this.id, numRows, start).then(function(rows) {
+      backend.getDocuments(this, numRows, start).then(function(rows) {
         var docs = _.map(rows, function(row) {
-          return new my.Document(row);
+          var _doc = new my.Document(row);
+          _doc.backendConfig = self.backendConfig;
+          _doc.backend = backend;
+          return _doc;
         });
         self.currentDocuments.reset(docs);
         dfd.resolve(self.currentDocuments);
