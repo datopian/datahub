@@ -104,14 +104,20 @@ my.DataExplorer = Backbone.View.extend({
     this.model.fetch().then(function(dataset) {
       self.el.find('.doc-count').text(self.model.docCount || 'Unknown');
       // initialize of dataTable calls render
-      self.model.getDocuments(self.config.displayCount);
+      var queryObj = {
+        size: self.config.displayCount
+      };
+      self.model.query(queryObj);
     });
   },
 
   onDisplayCountUpdate: function(e) {
     e.preventDefault();
     this.config.displayCount = parseInt(this.el.find('input[name="displayCount"]').val());
-    this.model.getDocuments(this.config.displayCount);
+    var queryObj = {
+      size: this.config.displayCount
+    };
+    this.model.query(queryObj);
   },
 
   setReadOnly: function() {
