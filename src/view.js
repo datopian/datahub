@@ -186,6 +186,7 @@ my.DataTable = Backbone.View.extend({
     this.model.currentDocuments.bind('reset', this.render);
     this.model.currentDocuments.bind('remove', this.render);
     this.state = {};
+    this.hiddenHeaders = [];
   },
 
   events: {
@@ -229,6 +230,7 @@ my.DataTable = Backbone.View.extend({
       transform: function() { self.showTransformDialog('transform') },
       sortAsc: function() { self.setColumnSort('asc') },
       sortDesc: function() { self.setColumnSort('desc') },
+      hideColumn: function() { self.hideColumn() },
       // TODO: Delete or re-implement ...
       csv: function() { window.location.href = app.csvUrl },
       json: function() { window.location.href = "_rewrite/api/json" },
@@ -296,6 +298,11 @@ my.DataTable = Backbone.View.extend({
     var query = _.extend(this.model.queryState, {sort: [[this.state.currentColumn, order]]});
     this.model.query(query);
   },
+  
+  hideColumn: function(order) {
+    this.hiddenHeaders.push(this.state.currentColumn);
+    this.render();
+  },
 
   // ======================================================
   // Core Templating
@@ -323,11 +330,15 @@ my.DataTable = Backbone.View.extend({
 
   toTemplateJSON: function() {
     var modelData = this.model.toJSON()
-    modelData.notEmpty = ( modelData.headers.length > 0 )
+    modelData.notEmpty = ( this.headers.length > 0 )
+    modelData.headers = this.headers;
     return modelData;
   },
   render: function() {
     var self = this;
+    this.headers = _.filter(this.model.get('headers'), function(header) {
+      return _.indexOf(self.hiddenHeaders, header) == -1;
+    });
     var htmls = $.mustache(this.template, this.toTemplateJSON());
     this.el.html(htmls);
     this.model.currentDocuments.forEach(function(doc) {
@@ -336,7 +347,7 @@ my.DataTable = Backbone.View.extend({
       var newView = new my.DataTableRow({
           model: doc,
           el: tr,
-          headers: self.model.get('headers')
+          headers: self.headers,
         });
       newView.render();
     });
@@ -355,6 +366,7 @@ my.DataTableRow = Backbone.View.extend({
     this.el = $(this.el);
     this.model.bind('change', this.render);
   },
+
   template: ' \
       <td><a class="row-header-menu"></a></td> \
       {{#cells}} \
