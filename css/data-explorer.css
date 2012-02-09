@@ -517,8 +517,7 @@ td.expression-preview-value {
   display: none;
 }
 
-.read-only .column-header-menu,
-.read-only .row-header-menu,
+.read-only .write-op,
 .read-only a.data-table-cell-edit
 {
   display: none;
