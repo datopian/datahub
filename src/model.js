@@ -15,6 +15,11 @@ this.recline.Model = this.recline.Model || {};
       this.currentDocuments = new my.DocumentList();
       this.docCount = null;
       this.backend = null;
+      this.defaultQuery = {
+        size: 100
+        , offset: 0
+      };
+      // this.queryState = {};
     },
 
     // ### getDocuments
@@ -29,11 +34,13 @@ this.recline.Model = this.recline.Model || {};
     //
     // this does not fit very well with Backbone setup. Backbone really expects you to know the ids of objects your are fetching (which you do in classic RESTful ajax-y world). But this paradigm does not fill well with data set up we have here.
     // This also illustrates the limitations of separating the Dataset and the Backend
-    getDocuments: function(numRows, start) {
+    query: function(queryObj) {
+      this.actualQuery = queryObj || this.defaultQuery;
+      this.actualQuery = _.extend({size: 100, offset: 0}, this.actualQuery);
       var self = this;
       var backend = my.backends[this.backendConfig.type];
       var dfd = $.Deferred();
-      backend.getDocuments(this, numRows, start).then(function(rows) {
+      backend.query(this, this.actualQuery).then(function(rows) {
         var docs = _.map(rows, function(row) {
           var _doc = new my.Document(row);
           _doc.backendConfig = self.backendConfig;

@@ -78,16 +78,19 @@ this.recline.Model = this.recline.Model || {};
           alert('Not supported: sync on BackendMemory with method ' + method + ' and model ' + model);
         }
       },
-      getDocuments: function(model, numRows, start) {
-        if (start === undefined) {
-          start = 0;
-        }
-        if (numRows === undefined) {
-          numRows = 10;
-        }
+      query: function(model, queryObj) {
+        var numRows = queryObj.size;
+        var start = queryObj.offset;
         var dfd = $.Deferred();
         rows = model.backendConfig.data.rows;
         var results = rows.slice(start, start+numRows);
+        // not complete sorting!
+        _.each(queryObj.sort, function(item) {
+          results = _.sortBy(results, function(row) {
+            var _out = row[item[0]];
+            return (item[1] == 'asc') ? _out : -1*_out;
+          });
+        });
         dfd.resolve(results);
         return dfd.promise();
       }
@@ -133,19 +136,18 @@ this.recline.Model = this.recline.Model || {};
         }
       }
     },
-    getDocuments: function(model, numRows, start) {
-      if (start === undefined) {
-        start = 0;
-      }
-      if (numRows === undefined) {
-        numRows = 10;
-      }
+    query: function(model, queryObj) {
       var base = model.backendConfig.url;
+      var data = {
+        _limit:  queryObj.size
+        , _offset: queryObj.offset
+      };
       var jqxhr = $.ajax({
-        url: base + '.json?_limit=' + numRows,
-          dataType: 'jsonp',
-          jsonp: '_callback',
-          cache: true
+        url: base + '.json',
+        data: data,
+        dataType: 'jsonp',
+        jsonp: '_callback',
+        cache: true
       });
       var dfd = $.Deferred();
       jqxhr.then(function(results) {
@@ -206,17 +208,11 @@ this.recline.Model = this.recline.Model || {};
         alert('This backend only supports read operations');
       }
     },
-    getDocuments: function(dataset, numRows, start) {
-      if (start === undefined) {
-        start = 0;
-      }
-      if (numRows === undefined) {
-        numRows = 10;
-      }
+    query: function(dataset, queryObj) {
       var base = my.backends['dataproxy'].get('dataproxy');
       var data = {
         url: dataset.backendConfig.url
-        , 'max-results':  numRows
+        , 'max-results':  queryObj.size
         , type: dataset.backendConfig.format
       };
       var jqxhr = $.ajax({
@@ -260,7 +256,7 @@ this.recline.Model = this.recline.Model || {};
         return dfd.promise(); }
     },
 
-    getDocuments: function(dataset, start, numRows) { 
+    query: function(dataset, queryObj) { 
       var dfd = $.Deferred();
       var fields = dataset.get('headers');
 
