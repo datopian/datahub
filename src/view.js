@@ -192,6 +192,7 @@ my.DataTable = Backbone.View.extend({
   events: {
     'click .column-header-menu': 'onColumnHeaderClick'
     , 'click .row-header-menu': 'onRowHeaderClick'
+    , 'click .root-header-menu': 'onRootHeaderClick'
     , 'click .data-table-menu li a': 'onMenuClick'
   },
 
@@ -221,6 +222,11 @@ my.DataTable = Backbone.View.extend({
     util.position('data-table-menu', e);
     util.render('rowActions', 'data-table-menu');
   },
+  
+  onRootHeaderClick: function(e) {
+    util.position('data-table-menu', e);
+    util.render('rootActions', 'data-table-menu', {'columns': this.hiddenHeaders});
+  },
 
   onMenuClick: function(e) {
     var self = this;
@@ -231,6 +237,7 @@ my.DataTable = Backbone.View.extend({
       sortAsc: function() { self.setColumnSort('asc') },
       sortDesc: function() { self.setColumnSort('desc') },
       hideColumn: function() { self.hideColumn() },
+      showColumn: function() { self.showColumn(e) },
       // TODO: Delete or re-implement ...
       csv: function() { window.location.href = app.csvUrl },
       json: function() { window.location.href = "_rewrite/api/json" },
@@ -299,8 +306,13 @@ my.DataTable = Backbone.View.extend({
     this.model.query(query);
   },
   
-  hideColumn: function(order) {
+  hideColumn: function() {
     this.hiddenHeaders.push(this.state.currentColumn);
+    this.render();
+  },
+  
+  showColumn: function(e) {
+    this.hiddenHeaders = _.without(this.hiddenHeaders, $(e.target).data('column'));
     this.render();
   },
 
@@ -312,7 +324,14 @@ my.DataTable = Backbone.View.extend({
     <table class="data-table" cellspacing="0"> \
       <thead> \
         <tr> \
-          {{#notEmpty}}<th class="column-header"></th>{{/notEmpty}} \
+          {{#notEmpty}} \
+            <th class="column-header"> \
+              <div class="column-header-title"> \
+                <a class="root-header-menu"></a> \
+                <span class="column-header-name"></span> \
+              </div> \
+            </th> \
+          {{/notEmpty}} \
           {{#headers}} \
             <th class="column-header"> \
               <div class="column-header-title"> \
@@ -351,6 +370,7 @@ my.DataTable = Backbone.View.extend({
         });
       newView.render();
     });
+    $(".root-header-menu").toggle((self.hiddenHeaders.length > 0));
     return this;
   }
 });

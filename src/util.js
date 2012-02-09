@@ -9,6 +9,10 @@ var util = function() {
       <li><a data-action="hideColumn" class="menuAction" href="JavaScript:void(0);">Hide this column</a></li> \
     '
     , rowActions: '<li><a data-action="deleteRow" class="menuAction write-op" href="JavaScript:void(0);">Delete this row</a></li>'
+    , rootActions: ' \
+        {{#columns}} \
+        <li><a data-action="showColumn" data-column="{{.}}" class="menuAction" href="JavaScript:void(0);">Add column: {{.}}</a></li> \
+        {{/columns}}'
     , cellEditor: ' \
       <div class="menu-container data-table-cell-editor"> \
         <textarea class="data-table-cell-editor-editor" bind="textarea">{{value}}</textarea> \
