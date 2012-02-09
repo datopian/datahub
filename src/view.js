@@ -227,6 +227,8 @@ my.DataTable = Backbone.View.extend({
     var actions = {
       bulkEdit: function() { self.showTransformColumnDialog('bulkEdit', {name: self.state.currentColumn}) },
       transform: function() { self.showTransformDialog('transform') },
+      sortAsc: function() { self.setColumnSort('asc') },
+      sortDesc: function() { self.setColumnSort('desc') },
       // TODO: Delete or re-implement ...
       csv: function() { window.location.href = app.csvUrl },
       json: function() { window.location.href = "_rewrite/api/json" },
@@ -290,6 +292,10 @@ my.DataTable = Backbone.View.extend({
     $('.dialog').draggable({ handle: '.dialog-header', cursor: 'move' });
   },
 
+  setColumnSort: function(order) {
+    var query = _.extend(this.model.queryState, {sort: [[this.state.currentColumn, order]]});
+    this.model.query(query);
+  },
 
   // ======================================================
   // Core Templating

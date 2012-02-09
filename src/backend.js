@@ -82,8 +82,7 @@ this.recline.Model = this.recline.Model || {};
         var numRows = queryObj.size;
         var start = queryObj.offset;
         var dfd = $.Deferred();
-        rows = model.backendConfig.data.rows;
-        var results = rows.slice(start, start+numRows);
+        results = model.backendConfig.data.rows;
         // not complete sorting!
         _.each(queryObj.sort, function(item) {
           results = _.sortBy(results, function(row) {
@@ -91,6 +90,7 @@ this.recline.Model = this.recline.Model || {};
             return (item[1] == 'asc') ? _out : -1*_out;
           });
         });
+        var results = results.slice(start, start+numRows);
         dfd.resolve(results);
         return dfd.promise();
       }
