@@ -16,7 +16,7 @@ Live demo: http://okfnlabs.org/recline/demo/
 * Bulk update/clean your data using an easy scripting UI
 * Visualize your data
 
-![screenshot](http://i.imgur.com/XDSRe.png)
+![screenshot](http://farm8.staticflickr.com/7020/6847468031_0f474de5f7_b.jpg)
 
 
 ## Demo App
