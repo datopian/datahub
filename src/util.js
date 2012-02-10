@@ -150,30 +150,6 @@ var util = function() {
     // if (template in app.after) app.after[template]();
   }
 
-  function notify(message, options) {
-    if (!options) var options = {};
-    var tmplData = _.extend({
-      msg: message,
-      category: 'warning'
-      },
-      options);
-    var _template = ' \
-      <div class="alert-message {{category}} fade in" data-alert="alert"><a class="close" href="#">×</a> \
-        <p>{{msg}} \
-          {{#loader}} \
-          <img src="images/small-spinner.gif" class="notification-loader"> \
-          {{/loader}} \
-        </p> \
-      </div>';
-    var _templated = $.mustache(_template, tmplData); 
-    _templated = $(_templated).appendTo($('.data-explorer .alert-messages'));
-    if (!options.persist) {
-      setTimeout(function() {
-        $(_templated).remove();
-      }, 3000);
-    }
-  }
-  
   return {
     registerEmitter: registerEmitter,
     listenFor: listenFor,
@@ -181,7 +157,6 @@ var util = function() {
     hide: hide,
     position: position,
     render: render,
-    notify: notify,
     observeExit: observeExit
   };
 }();
