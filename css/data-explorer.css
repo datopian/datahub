@@ -150,7 +150,7 @@
   * Data Table Menus
   *********************************************************/
 
-a.column-header-menu {
+a.column-header-menu, a.root-header-menu {
   float: right;
   display: block;
   margin: 0 4px 0 0;
@@ -160,7 +160,7 @@ a.column-header-menu {
   background-repeat: no-repeat;
 }
 
-a.row-header-menu:hover {
+a.row-header-menu:hover, a.root-header-menu:hover {
   background-position: -17px 0px;
   text-decoration: none;
 }
@@ -173,6 +173,10 @@ a.row-header-menu {
   height: 18px;
   background-image: url(images/menu-dropdown.png);
   background-repeat: no-repeat;
+}
+
+.read-only a.row-header-menu {
+  display: none;
 }
 
 a.column-header-menu:hover {
@@ -511,14 +515,14 @@ td.expression-preview-value {
   * Read-only mode
   *********************************************************/
 
-.read-only .data-table tr td:first-child,
+/*.read-only .data-table tr td:first-child,
 .read-only .data-table tr th:first-child
 {
   display: none;
 }
+*/
 
-.read-only .column-header-menu,
-.read-only .row-header-menu,
+.read-only .write-op,
 .read-only a.data-table-cell-edit
 {
   display: none;

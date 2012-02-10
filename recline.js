@@ -1,3 +1,739 @@
+// # Recline Backends
+//
+// Backends are connectors to backend data sources and stores
+//
+// Backends are implemented as Backbone models but this is just a
+// convenience (they do not save or load themselves from any remote
+// source)
+this.recline = this.recline || {};
+this.recline.Model = this.recline.Model || {};
+
+(function($, my) {
+  my.backends = {};
+
+  // ## Backbone.sync
+  //
+  // Override Backbone.sync to hand off to sync function in relevant backend
+  Backbone.sync = function(method, model, options) {
+    return my.backends[model.backendConfig.type].sync(method, model, options);
+  }
+
+  // ## wrapInTimeout
+  // 
+  // Crude way to catch backend errors
+  // Many of backends use JSONP and so will not get error messages and this is
+  // a crude way to catch those errors.
+  function wrapInTimeout(ourFunction) {
+    var dfd = $.Deferred();
+    var timeout = 5000;
+    var timer = setTimeout(function() {
+      dfd.reject({
+        message: 'Request Error: Backend did not respond after ' + (timeout / 1000) + ' seconds'
+      });
+    }, timeout);
+    ourFunction.done(function(arguments) {
+        clearTimeout(timer);
+        dfd.resolve(arguments);
+      })
+      .fail(function(arguments) {
+        clearTimeout(timer);
+        dfd.reject(arguments);
+      })
+      ;
+    return dfd.promise();
+  }
+
+  // ## BackendMemory - uses in-memory data
+  //
+  // To use you should:
+  // 
+  // A. provide metadata as model data to the Dataset
+  //
+  // B. Set backendConfig on your dataset with attributes:
+  //
+  //   - type: 'memory'
+  //   - data: hash with 2 keys:
+  //
+  //     * headers: list of header names/labels
+  //     * rows: list of hashes, each hash being one row. A row *must* have an id attribute which is unique.
+  //
+  //  Example of data:
+  // 
+  //  <pre>
+  //        {
+  //            headers: ['x', 'y', 'z']
+  //          , rows: [
+  //              {id: 0, x: 1, y: 2, z: 3}
+  //            , {id: 1, x: 2, y: 4, z: 6}
+  //          ]
+  //        };
+  //  </pre>
+  my.BackendMemory = Backbone.Model.extend({
+      sync: function(method, model, options) {
+        var self = this;
+        if (method === "read") {
+          var dfd = $.Deferred();
+          if (model.__type__ == 'Dataset') {
+            var dataset = model;
+            dataset.set({
+              headers: dataset.backendConfig.data.headers
+            });
+            dataset.docCount = dataset.backendConfig.data.rows.length;
+            dfd.resolve(dataset);
+          }
+          return dfd.promise();
+        } else if (method === 'update') {
+          var dfd = $.Deferred();
+          if (model.__type__ == 'Document') {
+            _.each(model.backendConfig.data.rows, function(row, idx) {
+              if(row.id === model.id) {
+                model.backendConfig.data.rows[idx] = model.toJSON();
+              }
+            });
+            dfd.resolve(model);
+          }
+          return dfd.promise();
+        } else if (method === 'delete') {
+          var dfd = $.Deferred();
+          if (model.__type__ == 'Document') {
+            model.backendConfig.data.rows = _.reject(model.backendConfig.data.rows, function(row) {
+              return (row.id === model.id);
+            });
+            dfd.resolve(model);
+          }
+          return dfd.promise();
+        } else {
+          alert('Not supported: sync on BackendMemory with method ' + method + ' and model ' + model);
+        }
+      },
+      query: function(model, queryObj) {
+        var numRows = queryObj.size;
+        var start = queryObj.offset;
+        var dfd = $.Deferred();
+        results = model.backendConfig.data.rows;
+        // not complete sorting!
+        _.each(queryObj.sort, function(item) {
+          results = _.sortBy(results, function(row) {
+            var _out = row[item[0]];
+            return (item[1] == 'asc') ? _out : -1*_out;
+          });
+        });
+        var results = results.slice(start, start+numRows);
+        dfd.resolve(results);
+        return dfd.promise();
+      }
+  });
+  my.backends['memory'] = new my.BackendMemory();
+
+  // ## BackendWebstore
+  //
+  // Connecting to [Webstores](http://github.com/okfn/webstore)
+  //
+  // To use this backend set backendConfig on your Dataset as:
+  //
+  // <pre>
+  // {
+  //   'type': 'webstore',
+  //   'url': url to relevant Webstore table
+  // }
+  // </pre>
+  my.BackendWebstore = Backbone.Model.extend({
+    sync: function(method, model, options) {
+      if (method === "read") {
+        if (model.__type__ == 'Dataset') {
+          var dataset = model;
+          var base = dataset.backendConfig.url;
+          var schemaUrl = base + '/schema.json';
+          var jqxhr = $.ajax({
+            url: schemaUrl,
+              dataType: 'jsonp',
+              jsonp: '_callback'
+          });
+          var dfd = $.Deferred();
+          wrapInTimeout(jqxhr).done(function(schema) {
+            headers = _.map(schema.data, function(item) {
+              return item.name;
+            });
+            dataset.set({
+              headers: headers
+            });
+            dataset.docCount = schema.count;
+            dfd.resolve(dataset, jqxhr);
+          })
+          .fail(function(arguments) {
+            dfd.reject(arguments);
+          });
+          return dfd.promise();
+        }
+      }
+    },
+    query: function(model, queryObj) {
+      var base = model.backendConfig.url;
+      var data = {
+        _limit:  queryObj.size
+        , _offset: queryObj.offset
+      };
+      var jqxhr = $.ajax({
+        url: base + '.json',
+        data: data,
+        dataType: 'jsonp',
+        jsonp: '_callback',
+        cache: true
+      });
+      var dfd = $.Deferred();
+      jqxhr.done(function(results) {
+        dfd.resolve(results.data);
+      });
+      return dfd.promise();
+    }
+  });
+  my.backends['webstore'] = new my.BackendWebstore();
+
+  // ## BackendDataProxy
+  // 
+  // For connecting to [DataProxy-s](http://github.com/okfn/dataproxy).
+  //
+  // Set a Dataset to use this backend:
+  //
+  //     dataset.backendConfig = {
+  //       // required
+  //       url: {url-of-data-to-proxy},
+  //       format: csv | xls,
+  //     }
+  //
+  // When initializing the DataProxy backend you can set the following attributes:
+  //
+  // * dataproxy: {url-to-proxy} (optional). Defaults to http://jsonpdataproxy.appspot.com
+  //
+  // Note that this is a **read-only** backend.
+  my.BackendDataProxy = Backbone.Model.extend({
+    defaults: {
+      dataproxy: 'http://jsonpdataproxy.appspot.com'
+    },
+    sync: function(method, model, options) {
+      if (method === "read") {
+        if (model.__type__ == 'Dataset') {
+          var dataset = model;
+          var base = my.backends['dataproxy'].get('dataproxy');
+          // TODO: should we cache for extra efficiency
+          var data = {
+            url: dataset.backendConfig.url
+            , 'max-results':  1
+            , type: dataset.backendConfig.format
+          };
+          var jqxhr = $.ajax({
+            url: base
+            , data: data
+            , dataType: 'jsonp'
+          });
+          var dfd = $.Deferred();
+          wrapInTimeout(jqxhr).done(function(results) {
+            dataset.set({
+              headers: results.fields
+            });
+            dfd.resolve(dataset, jqxhr);
+          })
+          .fail(function(arguments) {
+            dfd.reject(arguments);
+          });
+          return dfd.promise();
+        }
+      } else {
+        alert('This backend only supports read operations');
+      }
+    },
+    query: function(dataset, queryObj) {
+      var base = my.backends['dataproxy'].get('dataproxy');
+      var data = {
+        url: dataset.backendConfig.url
+        , 'max-results':  queryObj.size
+        , type: dataset.backendConfig.format
+      };
+      var jqxhr = $.ajax({
+        url: base
+        , data: data
+        , dataType: 'jsonp'
+      });
+      var dfd = $.Deferred();
+      jqxhr.done(function(results) {
+        var _out = _.map(results.data, function(row) {
+          var tmp = {};
+          _.each(results.fields, function(key, idx) {
+            tmp[key] = row[idx];
+          });
+          return tmp;
+        });
+        dfd.resolve(_out);
+      });
+      return dfd.promise();
+    }
+  });
+  my.backends['dataproxy'] = new my.BackendDataProxy();
+
+
+  // ## Google spreadsheet backend
+  // 
+  // Connect to Google Docs spreadsheet. For write operations
+  my.BackendGDoc = Backbone.Model.extend({
+    sync: function(method, model, options) {
+      if (method === "read") { 
+        var dfd = $.Deferred(); 
+        var dataset = model;
+
+        $.getJSON(model.backendConfig.url, function(d) {
+          result = my.backends['gdocs'].gdocsToJavascript(d);
+          model.set({'headers': result.header});
+          // cache data onto dataset (we have loaded whole gdoc it seems!)
+          model._dataCache = result.data;
+          dfd.resolve(model);
+        })
+        return dfd.promise(); }
+    },
+
+    query: function(dataset, queryObj) { 
+      var dfd = $.Deferred();
+      var fields = dataset.get('headers');
+
+      // zip the field headers with the data rows to produce js objs
+      // TODO: factor this out as a common method with other backends
+      var objs = _.map(dataset._dataCache, function (d) { 
+        var obj = {};
+        _.each(_.zip(fields, d), function (x) { obj[x[0]] = x[1]; })
+        return obj;
+      });
+      dfd.resolve(objs);
+      return dfd;
+    },
+    gdocsToJavascript:  function(gdocsSpreadsheet) {
+      /*
+         :options: (optional) optional argument dictionary:
+         columnsToUse: list of columns to use (specified by header names)
+         colTypes: dictionary (with column names as keys) specifying types (e.g. range, percent for use in conversion).
+         :return: tabular data object (hash with keys: header and data).
+
+         Issues: seems google docs return columns in rows in random order and not even sure whether consistent across rows.
+         */
+      var options = {};
+      if (arguments.length > 1) {
+        options = arguments[1];
+      }
+      var results = {
+        'header': [],
+        'data': []
+      };
+      // default is no special info on type of columns
+      var colTypes = {};
+      if (options.colTypes) {
+        colTypes = options.colTypes;
+      }
+      // either extract column headings from spreadsheet directly, or used supplied ones
+      if (options.columnsToUse) {
+        // columns set to subset supplied
+        results.header = options.columnsToUse;
+      } else {
+        // set columns to use to be all available
+        if (gdocsSpreadsheet.feed.entry.length > 0) {
+          for (var k in gdocsSpreadsheet.feed.entry[0]) {
+            if (k.substr(0, 3) == 'gsx') {
+              var col = k.substr(4)
+                results.header.push(col);
+            }
+          }
+        }
+      }
+
+      // converts non numberical values that should be numerical (22.3%[string] -> 0.223[float])
+      var rep = /^([\d\.\-]+)\%$/;
+      $.each(gdocsSpreadsheet.feed.entry, function (i, entry) {
+        var row = [];
+        for (var k in results.header) {
+          var col = results.header[k];
+          var _keyname = 'gsx$' + col;
+          var value = entry[_keyname]['$t'];
+          // if labelled as % and value contains %, convert
+          if (colTypes[col] == 'percent') {
+            if (rep.test(value)) {
+              var value2 = rep.exec(value);
+              var value3 = parseFloat(value2);
+              value = value3 / 100;
+            }
+          }
+          row.push(value);
+        }
+        results.data.push(row);
+      });
+      return results;
+    }
+  });
+  my.backends['gdocs'] = new my.BackendGDoc();
+
+}(jQuery, this.recline.Model));
+// importScripts('lib/underscore.js'); 
+
+onmessage = function(message) {
+  
+  function parseCSV(rawCSV) {
+    var patterns = new RegExp((
+      // Delimiters.
+      "(\\,|\\r?\\n|\\r|^)" +
+      // Quoted fields.
+      "(?:\"([^\"]*(?:\"\"[^\"]*)*)\"|" +
+      // Standard fields.
+      "([^\"\\,\\r\\n]*))"
+    ), "gi");
+
+    var rows = [[]], matches = null;
+
+    while (matches = patterns.exec(rawCSV)) {
+      var delimiter = matches[1];
+
+      if (delimiter.length && (delimiter !== ",")) rows.push([]);
+
+      if (matches[2]) {
+        var value = matches[2].replace(new RegExp("\"\"", "g"), "\"");
+      } else {
+        var value = matches[3];
+      }
+      rows[rows.length - 1].push(value);
+    }
+
+    if(_.isEqual(rows[rows.length -1], [""])) rows.pop();
+
+    var docs = [];
+    var headers = _.first(rows);
+    _.each(_.rest(rows), function(row, rowIDX) {
+      var doc = {};
+      _.each(row, function(cell, idx) {      
+        doc[headers[idx]] = cell;
+      })
+      docs.push(doc);
+    })
+
+    return docs;
+  }
+  
+  var docs = parseCSV(message.data.data);
+  
+  var req = new XMLHttpRequest();
+
+  req.onprogress = req.upload.onprogress = function(e) {
+    if(e.lengthComputable) postMessage({ percent: (e.loaded / e.total) * 100 });
+  };
+  
+  req.onreadystatechange = function() { if (req.readyState == 4) postMessage({done: true, response: req.responseText}) };
+  req.open('POST', message.data.url);
+  req.setRequestHeader('Content-Type', 'application/json');
+  req.send(JSON.stringify({docs: docs}));
+};
+// adapted from https://github.com/harthur/costco. heather rules
+
+var costco = function() {
+  
+  function evalFunction(funcString) {
+    try {
+      eval("var editFunc = " + funcString);
+    } catch(e) {
+      return {errorMessage: e+""};
+    }
+    return editFunc;
+  }
+  
+  function previewTransform(docs, editFunc, currentColumn) {
+    var preview = [];
+    var updated = mapDocs($.extend(true, {}, docs), editFunc);
+    for (var i = 0; i < updated.docs.length; i++) {      
+      var before = docs[i]
+        , after = updated.docs[i]
+        ;
+      if (!after) after = {};
+      if (currentColumn) {
+        preview.push({before: JSON.stringify(before[currentColumn]), after: JSON.stringify(after[currentColumn])});      
+      } else {
+        preview.push({before: JSON.stringify(before), after: JSON.stringify(after)});      
+      }
+    }
+    return preview;
+  }
+
+  function mapDocs(docs, editFunc) {
+    var edited = []
+      , deleted = []
+      , failed = []
+      ;
+    
+    var updatedDocs = _.map(docs, function(doc) {
+      try {
+        var updated = editFunc(_.clone(doc));
+      } catch(e) {
+        failed.push(doc);
+        return;
+      }
+      if(updated === null) {
+        updated = {_deleted: true};
+        edited.push(updated);
+        deleted.push(doc);
+      }
+      else if(updated && !_.isEqual(updated, doc)) {
+        edited.push(updated);
+      }
+      return updated;      
+    });
+    
+    return {
+      edited: edited, 
+      docs: updatedDocs, 
+      deleted: deleted, 
+      failed: failed
+    };
+  }
+  
+  return {
+    evalFunction: evalFunction,
+    previewTransform: previewTransform,
+    mapDocs: mapDocs
+  };
+}();
+// # Recline Backbone Models
+this.recline = this.recline || {};
+this.recline.Model = this.recline.Model || {};
+
+(function($, my) {
+  // ## A Dataset model
+  //
+  // Other than standard list of Backbone methods it has two important attributes:
+  //
+  // * currentDocuments: a DocumentList containing the Documents we have currently loaded for viewing (you update currentDocuments by calling getRows)
+  // * docCount: total number of documents in this dataset (obtained on a fetch for this Dataset)
+  my.Dataset = Backbone.Model.extend({
+    __type__: 'Dataset',
+    initialize: function(options) {
+      this.currentDocuments = new my.DocumentList();
+      this.docCount = null;
+      this.backend = null;
+      this.defaultQuery = {
+        size: 100
+        , offset: 0
+      };
+      // this.queryState = {};
+    },
+
+    // ### getDocuments
+    //
+    // AJAX method with promise API to get rows (documents) from the backend.
+    //
+    // Resulting DocumentList are used to reset this.currentDocuments and are
+    // also returned.
+    //
+    // :param numRows: passed onto backend getDocuments.
+    // :param start: passed onto backend getDocuments.
+    //
+    // this does not fit very well with Backbone setup. Backbone really expects you to know the ids of objects your are fetching (which you do in classic RESTful ajax-y world). But this paradigm does not fill well with data set up we have here.
+    // This also illustrates the limitations of separating the Dataset and the Backend
+    query: function(queryObj) {
+      var self = this;
+      var backend = my.backends[this.backendConfig.type];
+      this.queryState = queryObj || this.defaultQuery;
+      this.queryState = _.extend({size: 100, offset: 0}, this.queryState);
+      var dfd = $.Deferred();
+      backend.query(this, this.queryState).done(function(rows) {
+        var docs = _.map(rows, function(row) {
+          var _doc = new my.Document(row);
+          _doc.backendConfig = self.backendConfig;
+          _doc.backend = backend;
+          return _doc;
+        });
+        self.currentDocuments.reset(docs);
+        dfd.resolve(self.currentDocuments);
+      })
+      .fail(function(arguments) {
+        dfd.reject(arguments);
+      });
+      return dfd.promise();
+    },
+
+    toTemplateJSON: function() {
+      var data = this.toJSON();
+      data.docCount = this.docCount;
+      return data;
+    }
+  });
+
+  // ## A Document (aka Row)
+  // 
+  // A single entry or row in the dataset
+  my.Document = Backbone.Model.extend({
+    __type__: 'Document'
+  });
+
+  // ## A Backbone collection of Documents
+  my.DocumentList = Backbone.Collection.extend({
+    __type__: 'DocumentList',
+    model: my.Document
+  });
+}(jQuery, this.recline.Model));
+
+var util = function() {
+  var templates = {
+    transformActions: '<li><a data-action="transform" class="menuAction" href="JavaScript:void(0);">Global transform...</a></li>'
+    , columnActions: ' \
+      <li class="write-op"><a data-action="bulkEdit" class="menuAction" href="JavaScript:void(0);">Transform...</a></li> \
+      <li class="write-op"><a data-action="deleteColumn" class="menuAction" href="JavaScript:void(0);">Delete this column</a></li> \
+      <li><a data-action="sortAsc" class="menuAction" href="JavaScript:void(0);">Sort ascending</a></li> \
+      <li><a data-action="sortDesc" class="menuAction" href="JavaScript:void(0);">Sort descending</a></li> \
+      <li><a data-action="hideColumn" class="menuAction" href="JavaScript:void(0);">Hide this column</a></li> \
+    '
+    , rowActions: '<li><a data-action="deleteRow" class="menuAction write-op" href="JavaScript:void(0);">Delete this row</a></li>'
+    , rootActions: ' \
+        {{#columns}} \
+        <li><a data-action="showColumn" data-column="{{.}}" class="menuAction" href="JavaScript:void(0);">Add column: {{.}}</a></li> \
+        {{/columns}}'
+    , cellEditor: ' \
+      <div class="menu-container data-table-cell-editor"> \
+        <textarea class="data-table-cell-editor-editor" bind="textarea">{{value}}</textarea> \
+        <div id="data-table-cell-editor-actions"> \
+          <div class="data-table-cell-editor-action"> \
+            <button class="okButton btn primary">Update</button> \
+            <button class="cancelButton btn danger">Cancel</button> \
+          </div> \
+        </div> \
+      </div> \
+    '
+    , editPreview: ' \
+      <div class="expression-preview-table-wrapper"> \
+        <table> \
+        <thead> \
+        <tr> \
+          <th class="expression-preview-heading"> \
+            before \
+          </th> \
+          <th class="expression-preview-heading"> \
+            after \
+          </th> \
+        </tr> \
+        </thead> \
+        <tbody> \
+        {{#rows}} \
+        <tr> \
+          <td class="expression-preview-value"> \
+            {{before}} \
+          </td> \
+          <td class="expression-preview-value"> \
+            {{after}} \
+          </td> \
+        </tr> \
+        {{/rows}} \
+        </tbody> \
+        </table> \
+      </div> \
+    '
+  };
+
+  $.fn.serializeObject = function() {
+    var o = {};
+    var a = this.serializeArray();
+    $.each(a, function() {
+      if (o[this.name]) {
+        if (!o[this.name].push) {
+          o[this.name] = [o[this.name]];
+        }
+        o[this.name].push(this.value || '');
+      } else {
+        o[this.name] = this.value || '';
+      }
+    });
+    return o;
+  };
+
+  function registerEmitter() {
+    var Emitter = function(obj) {
+      this.emit = function(obj, channel) { 
+        if (!channel) var channel = 'data';
+        this.trigger(channel, obj); 
+      };
+    };
+    MicroEvent.mixin(Emitter);
+    return new Emitter();
+  }
+  
+  function listenFor(keys) {
+    var shortcuts = { // from jquery.hotkeys.js
+			8: "backspace", 9: "tab", 13: "return", 16: "shift", 17: "ctrl", 18: "alt", 19: "pause",
+			20: "capslock", 27: "esc", 32: "space", 33: "pageup", 34: "pagedown", 35: "end", 36: "home",
+			37: "left", 38: "up", 39: "right", 40: "down", 45: "insert", 46: "del", 
+			96: "0", 97: "1", 98: "2", 99: "3", 100: "4", 101: "5", 102: "6", 103: "7",
+			104: "8", 105: "9", 106: "*", 107: "+", 109: "-", 110: ".", 111 : "/", 
+			112: "f1", 113: "f2", 114: "f3", 115: "f4", 116: "f5", 117: "f6", 118: "f7", 119: "f8", 
+			120: "f9", 121: "f10", 122: "f11", 123: "f12", 144: "numlock", 145: "scroll", 191: "/", 224: "meta"
+		}
+    window.addEventListener("keyup", function(e) { 
+      var pressed = shortcuts[e.keyCode];
+      if(_.include(keys, pressed)) app.emitter.emit("keyup", pressed); 
+    }, false);
+  }
+  
+  function observeExit(elem, callback) {
+    var cancelButton = elem.find('.cancelButton');
+    // TODO: remove (commented out as part of Backbon-i-fication
+    // app.emitter.on('esc', function() { 
+    //  cancelButton.click();
+    //  app.emitter.clear('esc');
+    // });
+    cancelButton.click(callback);
+  }
+  
+  function show( thing ) {
+    $('.' + thing ).show();
+    $('.' + thing + '-overlay').show();
+  }
+
+  function hide( thing ) {
+    $('.' + thing ).hide();
+    $('.' + thing + '-overlay').hide();
+    // TODO: remove or replace (commented out as part of Backbon-i-fication
+    // if (thing === "dialog") app.emitter.clear('esc'); // todo more elegant solution
+  }
+  
+  function position( thing, elem, offset ) {
+    var position = $(elem.target).position();
+    if (offset) {
+      if (offset.top) position.top += offset.top;
+      if (offset.left) position.left += offset.left;
+    }
+    $('.' + thing + '-overlay').show().click(function(e) {
+      $(e.target).hide();
+      $('.' + thing).hide();
+    });
+    $('.' + thing).show().css({top: position.top + $(elem.target).height(), left: position.left});
+  }
+
+  function render( template, target, options ) {
+    if ( !options ) options = {data: {}};
+    if ( !options.data ) options = {data: options};
+    var html = $.mustache( templates[template], options.data );
+    if (target instanceof jQuery) {
+      var targetDom = target;
+    } else {
+      var targetDom = $( "." + target + ":first" );      
+    }
+    if( options.append ) {
+      targetDom.append( html );
+    } else {
+      targetDom.html( html );
+    }
+    // TODO: remove (commented out as part of Backbon-i-fication
+    // if (template in app.after) app.after[template]();
+  }
+
+  return {
+    registerEmitter: registerEmitter,
+    listenFor: listenFor,
+    show: show,
+    hide: hide,
+    position: position,
+    render: render,
+    observeExit: observeExit
+  };
+}();
 this.recline = this.recline || {};
 
 // Views module following classic module pattern

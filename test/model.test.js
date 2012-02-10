@@ -26,21 +26,33 @@
       // deep copy so we do not touch original data ...
       , data: $.extend(true, {}, indata)
     };
-    expect(9);
+    expect(10);
     dataset.fetch().then(function(dataset) {
       equal(dataset.get('name'), metadata.name);
       deepEqual(dataset.get('headers'), indata.headers);
       equal(dataset.docCount, 6);
-      dataset.getDocuments(4, 2).then(function(documentList) {
+      var queryObj = {
+        size: 4
+        , offset: 2
+      };
+      dataset.query(queryObj).then(function(documentList) {
         deepEqual(indata.rows[2], documentList.models[0].toJSON());
       });
-      dataset.getDocuments().then(function(docList) {
-        // Test getDocuments
-        equal(docList.length, Math.min(10, indata.rows.length));
+      var queryObj = {
+        sort: [
+          ['y', 'desc']
+        ]
+      };
+      dataset.query(queryObj).then(function(docs) {
+        var doc0 = dataset.currentDocuments.models[0].toJSON();
+        equal(doc0.x, 6);
+      });
+      dataset.query().then(function(docList) {
+        equal(docList.length, Math.min(100, indata.rows.length));
         var doc1 = docList.models[0];
         deepEqual(doc1.toJSON(), indata.rows[0]);
 
-        // Test UPDATA
+        // Test UPDATE
         var newVal = 10;
         doc1.set({x: newVal});
         doc1.save().then(function() {
@@ -142,26 +154,32 @@
     var stub = sinon.stub($, 'ajax', function(options) {
       if (options.url.indexOf('schema.json') != -1) {
         return {
-          then: function(callback) {
+          done: function(callback) {
             callback(webstoreSchema);
+            return this;
+          },
+          fail: function() {
+            return this;
           }
         }
       } else {
         return {
-          then: function(callback) {
+          done: function(callback) {
             callback(webstoreData);
+          },
+          fail: function() {
           }
         }
       }
     });
 
-    dataset.fetch().then(function(dataset) {
+    dataset.fetch().done(function(dataset) {
       deepEqual(['__id__', 'date', 'geometry', 'amount'], dataset.get('headers'));
       equal(3, dataset.docCount)
-      dataset.getDocuments().then(function(docList) {
-        equal(3, docList.length)
-        equal("2009-01-01", docList.models[0].get('date'));
-      });
+      // dataset.query().done(function(docList) {
+      //  equal(3, docList.length)
+      //  equal("2009-01-01", docList.models[0].get('date'));
+      // });
     });
     $.ajax.restore();
   });
@@ -243,21 +261,25 @@
       var partialUrl = 'jsonpdataproxy.appspot.com';
       if (options.url.indexOf(partialUrl) != -1) {
         return {
-          then: function(callback) {
+          done: function(callback) {
             callback(dataProxyData);
+            return this;
+          }, 
+          fail: function() {
+            return this;
           }
         }
       }
     });
 
-    dataset.fetch().then(function(dataset) {
+    dataset.fetch().done(function(dataset) {
       deepEqual(['__id__', 'date', 'price'], dataset.get('headers'));
       equal(null, dataset.docCount)
-      dataset.getDocuments().then(function(docList) {
+      dataset.query().done(function(docList) {
         equal(10, docList.length)
         equal("1950-01", docList.models[0].get('date'));
-      // needed only if not stubbing
-      start();
+        // needed only if not stubbing
+        start();
       });
     });
     $.ajax.restore();
@@ -455,7 +477,7 @@
       console.log('inside dataset:', dataset, dataset.get('headers'), dataset.get('data'));
       deepEqual(['column-2', 'column-1'], dataset.get('headers'));
       //equal(null, dataset.docCount)
-      dataset.getDocuments().then(function(docList) {
+      dataset.query().then(function(docList) {
         equal(3, docList.length);
         console.log(docList.models[0]);
         equal("A", docList.models[0].get('column-1'));

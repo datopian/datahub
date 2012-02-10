@@ -11,8 +11,36 @@ this.recline.Model = this.recline.Model || {};
 (function($, my) {
   my.backends = {};
 
+  // ## Backbone.sync
+  //
+  // Override Backbone.sync to hand off to sync function in relevant backend
   Backbone.sync = function(method, model, options) {
     return my.backends[model.backendConfig.type].sync(method, model, options);
+  }
+
+  // ## wrapInTimeout
+  // 
+  // Crude way to catch backend errors
+  // Many of backends use JSONP and so will not get error messages and this is
+  // a crude way to catch those errors.
+  function wrapInTimeout(ourFunction) {
+    var dfd = $.Deferred();
+    var timeout = 5000;
+    var timer = setTimeout(function() {
+      dfd.reject({
+        message: 'Request Error: Backend did not respond after ' + (timeout / 1000) + ' seconds'
+      });
+    }, timeout);
+    ourFunction.done(function(arguments) {
+        clearTimeout(timer);
+        dfd.resolve(arguments);
+      })
+      .fail(function(arguments) {
+        clearTimeout(timer);
+        dfd.reject(arguments);
+      })
+      ;
+    return dfd.promise();
   }
 
   // ## BackendMemory - uses in-memory data
@@ -78,16 +106,19 @@ this.recline.Model = this.recline.Model || {};
           alert('Not supported: sync on BackendMemory with method ' + method + ' and model ' + model);
         }
       },
-      getDocuments: function(model, numRows, start) {
-        if (start === undefined) {
-          start = 0;
-        }
-        if (numRows === undefined) {
-          numRows = 10;
-        }
+      query: function(model, queryObj) {
+        var numRows = queryObj.size;
+        var start = queryObj.offset;
         var dfd = $.Deferred();
-        rows = model.backendConfig.data.rows;
-        var results = rows.slice(start, start+numRows);
+        results = model.backendConfig.data.rows;
+        // not complete sorting!
+        _.each(queryObj.sort, function(item) {
+          results = _.sortBy(results, function(row) {
+            var _out = row[item[0]];
+            return (item[1] == 'asc') ? _out : -1*_out;
+          });
+        });
+        var results = results.slice(start, start+numRows);
         dfd.resolve(results);
         return dfd.promise();
       }
@@ -119,7 +150,7 @@ this.recline.Model = this.recline.Model || {};
               jsonp: '_callback'
           });
           var dfd = $.Deferred();
-          jqxhr.then(function(schema) {
+          wrapInTimeout(jqxhr).done(function(schema) {
             headers = _.map(schema.data, function(item) {
               return item.name;
             });
@@ -128,27 +159,29 @@ this.recline.Model = this.recline.Model || {};
             });
             dataset.docCount = schema.count;
             dfd.resolve(dataset, jqxhr);
+          })
+          .fail(function(arguments) {
+            dfd.reject(arguments);
           });
           return dfd.promise();
         }
       }
     },
-    getDocuments: function(model, numRows, start) {
-      if (start === undefined) {
-        start = 0;
-      }
-      if (numRows === undefined) {
-        numRows = 10;
-      }
+    query: function(model, queryObj) {
       var base = model.backendConfig.url;
+      var data = {
+        _limit:  queryObj.size
+        , _offset: queryObj.offset
+      };
       var jqxhr = $.ajax({
-        url: base + '.json?_limit=' + numRows,
-          dataType: 'jsonp',
-          jsonp: '_callback',
-          cache: true
+        url: base + '.json',
+        data: data,
+        dataType: 'jsonp',
+        jsonp: '_callback',
+        cache: true
       });
       var dfd = $.Deferred();
-      jqxhr.then(function(results) {
+      jqxhr.done(function(results) {
         dfd.resolve(results.data);
       });
       return dfd.promise();
@@ -194,11 +227,14 @@ this.recline.Model = this.recline.Model || {};
             , dataType: 'jsonp'
           });
           var dfd = $.Deferred();
-          jqxhr.then(function(results) {
+          wrapInTimeout(jqxhr).done(function(results) {
             dataset.set({
               headers: results.fields
             });
             dfd.resolve(dataset, jqxhr);
+          })
+          .fail(function(arguments) {
+            dfd.reject(arguments);
           });
           return dfd.promise();
         }
@@ -206,17 +242,11 @@ this.recline.Model = this.recline.Model || {};
         alert('This backend only supports read operations');
       }
     },
-    getDocuments: function(dataset, numRows, start) {
-      if (start === undefined) {
-        start = 0;
-      }
-      if (numRows === undefined) {
-        numRows = 10;
-      }
+    query: function(dataset, queryObj) {
       var base = my.backends['dataproxy'].get('dataproxy');
       var data = {
         url: dataset.backendConfig.url
-        , 'max-results':  numRows
+        , 'max-results':  queryObj.size
         , type: dataset.backendConfig.format
       };
       var jqxhr = $.ajax({
@@ -225,7 +255,7 @@ this.recline.Model = this.recline.Model || {};
         , dataType: 'jsonp'
       });
       var dfd = $.Deferred();
-      jqxhr.then(function(results) {
+      jqxhr.done(function(results) {
         var _out = _.map(results.data, function(row) {
           var tmp = {};
           _.each(results.fields, function(key, idx) {
@@ -260,7 +290,7 @@ this.recline.Model = this.recline.Model || {};
         return dfd.promise(); }
     },
 
-    getDocuments: function(dataset, start, numRows) { 
+    query: function(dataset, queryObj) { 
       var dfd = $.Deferred();
       var fields = dataset.get('headers');
 
