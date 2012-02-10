@@ -29,7 +29,8 @@ function parseQueryString(q) {
 //
 // * category: warning (default), success, error
 // * persist: if true alert is persistent, o/w hidden after 3s (default = false)
-function notify(message, options) {
+// * loader: if true show loading spinner
+my.notify = function(message, options) {
   if (!options) var options = {};
   var tmplData = _.extend({
     msg: message,
@@ -48,9 +49,19 @@ function notify(message, options) {
   _templated = $(_templated).appendTo($('.data-explorer .alert-messages'));
   if (!options.persist) {
     setTimeout(function() {
-      $(_templated).remove();
-    }, 3000);
+      $(_templated).fadeOut(1000, function() {
+        $(this).remove();
+      });
+    }, 1000);
   }
+}
+
+// ## clearNotifications
+//
+// Clear all existing notifications
+my.clearNotifications = function() {
+  var $notifications = $('.data-explorer .alert-message');
+  $notifications.remove();
 }
 
 // The primary view for the entire application.
@@ -133,21 +144,26 @@ my.DataExplorer = Backbone.View.extend({
     // note this.model and dataset returned are the same
     this.model.fetch().then(function(dataset) {
       self.el.find('.doc-count').text(self.model.docCount || 'Unknown');
-      // initialize of dataTable calls render
-      var queryObj = {
-        size: self.config.displayCount
-      };
-      self.model.query(queryObj);
+      self.query();
     });
   },
 
-  onDisplayCountUpdate: function(e) {
-    e.preventDefault();
+  query: function() {
     this.config.displayCount = parseInt(this.el.find('input[name="displayCount"]').val());
     var queryObj = {
       size: this.config.displayCount
     };
-    this.model.query(queryObj);
+    my.notify('Loading data', {loader: true});
+    this.model.query(queryObj)
+      .done(function() {
+        my.clearNotifications();
+        my.notify('Data loaded', {category: 'success'});
+      });
+  },
+
+  onDisplayCountUpdate: function(e) {
+    e.preventDefault();
+    this.query();
   },
 
   setReadOnly: function() {
@@ -290,10 +306,10 @@ my.DataTable = Backbone.View.extend({
         });
         doc.destroy().then(function() { 
             self.model.currentDocuments.remove(doc);
-            notify("Row deleted successfully");
+            my.notify("Row deleted successfully");
           })
           .fail(function(err) {
-            notify("Errorz! " + err)
+            my.notify("Errorz! " + err)
           })
       }
     }
@@ -472,12 +488,12 @@ my.DataTableRow = Backbone.View.extend({
     var newData = {};
     newData[header] = newValue;
     this.model.set(newData);
-    notify("Updating row...", {loader: true});
+    my.notify("Updating row...", {loader: true});
     this.model.save().then(function(response) {
-        notify("Row updated successfully", {category: 'success'});
+        my.notify("Row updated successfully", {category: 'success'});
       })
       .fail(function() {
-        notify('Error saving row', {
+        my.notify('Error saving row', {
           category: 'error',
           persist: true
         });
@@ -575,11 +591,11 @@ my.ColumnTransform = Backbone.View.extend({
     var funcText = this.el.find('.expression-preview-code').val();
     var editFunc = costco.evalFunction(funcText);
     if (editFunc.errorMessage) {
-      notify("Error with function! " + editFunc.errorMessage);
+      my.notify("Error with function! " + editFunc.errorMessage);
       return;
     }
     util.hide('dialog');
-    notify("Updating all visible docs. This could take a while...", {persist: true, loader: true});
+    my.notify("Updating all visible docs. This could take a while...", {persist: true, loader: true});
       var docs = self.model.currentDocuments.map(function(doc) {
        return doc.toJSON();
       });
@@ -589,7 +605,7 @@ my.ColumnTransform = Backbone.View.extend({
     function onCompletedUpdate() {
       totalToUpdate += -1;
       if (totalToUpdate === 0) {
-        notify(toUpdate.length + " documents updated successfully");
+        my.notify(toUpdate.length + " documents updated successfully");
         alert('WARNING: We have only updated the docs in this view. (Updating of all docs not yet implemented!)');
         self.remove();
       }
