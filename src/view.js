@@ -23,6 +23,36 @@ function parseQueryString(q) {
   return urlParams;
 }
 
+// ## notify
+//
+// Create a notification (a div.alert-message in div.alert-messsages) using provide messages and options. Options are:
+//
+// * category: warning (default), success, error
+// * persist: if true alert is persistent, o/w hidden after 3s (default = false)
+function notify(message, options) {
+  if (!options) var options = {};
+  var tmplData = _.extend({
+    msg: message,
+    category: 'warning'
+    },
+    options);
+  var _template = ' \
+    <div class="alert-message {{category}} fade in" data-alert="alert"><a class="close" href="#">×</a> \
+      <p>{{msg}} \
+        {{#loader}} \
+        <img src="images/small-spinner.gif" class="notification-loader"> \
+        {{/loader}} \
+      </p> \
+    </div>';
+  var _templated = $.mustache(_template, tmplData); 
+  _templated = $(_templated).appendTo($('.data-explorer .alert-messages'));
+  if (!options.persist) {
+    setTimeout(function() {
+      $(_templated).remove();
+    }, 3000);
+  }
+}
+
 // The primary view for the entire application.
 //
 // It should be initialized with a recline.Model.Dataset object and an existing
@@ -260,10 +290,10 @@ my.DataTable = Backbone.View.extend({
         });
         doc.destroy().then(function() { 
             self.model.currentDocuments.remove(doc);
-            util.notify("Row deleted successfully");
+            notify("Row deleted successfully");
           })
           .fail(function(err) {
-            util.notify("Errorz! " + err)
+            notify("Errorz! " + err)
           })
       }
     }
@@ -442,12 +472,12 @@ my.DataTableRow = Backbone.View.extend({
     var newData = {};
     newData[header] = newValue;
     this.model.set(newData);
-    util.notify("Updating row...", {loader: true});
+    notify("Updating row...", {loader: true});
     this.model.save().then(function(response) {
-        util.notify("Row updated successfully", {category: 'success'});
+        notify("Row updated successfully", {category: 'success'});
       })
       .fail(function() {
-        util.notify('Error saving row', {
+        notify('Error saving row', {
           category: 'error',
           persist: true
         });
@@ -545,11 +575,11 @@ my.ColumnTransform = Backbone.View.extend({
     var funcText = this.el.find('.expression-preview-code').val();
     var editFunc = costco.evalFunction(funcText);
     if (editFunc.errorMessage) {
-      util.notify("Error with function! " + editFunc.errorMessage);
+      notify("Error with function! " + editFunc.errorMessage);
       return;
     }
     util.hide('dialog');
-    util.notify("Updating all visible docs. This could take a while...", {persist: true, loader: true});
+    notify("Updating all visible docs. This could take a while...", {persist: true, loader: true});
       var docs = self.model.currentDocuments.map(function(doc) {
        return doc.toJSON();
       });
@@ -559,7 +589,7 @@ my.ColumnTransform = Backbone.View.extend({
     function onCompletedUpdate() {
       totalToUpdate += -1;
       if (totalToUpdate === 0) {
-        util.notify(toUpdate.length + " documents updated successfully");
+        notify(toUpdate.length + " documents updated successfully");
         alert('WARNING: We have only updated the docs in this view. (Updating of all docs not yet implemented!)');
         self.remove();
       }
