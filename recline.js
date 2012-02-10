@@ -11,8 +11,36 @@ this.recline.Model = this.recline.Model || {};
 (function($, my) {
   my.backends = {};
 
+  // ## Backbone.sync
+  //
+  // Override Backbone.sync to hand off to sync function in relevant backend
   Backbone.sync = function(method, model, options) {
     return my.backends[model.backendConfig.type].sync(method, model, options);
+  }
+
+  // ## wrapInTimeout
+  // 
+  // Crude way to catch backend errors
+  // Many of backends use JSONP and so will not get error messages and this is
+  // a crude way to catch those errors.
+  function wrapInTimeout(ourFunction) {
+    var dfd = $.Deferred();
+    var timeout = 5000;
+    var timer = setTimeout(function() {
+      dfd.reject({
+        message: 'Request Error: Backend did not respond after ' + (timeout / 1000) + ' seconds'
+      });
+    }, timeout);
+    ourFunction.done(function(arguments) {
+        clearTimeout(timer);
+        dfd.resolve(arguments);
+      })
+      .fail(function(arguments) {
+        clearTimeout(timer);
+        dfd.reject(arguments);
+      })
+      ;
+    return dfd.promise();
   }
 
   // ## BackendMemory - uses in-memory data
@@ -122,7 +150,7 @@ this.recline.Model = this.recline.Model || {};
               jsonp: '_callback'
           });
           var dfd = $.Deferred();
-          jqxhr.then(function(schema) {
+          wrapInTimeout(jqxhr).done(function(schema) {
             headers = _.map(schema.data, function(item) {
               return item.name;
             });
@@ -131,6 +159,9 @@ this.recline.Model = this.recline.Model || {};
             });
             dataset.docCount = schema.count;
             dfd.resolve(dataset, jqxhr);
+          })
+          .fail(function(arguments) {
+            dfd.reject(arguments);
           });
           return dfd.promise();
         }
@@ -150,7 +181,7 @@ this.recline.Model = this.recline.Model || {};
         cache: true
       });
       var dfd = $.Deferred();
-      jqxhr.then(function(results) {
+      jqxhr.done(function(results) {
         dfd.resolve(results.data);
       });
       return dfd.promise();
@@ -196,11 +227,14 @@ this.recline.Model = this.recline.Model || {};
             , dataType: 'jsonp'
           });
           var dfd = $.Deferred();
-          jqxhr.then(function(results) {
+          wrapInTimeout(jqxhr).done(function(results) {
             dataset.set({
               headers: results.fields
             });
             dfd.resolve(dataset, jqxhr);
+          })
+          .fail(function(arguments) {
+            dfd.reject(arguments);
           });
           return dfd.promise();
         }
@@ -221,7 +255,7 @@ this.recline.Model = this.recline.Model || {};
         , dataType: 'jsonp'
       });
       var dfd = $.Deferred();
-      jqxhr.then(function(results) {
+      jqxhr.done(function(results) {
         var _out = _.map(results.data, function(row) {
           var tmp = {};
           _.each(results.fields, function(key, idx) {
@@ -453,111 +487,10 @@ var costco = function() {
     };
   }
   
-  function updateDocs(editFunc) {
-    var dfd = $.Deferred();
-    util.notify("Download entire database into Recline. This could take a while...", {persist: true, loader: true});
-    couch.request({url: app.baseURL + "api/json"}).then(function(docs) {
-      util.notify("Updating " + docs.docs.length + " documents. This could take a while...", {persist: true, loader: true});
-      var toUpdate = costco.mapDocs(docs.docs, editFunc).edited;
-      costco.uploadDocs(toUpdate).then(
-        function(updatedDocs) { 
-          util.notify(updatedDocs.length + " documents updated successfully");
-          recline.initializeTable(app.offset);
-          dfd.resolve(updatedDocs);
-        },
-        function(err) {
-          util.notify("Errorz! " + err);
-          dfd.reject(err);
-        }
-      );
-    });
-    return dfd.promise();
-  }
-  
-  function updateDoc(doc) {
-    return couch.request({type: "PUT", url: app.baseURL + "api/" + doc._id, data: JSON.stringify(doc)})    
-  }
-
-  function uploadDocs(docs) {
-    var dfd = $.Deferred();
-    if(!docs.length) dfd.resolve("Failed: No docs specified");
-    couch.request({url: app.baseURL + "api/_bulk_docs", type: "POST", data: JSON.stringify({docs: docs})})
-      .then(
-        function(resp) {ensureCommit().then(function() { 
-          var error = couch.responseError(resp);
-          if (error) {
-            dfd.reject(error);
-          } else {
-            dfd.resolve(resp);            
-          }
-        })}, 
-        function(err) { dfd.reject(err.responseText) }
-      );
-    return dfd.promise();
-  }
-  
-  function ensureCommit() {
-    return couch.request({url: app.baseURL + "api/_ensure_full_commit", type:'POST', data: "''"});
-  }
-  
-  function deleteColumn(name) {
-    var deleteFunc = function(doc) {
-      delete doc[name];
-      return doc;
-    }
-    return updateDocs(deleteFunc);
-  }
-  
-  function uploadCSV() {
-    var file = $('#file')[0].files[0];
-    if (file) {
-      var reader = new FileReader();
-      reader.readAsText(file);
-      reader.onload = function(event) {
-        var payload = {
-          url: window.location.href + "/api/_bulk_docs", // todo more robust url composition
-          data: event.target.result
-        };
-        var worker = new Worker('script/costco-csv-worker.js');
-        worker.onmessage = function(event) {
-          var message = event.data;
-          if (message.done) {
-            var error = couch.responseError(JSON.parse(message.response))
-            console.log('e',error)
-            if (error) {
-              app.emitter.emit(error, 'error');
-            } else {
-              util.notify("Data uploaded successfully!");
-              recline.initializeTable(app.offset);
-            }
-            util.hide('dialog');
-          } else if (message.percent) {
-            if (message.percent === 100) {
-              util.notify("Waiting for CouchDB...", {persist: true, loader: true})
-            } else {
-              util.notify("Uploading... " + message.percent + "%");            
-            }
-          } else {
-            util.notify(JSON.stringify(message));
-          }
-        };
-        worker.postMessage(payload);
-      };
-    } else {
-      util.notify('File not selected. Please try again');
-    }
-  };
-
   return {
     evalFunction: evalFunction,
     previewTransform: previewTransform,
-    mapDocs: mapDocs,
-    updateDocs: updateDocs,
-    updateDoc: updateDoc,
-    uploadDocs: uploadDocs,
-    deleteColumn: deleteColumn,
-    ensureCommit: ensureCommit,
-    uploadCSV: uploadCSV 
+    mapDocs: mapDocs
   };
 }();
 // # Recline Backbone Models
@@ -597,13 +530,12 @@ this.recline.Model = this.recline.Model || {};
     // this does not fit very well with Backbone setup. Backbone really expects you to know the ids of objects your are fetching (which you do in classic RESTful ajax-y world). But this paradigm does not fill well with data set up we have here.
     // This also illustrates the limitations of separating the Dataset and the Backend
     query: function(queryObj) {
-      this.queryState = queryObj || this.defaultQuery;
-      this.queryState = _.extend({size: 100, offset: 0}, this.queryState);
-
       var self = this;
       var backend = my.backends[this.backendConfig.type];
+      this.queryState = queryObj || this.defaultQuery;
+      this.queryState = _.extend({size: 100, offset: 0}, this.queryState);
       var dfd = $.Deferred();
-      backend.query(this, this.queryState).then(function(rows) {
+      backend.query(this, this.queryState).done(function(rows) {
         var docs = _.map(rows, function(row) {
           var _doc = new my.Document(row);
           _doc.backendConfig = self.backendConfig;
@@ -612,6 +544,9 @@ this.recline.Model = this.recline.Model || {};
         });
         self.currentDocuments.reset(docs);
         dfd.resolve(self.currentDocuments);
+      })
+      .fail(function(arguments) {
+        dfd.reject(arguments);
       });
       return dfd.promise();
     },
@@ -789,30 +724,6 @@ var util = function() {
     // if (template in app.after) app.after[template]();
   }
 
-  function notify(message, options) {
-    if (!options) var options = {};
-    var tmplData = _.extend({
-      msg: message,
-      category: 'warning'
-      },
-      options);
-    var _template = ' \
-      <div class="alert-message {{category}} fade in" data-alert="alert"><a class="close" href="#">×</a> \
-        <p>{{msg}} \
-          {{#loader}} \
-          <img src="images/small-spinner.gif" class="notification-loader"> \
-          {{/loader}} \
-        </p> \
-      </div>';
-    var _templated = $.mustache(_template, tmplData); 
-    _templated = $(_templated).appendTo($('.data-explorer .alert-messages'));
-    if (!options.persist) {
-      setTimeout(function() {
-        $(_templated).remove();
-      }, 3000);
-    }
-  }
-  
   return {
     registerEmitter: registerEmitter,
     listenFor: listenFor,
@@ -820,7 +731,6 @@ var util = function() {
     hide: hide,
     position: position,
     render: render,
-    notify: notify,
     observeExit: observeExit
   };
 }();
@@ -847,6 +757,47 @@ function parseQueryString(q) {
     urlParams[d(e[1])] = d(e[2]);
   }
   return urlParams;
+}
+
+// ## notify
+//
+// Create a notification (a div.alert-message in div.alert-messsages) using provide messages and options. Options are:
+//
+// * category: warning (default), success, error
+// * persist: if true alert is persistent, o/w hidden after 3s (default = false)
+// * loader: if true show loading spinner
+my.notify = function(message, options) {
+  if (!options) var options = {};
+  var tmplData = _.extend({
+    msg: message,
+    category: 'warning'
+    },
+    options);
+  var _template = ' \
+    <div class="alert-message {{category}} fade in" data-alert="alert"><a class="close" href="#">×</a> \
+      <p>{{msg}} \
+        {{#loader}} \
+        <img src="images/small-spinner.gif" class="notification-loader"> \
+        {{/loader}} \
+      </p> \
+    </div>';
+  var _templated = $.mustache(_template, tmplData); 
+  _templated = $(_templated).appendTo($('.data-explorer .alert-messages'));
+  if (!options.persist) {
+    setTimeout(function() {
+      $(_templated).fadeOut(1000, function() {
+        $(this).remove();
+      });
+    }, 1000);
+  }
+}
+
+// ## clearNotifications
+//
+// Clear all existing notifications
+my.clearNotifications = function() {
+  var $notifications = $('.data-explorer .alert-message');
+  $notifications.remove();
 }
 
 // The primary view for the entire application.
@@ -927,23 +878,36 @@ my.DataExplorer = Backbone.View.extend({
 
     // retrieve basic data like headers etc
     // note this.model and dataset returned are the same
-    this.model.fetch().then(function(dataset) {
-      self.el.find('.doc-count').text(self.model.docCount || 'Unknown');
-      // initialize of dataTable calls render
-      var queryObj = {
-        size: self.config.displayCount
-      };
-      self.model.query(queryObj);
-    });
+    this.model.fetch()
+      .done(function(dataset) {
+        self.el.find('.doc-count').text(self.model.docCount || 'Unknown');
+        self.query();
+      })
+      .fail(function(error) {
+        my.notify(error.message, {category: 'error', persist: true});
+      });
   },
 
-  onDisplayCountUpdate: function(e) {
-    e.preventDefault();
+  query: function() {
     this.config.displayCount = parseInt(this.el.find('input[name="displayCount"]').val());
     var queryObj = {
       size: this.config.displayCount
     };
-    this.model.query(queryObj);
+    my.notify('Loading data', {loader: true});
+    this.model.query(queryObj)
+      .done(function() {
+        my.clearNotifications();
+        my.notify('Data loaded', {category: 'success'});
+      })
+      .fail(function(error) {
+        my.clearNotifications();
+        my.notify(error.message, {category: 'error', persist: true});
+      });
+  },
+
+  onDisplayCountUpdate: function(e) {
+    e.preventDefault();
+    this.query();
   },
 
   setReadOnly: function() {
@@ -1086,10 +1050,10 @@ my.DataTable = Backbone.View.extend({
         });
         doc.destroy().then(function() { 
             self.model.currentDocuments.remove(doc);
-            util.notify("Row deleted successfully");
+            my.notify("Row deleted successfully");
           })
           .fail(function(err) {
-            util.notify("Errorz! " + err)
+            my.notify("Errorz! " + err)
           })
       }
     }
@@ -1268,12 +1232,12 @@ my.DataTableRow = Backbone.View.extend({
     var newData = {};
     newData[header] = newValue;
     this.model.set(newData);
-    util.notify("Updating row...", {loader: true});
+    my.notify("Updating row...", {loader: true});
     this.model.save().then(function(response) {
-        util.notify("Row updated successfully", {category: 'success'});
+        my.notify("Row updated successfully", {category: 'success'});
       })
       .fail(function() {
-        util.notify('Error saving row', {
+        my.notify('Error saving row', {
           category: 'error',
           persist: true
         });
@@ -1371,11 +1335,11 @@ my.ColumnTransform = Backbone.View.extend({
     var funcText = this.el.find('.expression-preview-code').val();
     var editFunc = costco.evalFunction(funcText);
     if (editFunc.errorMessage) {
-      util.notify("Error with function! " + editFunc.errorMessage);
+      my.notify("Error with function! " + editFunc.errorMessage);
       return;
     }
     util.hide('dialog');
-    util.notify("Updating all visible docs. This could take a while...", {persist: true, loader: true});
+    my.notify("Updating all visible docs. This could take a while...", {persist: true, loader: true});
       var docs = self.model.currentDocuments.map(function(doc) {
        return doc.toJSON();
       });
@@ -1385,7 +1349,7 @@ my.ColumnTransform = Backbone.View.extend({
     function onCompletedUpdate() {
       totalToUpdate += -1;
       if (totalToUpdate === 0) {
-        util.notify(toUpdate.length + " documents updated successfully");
+        my.notify(toUpdate.length + " documents updated successfully");
         alert('WARNING: We have only updated the docs in this view. (Updating of all docs not yet implemented!)');
         self.remove();
       }
