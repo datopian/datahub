@@ -11,8 +11,36 @@ this.recline.Model = this.recline.Model || {};
 (function($, my) {
   my.backends = {};
 
+  // ## Backbone.sync
+  //
+  // Override Backbone.sync to hand off to sync function in relevant backend
   Backbone.sync = function(method, model, options) {
     return my.backends[model.backendConfig.type].sync(method, model, options);
+  }
+
+  // ## wrapInTimeout
+  // 
+  // Crude way to catch backend errors
+  // Many of backends use JSONP and so will not get error messages and this is
+  // a crude way to catch those errors.
+  function wrapInTimeout(ourFunction) {
+    var dfd = $.Deferred();
+    var timeout = 5000;
+    var timer = setTimeout(function() {
+      dfd.reject({
+        message: 'Request Error: Backend did not respond after ' + (timeout / 1000) + ' seconds'
+      });
+    }, timeout);
+    ourFunction.done(function(arguments) {
+        clearTimeout(timer);
+        dfd.resolve(arguments);
+      })
+      .fail(function(arguments) {
+        clearTimeout(timer);
+        dfd.reject(arguments);
+      })
+      ;
+    return dfd.promise();
   }
 
   // ## BackendMemory - uses in-memory data
@@ -122,7 +150,7 @@ this.recline.Model = this.recline.Model || {};
               jsonp: '_callback'
           });
           var dfd = $.Deferred();
-          jqxhr.then(function(schema) {
+          wrapInTimeout(jqxhr).done(function(schema) {
             headers = _.map(schema.data, function(item) {
               return item.name;
             });
@@ -131,6 +159,9 @@ this.recline.Model = this.recline.Model || {};
             });
             dataset.docCount = schema.count;
             dfd.resolve(dataset, jqxhr);
+          })
+          .fail(function(arguments) {
+            dfd.reject(arguments);
           });
           return dfd.promise();
         }
@@ -150,7 +181,7 @@ this.recline.Model = this.recline.Model || {};
         cache: true
       });
       var dfd = $.Deferred();
-      jqxhr.then(function(results) {
+      jqxhr.done(function(results) {
         dfd.resolve(results.data);
       });
       return dfd.promise();
@@ -196,11 +227,14 @@ this.recline.Model = this.recline.Model || {};
             , dataType: 'jsonp'
           });
           var dfd = $.Deferred();
-          jqxhr.then(function(results) {
+          wrapInTimeout(jqxhr).done(function(results) {
             dataset.set({
               headers: results.fields
             });
             dfd.resolve(dataset, jqxhr);
+          })
+          .fail(function(arguments) {
+            dfd.reject(arguments);
           });
           return dfd.promise();
         }
@@ -221,7 +255,7 @@ this.recline.Model = this.recline.Model || {};
         , dataType: 'jsonp'
       });
       var dfd = $.Deferred();
-      jqxhr.then(function(results) {
+      jqxhr.done(function(results) {
         var _out = _.map(results.data, function(row) {
           var tmp = {};
           _.each(results.fields, function(key, idx) {
