@@ -128,7 +128,8 @@ my.DataExplorer = Backbone.View.extend({
     // Hash of 'page' views (i.e. those for whole page) keyed by page name
     this.pageViews = {
       grid: new my.DataTable({
-          model: this.model
+          model: this.model,
+          config: this.config
         })
       , graph: new my.FlotGraph({
           model: this.model
@@ -424,7 +425,7 @@ my.DataTable = Backbone.View.extend({
         });
       newView.render();
     });
-    $(".root-header-menu").toggle((self.hiddenHeaders.length > 0));
+    this.el.toggleClass('no-hidden', (self.hiddenHeaders.length == 0));
     return this;
   }
 });

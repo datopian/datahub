@@ -515,12 +515,12 @@ td.expression-preview-value {
   * Read-only mode
   *********************************************************/
 
-/*.read-only .data-table tr td:first-child,
-.read-only .data-table tr th:first-child
+.read-only .no-hidden .data-table tr td:first-child,
+.read-only .no-hidden .data-table tr th:first-child
 {
   display: none;
 }
-*/
+
 
 .read-only .write-op,
 .read-only a.data-table-cell-edit
