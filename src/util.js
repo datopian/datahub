@@ -11,7 +11,7 @@ var util = function() {
     , rowActions: '<li><a data-action="deleteRow" class="menuAction write-op" href="JavaScript:void(0);">Delete this row</a></li>'
     , rootActions: ' \
         {{#columns}} \
-        <li><a data-action="showColumn" data-column="{{.}}" class="menuAction" href="JavaScript:void(0);">Add column: {{.}}</a></li> \
+        <li><a data-action="showColumn" data-column="{{.}}" class="menuAction" href="JavaScript:void(0);">Show column: {{.}}</a></li> \
         {{/columns}}'
     , cellEditor: ' \
       <div class="menu-container data-table-cell-editor"> \
