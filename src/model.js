@@ -12,6 +12,7 @@ this.recline.Model = this.recline.Model || {};
   my.Dataset = Backbone.Model.extend({
     __type__: 'Dataset',
     initialize: function(options) {
+      console.log(options);
       this.currentDocuments = new my.DocumentList();
       this.docCount = null;
       this.backend = null;
