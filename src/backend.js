@@ -69,59 +69,59 @@ this.recline.Model = this.recline.Model || {};
   //        };
   //  </pre>
   my.BackendMemory = Backbone.Model.extend({
-      sync: function(method, model, options) {
-        var self = this;
-        if (method === "read") {
-          var dfd = $.Deferred();
-          if (model.__type__ == 'Dataset') {
-            var dataset = model;
-            dataset.set({
-              headers: dataset.backendConfig.data.headers
-            });
-            dataset.docCount = dataset.backendConfig.data.rows.length;
-            dfd.resolve(dataset);
-          }
-          return dfd.promise();
-        } else if (method === 'update') {
-          var dfd = $.Deferred();
-          if (model.__type__ == 'Document') {
-            _.each(model.backendConfig.data.rows, function(row, idx) {
-              if(row.id === model.id) {
-                model.backendConfig.data.rows[idx] = model.toJSON();
-              }
-            });
-            dfd.resolve(model);
-          }
-          return dfd.promise();
-        } else if (method === 'delete') {
-          var dfd = $.Deferred();
-          if (model.__type__ == 'Document') {
-            model.backendConfig.data.rows = _.reject(model.backendConfig.data.rows, function(row) {
-              return (row.id === model.id);
-            });
-            dfd.resolve(model);
-          }
-          return dfd.promise();
-        } else {
-          alert('Not supported: sync on BackendMemory with method ' + method + ' and model ' + model);
-        }
-      },
-      query: function(model, queryObj) {
-        var numRows = queryObj.size;
-        var start = queryObj.offset;
+    sync: function(method, model, options) {
+      var self = this;
+      if (method === "read") {
         var dfd = $.Deferred();
-        results = model.backendConfig.data.rows;
-        // not complete sorting!
-        _.each(queryObj.sort, function(item) {
-          results = _.sortBy(results, function(row) {
-            var _out = row[item[0]];
-            return (item[1] == 'asc') ? _out : -1*_out;
+        if (model.__type__ == 'Dataset') {
+          var dataset = model;
+          dataset.set({
+            headers: dataset.backendConfig.data.headers
           });
-        });
-        var results = results.slice(start, start+numRows);
-        dfd.resolve(results);
+          dataset.docCount = dataset.backendConfig.data.rows.length;
+          dfd.resolve(dataset);
+        }
         return dfd.promise();
+      } else if (method === 'update') {
+        var dfd = $.Deferred();
+        if (model.__type__ == 'Document') {
+          _.each(model.backendConfig.data.rows, function(row, idx) {
+            if(row.id === model.id) {
+              model.backendConfig.data.rows[idx] = model.toJSON();
+            }
+          });
+          dfd.resolve(model);
+        }
+        return dfd.promise();
+      } else if (method === 'delete') {
+        var dfd = $.Deferred();
+        if (model.__type__ == 'Document') {
+          model.backendConfig.data.rows = _.reject(model.backendConfig.data.rows, function(row) {
+            return (row.id === model.id);
+          });
+          dfd.resolve(model);
+        }
+        return dfd.promise();
+      } else {
+        alert('Not supported: sync on BackendMemory with method ' + method + ' and model ' + model);
       }
+    },
+    query: function(model, queryObj) {
+      var numRows = queryObj.size;
+      var start = queryObj.offset;
+      var dfd = $.Deferred();
+      results = model.backendConfig.data.rows;
+      // not complete sorting!
+      _.each(queryObj.sort, function(item) {
+        results = _.sortBy(results, function(row) {
+          var _out = row[item[0]];
+          return (item[1] == 'asc') ? _out : -1*_out;
+        });
+      });
+      var results = results.slice(start, start+numRows);
+      dfd.resolve(results);
+      return dfd.promise();
+    }
   });
   my.backends['memory'] = new my.BackendMemory();
 
