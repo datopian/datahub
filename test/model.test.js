@@ -1,68 +1,91 @@
 (function ($) {
 module("Dataset");
 
-test('Memory Backend', function () {
-  var datasetId = 'test-dataset';
-  var inData = {
-    metadata: {
-      title: 'My Test Dataset'
-      , name: '1-my-test-dataset' 
-      , id: datasetId
-      , headers: ['x', 'y', 'z']
-    },
-    documents: [
-      {id: 0, x: 1, y: 2, z: 3}
-      , {id: 1, x: 2, y: 4, z: 6}
-      , {id: 2, x: 3, y: 6, z: 9}
-      , {id: 3, x: 4, y: 8, z: 12}
-      , {id: 4, x: 5, y: 10, z: 15}
-      , {id: 5, x: 6, y: 12, z: 18}
-    ]
-  };
+var memoryData = {
+  metadata: {
+    title: 'My Test Dataset'
+    , name: '1-my-test-dataset' 
+    , id: 'test-dataset'
+    , headers: ['x', 'y', 'z']
+  },
+  documents: [
+    {id: 0, x: 1, y: 2, z: 3}
+    , {id: 1, x: 2, y: 4, z: 6}
+    , {id: 2, x: 3, y: 6, z: 9}
+    , {id: 3, x: 4, y: 8, z: 12}
+    , {id: 4, x: 5, y: 10, z: 15}
+    , {id: 5, x: 6, y: 12, z: 18}
+  ]
+};
+
+function makeBackendDataset() {
   var backend = new recline.Model.BackendMemory();
-  backend.addDataset(inData);
-  var dataset = new recline.Model.Dataset({id: datasetId}, backend);
-  // ### Start testing
-  expect(10);
-  // convenience for tests
-  var data = backend.datasets[datasetId];
+  backend.addDataset(memoryData);
+  var dataset = new recline.Model.Dataset({id: memoryData.metadata.id}, backend);
+  return dataset;
+}
+
+test('Memory Backend: basics', function () {
+  var dataset = makeBackendDataset();
+  expect(3);
+  // convenience for tests - get the data that should get changed
+  var data = dataset.backend.datasets[memoryData.metadata.id];
   dataset.fetch().then(function(datasetAgain) {
     equal(dataset.get('name'), data.metadata.name);
     deepEqual(dataset.get('headers'), data.metadata.headers);
     equal(dataset.docCount, 6);
-    var queryObj = {
-      size: 4
-      , offset: 2
-    };
-    dataset.query(queryObj).then(function(documentList) {
-      deepEqual(data.documents[2], documentList.models[0].toJSON());
-    });
-    var queryObj = {
-      sort: [
-        ['y', 'desc']
-      ]
-    };
-    dataset.query(queryObj).then(function(docs) {
-      var doc0 = dataset.currentDocuments.models[0].toJSON();
-      equal(doc0.x, 6);
-    });
-    dataset.query().then(function(docList) {
-      equal(docList.length, Math.min(100, data.documents.length));
-      var doc1 = docList.models[0];
-      deepEqual(doc1.toJSON(), data.documents[0]);
+  });
+});
 
-      // Test UPDATE
-      var newVal = 10;
-      doc1.set({x: newVal});
-      doc1.save().then(function() {
-        equal(data.documents[0].x, newVal);
-      })
+test('Memory Backend: query', function () {
+  var dataset = makeBackendDataset();
+  // convenience for tests - get the data that should get changed
+  var data = dataset.backend.datasets[memoryData.metadata.id];
+  var dataset = makeBackendDataset();
+  var queryObj = {
+    size: 4
+    , offset: 2
+  };
+  dataset.query(queryObj).then(function(documentList) {
+    deepEqual(data.documents[2], documentList.models[0].toJSON());
+  });
+});
 
-      // Test Delete
-      doc1.destroy().then(function() {
-        equal(data.documents.length, 5);
-        equal(data.documents[0].x, inData.documents[1].x);
-      });
+test('Memory Backend: query sort', function () {
+  var dataset = makeBackendDataset();
+  // convenience for tests - get the data that should get changed
+  var data = dataset.backend.datasets[memoryData.metadata.id];
+  var queryObj = {
+    sort: [
+      ['y', 'desc']
+    ]
+  };
+  dataset.query(queryObj).then(function(docs) {
+    var doc0 = dataset.currentDocuments.models[0].toJSON();
+    equal(doc0.x, 6);
+  });
+});
+ 
+test('Memory Backend: update and delete', function () {
+  var dataset = makeBackendDataset();
+  // convenience for tests - get the data that should get changed
+  var data = dataset.backend.datasets[memoryData.metadata.id];
+  dataset.query().then(function(docList) {
+    equal(docList.length, Math.min(100, data.documents.length));
+    var doc1 = docList.models[0];
+    deepEqual(doc1.toJSON(), data.documents[0]);
+
+    // Test UPDATE
+    var newVal = 10;
+    doc1.set({x: newVal});
+    doc1.save().then(function() {
+      equal(data.documents[0].x, newVal);
+    })
+
+    // Test Delete
+    doc1.destroy().then(function() {
+      equal(data.documents.length, 5);
+      equal(data.documents[0].x, memoryData.documents[1].x);
     });
   });
 });
