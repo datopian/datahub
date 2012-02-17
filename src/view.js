@@ -17,34 +17,34 @@ this.recline.View = this.recline.View || {};
 //
 // ### Parameters
 // 
-// **:param model:** (required) Dataset instance.
+// **model**: (required) Dataset instance.
 //
-// **:param el:** (required) DOM element.
+// **el**: (required) DOM element.
 //
-// **:param views:** (optional) the views (Grid, Graph etc) for DataExplorer to
-// show. This is an array with the key used in routing. If not provided
-// just initialize a DataTable with key 'grid'. Example:
+// **views**: (optional) the views (Grid, Graph etc) for DataExplorer to
+// show. This is an array of view hashes. If not provided
+// just initialize a DataTable with id 'grid'. Example:
 //
 // <pre>
-//  var views = [
-//    {
-//      id: 'grid',
-//      label: 'Grid',
-//      view: new recline.View.DataTable({
-//        model: dataset
-//      })
-//    },
-//    {
-//      id: 'graph',
-//      label: 'Graph',
-//      view: new recline.View.FlotGraph({
-//        model: dataset
-//      })
-//    }
-//  ];
+// var views = [
+//   {
+//     id: 'grid', // used for routing
+//     label: 'Grid', // used for view switcher
+//     view: new recline.View.DataTable({
+//       model: dataset
+//     })
+//   },
+//   {
+//     id: 'graph',
+//     label: 'Graph',
+//     view: new recline.View.FlotGraph({
+//       model: dataset
+//     })
+//   }
+// ];
 // </pre>
 //
-// **:param config:** Config options like:
+// **config**: Config options like:
 //
 //   * displayCount: how many documents to display initially (default: 10)
 //   * readOnly: true/false (default: false) value indicating whether to
