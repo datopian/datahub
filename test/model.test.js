@@ -452,13 +452,11 @@ var sample_gdocs_spreadsheet_data = {
 }
 
 test("GDoc Backend", function() { 
-  var dataset = new recline.Model.Dataset();
-  dataset.backendConfig = {
-    type: 'gdocs',
-    url: 'https://spreadsheets.google.com/feeds/list/0Aon3JiuouxLUdDQwZE1JdV94cUd6NWtuZ0IyWTBjLWc/od6/public/values?alt=json'
-  };
-
-  console.log('got gdoc dataset', dataset);
+  var dataset = new recline.Model.Dataset({
+      url: 'https://spreadsheets.google.com/feeds/list/0Aon3JiuouxLUdDQwZE1JdV94cUd6NWtuZ0IyWTBjLWc/od6/public/values?alt=json'
+    },
+    'gdocs'
+  );
 
   var stub = sinon.stub($, 'getJSON', function(options, cb) {
     console.log('options are', options, cb);

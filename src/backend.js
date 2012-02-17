@@ -272,15 +272,27 @@ this.recline.Model = this.recline.Model || {};
 
   // ## Google spreadsheet backend
   // 
-  // Connect to Google Docs spreadsheet. For write operations
+  // Connect to Google Docs spreadsheet.
+  //
+  // Dataset must have a url attribute pointing to the Gdocs
+  // spreadsheet's JSON feed e.g.
+  //
+  // <pre>
+  // var dataset = new recline.Model.Dataset({
+  //     url: 'https://spreadsheets.google.com/feeds/list/0Aon3JiuouxLUdDQwZE1JdV94cUd6NWtuZ0IyWTBjLWc/od6/public/values?alt=json'
+  //   },
+  //   'gdocs'
+  // );
+  // </pre>
   my.BackendGDoc = Backbone.Model.extend({
     sync: function(method, model, options) {
+      var self = this;
       if (method === "read") { 
         var dfd = $.Deferred(); 
         var dataset = model;
 
-        $.getJSON(model.backendConfig.url, function(d) {
-          result = my.backends['gdocs'].gdocsToJavascript(d);
+        $.getJSON(model.get('url'), function(d) {
+          result = self.gdocsToJavascript(d);
           model.set({'headers': result.header});
           // cache data onto dataset (we have loaded whole gdoc it seems!)
           model._dataCache = result.data;
