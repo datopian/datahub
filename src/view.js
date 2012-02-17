@@ -485,8 +485,23 @@ my.DataTableRow = Backbone.View.extend({
 /* ========================================================== */
 // ## Miscellaneous Utilities
 
+var urlPathRegex = /^([^?]+)(\?.*)?/;
+
+// Parse the Hash section of a URL into path and query string
+my.parseHashUrl = function(hashUrl) {
+  var parsed = urlPathRegex.exec(hashUrl);
+  if (parsed == null) {
+    return {};
+  } else {
+    return {
+      path: parsed[1],
+      query: parsed[2] || ''
+    }
+  }
+}
+
 // Parse a URL query string (?xyz=abc...) into a dictionary.
-function parseQueryString(q) {
+my.parseQueryString = function(q) {
   var urlParams = {},
     e, d = function (s) {
       return unescape(s.replace(/\+/g, " "));
@@ -501,6 +516,27 @@ function parseQueryString(q) {
     urlParams[d(e[1])] = d(e[2]);
   }
   return urlParams;
+}
+
+// Parse the query string out of the URL hash
+my.parseHashQueryString = function() {
+  q = my.parseHashUrl(window.location.hash).query;
+  return my.parseQueryString(q);
+}
+
+// Compse a Query String
+my.composeQueryString = function(queryParams) {
+  var queryString = '?';
+  var items = [];
+  $.each(queryParams, function(key, value) {
+    items.push(key + '=' + JSON.stringify(value));
+  });
+  queryString += items.join('&');
+  return queryString;
+}
+
+my.setHashQueryString = function(queryParams) {
+  window.location.hash = window.location.hash.split('?')[0] + my.composeQueryString(queryParams);
 }
 
 // ## notify

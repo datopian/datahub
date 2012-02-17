@@ -90,12 +90,18 @@ my.FlotGraph = Backbone.View.extend({
     this.model.bind('change', this.render);
     this.model.currentDocuments.bind('add', this.redraw);
     this.model.currentDocuments.bind('reset', this.redraw);
+    var configFromHash = my.parseHashQueryString().graph;
+    if (configFromHash) {
+      configFromHash = JSON.parse(configFromHash);
+    }
     this.chartConfig = _.extend({
         group: null,
         series: [],
         graphType: 'line'
       },
-      config)
+      configFromHash,
+      config
+      );
     this.render();
   },
 
@@ -120,8 +126,9 @@ my.FlotGraph = Backbone.View.extend({
     this._getEditorData();
     // update navigation
     // TODO: make this less invasive (e.g. preserve other keys in query string)
-    window.location.hash = window.location.hash.split('?')[0] +
-        '?graph=' + JSON.stringify(this.chartConfig);
+    var qs = my.parseHashQueryString();
+    qs['graph'] = this.chartConfig;
+    my.setHashQueryString(qs);
     this.redraw();
   },
 
