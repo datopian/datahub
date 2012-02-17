@@ -6,7 +6,7 @@ var memoryData = {
     title: 'My Test Dataset'
     , name: '1-my-test-dataset' 
     , id: 'test-dataset'
-    , headers: ['x', 'y', 'z']
+    , fields: ['x', 'y', 'z']
   },
   documents: [
     {id: 0, x: 1, y: 2, z: 3}
@@ -32,7 +32,7 @@ test('Memory Backend: basics', function () {
   var data = dataset.backend.datasets[memoryData.metadata.id];
   dataset.fetch().then(function(datasetAgain) {
     equal(dataset.get('name'), data.metadata.name);
-    deepEqual(dataset.get('headers'), data.metadata.headers);
+    deepEqual(dataset.get('fields'), data.metadata.fields);
     equal(dataset.docCount, 6);
   });
 });
@@ -196,7 +196,7 @@ test('Webstore Backend', function() {
   });
 
   dataset.fetch().done(function(dataset) {
-    deepEqual(['__id__', 'date', 'geometry', 'amount'], dataset.get('headers'));
+    deepEqual(['__id__', 'date', 'geometry', 'amount'], dataset.get('fields'));
     equal(3, dataset.docCount)
     dataset.query().done(function(docList) {
       equal(3, docList.length)
@@ -295,7 +295,7 @@ test('DataProxy Backend', function() {
   });
 
   dataset.fetch().done(function(dataset) {
-    deepEqual(['__id__', 'date', 'price'], dataset.get('headers'));
+    deepEqual(['__id__', 'date', 'price'], dataset.get('fields'));
     equal(null, dataset.docCount)
     dataset.query().done(function(docList) {
       equal(10, docList.length)
@@ -490,8 +490,8 @@ test("GDoc Backend", function() {
   });
 
   dataset.fetch().then(function(dataset) {
-    console.log('inside dataset:', dataset, dataset.get('headers'), dataset.get('data'));
-    deepEqual(['column-2', 'column-1'], dataset.get('headers'));
+    console.log('inside dataset:', dataset, dataset.get('fields'), dataset.get('data'));
+    deepEqual(['column-2', 'column-1'], dataset.get('fields'));
     //equal(null, dataset.docCount)
     dataset.query().then(function(docList) {
       equal(3, docList.length);

@@ -112,7 +112,7 @@ my.DataExplorer = Backbone.View.extend({
     this.router = new Backbone.Router();
     this.setupRouting();
 
-    // retrieve basic data like headers etc
+    // retrieve basic data like fields etc
     // note this.model and dataset returned are the same
     this.model.fetch()
       .done(function(dataset) {
@@ -207,7 +207,7 @@ my.DataTable = Backbone.View.extend({
     this.model.currentDocuments.bind('reset', this.render);
     this.model.currentDocuments.bind('remove', this.render);
     this.state = {};
-    this.hiddenHeaders = [];
+    this.hiddenFields = [];
   },
 
   events: {
@@ -246,7 +246,7 @@ my.DataTable = Backbone.View.extend({
   
   onRootHeaderClick: function(e) {
     util.position('data-table-menu', e);
-    util.render('rootActions', 'data-table-menu', {'columns': this.hiddenHeaders});
+    util.render('rootActions', 'data-table-menu', {'columns': this.hiddenFields});
   },
 
   onMenuClick: function(e) {
@@ -331,12 +331,12 @@ my.DataTable = Backbone.View.extend({
   },
   
   hideColumn: function() {
-    this.hiddenHeaders.push(this.state.currentColumn);
+    this.hiddenFields.push(this.state.currentColumn);
     this.render();
   },
   
   showColumn: function(e) {
-    this.hiddenHeaders = _.without(this.hiddenHeaders, $(e.target).data('column'));
+    this.hiddenFields = _.without(this.hiddenFields, $(e.target).data('column'));
     this.render();
   },
 
@@ -356,7 +356,7 @@ my.DataTable = Backbone.View.extend({
               </div> \
             </th> \
           {{/notEmpty}} \
-          {{#headers}} \
+          {{#fields}} \
             <th class="column-header"> \
               <div class="column-header-title"> \
                 <a class="column-header-menu"></a> \
@@ -364,7 +364,7 @@ my.DataTable = Backbone.View.extend({
               </div> \
               </div> \
             </th> \
-          {{/headers}} \
+          {{/fields}} \
         </tr> \
       </thead> \
       <tbody></tbody> \
@@ -373,14 +373,14 @@ my.DataTable = Backbone.View.extend({
 
   toTemplateJSON: function() {
     var modelData = this.model.toJSON()
-    modelData.notEmpty = ( this.headers.length > 0 )
-    modelData.headers = this.headers;
+    modelData.notEmpty = ( this.fields.length > 0 )
+    modelData.fields = this.fields;
     return modelData;
   },
   render: function() {
     var self = this;
-    this.headers = _.filter(this.model.get('headers'), function(header) {
-      return _.indexOf(self.hiddenHeaders, header) == -1;
+    this.fields = _.filter(this.model.get('fields'), function(field) {
+      return _.indexOf(self.hiddenFields, field) == -1;
     });
     var htmls = $.mustache(this.template, this.toTemplateJSON());
     this.el.html(htmls);
@@ -390,11 +390,11 @@ my.DataTable = Backbone.View.extend({
       var newView = new my.DataTableRow({
           model: doc,
           el: tr,
-          headers: self.headers,
+          fields: self.fields,
         });
       newView.render();
     });
-    this.el.toggleClass('no-hidden', (self.hiddenHeaders.length == 0));
+    this.el.toggleClass('no-hidden', (self.hiddenFields.length == 0));
     return this;
   }
 });
@@ -402,11 +402,11 @@ my.DataTable = Backbone.View.extend({
 // ## DataTableRow View for rendering an individual document.
 //
 // Since we want this to update in place it is up to creator to provider the element to attach to.
-// In addition you must pass in a headers in the constructor options. This should be list of headers for the DataTable.
+// In addition you must pass in a fields in the constructor options. This should be list of fields for the DataTable.
 my.DataTableRow = Backbone.View.extend({
   initialize: function(options) {
     _.bindAll(this, 'render');
-    this._headers = options.headers;
+    this._fields = options.fields;
     this.el = $(this.el);
     this.model.bind('change', this.render);
   },
@@ -414,7 +414,7 @@ my.DataTableRow = Backbone.View.extend({
   template: ' \
       <td><a class="row-header-menu"></a></td> \
       {{#cells}} \
-      <td data-header="{{header}}"> \
+      <td data-field="{{field}}"> \
         <div class="data-table-cell-content"> \
           <a href="javascript:{}" class="data-table-cell-edit" title="Edit this cell">&nbsp;</a> \
           <div class="data-table-cell-value">{{value}}</div> \
@@ -431,8 +431,8 @@ my.DataTableRow = Backbone.View.extend({
   
   toTemplateJSON: function() {
     var doc = this.model;
-    var cellData = _.map(this._headers, function(header) {
-      return {header: header, value: doc.get(header)}
+    var cellData = _.map(this._fields, function(field) {
+      return {field: field, value: doc.get(field)}
     })
     return { id: this.id, cells: cellData }
   },
@@ -461,10 +461,10 @@ my.DataTableRow = Backbone.View.extend({
   onEditorOK: function(e) {
     var cell = $(e.target);
     var rowId = cell.parents('tr').attr('data-id');
-    var header = cell.parents('td').attr('data-header');
+    var field = cell.parents('td').attr('data-field');
     var newValue = cell.parents('.data-table-cell-editor').find('.data-table-cell-editor-editor').val();
     var newData = {};
-    newData[header] = newValue;
+    newData[field] = newValue;
     this.model.set(newData);
     my.notify("Updating row...", {loader: true});
     this.model.save().then(function(response) {

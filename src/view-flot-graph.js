@@ -44,9 +44,9 @@ my.FlotGraph = Backbone.View.extend({
         <label>Group Column (x-axis)</label> \
         <div class="input editor-group"> \
           <select> \
-          {{#headers}} \
+          {{#fields}} \
           <option value="{{.}}">{{.}}</option> \
-          {{/headers}} \
+          {{/fields}} \
           </select> \
         </div> \
         <div class="editor-series-group"> \
@@ -54,9 +54,9 @@ my.FlotGraph = Backbone.View.extend({
             <label>Series <span>A (y-axis)</span></label> \
             <div class="input"> \
               <select> \
-              {{#headers}} \
+              {{#fields}} \
               <option value="{{.}}">{{.}}</option> \
-              {{/headers}} \
+              {{/fields}} \
               </select> \
             </div> \
           </div> \
@@ -86,7 +86,7 @@ my.FlotGraph = Backbone.View.extend({
     var self = this;
     this.el = $(this.el);
     _.bindAll(this, 'render', 'redraw');
-    // we need the model.headers to render properly
+    // we need the model.fields to render properly
     this.model.bind('change', this.render);
     this.model.currentDocuments.bind('add', this.redraw);
     this.model.currentDocuments.bind('reset', this.redraw);
