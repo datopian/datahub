@@ -13,37 +13,31 @@ this.recline.Model = this.recline.Model || {};
 my.Dataset = Backbone.Model.extend({
   __type__: 'Dataset',
   initialize: function(model, backend) {
+    _.bindAll(this, 'query');
     this.backend = backend;
     if (backend && backend.constructor == String) {
       this.backend = my.backends[backend];
     }
     this.currentDocuments = new my.DocumentList();
     this.docCount = null;
-    this.defaultQuery = {
-      size: 100
-      , offset: 0
-    };
-    // this.queryState = {};
+    this.queryState = new my.Query();
+    this.queryState.bind('change', this.query);
   },
 
-  // ### getDocuments
+  // ### query
   //
-  // AJAX method with promise API to get rows (documents) from the backend.
+  // AJAX method with promise API to get documents from the backend.
+  //
+  // It will query based on current query state (given by this.queryState)
+  // updated by queryObj (if provided).
   //
   // Resulting DocumentList are used to reset this.currentDocuments and are
   // also returned.
-  //
-  // :param numRows: passed onto backend getDocuments.
-  // :param start: passed onto backend getDocuments.
-  //
-  // this does not fit very well with Backbone setup. Backbone really expects you to know the ids of objects your are fetching (which you do in classic RESTful ajax-y world). But this paradigm does not fill well with data set up we have here.
-  // This also illustrates the limitations of separating the Dataset and the Backend
   query: function(queryObj) {
     var self = this;
-    this.queryState = queryObj || this.defaultQuery;
-    this.queryState = _.extend({size: 100, offset: 0}, this.queryState);
+    this.queryState.set(queryObj, {silent: true});
     var dfd = $.Deferred();
-    this.backend.query(this, this.queryState).done(function(rows) {
+    this.backend.query(this, this.queryState.toJSON()).done(function(rows) {
       var docs = _.map(rows, function(row) {
         var _doc = new my.Document(row);
         _doc.backend = self.backend;
@@ -77,6 +71,13 @@ my.Document = Backbone.Model.extend({
 my.DocumentList = Backbone.Collection.extend({
   __type__: 'DocumentList',
   model: my.Document
+});
+
+my.Query = Backbone.Model.extend({
+  defaults: {
+    size: 100
+    , offset: 0
+  }
 });
 
 // ## Backend registry
