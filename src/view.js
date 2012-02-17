@@ -323,8 +323,11 @@ my.DataTable = Backbone.View.extend({
   },
 
   setColumnSort: function(order) {
-    var query = _.extend(this.model.queryState, {sort: [[this.state.currentColumn, order]]});
-    this.model.query(query);
+    this.model.query({
+      sort: [
+        [this.state.currentColumn, order]
+      ]
+    });
   },
   
   hideColumn: function() {
