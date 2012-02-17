@@ -1,41 +1,41 @@
 (function ($) {
 module("Dataset");
 
-test('new Dataset', function () {
+test('Memory Backend', function () {
   var datasetId = 'test-dataset';
-  var metadata = {
-    title: 'My Test Dataset'
-    , name: '1-my-test-dataset' 
-    , id: datasetId
-  };
-  var indata = {
-    headers: ['x', 'y', 'z']
-    , rows: [
+  var inData = {
+    metadata: {
+      title: 'My Test Dataset'
+      , name: '1-my-test-dataset' 
+      , id: datasetId
+      , headers: ['x', 'y', 'z']
+    },
+    documents: [
       {id: 0, x: 1, y: 2, z: 3}
       , {id: 1, x: 2, y: 4, z: 6}
       , {id: 2, x: 3, y: 6, z: 9}
       , {id: 3, x: 4, y: 8, z: 12}
       , {id: 4, x: 5, y: 10, z: 15}
       , {id: 5, x: 6, y: 12, z: 18}
-      ]
+    ]
   };
-  var dataset = new recline.Model.Dataset(metadata);
-  dataset.backendConfig = { 
-    type: 'memory'
-    // deep copy so we do not touch original data ...
-    , data: $.extend(true, {}, indata)
-  };
+  var backend = new recline.Model.BackendMemory();
+  backend.addDataset(inData);
+  var dataset = new recline.Model.Dataset({id: datasetId}, backend);
+  // ### Start testing
   expect(10);
-  dataset.fetch().then(function(dataset) {
-    equal(dataset.get('name'), metadata.name);
-    deepEqual(dataset.get('headers'), indata.headers);
+  // convenience for tests
+  var data = backend.datasets[datasetId];
+  dataset.fetch().then(function(datasetAgain) {
+    equal(dataset.get('name'), data.metadata.name);
+    deepEqual(dataset.get('headers'), data.metadata.headers);
     equal(dataset.docCount, 6);
     var queryObj = {
       size: 4
       , offset: 2
     };
     dataset.query(queryObj).then(function(documentList) {
-      deepEqual(indata.rows[2], documentList.models[0].toJSON());
+      deepEqual(data.documents[2], documentList.models[0].toJSON());
     });
     var queryObj = {
       sort: [
@@ -47,21 +47,21 @@ test('new Dataset', function () {
       equal(doc0.x, 6);
     });
     dataset.query().then(function(docList) {
-      equal(docList.length, Math.min(100, indata.rows.length));
+      equal(docList.length, Math.min(100, data.documents.length));
       var doc1 = docList.models[0];
-      deepEqual(doc1.toJSON(), indata.rows[0]);
+      deepEqual(doc1.toJSON(), data.documents[0]);
 
       // Test UPDATE
       var newVal = 10;
       doc1.set({x: newVal});
       doc1.save().then(function() {
-        equal(dataset.backendConfig.data.rows[0].x, newVal);
+        equal(data.documents[0].x, newVal);
       })
 
       // Test Delete
       doc1.destroy().then(function() {
-        equal(dataset.backendConfig.data.rows.length, 5);
-        equal(dataset.backendConfig.data.rows[0].x, indata.rows[1].x);
+        equal(data.documents.length, 5);
+        equal(data.documents[0].x, inData.documents[1].x);
       });
     });
   });
@@ -144,12 +144,12 @@ webstoreData = {
 };
 
 test('Webstore Backend', function() {
-  var dataset = new recline.Model.Dataset();
-  dataset.backendConfig = {
-    type: 'webstore',
-    url: 'http://webstore.test.ckan.org/rufuspollock/demo/data'
-  };
-
+  var dataset = new recline.Model.Dataset({
+    id: 'my-id',
+    webstore_url: 'http://webstore.test.ckan.org/rufuspollock/demo/data'
+    },
+    'webstore'
+  );
   var stub = sinon.stub($, 'ajax', function(options) {
     if (options.url.indexOf('schema.json') != -1) {
       return {
@@ -175,10 +175,10 @@ test('Webstore Backend', function() {
   dataset.fetch().done(function(dataset) {
     deepEqual(['__id__', 'date', 'geometry', 'amount'], dataset.get('headers'));
     equal(3, dataset.docCount)
-    // dataset.query().done(function(docList) {
-    //  equal(3, docList.length)
-    //  equal("2009-01-01", docList.models[0].get('date'));
-    // });
+    dataset.query().done(function(docList) {
+      equal(3, docList.length)
+      equal("2009-01-01", docList.models[0].get('date'));
+    });
   });
   $.ajax.restore();
 });
@@ -250,11 +250,11 @@ var dataProxyData = {
 test('DataProxy Backend', function() {
   // needed only if not stubbing
   // stop();
-  var dataset = new recline.Model.Dataset();
-  dataset.backendConfig = {
-    type: 'dataproxy',
-    url: 'http://webstore.thedatahub.org/rufuspollock/gold_prices/data.csv'
-  };
+  var dataset = new recline.Model.Dataset({
+      url: 'http://webstore.thedatahub.org/rufuspollock/gold_prices/data.csv'
+    },
+    'dataproxy'
+  );
 
   var stub = sinon.stub($, 'ajax', function(options) {
     var partialUrl = 'jsonpdataproxy.appspot.com';
@@ -452,13 +452,11 @@ var sample_gdocs_spreadsheet_data = {
 }
 
 test("GDoc Backend", function() { 
-  var dataset = new recline.Model.Dataset();
-  dataset.backendConfig = {
-    type: 'gdocs',
-    url: 'https://spreadsheets.google.com/feeds/list/0Aon3JiuouxLUdDQwZE1JdV94cUd6NWtuZ0IyWTBjLWc/od6/public/values?alt=json'
-  };
-
-  console.log('got gdoc dataset', dataset);
+  var dataset = new recline.Model.Dataset({
+      url: 'https://spreadsheets.google.com/feeds/list/0Aon3JiuouxLUdDQwZE1JdV94cUd6NWtuZ0IyWTBjLWc/od6/public/values?alt=json'
+    },
+    'gdocs'
+  );
 
   var stub = sinon.stub($, 'getJSON', function(options, cb) {
     console.log('options are', options, cb);
