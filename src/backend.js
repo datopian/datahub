@@ -144,8 +144,7 @@ this.recline.Model = this.recline.Model || {};
     sync: function(method, model, options) {
       if (method === "read") {
         if (model.__type__ == 'Dataset') {
-          var dataset = model;
-          var base = dataset.backendConfig.url;
+          var base = model.get('webstore_url');
           var schemaUrl = base + '/schema.json';
           var jqxhr = $.ajax({
             url: schemaUrl,
@@ -157,11 +156,11 @@ this.recline.Model = this.recline.Model || {};
             headers = _.map(schema.data, function(item) {
               return item.name;
             });
-            dataset.set({
+            model.set({
               headers: headers
             });
-            dataset.docCount = schema.count;
-            dfd.resolve(dataset, jqxhr);
+            model.docCount = schema.count;
+            dfd.resolve(model, jqxhr);
           })
           .fail(function(arguments) {
             dfd.reject(arguments);
@@ -171,7 +170,7 @@ this.recline.Model = this.recline.Model || {};
       }
     },
     query: function(model, queryObj) {
-      var base = model.backendConfig.url;
+      var base = model.get('webstore_url');
       var data = {
         _limit:  queryObj.size
         , _offset: queryObj.offset
@@ -196,33 +195,30 @@ this.recline.Model = this.recline.Model || {};
   // 
   // For connecting to [DataProxy-s](http://github.com/okfn/dataproxy).
   //
-  // Set a Dataset to use this backend:
-  //
-  //     dataset.backendConfig = {
-  //       // required
-  //       url: {url-of-data-to-proxy},
-  //       format: csv | xls,
-  //     }
-  //
   // When initializing the DataProxy backend you can set the following attributes:
   //
   // * dataproxy: {url-to-proxy} (optional). Defaults to http://jsonpdataproxy.appspot.com
   //
+  // Datasets using using this backend should set the following attributes:
+  //
+  // * url: (required) url-of-data-to-proxy
+  // * format: (optional) csv | xls (defaults to csv if not specified)
+  //
   // Note that this is a **read-only** backend.
   my.BackendDataProxy = Backbone.Model.extend({
     defaults: {
-      dataproxy: 'http://jsonpdataproxy.appspot.com'
+      dataproxy_url: 'http://jsonpdataproxy.appspot.com'
     },
     sync: function(method, model, options) {
+      var self = this;
       if (method === "read") {
         if (model.__type__ == 'Dataset') {
-          var dataset = model;
-          var base = my.backends['dataproxy'].get('dataproxy');
+          var base = self.get('dataproxy_url');
           // TODO: should we cache for extra efficiency
           var data = {
-            url: dataset.backendConfig.url
+            url: model.get('url')
             , 'max-results':  1
-            , type: dataset.backendConfig.format
+            , type: model.get('format') || 'csv'
           };
           var jqxhr = $.ajax({
             url: base
@@ -231,10 +227,10 @@ this.recline.Model = this.recline.Model || {};
           });
           var dfd = $.Deferred();
           wrapInTimeout(jqxhr).done(function(results) {
-            dataset.set({
+            model.set({
               headers: results.fields
             });
-            dfd.resolve(dataset, jqxhr);
+            dfd.resolve(model, jqxhr);
           })
           .fail(function(arguments) {
             dfd.reject(arguments);
@@ -246,11 +242,11 @@ this.recline.Model = this.recline.Model || {};
       }
     },
     query: function(dataset, queryObj) {
-      var base = my.backends['dataproxy'].get('dataproxy');
+      var base = this.get('dataproxy_url');
       var data = {
-        url: dataset.backendConfig.url
+        url: dataset.get('url')
         , 'max-results':  queryObj.size
-        , type: dataset.backendConfig.format
+        , type: dataset.get('format')
       };
       var jqxhr = $.ajax({
         url: base

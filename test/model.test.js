@@ -144,12 +144,12 @@ webstoreData = {
 };
 
 test('Webstore Backend', function() {
-  var dataset = new recline.Model.Dataset();
-  dataset.backendConfig = {
-    type: 'webstore',
-    url: 'http://webstore.test.ckan.org/rufuspollock/demo/data'
-  };
-
+  var dataset = new recline.Model.Dataset({
+    id: 'my-id',
+    webstore_url: 'http://webstore.test.ckan.org/rufuspollock/demo/data'
+    },
+    'webstore'
+  );
   var stub = sinon.stub($, 'ajax', function(options) {
     if (options.url.indexOf('schema.json') != -1) {
       return {
@@ -175,10 +175,10 @@ test('Webstore Backend', function() {
   dataset.fetch().done(function(dataset) {
     deepEqual(['__id__', 'date', 'geometry', 'amount'], dataset.get('headers'));
     equal(3, dataset.docCount)
-    // dataset.query().done(function(docList) {
-    //  equal(3, docList.length)
-    //  equal("2009-01-01", docList.models[0].get('date'));
-    // });
+    dataset.query().done(function(docList) {
+      equal(3, docList.length)
+      equal("2009-01-01", docList.models[0].get('date'));
+    });
   });
   $.ajax.restore();
 });
@@ -250,11 +250,11 @@ var dataProxyData = {
 test('DataProxy Backend', function() {
   // needed only if not stubbing
   // stop();
-  var dataset = new recline.Model.Dataset();
-  dataset.backendConfig = {
-    type: 'dataproxy',
-    url: 'http://webstore.thedatahub.org/rufuspollock/gold_prices/data.csv'
-  };
+  var dataset = new recline.Model.Dataset({
+      url: 'http://webstore.thedatahub.org/rufuspollock/gold_prices/data.csv'
+    },
+    'dataproxy'
+  );
 
   var stub = sinon.stub($, 'ajax', function(options) {
     var partialUrl = 'jsonpdataproxy.appspot.com';
