@@ -1,30 +1,57 @@
 this.recline = this.recline || {};
 this.recline.View = this.recline.View || {};
 
-// Views module following classic module pattern
 (function($, my) {
 // ## DataExplorer
 //
-// The primary view for the entire application.
-//
-// It should be initialized with a recline.Model.Dataset object and an existing
-// dom element to attach to (the existing DOM element is important for
-// rendering of FlotGraph subview).
+// The primary view for the entire application. Usage:
 // 
-// To pass in configuration options use the config key in initialization hash
-// e.g.
+// <pre>
+// var myExplorer = new model.recline.DataExplorer({
+//   model: {{recline.Model.Dataset instance}}
+//   el: {{an existing dom element}}
+//   views: {{page views}}
+//   config: {{config options -- see below}}
+// });
+// </pre> 
 //
-//      var explorer = new DataExplorer({
-//        config: {...}
+// ### Parameters
+// 
+// **:param model:** (required) Dataset instance.
+//
+// **:param el:** (required) DOM element.
+//
+// **:param views:** (optional) the views (Grid, Graph etc) for DataExplorer to
+// show. This is an array with the key used in routing. If not provided
+// just initialize a DataTable with key 'grid'. Example:
+//
+// <pre>
+//  var views = [
+//    {
+//      id: 'grid',
+//      label: 'Grid',
+//      view: new recline.View.DataTable({
+//        model: dataset
 //      })
+//    },
+//    {
+//      id: 'graph',
+//      label: 'Graph',
+//      view: new recline.View.FlotGraph({
+//        model: dataset
+//      })
+//    }
+//  ];
+// </pre>
 //
-// Config options:
+// **:param config:** Config options like:
 //
-// * displayCount: how many documents to display initially (default: 10)
-// * readOnly: true/false (default: false) value indicating whether to
-//   operate in read-only mode (hiding all editing options).
+//   * displayCount: how many documents to display initially (default: 10)
+//   * readOnly: true/false (default: false) value indicating whether to
+//     operate in read-only mode (hiding all editing options).
 //
-// All other views as contained in this one.
+// NB: the element already being in the DOM is important for rendering of
+// FlotGraph subview.
 my.DataExplorer = Backbone.View.extend({
   template: ' \
   <div class="data-explorer"> \
@@ -32,8 +59,9 @@ my.DataExplorer = Backbone.View.extend({
     \
     <div class="header"> \
       <ul class="navigation"> \
-        <li class="active"><a href="#grid" class="btn">Grid</a> \
-        <li><a href="#graph" class="btn">Graph</a></li> \
+        {{#views}} \
+        <li><a href="#{{id}}" class="btn">{{label}}</a> \
+        {{/views}} \
       </ul> \
       <div class="pagination"> \
         <form class="display-count"> \
@@ -67,15 +95,17 @@ my.DataExplorer = Backbone.View.extend({
       this.setReadOnly();
     }
     // Hash of 'page' views (i.e. those for whole page) keyed by page name
-    this.pageViews = {
-      grid: new my.DataTable({
-          model: this.model,
-          config: this.config
-        })
-      , graph: new my.FlotGraph({
-          model: this.model
-        })
-    };
+    if (options.views) {
+      this.pageViews = options.views;
+    } else {
+      this.pageViews = [{
+        id: 'grid',
+        label: 'Grid',
+        view: new my.DataTable({
+            model: this.model
+          })
+      }];
+    }
     // this must be called after pageViews are created
     this.render();
 
@@ -123,32 +153,25 @@ my.DataExplorer = Backbone.View.extend({
   render: function() {
     var tmplData = this.model.toTemplateJSON();
     tmplData.displayCount = this.config.displayCount;
+    tmplData.views = this.pageViews;
     var template = $.mustache(this.template, tmplData);
     $(this.el).html(template);
     var $dataViewContainer = this.el.find('.data-view-container');
     _.each(this.pageViews, function(view, pageName) {
-      $dataViewContainer.append(view.el)
+      $dataViewContainer.append(view.view.el)
     });
   },
 
   setupRouting: function() {
     var self = this;
-    this.router.route('', 'grid', function() {
-      self.updateNav('grid');
+    // Default route
+    this.router.route('', this.pageViews[0].id, function() {
+      self.updateNav(self.pageViews[0].id);
     });
-    this.router.route(/grid(\?.*)?/, 'view', function(queryString) {
-      self.updateNav('grid', queryString);
-    });
-    this.router.route(/graph(\?.*)?/, 'graph', function(queryString) {
-      self.updateNav('graph', queryString);
-      // we have to call here due to fact plot may not have been able to draw
-      // if it was hidden until now - see comments in FlotGraph.redraw
-      qsParsed = parseQueryString(queryString);
-      if ('graph' in qsParsed) {
-        var chartConfig = JSON.parse(qsParsed['graph']);
-        _.extend(self.pageViews['graph'].chartConfig, chartConfig);
-      }
-      self.pageViews['graph'].redraw();
+    $.each(this.pageViews, function(idx, view) {
+      self.router.route(/^([^?]+)(\?.*)?/, 'view', function(viewId, queryString) {
+        self.updateNav(viewId, queryString);
+      });
     });
   },
 
@@ -157,11 +180,11 @@ my.DataExplorer = Backbone.View.extend({
     var $el = this.el.find('.navigation li a[href=#' + pageName + ']');
     $el.parent().addClass('active');
     // show the specific page
-    _.each(this.pageViews, function(view, pageViewName) {
-      if (pageViewName === pageName) {
-        view.el.show();
+    _.each(this.pageViews, function(view, idx) {
+      if (view.id === pageName) {
+        view.view.el.show();
       } else {
-        view.el.hide();
+        view.view.el.hide();
       }
     });
   }
