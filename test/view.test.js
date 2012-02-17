@@ -13,13 +13,13 @@ test('new DataTableRow View', function () {
   var view = new recline.View.DataTableRow({
     model: doc
     , el: $el
-    , headers: ['a', 'b']
+    , fields: ['a', 'b']
   });
   view.render();
   ok($el.attr('data-id'), '1');
   var tds = $el.find('td');
   equal(tds.length, 3);
-  equal($(tds[1]).attr('data-header'), 'a');
+  equal($(tds[1]).attr('data-field'), 'a');
 });
 
 })(this.jQuery);

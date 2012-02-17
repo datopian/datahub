@@ -6,6 +6,17 @@ this.recline.Model = this.recline.Model || {};
 
 // ## A Dataset model
 //
+// A model must have the following (Backbone) attributes:
+//
+// * fields: (aka columns) is the array of fields (column) to display. Each
+// entry in fields is a hash having at a minimum:
+//  * id: a unique identifer for this field- usually this should match the key in the documents hash
+//  * label: the visible label used for this field
+//  * type: the type of the data
+//  * data_key: the key used in the documents (usually this will be the same as
+//  id but having this allows us to set more than one column reading the same
+//  field. 
+//
 // Other than standard list of Backbone methods it has two important attributes:
 //
 // * currentDocuments: a DocumentList containing the Documents we have currently loaded for viewing (you update currentDocuments by calling getRows)
