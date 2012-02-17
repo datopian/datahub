@@ -2,9 +2,26 @@ $(function() {
   var $el = $('<div />');
   $el.appendTo($('.data-explorer-here'));
   var dataset = demoDataset();
+  var views = [
+    {
+      id: 'grid',
+      label: 'Grid',
+      view: new recline.View.DataTable({
+        model: dataset
+      })
+    },
+    {
+      id: 'graph',
+      label: 'Graph',
+      view: new recline.View.FlotGraph({
+        model: dataset
+      })
+    }
+  ];
   window.dataExplorer = new recline.View.DataExplorer({
     el: $el
     , model: dataset
+    , views: views
   });
   Backbone.history.start();
   setupLoadFromWebstore(function(dataset) {
