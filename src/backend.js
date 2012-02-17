@@ -9,13 +9,11 @@ this.recline = this.recline || {};
 this.recline.Model = this.recline.Model || {};
 
 (function($, my) {
-  my.backends = {};
-
   // ## Backbone.sync
   //
   // Override Backbone.sync to hand off to sync function in relevant backend
   Backbone.sync = function(method, model, options) {
-    return my.backends[model.backendConfig.type].sync(method, model, options);
+    return model.backend.sync(method, model, options);
   }
 
   // ## wrapInTimeout
@@ -45,49 +43,59 @@ this.recline.Model = this.recline.Model || {};
 
   // ## BackendMemory - uses in-memory data
   //
-  // To use you should:
+  // This is very artificial and is really only designed for testing
+  // purposes.
+  //
+  // To use it you should provide in your constructor data:
   // 
-  // A. provide metadata as model data to the Dataset
+  //   * metadata (including headers array)
+  //   * documents: list of hashes, each hash being one doc. A doc *must* have an id attribute which is unique.
   //
-  // B. Set backendConfig on your dataset with attributes:
-  //
-  //   - type: 'memory'
-  //   - data: hash with 2 keys:
-  //
-  //     * headers: list of header names/labels
-  //     * rows: list of hashes, each hash being one row. A row *must* have an id attribute which is unique.
-  //
-  //  Example of data:
+  //  Example:
   // 
   //  <pre>
-  //        {
-  //            headers: ['x', 'y', 'z']
-  //          , rows: [
-  //              {id: 0, x: 1, y: 2, z: 3}
-  //            , {id: 1, x: 2, y: 4, z: 6}
-  //          ]
-  //        };
+  //  // Backend setup
+  //  var backend = Backend();
+  //  backend.addDataset({
+  //    metadata: {
+  //      id: 'my-id',
+  //      title: 'My Title',
+  //      headers: ['x', 'y', 'z'],
+  //    },
+  //    documents: [
+  //        {id: 0, x: 1, y: 2, z: 3},
+  //        {id: 1, x: 2, y: 4, z: 6}
+  //      ]
+  //  });
+  //  // later ...
+  //  var dataset = Dataset({id: 'my-id'});
+  //  dataset.fetch();
+  //  etc ...
   //  </pre>
   my.BackendMemory = Backbone.Model.extend({
+    initialize: function() {
+      this.datasets = {};
+    },
+    addDataset: function(data) {
+      this.datasets[data.metadata.id] = $.extend(true, {}, data);
+    },
     sync: function(method, model, options) {
       var self = this;
       if (method === "read") {
         var dfd = $.Deferred();
         if (model.__type__ == 'Dataset') {
-          var dataset = model;
-          dataset.set({
-            headers: dataset.backendConfig.data.headers
-          });
-          dataset.docCount = dataset.backendConfig.data.rows.length;
-          dfd.resolve(dataset);
+          var rawDataset = this.datasets[model.id];
+          model.set(rawDataset.metadata);
+          model.docCount = rawDataset.documents.length;
+          dfd.resolve(model);
         }
         return dfd.promise();
       } else if (method === 'update') {
         var dfd = $.Deferred();
         if (model.__type__ == 'Document') {
-          _.each(model.backendConfig.data.rows, function(row, idx) {
-            if(row.id === model.id) {
-              model.backendConfig.data.rows[idx] = model.toJSON();
+          _.each(self.datasets[model.dataset.id].documents, function(doc, idx) {
+            if(doc.id === model.id) {
+              self.datasets[model.dataset.id].documents[idx] = model.toJSON();
             }
           });
           dfd.resolve(model);
@@ -96,9 +104,11 @@ this.recline.Model = this.recline.Model || {};
       } else if (method === 'delete') {
         var dfd = $.Deferred();
         if (model.__type__ == 'Document') {
-          model.backendConfig.data.rows = _.reject(model.backendConfig.data.rows, function(row) {
-            return (row.id === model.id);
+          var rawDataset = self.datasets[model.dataset.id];
+          var newdocs = _.reject(rawDataset.documents, function(doc) {
+            return (doc.id === model.id);
           });
+          rawDataset.documents = newdocs;
           dfd.resolve(model);
         }
         return dfd.promise();
@@ -110,11 +120,11 @@ this.recline.Model = this.recline.Model || {};
       var numRows = queryObj.size;
       var start = queryObj.offset;
       var dfd = $.Deferred();
-      results = model.backendConfig.data.rows;
+      results = this.datasets[model.id].documents;
       // not complete sorting!
       _.each(queryObj.sort, function(item) {
-        results = _.sortBy(results, function(row) {
-          var _out = row[item[0]];
+        results = _.sortBy(results, function(doc) {
+          var _out = doc[item[0]];
           return (item[1] == 'asc') ? _out : -1*_out;
         });
       });
@@ -129,14 +139,7 @@ this.recline.Model = this.recline.Model || {};
   //
   // Connecting to [Webstores](http://github.com/okfn/webstore)
   //
-  // To use this backend set backendConfig on your Dataset as:
-  //
-  // <pre>
-  // {
-  //   'type': 'webstore',
-  //   'url': url to relevant Webstore table
-  // }
-  // </pre>
+  // To use this backend ensure your Dataset has a webstore_url in its attributes.
   my.BackendWebstore = Backbone.Model.extend({
     sync: function(method, model, options) {
       if (method === "read") {
@@ -256,10 +259,10 @@ this.recline.Model = this.recline.Model || {};
       });
       var dfd = $.Deferred();
       jqxhr.done(function(results) {
-        var _out = _.map(results.data, function(row) {
+        var _out = _.map(results.data, function(doc) {
           var tmp = {};
           _.each(results.fields, function(key, idx) {
-            tmp[key] = row[idx];
+            tmp[key] = doc[idx];
           });
           return tmp;
         });
