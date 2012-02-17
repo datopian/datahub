@@ -29,15 +29,15 @@ $(function() {
 
 function demoDataset() {
   var datasetId = 'test-dataset';
-  var metadata = {
-    title: 'My Test Dataset'
-    , name: '1-my-test-dataset' 
-    , id: datasetId
-  };
-  var indata = {
-      headers: ['x', 'y', 'z']
-    , rows: [
-        {id: 0, x: 1, y: 2, z: 3}
+  var inData = {
+    metadata: {
+      title: 'My Test Dataset'
+      , name: '1-my-test-dataset' 
+      , id: datasetId
+      , headers: ['x', 'y', 'z']
+    },
+    documents: [
+      {id: 0, x: 1, y: 2, z: 3}
       , {id: 1, x: 2, y: 4, z: 6}
       , {id: 2, x: 3, y: 6, z: 9}
       , {id: 3, x: 4, y: 8, z: 12}
@@ -45,12 +45,9 @@ function demoDataset() {
       , {id: 5, x: 6, y: 12, z: 18}
     ]
   };
-  var dataset = new recline.Model.Dataset(metadata);
-  dataset.backendConfig = { 
-    type: 'memory'
-    // deep copy so we do not touch original data ...
-    , data: $.extend(true, {}, indata)
-  };
+  var backend = new recline.Model.BackendMemory();
+  backend.addDataset(inData);
+  var dataset = new recline.Model.Dataset({id: datasetId}, backend);
   return dataset;
 }
 
@@ -62,11 +59,12 @@ function setupLoadFromWebstore(callback) {
     e.preventDefault();
     var $form = $(e.target);
     var source = $form.find('input[name="source"]').val();
-    var dataset = new recline.Model.Dataset();
-    dataset.backendConfig = {
-      type: 'webstore',
-      url: source
-    };
+    var dataset = new recline.Model.Dataset({
+        id: 'gold-prices',
+        webstore_url: source
+      },
+      'webstore'
+    );
     callback(dataset);
   });
 }

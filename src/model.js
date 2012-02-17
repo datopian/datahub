@@ -11,10 +11,13 @@ this.recline.Model = this.recline.Model || {};
   // * docCount: total number of documents in this dataset (obtained on a fetch for this Dataset)
   my.Dataset = Backbone.Model.extend({
     __type__: 'Dataset',
-    initialize: function(options) {
+    initialize: function(model, backend) {
+      this.backend = backend;
+      if (backend && backend.constructor == String) {
+        this.backend = my.backends[backend];
+      }
       this.currentDocuments = new my.DocumentList();
       this.docCount = null;
-      this.backend = null;
       this.defaultQuery = {
         size: 100
         , offset: 0
@@ -36,15 +39,14 @@ this.recline.Model = this.recline.Model || {};
     // This also illustrates the limitations of separating the Dataset and the Backend
     query: function(queryObj) {
       var self = this;
-      var backend = my.backends[this.backendConfig.type];
       this.queryState = queryObj || this.defaultQuery;
       this.queryState = _.extend({size: 100, offset: 0}, this.queryState);
       var dfd = $.Deferred();
-      backend.query(this, this.queryState).done(function(rows) {
+      this.backend.query(this, this.queryState).done(function(rows) {
         var docs = _.map(rows, function(row) {
           var _doc = new my.Document(row);
-          _doc.backendConfig = self.backendConfig;
-          _doc.backend = backend;
+          _doc.backend = self.backend;
+          _doc.dataset = self;
           return _doc;
         });
         self.currentDocuments.reset(docs);
@@ -75,5 +77,11 @@ this.recline.Model = this.recline.Model || {};
     __type__: 'DocumentList',
     model: my.Document
   });
+
+  // ## Backend registry
+  //
+  // Backends will register themselves by id into this registry
+  my.backends = {};
+
 }(jQuery, this.recline.Model));
 
