@@ -13,7 +13,7 @@ test('new DataTableRow View', function () {
   var view = new recline.View.DataTableRow({
     model: doc
     , el: $el
-    , fields: ['a', 'b']
+    , fields: new recline.Model.FieldList([{id: 'a'}, {id: 'b'}])
   });
   view.render();
   ok($el.attr('data-id'), '1');

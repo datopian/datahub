@@ -20,4 +20,12 @@ test('Field: basics', function () {
   );
 });
 
+test('Dataset', function () {
+  var meta = {id: 'test', title: 'xyz'};
+  var dataset = new recline.Model.Dataset(meta);
+  dataset.fields = new recline.Model.FieldList([{id: 'xx'}, {id: 'yy'}]);
+  var out = dataset.toTemplateJSON();
+  equal(out.fields.length, 2);
+});
+
 })(this.jQuery);

@@ -61,6 +61,7 @@ my.Dataset = Backbone.Model.extend({
   toTemplateJSON: function() {
     var data = this.toJSON();
     data.docCount = this.docCount;
+    data.fields = this.fields.toJSON();
     return data;
   }
 });
