@@ -195,11 +195,15 @@ my.DataExplorer = Backbone.View.extend({
 // Provides a tabular view on a Dataset.
 //
 // Initialize it with a recline.Dataset object.
+//
+// Additional options passed in second arguments. Options:
+//
+// * cellRenderer: function used to render individual cells. See DataTableRow for more.
 my.DataTable = Backbone.View.extend({
   tagName:  "div",
   className: "data-table-container",
 
-  initialize: function() {
+  initialize: function(modelEtc, options) {
     var self = this;
     this.el = $(this.el);
     _.bindAll(this, 'render');
@@ -208,6 +212,7 @@ my.DataTable = Backbone.View.extend({
     this.model.currentDocuments.bind('remove', this.render);
     this.state = {};
     this.hiddenFields = [];
+    this.options = options;
   },
 
   events: {
@@ -392,7 +397,9 @@ my.DataTable = Backbone.View.extend({
           model: doc,
           el: tr,
           fields: self.fields,
-        });
+        },
+        self.options
+        );
       newView.render();
     });
     this.el.toggleClass('no-hidden', (self.hiddenFields.length == 0));
@@ -404,10 +411,25 @@ my.DataTable = Backbone.View.extend({
 //
 // Since we want this to update in place it is up to creator to provider the element to attach to.
 // In addition you must pass in a fields in the constructor options. This should be list of fields for the DataTable.
+//
+// Additional options can be passed in a second hash argument. Options:
+//
+// * cellRenderer: function to render cells. Signature: function(value,
+//   field, doc) where value is the value of this cell, field is
+//   corresponding field object and document is the document object. Note
+//   that implementing functions can ignore arguments (e.g.
+//   function(value) would be a valid cellRenderer function).
 my.DataTableRow = Backbone.View.extend({
-  initialize: function(options) {
+  initialize: function(initData, options) {
     _.bindAll(this, 'render');
-    this._fields = options.fields;
+    this._fields = initData.fields;
+    if (options && options.cellRenderer) {
+      this._cellRenderer = options.cellRenderer;
+    } else {
+      this._cellRenderer = function(value) {
+        return value;
+      }
+    }
     this.el = $(this.el);
     this.model.bind('change', this.render);
   },
@@ -418,22 +440,25 @@ my.DataTableRow = Backbone.View.extend({
       <td data-field="{{field}}"> \
         <div class="data-table-cell-content"> \
           <a href="javascript:{}" class="data-table-cell-edit" title="Edit this cell">&nbsp;</a> \
-          <div class="data-table-cell-value">{{value}}</div> \
+          <div class="data-table-cell-value">{{{value}}}</div> \
         </div> \
       </td> \
       {{/cells}} \
     ',
   events: {
     'click .data-table-cell-edit': 'onEditClick',
-    // cell editor
     'click .data-table-cell-editor .okButton': 'onEditorOK',
     'click .data-table-cell-editor .cancelButton': 'onEditorCancel'
   },
   
   toTemplateJSON: function() {
+    var self = this;
     var doc = this.model;
     var cellData = this._fields.map(function(field) {
-      return {field: field.id, value: doc.get(field.id)}
+      return {
+        field: field.id,
+        value: self._cellRenderer(doc.get(field.id), field, doc)
+      }
     })
     return { id: this.id, cells: cellData }
   },
