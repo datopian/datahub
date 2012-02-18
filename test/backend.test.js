@@ -1,5 +1,5 @@
 (function ($) {
-module("Dataset");
+module("Backend");
 
 var memoryData = {
   metadata: {
