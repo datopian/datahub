@@ -4,7 +4,7 @@ toolkit, all in pure javascript and html.
 
 Designed for standalone use or as a library to integrate into your own app.
 
-Live demo: http://okfnlabs.org/recline/demo/
+<h3><a href="http://okfnlabs.org/recline/">Recline Website - including Overview, Documentation, Demos etc</a></h3>
 
 
 ## Features
@@ -15,19 +15,14 @@ Live demo: http://okfnlabs.org/recline/demo/
 * View and edit your data in clean tabular interface
 * Bulk update/clean your data using an easy scripting UI
 * Visualize your data
+* And more ... see <http://okfnlabs.org/recline/>
 
 ![screenshot](http://farm8.staticflickr.com/7020/6847468031_0f474de5f7_b.jpg)
-
-
-## Demo App
-
-Open demo/index.html in your favourite browser.
 
 
 ## Developer Notes
 
 Running the tests by opening `test/index.html` in your browser.
-
 
 
 ## Copyright and License

@@ -48,7 +48,7 @@ this.recline.Model = this.recline.Model || {};
   //
   // To use it you should provide in your constructor data:
   // 
-  //   * metadata (including headers array)
+  //   * metadata (including fields array)
   //   * documents: list of hashes, each hash being one doc. A doc *must* have an id attribute which is unique.
   //
   //  Example:
@@ -59,9 +59,9 @@ this.recline.Model = this.recline.Model || {};
   //  backend.addDataset({
   //    metadata: {
   //      id: 'my-id',
-  //      title: 'My Title',
-  //      headers: ['x', 'y', 'z'],
+  //      title: 'My Title'
   //    },
+  //    fields: [{id: 'x'}, {id: 'y'}, {id: 'z'}],
   //    documents: [
   //        {id: 0, x: 1, y: 2, z: 3},
   //        {id: 1, x: 2, y: 4, z: 6}
@@ -86,6 +86,7 @@ this.recline.Model = this.recline.Model || {};
         if (model.__type__ == 'Dataset') {
           var rawDataset = this.datasets[model.id];
           model.set(rawDataset.metadata);
+          model.fields.reset(rawDataset.fields);
           model.docCount = rawDataset.documents.length;
           dfd.resolve(model);
         }
@@ -153,12 +154,12 @@ this.recline.Model = this.recline.Model || {};
           });
           var dfd = $.Deferred();
           wrapInTimeout(jqxhr).done(function(schema) {
-            headers = _.map(schema.data, function(item) {
-              return item.name;
+            var fieldData = _.map(schema.data, function(item) {
+              item.id = item.name;
+              delete item.name;
+              return item;
             });
-            model.set({
-              headers: headers
-            });
+            model.fields.reset(fieldData);
             model.docCount = schema.count;
             dfd.resolve(model, jqxhr);
           })
@@ -227,9 +228,10 @@ this.recline.Model = this.recline.Model || {};
           });
           var dfd = $.Deferred();
           wrapInTimeout(jqxhr).done(function(results) {
-            model.set({
-              headers: results.fields
-            });
+            model.fields.reset(_.map(results.fields, function(fieldId) {
+              return {id: fieldId};
+              })
+            );
             dfd.resolve(model, jqxhr);
           })
           .fail(function(arguments) {
@@ -293,7 +295,10 @@ this.recline.Model = this.recline.Model || {};
 
         $.getJSON(model.get('url'), function(d) {
           result = self.gdocsToJavascript(d);
-          model.set({'headers': result.header});
+          model.fields.reset(_.map(result.field, function(fieldId) {
+              return {id: fieldId};
+            })
+          );
           // cache data onto dataset (we have loaded whole gdoc it seems!)
           model._dataCache = result.data;
           dfd.resolve(model);
@@ -303,9 +308,9 @@ this.recline.Model = this.recline.Model || {};
 
     query: function(dataset, queryObj) { 
       var dfd = $.Deferred();
-      var fields = dataset.get('headers');
+      var fields = _.pluck(dataset.fields.toJSON(), 'id');
 
-      // zip the field headers with the data rows to produce js objs
+      // zip the fields with the data rows to produce js objs
       // TODO: factor this out as a common method with other backends
       var objs = _.map(dataset._dataCache, function (d) { 
         var obj = {};
@@ -318,9 +323,9 @@ this.recline.Model = this.recline.Model || {};
     gdocsToJavascript:  function(gdocsSpreadsheet) {
       /*
          :options: (optional) optional argument dictionary:
-         columnsToUse: list of columns to use (specified by header names)
+         columnsToUse: list of columns to use (specified by field names)
          colTypes: dictionary (with column names as keys) specifying types (e.g. range, percent for use in conversion).
-         :return: tabular data object (hash with keys: header and data).
+         :return: tabular data object (hash with keys: field and data).
 
          Issues: seems google docs return columns in rows in random order and not even sure whether consistent across rows.
          */
@@ -329,7 +334,7 @@ this.recline.Model = this.recline.Model || {};
         options = arguments[1];
       }
       var results = {
-        'header': [],
+        'field': [],
         'data': []
       };
       // default is no special info on type of columns
@@ -340,14 +345,14 @@ this.recline.Model = this.recline.Model || {};
       // either extract column headings from spreadsheet directly, or used supplied ones
       if (options.columnsToUse) {
         // columns set to subset supplied
-        results.header = options.columnsToUse;
+        results.field = options.columnsToUse;
       } else {
         // set columns to use to be all available
         if (gdocsSpreadsheet.feed.entry.length > 0) {
           for (var k in gdocsSpreadsheet.feed.entry[0]) {
             if (k.substr(0, 3) == 'gsx') {
               var col = k.substr(4)
-                results.header.push(col);
+                results.field.push(col);
             }
           }
         }
@@ -357,8 +362,8 @@ this.recline.Model = this.recline.Model || {};
       var rep = /^([\d\.\-]+)\%$/;
       $.each(gdocsSpreadsheet.feed.entry, function (i, entry) {
         var row = [];
-        for (var k in results.header) {
-          var col = results.header[k];
+        for (var k in results.field) {
+          var col = results.field[k];
           var _keyname = 'gsx$' + col;
           var value = entry[_keyname]['$t'];
           // if labelled as % and value contains %, convert

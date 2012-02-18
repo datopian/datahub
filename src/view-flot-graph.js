@@ -1,10 +1,9 @@
 this.recline = this.recline || {};
 this.recline.View = this.recline.View || {};
 
-// Views module following classic module pattern
 (function($, my) {
 
-// Graph view for a Dataset using Flot graphing library.
+// ## Graph view for a Dataset using Flot graphing library.
 //
 // Initialization arguments:
 //
@@ -44,9 +43,9 @@ my.FlotGraph = Backbone.View.extend({
         <label>Group Column (x-axis)</label> \
         <div class="input editor-group"> \
           <select> \
-          {{#headers}} \
-          <option value="{{.}}">{{.}}</option> \
-          {{/headers}} \
+          {{#fields}} \
+          <option value="{{id}}">{{label}}</option> \
+          {{/fields}} \
           </select> \
         </div> \
         <div class="editor-series-group"> \
@@ -54,9 +53,9 @@ my.FlotGraph = Backbone.View.extend({
             <label>Series <span>A (y-axis)</span></label> \
             <div class="input"> \
               <select> \
-              {{#headers}} \
-              <option value="{{.}}">{{.}}</option> \
-              {{/headers}} \
+              {{#fields}} \
+              <option value="{{id}}">{{label}}</option> \
+              {{/fields}} \
               </select> \
             </div> \
           </div> \
@@ -86,25 +85,29 @@ my.FlotGraph = Backbone.View.extend({
     var self = this;
     this.el = $(this.el);
     _.bindAll(this, 'render', 'redraw');
-    // we need the model.headers to render properly
+    // we need the model.fields to render properly
     this.model.bind('change', this.render);
+    this.model.fields.bind('reset', this.render);
+    this.model.fields.bind('add', this.render);
     this.model.currentDocuments.bind('add', this.redraw);
     this.model.currentDocuments.bind('reset', this.redraw);
+    var configFromHash = my.parseHashQueryString().graph;
+    if (configFromHash) {
+      configFromHash = JSON.parse(configFromHash);
+    }
     this.chartConfig = _.extend({
         group: null,
         series: [],
         graphType: 'line'
       },
-      config)
+      configFromHash,
+      config
+      );
     this.render();
   },
 
-  toTemplateJSON: function() {
-    return this.model.toJSON();
-  },
-
   render: function() {
-    htmls = $.mustache(this.template, this.toTemplateJSON());
+    htmls = $.mustache(this.template, this.model.toTemplateJSON());
     $(this.el).html(htmls);
     // now set a load of stuff up
     this.$graph = this.el.find('.panel.graph');
@@ -120,8 +123,9 @@ my.FlotGraph = Backbone.View.extend({
     this._getEditorData();
     // update navigation
     // TODO: make this less invasive (e.g. preserve other keys in query string)
-    window.location.hash = window.location.hash.split('?')[0] +
-        '?graph=' + JSON.stringify(this.chartConfig);
+    var qs = my.parseHashQueryString();
+    qs['graph'] = this.chartConfig;
+    my.setHashQueryString(qs);
     this.redraw();
   },
 
