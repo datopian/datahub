@@ -96,8 +96,7 @@ my.Field = Backbone.Model.extend({
   initialize: function(data) {
     // if a hash not passed in the first argument is set as value for key 0
     if ('0' in data) {
-      this.set({id: data['0']});
-      this.unset('0');
+      throw new Error('Looks like you did not pass a proper hash with id to Field constructor');
     }
     if (this.attributes.label == null) {
       this.set({label: this.id});
