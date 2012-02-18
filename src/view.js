@@ -233,7 +233,7 @@ my.DataTable = Backbone.View.extend({
   // Column and row menus
 
   onColumnHeaderClick: function(e) {
-    this.state.currentColumn = $(e.target).siblings().text();
+    this.state.currentColumn = $(e.target).closest('.column-header').attr('data-field');
     util.position('data-table-menu', e);
     util.render('columnActions', 'data-table-menu');
   },
@@ -357,10 +357,10 @@ my.DataTable = Backbone.View.extend({
             </th> \
           {{/notEmpty}} \
           {{#fields}} \
-            <th class="column-header"> \
+            <th class="column-header {{#hidden}}hidden{{/hidden}}" data-field="{{id}}"> \
               <div class="column-header-title"> \
                 <a class="column-header-menu"></a> \
-                <span class="column-header-name">{{.}}</span> \
+                <span class="column-header-name">{{label}}</span> \
               </div> \
               </div> \
             </th> \
@@ -374,13 +374,14 @@ my.DataTable = Backbone.View.extend({
   toTemplateJSON: function() {
     var modelData = this.model.toJSON()
     modelData.notEmpty = ( this.fields.length > 0 )
-    modelData.fields = this.fields;
+    // TODO: move this sort of thing into a toTemplateJSON method on Dataset?
+    modelData.fields = _.map(this.fields, function(field) { return field.toJSON() });
     return modelData;
   },
   render: function() {
     var self = this;
-    this.fields = _.filter(this.model.get('fields'), function(field) {
-      return _.indexOf(self.hiddenFields, field) == -1;
+    this.fields = this.model.fields.filter(function(field) {
+      return _.indexOf(self.hiddenFields, field.id) == -1;
     });
     var htmls = $.mustache(this.template, this.toTemplateJSON());
     this.el.html(htmls);
@@ -431,8 +432,8 @@ my.DataTableRow = Backbone.View.extend({
   
   toTemplateJSON: function() {
     var doc = this.model;
-    var cellData = _.map(this._fields, function(field) {
-      return {field: field, value: doc.get(field)}
+    var cellData = this._fields.map(function(field) {
+      return {field: field.id, value: doc.get(field.id)}
     })
     return { id: this.id, cells: cellData }
   },

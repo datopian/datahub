@@ -45,7 +45,7 @@ my.FlotGraph = Backbone.View.extend({
         <div class="input editor-group"> \
           <select> \
           {{#fields}} \
-          <option value="{{.}}">{{.}}</option> \
+          <option value="{{id}}">{{label}}</option> \
           {{/fields}} \
           </select> \
         </div> \
@@ -55,7 +55,7 @@ my.FlotGraph = Backbone.View.extend({
             <div class="input"> \
               <select> \
               {{#fields}} \
-              <option value="{{.}}">{{.}}</option> \
+              <option value="{{id}}">{{label}}</option> \
               {{/fields}} \
               </select> \
             </div> \
@@ -88,6 +88,8 @@ my.FlotGraph = Backbone.View.extend({
     _.bindAll(this, 'render', 'redraw');
     // we need the model.fields to render properly
     this.model.bind('change', this.render);
+    this.model.fields.bind('reset', this.render);
+    this.model.fields.bind('add', this.render);
     this.model.currentDocuments.bind('add', this.redraw);
     this.model.currentDocuments.bind('reset', this.redraw);
     var configFromHash = my.parseHashQueryString().graph;
@@ -105,12 +107,8 @@ my.FlotGraph = Backbone.View.extend({
     this.render();
   },
 
-  toTemplateJSON: function() {
-    return this.model.toJSON();
-  },
-
   render: function() {
-    htmls = $.mustache(this.template, this.toTemplateJSON());
+    htmls = $.mustache(this.template, this.model.toTemplateJSON());
     $(this.el).html(htmls);
     // now set a load of stuff up
     this.$graph = this.el.find('.panel.graph');
