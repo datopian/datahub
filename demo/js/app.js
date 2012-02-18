@@ -51,8 +51,8 @@ function demoDataset() {
       title: 'My Test Dataset'
       , name: '1-my-test-dataset' 
       , id: datasetId
-      , fields: ['x', 'y', 'z']
     },
+    fields: [{id: 'x'}, {id: 'y'}, {id: 'z'}],
     documents: [
       {id: 0, x: 1, y: 2, z: 3}
       , {id: 1, x: 2, y: 4, z: 6}

@@ -59,9 +59,9 @@ this.recline.Model = this.recline.Model || {};
   //  backend.addDataset({
   //    metadata: {
   //      id: 'my-id',
-  //      title: 'My Title',
-  //      fields: ['x', 'y', 'z'],
+  //      title: 'My Title'
   //    },
+  //    fields: [{id: 'x'}, {id: 'y'}, {id: 'z'}],
   //    documents: [
   //        {id: 0, x: 1, y: 2, z: 3},
   //        {id: 1, x: 2, y: 4, z: 6}
@@ -86,6 +86,7 @@ this.recline.Model = this.recline.Model || {};
         if (model.__type__ == 'Dataset') {
           var rawDataset = this.datasets[model.id];
           model.set(rawDataset.metadata);
+          model.fields.reset(rawDataset.fields);
           model.docCount = rawDataset.documents.length;
           dfd.resolve(model);
         }
@@ -153,12 +154,12 @@ this.recline.Model = this.recline.Model || {};
           });
           var dfd = $.Deferred();
           wrapInTimeout(jqxhr).done(function(schema) {
-            fields = _.map(schema.data, function(item) {
-              return item.name;
+            var fieldData = _.map(schema.data, function(item) {
+              item.id = item.name;
+              delete item.name;
+              return item;
             });
-            model.set({
-              fields: fields
-            });
+            model.fields.reset(fieldData);
             model.docCount = schema.count;
             dfd.resolve(model, jqxhr);
           })
@@ -227,9 +228,10 @@ this.recline.Model = this.recline.Model || {};
           });
           var dfd = $.Deferred();
           wrapInTimeout(jqxhr).done(function(results) {
-            model.set({
-              fields: results.fields
-            });
+            model.fields.reset(_.map(results.fields, function(fieldId) {
+              return {id: fieldId};
+              })
+            );
             dfd.resolve(model, jqxhr);
           })
           .fail(function(arguments) {
@@ -293,7 +295,10 @@ this.recline.Model = this.recline.Model || {};
 
         $.getJSON(model.get('url'), function(d) {
           result = self.gdocsToJavascript(d);
-          model.set({'fields': result.field});
+          model.fields.reset(_.map(result.field, function(fieldId) {
+              return {id: fieldId};
+            })
+          );
           // cache data onto dataset (we have loaded whole gdoc it seems!)
           model._dataCache = result.data;
           dfd.resolve(model);
@@ -303,7 +308,7 @@ this.recline.Model = this.recline.Model || {};
 
     query: function(dataset, queryObj) { 
       var dfd = $.Deferred();
-      var fields = dataset.get('fields');
+      var fields = _.pluck(dataset.fields.toJSON(), 'id');
 
       // zip the fields with the data rows to produce js objs
       // TODO: factor this out as a common method with other backends
