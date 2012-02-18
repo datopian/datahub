@@ -9,13 +9,11 @@ this.recline = this.recline || {};
 this.recline.Model = this.recline.Model || {};
 
 (function($, my) {
-  my.backends = {};
-
   // ## Backbone.sync
   //
   // Override Backbone.sync to hand off to sync function in relevant backend
   Backbone.sync = function(method, model, options) {
-    return my.backends[model.backendConfig.type].sync(method, model, options);
+    return model.backend.sync(method, model, options);
   }
 
   // ## wrapInTimeout
@@ -45,83 +43,96 @@ this.recline.Model = this.recline.Model || {};
 
   // ## BackendMemory - uses in-memory data
   //
-  // To use you should:
+  // This is very artificial and is really only designed for testing
+  // purposes.
+  //
+  // To use it you should provide in your constructor data:
   // 
-  // A. provide metadata as model data to the Dataset
+  //   * metadata (including fields array)
+  //   * documents: list of hashes, each hash being one doc. A doc *must* have an id attribute which is unique.
   //
-  // B. Set backendConfig on your dataset with attributes:
-  //
-  //   - type: 'memory'
-  //   - data: hash with 2 keys:
-  //
-  //     * headers: list of header names/labels
-  //     * rows: list of hashes, each hash being one row. A row *must* have an id attribute which is unique.
-  //
-  //  Example of data:
+  //  Example:
   // 
   //  <pre>
-  //        {
-  //            headers: ['x', 'y', 'z']
-  //          , rows: [
-  //              {id: 0, x: 1, y: 2, z: 3}
-  //            , {id: 1, x: 2, y: 4, z: 6}
-  //          ]
-  //        };
+  //  // Backend setup
+  //  var backend = Backend();
+  //  backend.addDataset({
+  //    metadata: {
+  //      id: 'my-id',
+  //      title: 'My Title'
+  //    },
+  //    fields: [{id: 'x'}, {id: 'y'}, {id: 'z'}],
+  //    documents: [
+  //        {id: 0, x: 1, y: 2, z: 3},
+  //        {id: 1, x: 2, y: 4, z: 6}
+  //      ]
+  //  });
+  //  // later ...
+  //  var dataset = Dataset({id: 'my-id'});
+  //  dataset.fetch();
+  //  etc ...
   //  </pre>
   my.BackendMemory = Backbone.Model.extend({
-      sync: function(method, model, options) {
-        var self = this;
-        if (method === "read") {
-          var dfd = $.Deferred();
-          if (model.__type__ == 'Dataset') {
-            var dataset = model;
-            dataset.set({
-              headers: dataset.backendConfig.data.headers
-            });
-            dataset.docCount = dataset.backendConfig.data.rows.length;
-            dfd.resolve(dataset);
-          }
-          return dfd.promise();
-        } else if (method === 'update') {
-          var dfd = $.Deferred();
-          if (model.__type__ == 'Document') {
-            _.each(model.backendConfig.data.rows, function(row, idx) {
-              if(row.id === model.id) {
-                model.backendConfig.data.rows[idx] = model.toJSON();
-              }
-            });
-            dfd.resolve(model);
-          }
-          return dfd.promise();
-        } else if (method === 'delete') {
-          var dfd = $.Deferred();
-          if (model.__type__ == 'Document') {
-            model.backendConfig.data.rows = _.reject(model.backendConfig.data.rows, function(row) {
-              return (row.id === model.id);
-            });
-            dfd.resolve(model);
-          }
-          return dfd.promise();
-        } else {
-          alert('Not supported: sync on BackendMemory with method ' + method + ' and model ' + model);
-        }
-      },
-      query: function(model, queryObj) {
-        var numRows = queryObj.size;
-        var start = queryObj.offset;
+    initialize: function() {
+      this.datasets = {};
+    },
+    addDataset: function(data) {
+      this.datasets[data.metadata.id] = $.extend(true, {}, data);
+    },
+    sync: function(method, model, options) {
+      var self = this;
+      if (method === "read") {
         var dfd = $.Deferred();
-        results = model.backendConfig.data.rows;
-        // not complete sorting!
-        _.each(queryObj.sort, function(item) {
-          results = _.sortBy(results, function(row) {
-            var _out = row[item[0]];
-            return (item[1] == 'asc') ? _out : -1*_out;
-          });
-        });
-        var results = results.slice(start, start+numRows);
-        dfd.resolve(results);
+        if (model.__type__ == 'Dataset') {
+          var rawDataset = this.datasets[model.id];
+          model.set(rawDataset.metadata);
+          model.fields.reset(rawDataset.fields);
+          model.docCount = rawDataset.documents.length;
+          dfd.resolve(model);
+        }
         return dfd.promise();
+      } else if (method === 'update') {
+        var dfd = $.Deferred();
+        if (model.__type__ == 'Document') {
+          _.each(self.datasets[model.dataset.id].documents, function(doc, idx) {
+            if(doc.id === model.id) {
+              self.datasets[model.dataset.id].documents[idx] = model.toJSON();
+            }
+          });
+          dfd.resolve(model);
+        }
+        return dfd.promise();
+      } else if (method === 'delete') {
+        var dfd = $.Deferred();
+        if (model.__type__ == 'Document') {
+          var rawDataset = self.datasets[model.dataset.id];
+          var newdocs = _.reject(rawDataset.documents, function(doc) {
+            return (doc.id === model.id);
+          });
+          rawDataset.documents = newdocs;
+          dfd.resolve(model);
+        }
+        return dfd.promise();
+      } else {
+        alert('Not supported: sync on BackendMemory with method ' + method + ' and model ' + model);
       }
+    },
+    query: function(model, queryObj) {
+      var numRows = queryObj.size;
+      var start = queryObj.offset;
+      var dfd = $.Deferred();
+      results = this.datasets[model.id].documents;
+      // not complete sorting!
+      _.each(queryObj.sort, function(item) {
+        results = _.sortBy(results, function(doc) {
+          var _out = doc[item[0]];
+          return (item[1] == 'asc') ? _out : -1*_out;
+        });
+      });
+      var results = results.slice(start, start+numRows);
+      dfd.resolve(results);
+      return dfd.promise();
+    }
   });
   my.backends['memory'] = new my.BackendMemory();
 
@@ -129,20 +140,12 @@ this.recline.Model = this.recline.Model || {};
   //
   // Connecting to [Webstores](http://github.com/okfn/webstore)
   //
-  // To use this backend set backendConfig on your Dataset as:
-  //
-  // <pre>
-  // {
-  //   'type': 'webstore',
-  //   'url': url to relevant Webstore table
-  // }
-  // </pre>
+  // To use this backend ensure your Dataset has a webstore_url in its attributes.
   my.BackendWebstore = Backbone.Model.extend({
     sync: function(method, model, options) {
       if (method === "read") {
         if (model.__type__ == 'Dataset') {
-          var dataset = model;
-          var base = dataset.backendConfig.url;
+          var base = model.get('webstore_url');
           var schemaUrl = base + '/schema.json';
           var jqxhr = $.ajax({
             url: schemaUrl,
@@ -151,14 +154,14 @@ this.recline.Model = this.recline.Model || {};
           });
           var dfd = $.Deferred();
           wrapInTimeout(jqxhr).done(function(schema) {
-            headers = _.map(schema.data, function(item) {
-              return item.name;
+            var fieldData = _.map(schema.data, function(item) {
+              item.id = item.name;
+              delete item.name;
+              return item;
             });
-            dataset.set({
-              headers: headers
-            });
-            dataset.docCount = schema.count;
-            dfd.resolve(dataset, jqxhr);
+            model.fields.reset(fieldData);
+            model.docCount = schema.count;
+            dfd.resolve(model, jqxhr);
           })
           .fail(function(arguments) {
             dfd.reject(arguments);
@@ -168,7 +171,7 @@ this.recline.Model = this.recline.Model || {};
       }
     },
     query: function(model, queryObj) {
-      var base = model.backendConfig.url;
+      var base = model.get('webstore_url');
       var data = {
         _limit:  queryObj.size
         , _offset: queryObj.offset
@@ -193,33 +196,30 @@ this.recline.Model = this.recline.Model || {};
   // 
   // For connecting to [DataProxy-s](http://github.com/okfn/dataproxy).
   //
-  // Set a Dataset to use this backend:
-  //
-  //     dataset.backendConfig = {
-  //       // required
-  //       url: {url-of-data-to-proxy},
-  //       format: csv | xls,
-  //     }
-  //
   // When initializing the DataProxy backend you can set the following attributes:
   //
   // * dataproxy: {url-to-proxy} (optional). Defaults to http://jsonpdataproxy.appspot.com
   //
+  // Datasets using using this backend should set the following attributes:
+  //
+  // * url: (required) url-of-data-to-proxy
+  // * format: (optional) csv | xls (defaults to csv if not specified)
+  //
   // Note that this is a **read-only** backend.
   my.BackendDataProxy = Backbone.Model.extend({
     defaults: {
-      dataproxy: 'http://jsonpdataproxy.appspot.com'
+      dataproxy_url: 'http://jsonpdataproxy.appspot.com'
     },
     sync: function(method, model, options) {
+      var self = this;
       if (method === "read") {
         if (model.__type__ == 'Dataset') {
-          var dataset = model;
-          var base = my.backends['dataproxy'].get('dataproxy');
+          var base = self.get('dataproxy_url');
           // TODO: should we cache for extra efficiency
           var data = {
-            url: dataset.backendConfig.url
+            url: model.get('url')
             , 'max-results':  1
-            , type: dataset.backendConfig.format
+            , type: model.get('format') || 'csv'
           };
           var jqxhr = $.ajax({
             url: base
@@ -228,10 +228,11 @@ this.recline.Model = this.recline.Model || {};
           });
           var dfd = $.Deferred();
           wrapInTimeout(jqxhr).done(function(results) {
-            dataset.set({
-              headers: results.fields
-            });
-            dfd.resolve(dataset, jqxhr);
+            model.fields.reset(_.map(results.fields, function(fieldId) {
+              return {id: fieldId};
+              })
+            );
+            dfd.resolve(model, jqxhr);
           })
           .fail(function(arguments) {
             dfd.reject(arguments);
@@ -243,11 +244,11 @@ this.recline.Model = this.recline.Model || {};
       }
     },
     query: function(dataset, queryObj) {
-      var base = my.backends['dataproxy'].get('dataproxy');
+      var base = this.get('dataproxy_url');
       var data = {
-        url: dataset.backendConfig.url
+        url: dataset.get('url')
         , 'max-results':  queryObj.size
-        , type: dataset.backendConfig.format
+        , type: dataset.get('format')
       };
       var jqxhr = $.ajax({
         url: base
@@ -256,10 +257,10 @@ this.recline.Model = this.recline.Model || {};
       });
       var dfd = $.Deferred();
       jqxhr.done(function(results) {
-        var _out = _.map(results.data, function(row) {
+        var _out = _.map(results.data, function(doc) {
           var tmp = {};
           _.each(results.fields, function(key, idx) {
-            tmp[key] = row[idx];
+            tmp[key] = doc[idx];
           });
           return tmp;
         });
@@ -273,16 +274,31 @@ this.recline.Model = this.recline.Model || {};
 
   // ## Google spreadsheet backend
   // 
-  // Connect to Google Docs spreadsheet. For write operations
+  // Connect to Google Docs spreadsheet.
+  //
+  // Dataset must have a url attribute pointing to the Gdocs
+  // spreadsheet's JSON feed e.g.
+  //
+  // <pre>
+  // var dataset = new recline.Model.Dataset({
+  //     url: 'https://spreadsheets.google.com/feeds/list/0Aon3JiuouxLUdDQwZE1JdV94cUd6NWtuZ0IyWTBjLWc/od6/public/values?alt=json'
+  //   },
+  //   'gdocs'
+  // );
+  // </pre>
   my.BackendGDoc = Backbone.Model.extend({
     sync: function(method, model, options) {
+      var self = this;
       if (method === "read") { 
         var dfd = $.Deferred(); 
         var dataset = model;
 
-        $.getJSON(model.backendConfig.url, function(d) {
-          result = my.backends['gdocs'].gdocsToJavascript(d);
-          model.set({'headers': result.header});
+        $.getJSON(model.get('url'), function(d) {
+          result = self.gdocsToJavascript(d);
+          model.fields.reset(_.map(result.field, function(fieldId) {
+              return {id: fieldId};
+            })
+          );
           // cache data onto dataset (we have loaded whole gdoc it seems!)
           model._dataCache = result.data;
           dfd.resolve(model);
@@ -292,9 +308,9 @@ this.recline.Model = this.recline.Model || {};
 
     query: function(dataset, queryObj) { 
       var dfd = $.Deferred();
-      var fields = dataset.get('headers');
+      var fields = _.pluck(dataset.fields.toJSON(), 'id');
 
-      // zip the field headers with the data rows to produce js objs
+      // zip the fields with the data rows to produce js objs
       // TODO: factor this out as a common method with other backends
       var objs = _.map(dataset._dataCache, function (d) { 
         var obj = {};
@@ -307,9 +323,9 @@ this.recline.Model = this.recline.Model || {};
     gdocsToJavascript:  function(gdocsSpreadsheet) {
       /*
          :options: (optional) optional argument dictionary:
-         columnsToUse: list of columns to use (specified by header names)
+         columnsToUse: list of columns to use (specified by field names)
          colTypes: dictionary (with column names as keys) specifying types (e.g. range, percent for use in conversion).
-         :return: tabular data object (hash with keys: header and data).
+         :return: tabular data object (hash with keys: field and data).
 
          Issues: seems google docs return columns in rows in random order and not even sure whether consistent across rows.
          */
@@ -318,7 +334,7 @@ this.recline.Model = this.recline.Model || {};
         options = arguments[1];
       }
       var results = {
-        'header': [],
+        'field': [],
         'data': []
       };
       // default is no special info on type of columns
@@ -329,14 +345,14 @@ this.recline.Model = this.recline.Model || {};
       // either extract column headings from spreadsheet directly, or used supplied ones
       if (options.columnsToUse) {
         // columns set to subset supplied
-        results.header = options.columnsToUse;
+        results.field = options.columnsToUse;
       } else {
         // set columns to use to be all available
         if (gdocsSpreadsheet.feed.entry.length > 0) {
           for (var k in gdocsSpreadsheet.feed.entry[0]) {
             if (k.substr(0, 3) == 'gsx') {
               var col = k.substr(4)
-                results.header.push(col);
+                results.field.push(col);
             }
           }
         }
@@ -346,8 +362,8 @@ this.recline.Model = this.recline.Model || {};
       var rep = /^([\d\.\-]+)\%$/;
       $.each(gdocsSpreadsheet.feed.entry, function (i, entry) {
         var row = [];
-        for (var k in results.header) {
-          var col = results.header[k];
+        for (var k in results.field) {
+          var col = results.field[k];
           var _keyname = 'gsx$' + col;
           var value = entry[_keyname]['$t'];
           // if labelled as % and value contains %, convert
@@ -498,78 +514,125 @@ this.recline = this.recline || {};
 this.recline.Model = this.recline.Model || {};
 
 (function($, my) {
-  // ## A Dataset model
-  //
-  // Other than standard list of Backbone methods it has two important attributes:
-  //
-  // * currentDocuments: a DocumentList containing the Documents we have currently loaded for viewing (you update currentDocuments by calling getRows)
-  // * docCount: total number of documents in this dataset (obtained on a fetch for this Dataset)
-  my.Dataset = Backbone.Model.extend({
-    __type__: 'Dataset',
-    initialize: function(options) {
-      this.currentDocuments = new my.DocumentList();
-      this.docCount = null;
-      this.backend = null;
-      this.defaultQuery = {
-        size: 100
-        , offset: 0
-      };
-      // this.queryState = {};
-    },
 
-    // ### getDocuments
-    //
-    // AJAX method with promise API to get rows (documents) from the backend.
-    //
-    // Resulting DocumentList are used to reset this.currentDocuments and are
-    // also returned.
-    //
-    // :param numRows: passed onto backend getDocuments.
-    // :param start: passed onto backend getDocuments.
-    //
-    // this does not fit very well with Backbone setup. Backbone really expects you to know the ids of objects your are fetching (which you do in classic RESTful ajax-y world). But this paradigm does not fill well with data set up we have here.
-    // This also illustrates the limitations of separating the Dataset and the Backend
-    query: function(queryObj) {
-      var self = this;
-      var backend = my.backends[this.backendConfig.type];
-      this.queryState = queryObj || this.defaultQuery;
-      this.queryState = _.extend({size: 100, offset: 0}, this.queryState);
-      var dfd = $.Deferred();
-      backend.query(this, this.queryState).done(function(rows) {
-        var docs = _.map(rows, function(row) {
-          var _doc = new my.Document(row);
-          _doc.backendConfig = self.backendConfig;
-          _doc.backend = backend;
-          return _doc;
-        });
-        self.currentDocuments.reset(docs);
-        dfd.resolve(self.currentDocuments);
-      })
-      .fail(function(arguments) {
-        dfd.reject(arguments);
-      });
-      return dfd.promise();
-    },
-
-    toTemplateJSON: function() {
-      var data = this.toJSON();
-      data.docCount = this.docCount;
-      return data;
+// ## A Dataset model
+//
+// A model must have the following (Backbone) attributes:
+//
+// * fields: (aka columns) is a FieldList listing all the fields on this
+//   Dataset (this can be set explicitly, or, on fetch() of Dataset
+//   information from the backend, or as is perhaps most common on the first
+//   query)
+// * currentDocuments: a DocumentList containing the Documents we have currently loaded for viewing (you update currentDocuments by calling getRows)
+// * docCount: total number of documents in this dataset (obtained on a fetch for this Dataset)
+my.Dataset = Backbone.Model.extend({
+  __type__: 'Dataset',
+  initialize: function(model, backend) {
+    _.bindAll(this, 'query');
+    this.backend = backend;
+    if (backend && backend.constructor == String) {
+      this.backend = my.backends[backend];
     }
-  });
+    this.fields = new my.FieldList();
+    this.currentDocuments = new my.DocumentList();
+    this.docCount = null;
+    this.queryState = new my.Query();
+    this.queryState.bind('change', this.query);
+  },
 
-  // ## A Document (aka Row)
-  // 
-  // A single entry or row in the dataset
-  my.Document = Backbone.Model.extend({
-    __type__: 'Document'
-  });
+  // ### query
+  //
+  // AJAX method with promise API to get documents from the backend.
+  //
+  // It will query based on current query state (given by this.queryState)
+  // updated by queryObj (if provided).
+  //
+  // Resulting DocumentList are used to reset this.currentDocuments and are
+  // also returned.
+  query: function(queryObj) {
+    var self = this;
+    this.queryState.set(queryObj, {silent: true});
+    var dfd = $.Deferred();
+    this.backend.query(this, this.queryState.toJSON()).done(function(rows) {
+      var docs = _.map(rows, function(row) {
+        var _doc = new my.Document(row);
+        _doc.backend = self.backend;
+        _doc.dataset = self;
+        return _doc;
+      });
+      self.currentDocuments.reset(docs);
+      dfd.resolve(self.currentDocuments);
+    })
+    .fail(function(arguments) {
+      dfd.reject(arguments);
+    });
+    return dfd.promise();
+  },
 
-  // ## A Backbone collection of Documents
-  my.DocumentList = Backbone.Collection.extend({
-    __type__: 'DocumentList',
-    model: my.Document
-  });
+  toTemplateJSON: function() {
+    var data = this.toJSON();
+    data.docCount = this.docCount;
+    data.fields = this.fields.toJSON();
+    return data;
+  }
+});
+
+// ## A Document (aka Row)
+// 
+// A single entry or row in the dataset
+my.Document = Backbone.Model.extend({
+  __type__: 'Document'
+});
+
+// ## A Backbone collection of Documents
+my.DocumentList = Backbone.Collection.extend({
+  __type__: 'DocumentList',
+  model: my.Document
+});
+
+// ## A Field (aka Column) on a Dataset
+// 
+// Following attributes as standard:
+//
+//  * id: a unique identifer for this field- usually this should match the key in the documents hash
+//  * label: the visible label used for this field
+//  * type: the type of the data
+my.Field = Backbone.Model.extend({
+  defaults: {
+    id: null,
+    label: null,
+    type: 'String'
+  },
+  // In addition to normal backbone initialization via a Hash you can also
+  // just pass a single argument representing id to the ctor
+  initialize: function(data) {
+    // if a hash not passed in the first argument is set as value for key 0
+    if ('0' in data) {
+      throw new Error('Looks like you did not pass a proper hash with id to Field constructor');
+    }
+    if (this.attributes.label == null) {
+      this.set({label: this.id});
+    }
+  }
+});
+
+my.FieldList = Backbone.Collection.extend({
+  model: my.Field
+});
+
+// ## A Query object storing Dataset Query state
+my.Query = Backbone.Model.extend({
+  defaults: {
+    size: 100
+    , offset: 0
+  }
+});
+
+// ## Backend registry
+//
+// Backends will register themselves by id into this registry
+my.backends = {};
+
 }(jQuery, this.recline.Model));
 
 var util = function() {
@@ -585,7 +648,7 @@ var util = function() {
     , rowActions: '<li><a data-action="deleteRow" class="menuAction write-op" href="JavaScript:void(0);">Delete this row</a></li>'
     , rootActions: ' \
         {{#columns}} \
-        <li><a data-action="showColumn" data-column="{{.}}" class="menuAction" href="JavaScript:void(0);">Add column: {{.}}</a></li> \
+        <li><a data-action="showColumn" data-column="{{.}}" class="menuAction" href="JavaScript:void(0);">Show column: {{.}}</a></li> \
         {{/columns}}'
     , cellEditor: ' \
       <div class="menu-container data-table-cell-editor"> \
@@ -735,91 +798,296 @@ var util = function() {
   };
 }();
 this.recline = this.recline || {};
+this.recline.View = this.recline.View || {};
 
 // Views module following classic module pattern
-recline.View = function($) {
+(function($, my) {
 
-var my = {};
-
-// Parse a URL query string (?xyz=abc...) into a dictionary.
-function parseQueryString(q) {
-  var urlParams = {},
-    e, d = function (s) {
-      return unescape(s.replace(/\+/g, " "));
-    },
-    r = /([^&=]+)=?([^&]*)/g;
-
-  if (q && q.length && q[0] === '?') {
-    q = q.slice(1);
-  }
-  while (e = r.exec(q)) {
-    // TODO: have values be array as query string allow repetition of keys
-    urlParams[d(e[1])] = d(e[2]);
-  }
-  return urlParams;
-}
-
-// ## notify
+// Graph view for a Dataset using Flot graphing library.
 //
-// Create a notification (a div.alert-message in div.alert-messsages) using provide messages and options. Options are:
+// Initialization arguments:
 //
-// * category: warning (default), success, error
-// * persist: if true alert is persistent, o/w hidden after 3s (default = false)
-// * loader: if true show loading spinner
-my.notify = function(message, options) {
-  if (!options) var options = {};
-  var tmplData = _.extend({
-    msg: message,
-    category: 'warning'
-    },
-    options);
-  var _template = ' \
-    <div class="alert-message {{category}} fade in" data-alert="alert"><a class="close" href="#">×</a> \
-      <p>{{msg}} \
-        {{#loader}} \
-        <img src="images/small-spinner.gif" class="notification-loader"> \
-        {{/loader}} \
-      </p> \
-    </div>';
-  var _templated = $.mustache(_template, tmplData); 
-  _templated = $(_templated).appendTo($('.data-explorer .alert-messages'));
-  if (!options.persist) {
-    setTimeout(function() {
-      $(_templated).fadeOut(1000, function() {
-        $(this).remove();
+// * model: recline.Model.Dataset
+// * config: (optional) graph configuration hash of form:
+//
+//        { 
+//          group: {column name for x-axis},
+//          series: [{column name for series A}, {column name series B}, ... ],
+//          graphType: 'line'
+//        }
+//
+// NB: should *not* provide an el argument to the view but must let the view
+// generate the element itself (you can then append view.el to the DOM.
+my.FlotGraph = Backbone.View.extend({
+
+  tagName:  "div",
+  className: "data-graph-container",
+
+  template: ' \
+  <div class="editor"> \
+    <div class="editor-info editor-hide-info"> \
+      <h3 class="action-toggle-help">Help &raquo;</h3> \
+      <p>To create a chart select a column (group) to use as the x-axis \
+         then another column (Series A) to plot against it.</p> \
+      <p>You can add add \
+         additional series by clicking the "Add series" button</p> \
+    </div> \
+    <form class="form-stacked"> \
+      <div class="clearfix"> \
+        <label>Graph Type</label> \
+        <div class="input editor-type"> \
+          <select> \
+          <option value="line">Line</option> \
+          </select> \
+        </div> \
+        <label>Group Column (x-axis)</label> \
+        <div class="input editor-group"> \
+          <select> \
+          {{#fields}} \
+          <option value="{{id}}">{{label}}</option> \
+          {{/fields}} \
+          </select> \
+        </div> \
+        <div class="editor-series-group"> \
+          <div class="editor-series"> \
+            <label>Series <span>A (y-axis)</span></label> \
+            <div class="input"> \
+              <select> \
+              {{#fields}} \
+              <option value="{{id}}">{{label}}</option> \
+              {{/fields}} \
+              </select> \
+            </div> \
+          </div> \
+        </div> \
+      </div> \
+      <div class="editor-buttons"> \
+        <button class="btn editor-add">Add Series</button> \
+      </div> \
+      <div class="editor-buttons editor-submit" comment="hidden temporarily" style="display: none;"> \
+        <button class="editor-save">Save</button> \
+        <input type="hidden" class="editor-id" value="chart-1" /> \
+      </div> \
+    </form> \
+  </div> \
+  <div class="panel graph"></div> \
+</div> \
+',
+
+  events: {
+    'change form select': 'onEditorSubmit'
+    , 'click .editor-add': 'addSeries'
+    , 'click .action-remove-series': 'removeSeries'
+    , 'click .action-toggle-help': 'toggleHelp'
+  },
+
+  initialize: function(options, config) {
+    var self = this;
+    this.el = $(this.el);
+    _.bindAll(this, 'render', 'redraw');
+    // we need the model.fields to render properly
+    this.model.bind('change', this.render);
+    this.model.fields.bind('reset', this.render);
+    this.model.fields.bind('add', this.render);
+    this.model.currentDocuments.bind('add', this.redraw);
+    this.model.currentDocuments.bind('reset', this.redraw);
+    var configFromHash = my.parseHashQueryString().graph;
+    if (configFromHash) {
+      configFromHash = JSON.parse(configFromHash);
+    }
+    this.chartConfig = _.extend({
+        group: null,
+        series: [],
+        graphType: 'line'
+      },
+      configFromHash,
+      config
+      );
+    this.render();
+  },
+
+  render: function() {
+    htmls = $.mustache(this.template, this.model.toTemplateJSON());
+    $(this.el).html(htmls);
+    // now set a load of stuff up
+    this.$graph = this.el.find('.panel.graph');
+    // for use later when adding additional series
+    // could be simpler just to have a common template!
+    this.$seriesClone = this.el.find('.editor-series').clone();
+    this._updateSeries();
+    return this;
+  },
+
+  onEditorSubmit: function(e) {
+    var select = this.el.find('.editor-group select');
+    this._getEditorData();
+    // update navigation
+    // TODO: make this less invasive (e.g. preserve other keys in query string)
+    var qs = my.parseHashQueryString();
+    qs['graph'] = this.chartConfig;
+    my.setHashQueryString(qs);
+    this.redraw();
+  },
+
+  redraw: function() {
+    // There appear to be issues generating a Flot graph if either:
+
+    // * The relevant div that graph attaches to his hidden at the moment of creating the plot -- Flot will complain with
+    //
+    //   Uncaught Invalid dimensions for plot, width = 0, height = 0
+    // * There is no data for the plot -- either same error or may have issues later with errors like 'non-existent node-value' 
+    var areWeVisible = !jQuery.expr.filters.hidden(this.el[0]);
+    if (!this.plot && (!areWeVisible || this.model.currentDocuments.length == 0)) {
+      return
+    }
+    // create this.plot and cache it
+    if (!this.plot) {
+      // only lines for the present
+      options = {
+        id: 'line',
+        name: 'Line Chart'
+      };
+      this.plot = $.plot(this.$graph, this.createSeries(), options);
+    } 
+    this.plot.setData(this.createSeries());
+    this.plot.resize();
+    this.plot.setupGrid();
+    this.plot.draw();
+  },
+
+  _getEditorData: function() {
+    $editor = this
+    var series = this.$series.map(function () {
+      return $(this).val();
+    });
+    this.chartConfig.series = $.makeArray(series)
+    this.chartConfig.group = this.el.find('.editor-group select').val();
+  },
+
+  createSeries: function () {
+    var self = this;
+    var series = [];
+    if (this.chartConfig) {
+      $.each(this.chartConfig.series, function (seriesIndex, field) {
+        var points = [];
+        $.each(self.model.currentDocuments.models, function (index, doc) {
+          var x = doc.get(self.chartConfig.group);
+          var y = doc.get(field);
+          if (typeof x === 'string') {
+            x = index;
+          }
+          points.push([x, y]);
+        });
+        series.push({data: points, label: field});
       });
-    }, 1000);
+    }
+    return series;
+  },
+
+  // Public: Adds a new empty series select box to the editor.
+  //
+  // All but the first select box will have a remove button that allows them
+  // to be removed.
+  //
+  // Returns itself.
+  addSeries: function (e) {
+    e.preventDefault();
+    var element = this.$seriesClone.clone(),
+        label   = element.find('label'),
+        index   = this.$series.length;
+
+    this.el.find('.editor-series-group').append(element);
+    this._updateSeries();
+    label.append(' [<a href="#remove" class="action-remove-series">Remove</a>]');
+    label.find('span').text(String.fromCharCode(this.$series.length + 64));
+    return this;
+  },
+
+  // Public: Removes a series list item from the editor.
+  //
+  // Also updates the labels of the remaining series elements.
+  removeSeries: function (e) {
+    e.preventDefault();
+    var $el = $(e.target);
+    $el.parent().parent().remove();
+    this._updateSeries();
+    this.$series.each(function (index) {
+      if (index > 0) {
+        var labelSpan = $(this).prev().find('span');
+        labelSpan.text(String.fromCharCode(index + 65));
+      }
+    });
+    this.onEditorSubmit();
+  },
+
+  toggleHelp: function() {
+    this.el.find('.editor-info').toggleClass('editor-hide-info');
+  },
+
+  // Private: Resets the series property to reference the select elements.
+  //
+  // Returns itself.
+  _updateSeries: function () {
+    this.$series  = this.el.find('.editor-series select');
   }
-}
+});
 
-// ## clearNotifications
-//
-// Clear all existing notifications
-my.clearNotifications = function() {
-  var $notifications = $('.data-explorer .alert-message');
-  $notifications.remove();
-}
+})(jQuery, recline.View);
 
-// The primary view for the entire application.
+this.recline = this.recline || {};
+this.recline.View = this.recline.View || {};
+
+(function($, my) {
+// ## DataExplorer
 //
-// It should be initialized with a recline.Model.Dataset object and an existing
-// dom element to attach to (the existing DOM element is important for
-// rendering of FlotGraph subview).
+// The primary view for the entire application. Usage:
 // 
-// To pass in configuration options use the config key in initialization hash
-// e.g.
+// <pre>
+// var myExplorer = new model.recline.DataExplorer({
+//   model: {{recline.Model.Dataset instance}}
+//   el: {{an existing dom element}}
+//   views: {{page views}}
+//   config: {{config options -- see below}}
+// });
+// </pre> 
 //
-//      var explorer = new DataExplorer({
-//        config: {...}
-//      })
+// ### Parameters
+// 
+// **model**: (required) Dataset instance.
 //
-// Config options:
+// **el**: (required) DOM element.
 //
-// * displayCount: how many documents to display initially (default: 10)
-// * readOnly: true/false (default: false) value indicating whether to
-//   operate in read-only mode (hiding all editing options).
+// **views**: (optional) the views (Grid, Graph etc) for DataExplorer to
+// show. This is an array of view hashes. If not provided
+// just initialize a DataTable with id 'grid'. Example:
 //
-// All other views as contained in this one.
+// <pre>
+// var views = [
+//   {
+//     id: 'grid', // used for routing
+//     label: 'Grid', // used for view switcher
+//     view: new recline.View.DataTable({
+//       model: dataset
+//     })
+//   },
+//   {
+//     id: 'graph',
+//     label: 'Graph',
+//     view: new recline.View.FlotGraph({
+//       model: dataset
+//     })
+//   }
+// ];
+// </pre>
+//
+// **config**: Config options like:
+//
+//   * displayCount: how many documents to display initially (default: 10)
+//   * readOnly: true/false (default: false) value indicating whether to
+//     operate in read-only mode (hiding all editing options).
+//
+// NB: the element already being in the DOM is important for rendering of
+// FlotGraph subview.
 my.DataExplorer = Backbone.View.extend({
   template: ' \
   <div class="data-explorer"> \
@@ -827,8 +1095,9 @@ my.DataExplorer = Backbone.View.extend({
     \
     <div class="header"> \
       <ul class="navigation"> \
-        <li class="active"><a href="#grid" class="btn">Grid</a> \
-        <li><a href="#graph" class="btn">Graph</a></li> \
+        {{#views}} \
+        <li><a href="#{{id}}" class="btn">{{label}}</a> \
+        {{/views}} \
       </ul> \
       <div class="pagination"> \
         <form class="display-count"> \
@@ -862,21 +1131,24 @@ my.DataExplorer = Backbone.View.extend({
       this.setReadOnly();
     }
     // Hash of 'page' views (i.e. those for whole page) keyed by page name
-    this.pageViews = {
-      grid: new my.DataTable({
-          model: this.model
-        })
-      , graph: new my.FlotGraph({
-          model: this.model
-        })
-    };
+    if (options.views) {
+      this.pageViews = options.views;
+    } else {
+      this.pageViews = [{
+        id: 'grid',
+        label: 'Grid',
+        view: new my.DataTable({
+            model: this.model
+          })
+      }];
+    }
     // this must be called after pageViews are created
     this.render();
 
     this.router = new Backbone.Router();
     this.setupRouting();
 
-    // retrieve basic data like headers etc
+    // retrieve basic data like fields etc
     // note this.model and dataset returned are the same
     this.model.fetch()
       .done(function(dataset) {
@@ -917,32 +1189,25 @@ my.DataExplorer = Backbone.View.extend({
   render: function() {
     var tmplData = this.model.toTemplateJSON();
     tmplData.displayCount = this.config.displayCount;
+    tmplData.views = this.pageViews;
     var template = $.mustache(this.template, tmplData);
     $(this.el).html(template);
     var $dataViewContainer = this.el.find('.data-view-container');
     _.each(this.pageViews, function(view, pageName) {
-      $dataViewContainer.append(view.el)
+      $dataViewContainer.append(view.view.el)
     });
   },
 
   setupRouting: function() {
     var self = this;
-    this.router.route('', 'grid', function() {
-      self.updateNav('grid');
+    // Default route
+    this.router.route('', this.pageViews[0].id, function() {
+      self.updateNav(self.pageViews[0].id);
     });
-    this.router.route(/grid(\?.*)?/, 'view', function(queryString) {
-      self.updateNav('grid', queryString);
-    });
-    this.router.route(/graph(\?.*)?/, 'graph', function(queryString) {
-      self.updateNav('graph', queryString);
-      // we have to call here due to fact plot may not have been able to draw
-      // if it was hidden until now - see comments in FlotGraph.redraw
-      qsParsed = parseQueryString(queryString);
-      if ('graph' in qsParsed) {
-        var chartConfig = JSON.parse(qsParsed['graph']);
-        _.extend(self.pageViews['graph'].chartConfig, chartConfig);
-      }
-      self.pageViews['graph'].redraw();
+    $.each(this.pageViews, function(idx, view) {
+      self.router.route(/^([^?]+)(\?.*)?/, 'view', function(viewId, queryString) {
+        self.updateNav(viewId, queryString);
+      });
     });
   },
 
@@ -951,17 +1216,19 @@ my.DataExplorer = Backbone.View.extend({
     var $el = this.el.find('.navigation li a[href=#' + pageName + ']');
     $el.parent().addClass('active');
     // show the specific page
-    _.each(this.pageViews, function(view, pageViewName) {
-      if (pageViewName === pageName) {
-        view.el.show();
+    _.each(this.pageViews, function(view, idx) {
+      if (view.id === pageName) {
+        view.view.el.show();
       } else {
-        view.el.hide();
+        view.view.el.hide();
       }
     });
   }
 });
 
-// DataTable provides a tabular view on a Dataset.
+// ## DataTable
+//
+// Provides a tabular view on a Dataset.
 //
 // Initialize it with a recline.Dataset object.
 my.DataTable = Backbone.View.extend({
@@ -976,7 +1243,7 @@ my.DataTable = Backbone.View.extend({
     this.model.currentDocuments.bind('reset', this.render);
     this.model.currentDocuments.bind('remove', this.render);
     this.state = {};
-    this.hiddenHeaders = [];
+    this.hiddenFields = [];
   },
 
   events: {
@@ -1002,7 +1269,7 @@ my.DataTable = Backbone.View.extend({
   // Column and row menus
 
   onColumnHeaderClick: function(e) {
-    this.state.currentColumn = $(e.target).siblings().text();
+    this.state.currentColumn = $(e.target).closest('.column-header').attr('data-field');
     util.position('data-table-menu', e);
     util.render('columnActions', 'data-table-menu');
   },
@@ -1015,7 +1282,7 @@ my.DataTable = Backbone.View.extend({
   
   onRootHeaderClick: function(e) {
     util.position('data-table-menu', e);
-    util.render('rootActions', 'data-table-menu', {'columns': this.hiddenHeaders});
+    util.render('rootActions', 'data-table-menu', {'columns': this.hiddenFields});
   },
 
   onMenuClick: function(e) {
@@ -1080,7 +1347,7 @@ my.DataTable = Backbone.View.extend({
   showTransformDialog: function() {
     var $el = $('.dialog-content');
     util.show('dialog');
-    var view = new my.DataTransform({
+    var view = new recline.View.DataTransform({
     });
     view.render();
     $el.empty();
@@ -1092,22 +1359,25 @@ my.DataTable = Backbone.View.extend({
   },
 
   setColumnSort: function(order) {
-    var query = _.extend(this.model.queryState, {sort: [[this.state.currentColumn, order]]});
-    this.model.query(query);
+    this.model.query({
+      sort: [
+        [this.state.currentColumn, order]
+      ]
+    });
   },
   
   hideColumn: function() {
-    this.hiddenHeaders.push(this.state.currentColumn);
+    this.hiddenFields.push(this.state.currentColumn);
     this.render();
   },
   
   showColumn: function(e) {
-    this.hiddenHeaders = _.without(this.hiddenHeaders, $(e.target).data('column'));
+    this.hiddenFields = _.without(this.hiddenFields, $(e.target).data('column'));
     this.render();
   },
 
   // ======================================================
-  // Core Templating
+  // #### Templating
   template: ' \
     <div class="data-table-menu-overlay" style="display: none; z-index: 101; ">&nbsp;</div> \
     <ul class="data-table-menu"></ul> \
@@ -1122,15 +1392,15 @@ my.DataTable = Backbone.View.extend({
               </div> \
             </th> \
           {{/notEmpty}} \
-          {{#headers}} \
-            <th class="column-header"> \
+          {{#fields}} \
+            <th class="column-header {{#hidden}}hidden{{/hidden}}" data-field="{{id}}"> \
               <div class="column-header-title"> \
                 <a class="column-header-menu"></a> \
-                <span class="column-header-name">{{.}}</span> \
+                <span class="column-header-name">{{label}}</span> \
               </div> \
               </div> \
             </th> \
-          {{/headers}} \
+          {{/fields}} \
         </tr> \
       </thead> \
       <tbody></tbody> \
@@ -1139,14 +1409,15 @@ my.DataTable = Backbone.View.extend({
 
   toTemplateJSON: function() {
     var modelData = this.model.toJSON()
-    modelData.notEmpty = ( this.headers.length > 0 )
-    modelData.headers = this.headers;
+    modelData.notEmpty = ( this.fields.length > 0 )
+    // TODO: move this sort of thing into a toTemplateJSON method on Dataset?
+    modelData.fields = _.map(this.fields, function(field) { return field.toJSON() });
     return modelData;
   },
   render: function() {
     var self = this;
-    this.headers = _.filter(this.model.get('headers'), function(header) {
-      return _.indexOf(self.hiddenHeaders, header) == -1;
+    this.fields = this.model.fields.filter(function(field) {
+      return _.indexOf(self.hiddenFields, field.id) == -1;
     });
     var htmls = $.mustache(this.template, this.toTemplateJSON());
     this.el.html(htmls);
@@ -1156,23 +1427,23 @@ my.DataTable = Backbone.View.extend({
       var newView = new my.DataTableRow({
           model: doc,
           el: tr,
-          headers: self.headers,
+          fields: self.fields,
         });
       newView.render();
     });
-    $(".root-header-menu").toggle((self.hiddenHeaders.length > 0));
+    this.el.toggleClass('no-hidden', (self.hiddenFields.length == 0));
     return this;
   }
 });
 
-// DataTableRow View for rendering an individual document.
+// ## DataTableRow View for rendering an individual document.
 //
 // Since we want this to update in place it is up to creator to provider the element to attach to.
-// In addition you must pass in a headers in the constructor options. This should be list of headers for the DataTable.
+// In addition you must pass in a fields in the constructor options. This should be list of fields for the DataTable.
 my.DataTableRow = Backbone.View.extend({
   initialize: function(options) {
     _.bindAll(this, 'render');
-    this._headers = options.headers;
+    this._fields = options.fields;
     this.el = $(this.el);
     this.model.bind('change', this.render);
   },
@@ -1180,7 +1451,7 @@ my.DataTableRow = Backbone.View.extend({
   template: ' \
       <td><a class="row-header-menu"></a></td> \
       {{#cells}} \
-      <td data-header="{{header}}"> \
+      <td data-field="{{field}}"> \
         <div class="data-table-cell-content"> \
           <a href="javascript:{}" class="data-table-cell-edit" title="Edit this cell">&nbsp;</a> \
           <div class="data-table-cell-value">{{value}}</div> \
@@ -1197,8 +1468,8 @@ my.DataTableRow = Backbone.View.extend({
   
   toTemplateJSON: function() {
     var doc = this.model;
-    var cellData = _.map(this._headers, function(header) {
-      return {header: header, value: doc.get(header)}
+    var cellData = this._fields.map(function(field) {
+      return {field: field.id, value: doc.get(field.id)}
     })
     return { id: this.id, cells: cellData }
   },
@@ -1210,8 +1481,8 @@ my.DataTableRow = Backbone.View.extend({
     return this;
   },
 
-  // ======================================================
   // Cell Editor
+  // ===========
 
   onEditClick: function(e) {
     var editing = this.el.find('.data-table-cell-editor-editor');
@@ -1227,10 +1498,10 @@ my.DataTableRow = Backbone.View.extend({
   onEditorOK: function(e) {
     var cell = $(e.target);
     var rowId = cell.parents('tr').attr('data-id');
-    var header = cell.parents('td').attr('data-header');
+    var field = cell.parents('td').attr('data-field');
     var newValue = cell.parents('.data-table-cell-editor').find('.data-table-cell-editor-editor').val();
     var newData = {};
-    newData[header] = newValue;
+    newData[field] = newValue;
     this.model.set(newData);
     my.notify("Updating row...", {loader: true});
     this.model.save().then(function(response) {
@@ -1247,6 +1518,180 @@ my.DataTableRow = Backbone.View.extend({
   onEditorCancel: function(e) {
     var cell = $(e.target).parents('.data-table-cell-value');
     cell.html(cell.data('previousContents')).siblings('.data-table-cell-edit').removeClass("hidden");
+  }
+});
+
+
+/* ========================================================== */
+// ## Miscellaneous Utilities
+
+var urlPathRegex = /^([^?]+)(\?.*)?/;
+
+// Parse the Hash section of a URL into path and query string
+my.parseHashUrl = function(hashUrl) {
+  var parsed = urlPathRegex.exec(hashUrl);
+  if (parsed == null) {
+    return {};
+  } else {
+    return {
+      path: parsed[1],
+      query: parsed[2] || ''
+    }
+  }
+}
+
+// Parse a URL query string (?xyz=abc...) into a dictionary.
+my.parseQueryString = function(q) {
+  var urlParams = {},
+    e, d = function (s) {
+      return unescape(s.replace(/\+/g, " "));
+    },
+    r = /([^&=]+)=?([^&]*)/g;
+
+  if (q && q.length && q[0] === '?') {
+    q = q.slice(1);
+  }
+  while (e = r.exec(q)) {
+    // TODO: have values be array as query string allow repetition of keys
+    urlParams[d(e[1])] = d(e[2]);
+  }
+  return urlParams;
+}
+
+// Parse the query string out of the URL hash
+my.parseHashQueryString = function() {
+  q = my.parseHashUrl(window.location.hash).query;
+  return my.parseQueryString(q);
+}
+
+// Compse a Query String
+my.composeQueryString = function(queryParams) {
+  var queryString = '?';
+  var items = [];
+  $.each(queryParams, function(key, value) {
+    items.push(key + '=' + JSON.stringify(value));
+  });
+  queryString += items.join('&');
+  return queryString;
+}
+
+my.setHashQueryString = function(queryParams) {
+  window.location.hash = window.location.hash.split('?')[0] + my.composeQueryString(queryParams);
+}
+
+// ## notify
+//
+// Create a notification (a div.alert-message in div.alert-messsages) using provide messages and options. Options are:
+//
+// * category: warning (default), success, error
+// * persist: if true alert is persistent, o/w hidden after 3s (default = false)
+// * loader: if true show loading spinner
+my.notify = function(message, options) {
+  if (!options) var options = {};
+  var tmplData = _.extend({
+    msg: message,
+    category: 'warning'
+    },
+    options);
+  var _template = ' \
+    <div class="alert-message {{category}} fade in" data-alert="alert"><a class="close" href="#">×</a> \
+      <p>{{msg}} \
+        {{#loader}} \
+        <img src="images/small-spinner.gif" class="notification-loader"> \
+        {{/loader}} \
+      </p> \
+    </div>';
+  var _templated = $.mustache(_template, tmplData); 
+  _templated = $(_templated).appendTo($('.data-explorer .alert-messages'));
+  if (!options.persist) {
+    setTimeout(function() {
+      $(_templated).fadeOut(1000, function() {
+        $(this).remove();
+      });
+    }, 1000);
+  }
+}
+
+// ## clearNotifications
+//
+// Clear all existing notifications
+my.clearNotifications = function() {
+  var $notifications = $('.data-explorer .alert-message');
+  $notifications.remove();
+}
+
+})(jQuery, recline.View);
+
+this.recline = this.recline || {};
+this.recline.View = this.recline.View || {};
+
+// Views module following classic module pattern
+(function($, my) {
+
+// View (Dialog) for doing data transformations on whole dataset.
+my.DataTransform = Backbone.View.extend({
+  className: 'transform-view',
+  template: ' \
+    <div class="dialog-header"> \
+      Recursive transform on all rows \
+    </div> \
+    <div class="dialog-body"> \
+      <div class="grid-layout layout-full"> \
+        <p class="info">Traverse and transform objects by visiting every node on a recursive walk using <a href="https://github.com/substack/js-traverse">js-traverse</a>.</p> \
+        <table> \
+        <tbody> \
+        <tr> \
+          <td colspan="4"> \
+            <div class="grid-layout layout-tight layout-full"> \
+              <table rows="4" cols="4"> \
+              <tbody> \
+              <tr style="vertical-align: bottom;"> \
+                <td colspan="4"> \
+                  Expression \
+                </td> \
+              </tr> \
+              <tr> \
+                <td colspan="3"> \
+                  <div class="input-container"> \
+                    <textarea class="expression-preview-code"></textarea> \
+                  </div> \
+                </td> \
+                <td class="expression-preview-parsing-status" width="150" style="vertical-align: top;"> \
+                  No syntax error. \
+                </td> \
+              </tr> \
+              <tr> \
+                <td colspan="4"> \
+                  <div id="expression-preview-tabs" class="refine-tabs ui-tabs ui-widget ui-widget-content ui-corner-all"> \
+                    <span>Preview</span> \
+                    <div id="expression-preview-tabs-preview" class="ui-tabs-panel ui-widget-content ui-corner-bottom"> \
+                      <div class="expression-preview-container" style="width: 652px; "> \
+                      </div> \
+                    </div> \
+                  </div> \
+                </td> \
+              </tr> \
+              </tbody> \
+              </table> \
+            </div> \
+          </td> \
+        </tr> \
+        </tbody> \
+        </table> \
+      </div> \
+    </div> \
+    <div class="dialog-footer"> \
+      <button class="okButton button">&nbsp;&nbsp;Update All&nbsp;&nbsp;</button> \
+      <button class="cancelButton button">Cancel</button> \
+    </div> \
+  ',
+
+  initialize: function() {
+    this.el = $(this.el);
+  },
+
+  render: function() {
+    this.el.html(this.template);
   }
 });
 
@@ -1382,299 +1827,4 @@ my.ColumnTransform = Backbone.View.extend({
   }
 });
 
-// View (Dialog) for doing data transformations on whole dataset.
-my.DataTransform = Backbone.View.extend({
-  className: 'transform-view',
-  template: ' \
-    <div class="dialog-header"> \
-      Recursive transform on all rows \
-    </div> \
-    <div class="dialog-body"> \
-      <div class="grid-layout layout-full"> \
-        <p class="info">Traverse and transform objects by visiting every node on a recursive walk using <a href="https://github.com/substack/js-traverse">js-traverse</a>.</p> \
-        <table> \
-        <tbody> \
-        <tr> \
-          <td colspan="4"> \
-            <div class="grid-layout layout-tight layout-full"> \
-              <table rows="4" cols="4"> \
-              <tbody> \
-              <tr style="vertical-align: bottom;"> \
-                <td colspan="4"> \
-                  Expression \
-                </td> \
-              </tr> \
-              <tr> \
-                <td colspan="3"> \
-                  <div class="input-container"> \
-                    <textarea class="expression-preview-code"></textarea> \
-                  </div> \
-                </td> \
-                <td class="expression-preview-parsing-status" width="150" style="vertical-align: top;"> \
-                  No syntax error. \
-                </td> \
-              </tr> \
-              <tr> \
-                <td colspan="4"> \
-                  <div id="expression-preview-tabs" class="refine-tabs ui-tabs ui-widget ui-widget-content ui-corner-all"> \
-                    <span>Preview</span> \
-                    <div id="expression-preview-tabs-preview" class="ui-tabs-panel ui-widget-content ui-corner-bottom"> \
-                      <div class="expression-preview-container" style="width: 652px; "> \
-                      </div> \
-                    </div> \
-                  </div> \
-                </td> \
-              </tr> \
-              </tbody> \
-              </table> \
-            </div> \
-          </td> \
-        </tr> \
-        </tbody> \
-        </table> \
-      </div> \
-    </div> \
-    <div class="dialog-footer"> \
-      <button class="okButton button">&nbsp;&nbsp;Update All&nbsp;&nbsp;</button> \
-      <button class="cancelButton button">Cancel</button> \
-    </div> \
-  ',
-
-  initialize: function() {
-    this.el = $(this.el);
-  },
-
-  render: function() {
-    this.el.html(this.template);
-  }
-});
-
-
-// Graph view for a Dataset using Flot graphing library.
-//
-// Initialization arguments:
-//
-// * model: recline.Model.Dataset
-// * config: (optional) graph configuration hash of form:
-//
-//        { 
-//          group: {column name for x-axis},
-//          series: [{column name for series A}, {column name series B}, ... ],
-//          graphType: 'line'
-//        }
-//
-// NB: should *not* provide an el argument to the view but must let the view
-// generate the element itself (you can then append view.el to the DOM.
-my.FlotGraph = Backbone.View.extend({
-
-  tagName:  "div",
-  className: "data-graph-container",
-
-  template: ' \
-  <div class="editor"> \
-    <div class="editor-info editor-hide-info"> \
-      <h3 class="action-toggle-help">Help &raquo;</h3> \
-      <p>To create a chart select a column (group) to use as the x-axis \
-         then another column (Series A) to plot against it.</p> \
-      <p>You can add add \
-         additional series by clicking the "Add series" button</p> \
-    </div> \
-    <form class="form-stacked"> \
-      <div class="clearfix"> \
-        <label>Graph Type</label> \
-        <div class="input editor-type"> \
-          <select> \
-          <option value="line">Line</option> \
-          </select> \
-        </div> \
-        <label>Group Column (x-axis)</label> \
-        <div class="input editor-group"> \
-          <select> \
-          {{#headers}} \
-          <option value="{{.}}">{{.}}</option> \
-          {{/headers}} \
-          </select> \
-        </div> \
-        <div class="editor-series-group"> \
-          <div class="editor-series"> \
-            <label>Series <span>A (y-axis)</span></label> \
-            <div class="input"> \
-              <select> \
-              {{#headers}} \
-              <option value="{{.}}">{{.}}</option> \
-              {{/headers}} \
-              </select> \
-            </div> \
-          </div> \
-        </div> \
-      </div> \
-      <div class="editor-buttons"> \
-        <button class="btn editor-add">Add Series</button> \
-      </div> \
-      <div class="editor-buttons editor-submit" comment="hidden temporarily" style="display: none;"> \
-        <button class="editor-save">Save</button> \
-        <input type="hidden" class="editor-id" value="chart-1" /> \
-      </div> \
-    </form> \
-  </div> \
-  <div class="panel graph"></div> \
-</div> \
-',
-
-  events: {
-    'change form select': 'onEditorSubmit'
-    , 'click .editor-add': 'addSeries'
-    , 'click .action-remove-series': 'removeSeries'
-    , 'click .action-toggle-help': 'toggleHelp'
-  },
-
-  initialize: function(options, config) {
-    var self = this;
-    this.el = $(this.el);
-    _.bindAll(this, 'render', 'redraw');
-    // we need the model.headers to render properly
-    this.model.bind('change', this.render);
-    this.model.currentDocuments.bind('add', this.redraw);
-    this.model.currentDocuments.bind('reset', this.redraw);
-    this.chartConfig = _.extend({
-        group: null,
-        series: [],
-        graphType: 'line'
-      },
-      config)
-    this.render();
-  },
-
-  toTemplateJSON: function() {
-    return this.model.toJSON();
-  },
-
-  render: function() {
-    htmls = $.mustache(this.template, this.toTemplateJSON());
-    $(this.el).html(htmls);
-    // now set a load of stuff up
-    this.$graph = this.el.find('.panel.graph');
-    // for use later when adding additional series
-    // could be simpler just to have a common template!
-    this.$seriesClone = this.el.find('.editor-series').clone();
-    this._updateSeries();
-    return this;
-  },
-
-  onEditorSubmit: function(e) {
-    var select = this.el.find('.editor-group select');
-    this._getEditorData();
-    // update navigation
-    // TODO: make this less invasive (e.g. preserve other keys in query string)
-    window.location.hash = window.location.hash.split('?')[0] +
-        '?graph=' + JSON.stringify(this.chartConfig);
-    this.redraw();
-  },
-
-  redraw: function() {
-    // There appear to be issues generating a Flot graph if either:
-
-    // * The relevant div that graph attaches to his hidden at the moment of creating the plot -- Flot will complain with
-    //
-    //   Uncaught Invalid dimensions for plot, width = 0, height = 0
-    // * There is no data for the plot -- either same error or may have issues later with errors like 'non-existent node-value' 
-    var areWeVisible = !jQuery.expr.filters.hidden(this.el[0]);
-    if (!this.plot && (!areWeVisible || this.model.currentDocuments.length == 0)) {
-      return
-    }
-    // create this.plot and cache it
-    if (!this.plot) {
-      // only lines for the present
-      options = {
-        id: 'line',
-        name: 'Line Chart'
-      };
-      this.plot = $.plot(this.$graph, this.createSeries(), options);
-    } 
-    this.plot.setData(this.createSeries());
-    this.plot.resize();
-    this.plot.setupGrid();
-    this.plot.draw();
-  },
-
-  _getEditorData: function() {
-    $editor = this
-    var series = this.$series.map(function () {
-      return $(this).val();
-    });
-    this.chartConfig.series = $.makeArray(series)
-    this.chartConfig.group = this.el.find('.editor-group select').val();
-  },
-
-  createSeries: function () {
-    var self = this;
-    var series = [];
-    if (this.chartConfig) {
-      $.each(this.chartConfig.series, function (seriesIndex, field) {
-        var points = [];
-        $.each(self.model.currentDocuments.models, function (index, doc) {
-          var x = doc.get(self.chartConfig.group);
-          var y = doc.get(field);
-          if (typeof x === 'string') {
-            x = index;
-          }
-          points.push([x, y]);
-        });
-        series.push({data: points, label: field});
-      });
-    }
-    return series;
-  },
-
-  // Public: Adds a new empty series select box to the editor.
-  //
-  // All but the first select box will have a remove button that allows them
-  // to be removed.
-  //
-  // Returns itself.
-  addSeries: function (e) {
-    e.preventDefault();
-    var element = this.$seriesClone.clone(),
-        label   = element.find('label'),
-        index   = this.$series.length;
-
-    this.el.find('.editor-series-group').append(element);
-    this._updateSeries();
-    label.append(' [<a href="#remove" class="action-remove-series">Remove</a>]');
-    label.find('span').text(String.fromCharCode(this.$series.length + 64));
-    return this;
-  },
-
-  // Public: Removes a series list item from the editor.
-  //
-  // Also updates the labels of the remaining series elements.
-  removeSeries: function (e) {
-    e.preventDefault();
-    var $el = $(e.target);
-    $el.parent().parent().remove();
-    this._updateSeries();
-    this.$series.each(function (index) {
-      if (index > 0) {
-        var labelSpan = $(this).prev().find('span');
-        labelSpan.text(String.fromCharCode(index + 65));
-      }
-    });
-    this.onEditorSubmit();
-  },
-
-  toggleHelp: function() {
-    this.el.find('.editor-info').toggleClass('editor-hide-info');
-  },
-
-  // Private: Resets the series property to reference the select elements.
-  //
-  // Returns itself.
-  _updateSeries: function () {
-    this.$series  = this.el.find('.editor-series select');
-  }
-});
-
-return my;
-
-}(jQuery);
-
+})(jQuery, recline.View);

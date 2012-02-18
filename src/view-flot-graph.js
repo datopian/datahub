@@ -1,10 +1,9 @@
 this.recline = this.recline || {};
 this.recline.View = this.recline.View || {};
 
-// Views module following classic module pattern
 (function($, my) {
 
-// Graph view for a Dataset using Flot graphing library.
+// ## Graph view for a Dataset using Flot graphing library.
 //
 // Initialization arguments:
 //
