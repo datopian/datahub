@@ -94,7 +94,6 @@ my.Field = Backbone.Model.extend({
   // In addition to normal backbone initialization via a Hash you can also
   // just pass a single argument representing id to the ctor
   initialize: function(data) {
-    console.log(data);
     // if a hash not passed in the first argument is set as value for key 0
     if ('0' in data) {
       this.set({id: data['0']});
