@@ -16,6 +16,7 @@ test('Field: basics', function () {
   var field = new recline.Model.Field('x');
   equal(field.id, 'x', 'Set of id from single argumentst to ctor');
   equal(field.attributes.id, 'x', 'Set of id from single argumentst to ctor');
+  ok(!('0' in field.toJSON()), 'Should have removed artificially created 0 key in attributes');
 });
 
 })(this.jQuery);
