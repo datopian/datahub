@@ -8,17 +8,10 @@ this.recline.Model = this.recline.Model || {};
 //
 // A model must have the following (Backbone) attributes:
 //
-// * fields: (aka columns) is the array of fields (column) to display. Each
-// entry in fields is a hash having at a minimum:
-//  * id: a unique identifer for this field- usually this should match the key in the documents hash
-//  * label: the visible label used for this field
-//  * type: the type of the data
-//  * data_key: the key used in the documents (usually this will be the same as
-//  id but having this allows us to set more than one column reading the same
-//  field. 
-//
-// Other than standard list of Backbone methods it has two important attributes:
-//
+// * fields: (aka columns) is a FieldList listing all the fields on this
+//   Dataset (this can be set explicitly, or, on fetch() of Dataset
+//   information from the backend, or as is perhaps most common on the first
+//   query)
 // * currentDocuments: a DocumentList containing the Documents we have currently loaded for viewing (you update currentDocuments by calling getRows)
 // * docCount: total number of documents in this dataset (obtained on a fetch for this Dataset)
 my.Dataset = Backbone.Model.extend({
@@ -29,6 +22,7 @@ my.Dataset = Backbone.Model.extend({
     if (backend && backend.constructor == String) {
       this.backend = my.backends[backend];
     }
+    this.fields = new my.FieldList();
     this.currentDocuments = new my.DocumentList();
     this.docCount = null;
     this.queryState = new my.Query();
@@ -84,6 +78,38 @@ my.DocumentList = Backbone.Collection.extend({
   model: my.Document
 });
 
+// ## A Field (aka Column) on a Dataset
+// 
+// Following attributes as standard:
+//
+//  * id: a unique identifer for this field- usually this should match the key in the documents hash
+//  * label: the visible label used for this field
+//  * type: the type of the data
+my.Field = Backbone.Model.extend({
+  defaults: {
+    id: null,
+    label: null,
+    type: 'String'
+  },
+  // In addition to normal backbone initialization via a Hash you can also
+  // just pass a single argument representing id to the ctor
+  initialize: function(data) {
+    console.log(data);
+    // if a hash not passed in the first argument is set as value for key 0
+    if ('0' in data) {
+      this.set({id: data['0']});
+    }
+    if (this.attributes.label == null) {
+      this.set({label: this.id});
+    }
+  }
+});
+
+my.FieldList = Backbone.Collection.extend({
+  model: my.Field
+});
+
+// ## A Query object storing Dataset Query state
 my.Query = Backbone.Model.extend({
   defaults: {
     size: 100
