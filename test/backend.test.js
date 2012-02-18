@@ -6,8 +6,8 @@ var memoryData = {
     title: 'My Test Dataset'
     , name: '1-my-test-dataset' 
     , id: 'test-dataset'
-    , fields: ['x', 'y', 'z']
   },
+  fields: [{id: 'x'}, {id: 'y'}, {id: 'z'}],
   documents: [
     {id: 0, x: 1, y: 2, z: 3}
     , {id: 1, x: 2, y: 4, z: 6}
@@ -32,7 +32,7 @@ test('Memory Backend: basics', function () {
   var data = dataset.backend.datasets[memoryData.metadata.id];
   dataset.fetch().then(function(datasetAgain) {
     equal(dataset.get('name'), data.metadata.name);
-    deepEqual(dataset.get('fields'), data.metadata.fields);
+    deepEqual(_.pluck(dataset.fields.toJSON(), 'id'), _.pluck(data.fields, 'id'));
     equal(dataset.docCount, 6);
   });
 });
@@ -196,7 +196,7 @@ test('Webstore Backend', function() {
   });
 
   dataset.fetch().done(function(dataset) {
-    deepEqual(['__id__', 'date', 'geometry', 'amount'], dataset.get('fields'));
+    deepEqual(['__id__', 'date', 'geometry', 'amount'], _.pluck(dataset.fields.toJSON(), 'id'));
     equal(3, dataset.docCount)
     dataset.query().done(function(docList) {
       equal(3, docList.length)
@@ -295,7 +295,7 @@ test('DataProxy Backend', function() {
   });
 
   dataset.fetch().done(function(dataset) {
-    deepEqual(['__id__', 'date', 'price'], dataset.get('fields'));
+    deepEqual(['__id__', 'date', 'price'], _.pluck(dataset.fields.toJSON(), 'id'));
     equal(null, dataset.docCount)
     dataset.query().done(function(docList) {
       equal(10, docList.length)
@@ -490,8 +490,8 @@ test("GDoc Backend", function() {
   });
 
   dataset.fetch().then(function(dataset) {
-    console.log('inside dataset:', dataset, dataset.get('fields'), dataset.get('data'));
-    deepEqual(['column-2', 'column-1'], dataset.get('fields'));
+    console.log('inside dataset:', dataset, dataset.fields, dataset.get('data'));
+    deepEqual(['column-2', 'column-1'], _.pluck(dataset.fields.toJSON(), 'id'));
     //equal(null, dataset.docCount)
     dataset.query().then(function(docList) {
       equal(3, docList.length);
