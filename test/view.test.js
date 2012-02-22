@@ -2,7 +2,7 @@
 
 module("View");
 
-test('new DataTableRow View', function () {
+test('new DataGridRow View', function () {
   var $el = $('<tr />');
   $('.fixtures .test-datatable').append($el);
   var doc = new recline.Model.Document({
@@ -10,7 +10,7 @@ test('new DataTableRow View', function () {
     'b': '2',
     'a': '1'
     });
-  var view = new recline.View.DataTableRow({
+  var view = new recline.View.DataGridRow({
     model: doc
     , el: $el
     , fields: new recline.Model.FieldList([{id: 'a'}, {id: 'b'}])
@@ -21,7 +21,7 @@ test('new DataTableRow View', function () {
   equal(tds.length, 3);
   equal($(tds[1]).attr('data-field'), 'a');
 
-  var view = new recline.View.DataTableRow({
+  var view = new recline.View.DataGridRow({
       model: doc
       , el: $el
       , fields: new recline.Model.FieldList([{id: 'a'}, {id: 'b'}])
