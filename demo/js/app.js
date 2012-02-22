@@ -269,7 +269,7 @@ $(function() {
     {
       id: 'grid',
       label: 'Grid',
-      view: new recline.View.DataTable({
+      view: new recline.View.DataGrid({
         model: dataset
       })
     },

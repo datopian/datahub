@@ -23,14 +23,14 @@ this.recline.View = this.recline.View || {};
 //
 // **views**: (optional) the views (Grid, Graph etc) for DataExplorer to
 // show. This is an array of view hashes. If not provided
-// just initialize a DataTable with id 'grid'. Example:
+// just initialize a DataGrid with id 'grid'. Example:
 //
 // <pre>
 // var views = [
 //   {
 //     id: 'grid', // used for routing
 //     label: 'Grid', // used for view switcher
-//     view: new recline.View.DataTable({
+//     view: new recline.View.DataGrid({
 //       model: dataset
 //     })
 //   },
@@ -101,7 +101,7 @@ my.DataExplorer = Backbone.View.extend({
       this.pageViews = [{
         id: 'grid',
         label: 'Grid',
-        view: new my.DataTable({
+        view: new my.DataGrid({
             model: this.model
           })
       }];

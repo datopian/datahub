@@ -2,7 +2,7 @@ this.recline = this.recline || {};
 this.recline.View = this.recline.View || {};
 
 (function($, my) {
-// ## DataTable
+// ## DataGrid
 //
 // Provides a tabular view on a Dataset.
 //
@@ -10,8 +10,8 @@ this.recline.View = this.recline.View || {};
 //
 // Additional options passed in second arguments. Options:
 //
-// * cellRenderer: function used to render individual cells. See DataTableRow for more.
-my.DataTable = Backbone.View.extend({
+// * cellRenderer: function used to render individual cells. See DataGridRow for more.
+my.DataGrid = Backbone.View.extend({
   tagName:  "div",
   className: "data-table-container",
 
@@ -205,7 +205,7 @@ my.DataTable = Backbone.View.extend({
     this.model.currentDocuments.forEach(function(doc) {
       var tr = $('<tr />');
       self.el.find('tbody').append(tr);
-      var newView = new my.DataTableRow({
+      var newView = new my.DataGridRow({
           model: doc,
           el: tr,
           fields: self.fields,
@@ -219,10 +219,10 @@ my.DataTable = Backbone.View.extend({
   }
 });
 
-// ## DataTableRow View for rendering an individual document.
+// ## DataGridRow View for rendering an individual document.
 //
 // Since we want this to update in place it is up to creator to provider the element to attach to.
-// In addition you must pass in a fields in the constructor options. This should be list of fields for the DataTable.
+// In addition you must pass in a fields in the constructor options. This should be list of fields for the DataGrid.
 //
 // Additional options can be passed in a second hash argument. Options:
 //
@@ -231,7 +231,7 @@ my.DataTable = Backbone.View.extend({
 //   corresponding field object and document is the document object. Note
 //   that implementing functions can ignore arguments (e.g.
 //   function(value) would be a valid cellRenderer function).
-my.DataTableRow = Backbone.View.extend({
+my.DataGridRow = Backbone.View.extend({
   initialize: function(initData, options) {
     _.bindAll(this, 'render');
     this._fields = initData.fields;
