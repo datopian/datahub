@@ -46,7 +46,6 @@ this.recline.View = this.recline.View || {};
 //
 // **config**: Config options like:
 //
-//   * displayCount: how many documents to display initially (default: 10)
 //   * readOnly: true/false (default: false) value indicating whether to
 //     operate in read-only mode (hiding all editing options).
 //
@@ -63,11 +62,6 @@ my.DataExplorer = Backbone.View.extend({
         <li><a href="#{{id}}" class="btn">{{label}}</a> \
         {{/views}} \
       </ul> \
-      <div class="pagination"> \
-        <form class="display-count"> \
-          Showing 0 to <input name="displayCount" type="text" value="{{displayCount}}" title="Edit and hit enter to change the number of rows displayed" /> of  <span class="doc-count">{{docCount}}</span> \
-        </form> \
-      </div> \
     </div> \
     <div class="data-view-container"></div> \
     <div class="dialog-overlay" style="display: none; z-index: 101; ">&nbsp;</div> \
@@ -79,16 +73,11 @@ my.DataExplorer = Backbone.View.extend({
   </div> \
   ',
 
-  events: {
-    'submit form.display-count': 'onDisplayCountUpdate'
-  },
-
   initialize: function(options) {
     var self = this;
     this.el = $(this.el);
     this.config = _.extend({
-        displayCount: 50
-        , readOnly: false
+        readOnly: false
       },
       options.config);
     if (this.config.readOnly) {
@@ -124,13 +113,11 @@ my.DataExplorer = Backbone.View.extend({
       });
   },
 
+  // TODO: listen for being query and end query events on the dataset ...
+  // (This is no longer called by anything ...)
   query: function() {
-    this.config.displayCount = parseInt(this.el.find('input[name="displayCount"]').val());
-    var queryObj = {
-      size: this.config.displayCount
-    };
     my.notify('Loading data', {loader: true});
-    this.model.query(queryObj)
+    this.model.query()
       .done(function() {
         my.clearNotifications();
         my.notify('Data loaded', {category: 'success'});
@@ -139,11 +126,6 @@ my.DataExplorer = Backbone.View.extend({
         my.clearNotifications();
         my.notify(error.message, {category: 'error', persist: true});
       });
-  },
-
-  onDisplayCountUpdate: function(e) {
-    e.preventDefault();
-    this.query();
   },
 
   setReadOnly: function() {
@@ -160,6 +142,10 @@ my.DataExplorer = Backbone.View.extend({
     _.each(this.pageViews, function(view, pageName) {
       $dataViewContainer.append(view.view.el)
     });
+    var queryEditor = new my.QueryEditor({
+      model: this.model.queryState
+    });
+    this.el.find('.header').append(queryEditor.el);
   },
 
   setupRouting: function() {
@@ -187,6 +173,35 @@ my.DataExplorer = Backbone.View.extend({
         view.view.el.hide();
       }
     });
+  }
+});
+
+
+my.QueryEditor = Backbone.View.extend({
+  className: 'recline-query-editor', 
+  template: ' \
+    <form class="display-count"> \
+      Showing 0 to <input name="displayCount" type="text" value="{{size}}" title="Edit and hit enter to change the number of rows displayed" /> of  <span class="doc-count">{{docCount}}</span> \
+    </form> \
+  ',
+
+  events: {
+    'submit form.display-count': 'onFormSubmit'
+  },
+
+  initialize: function() {
+    this.el = $(this.el);
+    this.render();
+  },
+  onFormSubmit: function(e) {
+    e.preventDefault();
+    var newSize = parseInt(this.el.find('input[name="displayCount"]').val());
+    this.model.set({size: newSize});
+  },
+  render: function() {
+    var tmplData = this.model.toJSON();
+    var templated = $.mustache(this.template, tmplData);
+    this.el.html(templated);
   }
 });
 
