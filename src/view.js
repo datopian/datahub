@@ -101,29 +101,26 @@ my.DataExplorer = Backbone.View.extend({
     this.router = new Backbone.Router();
     this.setupRouting();
 
+    this.model.bind('query:start', function(eventName) {
+        my.notify('Loading data', {loader: true});
+      });
+    this.model.bind('query:done', function(eventName) {
+        my.clearNotifications();
+        my.notify('Data loaded', {category: 'success'});
+      });
+    this.model.bind('query:fail', function(eventName, error) {
+        my.clearNotifications();
+        my.notify(error.message, {category: 'error', persist: true});
+      });
+
     // retrieve basic data like fields etc
     // note this.model and dataset returned are the same
     this.model.fetch()
       .done(function(dataset) {
         self.el.find('.doc-count').text(self.model.docCount || 'Unknown');
-        self.query();
+        self.model.query();
       })
       .fail(function(error) {
-        my.notify(error.message, {category: 'error', persist: true});
-      });
-  },
-
-  // TODO: listen for being query and end query events on the dataset ...
-  // (This is no longer called by anything ...)
-  query: function() {
-    my.notify('Loading data', {loader: true});
-    this.model.query()
-      .done(function() {
-        my.clearNotifications();
-        my.notify('Data loaded', {category: 'success'});
-      })
-      .fail(function(error) {
-        my.clearNotifications();
         my.notify(error.message, {category: 'error', persist: true});
       });
   },
