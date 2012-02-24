@@ -177,13 +177,14 @@ my.DataExplorer = Backbone.View.extend({
 my.QueryEditor = Backbone.View.extend({
   className: 'recline-query-editor', 
   template: ' \
-    <form class="display-count"> \
-      Showing 0 to <input name="displayCount" type="text" value="{{size}}" title="Edit and hit enter to change the number of rows displayed" /> of  <span class="doc-count">{{docCount}}</span> \
+    <form action="" method="GET"> \
+      Showing <input name="size" type="text" value="{{size}}" title="Edit and hit enter to change the number of rows displayed" /> starting at <input name="offset" type="text" value="{{offset}}" /> of <span class="doc-count">{{docCount}}</span> \
+      <button type="submit" class="btn">Update &raquo;</button> \
     </form> \
   ',
 
   events: {
-    'submit form.display-count': 'onFormSubmit'
+    'submit form': 'onFormSubmit'
   },
 
   initialize: function() {
@@ -192,8 +193,9 @@ my.QueryEditor = Backbone.View.extend({
   },
   onFormSubmit: function(e) {
     e.preventDefault();
-    var newSize = parseInt(this.el.find('input[name="displayCount"]').val());
-    this.model.set({size: newSize});
+    var newSize = parseInt(this.el.find('input[name="size"]').val());
+    var newOffset = parseInt(this.el.find('input[name="offset"]').val());
+    this.model.set({size: newSize, offset: newOffset});
   },
   render: function() {
     var tmplData = this.model.toJSON();
