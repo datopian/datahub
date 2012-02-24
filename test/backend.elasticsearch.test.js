@@ -1,0 +1,124 @@
+(function ($) {
+module("Backend ElasticSearch");
+
+var mapping_data = {
+  "note": {
+    "properties": {
+      "_created": {
+        "format": "dateOptionalTime", 
+        "type": "date"
+      }, 
+      "_last_modified": {
+        "format": "dateOptionalTime", 
+        "type": "date"
+      }, 
+      "end": {
+        "type": "string"
+      }, 
+      "owner": {
+        "type": "string"
+      }, 
+      "start": {
+        "type": "string"
+      }, 
+      "title": {
+        "type": "string"
+      }
+    }
+  }
+};
+
+var sample_data = {
+  "_shards": {
+    "failed": 0, 
+    "successful": 5, 
+    "total": 5
+  }, 
+  "hits": {
+    "hits": [
+      {
+        "_id": "u3rpLyuFS3yLNXrtxWkMwg", 
+        "_index": "hypernotes", 
+        "_score": 1.0, 
+        "_source": {
+          "_created": "2012-02-24T17:53:57.286Z", 
+          "_last_modified": "2012-02-24T17:53:57.286Z", 
+          "owner": "tester", 
+          "title": "Note 1"
+        }, 
+        "_type": "note"
+      }, 
+      {
+        "_id": "n7JMkFOHSASJCVTXgcpqkA", 
+        "_index": "hypernotes", 
+        "_score": 1.0, 
+        "_source": {
+          "_created": "2012-02-24T17:53:57.290Z", 
+          "_last_modified": "2012-02-24T17:53:57.290Z", 
+          "owner": "tester", 
+          "title": "Note 3"
+        }, 
+        "_type": "note"
+      }, 
+      {
+        "_id": "g7UMA55gTJijvsB3dFitzw", 
+        "_index": "hypernotes", 
+        "_score": 1.0, 
+        "_source": {
+          "_created": "2012-02-24T17:53:57.289Z", 
+          "_last_modified": "2012-02-24T17:53:57.289Z", 
+          "owner": "tester", 
+          "title": "Note 2"
+        }, 
+        "_type": "note"
+      }
+    ], 
+    "max_score": 1.0, 
+    "total": 3
+  }, 
+  "timed_out": false, 
+  "took": 2
+};
+
+test("ElasticSearch", function() { 
+  var dataset = new recline.Model.Dataset({
+      url: 'https://localhost:9200/my-es-db/my-es-type'
+    },
+    'elasticsearch'
+  );
+
+  var stub = sinon.stub($, 'ajax', function(options) {
+    if (options.url.indexOf('_mapping') != -1) {
+      return {
+        done: function(callback) {
+          callback(mapping_data);
+          return this;
+        },
+        fail: function() {
+          return this;
+        }
+      }
+    } else {
+      return {
+        done: function(callback) {
+          callback(sample_data);
+        },
+        fail: function() {
+        }
+      }
+    }
+  });
+
+  dataset.fetch().then(function(dataset) {
+    deepEqual(['_created', '_last_modified', 'end', 'owner', 'start', 'title'], _.pluck(dataset.fields.toJSON(), 'id'));
+    dataset.query().then(function(docList) {
+      equal(3, dataset.docCount);
+      equal(3, docList.length);
+      equal('Note 1', docList.models[0].get('title'));
+      start();
+    });
+  });
+  $.ajax.restore();
+});
+
+})(this.jQuery);
