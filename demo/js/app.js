@@ -325,7 +325,7 @@ function demoDataset() {
       , {id: 5, x: 6, y: 12, z: 18}
     ]
   };
-  var backend = new recline.Backend.BackendMemory();
+  var backend = new recline.Backend.Memory();
   backend.addDataset(inData);
   var dataset = new recline.Model.Dataset({id: datasetId}, backend);
   return dataset;

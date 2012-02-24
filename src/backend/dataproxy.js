@@ -2,7 +2,7 @@ this.recline = this.recline || {};
 this.recline.Backend = this.recline.Backend || {};
 
 (function($, my) {
-  // ## BackendDataProxy
+  // ## DataProxy Backend
   // 
   // For connecting to [DataProxy-s](http://github.com/okfn/dataproxy).
   //
@@ -16,7 +16,7 @@ this.recline.Backend = this.recline.Backend || {};
   // * format: (optional) csv | xls (defaults to csv if not specified)
   //
   // Note that this is a **read-only** backend.
-  my.BackendDataProxy = Backbone.Model.extend({
+  my.DataProxy = Backbone.Model.extend({
     defaults: {
       dataproxy_url: 'http://jsonpdataproxy.appspot.com'
     },
@@ -79,7 +79,7 @@ this.recline.Backend = this.recline.Backend || {};
       return dfd.promise();
     }
   });
-  recline.Model.backends['dataproxy'] = new my.BackendDataProxy();
+  recline.Model.backends['dataproxy'] = new my.DataProxy();
 
 
 }(jQuery, this.recline.Backend));

@@ -2,12 +2,12 @@ this.recline = this.recline || {};
 this.recline.Backend = this.recline.Backend || {};
 
 (function($, my) {
-  // ## BackendWebstore
+  // ## Webstore Backend
   //
   // Connecting to [Webstores](http://github.com/okfn/webstore)
   //
   // To use this backend ensure your Dataset has a webstore_url in its attributes.
-  my.BackendWebstore = Backbone.Model.extend({
+  my.Webstore = Backbone.Model.extend({
     sync: function(method, model, options) {
       if (method === "read") {
         if (model.__type__ == 'Dataset') {
@@ -56,6 +56,6 @@ this.recline.Backend = this.recline.Backend || {};
       return dfd.promise();
     }
   });
-  recline.Model.backends['webstore'] = new my.BackendWebstore();
+  recline.Model.backends['webstore'] = new my.Webstore();
 
 }(jQuery, this.recline.Backend));
