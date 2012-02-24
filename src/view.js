@@ -62,6 +62,9 @@ my.DataExplorer = Backbone.View.extend({
         <li><a href="#{{id}}" class="btn">{{label}}</a> \
         {{/views}} \
       </ul> \
+      <div class="recline-results-info"> \
+        Results found <span class="doc-count">{{docCount}}</span> \
+      </div> \
     </div> \
     <div class="data-view-container"></div> \
     <div class="dialog-overlay" style="display: none; z-index: 101; ">&nbsp;</div> \
@@ -106,6 +109,7 @@ my.DataExplorer = Backbone.View.extend({
       });
     this.model.bind('query:done', function(eventName) {
         my.clearNotifications();
+        self.el.find('.doc-count').text(self.model.docCount || 'Unknown');
         my.notify('Data loaded', {category: 'success'});
       });
     this.model.bind('query:fail', function(eventName, error) {
@@ -178,27 +182,47 @@ my.QueryEditor = Backbone.View.extend({
   className: 'recline-query-editor', 
   template: ' \
     <form action="" method="GET"> \
-      Showing <input name="size" type="text" value="{{size}}" title="Edit and hit enter to change the number of rows displayed" /> starting at <input name="offset" type="text" value="{{offset}}" /> of <span class="doc-count">{{docCount}}</span> \
-      <button type="submit" class="btn">Update &raquo;</button> \
+      <div class="pagination"> \
+        <ul> \
+          <li class="prev action-pagination-update"><a>&laquo; back</a></li> \
+          <li class="active"><a><input name="offset" type="text" value="{{offset}}" /> &ndash; <input name="to" type="text" value="{{to}}" /> </a></li> \
+          <li class="next action-pagination-update"><a>next &raquo;</a></li> \
+        </ul> \
+      </div> \
+      <button type="submit" class="btn" style="">Update &raquo;</button> \
     </form> \
   ',
 
   events: {
-    'submit form': 'onFormSubmit'
+    'submit form': 'onFormSubmit',
+    'click .action-pagination-update': 'onPaginationUpdate'
   },
 
   initialize: function() {
+    _.bindAll(this, 'render');
     this.el = $(this.el);
+    this.model.bind('change', this.render);
     this.render();
   },
   onFormSubmit: function(e) {
     e.preventDefault();
-    var newSize = parseInt(this.el.find('input[name="size"]').val());
     var newOffset = parseInt(this.el.find('input[name="offset"]').val());
+    var newSize = parseInt(this.el.find('input[name="to"]').val()) - newOffset;
     this.model.set({size: newSize, offset: newOffset});
+  },
+  onPaginationUpdate: function(e) {
+    e.preventDefault();
+    var $el = $(e.target);
+    if ($el.parent().hasClass('prev')) {
+      var newOffset = this.model.get('offset') - Math.max(0, this.model.get('size'));
+    } else {
+      var newOffset = this.model.get('offset') + this.model.get('size');
+    }
+    this.model.set({offset: newOffset});
   },
   render: function() {
     var tmplData = this.model.toJSON();
+    tmplData.to = this.model.get('offset') + this.model.get('size');
     var templated = $.mustache(this.template, tmplData);
     this.el.html(templated);
   }

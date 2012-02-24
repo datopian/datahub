@@ -12,6 +12,12 @@
   padding-left: 0;
 }
 
+.header .recline-results-info {
+  line-height: 28px;
+  margin-left: 20px;
+  display: inline;
+}
+
 .header .recline-query-editor {
   float: right;
   margin: 4px;
@@ -23,6 +29,10 @@
 
 .header .recline-query-editor input {
   width: 30px;
+}
+
+.header .recline-query-editor .pagination a {
+  line-height: 28px;
 }
 
 .data-view-container {
