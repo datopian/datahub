@@ -12,16 +12,16 @@
   padding-left: 0;
 }
 
-.header .pagination {
+.header .recline-query-editor {
   float: right;
   margin: 4px;
 }
 
-.header .pagination label {
+.header .recline-query-editor label {
   float: none;
 }
 
-.header .pagination input {
+.header .recline-query-editor input {
   width: 30px;
 }
 
