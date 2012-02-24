@@ -182,6 +182,7 @@ my.QueryEditor = Backbone.View.extend({
   className: 'recline-query-editor', 
   template: ' \
     <form action="" method="GET"> \
+      <input type="text" name="q" value="{{q}}" class="text-query" /> \
       <div class="pagination"> \
         <ul> \
           <li class="prev action-pagination-update"><a>&laquo; back</a></li> \
@@ -208,7 +209,8 @@ my.QueryEditor = Backbone.View.extend({
     e.preventDefault();
     var newOffset = parseInt(this.el.find('input[name="offset"]').val());
     var newSize = parseInt(this.el.find('input[name="to"]').val()) - newOffset;
-    this.model.set({size: newSize, offset: newOffset});
+    var query = this.el.find('.text-query').val();
+    this.model.set({size: newSize, offset: newOffset, q: query});
   },
   onPaginationUpdate: function(e) {
     e.preventDefault();

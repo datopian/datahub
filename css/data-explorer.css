@@ -27,7 +27,17 @@
   float: none;
 }
 
-.header .recline-query-editor input {
+.header .recline-query-editor label {
+  float: none;
+}
+
+.header .recline-query-editor input.text-query {
+  float: left;  
+  margin-top: 1px;
+  margin-right: 5px;
+}
+
+.header .recline-query-editor .pagination input {
   width: 30px;
 }
 
