@@ -19,7 +19,7 @@ var memoryData = {
 };
 
 function makeBackendDataset() {
-  var backend = new recline.Backend.BackendMemory();
+  var backend = new recline.Backend.Memory();
   backend.addDataset(memoryData);
   var dataset = new recline.Model.Dataset({id: memoryData.metadata.id}, backend);
   return dataset;

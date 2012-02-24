@@ -16,7 +16,7 @@ this.recline.Backend = this.recline.Backend || {};
   //   'gdocs'
   // );
   // </pre>
-  my.BackendGDoc = Backbone.Model.extend({
+  my.GDoc = Backbone.Model.extend({
     sync: function(method, model, options) {
       var self = this;
       if (method === "read") { 
@@ -111,7 +111,7 @@ this.recline.Backend = this.recline.Backend || {};
       return results;
     }
   });
-  recline.Model.backends['gdocs'] = new my.BackendGDoc();
+  recline.Model.backends['gdocs'] = new my.GDoc();
 
 }(jQuery, this.recline.Backend));
 

@@ -1,15 +1,8 @@
-// # Recline Backends
-//
-// Backends are connectors to backend data sources and stores
-//
-// Backends are implemented as Backbone models but this is just a
-// convenience (they do not save or load themselves from any remote
-// source)
 this.recline = this.recline || {};
 this.recline.Backend = this.recline.Backend || {};
 
 (function($, my) {
-  // ## BackendMemory - uses in-memory data
+  // ## Memory Backend - uses in-memory data
   //
   // This is very artificial and is really only designed for testing
   // purposes.
@@ -23,7 +16,7 @@ this.recline.Backend = this.recline.Backend || {};
   // 
   //  <pre>
   //  // Backend setup
-  //  var backend = Backend();
+  //  var backend = recline.Backend.Memory();
   //  backend.addDataset({
   //    metadata: {
   //      id: 'my-id',
@@ -40,7 +33,7 @@ this.recline.Backend = this.recline.Backend || {};
   //  dataset.fetch();
   //  etc ...
   //  </pre>
-  my.BackendMemory = Backbone.Model.extend({
+  my.Memory = Backbone.Model.extend({
     initialize: function() {
       this.datasets = {};
     },
@@ -82,7 +75,7 @@ this.recline.Backend = this.recline.Backend || {};
         }
         return dfd.promise();
       } else {
-        alert('Not supported: sync on BackendMemory with method ' + method + ' and model ' + model);
+        alert('Not supported: sync on Memory backend with method ' + method + ' and model ' + model);
       }
     },
     query: function(model, queryObj) {
@@ -102,6 +95,6 @@ this.recline.Backend = this.recline.Backend || {};
       return dfd.promise();
     }
   });
-  recline.Model.backends['memory'] = new my.BackendMemory();
+  recline.Model.backends['memory'] = new my.Memory();
 
 }(jQuery, this.recline.Backend));
