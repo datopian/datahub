@@ -186,7 +186,7 @@ my.QueryEditor = Backbone.View.extend({
       <div class="pagination"> \
         <ul> \
           <li class="prev action-pagination-update"><a>&laquo; back</a></li> \
-          <li class="active"><a><input name="offset" type="text" value="{{offset}}" /> &ndash; <input name="to" type="text" value="{{to}}" /> </a></li> \
+          <li class="active"><a><input name="from" type="text" value="{{from}}" /> &ndash; <input name="to" type="text" value="{{to}}" /> </a></li> \
           <li class="next action-pagination-update"><a>next &raquo;</a></li> \
         </ul> \
       </div> \
@@ -207,24 +207,24 @@ my.QueryEditor = Backbone.View.extend({
   },
   onFormSubmit: function(e) {
     e.preventDefault();
-    var newOffset = parseInt(this.el.find('input[name="offset"]').val());
-    var newSize = parseInt(this.el.find('input[name="to"]').val()) - newOffset;
+    var newFrom = parseInt(this.el.find('input[name="from"]').val());
+    var newSize = parseInt(this.el.find('input[name="to"]').val()) - newFrom;
     var query = this.el.find('.text-query').val();
-    this.model.set({size: newSize, offset: newOffset, q: query});
+    this.model.set({size: newSize, from: newFrom, q: query});
   },
   onPaginationUpdate: function(e) {
     e.preventDefault();
     var $el = $(e.target);
     if ($el.parent().hasClass('prev')) {
-      var newOffset = this.model.get('offset') - Math.max(0, this.model.get('size'));
+      var newFrom = this.model.get('from') - Math.max(0, this.model.get('size'));
     } else {
-      var newOffset = this.model.get('offset') + this.model.get('size');
+      var newFrom = this.model.get('from') + this.model.get('size');
     }
-    this.model.set({offset: newOffset});
+    this.model.set({from: newFrom});
   },
   render: function() {
     var tmplData = this.model.toJSON();
-    tmplData.to = this.model.get('offset') + this.model.get('size');
+    tmplData.to = this.model.get('from') + this.model.get('size');
     var templated = $.mustache(this.template, tmplData);
     this.el.html(templated);
   }

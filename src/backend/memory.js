@@ -80,7 +80,7 @@ this.recline.Backend = this.recline.Backend || {};
     },
     query: function(model, queryObj) {
       var numRows = queryObj.size;
-      var start = queryObj.offset;
+      var start = queryObj.from;
       var dfd = $.Deferred();
       results = this.datasets[model.id].documents;
       // not complete sorting!

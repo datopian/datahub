@@ -116,7 +116,7 @@ my.FieldList = Backbone.Collection.extend({
 my.Query = Backbone.Model.extend({
   defaults: {
     size: 100
-    , offset: 0
+    , from: 0
   }
 });
 

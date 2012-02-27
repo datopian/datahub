@@ -40,7 +40,7 @@ this.recline.Backend = this.recline.Backend || {};
       var base = model.get('webstore_url');
       var data = {
         _limit:  queryObj.size
-        , _offset: queryObj.offset
+        , _offset: queryObj.from
       };
       var jqxhr = $.ajax({
         url: base + '.json',
