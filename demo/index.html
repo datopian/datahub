@@ -29,6 +29,8 @@
   <script type="text/javascript" src="../src/backend/base.js"></script>
   <script type="text/javascript" src="../src/backend/memory.js"></script>
   <script type="text/javascript" src="../src/backend/webstore.js"></script>
+  <script type="text/javascript" src="../src/backend/dataproxy.js"></script>
+  <script type="text/javascript" src="../src/backend/elasticsearch.js"></script>
   <script type="text/javascript" src="../src/view.js"></script>
   <script type="text/javascript" src="../src/view-grid.js"></script>
   <script type="text/javascript" src="../src/view-flot-graph.js"></script>
@@ -45,6 +47,11 @@
         </ul>
         <form class="webstore-load pull-right" title="Update from the specified webstore dataset">
           <input type="text" name="source" size="50" />
+          <select name="backend_type">
+            <option value="dataproxy">DataProxy</option>
+            <option value="elasticsearch">ElasticSearch</option>
+            <option value="webstore">Webstore</option>
+          </select>
         </form>
       </div>
     </div>
