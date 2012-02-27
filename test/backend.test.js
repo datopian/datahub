@@ -44,7 +44,7 @@ test('Memory Backend: query', function () {
   var dataset = makeBackendDataset();
   var queryObj = {
     size: 4
-    , offset: 2
+    , from: 2
   };
   dataset.query(queryObj).then(function(documentList) {
     deepEqual(data.documents[2], documentList.models[0].toJSON());
