@@ -76,11 +76,13 @@ function setupLoadFromWebstore(callback) {
     e.preventDefault();
     var $form = $(e.target);
     var source = $form.find('input[name="source"]').val();
+    var type = $form.find('select[name="backend_type"]').val();
     var dataset = new recline.Model.Dataset({
-        id: 'gold-prices',
+        id: 'my-dataset',
+        url: source,
         webstore_url: source
       },
-      'webstore'
+      type
     );
     callback(dataset);
   });
