@@ -4,15 +4,12 @@ this.recline.Backend = this.recline.Backend || {};
 (function($, my) {
   // ## Memory Backend - uses in-memory data
   //
-  // This is very artificial and is really only designed for testing
-  // purposes.
-  //
   // To use it you should provide in your constructor data:
   // 
   //   * metadata (including fields array)
   //   * documents: list of hashes, each hash being one doc. A doc *must* have an id attribute which is unique.
   //
-  //  Example:
+  // Example:
   // 
   //  <pre>
   //  // Backend setup
@@ -29,7 +26,7 @@ this.recline.Backend = this.recline.Backend || {};
   //      ]
   //  });
   //  // later ...
-  //  var dataset = Dataset({id: 'my-id'});
+  //  var dataset = Dataset({id: 'my-id'}, 'memory');
   //  dataset.fetch();
   //  etc ...
   //  </pre>
