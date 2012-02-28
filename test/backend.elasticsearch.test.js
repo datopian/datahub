@@ -1,6 +1,27 @@
 (function ($) {
 module("Backend ElasticSearch");
 
+test("ElasticSearch queryNormalize", function() { 
+  var backend = new recline.Backend.ElasticSearch();
+  var in_ = new recline.Model.Query();
+  in_.set({q: ''});
+  var out = backend._normalizeQuery(in_);
+  equal(out.q, undefined);
+  deepEqual(out.query.match_all, {});
+
+  var backend = new recline.Backend.ElasticSearch();
+  var in_ = new recline.Model.Query().toJSON();
+  in_.q = '';
+  var out = backend._normalizeQuery(in_);
+  equal(out.q, undefined);
+  deepEqual(out.query.match_all, {});
+
+  var in_ = new recline.Model.Query().toJSON();
+  in_.q = 'abc';
+  var out = backend._normalizeQuery(in_);
+  equal(out.query.query_string.query, 'abc');
+});
+
 var mapping_data = {
   "note": {
     "properties": {

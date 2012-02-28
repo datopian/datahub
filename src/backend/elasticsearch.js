@@ -47,9 +47,33 @@ this.recline.Backend = this.recline.Backend || {};
         alert('This backend currently only supports read operations');
       }
     },
+    _normalizeQuery: function(queryObj) {
+      if (queryObj.toJSON) {
+        var out = queryObj.toJSON();
+      } else {
+        var out = _.extend({}, queryObj);
+      }
+      if (out.q != undefined && out.q.trim() === '') {
+        delete out.q;
+      }
+      if (!out.q) {
+        out.query = {
+          match_all: {}
+        }
+      } else {
+        out.query = {
+          query_string: {
+            query: out.q
+          }
+        }
+        delete out.q;
+      }
+      return out;
+    },
     query: function(model, queryObj) {
+      var queryNormalized = this._normalizeQuery(queryObj);
+      var data = {source: JSON.stringify(queryNormalized)};
       var base = this._getESUrl(model);
-      var data = _.extend({}, queryObj);
       var jqxhr = $.ajax({
         url: base + '/_search',
         data: data,
