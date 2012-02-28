@@ -105,13 +105,18 @@
 
     <h2 id="docs">Documentation</h2>
     <p>Recline has a simple structure layered on top of the basic Model/View
-    distinction inherent in Backbone. There are the following three domain objects (all Backbone Models):</p>
+    distinction inherent in Backbone. There are the following two main domain objects (all Backbone Models):</p>
     <ul>
       <li>Dataset: represents the dataset. Holds dataset info and a pointer to list of data items (Documents in our terminology) which it can load from the relevant Backend.</li>
       <li>Document: an individual data item (e.g. a row from a relational database or a spreadsheet, a document from from a document DB like CouchDB or MongoDB).</li>
-      <li>Backend: provides a way to get data from a specific 'Backend' data source. They provide methods for loading and saving Datasets and individuals Documents as well as for bulk loading via a query API and doing bulk transforms on the backend</li>
     </ul>
-    <p>There are then various Views (you can easily write your own). Each view holds a pointer to a Dataset:</p>
+
+    <p>Backends (more info below) then connect Dataset and Documents to data
+    from a specific 'Backend' data source. They provide methods for loading and
+    saving Datasets and individuals Documents as well as for bulk loading via a
+    query API and doing bulk transforms on the backend.</p>
+
+    <p>Complementing the model are various Views (you can easily write your own). Each view holds a pointer to a Dataset:</p>
     <ul>
       <li>DataExplorer: the parent view which manages the overall app and sets up sub views.</li>
       <li>DataGrid: the data grid view.</li>
@@ -143,6 +148,50 @@ Backbone.history.start();
       href="demo/">Demo</a> -- just hit view source (NB: the javascript for the
     demo is in: <a href="demo/js/app.js">app.js</a>).</p>
 
+<h3>Backends</h3>
+
+<p>Backends are connectors to backend data sources from which data can be retrieved.</p>
+
+<p>Backends are implemented as Backbone models but this is just a convenience
+(they do not save or load themselves from any remote source). You can see
+detailed examples of backend implementation in the source documentation
+below.</p>
+
+<p>A backend <em>must</em> implement two methods:</p>
+<pre>
+sync(method, model, options)
+query(dataset, queryObj)
+</pre>
+
+<h4>sync(method, model, options)</h4>
+
+<p>This is an implemntation of Backbone.sync and is used to override
+Backbone.sync on operations for Datasets and Documents which are using this
+backend.</p>
+
+<p>For read-only implementations you will need only to implement read method
+for Dataset models (and even this can be a null operation). The read method
+should return relevant metadata for the Dataset. We do not require read support
+for Documents because they are loaded in bulk by the query method.</p>
+
+<p>For backends supporting write operations you must implement update and
+delete support for Document objects.</p>
+
+<p>All code paths should return an object conforming to the jquery promise
+API.</p>
+
+<h4>query(dataset, queryObj)</h4>
+
+<p>Query the backend for documents returning them in bulk. This method will be
+used by the Dataset.query method to search the backend for documents,
+retrieving the results in bulk. This method should also set the docCount
+attribute on the dataset.</p>
+
+<p><strong>queryObj</strong> should be either a recline.Model.Query object or a
+Hash. The structure of data in the Query object or Hash should follow that
+defined in issue 34. (That said, if you are writing your own backend and have
+control over the query object you can obviously use whatever structure you
+like).</p>
 
     <h3>Source Docs (via Docco)</h3>
     <ul>
