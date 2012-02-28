@@ -1,389 +1,3 @@
-// # Recline Backends
-//
-// Backends are connectors to backend data sources and stores
-//
-// Backends are implemented as Backbone models but this is just a
-// convenience (they do not save or load themselves from any remote
-// source)
-this.recline = this.recline || {};
-this.recline.Model = this.recline.Model || {};
-
-(function($, my) {
-  // ## Backbone.sync
-  //
-  // Override Backbone.sync to hand off to sync function in relevant backend
-  Backbone.sync = function(method, model, options) {
-    return model.backend.sync(method, model, options);
-  }
-
-  // ## wrapInTimeout
-  // 
-  // Crude way to catch backend errors
-  // Many of backends use JSONP and so will not get error messages and this is
-  // a crude way to catch those errors.
-  function wrapInTimeout(ourFunction) {
-    var dfd = $.Deferred();
-    var timeout = 5000;
-    var timer = setTimeout(function() {
-      dfd.reject({
-        message: 'Request Error: Backend did not respond after ' + (timeout / 1000) + ' seconds'
-      });
-    }, timeout);
-    ourFunction.done(function(arguments) {
-        clearTimeout(timer);
-        dfd.resolve(arguments);
-      })
-      .fail(function(arguments) {
-        clearTimeout(timer);
-        dfd.reject(arguments);
-      })
-      ;
-    return dfd.promise();
-  }
-
-  // ## BackendMemory - uses in-memory data
-  //
-  // This is very artificial and is really only designed for testing
-  // purposes.
-  //
-  // To use it you should provide in your constructor data:
-  // 
-  //   * metadata (including fields array)
-  //   * documents: list of hashes, each hash being one doc. A doc *must* have an id attribute which is unique.
-  //
-  //  Example:
-  // 
-  //  <pre>
-  //  // Backend setup
-  //  var backend = Backend();
-  //  backend.addDataset({
-  //    metadata: {
-  //      id: 'my-id',
-  //      title: 'My Title'
-  //    },
-  //    fields: [{id: 'x'}, {id: 'y'}, {id: 'z'}],
-  //    documents: [
-  //        {id: 0, x: 1, y: 2, z: 3},
-  //        {id: 1, x: 2, y: 4, z: 6}
-  //      ]
-  //  });
-  //  // later ...
-  //  var dataset = Dataset({id: 'my-id'});
-  //  dataset.fetch();
-  //  etc ...
-  //  </pre>
-  my.BackendMemory = Backbone.Model.extend({
-    initialize: function() {
-      this.datasets = {};
-    },
-    addDataset: function(data) {
-      this.datasets[data.metadata.id] = $.extend(true, {}, data);
-    },
-    sync: function(method, model, options) {
-      var self = this;
-      if (method === "read") {
-        var dfd = $.Deferred();
-        if (model.__type__ == 'Dataset') {
-          var rawDataset = this.datasets[model.id];
-          model.set(rawDataset.metadata);
-          model.fields.reset(rawDataset.fields);
-          model.docCount = rawDataset.documents.length;
-          dfd.resolve(model);
-        }
-        return dfd.promise();
-      } else if (method === 'update') {
-        var dfd = $.Deferred();
-        if (model.__type__ == 'Document') {
-          _.each(self.datasets[model.dataset.id].documents, function(doc, idx) {
-            if(doc.id === model.id) {
-              self.datasets[model.dataset.id].documents[idx] = model.toJSON();
-            }
-          });
-          dfd.resolve(model);
-        }
-        return dfd.promise();
-      } else if (method === 'delete') {
-        var dfd = $.Deferred();
-        if (model.__type__ == 'Document') {
-          var rawDataset = self.datasets[model.dataset.id];
-          var newdocs = _.reject(rawDataset.documents, function(doc) {
-            return (doc.id === model.id);
-          });
-          rawDataset.documents = newdocs;
-          dfd.resolve(model);
-        }
-        return dfd.promise();
-      } else {
-        alert('Not supported: sync on BackendMemory with method ' + method + ' and model ' + model);
-      }
-    },
-    query: function(model, queryObj) {
-      var numRows = queryObj.size;
-      var start = queryObj.offset;
-      var dfd = $.Deferred();
-      results = this.datasets[model.id].documents;
-      // not complete sorting!
-      _.each(queryObj.sort, function(item) {
-        results = _.sortBy(results, function(doc) {
-          var _out = doc[item[0]];
-          return (item[1] == 'asc') ? _out : -1*_out;
-        });
-      });
-      var results = results.slice(start, start+numRows);
-      dfd.resolve(results);
-      return dfd.promise();
-    }
-  });
-  my.backends['memory'] = new my.BackendMemory();
-
-  // ## BackendWebstore
-  //
-  // Connecting to [Webstores](http://github.com/okfn/webstore)
-  //
-  // To use this backend ensure your Dataset has a webstore_url in its attributes.
-  my.BackendWebstore = Backbone.Model.extend({
-    sync: function(method, model, options) {
-      if (method === "read") {
-        if (model.__type__ == 'Dataset') {
-          var base = model.get('webstore_url');
-          var schemaUrl = base + '/schema.json';
-          var jqxhr = $.ajax({
-            url: schemaUrl,
-              dataType: 'jsonp',
-              jsonp: '_callback'
-          });
-          var dfd = $.Deferred();
-          wrapInTimeout(jqxhr).done(function(schema) {
-            var fieldData = _.map(schema.data, function(item) {
-              item.id = item.name;
-              delete item.name;
-              return item;
-            });
-            model.fields.reset(fieldData);
-            model.docCount = schema.count;
-            dfd.resolve(model, jqxhr);
-          })
-          .fail(function(arguments) {
-            dfd.reject(arguments);
-          });
-          return dfd.promise();
-        }
-      }
-    },
-    query: function(model, queryObj) {
-      var base = model.get('webstore_url');
-      var data = {
-        _limit:  queryObj.size
-        , _offset: queryObj.offset
-      };
-      var jqxhr = $.ajax({
-        url: base + '.json',
-        data: data,
-        dataType: 'jsonp',
-        jsonp: '_callback',
-        cache: true
-      });
-      var dfd = $.Deferred();
-      jqxhr.done(function(results) {
-        dfd.resolve(results.data);
-      });
-      return dfd.promise();
-    }
-  });
-  my.backends['webstore'] = new my.BackendWebstore();
-
-  // ## BackendDataProxy
-  // 
-  // For connecting to [DataProxy-s](http://github.com/okfn/dataproxy).
-  //
-  // When initializing the DataProxy backend you can set the following attributes:
-  //
-  // * dataproxy: {url-to-proxy} (optional). Defaults to http://jsonpdataproxy.appspot.com
-  //
-  // Datasets using using this backend should set the following attributes:
-  //
-  // * url: (required) url-of-data-to-proxy
-  // * format: (optional) csv | xls (defaults to csv if not specified)
-  //
-  // Note that this is a **read-only** backend.
-  my.BackendDataProxy = Backbone.Model.extend({
-    defaults: {
-      dataproxy_url: 'http://jsonpdataproxy.appspot.com'
-    },
-    sync: function(method, model, options) {
-      var self = this;
-      if (method === "read") {
-        if (model.__type__ == 'Dataset') {
-          var base = self.get('dataproxy_url');
-          // TODO: should we cache for extra efficiency
-          var data = {
-            url: model.get('url')
-            , 'max-results':  1
-            , type: model.get('format') || 'csv'
-          };
-          var jqxhr = $.ajax({
-            url: base
-            , data: data
-            , dataType: 'jsonp'
-          });
-          var dfd = $.Deferred();
-          wrapInTimeout(jqxhr).done(function(results) {
-            model.fields.reset(_.map(results.fields, function(fieldId) {
-              return {id: fieldId};
-              })
-            );
-            dfd.resolve(model, jqxhr);
-          })
-          .fail(function(arguments) {
-            dfd.reject(arguments);
-          });
-          return dfd.promise();
-        }
-      } else {
-        alert('This backend only supports read operations');
-      }
-    },
-    query: function(dataset, queryObj) {
-      var base = this.get('dataproxy_url');
-      var data = {
-        url: dataset.get('url')
-        , 'max-results':  queryObj.size
-        , type: dataset.get('format')
-      };
-      var jqxhr = $.ajax({
-        url: base
-        , data: data
-        , dataType: 'jsonp'
-      });
-      var dfd = $.Deferred();
-      jqxhr.done(function(results) {
-        var _out = _.map(results.data, function(doc) {
-          var tmp = {};
-          _.each(results.fields, function(key, idx) {
-            tmp[key] = doc[idx];
-          });
-          return tmp;
-        });
-        dfd.resolve(_out);
-      });
-      return dfd.promise();
-    }
-  });
-  my.backends['dataproxy'] = new my.BackendDataProxy();
-
-
-  // ## Google spreadsheet backend
-  // 
-  // Connect to Google Docs spreadsheet.
-  //
-  // Dataset must have a url attribute pointing to the Gdocs
-  // spreadsheet's JSON feed e.g.
-  //
-  // <pre>
-  // var dataset = new recline.Model.Dataset({
-  //     url: 'https://spreadsheets.google.com/feeds/list/0Aon3JiuouxLUdDQwZE1JdV94cUd6NWtuZ0IyWTBjLWc/od6/public/values?alt=json'
-  //   },
-  //   'gdocs'
-  // );
-  // </pre>
-  my.BackendGDoc = Backbone.Model.extend({
-    sync: function(method, model, options) {
-      var self = this;
-      if (method === "read") { 
-        var dfd = $.Deferred(); 
-        var dataset = model;
-
-        $.getJSON(model.get('url'), function(d) {
-          result = self.gdocsToJavascript(d);
-          model.fields.reset(_.map(result.field, function(fieldId) {
-              return {id: fieldId};
-            })
-          );
-          // cache data onto dataset (we have loaded whole gdoc it seems!)
-          model._dataCache = result.data;
-          dfd.resolve(model);
-        })
-        return dfd.promise(); }
-    },
-
-    query: function(dataset, queryObj) { 
-      var dfd = $.Deferred();
-      var fields = _.pluck(dataset.fields.toJSON(), 'id');
-
-      // zip the fields with the data rows to produce js objs
-      // TODO: factor this out as a common method with other backends
-      var objs = _.map(dataset._dataCache, function (d) { 
-        var obj = {};
-        _.each(_.zip(fields, d), function (x) { obj[x[0]] = x[1]; })
-        return obj;
-      });
-      dfd.resolve(objs);
-      return dfd;
-    },
-    gdocsToJavascript:  function(gdocsSpreadsheet) {
-      /*
-         :options: (optional) optional argument dictionary:
-         columnsToUse: list of columns to use (specified by field names)
-         colTypes: dictionary (with column names as keys) specifying types (e.g. range, percent for use in conversion).
-         :return: tabular data object (hash with keys: field and data).
-
-         Issues: seems google docs return columns in rows in random order and not even sure whether consistent across rows.
-         */
-      var options = {};
-      if (arguments.length > 1) {
-        options = arguments[1];
-      }
-      var results = {
-        'field': [],
-        'data': []
-      };
-      // default is no special info on type of columns
-      var colTypes = {};
-      if (options.colTypes) {
-        colTypes = options.colTypes;
-      }
-      // either extract column headings from spreadsheet directly, or used supplied ones
-      if (options.columnsToUse) {
-        // columns set to subset supplied
-        results.field = options.columnsToUse;
-      } else {
-        // set columns to use to be all available
-        if (gdocsSpreadsheet.feed.entry.length > 0) {
-          for (var k in gdocsSpreadsheet.feed.entry[0]) {
-            if (k.substr(0, 3) == 'gsx') {
-              var col = k.substr(4)
-                results.field.push(col);
-            }
-          }
-        }
-      }
-
-      // converts non numberical values that should be numerical (22.3%[string] -> 0.223[float])
-      var rep = /^([\d\.\-]+)\%$/;
-      $.each(gdocsSpreadsheet.feed.entry, function (i, entry) {
-        var row = [];
-        for (var k in results.field) {
-          var col = results.field[k];
-          var _keyname = 'gsx$' + col;
-          var value = entry[_keyname]['$t'];
-          // if labelled as % and value contains %, convert
-          if (colTypes[col] == 'percent') {
-            if (rep.test(value)) {
-              var value2 = rep.exec(value);
-              var value3 = parseFloat(value2);
-              value = value3 / 100;
-            }
-          }
-          row.push(value);
-        }
-        results.data.push(row);
-      });
-      return results;
-    }
-  });
-  my.backends['gdocs'] = new my.BackendGDoc();
-
-}(jQuery, this.recline.Model));
 // importScripts('lib/underscore.js'); 
 
 onmessage = function(message) {
@@ -550,6 +164,7 @@ my.Dataset = Backbone.Model.extend({
   // Resulting DocumentList are used to reset this.currentDocuments and are
   // also returned.
   query: function(queryObj) {
+    this.trigger('query:start');
     var self = this;
     this.queryState.set(queryObj, {silent: true});
     var dfd = $.Deferred();
@@ -561,9 +176,11 @@ my.Dataset = Backbone.Model.extend({
         return _doc;
       });
       self.currentDocuments.reset(docs);
+      self.trigger('query:done');
       dfd.resolve(self.currentDocuments);
     })
     .fail(function(arguments) {
+      self.trigger('query:fail', arguments);
       dfd.reject(arguments);
     });
     return dfd.promise();
@@ -624,7 +241,7 @@ my.FieldList = Backbone.Collection.extend({
 my.Query = Backbone.Model.extend({
   defaults: {
     size: 100
-    , offset: 0
+    , from: 0
   }
 });
 
@@ -800,10 +417,9 @@ var util = function() {
 this.recline = this.recline || {};
 this.recline.View = this.recline.View || {};
 
-// Views module following classic module pattern
 (function($, my) {
 
-// Graph view for a Dataset using Flot graphing library.
+// ## Graph view for a Dataset using Flot graphing library.
 //
 // Initialization arguments:
 //
@@ -937,7 +553,7 @@ my.FlotGraph = Backbone.View.extend({
     //   Uncaught Invalid dimensions for plot, width = 0, height = 0
     // * There is no data for the plot -- either same error or may have issues later with errors like 'non-existent node-value' 
     var areWeVisible = !jQuery.expr.filters.hidden(this.el[0]);
-    if (!this.plot && (!areWeVisible || this.model.currentDocuments.length == 0)) {
+    if ((!areWeVisible || this.model.currentDocuments.length == 0)) {
       return
     }
     // create this.plot and cache it
@@ -1038,204 +654,20 @@ this.recline = this.recline || {};
 this.recline.View = this.recline.View || {};
 
 (function($, my) {
-// ## DataExplorer
-//
-// The primary view for the entire application. Usage:
-// 
-// <pre>
-// var myExplorer = new model.recline.DataExplorer({
-//   model: {{recline.Model.Dataset instance}}
-//   el: {{an existing dom element}}
-//   views: {{page views}}
-//   config: {{config options -- see below}}
-// });
-// </pre> 
-//
-// ### Parameters
-// 
-// **model**: (required) Dataset instance.
-//
-// **el**: (required) DOM element.
-//
-// **views**: (optional) the views (Grid, Graph etc) for DataExplorer to
-// show. This is an array of view hashes. If not provided
-// just initialize a DataTable with id 'grid'. Example:
-//
-// <pre>
-// var views = [
-//   {
-//     id: 'grid', // used for routing
-//     label: 'Grid', // used for view switcher
-//     view: new recline.View.DataTable({
-//       model: dataset
-//     })
-//   },
-//   {
-//     id: 'graph',
-//     label: 'Graph',
-//     view: new recline.View.FlotGraph({
-//       model: dataset
-//     })
-//   }
-// ];
-// </pre>
-//
-// **config**: Config options like:
-//
-//   * displayCount: how many documents to display initially (default: 10)
-//   * readOnly: true/false (default: false) value indicating whether to
-//     operate in read-only mode (hiding all editing options).
-//
-// NB: the element already being in the DOM is important for rendering of
-// FlotGraph subview.
-my.DataExplorer = Backbone.View.extend({
-  template: ' \
-  <div class="data-explorer"> \
-    <div class="alert-messages"></div> \
-    \
-    <div class="header"> \
-      <ul class="navigation"> \
-        {{#views}} \
-        <li><a href="#{{id}}" class="btn">{{label}}</a> \
-        {{/views}} \
-      </ul> \
-      <div class="pagination"> \
-        <form class="display-count"> \
-          Showing 0 to <input name="displayCount" type="text" value="{{displayCount}}" title="Edit and hit enter to change the number of rows displayed" /> of  <span class="doc-count">{{docCount}}</span> \
-        </form> \
-      </div> \
-    </div> \
-    <div class="data-view-container"></div> \
-    <div class="dialog-overlay" style="display: none; z-index: 101; ">&nbsp;</div> \
-    <div class="dialog ui-draggable" style="display: none; z-index: 102; top: 101px; "> \
-      <div class="dialog-frame" style="width: 700px; visibility: visible; "> \
-        <div class="dialog-content dialog-border"></div> \
-      </div> \
-    </div> \
-  </div> \
-  ',
-
-  events: {
-    'submit form.display-count': 'onDisplayCountUpdate'
-  },
-
-  initialize: function(options) {
-    var self = this;
-    this.el = $(this.el);
-    this.config = _.extend({
-        displayCount: 50
-        , readOnly: false
-      },
-      options.config);
-    if (this.config.readOnly) {
-      this.setReadOnly();
-    }
-    // Hash of 'page' views (i.e. those for whole page) keyed by page name
-    if (options.views) {
-      this.pageViews = options.views;
-    } else {
-      this.pageViews = [{
-        id: 'grid',
-        label: 'Grid',
-        view: new my.DataTable({
-            model: this.model
-          })
-      }];
-    }
-    // this must be called after pageViews are created
-    this.render();
-
-    this.router = new Backbone.Router();
-    this.setupRouting();
-
-    // retrieve basic data like fields etc
-    // note this.model and dataset returned are the same
-    this.model.fetch()
-      .done(function(dataset) {
-        self.el.find('.doc-count').text(self.model.docCount || 'Unknown');
-        self.query();
-      })
-      .fail(function(error) {
-        my.notify(error.message, {category: 'error', persist: true});
-      });
-  },
-
-  query: function() {
-    this.config.displayCount = parseInt(this.el.find('input[name="displayCount"]').val());
-    var queryObj = {
-      size: this.config.displayCount
-    };
-    my.notify('Loading data', {loader: true});
-    this.model.query(queryObj)
-      .done(function() {
-        my.clearNotifications();
-        my.notify('Data loaded', {category: 'success'});
-      })
-      .fail(function(error) {
-        my.clearNotifications();
-        my.notify(error.message, {category: 'error', persist: true});
-      });
-  },
-
-  onDisplayCountUpdate: function(e) {
-    e.preventDefault();
-    this.query();
-  },
-
-  setReadOnly: function() {
-    this.el.addClass('read-only');
-  },
-
-  render: function() {
-    var tmplData = this.model.toTemplateJSON();
-    tmplData.displayCount = this.config.displayCount;
-    tmplData.views = this.pageViews;
-    var template = $.mustache(this.template, tmplData);
-    $(this.el).html(template);
-    var $dataViewContainer = this.el.find('.data-view-container');
-    _.each(this.pageViews, function(view, pageName) {
-      $dataViewContainer.append(view.view.el)
-    });
-  },
-
-  setupRouting: function() {
-    var self = this;
-    // Default route
-    this.router.route('', this.pageViews[0].id, function() {
-      self.updateNav(self.pageViews[0].id);
-    });
-    $.each(this.pageViews, function(idx, view) {
-      self.router.route(/^([^?]+)(\?.*)?/, 'view', function(viewId, queryString) {
-        self.updateNav(viewId, queryString);
-      });
-    });
-  },
-
-  updateNav: function(pageName, queryString) {
-    this.el.find('.navigation li').removeClass('active');
-    var $el = this.el.find('.navigation li a[href=#' + pageName + ']');
-    $el.parent().addClass('active');
-    // show the specific page
-    _.each(this.pageViews, function(view, idx) {
-      if (view.id === pageName) {
-        view.view.el.show();
-      } else {
-        view.view.el.hide();
-      }
-    });
-  }
-});
-
-// ## DataTable
+// ## DataGrid
 //
 // Provides a tabular view on a Dataset.
 //
 // Initialize it with a recline.Dataset object.
-my.DataTable = Backbone.View.extend({
+//
+// Additional options passed in second arguments. Options:
+//
+// * cellRenderer: function used to render individual cells. See DataGridRow for more.
+my.DataGrid = Backbone.View.extend({
   tagName:  "div",
   className: "data-table-container",
 
-  initialize: function() {
+  initialize: function(modelEtc, options) {
     var self = this;
     this.el = $(this.el);
     _.bindAll(this, 'render');
@@ -1244,6 +676,7 @@ my.DataTable = Backbone.View.extend({
     this.model.currentDocuments.bind('remove', this.render);
     this.state = {};
     this.hiddenFields = [];
+    this.options = options;
   },
 
   events: {
@@ -1359,11 +792,9 @@ my.DataTable = Backbone.View.extend({
   },
 
   setColumnSort: function(order) {
-    this.model.query({
-      sort: [
-        [this.state.currentColumn, order]
-      ]
-    });
+    var sort = [{}];
+    sort[0][this.state.currentColumn] = {order: order};
+    this.model.query({sort: sort});
   },
   
   hideColumn: function() {
@@ -1424,11 +855,13 @@ my.DataTable = Backbone.View.extend({
     this.model.currentDocuments.forEach(function(doc) {
       var tr = $('<tr />');
       self.el.find('tbody').append(tr);
-      var newView = new my.DataTableRow({
+      var newView = new my.DataGridRow({
           model: doc,
           el: tr,
           fields: self.fields,
-        });
+        },
+        self.options
+        );
       newView.render();
     });
     this.el.toggleClass('no-hidden', (self.hiddenFields.length == 0));
@@ -1436,14 +869,29 @@ my.DataTable = Backbone.View.extend({
   }
 });
 
-// ## DataTableRow View for rendering an individual document.
+// ## DataGridRow View for rendering an individual document.
 //
 // Since we want this to update in place it is up to creator to provider the element to attach to.
-// In addition you must pass in a fields in the constructor options. This should be list of fields for the DataTable.
-my.DataTableRow = Backbone.View.extend({
-  initialize: function(options) {
+// In addition you must pass in a fields in the constructor options. This should be list of fields for the DataGrid.
+//
+// Additional options can be passed in a second hash argument. Options:
+//
+// * cellRenderer: function to render cells. Signature: function(value,
+//   field, doc) where value is the value of this cell, field is
+//   corresponding field object and document is the document object. Note
+//   that implementing functions can ignore arguments (e.g.
+//   function(value) would be a valid cellRenderer function).
+my.DataGridRow = Backbone.View.extend({
+  initialize: function(initData, options) {
     _.bindAll(this, 'render');
-    this._fields = options.fields;
+    this._fields = initData.fields;
+    if (options && options.cellRenderer) {
+      this._cellRenderer = options.cellRenderer;
+    } else {
+      this._cellRenderer = function(value) {
+        return value;
+      }
+    }
     this.el = $(this.el);
     this.model.bind('change', this.render);
   },
@@ -1454,22 +902,25 @@ my.DataTableRow = Backbone.View.extend({
       <td data-field="{{field}}"> \
         <div class="data-table-cell-content"> \
           <a href="javascript:{}" class="data-table-cell-edit" title="Edit this cell">&nbsp;</a> \
-          <div class="data-table-cell-value">{{value}}</div> \
+          <div class="data-table-cell-value">{{{value}}}</div> \
         </div> \
       </td> \
       {{/cells}} \
     ',
   events: {
     'click .data-table-cell-edit': 'onEditClick',
-    // cell editor
     'click .data-table-cell-editor .okButton': 'onEditorOK',
     'click .data-table-cell-editor .cancelButton': 'onEditorCancel'
   },
   
   toTemplateJSON: function() {
+    var self = this;
     var doc = this.model;
     var cellData = this._fields.map(function(field) {
-      return {field: field.id, value: doc.get(field.id)}
+      return {
+        field: field.id,
+        value: self._cellRenderer(doc.get(field.id), field, doc)
+      }
     })
     return { id: this.id, cells: cellData }
   },
@@ -1518,6 +969,239 @@ my.DataTableRow = Backbone.View.extend({
   onEditorCancel: function(e) {
     var cell = $(e.target).parents('.data-table-cell-value');
     cell.html(cell.data('previousContents')).siblings('.data-table-cell-edit').removeClass("hidden");
+  }
+});
+
+})(jQuery, recline.View);
+this.recline = this.recline || {};
+this.recline.View = this.recline.View || {};
+
+(function($, my) {
+// ## DataExplorer
+//
+// The primary view for the entire application. Usage:
+// 
+// <pre>
+// var myExplorer = new model.recline.DataExplorer({
+//   model: {{recline.Model.Dataset instance}}
+//   el: {{an existing dom element}}
+//   views: {{page views}}
+//   config: {{config options -- see below}}
+// });
+// </pre> 
+//
+// ### Parameters
+// 
+// **model**: (required) Dataset instance.
+//
+// **el**: (required) DOM element.
+//
+// **views**: (optional) the views (Grid, Graph etc) for DataExplorer to
+// show. This is an array of view hashes. If not provided
+// just initialize a DataGrid with id 'grid'. Example:
+//
+// <pre>
+// var views = [
+//   {
+//     id: 'grid', // used for routing
+//     label: 'Grid', // used for view switcher
+//     view: new recline.View.DataGrid({
+//       model: dataset
+//     })
+//   },
+//   {
+//     id: 'graph',
+//     label: 'Graph',
+//     view: new recline.View.FlotGraph({
+//       model: dataset
+//     })
+//   }
+// ];
+// </pre>
+//
+// **config**: Config options like:
+//
+//   * readOnly: true/false (default: false) value indicating whether to
+//     operate in read-only mode (hiding all editing options).
+//
+// NB: the element already being in the DOM is important for rendering of
+// FlotGraph subview.
+my.DataExplorer = Backbone.View.extend({
+  template: ' \
+  <div class="data-explorer"> \
+    <div class="alert-messages"></div> \
+    \
+    <div class="header"> \
+      <ul class="navigation"> \
+        {{#views}} \
+        <li><a href="#{{id}}" class="btn">{{label}}</a> \
+        {{/views}} \
+      </ul> \
+      <div class="recline-results-info"> \
+        Results found <span class="doc-count">{{docCount}}</span> \
+      </div> \
+    </div> \
+    <div class="data-view-container"></div> \
+    <div class="dialog-overlay" style="display: none; z-index: 101; ">&nbsp;</div> \
+    <div class="dialog ui-draggable" style="display: none; z-index: 102; top: 101px; "> \
+      <div class="dialog-frame" style="width: 700px; visibility: visible; "> \
+        <div class="dialog-content dialog-border"></div> \
+      </div> \
+    </div> \
+  </div> \
+  ',
+
+  initialize: function(options) {
+    var self = this;
+    this.el = $(this.el);
+    this.config = _.extend({
+        readOnly: false
+      },
+      options.config);
+    if (this.config.readOnly) {
+      this.setReadOnly();
+    }
+    // Hash of 'page' views (i.e. those for whole page) keyed by page name
+    if (options.views) {
+      this.pageViews = options.views;
+    } else {
+      this.pageViews = [{
+        id: 'grid',
+        label: 'Grid',
+        view: new my.DataGrid({
+            model: this.model
+          })
+      }];
+    }
+    // this must be called after pageViews are created
+    this.render();
+
+    this.router = new Backbone.Router();
+    this.setupRouting();
+
+    this.model.bind('query:start', function(eventName) {
+        my.notify('Loading data', {loader: true});
+      });
+    this.model.bind('query:done', function(eventName) {
+        my.clearNotifications();
+        self.el.find('.doc-count').text(self.model.docCount || 'Unknown');
+        my.notify('Data loaded', {category: 'success'});
+      });
+    this.model.bind('query:fail', function(eventName, error) {
+        my.clearNotifications();
+        my.notify(error.message, {category: 'error', persist: true});
+      });
+
+    // retrieve basic data like fields etc
+    // note this.model and dataset returned are the same
+    this.model.fetch()
+      .done(function(dataset) {
+        self.el.find('.doc-count').text(self.model.docCount || 'Unknown');
+        self.model.query();
+      })
+      .fail(function(error) {
+        my.notify(error.message, {category: 'error', persist: true});
+      });
+  },
+
+  setReadOnly: function() {
+    this.el.addClass('read-only');
+  },
+
+  render: function() {
+    var tmplData = this.model.toTemplateJSON();
+    tmplData.displayCount = this.config.displayCount;
+    tmplData.views = this.pageViews;
+    var template = $.mustache(this.template, tmplData);
+    $(this.el).html(template);
+    var $dataViewContainer = this.el.find('.data-view-container');
+    _.each(this.pageViews, function(view, pageName) {
+      $dataViewContainer.append(view.view.el)
+    });
+    var queryEditor = new my.QueryEditor({
+      model: this.model.queryState
+    });
+    this.el.find('.header').append(queryEditor.el);
+  },
+
+  setupRouting: function() {
+    var self = this;
+    // Default route
+    this.router.route('', this.pageViews[0].id, function() {
+      self.updateNav(self.pageViews[0].id);
+    });
+    $.each(this.pageViews, function(idx, view) {
+      self.router.route(/^([^?]+)(\?.*)?/, 'view', function(viewId, queryString) {
+        self.updateNav(viewId, queryString);
+      });
+    });
+  },
+
+  updateNav: function(pageName, queryString) {
+    this.el.find('.navigation li').removeClass('active');
+    var $el = this.el.find('.navigation li a[href=#' + pageName + ']');
+    $el.parent().addClass('active');
+    // show the specific page
+    _.each(this.pageViews, function(view, idx) {
+      if (view.id === pageName) {
+        view.view.el.show();
+      } else {
+        view.view.el.hide();
+      }
+    });
+  }
+});
+
+
+my.QueryEditor = Backbone.View.extend({
+  className: 'recline-query-editor', 
+  template: ' \
+    <form action="" method="GET"> \
+      <input type="text" name="q" value="{{q}}" class="text-query" /> \
+      <div class="pagination"> \
+        <ul> \
+          <li class="prev action-pagination-update"><a>&laquo; back</a></li> \
+          <li class="active"><a><input name="from" type="text" value="{{from}}" /> &ndash; <input name="to" type="text" value="{{to}}" /> </a></li> \
+          <li class="next action-pagination-update"><a>next &raquo;</a></li> \
+        </ul> \
+      </div> \
+      <button type="submit" class="btn" style="">Update &raquo;</button> \
+    </form> \
+  ',
+
+  events: {
+    'submit form': 'onFormSubmit',
+    'click .action-pagination-update': 'onPaginationUpdate'
+  },
+
+  initialize: function() {
+    _.bindAll(this, 'render');
+    this.el = $(this.el);
+    this.model.bind('change', this.render);
+    this.render();
+  },
+  onFormSubmit: function(e) {
+    e.preventDefault();
+    var newFrom = parseInt(this.el.find('input[name="from"]').val());
+    var newSize = parseInt(this.el.find('input[name="to"]').val()) - newFrom;
+    var query = this.el.find('.text-query').val();
+    this.model.set({size: newSize, from: newFrom, q: query});
+  },
+  onPaginationUpdate: function(e) {
+    e.preventDefault();
+    var $el = $(e.target);
+    if ($el.parent().hasClass('prev')) {
+      var newFrom = this.model.get('from') - Math.max(0, this.model.get('size'));
+    } else {
+      var newFrom = this.model.get('from') + this.model.get('size');
+    }
+    this.model.set({from: newFrom});
+  },
+  render: function() {
+    var tmplData = this.model.toJSON();
+    tmplData.to = this.model.get('from') + this.model.get('size');
+    var templated = $.mustache(this.template, tmplData);
+    this.el.html(templated);
   }
 });
 
@@ -1828,3 +1512,508 @@ my.ColumnTransform = Backbone.View.extend({
 });
 
 })(jQuery, recline.View);
+// # Recline Backends
+//
+// Backends are connectors to backend data sources and stores
+//
+// This is just the base module containing various convenience methods.
+this.recline = this.recline || {};
+this.recline.Backend = this.recline.Backend || {};
+
+(function($, my) {
+  // ## Backbone.sync
+  //
+  // Override Backbone.sync to hand off to sync function in relevant backend
+  Backbone.sync = function(method, model, options) {
+    return model.backend.sync(method, model, options);
+  }
+
+  // ## wrapInTimeout
+  // 
+  // Crude way to catch backend errors
+  // Many of backends use JSONP and so will not get error messages and this is
+  // a crude way to catch those errors.
+  my.wrapInTimeout = function(ourFunction) {
+    var dfd = $.Deferred();
+    var timeout = 5000;
+    var timer = setTimeout(function() {
+      dfd.reject({
+        message: 'Request Error: Backend did not respond after ' + (timeout / 1000) + ' seconds'
+      });
+    }, timeout);
+    ourFunction.done(function(arguments) {
+        clearTimeout(timer);
+        dfd.resolve(arguments);
+      })
+      .fail(function(arguments) {
+        clearTimeout(timer);
+        dfd.reject(arguments);
+      })
+      ;
+    return dfd.promise();
+  }
+}(jQuery, this.recline.Backend));
+
+this.recline = this.recline || {};
+this.recline.Backend = this.recline.Backend || {};
+
+(function($, my) {
+  // ## DataProxy Backend
+  // 
+  // For connecting to [DataProxy-s](http://github.com/okfn/dataproxy).
+  //
+  // When initializing the DataProxy backend you can set the following attributes:
+  //
+  // * dataproxy: {url-to-proxy} (optional). Defaults to http://jsonpdataproxy.appspot.com
+  //
+  // Datasets using using this backend should set the following attributes:
+  //
+  // * url: (required) url-of-data-to-proxy
+  // * format: (optional) csv | xls (defaults to csv if not specified)
+  //
+  // Note that this is a **read-only** backend.
+  my.DataProxy = Backbone.Model.extend({
+    defaults: {
+      dataproxy_url: 'http://jsonpdataproxy.appspot.com'
+    },
+    sync: function(method, model, options) {
+      var self = this;
+      if (method === "read") {
+        if (model.__type__ == 'Dataset') {
+          var base = self.get('dataproxy_url');
+          // TODO: should we cache for extra efficiency
+          var data = {
+            url: model.get('url')
+            , 'max-results':  1
+            , type: model.get('format') || 'csv'
+          };
+          var jqxhr = $.ajax({
+            url: base
+            , data: data
+            , dataType: 'jsonp'
+          });
+          var dfd = $.Deferred();
+          my.wrapInTimeout(jqxhr).done(function(results) {
+            model.fields.reset(_.map(results.fields, function(fieldId) {
+              return {id: fieldId};
+              })
+            );
+            dfd.resolve(model, jqxhr);
+          })
+          .fail(function(arguments) {
+            dfd.reject(arguments);
+          });
+          return dfd.promise();
+        }
+      } else {
+        alert('This backend only supports read operations');
+      }
+    },
+    query: function(dataset, queryObj) {
+      var base = this.get('dataproxy_url');
+      var data = {
+        url: dataset.get('url')
+        , 'max-results':  queryObj.size
+        , type: dataset.get('format')
+      };
+      var jqxhr = $.ajax({
+        url: base
+        , data: data
+        , dataType: 'jsonp'
+      });
+      var dfd = $.Deferred();
+      jqxhr.done(function(results) {
+        var _out = _.map(results.data, function(doc) {
+          var tmp = {};
+          _.each(results.fields, function(key, idx) {
+            tmp[key] = doc[idx];
+          });
+          return tmp;
+        });
+        dfd.resolve(_out);
+      });
+      return dfd.promise();
+    }
+  });
+  recline.Model.backends['dataproxy'] = new my.DataProxy();
+
+
+}(jQuery, this.recline.Backend));
+this.recline = this.recline || {};
+this.recline.Backend = this.recline.Backend || {};
+
+(function($, my) {
+  // ## ElasticSearch Backend
+  //
+  // Connecting to [ElasticSearch](http://www.elasticsearch.org/)
+  //
+  // To use this backend ensure your Dataset has a elasticsearch_url,
+  // webstore_url or url attribute (used in that order)
+  my.ElasticSearch = Backbone.Model.extend({
+    _getESUrl: function(dataset) {
+      var out = dataset.get('elasticsearch_url');
+      if (out) return out;
+      out = dataset.get('webstore_url');
+      if (out) return out;
+      out = dataset.get('url');
+      return out;
+    },
+    sync: function(method, model, options) {
+      var self = this;
+      if (method === "read") {
+        if (model.__type__ == 'Dataset') {
+          var base = self._getESUrl(model);
+          var schemaUrl = base + '/_mapping';
+          var jqxhr = $.ajax({
+            url: schemaUrl,
+            dataType: 'jsonp'
+          });
+          var dfd = $.Deferred();
+          my.wrapInTimeout(jqxhr).done(function(schema) {
+            // only one top level key in ES = the type so we can ignore it
+            var key = _.keys(schema)[0];
+            var fieldData = _.map(schema[key].properties, function(dict, fieldName) {
+              dict.id = fieldName;
+              return dict;
+            });
+            model.fields.reset(fieldData);
+            dfd.resolve(model, jqxhr);
+          })
+          .fail(function(arguments) {
+            dfd.reject(arguments);
+          });
+          return dfd.promise();
+        }
+      } else {
+        alert('This backend currently only supports read operations');
+      }
+    },
+    _normalizeQuery: function(queryObj) {
+      if (queryObj.toJSON) {
+        var out = queryObj.toJSON();
+      } else {
+        var out = _.extend({}, queryObj);
+      }
+      if (out.q != undefined && out.q.trim() === '') {
+        delete out.q;
+      }
+      if (!out.q) {
+        out.query = {
+          match_all: {}
+        }
+      } else {
+        out.query = {
+          query_string: {
+            query: out.q
+          }
+        }
+        delete out.q;
+      }
+      return out;
+    },
+    query: function(model, queryObj) {
+      var queryNormalized = this._normalizeQuery(queryObj);
+      var data = {source: JSON.stringify(queryNormalized)};
+      var base = this._getESUrl(model);
+      var jqxhr = $.ajax({
+        url: base + '/_search',
+        data: data,
+        dataType: 'jsonp'
+      });
+      var dfd = $.Deferred();
+      // TODO: fail case
+      jqxhr.done(function(results) {
+        model.docCount = results.hits.total;
+        var docs = _.map(results.hits.hits, function(result) {
+          var _out = result._source;
+          _out.id = result._id;
+          return _out;
+        });
+        dfd.resolve(docs);
+      });
+      return dfd.promise();
+    }
+  });
+  recline.Model.backends['elasticsearch'] = new my.ElasticSearch();
+
+}(jQuery, this.recline.Backend));
+
+this.recline = this.recline || {};
+this.recline.Backend = this.recline.Backend || {};
+
+(function($, my) {
+  // ## Google spreadsheet backend
+  // 
+  // Connect to Google Docs spreadsheet.
+  //
+  // Dataset must have a url attribute pointing to the Gdocs
+  // spreadsheet's JSON feed e.g.
+  //
+  // <pre>
+  // var dataset = new recline.Model.Dataset({
+  //     url: 'https://spreadsheets.google.com/feeds/list/0Aon3JiuouxLUdDQwZE1JdV94cUd6NWtuZ0IyWTBjLWc/od6/public/values?alt=json'
+  //   },
+  //   'gdocs'
+  // );
+  // </pre>
+  my.GDoc = Backbone.Model.extend({
+    sync: function(method, model, options) {
+      var self = this;
+      if (method === "read") { 
+        var dfd = $.Deferred(); 
+        var dataset = model;
+
+        $.getJSON(model.get('url'), function(d) {
+          result = self.gdocsToJavascript(d);
+          model.fields.reset(_.map(result.field, function(fieldId) {
+              return {id: fieldId};
+            })
+          );
+          // cache data onto dataset (we have loaded whole gdoc it seems!)
+          model._dataCache = result.data;
+          dfd.resolve(model);
+        })
+        return dfd.promise(); }
+    },
+
+    query: function(dataset, queryObj) { 
+      var dfd = $.Deferred();
+      var fields = _.pluck(dataset.fields.toJSON(), 'id');
+
+      // zip the fields with the data rows to produce js objs
+      // TODO: factor this out as a common method with other backends
+      var objs = _.map(dataset._dataCache, function (d) { 
+        var obj = {};
+        _.each(_.zip(fields, d), function (x) { obj[x[0]] = x[1]; })
+        return obj;
+      });
+      dfd.resolve(objs);
+      return dfd;
+    },
+    gdocsToJavascript:  function(gdocsSpreadsheet) {
+      /*
+         :options: (optional) optional argument dictionary:
+         columnsToUse: list of columns to use (specified by field names)
+         colTypes: dictionary (with column names as keys) specifying types (e.g. range, percent for use in conversion).
+         :return: tabular data object (hash with keys: field and data).
+
+         Issues: seems google docs return columns in rows in random order and not even sure whether consistent across rows.
+         */
+      var options = {};
+      if (arguments.length > 1) {
+        options = arguments[1];
+      }
+      var results = {
+        'field': [],
+        'data': []
+      };
+      // default is no special info on type of columns
+      var colTypes = {};
+      if (options.colTypes) {
+        colTypes = options.colTypes;
+      }
+      // either extract column headings from spreadsheet directly, or used supplied ones
+      if (options.columnsToUse) {
+        // columns set to subset supplied
+        results.field = options.columnsToUse;
+      } else {
+        // set columns to use to be all available
+        if (gdocsSpreadsheet.feed.entry.length > 0) {
+          for (var k in gdocsSpreadsheet.feed.entry[0]) {
+            if (k.substr(0, 3) == 'gsx') {
+              var col = k.substr(4)
+                results.field.push(col);
+            }
+          }
+        }
+      }
+
+      // converts non numberical values that should be numerical (22.3%[string] -> 0.223[float])
+      var rep = /^([\d\.\-]+)\%$/;
+      $.each(gdocsSpreadsheet.feed.entry, function (i, entry) {
+        var row = [];
+        for (var k in results.field) {
+          var col = results.field[k];
+          var _keyname = 'gsx$' + col;
+          var value = entry[_keyname]['$t'];
+          // if labelled as % and value contains %, convert
+          if (colTypes[col] == 'percent') {
+            if (rep.test(value)) {
+              var value2 = rep.exec(value);
+              var value3 = parseFloat(value2);
+              value = value3 / 100;
+            }
+          }
+          row.push(value);
+        }
+        results.data.push(row);
+      });
+      return results;
+    }
+  });
+  recline.Model.backends['gdocs'] = new my.GDoc();
+
+}(jQuery, this.recline.Backend));
+
+this.recline = this.recline || {};
+this.recline.Backend = this.recline.Backend || {};
+
+(function($, my) {
+  // ## Memory Backend - uses in-memory data
+  //
+  // This is very artificial and is really only designed for testing
+  // purposes.
+  //
+  // To use it you should provide in your constructor data:
+  // 
+  //   * metadata (including fields array)
+  //   * documents: list of hashes, each hash being one doc. A doc *must* have an id attribute which is unique.
+  //
+  //  Example:
+  // 
+  //  <pre>
+  //  // Backend setup
+  //  var backend = recline.Backend.Memory();
+  //  backend.addDataset({
+  //    metadata: {
+  //      id: 'my-id',
+  //      title: 'My Title'
+  //    },
+  //    fields: [{id: 'x'}, {id: 'y'}, {id: 'z'}],
+  //    documents: [
+  //        {id: 0, x: 1, y: 2, z: 3},
+  //        {id: 1, x: 2, y: 4, z: 6}
+  //      ]
+  //  });
+  //  // later ...
+  //  var dataset = Dataset({id: 'my-id'});
+  //  dataset.fetch();
+  //  etc ...
+  //  </pre>
+  my.Memory = Backbone.Model.extend({
+    initialize: function() {
+      this.datasets = {};
+    },
+    addDataset: function(data) {
+      this.datasets[data.metadata.id] = $.extend(true, {}, data);
+    },
+    sync: function(method, model, options) {
+      var self = this;
+      if (method === "read") {
+        var dfd = $.Deferred();
+        if (model.__type__ == 'Dataset') {
+          var rawDataset = this.datasets[model.id];
+          model.set(rawDataset.metadata);
+          model.fields.reset(rawDataset.fields);
+          model.docCount = rawDataset.documents.length;
+          dfd.resolve(model);
+        }
+        return dfd.promise();
+      } else if (method === 'update') {
+        var dfd = $.Deferred();
+        if (model.__type__ == 'Document') {
+          _.each(self.datasets[model.dataset.id].documents, function(doc, idx) {
+            if(doc.id === model.id) {
+              self.datasets[model.dataset.id].documents[idx] = model.toJSON();
+            }
+          });
+          dfd.resolve(model);
+        }
+        return dfd.promise();
+      } else if (method === 'delete') {
+        var dfd = $.Deferred();
+        if (model.__type__ == 'Document') {
+          var rawDataset = self.datasets[model.dataset.id];
+          var newdocs = _.reject(rawDataset.documents, function(doc) {
+            return (doc.id === model.id);
+          });
+          rawDataset.documents = newdocs;
+          dfd.resolve(model);
+        }
+        return dfd.promise();
+      } else {
+        alert('Not supported: sync on Memory backend with method ' + method + ' and model ' + model);
+      }
+    },
+    query: function(model, queryObj) {
+      var numRows = queryObj.size;
+      var start = queryObj.from;
+      var dfd = $.Deferred();
+      results = this.datasets[model.id].documents;
+      // not complete sorting!
+      _.each(queryObj.sort, function(sortObj) {
+        var fieldName = _.keys(sortObj)[0];
+        results = _.sortBy(results, function(doc) {
+          var _out = doc[fieldName];
+          return (sortObj[fieldName].order == 'asc') ? _out : -1*_out;
+        });
+      });
+      var results = results.slice(start, start+numRows);
+      dfd.resolve(results);
+      return dfd.promise();
+    }
+  });
+  recline.Model.backends['memory'] = new my.Memory();
+
+}(jQuery, this.recline.Backend));
+this.recline = this.recline || {};
+this.recline.Backend = this.recline.Backend || {};
+
+(function($, my) {
+  // ## Webstore Backend
+  //
+  // Connecting to [Webstores](http://github.com/okfn/webstore)
+  //
+  // To use this backend ensure your Dataset has a webstore_url in its attributes.
+  my.Webstore = Backbone.Model.extend({
+    sync: function(method, model, options) {
+      if (method === "read") {
+        if (model.__type__ == 'Dataset') {
+          var base = model.get('webstore_url');
+          var schemaUrl = base + '/schema.json';
+          var jqxhr = $.ajax({
+            url: schemaUrl,
+              dataType: 'jsonp',
+              jsonp: '_callback'
+          });
+          var dfd = $.Deferred();
+          my.wrapInTimeout(jqxhr).done(function(schema) {
+            var fieldData = _.map(schema.data, function(item) {
+              item.id = item.name;
+              delete item.name;
+              return item;
+            });
+            model.fields.reset(fieldData);
+            model.docCount = schema.count;
+            dfd.resolve(model, jqxhr);
+          })
+          .fail(function(arguments) {
+            dfd.reject(arguments);
+          });
+          return dfd.promise();
+        }
+      }
+    },
+    query: function(model, queryObj) {
+      var base = model.get('webstore_url');
+      var data = {
+        _limit:  queryObj.size
+        , _offset: queryObj.from
+      };
+      var jqxhr = $.ajax({
+        url: base + '.json',
+        data: data,
+        dataType: 'jsonp',
+        jsonp: '_callback',
+        cache: true
+      });
+      var dfd = $.Deferred();
+      jqxhr.done(function(results) {
+        dfd.resolve(results.data);
+      });
+      return dfd.promise();
+    }
+  });
+  recline.Model.backends['webstore'] = new my.Webstore();
+
+}(jQuery, this.recline.Backend));
