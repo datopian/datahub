@@ -140,11 +140,9 @@ my.DataGrid = Backbone.View.extend({
   },
 
   setColumnSort: function(order) {
-    this.model.query({
-      sort: [
-        [this.state.currentColumn, order]
-      ]
-    });
+    var sort = [{}];
+    sort[0][this.state.currentColumn] = {order: order};
+    this.model.query({sort: sort});
   },
   
   hideColumn: function() {

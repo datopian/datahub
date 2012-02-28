@@ -84,10 +84,11 @@ this.recline.Backend = this.recline.Backend || {};
       var dfd = $.Deferred();
       results = this.datasets[model.id].documents;
       // not complete sorting!
-      _.each(queryObj.sort, function(item) {
+      _.each(queryObj.sort, function(sortObj) {
+        var fieldName = _.keys(sortObj)[0];
         results = _.sortBy(results, function(doc) {
-          var _out = doc[item[0]];
-          return (item[1] == 'asc') ? _out : -1*_out;
+          var _out = doc[fieldName];
+          return (sortObj[fieldName].order == 'asc') ? _out : -1*_out;
         });
       });
       var results = results.slice(start, start+numRows);

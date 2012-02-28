@@ -57,7 +57,7 @@ test('Memory Backend: query sort', function () {
   var data = dataset.backend.datasets[memoryData.metadata.id];
   var queryObj = {
     sort: [
-      ['y', 'desc']
+      {'y': {order: 'desc'}}
     ]
   };
   dataset.query(queryObj).then(function(docs) {
