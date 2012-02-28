@@ -4,10 +4,21 @@ this.recline.Backend = this.recline.Backend || {};
 (function($, my) {
   // ## ElasticSearch Backend
   //
-  // Connecting to [ElasticSearch](http://www.elasticsearch.org/)
+  // Connecting to [ElasticSearch](http://www.elasticsearch.org/).
   //
-  // To use this backend ensure your Dataset has a elasticsearch_url,
-  // webstore_url or url attribute (used in that order)
+  // To use this backend ensure your Dataset has one of the following
+  // attributes (first one found is used):
+  //
+  // <pre>
+  // elasticsearch_url
+  // webstore_url
+  // url
+  // </pre>
+  //
+  // This should point to the ES type url. E.G. for ES running on
+  // localhost:9200 with index twitter and type tweet it would be
+  //
+  // <pre>http://localhost:9200/twitter/tweet</pre>
   my.ElasticSearch = Backbone.Model.extend({
     _getESUrl: function(dataset) {
       var out = dataset.get('elasticsearch_url');

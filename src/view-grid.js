@@ -220,7 +220,8 @@ my.DataGrid = Backbone.View.extend({
 // ## DataGridRow View for rendering an individual document.
 //
 // Since we want this to update in place it is up to creator to provider the element to attach to.
-// In addition you must pass in a fields in the constructor options. This should be list of fields for the DataGrid.
+//
+// In addition you *must* pass in a FieldList in the constructor options. This should be list of fields for the DataGrid.
 //
 // Additional options can be passed in a second hash argument. Options:
 //
@@ -229,6 +230,19 @@ my.DataGrid = Backbone.View.extend({
 //   corresponding field object and document is the document object. Note
 //   that implementing functions can ignore arguments (e.g.
 //   function(value) would be a valid cellRenderer function).
+//
+// Example:
+//
+// <pre>
+// var row = new DataGridRow({
+//   model: dataset-document,
+//     el: dom-element,
+//     fields: mydatasets.fields // a FieldList object
+//   }, {
+//     cellRenderer: my-cell-renderer-function 
+//   }
+// );
+// </pre>
 my.DataGridRow = Backbone.View.extend({
   initialize: function(initData, options) {
     _.bindAll(this, 'render');
@@ -280,9 +294,8 @@ my.DataGridRow = Backbone.View.extend({
     return this;
   },
 
-  // Cell Editor
-  // ===========
-
+  // ===================
+  // Cell Editor methods
   onEditClick: function(e) {
     var editing = this.el.find('.data-table-cell-editor-editor');
     if (editing.length > 0) {

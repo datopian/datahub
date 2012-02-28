@@ -2,9 +2,7 @@
 //
 // Backends are connectors to backend data sources and stores
 //
-// Backends are implemented as Backbone models but this is just a
-// convenience (they do not save or load themselves from any remote
-// source)
+// This is just the base module containing various convenience methods.
 this.recline = this.recline || {};
 this.recline.Backend = this.recline.Backend || {};
 
