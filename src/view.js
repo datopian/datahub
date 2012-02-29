@@ -290,7 +290,7 @@ my.setHashQueryString = function(queryParams) {
 
 // ## notify
 //
-// Create a notification (a div.alert-message in div.alert-messsages) using provide messages and options. Options are:
+// Create a notification (a div.alert in div.alert-messsages) using provide messages and options. Options are:
 //
 // * category: warning (default), success, error
 // * persist: if true alert is persistent, o/w hidden after 3s (default = false)
