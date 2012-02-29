@@ -122,36 +122,11 @@
   * Notifications
   *********************************************************/
 
-.notification-container {
-  width: 400px;
-  left: 520px;
-  display: none;
-  position: fixed;
-  top: 0;
-  z-index: 100;
-  text-align: center;
-}
-
-.notification {
-  display: inline-block;
-  margin: 0 auto;
-  padding: 5px 8px 4px;
-  font-size: 1.3em;
-  text-align: left;
-  font-weight: bold;
-  background: #fe8;
-  -moz-border-radius: 2px;
-  -webkit-border-radius: 2px;
-  border-radius: 2px;
-}
-
-.notification-action {
-  padding-left: 10px;
-}
-
 .notification-loader {
-  padding: 0 3px 0 0;
-  opacity: 0.3;
+  width: 18px;
+  margin-left: 5px;
+  background: url(images/small-spinner.gif) no-repeat;
+  display: inline-block;
 }
 
 
