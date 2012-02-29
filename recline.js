@@ -872,7 +872,8 @@ my.DataGrid = Backbone.View.extend({
 // ## DataGridRow View for rendering an individual document.
 //
 // Since we want this to update in place it is up to creator to provider the element to attach to.
-// In addition you must pass in a fields in the constructor options. This should be list of fields for the DataGrid.
+//
+// In addition you *must* pass in a FieldList in the constructor options. This should be list of fields for the DataGrid.
 //
 // Additional options can be passed in a second hash argument. Options:
 //
@@ -881,6 +882,19 @@ my.DataGrid = Backbone.View.extend({
 //   corresponding field object and document is the document object. Note
 //   that implementing functions can ignore arguments (e.g.
 //   function(value) would be a valid cellRenderer function).
+//
+// Example:
+//
+// <pre>
+// var row = new DataGridRow({
+//   model: dataset-document,
+//     el: dom-element,
+//     fields: mydatasets.fields // a FieldList object
+//   }, {
+//     cellRenderer: my-cell-renderer-function 
+//   }
+// );
+// </pre>
 my.DataGridRow = Backbone.View.extend({
   initialize: function(initData, options) {
     _.bindAll(this, 'render');
@@ -932,9 +946,8 @@ my.DataGridRow = Backbone.View.extend({
     return this;
   },
 
-  // Cell Editor
-  // ===========
-
+  // ===================
+  // Cell Editor methods
   onEditClick: function(e) {
     var editing = this.el.find('.data-table-cell-editor-editor');
     if (editing.length > 0) {
@@ -1156,7 +1169,7 @@ my.DataExplorer = Backbone.View.extend({
 my.QueryEditor = Backbone.View.extend({
   className: 'recline-query-editor', 
   template: ' \
-    <form action="" method="GET"> \
+    <form action="" method="GET" class="form-inline"> \
       <input type="text" name="q" value="{{q}}" class="text-query" /> \
       <div class="pagination"> \
         <ul> \
@@ -1278,12 +1291,11 @@ my.notify = function(message, options) {
     },
     options);
   var _template = ' \
-    <div class="alert-message {{category}} fade in" data-alert="alert"><a class="close" href="#">×</a> \
-      <p>{{msg}} \
+    <div class="alert alert-{{category}} fade in" data-alert="alert"><a class="close" data-dismiss="alert" href="#">×</a> \
+      {{msg}} \
         {{#loader}} \
         <img src="images/small-spinner.gif" class="notification-loader"> \
         {{/loader}} \
-      </p> \
     </div>';
   var _templated = $.mustache(_template, tmplData); 
   _templated = $(_templated).appendTo($('.data-explorer .alert-messages'));
@@ -1645,10 +1657,21 @@ this.recline.Backend = this.recline.Backend || {};
 (function($, my) {
   // ## ElasticSearch Backend
   //
-  // Connecting to [ElasticSearch](http://www.elasticsearch.org/)
+  // Connecting to [ElasticSearch](http://www.elasticsearch.org/).
   //
-  // To use this backend ensure your Dataset has a elasticsearch_url,
-  // webstore_url or url attribute (used in that order)
+  // To use this backend ensure your Dataset has one of the following
+  // attributes (first one found is used):
+  //
+  // <pre>
+  // elasticsearch_url
+  // webstore_url
+  // url
+  // </pre>
+  //
+  // This should point to the ES type url. E.G. for ES running on
+  // localhost:9200 with index twitter and type tweet it would be
+  //
+  // <pre>http://localhost:9200/twitter/tweet</pre>
   my.ElasticSearch = Backbone.Model.extend({
     _getESUrl: function(dataset) {
       var out = dataset.get('elasticsearch_url');
@@ -1861,15 +1884,12 @@ this.recline.Backend = this.recline.Backend || {};
 (function($, my) {
   // ## Memory Backend - uses in-memory data
   //
-  // This is very artificial and is really only designed for testing
-  // purposes.
-  //
   // To use it you should provide in your constructor data:
   // 
   //   * metadata (including fields array)
   //   * documents: list of hashes, each hash being one doc. A doc *must* have an id attribute which is unique.
   //
-  //  Example:
+  // Example:
   // 
   //  <pre>
   //  // Backend setup
@@ -1886,7 +1906,7 @@ this.recline.Backend = this.recline.Backend || {};
   //      ]
   //  });
   //  // later ...
-  //  var dataset = Dataset({id: 'my-id'});
+  //  var dataset = Dataset({id: 'my-id'}, 'memory');
   //  dataset.fetch();
   //  etc ...
   //  </pre>

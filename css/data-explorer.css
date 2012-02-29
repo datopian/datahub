@@ -20,7 +20,12 @@
 
 .header .recline-query-editor {
   float: right;
-  margin: 4px;
+  height: 30px;
+}
+
+.header .recline-query-editor form {
+  height: 30px;
+  margin-bottom: 0;
 }
 
 .header .recline-query-editor label {
@@ -39,10 +44,17 @@
 
 .header .recline-query-editor .pagination input {
   width: 30px;
+  height: 18px;
+  padding: 2px 4px;
+  margin-top: -4px;
 }
 
 .header .recline-query-editor .pagination a {
   line-height: 28px;
+}
+
+.header .recline-query-editor form .btn {
+  margin-top: -23px;
 }
 
 .data-view-container {
@@ -155,11 +167,13 @@
 .data-table {
   border: 1px solid #ccc;
   font-size: 12px;
+  width: 100%;
 }
 
 .data-table td, .data-table th {
   border-left: 1px solid #ccc;
   padding: 3px 4px;
+  text-align: left;
 }
 
 .data-table tr td:first-child, .data-table tr th:first-child {
