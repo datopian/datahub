@@ -324,7 +324,7 @@ my.notify = function(message, options) {
 //
 // Clear all existing notifications
 my.clearNotifications = function() {
-  var $notifications = $('.data-explorer .alert-message');
+  var $notifications = $('.data-explorer .alert-messages .alert');
   $notifications.remove();
 }
 

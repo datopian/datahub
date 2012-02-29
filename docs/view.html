@@ -292,7 +292,7 @@ note this.model and dataset returned are the same</p>             </td>         
 <span class="p">}</span></pre></div>             </td>           </tr>                               <tr id="section-15">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-15">&#182;</a>               </div>               <h2>clearNotifications</h2>
 
 <p>Clear all existing notifications</p>             </td>             <td class="code">               <div class="highlight"><pre><span class="nx">my</span><span class="p">.</span><span class="nx">clearNotifications</span> <span class="o">=</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
-  <span class="kd">var</span> <span class="nx">$notifications</span> <span class="o">=</span> <span class="nx">$</span><span class="p">(</span><span class="s1">&#39;.data-explorer .alert-message&#39;</span><span class="p">);</span>
+  <span class="kd">var</span> <span class="nx">$notifications</span> <span class="o">=</span> <span class="nx">$</span><span class="p">(</span><span class="s1">&#39;.data-explorer .alert-messages .alert&#39;</span><span class="p">);</span>
   <span class="nx">$notifications</span><span class="p">.</span><span class="nx">remove</span><span class="p">();</span>
 <span class="p">}</span>
 
