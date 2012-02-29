@@ -48,6 +48,9 @@ this.recline.Backend = this.recline.Backend || {};
       });
       var dfd = $.Deferred();
       my.wrapInTimeout(jqxhr).done(function(results) {
+        if (results.error) {
+          dfd.reject(results.error);
+        }
         dataset.fields.reset(_.map(results.fields, function(fieldId) {
           return {id: fieldId};
           })
