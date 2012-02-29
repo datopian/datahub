@@ -10,7 +10,7 @@
   <!--[if lt IE 9]>
     <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
   <![endif]-->
-  <link rel="stylesheet" href="../vendor/bootstrap/1.4.0/bootstrap.css">
+  <link rel="stylesheet" href="../vendor/bootstrap/2.0.0/bootstrap.css">
   <link rel="stylesheet" href="../css/data-explorer.css">
   <link rel="stylesheet" href="../css/graph-flot.css">
   <link rel="stylesheet" href="../css/bootstrap.css">
@@ -21,20 +21,20 @@
   <script type="text/javascript" src="../vendor/jquery-ui-1.8.14.custom.min.js"></script>
   <script type="text/javascript" src="../vendor/jquery.flot-0.7.js"></script>
   <script type="text/javascript" src="../vendor/jquery.mustache.js"></script>
-  <script type="text/javascript" src="../vendor/bootstrap/1.4.0/bootstrap-alerts.js"></script>
+  <script type="text/javascript" src="../vendor/bootstrap/2.0.0/bootstrap.js"></script>
 
   <script type="text/javascript" src="../recline.js"></script>
   <script type="text/javascript" src="js/app.js"></script>
 </head> 
 <body>
-  <div class="topbar">
-    <div class="topbar-inner">
+  <div class="navbar navbar-fixed-top">
+    <div class="navbar-inner">
       <div class="container-fluid">
         <a class="brand" href="#">Recline Data Explorer</a>
-        <ul class="nav secondary-nav">
+        <ul class="nav pull-right">
           <li><a class="set-read-only" title="Put into read-only mode">Read-only</a></li>
         </ul>
-        <form class="webstore-load pull-right" title="Update from the specified webstore dataset">
+        <form class="webstore-load pull-right navbar-search" title="Update from the specified webstore dataset">
           <input type="text" name="source" size="50" />
           <select name="backend_type">
             <option value="elasticsearch">ElasticSearch</option>

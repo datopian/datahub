@@ -181,7 +181,7 @@ my.DataExplorer = Backbone.View.extend({
 my.QueryEditor = Backbone.View.extend({
   className: 'recline-query-editor', 
   template: ' \
-    <form action="" method="GET"> \
+    <form action="" method="GET" class="form-inline"> \
       <input type="text" name="q" value="{{q}}" class="text-query" /> \
       <div class="pagination"> \
         <ul> \
@@ -303,12 +303,11 @@ my.notify = function(message, options) {
     },
     options);
   var _template = ' \
-    <div class="alert-message {{category}} fade in" data-alert="alert"><a class="close" href="#">×</a> \
-      <p>{{msg}} \
+    <div class="alert alert-{{category}} fade in" data-alert="alert"><a class="close" data-dismiss="alert" href="#">×</a> \
+      {{msg}} \
         {{#loader}} \
         <img src="images/small-spinner.gif" class="notification-loader"> \
         {{/loader}} \
-      </p> \
     </div>';
   var _templated = $.mustache(_template, tmplData); 
   _templated = $(_templated).appendTo($('.data-explorer .alert-messages'));
