@@ -160,7 +160,7 @@ my.DataGrid = Backbone.View.extend({
   template: ' \
     <div class="data-table-menu-overlay" style="display: none; z-index: 101; ">&nbsp;</div> \
     <ul class="data-table-menu"></ul> \
-    <table class="data-table" cellspacing="0"> \
+    <table class="data-table table-striped" cellspacing="0"> \
       <thead> \
         <tr> \
           {{#notEmpty}} \
