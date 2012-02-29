@@ -164,8 +164,10 @@ my.DataExplorer = Backbone.View.extend({
 
   updateNav: function(pageName, queryString) {
     this.el.find('.navigation li').removeClass('active');
+    this.el.find('.navigation li a').removeClass('disabled');
     var $el = this.el.find('.navigation li a[href=#' + pageName + ']');
     $el.parent().addClass('active');
+    $el.addClass('disabled');
     // show the specific page
     _.each(this.pageViews, function(view, idx) {
       if (view.id === pageName) {
