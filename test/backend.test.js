@@ -19,7 +19,7 @@ var memoryData = {
 };
 
 function makeBackendDataset() {
-  var backend = new recline.Model.BackendMemory();
+  var backend = new recline.Backend.Memory();
   backend.addDataset(memoryData);
   var dataset = new recline.Model.Dataset({id: memoryData.metadata.id}, backend);
   return dataset;
@@ -44,7 +44,7 @@ test('Memory Backend: query', function () {
   var dataset = makeBackendDataset();
   var queryObj = {
     size: 4
-    , offset: 2
+    , from: 2
   };
   dataset.query(queryObj).then(function(documentList) {
     deepEqual(data.documents[2], documentList.models[0].toJSON());
@@ -57,7 +57,7 @@ test('Memory Backend: query sort', function () {
   var data = dataset.backend.datasets[memoryData.metadata.id];
   var queryObj = {
     sort: [
-      ['y', 'desc']
+      {'y': {order: 'desc'}}
     ]
   };
   dataset.query(queryObj).then(function(docs) {

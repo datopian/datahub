@@ -137,7 +137,7 @@ my.FlotGraph = Backbone.View.extend({
     //   Uncaught Invalid dimensions for plot, width = 0, height = 0
     // * There is no data for the plot -- either same error or may have issues later with errors like 'non-existent node-value' 
     var areWeVisible = !jQuery.expr.filters.hidden(this.el[0]);
-    if (!this.plot && (!areWeVisible || this.model.currentDocuments.length == 0)) {
+    if ((!areWeVisible || this.model.currentDocuments.length == 0)) {
       return
     }
     // create this.plot and cache it

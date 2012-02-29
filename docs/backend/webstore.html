@@ -1,0 +1,61 @@
+<!DOCTYPE html>  <html> <head>   <title>webstore.js</title>   <meta http-equiv="content-type" content="text/html; charset=UTF-8">   <link rel="stylesheet" media="all" href="docco.css" /> </head> <body>   <div id="container">     <div id="background"></div>            <div id="jump_to">         Jump To &hellip;         <div id="jump_wrapper">           <div id="jump_page">                                           <a class="source" href="base.html">                 base.js               </a>                                           <a class="source" href="dataproxy.html">                 dataproxy.js               </a>                                           <a class="source" href="elasticsearch.html">                 elasticsearch.js               </a>                                           <a class="source" href="gdocs.html">                 gdocs.js               </a>                                           <a class="source" href="memory.html">                 memory.js               </a>                                           <a class="source" href="webstore.html">                 webstore.js               </a>                        </div>         </div>       </div>          <table cellpadding="0" cellspacing="0">       <thead>         <tr>           <th class="docs">             <h1>               webstore.js             </h1>           </th>           <th class="code">           </th>         </tr>       </thead>       <tbody>                               <tr id="section-1">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-1">&#182;</a>               </div>                            </td>             <td class="code">               <div class="highlight"><pre><span class="k">this</span><span class="p">.</span><span class="nx">recline</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">recline</span> <span class="o">||</span> <span class="p">{};</span>
+<span class="k">this</span><span class="p">.</span><span class="nx">recline</span><span class="p">.</span><span class="nx">Backend</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">recline</span><span class="p">.</span><span class="nx">Backend</span> <span class="o">||</span> <span class="p">{};</span>
+
+<span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">$</span><span class="p">,</span> <span class="nx">my</span><span class="p">)</span> <span class="p">{</span></pre></div>             </td>           </tr>                               <tr id="section-2">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-2">&#182;</a>               </div>               <h2>Webstore Backend</h2>
+
+<p>Connecting to <a href="http://github.com/okfn/webstore">Webstores</a></p>
+
+<p>To use this backend ensure your Dataset has a webstore_url in its attributes.</p>             </td>             <td class="code">               <div class="highlight"><pre>  <span class="nx">my</span><span class="p">.</span><span class="nx">Webstore</span> <span class="o">=</span> <span class="nx">Backbone</span><span class="p">.</span><span class="nx">Model</span><span class="p">.</span><span class="nx">extend</span><span class="p">({</span>
+    <span class="nx">sync</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">method</span><span class="p">,</span> <span class="nx">model</span><span class="p">,</span> <span class="nx">options</span><span class="p">)</span> <span class="p">{</span>
+      <span class="k">if</span> <span class="p">(</span><span class="nx">method</span> <span class="o">===</span> <span class="s2">&quot;read&quot;</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">if</span> <span class="p">(</span><span class="nx">model</span><span class="p">.</span><span class="nx">__type__</span> <span class="o">==</span> <span class="s1">&#39;Dataset&#39;</span><span class="p">)</span> <span class="p">{</span>
+          <span class="kd">var</span> <span class="nx">base</span> <span class="o">=</span> <span class="nx">model</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s1">&#39;webstore_url&#39;</span><span class="p">);</span>
+          <span class="kd">var</span> <span class="nx">schemaUrl</span> <span class="o">=</span> <span class="nx">base</span> <span class="o">+</span> <span class="s1">&#39;/schema.json&#39;</span><span class="p">;</span>
+          <span class="kd">var</span> <span class="nx">jqxhr</span> <span class="o">=</span> <span class="nx">$</span><span class="p">.</span><span class="nx">ajax</span><span class="p">({</span>
+            <span class="nx">url</span><span class="o">:</span> <span class="nx">schemaUrl</span><span class="p">,</span>
+              <span class="nx">dataType</span><span class="o">:</span> <span class="s1">&#39;jsonp&#39;</span><span class="p">,</span>
+              <span class="nx">jsonp</span><span class="o">:</span> <span class="s1">&#39;_callback&#39;</span>
+          <span class="p">});</span>
+          <span class="kd">var</span> <span class="nx">dfd</span> <span class="o">=</span> <span class="nx">$</span><span class="p">.</span><span class="nx">Deferred</span><span class="p">();</span>
+          <span class="nx">my</span><span class="p">.</span><span class="nx">wrapInTimeout</span><span class="p">(</span><span class="nx">jqxhr</span><span class="p">).</span><span class="nx">done</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">schema</span><span class="p">)</span> <span class="p">{</span>
+            <span class="kd">var</span> <span class="nx">fieldData</span> <span class="o">=</span> <span class="nx">_</span><span class="p">.</span><span class="nx">map</span><span class="p">(</span><span class="nx">schema</span><span class="p">.</span><span class="nx">data</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">item</span><span class="p">)</span> <span class="p">{</span>
+              <span class="nx">item</span><span class="p">.</span><span class="nx">id</span> <span class="o">=</span> <span class="nx">item</span><span class="p">.</span><span class="nx">name</span><span class="p">;</span>
+              <span class="k">delete</span> <span class="nx">item</span><span class="p">.</span><span class="nx">name</span><span class="p">;</span>
+              <span class="k">return</span> <span class="nx">item</span><span class="p">;</span>
+            <span class="p">});</span>
+            <span class="nx">model</span><span class="p">.</span><span class="nx">fields</span><span class="p">.</span><span class="nx">reset</span><span class="p">(</span><span class="nx">fieldData</span><span class="p">);</span>
+            <span class="nx">model</span><span class="p">.</span><span class="nx">docCount</span> <span class="o">=</span> <span class="nx">schema</span><span class="p">.</span><span class="nx">count</span><span class="p">;</span>
+            <span class="nx">dfd</span><span class="p">.</span><span class="nx">resolve</span><span class="p">(</span><span class="nx">model</span><span class="p">,</span> <span class="nx">jqxhr</span><span class="p">);</span>
+          <span class="p">})</span>
+          <span class="p">.</span><span class="nx">fail</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">arguments</span><span class="p">)</span> <span class="p">{</span>
+            <span class="nx">dfd</span><span class="p">.</span><span class="nx">reject</span><span class="p">(</span><span class="nx">arguments</span><span class="p">);</span>
+          <span class="p">});</span>
+          <span class="k">return</span> <span class="nx">dfd</span><span class="p">.</span><span class="nx">promise</span><span class="p">();</span>
+        <span class="p">}</span>
+      <span class="p">}</span>
+    <span class="p">},</span>
+    <span class="nx">query</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">model</span><span class="p">,</span> <span class="nx">queryObj</span><span class="p">)</span> <span class="p">{</span>
+      <span class="kd">var</span> <span class="nx">base</span> <span class="o">=</span> <span class="nx">model</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s1">&#39;webstore_url&#39;</span><span class="p">);</span>
+      <span class="kd">var</span> <span class="nx">data</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="nx">_limit</span><span class="o">:</span>  <span class="nx">queryObj</span><span class="p">.</span><span class="nx">size</span>
+        <span class="p">,</span> <span class="nx">_offset</span><span class="o">:</span> <span class="nx">queryObj</span><span class="p">.</span><span class="nx">from</span>
+      <span class="p">};</span>
+      <span class="kd">var</span> <span class="nx">jqxhr</span> <span class="o">=</span> <span class="nx">$</span><span class="p">.</span><span class="nx">ajax</span><span class="p">({</span>
+        <span class="nx">url</span><span class="o">:</span> <span class="nx">base</span> <span class="o">+</span> <span class="s1">&#39;.json&#39;</span><span class="p">,</span>
+        <span class="nx">data</span><span class="o">:</span> <span class="nx">data</span><span class="p">,</span>
+        <span class="nx">dataType</span><span class="o">:</span> <span class="s1">&#39;jsonp&#39;</span><span class="p">,</span>
+        <span class="nx">jsonp</span><span class="o">:</span> <span class="s1">&#39;_callback&#39;</span><span class="p">,</span>
+        <span class="nx">cache</span><span class="o">:</span> <span class="kc">true</span>
+      <span class="p">});</span>
+      <span class="kd">var</span> <span class="nx">dfd</span> <span class="o">=</span> <span class="nx">$</span><span class="p">.</span><span class="nx">Deferred</span><span class="p">();</span>
+      <span class="nx">jqxhr</span><span class="p">.</span><span class="nx">done</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">results</span><span class="p">)</span> <span class="p">{</span>
+        <span class="nx">dfd</span><span class="p">.</span><span class="nx">resolve</span><span class="p">(</span><span class="nx">results</span><span class="p">.</span><span class="nx">data</span><span class="p">);</span>
+      <span class="p">});</span>
+      <span class="k">return</span> <span class="nx">dfd</span><span class="p">.</span><span class="nx">promise</span><span class="p">();</span>
+    <span class="p">}</span>
+  <span class="p">});</span>
+  <span class="nx">recline</span><span class="p">.</span><span class="nx">Model</span><span class="p">.</span><span class="nx">backends</span><span class="p">[</span><span class="s1">&#39;webstore&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">my</span><span class="p">.</span><span class="nx">Webstore</span><span class="p">();</span>
+
+<span class="p">}(</span><span class="nx">jQuery</span><span class="p">,</span> <span class="k">this</span><span class="p">.</span><span class="nx">recline</span><span class="p">.</span><span class="nx">Backend</span><span class="p">));</span>
+
+</pre></div>             </td>           </tr>                </tbody>     </table>   </div> </body> </html> 

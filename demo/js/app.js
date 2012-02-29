@@ -6,7 +6,7 @@ $(function() {
     {
       id: 'grid',
       label: 'Grid',
-      view: new recline.View.DataTable({
+      view: new recline.View.DataGrid({
         model: dataset
       })
     },
@@ -62,7 +62,7 @@ function demoDataset() {
       , {id: 5, x: 6, y: 12, z: 18}
     ]
   };
-  var backend = new recline.Model.BackendMemory();
+  var backend = new recline.Backend.Memory();
   backend.addDataset(inData);
   var dataset = new recline.Model.Dataset({id: datasetId}, backend);
   return dataset;
@@ -76,11 +76,13 @@ function setupLoadFromWebstore(callback) {
     e.preventDefault();
     var $form = $(e.target);
     var source = $form.find('input[name="source"]').val();
+    var type = $form.find('select[name="backend_type"]').val();
     var dataset = new recline.Model.Dataset({
-        id: 'gold-prices',
+        id: 'my-dataset',
+        url: source,
         webstore_url: source
       },
-      'webstore'
+      type
     );
     callback(dataset);
   });

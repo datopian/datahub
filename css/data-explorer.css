@@ -12,17 +12,37 @@
   padding-left: 0;
 }
 
-.header .pagination {
+.header .recline-results-info {
+  line-height: 28px;
+  margin-left: 20px;
+  display: inline;
+}
+
+.header .recline-query-editor {
   float: right;
   margin: 4px;
 }
 
-.header .pagination label {
+.header .recline-query-editor label {
   float: none;
 }
 
-.header .pagination input {
+.header .recline-query-editor label {
+  float: none;
+}
+
+.header .recline-query-editor input.text-query {
+  float: left;  
+  margin-top: 1px;
+  margin-right: 5px;
+}
+
+.header .recline-query-editor .pagination input {
   width: 30px;
+}
+
+.header .recline-query-editor .pagination a {
+  line-height: 28px;
 }
 
 .data-view-container {

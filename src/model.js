@@ -39,6 +39,7 @@ my.Dataset = Backbone.Model.extend({
   // Resulting DocumentList are used to reset this.currentDocuments and are
   // also returned.
   query: function(queryObj) {
+    this.trigger('query:start');
     var self = this;
     this.queryState.set(queryObj, {silent: true});
     var dfd = $.Deferred();
@@ -50,9 +51,11 @@ my.Dataset = Backbone.Model.extend({
         return _doc;
       });
       self.currentDocuments.reset(docs);
+      self.trigger('query:done');
       dfd.resolve(self.currentDocuments);
     })
     .fail(function(arguments) {
+      self.trigger('query:fail', arguments);
       dfd.reject(arguments);
     });
     return dfd.promise();
@@ -113,7 +116,7 @@ my.FieldList = Backbone.Collection.extend({
 my.Query = Backbone.Model.extend({
   defaults: {
     size: 100
-    , offset: 0
+    , from: 0
   }
 });
 
