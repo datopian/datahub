@@ -812,7 +812,7 @@ my.DataGrid = Backbone.View.extend({
   template: ' \
     <div class="data-table-menu-overlay" style="display: none; z-index: 101; ">&nbsp;</div> \
     <ul class="data-table-menu"></ul> \
-    <table class="data-table" cellspacing="0"> \
+    <table class="data-table table-striped" cellspacing="0"> \
       <thead> \
         <tr> \
           {{#notEmpty}} \
@@ -1173,9 +1173,9 @@ my.QueryEditor = Backbone.View.extend({
       <input type="text" name="q" value="{{q}}" class="text-query" /> \
       <div class="pagination"> \
         <ul> \
-          <li class="prev action-pagination-update"><a>&laquo; back</a></li> \
+          <li class="prev action-pagination-update"><a>&laquo;</a></li> \
           <li class="active"><a><input name="from" type="text" value="{{from}}" /> &ndash; <input name="to" type="text" value="{{to}}" /> </a></li> \
-          <li class="next action-pagination-update"><a>next &raquo;</a></li> \
+          <li class="next action-pagination-update"><a>&raquo;</a></li> \
         </ul> \
       </div> \
       <button type="submit" class="btn" style="">Update &raquo;</button> \
@@ -1294,7 +1294,7 @@ my.notify = function(message, options) {
     <div class="alert alert-{{category}} fade in" data-alert="alert"><a class="close" data-dismiss="alert" href="#">×</a> \
       {{msg}} \
         {{#loader}} \
-        <img src="images/small-spinner.gif" class="notification-loader"> \
+        <span class="notification-loader">&nbsp;</span> \
         {{/loader}} \
     </div>';
   var _templated = $.mustache(_template, tmplData); 
