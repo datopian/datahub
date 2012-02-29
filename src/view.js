@@ -104,17 +104,30 @@ my.DataExplorer = Backbone.View.extend({
     this.router = new Backbone.Router();
     this.setupRouting();
 
-    this.model.bind('query:start', function(eventName) {
+    this.model.bind('query:start', function() {
         my.notify('Loading data', {loader: true});
       });
-    this.model.bind('query:done', function(eventName) {
+    this.model.bind('query:done', function() {
         my.clearNotifications();
         self.el.find('.doc-count').text(self.model.docCount || 'Unknown');
         my.notify('Data loaded', {category: 'success'});
       });
-    this.model.bind('query:fail', function(eventName, error) {
+    this.model.bind('query:fail', function(error) {
         my.clearNotifications();
-        my.notify(error.message, {category: 'error', persist: true});
+        var msg = '';
+        if (typeof(error) == 'string') {
+          msg = error;
+        } else if (typeof(error) == 'object') {
+          if (error.title) {
+            msg = error.title + ': ';
+          }
+          if (error.message) {
+            msg += error.message;
+          }
+        } else {
+          msg = 'There was an error querying the backend';
+        }
+        my.notify(msg, {category: 'error', persist: true});
       });
 
     // retrieve basic data like fields etc
