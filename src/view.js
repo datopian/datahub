@@ -197,7 +197,10 @@ my.QueryEditor = Backbone.View.extend({
   className: 'recline-query-editor', 
   template: ' \
     <form action="" method="GET" class="form-inline"> \
-      <input type="text" name="q" value="{{q}}" class="text-query" /> \
+      <div class="input-prepend text-query"> \
+        <span class="add-on"><i class="icon-search"></i></span> \
+        <input type="text" name="q" value="{{q}}" class="span2" placeholder="Search data ..." class="search-query" /> \
+      </div> \
       <div class="pagination"> \
         <ul> \
           <li class="prev action-pagination-update"><a>&laquo;</a></li> \

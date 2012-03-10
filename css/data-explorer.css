@@ -23,24 +23,13 @@
   height: 30px;
 }
 
-.header .recline-query-editor form {
-  height: 30px;
-  margin-bottom: 0;
+.header .recline-query-editor .input-prepend {
+  margin-bottom: auto;
 }
 
-.header .recline-query-editor label {
-  float: none;
-}
-
-.header .recline-query-editor label {
-  float: none;
-}
-
-.header .recline-query-editor input.text-query {
+.header .recline-query-editor .text-query input {
   float: left;  
-  margin-top: 1px;
   margin-right: 5px;
-  width: 200px;
 }
 
 .header .recline-query-editor .pagination input {
@@ -51,7 +40,7 @@
 }
 
 .header .recline-query-editor .pagination a {
-  line-height: 28px;
+  line-height: 26px;
 }
 
 .header .recline-query-editor form .btn {
