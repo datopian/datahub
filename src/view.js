@@ -227,7 +227,7 @@ my.QueryEditor = Backbone.View.extend({
     e.preventDefault();
     var newFrom = parseInt(this.el.find('input[name="from"]').val());
     var newSize = parseInt(this.el.find('input[name="to"]').val()) - newFrom;
-    var query = this.el.find('.text-query').val();
+    var query = this.el.find('.text-query input').val();
     this.model.set({size: newSize, from: newFrom, q: query});
   },
   onPaginationUpdate: function(e) {
