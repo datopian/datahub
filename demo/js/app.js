@@ -333,7 +333,7 @@ function demoDataset() {
 
 function setupLoadFromWebstore(callback) {
   // pre-populate webstore load form with an example url
-  var demoUrl = 'http://webstore.thedatahub.org/rufuspollock/gold_prices/data';
+  var demoUrl = 'http://thedatahub.org/api/data/b9aae52b-b082-4159-b46f-7bb9c158d013';
   $('form.webstore-load input[name="source"]').val(demoUrl);
   $('form.webstore-load').submit(function(e) {
     e.preventDefault();
