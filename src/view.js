@@ -104,17 +104,30 @@ my.DataExplorer = Backbone.View.extend({
     this.router = new Backbone.Router();
     this.setupRouting();
 
-    this.model.bind('query:start', function(eventName) {
+    this.model.bind('query:start', function() {
         my.notify('Loading data', {loader: true});
       });
-    this.model.bind('query:done', function(eventName) {
+    this.model.bind('query:done', function() {
         my.clearNotifications();
         self.el.find('.doc-count').text(self.model.docCount || 'Unknown');
         my.notify('Data loaded', {category: 'success'});
       });
-    this.model.bind('query:fail', function(eventName, error) {
+    this.model.bind('query:fail', function(error) {
         my.clearNotifications();
-        my.notify(error.message, {category: 'error', persist: true});
+        var msg = '';
+        if (typeof(error) == 'string') {
+          msg = error;
+        } else if (typeof(error) == 'object') {
+          if (error.title) {
+            msg = error.title + ': ';
+          }
+          if (error.message) {
+            msg += error.message;
+          }
+        } else {
+          msg = 'There was an error querying the backend';
+        }
+        my.notify(msg, {category: 'error', persist: true});
       });
 
     // retrieve basic data like fields etc
@@ -164,8 +177,10 @@ my.DataExplorer = Backbone.View.extend({
 
   updateNav: function(pageName, queryString) {
     this.el.find('.navigation li').removeClass('active');
+    this.el.find('.navigation li a').removeClass('disabled');
     var $el = this.el.find('.navigation li a[href=#' + pageName + ']');
     $el.parent().addClass('active');
+    $el.addClass('disabled');
     // show the specific page
     _.each(this.pageViews, function(view, idx) {
       if (view.id === pageName) {
@@ -181,13 +196,16 @@ my.DataExplorer = Backbone.View.extend({
 my.QueryEditor = Backbone.View.extend({
   className: 'recline-query-editor', 
   template: ' \
-    <form action="" method="GET"> \
-      <input type="text" name="q" value="{{q}}" class="text-query" /> \
+    <form action="" method="GET" class="form-inline"> \
+      <div class="input-prepend text-query"> \
+        <span class="add-on"><i class="icon-search"></i></span> \
+        <input type="text" name="q" value="{{q}}" class="span2" placeholder="Search data ..." class="search-query" /> \
+      </div> \
       <div class="pagination"> \
         <ul> \
-          <li class="prev action-pagination-update"><a>&laquo; back</a></li> \
+          <li class="prev action-pagination-update"><a>&laquo;</a></li> \
           <li class="active"><a><input name="from" type="text" value="{{from}}" /> &ndash; <input name="to" type="text" value="{{to}}" /> </a></li> \
-          <li class="next action-pagination-update"><a>next &raquo;</a></li> \
+          <li class="next action-pagination-update"><a>&raquo;</a></li> \
         </ul> \
       </div> \
       <button type="submit" class="btn" style="">Update &raquo;</button> \
@@ -209,7 +227,7 @@ my.QueryEditor = Backbone.View.extend({
     e.preventDefault();
     var newFrom = parseInt(this.el.find('input[name="from"]').val());
     var newSize = parseInt(this.el.find('input[name="to"]').val()) - newFrom;
-    var query = this.el.find('.text-query').val();
+    var query = this.el.find('.text-query input').val();
     this.model.set({size: newSize, from: newFrom, q: query});
   },
   onPaginationUpdate: function(e) {
@@ -290,7 +308,7 @@ my.setHashQueryString = function(queryParams) {
 
 // ## notify
 //
-// Create a notification (a div.alert-message in div.alert-messsages) using provide messages and options. Options are:
+// Create a notification (a div.alert in div.alert-messsages) using provide messages and options. Options are:
 //
 // * category: warning (default), success, error
 // * persist: if true alert is persistent, o/w hidden after 3s (default = false)
@@ -303,12 +321,11 @@ my.notify = function(message, options) {
     },
     options);
   var _template = ' \
-    <div class="alert-message {{category}} fade in" data-alert="alert"><a class="close" href="#">×</a> \
-      <p>{{msg}} \
+    <div class="alert alert-{{category}} fade in" data-alert="alert"><a class="close" data-dismiss="alert" href="#">×</a> \
+      {{msg}} \
         {{#loader}} \
-        <img src="images/small-spinner.gif" class="notification-loader"> \
+        <span class="notification-loader">&nbsp;</span> \
         {{/loader}} \
-      </p> \
     </div>';
   var _templated = $.mustache(_template, tmplData); 
   _templated = $(_templated).appendTo($('.data-explorer .alert-messages'));
@@ -325,7 +342,7 @@ my.notify = function(message, options) {
 //
 // Clear all existing notifications
 my.clearNotifications = function() {
-  var $notifications = $('.data-explorer .alert-message');
+  var $notifications = $('.data-explorer .alert-messages .alert');
   $notifications.remove();
 }
 

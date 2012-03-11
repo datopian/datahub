@@ -24,29 +24,10 @@ this.recline.Backend = this.recline.Backend || {};
       var self = this;
       if (method === "read") {
         if (model.__type__ == 'Dataset') {
-          var base = self.get('dataproxy_url');
-          // TODO: should we cache for extra efficiency
-          var data = {
-            url: model.get('url')
-            , 'max-results':  1
-            , type: model.get('format') || 'csv'
-          };
-          var jqxhr = $.ajax({
-            url: base
-            , data: data
-            , dataType: 'jsonp'
-          });
+          // Do nothing as we will get fields in query step (and no metadata to
+          // retrieve)
           var dfd = $.Deferred();
-          my.wrapInTimeout(jqxhr).done(function(results) {
-            model.fields.reset(_.map(results.fields, function(fieldId) {
-              return {id: fieldId};
-              })
-            );
-            dfd.resolve(model, jqxhr);
-          })
-          .fail(function(arguments) {
-            dfd.reject(arguments);
-          });
+          dfd.resolve(model);
           return dfd.promise();
         }
       } else {
@@ -66,7 +47,14 @@ this.recline.Backend = this.recline.Backend || {};
         , dataType: 'jsonp'
       });
       var dfd = $.Deferred();
-      jqxhr.done(function(results) {
+      my.wrapInTimeout(jqxhr).done(function(results) {
+        if (results.error) {
+          dfd.reject(results.error);
+        }
+        dataset.fields.reset(_.map(results.fields, function(fieldId) {
+          return {id: fieldId};
+          })
+        );
         var _out = _.map(results.data, function(doc) {
           var tmp = {};
           _.each(results.fields, function(key, idx) {
@@ -75,6 +63,9 @@ this.recline.Backend = this.recline.Backend || {};
           return tmp;
         });
         dfd.resolve(_out);
+      })
+      .fail(function(arguments) {
+        dfd.reject(arguments);
       });
       return dfd.promise();
     }

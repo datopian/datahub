@@ -812,7 +812,7 @@ my.DataGrid = Backbone.View.extend({
   template: ' \
     <div class="data-table-menu-overlay" style="display: none; z-index: 101; ">&nbsp;</div> \
     <ul class="data-table-menu"></ul> \
-    <table class="data-table" cellspacing="0"> \
+    <table class="data-table table-striped" cellspacing="0"> \
       <thead> \
         <tr> \
           {{#notEmpty}} \
@@ -872,7 +872,8 @@ my.DataGrid = Backbone.View.extend({
 // ## DataGridRow View for rendering an individual document.
 //
 // Since we want this to update in place it is up to creator to provider the element to attach to.
-// In addition you must pass in a fields in the constructor options. This should be list of fields for the DataGrid.
+//
+// In addition you *must* pass in a FieldList in the constructor options. This should be list of fields for the DataGrid.
 //
 // Additional options can be passed in a second hash argument. Options:
 //
@@ -881,6 +882,19 @@ my.DataGrid = Backbone.View.extend({
 //   corresponding field object and document is the document object. Note
 //   that implementing functions can ignore arguments (e.g.
 //   function(value) would be a valid cellRenderer function).
+//
+// Example:
+//
+// <pre>
+// var row = new DataGridRow({
+//   model: dataset-document,
+//     el: dom-element,
+//     fields: mydatasets.fields // a FieldList object
+//   }, {
+//     cellRenderer: my-cell-renderer-function 
+//   }
+// );
+// </pre>
 my.DataGridRow = Backbone.View.extend({
   initialize: function(initData, options) {
     _.bindAll(this, 'render');
@@ -932,9 +946,8 @@ my.DataGridRow = Backbone.View.extend({
     return this;
   },
 
-  // Cell Editor
-  // ===========
-
+  // ===================
+  // Cell Editor methods
   onEditClick: function(e) {
     var editing = this.el.find('.data-table-cell-editor-editor');
     if (editing.length > 0) {
@@ -973,339 +986,6 @@ my.DataGridRow = Backbone.View.extend({
 });
 
 })(jQuery, recline.View);
-this.recline = this.recline || {};
-this.recline.View = this.recline.View || {};
-
-(function($, my) {
-// ## DataExplorer
-//
-// The primary view for the entire application. Usage:
-// 
-// <pre>
-// var myExplorer = new model.recline.DataExplorer({
-//   model: {{recline.Model.Dataset instance}}
-//   el: {{an existing dom element}}
-//   views: {{page views}}
-//   config: {{config options -- see below}}
-// });
-// </pre> 
-//
-// ### Parameters
-// 
-// **model**: (required) Dataset instance.
-//
-// **el**: (required) DOM element.
-//
-// **views**: (optional) the views (Grid, Graph etc) for DataExplorer to
-// show. This is an array of view hashes. If not provided
-// just initialize a DataGrid with id 'grid'. Example:
-//
-// <pre>
-// var views = [
-//   {
-//     id: 'grid', // used for routing
-//     label: 'Grid', // used for view switcher
-//     view: new recline.View.DataGrid({
-//       model: dataset
-//     })
-//   },
-//   {
-//     id: 'graph',
-//     label: 'Graph',
-//     view: new recline.View.FlotGraph({
-//       model: dataset
-//     })
-//   }
-// ];
-// </pre>
-//
-// **config**: Config options like:
-//
-//   * readOnly: true/false (default: false) value indicating whether to
-//     operate in read-only mode (hiding all editing options).
-//
-// NB: the element already being in the DOM is important for rendering of
-// FlotGraph subview.
-my.DataExplorer = Backbone.View.extend({
-  template: ' \
-  <div class="data-explorer"> \
-    <div class="alert-messages"></div> \
-    \
-    <div class="header"> \
-      <ul class="navigation"> \
-        {{#views}} \
-        <li><a href="#{{id}}" class="btn">{{label}}</a> \
-        {{/views}} \
-      </ul> \
-      <div class="recline-results-info"> \
-        Results found <span class="doc-count">{{docCount}}</span> \
-      </div> \
-    </div> \
-    <div class="data-view-container"></div> \
-    <div class="dialog-overlay" style="display: none; z-index: 101; ">&nbsp;</div> \
-    <div class="dialog ui-draggable" style="display: none; z-index: 102; top: 101px; "> \
-      <div class="dialog-frame" style="width: 700px; visibility: visible; "> \
-        <div class="dialog-content dialog-border"></div> \
-      </div> \
-    </div> \
-  </div> \
-  ',
-
-  initialize: function(options) {
-    var self = this;
-    this.el = $(this.el);
-    this.config = _.extend({
-        readOnly: false
-      },
-      options.config);
-    if (this.config.readOnly) {
-      this.setReadOnly();
-    }
-    // Hash of 'page' views (i.e. those for whole page) keyed by page name
-    if (options.views) {
-      this.pageViews = options.views;
-    } else {
-      this.pageViews = [{
-        id: 'grid',
-        label: 'Grid',
-        view: new my.DataGrid({
-            model: this.model
-          })
-      }];
-    }
-    // this must be called after pageViews are created
-    this.render();
-
-    this.router = new Backbone.Router();
-    this.setupRouting();
-
-    this.model.bind('query:start', function(eventName) {
-        my.notify('Loading data', {loader: true});
-      });
-    this.model.bind('query:done', function(eventName) {
-        my.clearNotifications();
-        self.el.find('.doc-count').text(self.model.docCount || 'Unknown');
-        my.notify('Data loaded', {category: 'success'});
-      });
-    this.model.bind('query:fail', function(eventName, error) {
-        my.clearNotifications();
-        my.notify(error.message, {category: 'error', persist: true});
-      });
-
-    // retrieve basic data like fields etc
-    // note this.model and dataset returned are the same
-    this.model.fetch()
-      .done(function(dataset) {
-        self.el.find('.doc-count').text(self.model.docCount || 'Unknown');
-        self.model.query();
-      })
-      .fail(function(error) {
-        my.notify(error.message, {category: 'error', persist: true});
-      });
-  },
-
-  setReadOnly: function() {
-    this.el.addClass('read-only');
-  },
-
-  render: function() {
-    var tmplData = this.model.toTemplateJSON();
-    tmplData.displayCount = this.config.displayCount;
-    tmplData.views = this.pageViews;
-    var template = $.mustache(this.template, tmplData);
-    $(this.el).html(template);
-    var $dataViewContainer = this.el.find('.data-view-container');
-    _.each(this.pageViews, function(view, pageName) {
-      $dataViewContainer.append(view.view.el)
-    });
-    var queryEditor = new my.QueryEditor({
-      model: this.model.queryState
-    });
-    this.el.find('.header').append(queryEditor.el);
-  },
-
-  setupRouting: function() {
-    var self = this;
-    // Default route
-    this.router.route('', this.pageViews[0].id, function() {
-      self.updateNav(self.pageViews[0].id);
-    });
-    $.each(this.pageViews, function(idx, view) {
-      self.router.route(/^([^?]+)(\?.*)?/, 'view', function(viewId, queryString) {
-        self.updateNav(viewId, queryString);
-      });
-    });
-  },
-
-  updateNav: function(pageName, queryString) {
-    this.el.find('.navigation li').removeClass('active');
-    var $el = this.el.find('.navigation li a[href=#' + pageName + ']');
-    $el.parent().addClass('active');
-    // show the specific page
-    _.each(this.pageViews, function(view, idx) {
-      if (view.id === pageName) {
-        view.view.el.show();
-      } else {
-        view.view.el.hide();
-      }
-    });
-  }
-});
-
-
-my.QueryEditor = Backbone.View.extend({
-  className: 'recline-query-editor', 
-  template: ' \
-    <form action="" method="GET"> \
-      <input type="text" name="q" value="{{q}}" class="text-query" /> \
-      <div class="pagination"> \
-        <ul> \
-          <li class="prev action-pagination-update"><a>&laquo; back</a></li> \
-          <li class="active"><a><input name="from" type="text" value="{{from}}" /> &ndash; <input name="to" type="text" value="{{to}}" /> </a></li> \
-          <li class="next action-pagination-update"><a>next &raquo;</a></li> \
-        </ul> \
-      </div> \
-      <button type="submit" class="btn" style="">Update &raquo;</button> \
-    </form> \
-  ',
-
-  events: {
-    'submit form': 'onFormSubmit',
-    'click .action-pagination-update': 'onPaginationUpdate'
-  },
-
-  initialize: function() {
-    _.bindAll(this, 'render');
-    this.el = $(this.el);
-    this.model.bind('change', this.render);
-    this.render();
-  },
-  onFormSubmit: function(e) {
-    e.preventDefault();
-    var newFrom = parseInt(this.el.find('input[name="from"]').val());
-    var newSize = parseInt(this.el.find('input[name="to"]').val()) - newFrom;
-    var query = this.el.find('.text-query').val();
-    this.model.set({size: newSize, from: newFrom, q: query});
-  },
-  onPaginationUpdate: function(e) {
-    e.preventDefault();
-    var $el = $(e.target);
-    if ($el.parent().hasClass('prev')) {
-      var newFrom = this.model.get('from') - Math.max(0, this.model.get('size'));
-    } else {
-      var newFrom = this.model.get('from') + this.model.get('size');
-    }
-    this.model.set({from: newFrom});
-  },
-  render: function() {
-    var tmplData = this.model.toJSON();
-    tmplData.to = this.model.get('from') + this.model.get('size');
-    var templated = $.mustache(this.template, tmplData);
-    this.el.html(templated);
-  }
-});
-
-
-/* ========================================================== */
-// ## Miscellaneous Utilities
-
-var urlPathRegex = /^([^?]+)(\?.*)?/;
-
-// Parse the Hash section of a URL into path and query string
-my.parseHashUrl = function(hashUrl) {
-  var parsed = urlPathRegex.exec(hashUrl);
-  if (parsed == null) {
-    return {};
-  } else {
-    return {
-      path: parsed[1],
-      query: parsed[2] || ''
-    }
-  }
-}
-
-// Parse a URL query string (?xyz=abc...) into a dictionary.
-my.parseQueryString = function(q) {
-  var urlParams = {},
-    e, d = function (s) {
-      return unescape(s.replace(/\+/g, " "));
-    },
-    r = /([^&=]+)=?([^&]*)/g;
-
-  if (q && q.length && q[0] === '?') {
-    q = q.slice(1);
-  }
-  while (e = r.exec(q)) {
-    // TODO: have values be array as query string allow repetition of keys
-    urlParams[d(e[1])] = d(e[2]);
-  }
-  return urlParams;
-}
-
-// Parse the query string out of the URL hash
-my.parseHashQueryString = function() {
-  q = my.parseHashUrl(window.location.hash).query;
-  return my.parseQueryString(q);
-}
-
-// Compse a Query String
-my.composeQueryString = function(queryParams) {
-  var queryString = '?';
-  var items = [];
-  $.each(queryParams, function(key, value) {
-    items.push(key + '=' + JSON.stringify(value));
-  });
-  queryString += items.join('&');
-  return queryString;
-}
-
-my.setHashQueryString = function(queryParams) {
-  window.location.hash = window.location.hash.split('?')[0] + my.composeQueryString(queryParams);
-}
-
-// ## notify
-//
-// Create a notification (a div.alert-message in div.alert-messsages) using provide messages and options. Options are:
-//
-// * category: warning (default), success, error
-// * persist: if true alert is persistent, o/w hidden after 3s (default = false)
-// * loader: if true show loading spinner
-my.notify = function(message, options) {
-  if (!options) var options = {};
-  var tmplData = _.extend({
-    msg: message,
-    category: 'warning'
-    },
-    options);
-  var _template = ' \
-    <div class="alert-message {{category}} fade in" data-alert="alert"><a class="close" href="#">×</a> \
-      <p>{{msg}} \
-        {{#loader}} \
-        <img src="images/small-spinner.gif" class="notification-loader"> \
-        {{/loader}} \
-      </p> \
-    </div>';
-  var _templated = $.mustache(_template, tmplData); 
-  _templated = $(_templated).appendTo($('.data-explorer .alert-messages'));
-  if (!options.persist) {
-    setTimeout(function() {
-      $(_templated).fadeOut(1000, function() {
-        $(this).remove();
-      });
-    }, 1000);
-  }
-}
-
-// ## clearNotifications
-//
-// Clear all existing notifications
-my.clearNotifications = function() {
-  var $notifications = $('.data-explorer .alert-message');
-  $notifications.remove();
-}
-
-})(jQuery, recline.View);
-
 this.recline = this.recline || {};
 this.recline.View = this.recline.View || {};
 
@@ -1512,6 +1192,356 @@ my.ColumnTransform = Backbone.View.extend({
 });
 
 })(jQuery, recline.View);
+this.recline = this.recline || {};
+this.recline.View = this.recline.View || {};
+
+(function($, my) {
+// ## DataExplorer
+//
+// The primary view for the entire application. Usage:
+// 
+// <pre>
+// var myExplorer = new model.recline.DataExplorer({
+//   model: {{recline.Model.Dataset instance}}
+//   el: {{an existing dom element}}
+//   views: {{page views}}
+//   config: {{config options -- see below}}
+// });
+// </pre> 
+//
+// ### Parameters
+// 
+// **model**: (required) Dataset instance.
+//
+// **el**: (required) DOM element.
+//
+// **views**: (optional) the views (Grid, Graph etc) for DataExplorer to
+// show. This is an array of view hashes. If not provided
+// just initialize a DataGrid with id 'grid'. Example:
+//
+// <pre>
+// var views = [
+//   {
+//     id: 'grid', // used for routing
+//     label: 'Grid', // used for view switcher
+//     view: new recline.View.DataGrid({
+//       model: dataset
+//     })
+//   },
+//   {
+//     id: 'graph',
+//     label: 'Graph',
+//     view: new recline.View.FlotGraph({
+//       model: dataset
+//     })
+//   }
+// ];
+// </pre>
+//
+// **config**: Config options like:
+//
+//   * readOnly: true/false (default: false) value indicating whether to
+//     operate in read-only mode (hiding all editing options).
+//
+// NB: the element already being in the DOM is important for rendering of
+// FlotGraph subview.
+my.DataExplorer = Backbone.View.extend({
+  template: ' \
+  <div class="data-explorer"> \
+    <div class="alert-messages"></div> \
+    \
+    <div class="header"> \
+      <ul class="navigation"> \
+        {{#views}} \
+        <li><a href="#{{id}}" class="btn">{{label}}</a> \
+        {{/views}} \
+      </ul> \
+      <div class="recline-results-info"> \
+        Results found <span class="doc-count">{{docCount}}</span> \
+      </div> \
+    </div> \
+    <div class="data-view-container"></div> \
+    <div class="dialog-overlay" style="display: none; z-index: 101; ">&nbsp;</div> \
+    <div class="dialog ui-draggable" style="display: none; z-index: 102; top: 101px; "> \
+      <div class="dialog-frame" style="width: 700px; visibility: visible; "> \
+        <div class="dialog-content dialog-border"></div> \
+      </div> \
+    </div> \
+  </div> \
+  ',
+
+  initialize: function(options) {
+    var self = this;
+    this.el = $(this.el);
+    this.config = _.extend({
+        readOnly: false
+      },
+      options.config);
+    if (this.config.readOnly) {
+      this.setReadOnly();
+    }
+    // Hash of 'page' views (i.e. those for whole page) keyed by page name
+    if (options.views) {
+      this.pageViews = options.views;
+    } else {
+      this.pageViews = [{
+        id: 'grid',
+        label: 'Grid',
+        view: new my.DataGrid({
+            model: this.model
+          })
+      }];
+    }
+    // this must be called after pageViews are created
+    this.render();
+
+    this.router = new Backbone.Router();
+    this.setupRouting();
+
+    this.model.bind('query:start', function() {
+        my.notify('Loading data', {loader: true});
+      });
+    this.model.bind('query:done', function() {
+        my.clearNotifications();
+        self.el.find('.doc-count').text(self.model.docCount || 'Unknown');
+        my.notify('Data loaded', {category: 'success'});
+      });
+    this.model.bind('query:fail', function(error) {
+        my.clearNotifications();
+        var msg = '';
+        if (typeof(error) == 'string') {
+          msg = error;
+        } else if (typeof(error) == 'object') {
+          if (error.title) {
+            msg = error.title + ': ';
+          }
+          if (error.message) {
+            msg += error.message;
+          }
+        } else {
+          msg = 'There was an error querying the backend';
+        }
+        my.notify(msg, {category: 'error', persist: true});
+      });
+
+    // retrieve basic data like fields etc
+    // note this.model and dataset returned are the same
+    this.model.fetch()
+      .done(function(dataset) {
+        self.el.find('.doc-count').text(self.model.docCount || 'Unknown');
+        self.model.query();
+      })
+      .fail(function(error) {
+        my.notify(error.message, {category: 'error', persist: true});
+      });
+  },
+
+  setReadOnly: function() {
+    this.el.addClass('read-only');
+  },
+
+  render: function() {
+    var tmplData = this.model.toTemplateJSON();
+    tmplData.displayCount = this.config.displayCount;
+    tmplData.views = this.pageViews;
+    var template = $.mustache(this.template, tmplData);
+    $(this.el).html(template);
+    var $dataViewContainer = this.el.find('.data-view-container');
+    _.each(this.pageViews, function(view, pageName) {
+      $dataViewContainer.append(view.view.el)
+    });
+    var queryEditor = new my.QueryEditor({
+      model: this.model.queryState
+    });
+    this.el.find('.header').append(queryEditor.el);
+  },
+
+  setupRouting: function() {
+    var self = this;
+    // Default route
+    this.router.route('', this.pageViews[0].id, function() {
+      self.updateNav(self.pageViews[0].id);
+    });
+    $.each(this.pageViews, function(idx, view) {
+      self.router.route(/^([^?]+)(\?.*)?/, 'view', function(viewId, queryString) {
+        self.updateNav(viewId, queryString);
+      });
+    });
+  },
+
+  updateNav: function(pageName, queryString) {
+    this.el.find('.navigation li').removeClass('active');
+    this.el.find('.navigation li a').removeClass('disabled');
+    var $el = this.el.find('.navigation li a[href=#' + pageName + ']');
+    $el.parent().addClass('active');
+    $el.addClass('disabled');
+    // show the specific page
+    _.each(this.pageViews, function(view, idx) {
+      if (view.id === pageName) {
+        view.view.el.show();
+      } else {
+        view.view.el.hide();
+      }
+    });
+  }
+});
+
+
+my.QueryEditor = Backbone.View.extend({
+  className: 'recline-query-editor', 
+  template: ' \
+    <form action="" method="GET" class="form-inline"> \
+      <div class="input-prepend text-query"> \
+        <span class="add-on"><i class="icon-search"></i></span> \
+        <input type="text" name="q" value="{{q}}" class="span2" placeholder="Search data ..." class="search-query" /> \
+      </div> \
+      <div class="pagination"> \
+        <ul> \
+          <li class="prev action-pagination-update"><a>&laquo;</a></li> \
+          <li class="active"><a><input name="from" type="text" value="{{from}}" /> &ndash; <input name="to" type="text" value="{{to}}" /> </a></li> \
+          <li class="next action-pagination-update"><a>&raquo;</a></li> \
+        </ul> \
+      </div> \
+      <button type="submit" class="btn" style="">Update &raquo;</button> \
+    </form> \
+  ',
+
+  events: {
+    'submit form': 'onFormSubmit',
+    'click .action-pagination-update': 'onPaginationUpdate'
+  },
+
+  initialize: function() {
+    _.bindAll(this, 'render');
+    this.el = $(this.el);
+    this.model.bind('change', this.render);
+    this.render();
+  },
+  onFormSubmit: function(e) {
+    e.preventDefault();
+    var newFrom = parseInt(this.el.find('input[name="from"]').val());
+    var newSize = parseInt(this.el.find('input[name="to"]').val()) - newFrom;
+    var query = this.el.find('.text-query input').val();
+    this.model.set({size: newSize, from: newFrom, q: query});
+  },
+  onPaginationUpdate: function(e) {
+    e.preventDefault();
+    var $el = $(e.target);
+    if ($el.parent().hasClass('prev')) {
+      var newFrom = this.model.get('from') - Math.max(0, this.model.get('size'));
+    } else {
+      var newFrom = this.model.get('from') + this.model.get('size');
+    }
+    this.model.set({from: newFrom});
+  },
+  render: function() {
+    var tmplData = this.model.toJSON();
+    tmplData.to = this.model.get('from') + this.model.get('size');
+    var templated = $.mustache(this.template, tmplData);
+    this.el.html(templated);
+  }
+});
+
+
+/* ========================================================== */
+// ## Miscellaneous Utilities
+
+var urlPathRegex = /^([^?]+)(\?.*)?/;
+
+// Parse the Hash section of a URL into path and query string
+my.parseHashUrl = function(hashUrl) {
+  var parsed = urlPathRegex.exec(hashUrl);
+  if (parsed == null) {
+    return {};
+  } else {
+    return {
+      path: parsed[1],
+      query: parsed[2] || ''
+    }
+  }
+}
+
+// Parse a URL query string (?xyz=abc...) into a dictionary.
+my.parseQueryString = function(q) {
+  var urlParams = {},
+    e, d = function (s) {
+      return unescape(s.replace(/\+/g, " "));
+    },
+    r = /([^&=]+)=?([^&]*)/g;
+
+  if (q && q.length && q[0] === '?') {
+    q = q.slice(1);
+  }
+  while (e = r.exec(q)) {
+    // TODO: have values be array as query string allow repetition of keys
+    urlParams[d(e[1])] = d(e[2]);
+  }
+  return urlParams;
+}
+
+// Parse the query string out of the URL hash
+my.parseHashQueryString = function() {
+  q = my.parseHashUrl(window.location.hash).query;
+  return my.parseQueryString(q);
+}
+
+// Compse a Query String
+my.composeQueryString = function(queryParams) {
+  var queryString = '?';
+  var items = [];
+  $.each(queryParams, function(key, value) {
+    items.push(key + '=' + JSON.stringify(value));
+  });
+  queryString += items.join('&');
+  return queryString;
+}
+
+my.setHashQueryString = function(queryParams) {
+  window.location.hash = window.location.hash.split('?')[0] + my.composeQueryString(queryParams);
+}
+
+// ## notify
+//
+// Create a notification (a div.alert in div.alert-messsages) using provide messages and options. Options are:
+//
+// * category: warning (default), success, error
+// * persist: if true alert is persistent, o/w hidden after 3s (default = false)
+// * loader: if true show loading spinner
+my.notify = function(message, options) {
+  if (!options) var options = {};
+  var tmplData = _.extend({
+    msg: message,
+    category: 'warning'
+    },
+    options);
+  var _template = ' \
+    <div class="alert alert-{{category}} fade in" data-alert="alert"><a class="close" data-dismiss="alert" href="#">×</a> \
+      {{msg}} \
+        {{#loader}} \
+        <span class="notification-loader">&nbsp;</span> \
+        {{/loader}} \
+    </div>';
+  var _templated = $.mustache(_template, tmplData); 
+  _templated = $(_templated).appendTo($('.data-explorer .alert-messages'));
+  if (!options.persist) {
+    setTimeout(function() {
+      $(_templated).fadeOut(1000, function() {
+        $(this).remove();
+      });
+    }, 1000);
+  }
+}
+
+// ## clearNotifications
+//
+// Clear all existing notifications
+my.clearNotifications = function() {
+  var $notifications = $('.data-explorer .alert-messages .alert');
+  $notifications.remove();
+}
+
+})(jQuery, recline.View);
+
 // # Recline Backends
 //
 // Backends are connectors to backend data sources and stores
@@ -1580,29 +1610,10 @@ this.recline.Backend = this.recline.Backend || {};
       var self = this;
       if (method === "read") {
         if (model.__type__ == 'Dataset') {
-          var base = self.get('dataproxy_url');
-          // TODO: should we cache for extra efficiency
-          var data = {
-            url: model.get('url')
-            , 'max-results':  1
-            , type: model.get('format') || 'csv'
-          };
-          var jqxhr = $.ajax({
-            url: base
-            , data: data
-            , dataType: 'jsonp'
-          });
+          // Do nothing as we will get fields in query step (and no metadata to
+          // retrieve)
           var dfd = $.Deferred();
-          my.wrapInTimeout(jqxhr).done(function(results) {
-            model.fields.reset(_.map(results.fields, function(fieldId) {
-              return {id: fieldId};
-              })
-            );
-            dfd.resolve(model, jqxhr);
-          })
-          .fail(function(arguments) {
-            dfd.reject(arguments);
-          });
+          dfd.resolve(model);
           return dfd.promise();
         }
       } else {
@@ -1622,7 +1633,14 @@ this.recline.Backend = this.recline.Backend || {};
         , dataType: 'jsonp'
       });
       var dfd = $.Deferred();
-      jqxhr.done(function(results) {
+      my.wrapInTimeout(jqxhr).done(function(results) {
+        if (results.error) {
+          dfd.reject(results.error);
+        }
+        dataset.fields.reset(_.map(results.fields, function(fieldId) {
+          return {id: fieldId};
+          })
+        );
         var _out = _.map(results.data, function(doc) {
           var tmp = {};
           _.each(results.fields, function(key, idx) {
@@ -1631,6 +1649,9 @@ this.recline.Backend = this.recline.Backend || {};
           return tmp;
         });
         dfd.resolve(_out);
+      })
+      .fail(function(arguments) {
+        dfd.reject(arguments);
       });
       return dfd.promise();
     }
@@ -1645,10 +1666,21 @@ this.recline.Backend = this.recline.Backend || {};
 (function($, my) {
   // ## ElasticSearch Backend
   //
-  // Connecting to [ElasticSearch](http://www.elasticsearch.org/)
+  // Connecting to [ElasticSearch](http://www.elasticsearch.org/).
   //
-  // To use this backend ensure your Dataset has a elasticsearch_url,
-  // webstore_url or url attribute (used in that order)
+  // To use this backend ensure your Dataset has one of the following
+  // attributes (first one found is used):
+  //
+  // <pre>
+  // elasticsearch_url
+  // webstore_url
+  // url
+  // </pre>
+  //
+  // This should point to the ES type url. E.G. for ES running on
+  // localhost:9200 with index twitter and type tweet it would be
+  //
+  // <pre>http://localhost:9200/twitter/tweet</pre>
   my.ElasticSearch = Backbone.Model.extend({
     _getESUrl: function(dataset) {
       var out = dataset.get('elasticsearch_url');
@@ -1861,15 +1893,12 @@ this.recline.Backend = this.recline.Backend || {};
 (function($, my) {
   // ## Memory Backend - uses in-memory data
   //
-  // This is very artificial and is really only designed for testing
-  // purposes.
-  //
   // To use it you should provide in your constructor data:
   // 
   //   * metadata (including fields array)
   //   * documents: list of hashes, each hash being one doc. A doc *must* have an id attribute which is unique.
   //
-  //  Example:
+  // Example:
   // 
   //  <pre>
   //  // Backend setup
@@ -1886,7 +1915,7 @@ this.recline.Backend = this.recline.Backend || {};
   //      ]
   //  });
   //  // later ...
-  //  var dataset = Dataset({id: 'my-id'});
+  //  var dataset = Dataset({id: 'my-id'}, 'memory');
   //  dataset.fetch();
   //  etc ...
   //  </pre>

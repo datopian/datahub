@@ -170,7 +170,7 @@ note this.model and dataset returned are the same</p>             </td>         
 <span class="nx">my</span><span class="p">.</span><span class="nx">QueryEditor</span> <span class="o">=</span> <span class="nx">Backbone</span><span class="p">.</span><span class="nx">View</span><span class="p">.</span><span class="nx">extend</span><span class="p">({</span>
   <span class="nx">className</span><span class="o">:</span> <span class="s1">&#39;recline-query-editor&#39;</span><span class="p">,</span> 
   <span class="nx">template</span><span class="o">:</span> <span class="s1">&#39; \</span>
-<span class="s1">    &lt;form action=&quot;&quot; method=&quot;GET&quot;&gt; \</span>
+<span class="s1">    &lt;form action=&quot;&quot; method=&quot;GET&quot; class=&quot;form-inline&quot;&gt; \</span>
 <span class="s1">      &lt;input type=&quot;text&quot; name=&quot;q&quot; value=&quot;{{q}}&quot; class=&quot;text-query&quot; /&gt; \</span>
 <span class="s1">      &lt;div class=&quot;pagination&quot;&gt; \</span>
 <span class="s1">        &lt;ul&gt; \</span>
@@ -260,7 +260,7 @@ note this.model and dataset returned are the same</p>             </td>         
   <span class="nb">window</span><span class="p">.</span><span class="nx">location</span><span class="p">.</span><span class="nx">hash</span> <span class="o">=</span> <span class="nb">window</span><span class="p">.</span><span class="nx">location</span><span class="p">.</span><span class="nx">hash</span><span class="p">.</span><span class="nx">split</span><span class="p">(</span><span class="s1">&#39;?&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="nx">my</span><span class="p">.</span><span class="nx">composeQueryString</span><span class="p">(</span><span class="nx">queryParams</span><span class="p">);</span>
 <span class="p">}</span></pre></div>             </td>           </tr>                               <tr id="section-14">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-14">&#182;</a>               </div>               <h2>notify</h2>
 
-<p>Create a notification (a div.alert-message in div.alert-messsages) using provide messages and options. Options are:</p>
+<p>Create a notification (a div.alert in div.alert-messsages) using provide messages and options. Options are:</p>
 
 <ul>
 <li>category: warning (default), success, error</li>
@@ -274,12 +274,11 @@ note this.model and dataset returned are the same</p>             </td>         
     <span class="p">},</span>
     <span class="nx">options</span><span class="p">);</span>
   <span class="kd">var</span> <span class="nx">_template</span> <span class="o">=</span> <span class="s1">&#39; \</span>
-<span class="s1">    &lt;div class=&quot;alert-message {{category}} fade in&quot; data-alert=&quot;alert&quot;&gt;&lt;a class=&quot;close&quot; href=&quot;#&quot;&gt;×&lt;/a&gt; \</span>
-<span class="s1">      &lt;p&gt;{{msg}} \</span>
+<span class="s1">    &lt;div class=&quot;alert alert-{{category}} fade in&quot; data-alert=&quot;alert&quot;&gt;&lt;a class=&quot;close&quot; data-dismiss=&quot;alert&quot; href=&quot;#&quot;&gt;×&lt;/a&gt; \</span>
+<span class="s1">      {{msg}} \</span>
 <span class="s1">        {{#loader}} \</span>
 <span class="s1">        &lt;img src=&quot;images/small-spinner.gif&quot; class=&quot;notification-loader&quot;&gt; \</span>
 <span class="s1">        {{/loader}} \</span>
-<span class="s1">      &lt;/p&gt; \</span>
 <span class="s1">    &lt;/div&gt;&#39;</span><span class="p">;</span>
   <span class="kd">var</span> <span class="nx">_templated</span> <span class="o">=</span> <span class="nx">$</span><span class="p">.</span><span class="nx">mustache</span><span class="p">(</span><span class="nx">_template</span><span class="p">,</span> <span class="nx">tmplData</span><span class="p">);</span> 
   <span class="nx">_templated</span> <span class="o">=</span> <span class="nx">$</span><span class="p">(</span><span class="nx">_templated</span><span class="p">).</span><span class="nx">appendTo</span><span class="p">(</span><span class="nx">$</span><span class="p">(</span><span class="s1">&#39;.data-explorer .alert-messages&#39;</span><span class="p">));</span>
@@ -293,7 +292,7 @@ note this.model and dataset returned are the same</p>             </td>         
 <span class="p">}</span></pre></div>             </td>           </tr>                               <tr id="section-15">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-15">&#182;</a>               </div>               <h2>clearNotifications</h2>
 
 <p>Clear all existing notifications</p>             </td>             <td class="code">               <div class="highlight"><pre><span class="nx">my</span><span class="p">.</span><span class="nx">clearNotifications</span> <span class="o">=</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
-  <span class="kd">var</span> <span class="nx">$notifications</span> <span class="o">=</span> <span class="nx">$</span><span class="p">(</span><span class="s1">&#39;.data-explorer .alert-message&#39;</span><span class="p">);</span>
+  <span class="kd">var</span> <span class="nx">$notifications</span> <span class="o">=</span> <span class="nx">$</span><span class="p">(</span><span class="s1">&#39;.data-explorer .alert-messages .alert&#39;</span><span class="p">);</span>
   <span class="nx">$notifications</span><span class="p">.</span><span class="nx">remove</span><span class="p">();</span>
 <span class="p">}</span>
 
