@@ -3,7 +3,15 @@
 <head>
   <meta charset="utf-8" />
   <title>Recline DataExplorer</title>
-  <link rel="stylesheet" href="http://twitter.github.com/bootstrap/1.4.0/bootstrap.min.css">
+
+  <!-- Le HTML5 shim, for IE6-8 support of HTML elements -->
+  <!--[if lt IE 9]>
+    <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+  <![endif]-->
+
+  <link rel="stylesheet" href="vendor/bootstrap/2.0.0/css/bootstrap.css" />
+  <link rel="stylesheet" href="http://opendatahandbook.org/en/_static/bootstrap-sphinx.css" />
+  
   <style type="text/css">
     html, body {
       background-color: #eee;
@@ -30,15 +38,15 @@
       margin: -20px -20px 20px;
     }
 
-    .nav-logo img {
-      margin-top: 4px;
+    .page-header h1 {
+      font-size: 30px;
     }
   </style>
 </head>
 <body>
 <a href="http://github.com/okfn/recline"><img style="position: absolute; top: 0; right: 0; border: 0; z-index: 100000;" src="https://a248.e.akamai.net/assets.github.com/img/7afbc8b248c68eb468279e8c17986ad46549fb71/687474703a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f6461726b626c75655f3132313632312e706e67" alt="Fork me on GitHub"></a>
-<div class="topbar">
-  <div class="fill">
+<div class="navbar navbar-fixed-top">
+  <div class="navbar-inner">
     <div class="container">
       <a class="brand" href="#">Recline Data Explorer</a>
       <ul class="nav">
@@ -61,13 +69,14 @@
   <div class="content">
     <div class="page-header">
       <h1>
-        Recline Data Explorer <small>Data explorer library and app all in pure Javascript</small>
+        Recline Data Explorer <small>Powerful and extensible JS grid/spreadsheet</small>
       </h1>
     </div>
     <h4>Recline combines a data grid, Google Refine-style data transforms
       and visualizations all in lightweight javascript and html.</h4>
     <p>Designed for standalone use or as a library to integrate into your own
-    app.</p>
+    app. Recline utilizes the lightweight but powerful Backbone framework, and
+    so is a cinch to extend or adapt.</p>
 
     <h2 id="features">Main Features</h2>
     <ul>
@@ -76,9 +85,8 @@
       <li>Easily extensible with new Backends so you can connect to your
       database or storage layer</li>
       <li>Visualize data</li>
-      <li>Pure javascript (no Flash) and designed for integration -- so it is
+      <li>Open-source, pure javascript and designed for integration -- so it is
       easy to embed in other sites and applications</li>
-      <li>Open-source</li>
       <li>Built on the simple but powerful <a
         href="http://documentcloud.github.com/backbone/">Backbone</a> giving a
         clean and robust design which is easy to extend</li>
@@ -86,13 +94,14 @@
       <li>Componentized design means you use only what you need</li>
     </ul>
 
-    <img src="http://farm8.staticflickr.com/7020/6847468031_0f474de5f7_b.jpg" alt="Recline Data Explorer Screenshot" style="width: 95%; display: block; margin: auto; margin-bottom: 30px;" />
+    <h2>Screenshots</h2>
+    <img src="http://farm8.staticflickr.com/7020/6847468031_0f474de5f7_b.jpg" alt="Recline Data Explorer Screenshot" style="width: 700px; display: block; margin-bottom: 30px;" />
 
     <h2 id="demo">Demo</h2>
     <p><a href="demo/index.html" class="btn">For Recline Demo Click Here &raquo;</a></p>
 
     <h2 id="downloads">Downloads & Dependencies <small>(Right-click, and use 'Save As')</small></h2>
-    <p><a href="recline.js" class="btn">Recline Current Version (v0.2) &raquo;</a></p>
+    <p><a href="recline.js" class="btn">Recline Current Version (v0.3) &raquo;</a></p>
     <h3>Dependencies</h3>
     <p>Javascript Libraries:</p>
     <ul>
@@ -110,8 +119,9 @@
       <li>Dataset: represents the dataset. Holds dataset info and a pointer to list of data items (Documents in our terminology) which it can load from the relevant Backend.</li>
       <li>Document: an individual data item (e.g. a row from a relational database or a spreadsheet, a document from from a document DB like CouchDB or MongoDB).</li>
     </ul>
+    <p>More on the models in the <a href="docs/model.html">Model source docs</a>.</p>
 
-    <p>Backends (more info below) then connect Dataset and Documents to data
+    <p>Backends (more <a href="#doc-backends">info below</a>) connect Dataset and Documents to data
     from a specific 'Backend' data source. They provide methods for loading and
     saving Datasets and individuals Documents as well as for bulk loading via a
     query API and doing bulk transforms on the backend.</p>
@@ -148,7 +158,7 @@ Backbone.history.start();
       href="demo/">Demo</a> -- just hit view source (NB: the javascript for the
     demo is in: <a href="demo/js/app.js">app.js</a>).</p>
 
-<h3>Backends</h3>
+<h3 id="doc-backends">Backends</h3>
 
 <p>Backends are connectors to backend data sources from which data can be retrieved.</p>
 
@@ -196,7 +206,7 @@ like).</p>
     <h3>Source Docs (via Docco)</h3>
     <ul>
       <li><a href="docs/model.html">Models</a></li>
-      <li><a href="docs/view.html">DataExplorer View plus common view code</a></li>
+      <li><a href="docs/view.html">DataExplorer View (plus common view code)</a></li>
       <li><a href="docs/view-grid.html">DataGrid View</a></li>
       <li><a href="docs/view-flot-graph.html">Graph View (based on Flot)</a></li>
       <li><a href="docs/backend/memory.html">Backend: Memory (local data)</a></li>
