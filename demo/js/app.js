@@ -262,9 +262,56 @@ app.sammy = $.sammy(function () {
 });
 
 $(function() {
+  var qs = recline.View.parseQueryString(window.location.search);
+  if (qs.url) {
+    var dataset = new recline.Model.Dataset({
+        id: 'my-dataset',
+        url: qs.url,
+        webstore_url: qs.url 
+      },
+      qs.backend || 'elasticsearch'
+    );
+  } else {
+    dataset = localDataset();
+  }
+
+  createExplorer(dataset);
+  Backbone.history.start();
+
+  // setup the loader menu in top bar
+  setupLoader(createExplorer);
+
+  // set up readonly enabling in top bar
+  $('a.set-read-only').click(function() {
+    window.dataExplorer.setReadOnly();
+    alert('Read-only mode set');
+  });
+});
+
+// make Explorer creation / initialization in a function so we can call it
+// again and again
+function createExplorer(dataset) {
+  // remove existing data explorer view
+  if (window.dataExplorer) {
+    window.dataExplorer.remove();
+  }
+  window.dataExplorer = null;
   var $el = $('<div />');
   $el.appendTo($('.data-explorer-here'));
-  var dataset = demoDataset();
+  var views = standardViews(dataset);
+  window.dataExplorer = new recline.View.DataExplorer({
+    el: $el
+    , model: dataset
+    , views: views
+  });
+  // HACK (a bit). Issue is that Backbone will not trigger the route
+  // if you are already at that location so we have to make sure we genuinely switch
+  window.dataExplorer.router.navigate('graph');
+  window.dataExplorer.router.navigate('', true);
+}
+
+// convenience function
+function standardViews(dataset) {
   var views = [
     {
       id: 'grid',
@@ -281,50 +328,11 @@ $(function() {
       })
     }
   ];
-  window.dataExplorer = new recline.View.DataExplorer({
-    el: $el
-    , model: dataset
-    , views: views
-  });
-  Backbone.history.start();
-  setupLoadFromWebstore(function(dataset) {
-    window.dataExplorer.remove();
-    var $el = $('<div />');
-    $el.appendTo($('.data-explorer-here'));
-    window.dataExplorer = null;
-    var views = [
-      {
-        id: 'grid',
-        label: 'Grid',
-        view: new recline.View.DataGrid({
-          model: dataset
-        })
-      },
-      {
-        id: 'graph',
-        label: 'Graph',
-        view: new recline.View.FlotGraph({
-          model: dataset
-        })
-      }
-    ];
-    window.dataExplorer = new recline.View.DataExplorer({
-      el: $el
-      , model: dataset
-      , views: views
-    });
-    // HACK (a bit). Issue is that Backbone will not trigger the route
-    // if you are already at that location so we have to make sure we genuinely switch
-    window.dataExplorer.router.navigate('graph');
-    window.dataExplorer.router.navigate('', true);
-  });
-  $('a.set-read-only').click(function() {
-    window.dataExplorer.setReadOnly();
-    alert('Read-only mode set');
-  });
-})
+  return views;
+}
 
-function demoDataset() {
+// provide a demonstration in memory dataset
+function localDataset() {
   var datasetId = 'test-dataset';
   var inData = {
     metadata: {
@@ -348,7 +356,8 @@ function demoDataset() {
   return dataset;
 }
 
-function setupLoadFromWebstore(callback) {
+// setup the loader menu in top bar
+function setupLoader(callback) {
   // pre-populate webstore load form with an example url
   var demoUrl = 'http://thedatahub.org/api/data/b9aae52b-b082-4159-b46f-7bb9c158d013';
   $('form.webstore-load input[name="source"]').val(demoUrl);
