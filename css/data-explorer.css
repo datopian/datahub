@@ -29,22 +29,26 @@
 
 .header .recline-query-editor .text-query input {
   float: left;  
-  margin-right: 5px;
 }
 
-.header .recline-query-editor .pagination input {
-  width: 30px;
-  height: 18px;
-  padding: 2px 4px;
-  margin-top: -4px;
+.recline-query-editor .text-query .btn-group {
+  display: inline;
+  float:left;
+  margin-left:-2px;
+}
+
+.recline-query-editor .text-query .btn-group .dropdown-toggle {
+  -moz-border-radius:0px 3px 3px 0px;
+  -webkit-border-radius:0px 3px 3px 0px;
+  border-radius:0px 3px 3px 0px;
+}
+
+.recline-query-editor .text-query .btn-group ul {
+  margin-left:-110px;
 }
 
 .header .recline-query-editor .pagination a {
   line-height: 26px;
-}
-
-.header .recline-query-editor form .btn {
-  vertical-align: top;
 }
 
 .data-view-container {
