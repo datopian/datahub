@@ -37,7 +37,10 @@ my.FlotGraph = Backbone.View.extend({
         <label>Graph Type</label> \
         <div class="input editor-type"> \
           <select> \
-          <option value="line">Line</option> \
+          <option value="lines-and-points">Lines and Points</option> \
+          <option value="lines">Lines</option> \
+          <option value="points">Points</option> \
+          <option value="bars">Bars</option> \
           </select> \
         </div> \
         <label>Group Column (x-axis)</label> \
@@ -98,7 +101,7 @@ my.FlotGraph = Backbone.View.extend({
     this.chartConfig = _.extend({
         group: null,
         series: [],
-        graphType: 'line'
+        graphType: 'lines-and-points'
       },
       configFromHash,
       config
@@ -120,7 +123,13 @@ my.FlotGraph = Backbone.View.extend({
 
   onEditorSubmit: function(e) {
     var select = this.el.find('.editor-group select');
-    this._getEditorData();
+    $editor = this;
+    var series = this.$series.map(function () {
+      return $(this).val();
+    });
+    this.chartConfig.series = $.makeArray(series)
+    this.chartConfig.group = this.el.find('.editor-group select').val();
+    this.chartConfig.graphType = this.el.find('.editor-type select').val();
     // update navigation
     var qs = my.parseHashQueryString();
     qs['graph'] = JSON.stringify(this.chartConfig);
@@ -139,28 +148,55 @@ my.FlotGraph = Backbone.View.extend({
     if ((!areWeVisible || this.model.currentDocuments.length == 0)) {
       return
     }
+    var series = this.createSeries();
+    var options = this.graphOptions[this.chartConfig.graphType];
+    this.plot = $.plot(this.$graph, series, options);
     // create this.plot and cache it
-    if (!this.plot) {
-      // only lines for the present
-      options = {
-        id: 'line',
-        name: 'Line Chart'
-      };
-      this.plot = $.plot(this.$graph, this.createSeries(), options);
-    } 
-    this.plot.setData(this.createSeries());
-    this.plot.resize();
-    this.plot.setupGrid();
-    this.plot.draw();
+//    if (!this.plot) {
+//      this.plot = $.plot(this.$graph, series, options);
+//    } else {
+//      this.plot.parseOptions(options);
+//      this.plot.setData(this.createSeries());
+//      this.plot.resize();
+//      this.plot.setupGrid();
+//      this.plot.draw();
+//    }
   },
 
-  _getEditorData: function() {
-    $editor = this
-    var series = this.$series.map(function () {
-      return $(this).val();
-    });
-    this.chartConfig.series = $.makeArray(series)
-    this.chartConfig.group = this.el.find('.editor-group select').val();
+  graphOptions: { 
+    lines: {
+       series: { 
+         lines: { show: true }
+       }
+    }
+    , points: {
+      series: {
+        points: { show: true }
+      },
+      grid: { hoverable: true, clickable: true }
+    }
+    , 'lines-and-points': {
+      series: {
+        points: { show: true },
+        lines: { show: true }
+      },
+      grid: { hoverable: true, clickable: true }
+    }
+    , bars: {
+      series: {
+        lines: {show: false},
+        bars: {
+          show: true,
+          barWidth: 1,
+          align: "left",
+          fill: true
+        }
+      },
+      xaxis: {
+        tickSize: 1,
+        tickLength: 1,
+      }
+    }
   },
 
   createSeries: function () {
