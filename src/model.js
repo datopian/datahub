@@ -41,7 +41,7 @@ my.Dataset = Backbone.Model.extend({
   query: function(queryObj) {
     this.trigger('query:start');
     var self = this;
-    this.queryState.set(queryObj, {silent: true});
+    this.queryState.set(queryObj);
     var dfd = $.Deferred();
     this.backend.query(this, this.queryState.toJSON()).done(function(rows) {
       var docs = _.map(rows, function(row) {

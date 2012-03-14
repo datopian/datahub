@@ -111,6 +111,10 @@ my.DataExplorer = Backbone.View.extend({
         my.clearNotifications();
         self.el.find('.doc-count').text(self.model.docCount || 'Unknown');
         my.notify('Data loaded', {category: 'success'});
+        // update navigation
+        var qs = my.parseHashQueryString();
+        qs['reclineQuery'] = JSON.stringify(self.model.queryState.toJSON());
+        my.setHashQueryString(qs);
       });
     this.model.bind('query:fail', function(error) {
         my.clearNotifications();
@@ -134,8 +138,11 @@ my.DataExplorer = Backbone.View.extend({
     // note this.model and dataset returned are the same
     this.model.fetch()
       .done(function(dataset) {
-        self.el.find('.doc-count').text(self.model.docCount || 'Unknown');
-        self.model.query();
+        var queryState = my.parseHashQueryString().reclineQuery;
+        if (queryState) {
+          queryState = JSON.parse(queryState);
+        }
+        self.model.query(queryState);
       })
       .fail(function(error) {
         my.notify(error.message, {category: 'error', persist: true});
@@ -296,7 +303,7 @@ my.composeQueryString = function(queryParams) {
   var queryString = '?';
   var items = [];
   $.each(queryParams, function(key, value) {
-    items.push(key + '=' + JSON.stringify(value));
+    items.push(key + '=' + value);
   });
   queryString += items.join('&');
   return queryString;
