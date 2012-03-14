@@ -151,6 +151,9 @@ my.FlotGraph = Backbone.View.extend({
     var series = this.createSeries();
     var options = this.graphOptions[this.chartConfig.graphType];
     this.plot = $.plot(this.$graph, series, options);
+    if (this.chartConfig.graphType in { 'points': '', 'lines-and-points': '' }) {
+      this.setupTooltips();
+    }
     // create this.plot and cache it
 //    if (!this.plot) {
 //      this.plot = $.plot(this.$graph, series, options);
@@ -197,6 +200,47 @@ my.FlotGraph = Backbone.View.extend({
         tickLength: 1,
       }
     }
+  },
+
+  setupTooltips: function() {
+    var self = this;
+    function showTooltip(x, y, contents) {
+      $('<div id="flot-tooltip">' + contents + '</div>').css( {
+        position: 'absolute',
+        display: 'none',
+        top: y + 5,
+        left: x + 5,
+        border: '1px solid #fdd',
+        padding: '2px',
+        'background-color': '#fee',
+        opacity: 0.80
+      }).appendTo("body").fadeIn(200);
+    }
+
+    var previousPoint = null;
+    this.$graph.bind("plothover", function (event, pos, item) {
+      if (item) {
+        if (previousPoint != item.dataIndex) {
+          previousPoint = item.dataIndex;
+          
+          $("#flot-tooltip").remove();
+          var x = item.datapoint[0].toFixed(2),
+              y = item.datapoint[1].toFixed(2);
+          
+          var content = _.template('<%= group %> = <%= x %>, <%= series %> = <%= y %>', {
+            group: self.chartConfig.group,
+            x: x,
+            series: item.series.label,
+            y: y
+          });
+          showTooltip(item.pageX, item.pageY, content);
+        }
+      }
+      else {
+        $("#flot-tooltip").remove();
+        previousPoint = null;            
+      }
+    });
   },
 
   createSeries: function () {
