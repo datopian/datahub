@@ -122,7 +122,6 @@ my.FlotGraph = Backbone.View.extend({
     var select = this.el.find('.editor-group select');
     this._getEditorData();
     // update navigation
-    // TODO: make this less invasive (e.g. preserve other keys in query string)
     var qs = my.parseHashQueryString();
     qs['graph'] = this.chartConfig;
     my.setHashQueryString(qs);
