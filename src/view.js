@@ -276,6 +276,9 @@ my.parseHashUrl = function(hashUrl) {
 
 // Parse a URL query string (?xyz=abc...) into a dictionary.
 my.parseQueryString = function(q) {
+  if (!q) {
+    return {};
+  }
   var urlParams = {},
     e, d = function (s) {
       return unescape(s.replace(/\+/g, " "));
