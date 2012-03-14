@@ -157,7 +157,7 @@ my.DataGrid = Backbone.View.extend({
   // ======================================================
   // #### Templating
   template: ' \
-    <table class="data-table table-striped" cellspacing="0"> \
+    <table class="data-table table-striped table-condensed" cellspacing="0"> \
       <thead> \
         <tr> \
           {{#notEmpty}} \
