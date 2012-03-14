@@ -292,9 +292,26 @@ $(function() {
     var $el = $('<div />');
     $el.appendTo($('.data-explorer-here'));
     window.dataExplorer = null;
+    var views = [
+      {
+        id: 'grid',
+        label: 'Grid',
+        view: new recline.View.DataGrid({
+          model: dataset
+        })
+      },
+      {
+        id: 'graph',
+        label: 'Graph',
+        view: new recline.View.FlotGraph({
+          model: dataset
+        })
+      }
+    ];
     window.dataExplorer = new recline.View.DataExplorer({
       el: $el
       , model: dataset
+      , views: views
     });
     // HACK (a bit). Issue is that Backbone will not trigger the route
     // if you are already at that location so we have to make sure we genuinely switch
