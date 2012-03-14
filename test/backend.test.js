@@ -295,9 +295,9 @@ test('DataProxy Backend', function() {
   });
 
   dataset.fetch().done(function(dataset) {
-    deepEqual(['__id__', 'date', 'price'], _.pluck(dataset.fields.toJSON(), 'id'));
-    equal(null, dataset.docCount)
     dataset.query().done(function(docList) {
+      deepEqual(['__id__', 'date', 'price'], _.pluck(dataset.fields.toJSON(), 'id'));
+      equal(null, dataset.docCount)
       equal(10, docList.length)
       equal("1950-01", docList.models[0].get('date'));
       // needed only if not stubbing
