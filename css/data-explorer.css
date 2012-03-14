@@ -72,6 +72,11 @@
   * Data Table
   *********************************************************/
 
+.data-table .btn-group .dropdown-toggle {
+  padding: 1px 3px;
+  line-height: auto;
+}
+
 .data-table-container {
   overflow: auto;
   height: 550px;
@@ -79,7 +84,6 @@
 
 .data-table {
   border: 1px solid #ccc;
-  font-size: 12px;
   width: 100%;
 }
 
