@@ -93,38 +93,12 @@
   * Data Table Menus
   *********************************************************/
 
-a.column-header-menu, a.root-header-menu {
+.column-header-menu, a.root-header-menu {
   float: right;
-  display: block;
-  margin: 0 4px 0 0;
-  width: 17px;
-  height: 19px;
-  background-image: url(images/menu-dropdown.png);
-  background-repeat: no-repeat;
-}
-
-a.row-header-menu:hover, a.root-header-menu:hover {
-  background-position: -17px 0px;
-  text-decoration: none;
-}
-
-a.row-header-menu {
-  float: left;
-  display: block;
-  margin: -2px 0 -4px 0;
-  width: 17px;
-  height: 18px;
-  background-image: url(images/menu-dropdown.png);
-  background-repeat: no-repeat;
 }
 
 .read-only a.row-header-menu {
   display: none;
-}
-
-a.column-header-menu:hover {
-  background-position: -17px 0px;
-  text-decoration: none;
 }
 
 .column-header-recon-stats-bar {
@@ -191,45 +165,6 @@ div.data-table-cell-content-numeric > a.data-table-cell-edit {
 .data-table-error {
   color: red;
 }
-
-.data-table-menu-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-}
-
-ul.data-table-menu {
-  display: none;
-  outline-style: none;
-  background: white;
-  color: black;
-  font-size: 12px;
-  height: auto;
-  list-style: none;
-  overflow: hidden;
-  position: absolute;
-  text-align: left;
-  width: 120px;
-  z-index: 666;
-  border: 1px solid #CCC;
-  border-right: 1px solid #666;
-  border-bottom: 1px solid #666;
-  margin: 0; padding: 0; }
-  ul.data-table-menu * {
-    margin: 0;
-    padding: 0; }
-  ul.data-table-menu a {
-    line-height: 14px;
-    color: black;
-    display: block;
-    padding: 5px 7px;
-    text-decoration: none; }
-  ul.data-table-menu li {
-    height: 24px; }
-  ul.data-table-menu li:hover {
-    background-color: #DBE8F8 }
 
 /* TODO: not sure the rest of this is needed */
 .data-table-cell-editor, .data-table-topic-popup {
