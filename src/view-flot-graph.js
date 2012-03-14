@@ -123,7 +123,7 @@ my.FlotGraph = Backbone.View.extend({
     this._getEditorData();
     // update navigation
     var qs = my.parseHashQueryString();
-    qs['graph'] = this.chartConfig;
+    qs['graph'] = JSON.stringify(this.chartConfig);
     my.setHashQueryString(qs);
     this.redraw();
   },
