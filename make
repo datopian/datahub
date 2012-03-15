@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 import sys
+import shutil
 import os
 
 def cat():
@@ -12,6 +13,8 @@ def docs():
     print("** Building docs")
     cmd = 'docco src/model.js src/view.js src/view-grid.js src/view-flot-graph.js'
     os.system(cmd)
+    if os.path.exists('/tmp/recline-docs'):
+      shutil.rmtree('/tmp/recline-docs')
     os.makedirs('/tmp/recline-docs')
     os.system('mkdir -p docs/backend')
     files = '%s/src/backend/*.js' % os.getcwd()
