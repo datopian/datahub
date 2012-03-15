@@ -504,4 +504,15 @@ test("GDoc Backend", function() {
   $.getJSON.restore();
 });
 
+test("GDoc Backend.getUrl", function() { 
+  var key = 'Abc_dajkdkjdafkj';
+  var dataset = new recline.Model.Dataset({
+    url: 'https://docs.google.com/spreadsheet/ccc?key=' + key + '#gid=0'
+  });
+  var backend = recline.Model.backends['gdocs'];
+  var out = backend.getUrl(dataset);
+  var exp = 'https://spreadsheets.google.com/feeds/list/' + key + '/1/public/values?alt=json'
+  equal(exp, out);
+});
+
 })(this.jQuery);
