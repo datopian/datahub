@@ -166,7 +166,7 @@ my.Dataset = Backbone.Model.extend({
   query: function(queryObj) {
     this.trigger('query:start');
     var self = this;
-    this.queryState.set(queryObj, {silent: true});
+    this.queryState.set(queryObj);
     var dfd = $.Deferred();
     this.backend.query(this, this.queryState.toJSON()).done(function(rows) {
       var docs = _.map(rows, function(row) {
@@ -255,18 +255,6 @@ my.backends = {};
 var util = function() {
   var templates = {
     transformActions: '<li><a data-action="transform" class="menuAction" href="JavaScript:void(0);">Global transform...</a></li>'
-    , columnActions: ' \
-      <li class="write-op"><a data-action="bulkEdit" class="menuAction" href="JavaScript:void(0);">Transform...</a></li> \
-      <li class="write-op"><a data-action="deleteColumn" class="menuAction" href="JavaScript:void(0);">Delete this column</a></li> \
-      <li><a data-action="sortAsc" class="menuAction" href="JavaScript:void(0);">Sort ascending</a></li> \
-      <li><a data-action="sortDesc" class="menuAction" href="JavaScript:void(0);">Sort descending</a></li> \
-      <li><a data-action="hideColumn" class="menuAction" href="JavaScript:void(0);">Hide this column</a></li> \
-    '
-    , rowActions: '<li><a data-action="deleteRow" class="menuAction write-op" href="JavaScript:void(0);">Delete this row</a></li>'
-    , rootActions: ' \
-        {{#columns}} \
-        <li><a data-action="showColumn" data-column="{{.}}" class="menuAction" href="JavaScript:void(0);">Show column: {{.}}</a></li> \
-        {{/columns}}'
     , cellEditor: ' \
       <div class="menu-container data-table-cell-editor"> \
         <textarea class="data-table-cell-editor-editor" bind="textarea">{{value}}</textarea> \
@@ -453,7 +441,10 @@ my.FlotGraph = Backbone.View.extend({
         <label>Graph Type</label> \
         <div class="input editor-type"> \
           <select> \
-          <option value="line">Line</option> \
+          <option value="lines-and-points">Lines and Points</option> \
+          <option value="lines">Lines</option> \
+          <option value="points">Points</option> \
+          <option value="bars">Bars</option> \
           </select> \
         </div> \
         <label>Group Column (x-axis)</label> \
@@ -514,7 +505,7 @@ my.FlotGraph = Backbone.View.extend({
     this.chartConfig = _.extend({
         group: null,
         series: [],
-        graphType: 'line'
+        graphType: 'lines-and-points'
       },
       configFromHash,
       config
@@ -536,11 +527,16 @@ my.FlotGraph = Backbone.View.extend({
 
   onEditorSubmit: function(e) {
     var select = this.el.find('.editor-group select');
-    this._getEditorData();
+    $editor = this;
+    var series = this.$series.map(function () {
+      return $(this).val();
+    });
+    this.chartConfig.series = $.makeArray(series)
+    this.chartConfig.group = this.el.find('.editor-group select').val();
+    this.chartConfig.graphType = this.el.find('.editor-type select').val();
     // update navigation
-    // TODO: make this less invasive (e.g. preserve other keys in query string)
     var qs = my.parseHashQueryString();
-    qs['graph'] = this.chartConfig;
+    qs['graph'] = JSON.stringify(this.chartConfig);
     my.setHashQueryString(qs);
     this.redraw();
   },
@@ -556,28 +552,99 @@ my.FlotGraph = Backbone.View.extend({
     if ((!areWeVisible || this.model.currentDocuments.length == 0)) {
       return
     }
+    var series = this.createSeries();
+    var options = this.graphOptions[this.chartConfig.graphType];
+    this.plot = $.plot(this.$graph, series, options);
+    if (this.chartConfig.graphType in { 'points': '', 'lines-and-points': '' }) {
+      this.setupTooltips();
+    }
     // create this.plot and cache it
-    if (!this.plot) {
-      // only lines for the present
-      options = {
-        id: 'line',
-        name: 'Line Chart'
-      };
-      this.plot = $.plot(this.$graph, this.createSeries(), options);
-    } 
-    this.plot.setData(this.createSeries());
-    this.plot.resize();
-    this.plot.setupGrid();
-    this.plot.draw();
+//    if (!this.plot) {
+//      this.plot = $.plot(this.$graph, series, options);
+//    } else {
+//      this.plot.parseOptions(options);
+//      this.plot.setData(this.createSeries());
+//      this.plot.resize();
+//      this.plot.setupGrid();
+//      this.plot.draw();
+//    }
   },
 
-  _getEditorData: function() {
-    $editor = this
-    var series = this.$series.map(function () {
-      return $(this).val();
+  graphOptions: { 
+    lines: {
+       series: { 
+         lines: { show: true }
+       }
+    }
+    , points: {
+      series: {
+        points: { show: true }
+      },
+      grid: { hoverable: true, clickable: true }
+    }
+    , 'lines-and-points': {
+      series: {
+        points: { show: true },
+        lines: { show: true }
+      },
+      grid: { hoverable: true, clickable: true }
+    }
+    , bars: {
+      series: {
+        lines: {show: false},
+        bars: {
+          show: true,
+          barWidth: 1,
+          align: "left",
+          fill: true
+        }
+      },
+      xaxis: {
+        tickSize: 1,
+        tickLength: 1,
+      }
+    }
+  },
+
+  setupTooltips: function() {
+    var self = this;
+    function showTooltip(x, y, contents) {
+      $('<div id="flot-tooltip">' + contents + '</div>').css( {
+        position: 'absolute',
+        display: 'none',
+        top: y + 5,
+        left: x + 5,
+        border: '1px solid #fdd',
+        padding: '2px',
+        'background-color': '#fee',
+        opacity: 0.80
+      }).appendTo("body").fadeIn(200);
+    }
+
+    var previousPoint = null;
+    this.$graph.bind("plothover", function (event, pos, item) {
+      if (item) {
+        if (previousPoint != item.dataIndex) {
+          previousPoint = item.dataIndex;
+          
+          $("#flot-tooltip").remove();
+          var x = item.datapoint[0].toFixed(2),
+              y = item.datapoint[1].toFixed(2);
+          
+          var content = _.template('<%= group %> = <%= x %>, <%= series %> = <%= y %>', {
+            group: self.chartConfig.group,
+            x: x,
+            series: item.series.label,
+            y: y
+          });
+          showTooltip(item.pageX, item.pageY, content);
+        }
+      }
+      else {
+        $("#flot-tooltip").remove();
+        previousPoint = null;            
+      }
     });
-    this.chartConfig.series = $.makeArray(series)
-    this.chartConfig.group = this.el.find('.editor-group select').val();
   },
 
   createSeries: function () {
@@ -703,19 +770,19 @@ my.DataGrid = Backbone.View.extend({
 
   onColumnHeaderClick: function(e) {
     this.state.currentColumn = $(e.target).closest('.column-header').attr('data-field');
-    util.position('data-table-menu', e);
-    util.render('columnActions', 'data-table-menu');
   },
 
   onRowHeaderClick: function(e) {
     this.state.currentRow = $(e.target).parents('tr:first').attr('data-id');
-    util.position('data-table-menu', e);
-    util.render('rowActions', 'data-table-menu');
   },
   
   onRootHeaderClick: function(e) {
-    util.position('data-table-menu', e);
-    util.render('rootActions', 'data-table-menu', {'columns': this.hiddenFields});
+    var tmpl = ' \
+        {{#columns}} \
+        <li><a data-action="showColumn" data-column="{{.}}" href="JavaScript:void(0);">Show column: {{.}}</a></li> \
+        {{/columns}}';
+    var tmp = $.mustache(tmpl, {'columns': this.hiddenFields});
+    this.el.find('.root-header-menu .dropdown-menu').html(tmp);
   },
 
   onMenuClick: function(e) {
@@ -757,7 +824,6 @@ my.DataGrid = Backbone.View.extend({
           })
       }
     }
-    util.hide('data-table-menu');
     actions[$(e.target).attr('data-action')]();
   },
 
@@ -810,26 +876,32 @@ my.DataGrid = Backbone.View.extend({
   // ======================================================
   // #### Templating
   template: ' \
-    <div class="data-table-menu-overlay" style="display: none; z-index: 101; ">&nbsp;</div> \
-    <ul class="data-table-menu"></ul> \
-    <table class="data-table table-striped" cellspacing="0"> \
+    <table class="data-table table-striped table-condensed" cellspacing="0"> \
       <thead> \
         <tr> \
           {{#notEmpty}} \
             <th class="column-header"> \
-              <div class="column-header-title"> \
-                <a class="root-header-menu"></a> \
-                <span class="column-header-name"></span> \
+              <div class="btn-group root-header-menu"> \
+                <a class="btn dropdown-toggle" data-toggle="dropdown"><span class="caret"></span></a> \
+                <ul class="dropdown-menu data-table-menu"> \
+                </ul> \
               </div> \
+              <span class="column-header-name"></span> \
             </th> \
           {{/notEmpty}} \
           {{#fields}} \
             <th class="column-header {{#hidden}}hidden{{/hidden}}" data-field="{{id}}"> \
-              <div class="column-header-title"> \
-                <a class="column-header-menu"></a> \
-                <span class="column-header-name">{{label}}</span> \
+              <div class="btn-group column-header-menu"> \
+                <a class="btn dropdown-toggle" data-toggle="dropdown"><i class="icon-cog"></i><span class="caret"></span></a> \
+                <ul class="dropdown-menu data-table-menu"> \
+                  <li class="write-op"><a data-action="bulkEdit" href="JavaScript:void(0);">Transform...</a></li> \
+                  <li class="write-op"><a data-action="deleteColumn" href="JavaScript:void(0);">Delete this column</a></li> \
+                  <li><a data-action="sortAsc" href="JavaScript:void(0);">Sort ascending</a></li> \
+                  <li><a data-action="sortDesc" href="JavaScript:void(0);">Sort descending</a></li> \
+                  <li><a data-action="hideColumn" href="JavaScript:void(0);">Hide this column</a></li> \
+                </ul> \
               </div> \
-              </div> \
+              <span class="column-header-name">{{label}}</span> \
             </th> \
           {{/fields}} \
         </tr> \
@@ -911,7 +983,14 @@ my.DataGridRow = Backbone.View.extend({
   },
 
   template: ' \
-      <td><a class="row-header-menu"></a></td> \
+      <td> \
+        <div class="btn-group row-header-menu"> \
+          <a class="btn dropdown-toggle" data-toggle="dropdown"><span class="caret"></span></a> \
+          <ul class="dropdown-menu data-table-menu"> \
+            <li class="write-op"><a data-action="deleteRow" href="JavaScript:void(0);">Delete this row</a></li> \
+          </ul> \
+        </div> \
+      </td> \
       {{#cells}} \
       <td data-field="{{field}}"> \
         <div class="data-table-cell-content"> \
@@ -1305,6 +1384,10 @@ my.DataExplorer = Backbone.View.extend({
         my.clearNotifications();
         self.el.find('.doc-count').text(self.model.docCount || 'Unknown');
         my.notify('Data loaded', {category: 'success'});
+        // update navigation
+        var qs = my.parseHashQueryString();
+        qs['reclineQuery'] = JSON.stringify(self.model.queryState.toJSON());
+        my.setHashQueryString(qs);
       });
     this.model.bind('query:fail', function(error) {
         my.clearNotifications();
@@ -1328,8 +1411,11 @@ my.DataExplorer = Backbone.View.extend({
     // note this.model and dataset returned are the same
     this.model.fetch()
       .done(function(dataset) {
-        self.el.find('.doc-count').text(self.model.docCount || 'Unknown');
-        self.model.query();
+        var queryState = my.parseHashQueryString().reclineQuery;
+        if (queryState) {
+          queryState = JSON.parse(queryState);
+        }
+        self.model.query(queryState);
       })
       .fail(function(error) {
         my.notify(error.message, {category: 'error', persist: true});
@@ -1394,21 +1480,28 @@ my.QueryEditor = Backbone.View.extend({
       <div class="input-prepend text-query"> \
         <span class="add-on"><i class="icon-search"></i></span> \
         <input type="text" name="q" value="{{q}}" class="span2" placeholder="Search data ..." class="search-query" /> \
+        <div class="btn-group menu"> \
+          <a class="btn dropdown-toggle" data-toggle="dropdown"><i class="icon-cog"></i><span class="caret"></span></a> \
+          <ul class="dropdown-menu"> \
+            <li><a data-action="size" href="">Number of items to show ({{size}})</a></li> \
+            <li><a data-action="from" href="">Show from ({{from}})</a></li> \
+          </ul> \
+        </div> \
       </div> \
       <div class="pagination"> \
         <ul> \
-          <li class="prev action-pagination-update"><a>&laquo;</a></li> \
-          <li class="active"><a><input name="from" type="text" value="{{from}}" /> &ndash; <input name="to" type="text" value="{{to}}" /> </a></li> \
-          <li class="next action-pagination-update"><a>&raquo;</a></li> \
+          <li class="prev action-pagination-update"><a href="">&laquo;</a></li> \
+          <li class="active"><a>{{from}} &ndash; {{to}}</a></li> \
+          <li class="next action-pagination-update"><a href="">&raquo;</a></li> \
         </ul> \
       </div> \
-      <button type="submit" class="btn" style="">Update &raquo;</button> \
     </form> \
   ',
 
   events: {
-    'submit form': 'onFormSubmit',
-    'click .action-pagination-update': 'onPaginationUpdate'
+    'submit form': 'onFormSubmit'
+    , 'click .action-pagination-update': 'onPaginationUpdate'
+    , 'click .menu li a': 'onMenuItemClick'
   },
 
   initialize: function() {
@@ -1419,10 +1512,8 @@ my.QueryEditor = Backbone.View.extend({
   },
   onFormSubmit: function(e) {
     e.preventDefault();
-    var newFrom = parseInt(this.el.find('input[name="from"]').val());
-    var newSize = parseInt(this.el.find('input[name="to"]').val()) - newFrom;
     var query = this.el.find('.text-query input').val();
-    this.model.set({size: newSize, from: newFrom, q: query});
+    this.model.set({q: query});
   },
   onPaginationUpdate: function(e) {
     e.preventDefault();
@@ -1433,6 +1524,20 @@ my.QueryEditor = Backbone.View.extend({
       var newFrom = this.model.get('from') + this.model.get('size');
     }
     this.model.set({from: newFrom});
+  },
+  onMenuItemClick: function(e) {
+    e.preventDefault();
+    var attrName = $(e.target).attr('data-action');
+    var msg = _.template('New value (<%= value %>)',
+        {value: this.model.get(attrName)}
+        );
+    var newValue = prompt(msg);
+    if (newValue) {
+      newValue = parseInt(newValue);
+      var update = {};
+      update[attrName] = newValue;
+      this.model.set(update);
+    }
   },
   render: function() {
     var tmplData = this.model.toJSON();
@@ -1463,6 +1568,9 @@ my.parseHashUrl = function(hashUrl) {
 
 // Parse a URL query string (?xyz=abc...) into a dictionary.
 my.parseQueryString = function(q) {
+  if (!q) {
+    return {};
+  }
   var urlParams = {},
     e, d = function (s) {
       return unescape(s.replace(/\+/g, " "));
@@ -1490,7 +1598,7 @@ my.composeQueryString = function(queryParams) {
   var queryString = '?';
   var items = [];
   $.each(queryParams, function(key, value) {
-    items.push(key + '=' + JSON.stringify(value));
+    items.push(key + '=' + value);
   });
   queryString += items.join('&');
   return queryString;
@@ -1789,13 +1897,33 @@ this.recline.Backend = this.recline.Backend || {};
   // );
   // </pre>
   my.GDoc = Backbone.Model.extend({
+    getUrl: function(dataset) {
+      var url = dataset.get('url');
+      if (url.indexOf('feeds/list') != -1) {
+        return url;
+      } else {
+        // https://docs.google.com/spreadsheet/ccc?key=XXXX#gid=0
+        var regex = /.*spreadsheet\/ccc?.*key=([^#?&+]+).*/
+        var matches = url.match(regex);
+        if (matches) {
+          var key = matches[1];
+          var worksheet = 1;
+          var out = 'https://spreadsheets.google.com/feeds/list/' + key + '/' + worksheet + '/public/values?alt=json'
+          return out;
+        } else {
+          alert('Failed to extract gdocs key from ' + url);
+        }
+      }
+    },
     sync: function(method, model, options) {
       var self = this;
       if (method === "read") { 
         var dfd = $.Deferred(); 
         var dataset = model;
 
-        $.getJSON(model.get('url'), function(d) {
+        var url = this.getUrl(model);
+
+        $.getJSON(url, function(d) {
           result = self.gdocsToJavascript(d);
           model.fields.reset(_.map(result.field, function(fieldId) {
               return {id: fieldId};
@@ -1983,66 +2111,5 @@ this.recline.Backend = this.recline.Backend || {};
     }
   });
   recline.Model.backends['memory'] = new my.Memory();
-
-}(jQuery, this.recline.Backend));
-this.recline = this.recline || {};
-this.recline.Backend = this.recline.Backend || {};
-
-(function($, my) {
-  // ## Webstore Backend
-  //
-  // Connecting to [Webstores](http://github.com/okfn/webstore)
-  //
-  // To use this backend ensure your Dataset has a webstore_url in its attributes.
-  my.Webstore = Backbone.Model.extend({
-    sync: function(method, model, options) {
-      if (method === "read") {
-        if (model.__type__ == 'Dataset') {
-          var base = model.get('webstore_url');
-          var schemaUrl = base + '/schema.json';
-          var jqxhr = $.ajax({
-            url: schemaUrl,
-              dataType: 'jsonp',
-              jsonp: '_callback'
-          });
-          var dfd = $.Deferred();
-          my.wrapInTimeout(jqxhr).done(function(schema) {
-            var fieldData = _.map(schema.data, function(item) {
-              item.id = item.name;
-              delete item.name;
-              return item;
-            });
-            model.fields.reset(fieldData);
-            model.docCount = schema.count;
-            dfd.resolve(model, jqxhr);
-          })
-          .fail(function(arguments) {
-            dfd.reject(arguments);
-          });
-          return dfd.promise();
-        }
-      }
-    },
-    query: function(model, queryObj) {
-      var base = model.get('webstore_url');
-      var data = {
-        _limit:  queryObj.size
-        , _offset: queryObj.from
-      };
-      var jqxhr = $.ajax({
-        url: base + '.json',
-        data: data,
-        dataType: 'jsonp',
-        jsonp: '_callback',
-        cache: true
-      });
-      var dfd = $.Deferred();
-      jqxhr.done(function(results) {
-        dfd.resolve(results.data);
-      });
-      return dfd.promise();
-    }
-  });
-  recline.Model.backends['webstore'] = new my.Webstore();
 
 }(jQuery, this.recline.Backend));

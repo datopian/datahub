@@ -69,14 +69,14 @@
   <div class="content">
     <div class="page-header">
       <h1>
-        Recline Data Explorer <small>Powerful and extensible JS grid/spreadsheet</small>
+        Recline Data Explorer <small>Powerful, extensible JS grid/spreadsheet built on <a href="http://backbonejs.org/">Backbone</a></small>
       </h1>
     </div>
     <h4>Recline combines a data grid, Google Refine-style data transforms
       and visualizations all in lightweight javascript and html.</h4>
     <p>Designed for standalone use or as a library to integrate into your own
-    app. Recline utilizes the lightweight but powerful Backbone framework, and
-    so is a cinch to extend or adapt.</p>
+    app. Recline builds on the powerful but lightweight Backbone framework
+    making it extremely easy to extend and adapt.</p>
 
     <h2 id="features">Main Features</h2>
     <ul>
@@ -113,27 +113,7 @@
     <p><strong>CSS</strong>: the demo utilizes bootstrap but you can integrate with your own HTML and CSS. Data Explorer specific CSS can be found here in the repo: <a href="https://github.com/okfn/recline/tree/master/css">https://github.com/okfn/recline/tree/master/css</a>.</p>
 
     <h2 id="docs">Documentation</h2>
-    <p>Recline has a simple structure layered on top of the basic Model/View
-    distinction inherent in Backbone. There are the following two main domain objects (all Backbone Models):</p>
-    <ul>
-      <li>Dataset: represents the dataset. Holds dataset info and a pointer to list of data items (Documents in our terminology) which it can load from the relevant Backend.</li>
-      <li>Document: an individual data item (e.g. a row from a relational database or a spreadsheet, a document from from a document DB like CouchDB or MongoDB).</li>
-    </ul>
-    <p>More on the models in the <a href="docs/model.html">Model source docs</a>.</p>
-
-    <p>Backends (more <a href="#doc-backends">info below</a>) connect Dataset and Documents to data
-    from a specific 'Backend' data source. They provide methods for loading and
-    saving Datasets and individuals Documents as well as for bulk loading via a
-    query API and doing bulk transforms on the backend.</p>
-
-    <p>Complementing the model are various Views (you can easily write your own). Each view holds a pointer to a Dataset:</p>
-    <ul>
-      <li>DataExplorer: the parent view which manages the overall app and sets up sub views.</li>
-      <li>DataGrid: the data grid view.</li>
-      <li>FlotGraph: a simple graphing view using <a href="http://code.google.com/p/flot/">Flot</a>.</li>
-    </ul>
-
-    <h3 id="using">Using It</h3>
+    <h3 id="using">Quickstart</h3>
     <pre>
 // Note: you should have included the relevant JS libraries (and CSS)
 // See above for dependencies
@@ -157,6 +137,29 @@ Backbone.history.start();
     <p>More details and examples: see docs below and the <a
       href="demo/">Demo</a> -- just hit view source (NB: the javascript for the
     demo is in: <a href="demo/js/app.js">app.js</a>).</p>
+
+    <h3 id="doc-concepts">Architecture and Model</h3>
+    <p>Recline has a simple structure layered on top of the basic Model/View
+    distinction inherent in Backbone. There are the following two main domain objects (both Backbone Models):</p>
+    <ul>
+      <li>Dataset: represents the dataset. Holds dataset info and a pointer to list of data items (Documents in our terminology) which it can load from the relevant Backend.</li>
+      <li>Document: an individual data item (e.g. a row from a relational database or a spreadsheet, a document from from a document DB like CouchDB or MongoDB).</li>
+    </ul>
+    <p>More detail of how these work can be found in the <a href="docs/model.html">Model source docs</a>.</p>
+
+    <p><strong>Backends</strong> connect Dataset and Documents to data
+    from a specific 'Backend' data source. They provide methods for loading and
+    saving Datasets and individuals Documents as well as for bulk loading via a
+    query API and doing bulk transforms on the backend. More <a
+      href="#doc-backends">info on backends can be found below</a>.</p>
+
+    <p>Complementing the model are various Views (you can easily write your own). Each view holds a pointer to a Dataset:</p>
+    <ul>
+      <li>DataExplorer: the parent view which manages the overall app and sets up sub views.</li>
+      <li>DataGrid: the data grid view.</li>
+      <li>FlotGraph: a simple graphing view using <a href="http://code.google.com/p/flot/">Flot</a>.</li>
+    </ul>
+
 
 <h3 id="doc-backends">Backends</h3>
 
@@ -197,10 +200,11 @@ used by the Dataset.query method to search the backend for documents,
 retrieving the results in bulk. This method should also set the docCount
 attribute on the dataset.</p>
 
-<p><strong>queryObj</strong> should be either a recline.Model.Query object or a
+<p><code>queryObj</code> should be either a recline.Model.Query object or a
 Hash. The structure of data in the Query object or Hash should follow that
-defined in issue 34. (That said, if you are writing your own backend and have
-control over the query object you can obviously use whatever structure you
+defined in <a href="http://github.com/okfn/recline/issues/34">issue 34</a>. (Of
+course, if you are writing your own backend, and hence have control over the
+interpretation of the query object, you can use whatever structure you
 like).</p>
 
     <h3>Source Docs (via Docco)</h3>
@@ -211,6 +215,7 @@ like).</p>
       <li><a href="docs/view-flot-graph.html">Graph View (based on Flot)</a></li>
       <li><a href="docs/backend/memory.html">Backend: Memory (local data)</a></li>
       <li><a href="docs/backend/elasticsearch.html">Backend: ElasticSearch</a></li>
+      <li><a href="docs/backend/dataproxy.html">Backend: DataProxy</a></li>
       <li><a href="docs/backend/gdocs.html">Backend: Google Docs (Spreadsheet)</a></li>
     </ul>
 
