@@ -29,8 +29,10 @@ $(function() {
 // again and again
 function createExplorer(dataset) {
   // remove existing data explorer view
+  var reload = false;
   if (window.dataExplorer) {
     window.dataExplorer.remove();
+    reload = true;
   }
   window.dataExplorer = null;
   var $el = $('<div />');
@@ -43,8 +45,10 @@ function createExplorer(dataset) {
   });
   // HACK (a bit). Issue is that Backbone will not trigger the route
   // if you are already at that location so we have to make sure we genuinely switch
-  window.dataExplorer.router.navigate('graph');
-  window.dataExplorer.router.navigate('', true);
+  if (reload) {
+    window.dataExplorer.router.navigate('graph');
+    window.dataExplorer.router.navigate('', true);
+  }
 }
 
 // convenience function
