@@ -90,122 +90,6 @@ test('Memory Backend: update and delete', function () {
   });
 });
 
-// TODO: move to fixtures
-var webstoreSchema = {
-  "count": 3, 
-  "data": [
-  {
-    "name": "__id__", 
-    "type": "integer", 
-    "values_url": "/rufuspollock/demo/data/distinct/__id__"
-  }, 
-  {
-    "name": "date", 
-    "type": "text", 
-    "values_url": "/rufuspollock/demo/data/distinct/date"
-  }, 
-  {
-    "name": "geometry", 
-    "type": "text", 
-    "values_url": "/rufuspollock/demo/data/distinct/geometry"
-  }, 
-  {
-    "name": "amount", 
-    "type": "text", 
-    "values_url": "/rufuspollock/demo/data/distinct/amount"
-  }
-  ], 
-    "fields": [
-    {
-      "name": "type"
-    }, 
-    {
-      "name": "name"
-    }, 
-    {
-      "name": "values_url"
-    }
-  ]
-};
-
-webstoreData = {
-  "count": null, 
-  "data": [
-  {
-    "__id__": 1, 
-    "amount": "100", 
-    "date": "2009-01-01", 
-    "geometry": null
-  }, 
-  {
-    "__id__": 2, 
-    "amount": "200", 
-    "date": "2010-01-01", 
-    "geometry": null
-  }, 
-  {
-    "__id__": 3, 
-    "amount": "300", 
-    "date": "2011-01-01", 
-    "geometry": null
-  }
-  ], 
-    "fields": [
-    {
-      "name": "__id__"
-    }, 
-    {
-      "name": "date"
-    }, 
-    {
-      "name": "geometry"
-    }, 
-    {
-      "name": "amount"
-    }
-  ]
-};
-
-test('Webstore Backend', function() {
-  var dataset = new recline.Model.Dataset({
-    id: 'my-id',
-    webstore_url: 'http://webstore.test.ckan.org/rufuspollock/demo/data'
-    },
-    'webstore'
-  );
-  var stub = sinon.stub($, 'ajax', function(options) {
-    if (options.url.indexOf('schema.json') != -1) {
-      return {
-        done: function(callback) {
-          callback(webstoreSchema);
-          return this;
-        },
-        fail: function() {
-          return this;
-        }
-      }
-    } else {
-      return {
-        done: function(callback) {
-          callback(webstoreData);
-        },
-        fail: function() {
-        }
-      }
-    }
-  });
-
-  dataset.fetch().done(function(dataset) {
-    deepEqual(['__id__', 'date', 'geometry', 'amount'], _.pluck(dataset.fields.toJSON(), 'id'));
-    equal(3, dataset.docCount)
-    dataset.query().done(function(docList) {
-      equal(3, docList.length)
-      equal("2009-01-01", docList.models[0].get('date'));
-    });
-  });
-  $.ajax.restore();
-});
-
 
 var dataProxyData = {
   "data": [
@@ -295,9 +179,9 @@ test('DataProxy Backend', function() {
   });
 
   dataset.fetch().done(function(dataset) {
-    deepEqual(['__id__', 'date', 'price'], _.pluck(dataset.fields.toJSON(), 'id'));
-    equal(null, dataset.docCount)
     dataset.query().done(function(docList) {
+      deepEqual(['__id__', 'date', 'price'], _.pluck(dataset.fields.toJSON(), 'id'));
+      equal(null, dataset.docCount)
       equal(10, docList.length)
       equal("1950-01", docList.models[0].get('date'));
       // needed only if not stubbing
@@ -502,6 +386,17 @@ test("GDoc Backend", function() {
     });
   });
   $.getJSON.restore();
+});
+
+test("GDoc Backend.getUrl", function() { 
+  var key = 'Abc_dajkdkjdafkj';
+  var dataset = new recline.Model.Dataset({
+    url: 'https://docs.google.com/spreadsheet/ccc?key=' + key + '#gid=0'
+  });
+  var backend = recline.Model.backends['gdocs'];
+  var out = backend.getUrl(dataset);
+  var exp = 'https://spreadsheets.google.com/feeds/list/' + key + '/1/public/values?alt=json'
+  equal(exp, out);
 });
 
 })(this.jQuery);

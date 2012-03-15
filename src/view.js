@@ -111,6 +111,10 @@ my.DataExplorer = Backbone.View.extend({
         my.clearNotifications();
         self.el.find('.doc-count').text(self.model.docCount || 'Unknown');
         my.notify('Data loaded', {category: 'success'});
+        // update navigation
+        var qs = my.parseHashQueryString();
+        qs['reclineQuery'] = JSON.stringify(self.model.queryState.toJSON());
+        my.setHashQueryString(qs);
       });
     this.model.bind('query:fail', function(error) {
         my.clearNotifications();
@@ -134,8 +138,11 @@ my.DataExplorer = Backbone.View.extend({
     // note this.model and dataset returned are the same
     this.model.fetch()
       .done(function(dataset) {
-        self.el.find('.doc-count').text(self.model.docCount || 'Unknown');
-        self.model.query();
+        var queryState = my.parseHashQueryString().reclineQuery;
+        if (queryState) {
+          queryState = JSON.parse(queryState);
+        }
+        self.model.query(queryState);
       })
       .fail(function(error) {
         my.notify(error.message, {category: 'error', persist: true});
@@ -200,21 +207,28 @@ my.QueryEditor = Backbone.View.extend({
       <div class="input-prepend text-query"> \
         <span class="add-on"><i class="icon-search"></i></span> \
         <input type="text" name="q" value="{{q}}" class="span2" placeholder="Search data ..." class="search-query" /> \
+        <div class="btn-group menu"> \
+          <a class="btn dropdown-toggle" data-toggle="dropdown"><i class="icon-cog"></i><span class="caret"></span></a> \
+          <ul class="dropdown-menu"> \
+            <li><a data-action="size" href="">Number of items to show ({{size}})</a></li> \
+            <li><a data-action="from" href="">Show from ({{from}})</a></li> \
+          </ul> \
+        </div> \
       </div> \
       <div class="pagination"> \
         <ul> \
-          <li class="prev action-pagination-update"><a>&laquo;</a></li> \
-          <li class="active"><a><input name="from" type="text" value="{{from}}" /> &ndash; <input name="to" type="text" value="{{to}}" /> </a></li> \
-          <li class="next action-pagination-update"><a>&raquo;</a></li> \
+          <li class="prev action-pagination-update"><a href="">&laquo;</a></li> \
+          <li class="active"><a>{{from}} &ndash; {{to}}</a></li> \
+          <li class="next action-pagination-update"><a href="">&raquo;</a></li> \
         </ul> \
       </div> \
-      <button type="submit" class="btn" style="">Update &raquo;</button> \
     </form> \
   ',
 
   events: {
-    'submit form': 'onFormSubmit',
-    'click .action-pagination-update': 'onPaginationUpdate'
+    'submit form': 'onFormSubmit'
+    , 'click .action-pagination-update': 'onPaginationUpdate'
+    , 'click .menu li a': 'onMenuItemClick'
   },
 
   initialize: function() {
@@ -225,10 +239,8 @@ my.QueryEditor = Backbone.View.extend({
   },
   onFormSubmit: function(e) {
     e.preventDefault();
-    var newFrom = parseInt(this.el.find('input[name="from"]').val());
-    var newSize = parseInt(this.el.find('input[name="to"]').val()) - newFrom;
     var query = this.el.find('.text-query input').val();
-    this.model.set({size: newSize, from: newFrom, q: query});
+    this.model.set({q: query});
   },
   onPaginationUpdate: function(e) {
     e.preventDefault();
@@ -239,6 +251,20 @@ my.QueryEditor = Backbone.View.extend({
       var newFrom = this.model.get('from') + this.model.get('size');
     }
     this.model.set({from: newFrom});
+  },
+  onMenuItemClick: function(e) {
+    e.preventDefault();
+    var attrName = $(e.target).attr('data-action');
+    var msg = _.template('New value (<%= value %>)',
+        {value: this.model.get(attrName)}
+        );
+    var newValue = prompt(msg);
+    if (newValue) {
+      newValue = parseInt(newValue);
+      var update = {};
+      update[attrName] = newValue;
+      this.model.set(update);
+    }
   },
   render: function() {
     var tmplData = this.model.toJSON();
@@ -269,6 +295,9 @@ my.parseHashUrl = function(hashUrl) {
 
 // Parse a URL query string (?xyz=abc...) into a dictionary.
 my.parseQueryString = function(q) {
+  if (!q) {
+    return {};
+  }
   var urlParams = {},
     e, d = function (s) {
       return unescape(s.replace(/\+/g, " "));
@@ -296,7 +325,7 @@ my.composeQueryString = function(queryParams) {
   var queryString = '?';
   var items = [];
   $.each(queryParams, function(key, value) {
-    items.push(key + '=' + JSON.stringify(value));
+    items.push(key + '=' + value);
   });
   queryString += items.join('&');
   return queryString;

@@ -37,7 +37,10 @@ my.FlotGraph = Backbone.View.extend({
         <label>Graph Type</label> \
         <div class="input editor-type"> \
           <select> \
-          <option value="line">Line</option> \
+          <option value="lines-and-points">Lines and Points</option> \
+          <option value="lines">Lines</option> \
+          <option value="points">Points</option> \
+          <option value="bars">Bars</option> \
           </select> \
         </div> \
         <label>Group Column (x-axis)</label> \
@@ -98,7 +101,7 @@ my.FlotGraph = Backbone.View.extend({
     this.chartConfig = _.extend({
         group: null,
         series: [],
-        graphType: 'line'
+        graphType: 'lines-and-points'
       },
       configFromHash,
       config
@@ -120,11 +123,16 @@ my.FlotGraph = Backbone.View.extend({
 
   onEditorSubmit: function(e) {
     var select = this.el.find('.editor-group select');
-    this._getEditorData();
+    $editor = this;
+    var series = this.$series.map(function () {
+      return $(this).val();
+    });
+    this.chartConfig.series = $.makeArray(series)
+    this.chartConfig.group = this.el.find('.editor-group select').val();
+    this.chartConfig.graphType = this.el.find('.editor-type select').val();
     // update navigation
-    // TODO: make this less invasive (e.g. preserve other keys in query string)
     var qs = my.parseHashQueryString();
-    qs['graph'] = this.chartConfig;
+    qs['graph'] = JSON.stringify(this.chartConfig);
     my.setHashQueryString(qs);
     this.redraw();
   },
@@ -140,28 +148,99 @@ my.FlotGraph = Backbone.View.extend({
     if ((!areWeVisible || this.model.currentDocuments.length == 0)) {
       return
     }
+    var series = this.createSeries();
+    var options = this.graphOptions[this.chartConfig.graphType];
+    this.plot = $.plot(this.$graph, series, options);
+    if (this.chartConfig.graphType in { 'points': '', 'lines-and-points': '' }) {
+      this.setupTooltips();
+    }
     // create this.plot and cache it
-    if (!this.plot) {
-      // only lines for the present
-      options = {
-        id: 'line',
-        name: 'Line Chart'
-      };
-      this.plot = $.plot(this.$graph, this.createSeries(), options);
-    } 
-    this.plot.setData(this.createSeries());
-    this.plot.resize();
-    this.plot.setupGrid();
-    this.plot.draw();
+//    if (!this.plot) {
+//      this.plot = $.plot(this.$graph, series, options);
+//    } else {
+//      this.plot.parseOptions(options);
+//      this.plot.setData(this.createSeries());
+//      this.plot.resize();
+//      this.plot.setupGrid();
+//      this.plot.draw();
+//    }
   },
 
-  _getEditorData: function() {
-    $editor = this
-    var series = this.$series.map(function () {
-      return $(this).val();
+  graphOptions: { 
+    lines: {
+       series: { 
+         lines: { show: true }
+       }
+    }
+    , points: {
+      series: {
+        points: { show: true }
+      },
+      grid: { hoverable: true, clickable: true }
+    }
+    , 'lines-and-points': {
+      series: {
+        points: { show: true },
+        lines: { show: true }
+      },
+      grid: { hoverable: true, clickable: true }
+    }
+    , bars: {
+      series: {
+        lines: {show: false},
+        bars: {
+          show: true,
+          barWidth: 1,
+          align: "left",
+          fill: true
+        }
+      },
+      xaxis: {
+        tickSize: 1,
+        tickLength: 1,
+      }
+    }
+  },
+
+  setupTooltips: function() {
+    var self = this;
+    function showTooltip(x, y, contents) {
+      $('<div id="flot-tooltip">' + contents + '</div>').css( {
+        position: 'absolute',
+        display: 'none',
+        top: y + 5,
+        left: x + 5,
+        border: '1px solid #fdd',
+        padding: '2px',
+        'background-color': '#fee',
+        opacity: 0.80
+      }).appendTo("body").fadeIn(200);
+    }
+
+    var previousPoint = null;
+    this.$graph.bind("plothover", function (event, pos, item) {
+      if (item) {
+        if (previousPoint != item.dataIndex) {
+          previousPoint = item.dataIndex;
+          
+          $("#flot-tooltip").remove();
+          var x = item.datapoint[0].toFixed(2),
+              y = item.datapoint[1].toFixed(2);
+          
+          var content = _.template('<%= group %> = <%= x %>, <%= series %> = <%= y %>', {
+            group: self.chartConfig.group,
+            x: x,
+            series: item.series.label,
+            y: y
+          });
+          showTooltip(item.pageX, item.pageY, content);
+        }
+      }
+      else {
+        $("#flot-tooltip").remove();
+        previousPoint = null;            
+      }
     });
-    this.chartConfig.series = $.makeArray(series)
-    this.chartConfig.group = this.el.find('.editor-group select').val();
   },
 
   createSeries: function () {

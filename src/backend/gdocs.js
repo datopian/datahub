@@ -17,13 +17,33 @@ this.recline.Backend = this.recline.Backend || {};
   // );
   // </pre>
   my.GDoc = Backbone.Model.extend({
+    getUrl: function(dataset) {
+      var url = dataset.get('url');
+      if (url.indexOf('feeds/list') != -1) {
+        return url;
+      } else {
+        // https://docs.google.com/spreadsheet/ccc?key=XXXX#gid=0
+        var regex = /.*spreadsheet\/ccc?.*key=([^#?&+]+).*/
+        var matches = url.match(regex);
+        if (matches) {
+          var key = matches[1];
+          var worksheet = 1;
+          var out = 'https://spreadsheets.google.com/feeds/list/' + key + '/' + worksheet + '/public/values?alt=json'
+          return out;
+        } else {
+          alert('Failed to extract gdocs key from ' + url);
+        }
+      }
+    },
     sync: function(method, model, options) {
       var self = this;
       if (method === "read") { 
         var dfd = $.Deferred(); 
         var dataset = model;
 
-        $.getJSON(model.get('url'), function(d) {
+        var url = this.getUrl(model);
+
+        $.getJSON(url, function(d) {
           result = self.gdocsToJavascript(d);
           model.fields.reset(_.map(result.field, function(fieldId) {
               return {id: fieldId};

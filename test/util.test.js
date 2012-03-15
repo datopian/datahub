@@ -16,7 +16,7 @@ test('composeQueryString', function () {
     a: 'b'
   };
   var out = recline.View.composeQueryString(params);
-  equal(out, '?x="y"&a="b"');
+  equal(out, '?x=y&a=b');
 });
 
 })(this.jQuery);

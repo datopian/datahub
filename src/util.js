@@ -1,18 +1,6 @@
 var util = function() {
   var templates = {
     transformActions: '<li><a data-action="transform" class="menuAction" href="JavaScript:void(0);">Global transform...</a></li>'
-    , columnActions: ' \
-      <li class="write-op"><a data-action="bulkEdit" class="menuAction" href="JavaScript:void(0);">Transform...</a></li> \
-      <li class="write-op"><a data-action="deleteColumn" class="menuAction" href="JavaScript:void(0);">Delete this column</a></li> \
-      <li><a data-action="sortAsc" class="menuAction" href="JavaScript:void(0);">Sort ascending</a></li> \
-      <li><a data-action="sortDesc" class="menuAction" href="JavaScript:void(0);">Sort descending</a></li> \
-      <li><a data-action="hideColumn" class="menuAction" href="JavaScript:void(0);">Hide this column</a></li> \
-    '
-    , rowActions: '<li><a data-action="deleteRow" class="menuAction write-op" href="JavaScript:void(0);">Delete this row</a></li>'
-    , rootActions: ' \
-        {{#columns}} \
-        <li><a data-action="showColumn" data-column="{{.}}" class="menuAction" href="JavaScript:void(0);">Show column: {{.}}</a></li> \
-        {{/columns}}'
     , cellEditor: ' \
       <div class="menu-container data-table-cell-editor"> \
         <textarea class="data-table-cell-editor-editor" bind="textarea">{{value}}</textarea> \

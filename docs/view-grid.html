@@ -44,19 +44,19 @@ showDialog: function(template, data) {
 },</p>             </td>             <td class="code">               <div class="highlight"><pre></pre></div>             </td>           </tr>                               <tr id="section-4">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-4">&#182;</a>               </div>               <p>======================================================
 Column and row menus</p>             </td>             <td class="code">               <div class="highlight"><pre>  <span class="nx">onColumnHeaderClick</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">e</span><span class="p">)</span> <span class="p">{</span>
     <span class="k">this</span><span class="p">.</span><span class="nx">state</span><span class="p">.</span><span class="nx">currentColumn</span> <span class="o">=</span> <span class="nx">$</span><span class="p">(</span><span class="nx">e</span><span class="p">.</span><span class="nx">target</span><span class="p">).</span><span class="nx">closest</span><span class="p">(</span><span class="s1">&#39;.column-header&#39;</span><span class="p">).</span><span class="nx">attr</span><span class="p">(</span><span class="s1">&#39;data-field&#39;</span><span class="p">);</span>
-    <span class="nx">util</span><span class="p">.</span><span class="nx">position</span><span class="p">(</span><span class="s1">&#39;data-table-menu&#39;</span><span class="p">,</span> <span class="nx">e</span><span class="p">);</span>
-    <span class="nx">util</span><span class="p">.</span><span class="nx">render</span><span class="p">(</span><span class="s1">&#39;columnActions&#39;</span><span class="p">,</span> <span class="s1">&#39;data-table-menu&#39;</span><span class="p">);</span>
   <span class="p">},</span>
 
   <span class="nx">onRowHeaderClick</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">e</span><span class="p">)</span> <span class="p">{</span>
     <span class="k">this</span><span class="p">.</span><span class="nx">state</span><span class="p">.</span><span class="nx">currentRow</span> <span class="o">=</span> <span class="nx">$</span><span class="p">(</span><span class="nx">e</span><span class="p">.</span><span class="nx">target</span><span class="p">).</span><span class="nx">parents</span><span class="p">(</span><span class="s1">&#39;tr:first&#39;</span><span class="p">).</span><span class="nx">attr</span><span class="p">(</span><span class="s1">&#39;data-id&#39;</span><span class="p">);</span>
-    <span class="nx">util</span><span class="p">.</span><span class="nx">position</span><span class="p">(</span><span class="s1">&#39;data-table-menu&#39;</span><span class="p">,</span> <span class="nx">e</span><span class="p">);</span>
-    <span class="nx">util</span><span class="p">.</span><span class="nx">render</span><span class="p">(</span><span class="s1">&#39;rowActions&#39;</span><span class="p">,</span> <span class="s1">&#39;data-table-menu&#39;</span><span class="p">);</span>
   <span class="p">},</span>
   
   <span class="nx">onRootHeaderClick</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">e</span><span class="p">)</span> <span class="p">{</span>
-    <span class="nx">util</span><span class="p">.</span><span class="nx">position</span><span class="p">(</span><span class="s1">&#39;data-table-menu&#39;</span><span class="p">,</span> <span class="nx">e</span><span class="p">);</span>
-    <span class="nx">util</span><span class="p">.</span><span class="nx">render</span><span class="p">(</span><span class="s1">&#39;rootActions&#39;</span><span class="p">,</span> <span class="s1">&#39;data-table-menu&#39;</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;columns&#39;</span><span class="o">:</span> <span class="k">this</span><span class="p">.</span><span class="nx">hiddenFields</span><span class="p">});</span>
+    <span class="kd">var</span> <span class="nx">tmpl</span> <span class="o">=</span> <span class="s1">&#39; \</span>
+<span class="s1">        {{#columns}} \</span>
+<span class="s1">        &lt;li&gt;&lt;a data-action=&quot;showColumn&quot; data-column=&quot;{{.}}&quot; href=&quot;JavaScript:void(0);&quot;&gt;Show column: {{.}}&lt;/a&gt;&lt;/li&gt; \</span>
+<span class="s1">        {{/columns}}&#39;</span><span class="p">;</span>
+    <span class="kd">var</span> <span class="nx">tmp</span> <span class="o">=</span> <span class="nx">$</span><span class="p">.</span><span class="nx">mustache</span><span class="p">(</span><span class="nx">tmpl</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;columns&#39;</span><span class="o">:</span> <span class="k">this</span><span class="p">.</span><span class="nx">hiddenFields</span><span class="p">});</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">el</span><span class="p">.</span><span class="nx">find</span><span class="p">(</span><span class="s1">&#39;.root-header-menu .dropdown-menu&#39;</span><span class="p">).</span><span class="nx">html</span><span class="p">(</span><span class="nx">tmp</span><span class="p">);</span>
   <span class="p">},</span>
 
   <span class="nx">onMenuClick</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">e</span><span class="p">)</span> <span class="p">{</span>
@@ -90,7 +90,6 @@ from DOM) while id may be int</p>             </td>             <td class="code"
           <span class="p">})</span>
       <span class="p">}</span>
     <span class="p">}</span>
-    <span class="nx">util</span><span class="p">.</span><span class="nx">hide</span><span class="p">(</span><span class="s1">&#39;data-table-menu&#39;</span><span class="p">);</span>
     <span class="nx">actions</span><span class="p">[</span><span class="nx">$</span><span class="p">(</span><span class="nx">e</span><span class="p">.</span><span class="nx">target</span><span class="p">).</span><span class="nx">attr</span><span class="p">(</span><span class="s1">&#39;data-action&#39;</span><span class="p">)]();</span>
   <span class="p">},</span>
 
@@ -141,26 +140,32 @@ from DOM) while id may be int</p>             </td>             <td class="code"
   <span class="p">},</span></pre></div>             </td>           </tr>                               <tr id="section-9">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-9">&#182;</a>               </div>               <p>======================================================</p>
 
 <h4>Templating</h4>             </td>             <td class="code">               <div class="highlight"><pre>  <span class="nx">template</span><span class="o">:</span> <span class="s1">&#39; \</span>
-<span class="s1">    &lt;div class=&quot;data-table-menu-overlay&quot; style=&quot;display: none; z-index: 101; &quot;&gt;&amp;nbsp;&lt;/div&gt; \</span>
-<span class="s1">    &lt;ul class=&quot;data-table-menu&quot;&gt;&lt;/ul&gt; \</span>
-<span class="s1">    &lt;table class=&quot;data-table&quot; cellspacing=&quot;0&quot;&gt; \</span>
+<span class="s1">    &lt;table class=&quot;data-table table-striped table-condensed&quot; cellspacing=&quot;0&quot;&gt; \</span>
 <span class="s1">      &lt;thead&gt; \</span>
 <span class="s1">        &lt;tr&gt; \</span>
 <span class="s1">          {{#notEmpty}} \</span>
 <span class="s1">            &lt;th class=&quot;column-header&quot;&gt; \</span>
-<span class="s1">              &lt;div class=&quot;column-header-title&quot;&gt; \</span>
-<span class="s1">                &lt;a class=&quot;root-header-menu&quot;&gt;&lt;/a&gt; \</span>
-<span class="s1">                &lt;span class=&quot;column-header-name&quot;&gt;&lt;/span&gt; \</span>
+<span class="s1">              &lt;div class=&quot;btn-group root-header-menu&quot;&gt; \</span>
+<span class="s1">                &lt;a class=&quot;btn dropdown-toggle&quot; data-toggle=&quot;dropdown&quot;&gt;&lt;span class=&quot;caret&quot;&gt;&lt;/span&gt;&lt;/a&gt; \</span>
+<span class="s1">                &lt;ul class=&quot;dropdown-menu data-table-menu&quot;&gt; \</span>
+<span class="s1">                &lt;/ul&gt; \</span>
 <span class="s1">              &lt;/div&gt; \</span>
+<span class="s1">              &lt;span class=&quot;column-header-name&quot;&gt;&lt;/span&gt; \</span>
 <span class="s1">            &lt;/th&gt; \</span>
 <span class="s1">          {{/notEmpty}} \</span>
 <span class="s1">          {{#fields}} \</span>
 <span class="s1">            &lt;th class=&quot;column-header {{#hidden}}hidden{{/hidden}}&quot; data-field=&quot;{{id}}&quot;&gt; \</span>
-<span class="s1">              &lt;div class=&quot;column-header-title&quot;&gt; \</span>
-<span class="s1">                &lt;a class=&quot;column-header-menu&quot;&gt;&lt;/a&gt; \</span>
-<span class="s1">                &lt;span class=&quot;column-header-name&quot;&gt;{{label}}&lt;/span&gt; \</span>
+<span class="s1">              &lt;div class=&quot;btn-group column-header-menu&quot;&gt; \</span>
+<span class="s1">                &lt;a class=&quot;btn dropdown-toggle&quot; data-toggle=&quot;dropdown&quot;&gt;&lt;i class=&quot;icon-cog&quot;&gt;&lt;/i&gt;&lt;span class=&quot;caret&quot;&gt;&lt;/span&gt;&lt;/a&gt; \</span>
+<span class="s1">                &lt;ul class=&quot;dropdown-menu data-table-menu&quot;&gt; \</span>
+<span class="s1">                  &lt;li class=&quot;write-op&quot;&gt;&lt;a data-action=&quot;bulkEdit&quot; href=&quot;JavaScript:void(0);&quot;&gt;Transform...&lt;/a&gt;&lt;/li&gt; \</span>
+<span class="s1">                  &lt;li class=&quot;write-op&quot;&gt;&lt;a data-action=&quot;deleteColumn&quot; href=&quot;JavaScript:void(0);&quot;&gt;Delete this column&lt;/a&gt;&lt;/li&gt; \</span>
+<span class="s1">                  &lt;li&gt;&lt;a data-action=&quot;sortAsc&quot; href=&quot;JavaScript:void(0);&quot;&gt;Sort ascending&lt;/a&gt;&lt;/li&gt; \</span>
+<span class="s1">                  &lt;li&gt;&lt;a data-action=&quot;sortDesc&quot; href=&quot;JavaScript:void(0);&quot;&gt;Sort descending&lt;/a&gt;&lt;/li&gt; \</span>
+<span class="s1">                  &lt;li&gt;&lt;a data-action=&quot;hideColumn&quot; href=&quot;JavaScript:void(0);&quot;&gt;Hide this column&lt;/a&gt;&lt;/li&gt; \</span>
+<span class="s1">                &lt;/ul&gt; \</span>
 <span class="s1">              &lt;/div&gt; \</span>
-<span class="s1">              &lt;/div&gt; \</span>
+<span class="s1">              &lt;span class=&quot;column-header-name&quot;&gt;{{label}}&lt;/span&gt; \</span>
 <span class="s1">            &lt;/th&gt; \</span>
 <span class="s1">          {{/fields}} \</span>
 <span class="s1">        &lt;/tr&gt; \</span>
@@ -239,7 +244,14 @@ var row = new DataGridRow({
   <span class="p">},</span>
 
   <span class="nx">template</span><span class="o">:</span> <span class="s1">&#39; \</span>
-<span class="s1">      &lt;td&gt;&lt;a class=&quot;row-header-menu&quot;&gt;&lt;/a&gt;&lt;/td&gt; \</span>
+<span class="s1">      &lt;td&gt; \</span>
+<span class="s1">        &lt;div class=&quot;btn-group row-header-menu&quot;&gt; \</span>
+<span class="s1">          &lt;a class=&quot;btn dropdown-toggle&quot; data-toggle=&quot;dropdown&quot;&gt;&lt;span class=&quot;caret&quot;&gt;&lt;/span&gt;&lt;/a&gt; \</span>
+<span class="s1">          &lt;ul class=&quot;dropdown-menu data-table-menu&quot;&gt; \</span>
+<span class="s1">            &lt;li class=&quot;write-op&quot;&gt;&lt;a data-action=&quot;deleteRow&quot; href=&quot;JavaScript:void(0);&quot;&gt;Delete this row&lt;/a&gt;&lt;/li&gt; \</span>
+<span class="s1">          &lt;/ul&gt; \</span>
+<span class="s1">        &lt;/div&gt; \</span>
+<span class="s1">      &lt;/td&gt; \</span>
 <span class="s1">      {{#cells}} \</span>
 <span class="s1">      &lt;td data-field=&quot;{{field}}&quot;&gt; \</span>
 <span class="s1">        &lt;div class=&quot;data-table-cell-content&quot;&gt; \</span>

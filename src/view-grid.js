@@ -51,19 +51,19 @@ my.DataGrid = Backbone.View.extend({
 
   onColumnHeaderClick: function(e) {
     this.state.currentColumn = $(e.target).closest('.column-header').attr('data-field');
-    util.position('data-table-menu', e);
-    util.render('columnActions', 'data-table-menu');
   },
 
   onRowHeaderClick: function(e) {
     this.state.currentRow = $(e.target).parents('tr:first').attr('data-id');
-    util.position('data-table-menu', e);
-    util.render('rowActions', 'data-table-menu');
   },
   
   onRootHeaderClick: function(e) {
-    util.position('data-table-menu', e);
-    util.render('rootActions', 'data-table-menu', {'columns': this.hiddenFields});
+    var tmpl = ' \
+        {{#columns}} \
+        <li><a data-action="showColumn" data-column="{{.}}" href="JavaScript:void(0);">Show column: {{.}}</a></li> \
+        {{/columns}}';
+    var tmp = $.mustache(tmpl, {'columns': this.hiddenFields});
+    this.el.find('.root-header-menu .dropdown-menu').html(tmp);
   },
 
   onMenuClick: function(e) {
@@ -105,7 +105,6 @@ my.DataGrid = Backbone.View.extend({
           })
       }
     }
-    util.hide('data-table-menu');
     actions[$(e.target).attr('data-action')]();
   },
 
@@ -158,26 +157,32 @@ my.DataGrid = Backbone.View.extend({
   // ======================================================
   // #### Templating
   template: ' \
-    <div class="data-table-menu-overlay" style="display: none; z-index: 101; ">&nbsp;</div> \
-    <ul class="data-table-menu"></ul> \
-    <table class="data-table table-striped" cellspacing="0"> \
+    <table class="data-table table-striped table-condensed" cellspacing="0"> \
       <thead> \
         <tr> \
           {{#notEmpty}} \
             <th class="column-header"> \
-              <div class="column-header-title"> \
-                <a class="root-header-menu"></a> \
-                <span class="column-header-name"></span> \
+              <div class="btn-group root-header-menu"> \
+                <a class="btn dropdown-toggle" data-toggle="dropdown"><span class="caret"></span></a> \
+                <ul class="dropdown-menu data-table-menu"> \
+                </ul> \
               </div> \
+              <span class="column-header-name"></span> \
             </th> \
           {{/notEmpty}} \
           {{#fields}} \
             <th class="column-header {{#hidden}}hidden{{/hidden}}" data-field="{{id}}"> \
-              <div class="column-header-title"> \
-                <a class="column-header-menu"></a> \
-                <span class="column-header-name">{{label}}</span> \
+              <div class="btn-group column-header-menu"> \
+                <a class="btn dropdown-toggle" data-toggle="dropdown"><i class="icon-cog"></i><span class="caret"></span></a> \
+                <ul class="dropdown-menu data-table-menu"> \
+                  <li class="write-op"><a data-action="bulkEdit" href="JavaScript:void(0);">Transform...</a></li> \
+                  <li class="write-op"><a data-action="deleteColumn" href="JavaScript:void(0);">Delete this column</a></li> \
+                  <li><a data-action="sortAsc" href="JavaScript:void(0);">Sort ascending</a></li> \
+                  <li><a data-action="sortDesc" href="JavaScript:void(0);">Sort descending</a></li> \
+                  <li><a data-action="hideColumn" href="JavaScript:void(0);">Hide this column</a></li> \
+                </ul> \
               </div> \
-              </div> \
+              <span class="column-header-name">{{label}}</span> \
             </th> \
           {{/fields}} \
         </tr> \
@@ -259,7 +264,14 @@ my.DataGridRow = Backbone.View.extend({
   },
 
   template: ' \
-      <td><a class="row-header-menu"></a></td> \
+      <td> \
+        <div class="btn-group row-header-menu"> \
+          <a class="btn dropdown-toggle" data-toggle="dropdown"><span class="caret"></span></a> \
+          <ul class="dropdown-menu data-table-menu"> \
+            <li class="write-op"><a data-action="deleteRow" href="JavaScript:void(0);">Delete this row</a></li> \
+          </ul> \
+        </div> \
+      </td> \
       {{#cells}} \
       <td data-field="{{field}}"> \
         <div class="data-table-cell-content"> \
