@@ -3,15 +3,14 @@
 
 <span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">$</span><span class="p">,</span> <span class="nx">my</span><span class="p">)</span> <span class="p">{</span></pre></div>             </td>           </tr>                               <tr id="section-2">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-2">&#182;</a>               </div>               <h2>A Dataset model</h2>
 
-<p>A model must have the following (Backbone) attributes:</p>
+<p>A model has the following (non-Backbone) attributes:</p>
 
 <ul>
 <li>fields: (aka columns) is a FieldList listing all the fields on this
-Dataset (this can be set explicitly, or, on fetch() of Dataset
-information from the backend, or as is perhaps most common on the first
-query)</li>
-<li>currentDocuments: a DocumentList containing the Documents we have currently loaded for viewing (you update currentDocuments by calling getRows)</li>
-<li>docCount: total number of documents in this dataset (obtained on a fetch for this Dataset)</li>
+Dataset (this can be set explicitly, or, will be set by Dataset.fetch() or Dataset.query()</li>
+<li>currentDocuments: a DocumentList containing the Documents we have
+currently loaded for viewing (you update currentDocuments by calling query)</li>
+<li>docCount: total number of documents in this dataset</li>
 </ul>             </td>             <td class="code">               <div class="highlight"><pre><span class="nx">my</span><span class="p">.</span><span class="nx">Dataset</span> <span class="o">=</span> <span class="nx">Backbone</span><span class="p">.</span><span class="nx">Model</span><span class="p">.</span><span class="nx">extend</span><span class="p">({</span>
   <span class="nx">__type__</span><span class="o">:</span> <span class="s1">&#39;Dataset&#39;</span><span class="p">,</span>
   <span class="nx">initialize</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">model</span><span class="p">,</span> <span class="nx">backend</span><span class="p">)</span> <span class="p">{</span>
