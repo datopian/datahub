@@ -81,14 +81,14 @@ function localDataset() {
       , name: '1-my-test-dataset' 
       , id: datasetId
     },
-    fields: [{id: 'x'}, {id: 'y'}, {id: 'z'}],
+    fields: [{id: 'x'}, {id: 'y'}, {id: 'z'}, {id: 'label'}],
     documents: [
-      {id: 0, x: 1, y: 2, z: 3}
-      , {id: 1, x: 2, y: 4, z: 6}
-      , {id: 2, x: 3, y: 6, z: 9}
-      , {id: 3, x: 4, y: 8, z: 12}
-      , {id: 4, x: 5, y: 10, z: 15}
-      , {id: 5, x: 6, y: 12, z: 18}
+      {id: 0, x: 1, y: 2, z: 3, label: 'first'}
+      , {id: 1, x: 2, y: 4, z: 6, label: 'second'}
+      , {id: 2, x: 3, y: 6, z: 9, label: 'third'}
+      , {id: 3, x: 4, y: 8, z: 12, label: 'fourth'}
+      , {id: 4, x: 5, y: 10, z: 15, label: 'fifth'}
+      , {id: 5, x: 6, y: 12, z: 18, label: 'sixth'}
     ]
   };
   var backend = new recline.Backend.Memory();
