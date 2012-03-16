@@ -6,14 +6,13 @@ this.recline.Model = this.recline.Model || {};
 
 // ## A Dataset model
 //
-// A model must have the following (Backbone) attributes:
+// A model has the following (non-Backbone) attributes:
 //
 // * fields: (aka columns) is a FieldList listing all the fields on this
-//   Dataset (this can be set explicitly, or, on fetch() of Dataset
-//   information from the backend, or as is perhaps most common on the first
-//   query)
-// * currentDocuments: a DocumentList containing the Documents we have currently loaded for viewing (you update currentDocuments by calling getRows)
-// * docCount: total number of documents in this dataset (obtained on a fetch for this Dataset)
+//   Dataset (this can be set explicitly, or, will be set by Dataset.fetch() or Dataset.query()
+// * currentDocuments: a DocumentList containing the Documents we have
+//   currently loaded for viewing (you update currentDocuments by calling query)
+// * docCount: total number of documents in this dataset
 my.Dataset = Backbone.Model.extend({
   __type__: 'Dataset',
   initialize: function(model, backend) {
