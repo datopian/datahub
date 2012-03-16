@@ -220,12 +220,19 @@ my.FlotGraph = Backbone.View.extend({
     var previousPoint = null;
     this.$graph.bind("plothover", function (event, pos, item) {
       if (item) {
-        if (previousPoint != item.dataIndex) {
-          previousPoint = item.dataIndex;
+        if (previousPoint != item.datapoint) {
+          previousPoint = item.datapoint;
           
           $("#flot-tooltip").remove();
-          var x = item.datapoint[0].toFixed(2),
-              y = item.datapoint[1].toFixed(2);
+          var x = item.datapoint[0];
+          var y = item.datapoint[1];
+          // convert back from 'index' value on x-axis (e.g. in cases where non-number values)
+          if (self.model.currentDocuments.models[x]) {
+            x = self.model.currentDocuments.models[x].get(self.chartConfig.group);
+          } else {
+            x = x.toFixed(2);
+          }
+          y = y.toFixed(2);
           
           var content = _.template('<%= group %> = <%= x %>, <%= series %> = <%= y %>', {
             group: self.chartConfig.group,
