@@ -149,11 +149,9 @@ my.FlotGraph = Backbone.View.extend({
       return
     }
     var series = this.createSeries();
-    var options = this.graphOptions[this.chartConfig.graphType];
+    var options = this.getGraphOptions(this.chartConfig.graphType);
     this.plot = $.plot(this.$graph, series, options);
-    if (this.chartConfig.graphType in { 'points': '', 'lines-and-points': '' }) {
-      this.setupTooltips();
-    }
+    this.setupTooltips();
     // create this.plot and cache it
 //    if (!this.plot) {
 //      this.plot = $.plot(this.$graph, series, options);
@@ -166,40 +164,63 @@ my.FlotGraph = Backbone.View.extend({
 //    }
   },
 
-  graphOptions: { 
-    lines: {
-       series: { 
-         lines: { show: true }
-       }
-    }
-    , points: {
-      series: {
-        points: { show: true }
-      },
-      grid: { hoverable: true, clickable: true }
-    }
-    , 'lines-and-points': {
-      series: {
-        points: { show: true },
-        lines: { show: true }
-      },
-      grid: { hoverable: true, clickable: true }
-    }
-    , bars: {
-      series: {
-        lines: {show: false},
-        bars: {
-          show: true,
-          barWidth: 1,
-          align: "left",
-          fill: true
+  // needs to be function as can depend on state
+  getGraphOptions: function(typeId) { 
+    var self = this;
+    var tickFormatter = function (val) {
+      if (self.model.currentDocuments.models[val]) {
+        var out = self.model.currentDocuments.models[val].get(self.chartConfig.group);
+        // if the x-axis value was in fact a number we want that not the 
+        if (typeof(out) == 'number') {
+          return val;
+        } else {
+          return out;
         }
-      },
-      xaxis: {
-        tickSize: 1,
-        tickLength: 1,
+      }
+      return val;
+    }
+    // TODO: we should really use tickFormatter and 1 interval ticks if (and
+    // only if) x-axis values are non-numeric
+    // However, that is non-trivial to work out from a dataset (datasets may
+    // have no field type info). Thus at present we only do this for bars.
+    var options = { 
+      lines: {
+         series: { 
+           lines: { show: true }
+         }
+      }
+      , points: {
+        series: {
+          points: { show: true }
+        },
+        grid: { hoverable: true, clickable: true }
+      }
+      , 'lines-and-points': {
+        series: {
+          points: { show: true },
+          lines: { show: true }
+        },
+        grid: { hoverable: true, clickable: true },
+      }
+      , bars: {
+        series: {
+          lines: {show: false},
+          bars: {
+            show: true,
+            barWidth: 1,
+            align: "center",
+            fill: true
+          }
+        },
+        grid: { hoverable: true, clickable: true },
+        xaxis: {
+          tickSize: 1,
+          tickLength: 1,
+          tickFormatter: tickFormatter
+        }
       }
     }
+    return options[typeId];
   },
 
   setupTooltips: function() {
