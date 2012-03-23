@@ -167,10 +167,11 @@ my.FlotGraph = Backbone.View.extend({
   // needs to be function as can depend on state
   getGraphOptions: function(typeId) { 
     var self = this;
+    // special tickformatter to show labels rather than numbers
     var tickFormatter = function (val) {
       if (self.model.currentDocuments.models[val]) {
         var out = self.model.currentDocuments.models[val].get(self.chartConfig.group);
-        // if the x-axis value was in fact a number we want that not the 
+        // if the value was in fact a number we want that not the 
         if (typeof(out) == 'number') {
           return val;
         } else {
@@ -209,14 +210,17 @@ my.FlotGraph = Backbone.View.extend({
             show: true,
             barWidth: 1,
             align: "center",
-            fill: true
+            fill: true,
+            horizontal: true
           }
         },
         grid: { hoverable: true, clickable: true },
-        xaxis: {
+        yaxis: {
           tickSize: 1,
           tickLength: 1,
-          tickFormatter: tickFormatter
+          tickFormatter: tickFormatter,
+          min: -0.5,
+          max: self.model.currentDocuments.length - 0.5
         }
       }
     }
@@ -283,7 +287,12 @@ my.FlotGraph = Backbone.View.extend({
           if (typeof x === 'string') {
             x = index;
           }
-          points.push([x, y]);
+          // horizontal bar chart
+          if (self.chartConfig.graphType == 'bars') {
+            points.push([y, x]);
+          } else {
+            points.push([x, y]);
+          }
         });
         series.push({data: points, label: field});
       });
