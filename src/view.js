@@ -114,7 +114,8 @@ my.DataExplorer = Backbone.View.extend({
         // update navigation
         var qs = my.parseHashQueryString();
         qs['reclineQuery'] = JSON.stringify(self.model.queryState.toJSON());
-        my.setHashQueryString(qs);
+        var out = my.getNewHashForQueryString(qs);
+        self.router.navigate(out);
       });
     this.model.bind('query:fail', function(error) {
         my.clearNotifications();
@@ -172,8 +173,8 @@ my.DataExplorer = Backbone.View.extend({
   setupRouting: function() {
     var self = this;
     // Default route
-    this.router.route('', this.pageViews[0].id, function() {
-      self.updateNav(self.pageViews[0].id);
+    this.router.route(/^(\?.*)?$/, this.pageViews[0].id, function(queryString) {
+      self.updateNav(self.pageViews[0].id, queryString);
     });
     $.each(this.pageViews, function(idx, view) {
       self.router.route(/^([^?]+)(\?.*)?/, 'view', function(viewId, queryString) {
@@ -331,8 +332,18 @@ my.composeQueryString = function(queryParams) {
   return queryString;
 }
 
+my.getNewHashForQueryString = function(queryParams) {
+  var queryPart = my.composeQueryString(queryParams);
+  if (window.location.hash) {
+    // slice(1) to remove # at start
+    return window.location.hash.split('?')[0].slice(1) + queryPart;
+  } else {
+    return queryPart;
+  }
+}
+
 my.setHashQueryString = function(queryParams) {
-  window.location.hash = window.location.hash.split('?')[0] + my.composeQueryString(queryParams);
+  window.location.hash = my.getNewHashForQueryString(queryParams);
 }
 
 // ## notify
