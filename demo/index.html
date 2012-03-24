@@ -53,17 +53,48 @@
           <li><a href="../#docs">Documentation</a></li>
         </ul>
         <ul class="nav pull-right">
+          <li class="dropdown">
+            <a data-toggle="dropdown" class="dropdown-toggle">
+              Import <b class="caret"></b></a>
+            <ul class="dropdown-menu js-import">
+              <li>
+                <a data-toggle="modal" href=".js-import-dialog-url">Import from URL</a>
+              </li>
+            </ul>
+          </li>
           <li><a class="set-read-only" title="Put into read-only mode">Read-only</a></li>
         </ul>
-        <form class="webstore-load pull-right navbar-search" title="Update from the specified webstore dataset">
-          <input type="text" name="source" size="50" />
-          <select name="backend_type">
-            <option value="elasticsearch">ElasticSearch</option>
-            <option value="dataproxy">DataProxy</option>
-            <option value="gdocs">Google Spreadsheet (JSON API)</option>
-          </select>
-        </form>
       </div>
+    </div>
+  </div>
+
+  <div class="modal fade in js-import-dialog-url" style="display: none;">
+    <div class="modal-header">
+      <a class="close" data-dismiss="modal">×</a>
+      <h3>Import from URL</h3> 
+    </div>
+    <div class="modal-body">
+      <form class="js-import-url form-horizontal">
+        <div class="control-group">
+          <label class="control-label">URL</label>
+          <div class="controls">
+            <input type="text" name="source" class="input-xlarge" />
+          </div>
+        </div>
+        <div class="control-group">
+          <label class="control-label">Type of data</label>
+          <div class="controls">
+            <select name="backend_type">
+              <option value="elasticsearch">ElasticSearch</option>
+              <option value="dataproxy">CSV or Excel</option>
+              <option value="gdocs">Google Spreadsheet</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-actions">
+          <button type="submit" class="btn btn-primary">Import &raquo;</button>
+        </div>
+      </form>
     </div>
   </div>
 
