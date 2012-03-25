@@ -27,6 +27,10 @@
   margin-bottom: auto;
 }
 
+.recline-query-editor .add-on {
+  float: left;
+}
+
 .header .recline-query-editor .text-query input {
   float: left;  
 }
