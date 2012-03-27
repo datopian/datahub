@@ -201,7 +201,7 @@ my.FlotGraph = Backbone.View.extend({
           points: { show: true },
           lines: { show: true }
         },
-        grid: { hoverable: true, clickable: true },
+        grid: { hoverable: true, clickable: true }
       }
       , bars: {
         series: {
