@@ -36,6 +36,7 @@
   <script type="text/javascript" src="../src/backend/dataproxy.js"></script>
   <script type="text/javascript" src="../src/backend/elasticsearch.js"></script>
   <script type="text/javascript" src="../src/backend/gdocs.js"></script>
+  <script type="text/javascript" src="../src/backend/localcsv.js"></script>
   <script type="text/javascript" src="../src/view.js"></script>
   <script type="text/javascript" src="../src/view-grid.js"></script>
   <script type="text/javascript" src="../src/view-flot-graph.js"></script>
@@ -59,6 +60,9 @@
             <ul class="dropdown-menu js-import">
               <li>
                 <a data-toggle="modal" href=".js-import-dialog-url">Import from URL</a>
+              </li>
+              <li>
+                <a data-toggle="modal" href=".js-import-dialog-file">Import from File</a>
               </li>
             </ul>
           </li>
@@ -89,6 +93,26 @@
               <option value="dataproxy">CSV or Excel</option>
               <option value="gdocs">Google Spreadsheet</option>
             </select>
+          </div>
+        </div>
+        <div class="form-actions">
+          <button type="submit" class="btn btn-primary">Import &raquo;</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div class="modal fade in js-import-dialog-file" style="display: none;">
+    <div class="modal-header">
+      <a class="close" data-dismiss="modal">×</a>
+      <h3>Import from File</h3> 
+    </div>
+    <div class="modal-body">
+      <form class="form-horizontal">
+        <div class="control-group">
+          <label class="control-label">File</label>
+          <div class="controls">
+            <input type="file" name="source" />
           </div>
         </div>
         <div class="form-actions">
