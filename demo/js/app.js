@@ -380,5 +380,16 @@ function setupLoader(callback) {
     );
     callback(dataset);
   });
+
+  $('.js-import-dialog-file form').submit(function(e) {
+    e.preventDefault();
+    var $form = $(e.target);
+    $('.modal.js-import-dialog-file').modal('hide');
+    var $file = $form.find('input[type="file"]')[0];
+    var file = $file.files[0];
+    recline.Backend.loadFromCSVFile(file, function(dataset) {
+      callback(dataset)
+    });
+  });
 }
 
