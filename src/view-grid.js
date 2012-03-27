@@ -211,7 +211,7 @@ my.DataGrid = Backbone.View.extend({
       var newView = new my.DataGridRow({
           model: doc,
           el: tr,
-          fields: self.fields,
+          fields: self.fields
         },
         self.options
         );
