@@ -2,7 +2,7 @@ this.recline = this.recline || {};
 this.recline.Backend = this.recline.Backend || {};
 
 (function($, my) {
-  my.loadFromCSVFile = function(file) {
+  my.loadFromCSVFile = function(file, callback) {
     var metadata = {
       id: file.name,
       file: file
@@ -10,13 +10,30 @@ this.recline.Backend = this.recline.Backend || {};
     var reader = new FileReader();
     // TODO
     reader.onload = function(e) {
-      // console.log(e.target.result);
+      var dataset = my.csvToDataset(e.target.result);
+      callback(dataset);
     };
     reader.onerror = function (e) {
       alert('Failed to load file. Code: ' + e.target.error.code);
     }
     reader.readAsText(file);
   };
+
+  my.csvToDataset = function(csvString) {
+    var out = my.parseCSV(csvString);
+    fields = _.map(out[0], function(cell) {
+      return { id: cell, label: cell };
+    });
+    var data = _.map(out.slice(1), function(row) {
+      var _doc = {};
+      _.each(out[0], function(fieldId, idx) {
+        _doc[fieldId] = row[idx];
+      });
+      return _doc;
+    });
+    var dataset = recline.Backend.createDataset(data, fields);
+    return dataset;
+  }
 
 	// Converts a Comma Separated Values string into an array of arrays.
 	// Each line in the CSV becomes an array.

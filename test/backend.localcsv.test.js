@@ -19,6 +19,14 @@ test("parseCSV", function() {
   '"Other, AN", 12:35\n';
   var array = recline.Backend.parseCSV(csv, true);
   deepEqual(exp, array);
+
+  var csv = 'Name, Value\n' +
+  '"Jones, Jay", 10\n' +
+  '"Xyz ""ABC"" O\'Brien", 11:35\n' +
+  '"Other, AN", 12:35\n';
+  var dataset = recline.Backend.csvToDataset(csv);
+  dataset.query();
+  equal(dataset.currentDocuments.length, 3);
 });
 
 })(this.jQuery);
