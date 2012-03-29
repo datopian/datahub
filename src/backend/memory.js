@@ -29,7 +29,9 @@ this.recline.Backend = this.recline.Backend || {};
       datasetInfo.fields = fields;
     } else {
       if (data) {
-        datasetInfo.fields = _.keys(data[0]);
+        datasetInfo.fields = _.map(data[0], function(cell) {
+          return {id: cell};
+        });
       }
     }
     backend.addDataset(datasetInfo);
