@@ -18,6 +18,21 @@ test('Field: basics', function () {
     },
     'should throw an error if not passed in a hash with id'
   );
+  
+  // toJSON
+  var field = new recline.Model.Field({
+    id: 'x',
+    label: 'My label'
+  });
+  var out = field.toJSON();
+  equal('My label', out.label);
+
+  var fieldList = new recline.Model.FieldList([
+      {id: 'xx', label: 'XX'},
+      {id: 'yy', label: 'YY'}
+  ]);
+  var out = fieldList.toJSON();
+  equal('XX', out[0].label);
 });
 
 test('Dataset', function () {
