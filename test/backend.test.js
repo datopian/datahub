@@ -25,6 +25,17 @@ function makeBackendDataset() {
   return dataset;
 }
 
+test('Memory Backend: createDataset', function () {
+  var dataset = recline.Backend.createDataset(memoryData.documents, memoryData.fields, memoryData.metadata);
+  equal(memoryData.metadata.id, dataset.id);
+});
+
+test('Memory Backend: createDataset 2', function () {
+  var dataset = recline.Backend.createDataset(memoryData.documents);
+  dataset.query();
+  equal(memoryData.documents.length, dataset.currentDocuments.length);
+});
+
 test('Memory Backend: basics', function () {
   var dataset = makeBackendDataset();
   expect(3);

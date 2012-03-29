@@ -101,9 +101,10 @@ function localDataset() {
 function setupLoader(callback) {
   // pre-populate webstore load form with an example url
   var demoUrl = 'http://thedatahub.org/api/data/b9aae52b-b082-4159-b46f-7bb9c158d013';
-  $('form.webstore-load input[name="source"]').val(demoUrl);
-  $('form.webstore-load').submit(function(e) {
+  $('form.js-import-url input[name="source"]').val(demoUrl);
+  $('form.js-import-url').submit(function(e) {
     e.preventDefault();
+    $('.modal.js-import-dialog-url').modal('hide');
     var $form = $(e.target);
     var source = $form.find('input[name="source"]').val();
     var type = $form.find('select[name="backend_type"]').val();
@@ -115,6 +116,17 @@ function setupLoader(callback) {
       type
     );
     callback(dataset);
+  });
+
+  $('.js-import-dialog-file form').submit(function(e) {
+    e.preventDefault();
+    var $form = $(e.target);
+    $('.modal.js-import-dialog-file').modal('hide');
+    var $file = $form.find('input[type="file"]')[0];
+    var file = $file.files[0];
+    recline.Backend.loadFromCSVFile(file, function(dataset) {
+      callback(dataset)
+    });
   });
 }
 
