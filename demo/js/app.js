@@ -95,9 +95,10 @@ function localDataset() {
   backend.addDataset(inData);
   var dataset = new recline.Model.Dataset({id: datasetId}, backend);
   // TODO: auto-compute in Memory backend ??
-  dataset.facets = {
-    'country': {
-      terms: [
+  dataset.facets = new recline.Model.FacetList([
+    {
+      id: 'country',
+      result: [
         {
           term: 'UK',
           count: 3
@@ -112,7 +113,7 @@ function localDataset() {
         }
       ]
     }
-  };
+  ]);
   return dataset;
 }
 

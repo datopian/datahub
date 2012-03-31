@@ -43,4 +43,11 @@ test('Dataset', function () {
   equal(out.fields.length, 2);
 });
 
+test('Facet', function () {
+  var facets = new recline.Model.FacetList();
+  facets.addFacet('xyz');
+  equal(1, facets.length);
+  deepEqual({terms: {field: 'xyz'}}, facets.get('xyz').get('query'));
+});
+
 })(this.jQuery);

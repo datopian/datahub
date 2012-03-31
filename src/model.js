@@ -23,7 +23,7 @@ my.Dataset = Backbone.Model.extend({
     }
     this.fields = new my.FieldList();
     this.currentDocuments = new my.DocumentList();
-    this.facets = {};
+    this.facets = new my.FacetList();
     this.docCount = null;
     this.queryState = new my.Query();
     this.queryState.bind('change', this.query);
@@ -119,24 +119,36 @@ my.Query = Backbone.Model.extend({
     , from: 0
     , facets: {}
   },
-  initialize: function() {
-    _.bindAll(this, 'addFacet');
-  },
+  // Set (update or add) a terms filter
+  // http://www.elasticsearch.org/guide/reference/query-dsl/terms-filter.html
+  setFilter: function(fieldId, values) {
+  }
+});
 
+my.Facet = Backbone.Model.extend({
+  defaults: {
+    query: null,
+    result: null
+  }
+});
+
+my.FacetList = Backbone.Collection.extend({
+  model: my.Facet,
   addFacet: function(fieldId) {
-    // TODO: utilize field info to determine facet type ??
-    var facets = this.get('facets');
-    if (fieldId in facets) {
+    // Assume id and fieldId should be the same (TODO: this need not be true if we want to add two different type of facets on same field)
+    if (fieldId in this) {
       return;
     }
-    facets[fieldId] = {
-      terms: {
-        field: fieldId
+    // TODO: utilize field info to determine facet type ??
+    var facet = new my.Facet({
+      id: fieldId,
+      query: {
+        terms: {
+          field: fieldId
+        }
       }
-    } 
-    this.set({facets: facets});
-    // trigger change event (does not seem to be triggered o/w)
-    // this.change();
+    });
+    this.add(facet);
   }
 });
 
