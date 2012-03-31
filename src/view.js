@@ -168,11 +168,9 @@ my.DataExplorer = Backbone.View.extend({
       model: this.model.queryState
     });
     this.el.find('.header').append(queryEditor.el);
-    var queryFacetEditor = new my.QueryFacetEditor({
-        model: this.model.queryState
-      },
-      this.model
-      );
+    var queryFacetEditor = new my.FacetQueryEditor({
+      model: this.model
+    });
     this.el.find('.header').append(queryFacetEditor.el);
   },
 
@@ -281,58 +279,52 @@ my.QueryEditor = Backbone.View.extend({
   }
 });
 
-my.QueryFacetEditor = Backbone.View.extend({
+my.FacetQueryEditor = Backbone.View.extend({
   className: 'recline-query-facet-editor', 
   template: ' \
-      <a class="btn dropdown-toggle" data-toggle="drop-down">Add filter on</a> \
-      <ul class="dropdown-menu js-faceton"> \
-      {{#fields}} \
-      <li name="{{id}}">{{label}}</li> \
-      {{/fields}} \
+    <div class="dropdown js-add-facet"> \
+      <a class="btn dropdown-toggle" data-toggle="dropdown" href=".js-add-facet">Add Facet On <i class="caret"></i></a> \
+      <ul class="dropdown-menu"> \
+        {{#fields}} \
+        <li><a href="#{{id}}">{{label}}</a></li> \
+        {{/fields}} \
       </ul> \
+    </div> \
     <div class="facets"> \
       {{#facets}} \
-        <a class="btn js-facet-show-toggle" data-facet="{{label}}"><i class="icon-plus"></i> {{label}}</a> \
-        <ul class="facet-items" data-facet="{{label}}" style="display: none;"> \
-        {{#terms}} \
+        <a class="btn js-facet-show-toggle" data-facet="{{id}}"><i class="icon-plus"></i> {{id}} {{label}}</a> \
+        <ul class="facet-items" data-facet="{{id}}" style="display: none;"> \
+        {{#result}} \
           <li>{{term}} ({{count}}) <input type="checkbox" class="facet-choice" data-facet="{{label}}" value="{{term}}" /></li> \
-        {{/terms}} \
+        {{/result}} \
         </ul> \
       {{/facets}} \
     </div> \
   ',
 
   events: {
-    'change .js-faceton': 'onAddFilter',
+    'click .js-add-facet .dropdown-menu a': 'onAddFacet',
     'click .js-facet-show-toggle': 'onFacetShowToggle'
   },
-  initialize: function(model, dataset) {
+  initialize: function(model) {
     _.bindAll(this, 'render');
     this.el = $(this.el);
-    this.model.bind('change', this.render);
-    this.dataset = dataset;
-    this.dataset.fields.bind('add', this.render);
-    this.dataset.fields.bind('reset', this.render);
-    this.dataset.fields.bind('remove', this.render);
+    this.model.facets.bind('all', this.render);
+    this.model.fields.bind('all', this.render);
     this.render();
   },
   render: function() {
     var tmplData = {
-      query: this.model.toJSON(),
-      fields: this.dataset.fields.toJSON()
+      facets: this.model.facets.toJSON(),
+      fields: this.model.fields.toJSON()
     };
-    tmplData.facets = _.map(this.dataset.facets, function(data, key) {
-      var out = _.extend({label: key}, data);
-      return out;
-    })
     var templated = $.mustache(this.template, tmplData);
     this.el.html(templated);
   },
-  onAddFilter: function(e) {
-    var fieldId = $(e.target).find('option:selected').attr('name');
-    this.model.addFacet(fieldId);
-    // calculate facets for that field (if not already there??) 
-    // re-render will happen automatically as dataset will have updated
+  onAddFacet: function(e) {
+    e.preventDefault();
+    var fieldId = $(e.target).attr('href').slice(1);
+    this.model.facets.addFacet(fieldId);
   },
   onFacetShowToggle: function(e) {
     e.preventDefault();
