@@ -29,8 +29,8 @@ this.recline.Backend = this.recline.Backend || {};
       datasetInfo.fields = fields;
     } else {
       if (data) {
-        datasetInfo.fields = _.map(data[0], function(cell) {
-          return {id: cell};
+        datasetInfo.fields = _.map(data[0], function(value, key) {
+          return {id: key};
         });
       }
     }

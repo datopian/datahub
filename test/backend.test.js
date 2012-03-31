@@ -7,7 +7,7 @@ var memoryData = {
     , name: '1-my-test-dataset' 
     , id: 'test-dataset'
   },
-  fields: [{id: 'x'}, {id: 'y'}, {id: 'z'}],
+  fields: [{id: 'id'}, {id: 'x'}, {id: 'y'}, {id: 'z'}],
   documents: [
     {id: 0, x: 1, y: 2, z: 3}
     , {id: 1, x: 2, y: 4, z: 6}
@@ -32,6 +32,8 @@ test('Memory Backend: createDataset', function () {
 
 test('Memory Backend: createDataset 2', function () {
   var dataset = recline.Backend.createDataset(memoryData.documents);
+  equal(dataset.fields.length, 4);
+  deepEqual(['id', 'x', 'y', 'z'], dataset.fields.pluck('id'));
   dataset.query();
   equal(memoryData.documents.length, dataset.currentDocuments.length);
 });
