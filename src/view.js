@@ -168,6 +168,12 @@ my.DataExplorer = Backbone.View.extend({
       model: this.model.queryState
     });
     this.el.find('.header').append(queryEditor.el);
+    var queryFacetEditor = new my.QueryFacetEditor({
+        model: this.model.queryState
+      },
+      this.model
+      );
+    this.el.find('.header').append(queryFacetEditor.el);
   },
 
   setupRouting: function() {
@@ -275,6 +281,67 @@ my.QueryEditor = Backbone.View.extend({
   }
 });
 
+my.QueryFacetEditor = Backbone.View.extend({
+  className: 'recline-query-facet-editor', 
+  template: ' \
+      <a class="btn dropdown-toggle" data-toggle="drop-down">Add filter on</a> \
+      <ul class="dropdown-menu js-faceton"> \
+      {{#fields}} \
+      <li name="{{id}}">{{label}}</li> \
+      {{/fields}} \
+      </ul> \
+    <div class="facets"> \
+      {{#facets}} \
+        <a class="btn js-facet-show-toggle" data-facet="{{label}}"><i class="icon-plus"></i> {{label}}</a> \
+        <ul class="facet-items" data-facet="{{label}}" style="display: none;"> \
+        {{#terms}} \
+          <li>{{term}} ({{count}}) <input type="checkbox" class="facet-choice" data-facet="{{label}}" value="{{term}}" /></li> \
+        {{/terms}} \
+        </ul> \
+      {{/facets}} \
+    </div> \
+  ',
+
+  events: {
+    'change .js-faceton': 'onAddFilter',
+    'click .js-facet-show-toggle': 'onFacetShowToggle'
+  },
+  initialize: function(model, dataset) {
+    _.bindAll(this, 'render');
+    this.el = $(this.el);
+    this.model.bind('change', this.render);
+    this.dataset = dataset;
+    this.dataset.fields.bind('add', this.render);
+    this.dataset.fields.bind('reset', this.render);
+    this.dataset.fields.bind('remove', this.render);
+    this.render();
+  },
+  render: function() {
+    var tmplData = {
+      query: this.model.toJSON(),
+      fields: this.dataset.fields.toJSON()
+    };
+    tmplData.facets = _.map(this.dataset.facets, function(data, key) {
+      var out = _.extend({label: key}, data);
+      return out;
+    })
+    var templated = $.mustache(this.template, tmplData);
+    this.el.html(templated);
+  },
+  onAddFilter: function(e) {
+    var fieldId = $(e.target).find('option:selected').attr('name');
+    this.model.addFacet(fieldId);
+    // calculate facets for that field (if not already there??) 
+    // re-render will happen automatically as dataset will have updated
+  },
+  onFacetShowToggle: function(e) {
+    e.preventDefault();
+    var $a = $(e.target);
+    var facetId = $a.attr('data-facet');
+    var $ul = this.el.find('.facet-items[data-facet="' + facetId + '"]');
+    $ul.toggle();
+  }
+});
 
 /* ========================================================== */
 // ## Miscellaneous Utilities

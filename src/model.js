@@ -23,6 +23,7 @@ my.Dataset = Backbone.Model.extend({
     }
     this.fields = new my.FieldList();
     this.currentDocuments = new my.DocumentList();
+    this.facets = {};
     this.docCount = null;
     this.queryState = new my.Query();
     this.queryState.bind('change', this.query);
@@ -116,6 +117,26 @@ my.Query = Backbone.Model.extend({
   defaults: {
     size: 100
     , from: 0
+    , facets: {}
+  },
+  initialize: function() {
+    _.bindAll(this, 'addFacet');
+  },
+
+  addFacet: function(fieldId) {
+    // TODO: utilize field info to determine facet type ??
+    var facets = this.get('facets');
+    if (fieldId in facets) {
+      return;
+    }
+    facets[fieldId] = {
+      terms: {
+        field: fieldId
+      }
+    } 
+    this.set({facets: facets});
+    // trigger change event (does not seem to be triggered o/w)
+    // this.change();
   }
 });
 
