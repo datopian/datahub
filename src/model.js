@@ -27,6 +27,7 @@ my.Dataset = Backbone.Model.extend({
     this.docCount = null;
     this.queryState = new my.Query();
     this.queryState.bind('change', this.query);
+    this.queryState.bind('facet:add', this.query);
   },
 
   // ### query
