@@ -41,10 +41,6 @@ my.Dataset = Backbone.Model.extend({
   query: function(queryObj) {
     var self = this;
     this.trigger('query:start');
-    // HACK: query gets called on event changes and it appears that in those cases the type of event gets passed as first argument. The following handles those cases.
-    if (typeof(queryObj) != 'object') {
-      queryObj = null;
-    }
     var actualQuery = self._prepareQuery(queryObj);
     var dfd = $.Deferred();
     this.backend.query(this, actualQuery).done(function(queryResult) {
