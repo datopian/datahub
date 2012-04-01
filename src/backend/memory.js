@@ -127,8 +127,10 @@ this.recline.Backend = this.recline.Backend || {};
           return (sortObj[fieldName].order == 'asc') ? _out : -1*_out;
         });
       });
-      var results = results.slice(start, start+numRows);
-      dfd.resolve(results);
+      var total = results.length;
+      var out = this._docsToQueryResult(results.slice(start, start+numRows));
+      out.total = total;
+      dfd.resolve(out);
       return dfd.promise();
     }
   });

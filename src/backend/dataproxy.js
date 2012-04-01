@@ -35,6 +35,7 @@ this.recline.Backend = this.recline.Backend || {};
       }
     },
     query: function(dataset, queryObj) {
+      var self = this;
       var base = this.get('dataproxy_url');
       var data = {
         url: dataset.get('url')
@@ -62,7 +63,7 @@ this.recline.Backend = this.recline.Backend || {};
           });
           return tmp;
         });
-        dfd.resolve(_out);
+        dfd.resolve(self._docsToQueryResult(_out));
       })
       .fail(function(arguments) {
         dfd.reject(arguments);

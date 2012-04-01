@@ -67,7 +67,7 @@ this.recline.Backend = this.recline.Backend || {};
         _.each(_.zip(fields, d), function (x) { obj[x[0]] = x[1]; })
         return obj;
       });
-      dfd.resolve(objs);
+      dfd.resolve(this._docsToQueryResult(objs));
       return dfd;
     },
     gdocsToJavascript:  function(gdocsSpreadsheet) {
