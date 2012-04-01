@@ -71,25 +71,14 @@ my.DataGrid = Backbone.View.extend({
     e.preventDefault();
     var actions = {
       bulkEdit: function() { self.showTransformColumnDialog('bulkEdit', {name: self.state.currentColumn}) },
+      facet: function() { 
+        self.model.queryState.addFacet(self.state.currentColumn);
+      },
       transform: function() { self.showTransformDialog('transform') },
       sortAsc: function() { self.setColumnSort('asc') },
       sortDesc: function() { self.setColumnSort('desc') },
       hideColumn: function() { self.hideColumn() },
       showColumn: function() { self.showColumn(e) },
-      // TODO: Delete or re-implement ...
-      csv: function() { window.location.href = app.csvUrl },
-      json: function() { window.location.href = "_rewrite/api/json" },
-      urlImport: function() { showDialog('urlImport') },
-      pasteImport: function() { showDialog('pasteImport') },
-      uploadImport: function() { showDialog('uploadImport') },
-      // END TODO
-      deleteColumn: function() {
-        var msg = "Are you sure? This will delete '" + self.state.currentColumn + "' from all documents.";
-        // TODO:
-        alert('This function needs to be re-implemented');
-        return;
-        if (confirm(msg)) costco.deleteColumn(self.state.currentColumn);
-      },
       deleteRow: function() {
         var doc = _.find(self.model.currentDocuments.models, function(doc) {
           // important this is == as the currentRow will be string (as comes
@@ -175,11 +164,11 @@ my.DataGrid = Backbone.View.extend({
               <div class="btn-group column-header-menu"> \
                 <a class="btn dropdown-toggle" data-toggle="dropdown"><i class="icon-cog"></i><span class="caret"></span></a> \
                 <ul class="dropdown-menu data-table-menu pull-right"> \
-                  <li class="write-op"><a data-action="bulkEdit" href="JavaScript:void(0);">Transform...</a></li> \
-                  <li class="write-op"><a data-action="deleteColumn" href="JavaScript:void(0);">Delete this column</a></li> \
+                  <li><a data-action="facet" href="JavaScript:void(0);">Facet on this Field</a></li> \
                   <li><a data-action="sortAsc" href="JavaScript:void(0);">Sort ascending</a></li> \
                   <li><a data-action="sortDesc" href="JavaScript:void(0);">Sort descending</a></li> \
                   <li><a data-action="hideColumn" href="JavaScript:void(0);">Hide this column</a></li> \
+                  <li class="write-op"><a data-action="bulkEdit" href="JavaScript:void(0);">Transform...</a></li> \
                 </ul> \
               </div> \
               <span class="column-header-name">{{label}}</span> \

@@ -168,7 +168,7 @@ my.DataExplorer = Backbone.View.extend({
       model: this.model.queryState
     });
     this.el.find('.header').append(queryEditor.el);
-    var queryFacetEditor = new my.FacetQueryEditor({
+    var queryFacetEditor = new my.FacetViewer({
       model: this.model
     });
     this.el.find('.header').append(queryFacetEditor.el);
@@ -279,32 +279,29 @@ my.QueryEditor = Backbone.View.extend({
   }
 });
 
-my.FacetQueryEditor = Backbone.View.extend({
-  className: 'recline-query-facet-editor', 
+my.FacetViewer = Backbone.View.extend({
+  className: 'recline-facet-viewer well', 
   template: ' \
-    <div class="dropdown js-add-facet"> \
-      <a class="btn dropdown-toggle" data-toggle="dropdown" href=".js-add-facet">Add Facet On <i class="caret"></i></a> \
-      <ul class="dropdown-menu"> \
-        {{#fields}} \
-        <li><a href="#{{id}}">{{label}}</a></li> \
-        {{/fields}} \
-      </ul> \
-    </div> \
-    <div class="facets"> \
+    <a class="close js-hide" href="#">&times;</a> \
+    <div class="facets row"> \
+      <div class="span1"> \
+        <h3>Facets</h3> \
+      </div> \
       {{#facets}} \
-        <a class="btn js-facet-show-toggle" data-facet="{{id}}"><i class="icon-plus"></i> {{id}} {{label}}</a> \
-        <ul class="facet-items" data-facet="{{id}}" style="display: none;"> \
+      <div class="facet-summary span2 dropdown" data-facet="{{id}}"> \
+        <a class="btn dropdown-toggle" data-toggle="dropdown" href="#"><i class="icon-chevron-down"></i> {{id}} {{label}}</a> \
+        <ul class="facet-items dropdown-menu"> \
         {{#terms}} \
-          <li>{{term}} ({{count}}) <input type="checkbox" class="facet-choice" data-facet="{{label}}" value="{{term}}" /></li> \
+          <li><input type="checkbox" class="facet-choice" value="{{term}}" name="{{term}}" /> <label for="{{term}}">{{term}} ({{count}})</label></li> \
         {{/terms}} \
         </ul> \
+      </div> \
       {{/facets}} \
     </div> \
   ',
 
   events: {
-    'click .js-add-facet .dropdown-menu a': 'onAddFacet',
-    'click .js-facet-show-toggle': 'onFacetShowToggle'
+    'click .js-hide': 'onHide'
   },
   initialize: function(model) {
     _.bindAll(this, 'render');
@@ -320,18 +317,16 @@ my.FacetQueryEditor = Backbone.View.extend({
     };
     var templated = $.mustache(this.template, tmplData);
     this.el.html(templated);
+    // are there actually any facets to show?
+    if (this.model.facets.length > 0) {
+      this.el.show();
+    } else {
+      this.el.hide();
+    }
   },
-  onAddFacet: function(e) {
+  onHide: function(e) {
     e.preventDefault();
-    var fieldId = $(e.target).attr('href').slice(1);
-    this.model.queryState.addFacet(fieldId);
-  },
-  onFacetShowToggle: function(e) {
-    e.preventDefault();
-    var $a = $(e.target);
-    var facetId = $a.attr('data-facet');
-    var $ul = this.el.find('.facet-items[data-facet="' + facetId + '"]');
-    $ul.toggle();
+    this.el.hide();
   }
 });
 
