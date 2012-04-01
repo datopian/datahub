@@ -57,26 +57,16 @@ test('Dataset _prepareQuery', function () {
   var out = dataset._prepareQuery();
   var exp = new recline.Model.Query().toJSON();
   deepEqual(out, exp);
-
-  var fieldId = 'abc';
-  dataset.facets.addFacet(fieldId);
-
-  var out = dataset._prepareQuery();
-  var exp = new recline.Model.Query().toJSON();
-  exp.facets = {};
-  exp.facets[fieldId] = { terms: {field: fieldId} };
-  deepEqual(out, exp);
 });
 
 
 // =================================
-// Facet
+// Query
 
-test('Facet', function () {
-  var facets = new recline.Model.FacetList();
-  facets.addFacet('xyz');
-  equal(1, facets.length);
-  deepEqual({terms: {field: 'xyz'}}, facets.get('xyz').get('query'));
+test('Query', function () {
+  var query = new recline.Model.Query();
+  query.addFacet('xyz');
+  deepEqual({terms: {field: 'xyz'}}, query.get('facets')['xyz']);
 });
 
 })(this.jQuery);
