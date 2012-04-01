@@ -1,6 +1,9 @@
 (function ($) {
 module("Model");
 
+// =================================
+// Field
+
 test('Field: basics', function () {
   var field = new recline.Model.Field({
     id: 'x'
@@ -35,12 +38,35 @@ test('Field: basics', function () {
   equal('XX', out[0].label);
 });
 
+
+// =================================
+// Dataset
+
 test('Dataset', function () {
   var meta = {id: 'test', title: 'xyz'};
   var dataset = new recline.Model.Dataset(meta);
   dataset.fields = new recline.Model.FieldList([{id: 'xx'}, {id: 'yy'}]);
   var out = dataset.toTemplateJSON();
   equal(out.fields.length, 2);
+});
+
+test('Dataset _prepareQuery', function () {
+  var meta = {id: 'test', title: 'xyz'};
+  var dataset = new recline.Model.Dataset(meta);
+
+  var out = dataset._prepareQuery();
+  var exp = new recline.Model.Query().toJSON();
+  deepEqual(out, exp);
+});
+
+
+// =================================
+// Query
+
+test('Query', function () {
+  var query = new recline.Model.Query();
+  query.addFacet('xyz');
+  deepEqual({terms: {field: 'xyz'}}, query.get('facets')['xyz']);
 });
 
 })(this.jQuery);

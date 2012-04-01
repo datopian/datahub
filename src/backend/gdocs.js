@@ -16,7 +16,7 @@ this.recline.Backend = this.recline.Backend || {};
   //   'gdocs'
   // );
   // </pre>
-  my.GDoc = Backbone.Model.extend({
+  my.GDoc = my.Base.extend({
     getUrl: function(dataset) {
       var url = dataset.get('url');
       if (url.indexOf('feeds/list') != -1) {
@@ -67,7 +67,7 @@ this.recline.Backend = this.recline.Backend || {};
         _.each(_.zip(fields, d), function (x) { obj[x[0]] = x[1]; })
         return obj;
       });
-      dfd.resolve(objs);
+      dfd.resolve(this._docsToQueryResult(objs));
       return dfd;
     },
     gdocsToJavascript:  function(gdocsSpreadsheet) {

@@ -16,7 +16,7 @@ this.recline.Backend = this.recline.Backend || {};
   // * format: (optional) csv | xls (defaults to csv if not specified)
   //
   // Note that this is a **read-only** backend.
-  my.DataProxy = Backbone.Model.extend({
+  my.DataProxy = my.Base.extend({
     defaults: {
       dataproxy_url: 'http://jsonpdataproxy.appspot.com'
     },
@@ -35,6 +35,7 @@ this.recline.Backend = this.recline.Backend || {};
       }
     },
     query: function(dataset, queryObj) {
+      var self = this;
       var base = this.get('dataproxy_url');
       var data = {
         url: dataset.get('url')
@@ -47,7 +48,7 @@ this.recline.Backend = this.recline.Backend || {};
         , dataType: 'jsonp'
       });
       var dfd = $.Deferred();
-      my.wrapInTimeout(jqxhr).done(function(results) {
+      this._wrapInTimeout(jqxhr).done(function(results) {
         if (results.error) {
           dfd.reject(results.error);
         }
@@ -62,7 +63,7 @@ this.recline.Backend = this.recline.Backend || {};
           });
           return tmp;
         });
-        dfd.resolve(_out);
+        dfd.resolve(self._docsToQueryResult(_out));
       })
       .fail(function(arguments) {
         dfd.reject(arguments);

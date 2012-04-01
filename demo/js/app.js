@@ -81,19 +81,20 @@ function localDataset() {
       , name: '1-my-test-dataset' 
       , id: datasetId
     },
-    fields: [{id: 'x'}, {id: 'y'}, {id: 'z'}, {id: 'label'}],
+    fields: [{id: 'x'}, {id: 'y'}, {id: 'z'}, {id: 'country'}, {id: 'label'}],
     documents: [
-      {id: 0, x: 1, y: 2, z: 3, label: 'first'}
-      , {id: 1, x: 2, y: 4, z: 6, label: 'second'}
-      , {id: 2, x: 3, y: 6, z: 9, label: 'third'}
-      , {id: 3, x: 4, y: 8, z: 12, label: 'fourth'}
-      , {id: 4, x: 5, y: 10, z: 15, label: 'fifth'}
-      , {id: 5, x: 6, y: 12, z: 18, label: 'sixth'}
+      {id: 0, x: 1, y: 2, z: 3, country: 'DE', label: 'first'}
+      , {id: 1, x: 2, y: 4, z: 6, country: 'UK', label: 'second'}
+      , {id: 2, x: 3, y: 6, z: 9, country: 'US', label: 'third'}
+      , {id: 3, x: 4, y: 8, z: 12, country: 'UK', label: 'fourth'}
+      , {id: 4, x: 5, y: 10, z: 15, country: 'UK', label: 'fifth'}
+      , {id: 5, x: 6, y: 12, z: 18, country: 'DE', label: 'sixth'}
     ]
   };
   var backend = new recline.Backend.Memory();
   backend.addDataset(inData);
   var dataset = new recline.Model.Dataset({id: datasetId}, backend);
+  dataset.queryState.addFacet('country');
   return dataset;
 }
 

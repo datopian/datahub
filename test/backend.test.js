@@ -7,14 +7,14 @@ var memoryData = {
     , name: '1-my-test-dataset' 
     , id: 'test-dataset'
   },
-  fields: [{id: 'x'}, {id: 'y'}, {id: 'z'}],
+  fields: [{id: 'x'}, {id: 'y'}, {id: 'z'}, {id: 'country'}, {id: 'label'}],
   documents: [
-    {id: 0, x: 1, y: 2, z: 3}
-    , {id: 1, x: 2, y: 4, z: 6}
-    , {id: 2, x: 3, y: 6, z: 9}
-    , {id: 3, x: 4, y: 8, z: 12}
-    , {id: 4, x: 5, y: 10, z: 15}
-    , {id: 5, x: 6, y: 12, z: 18}
+    {id: 0, x: 1, y: 2, z: 3, country: 'DE', label: 'first'}
+    , {id: 1, x: 2, y: 4, z: 6, country: 'UK', label: 'second'}
+    , {id: 2, x: 3, y: 6, z: 9, country: 'US', label: 'third'}
+    , {id: 3, x: 4, y: 8, z: 12, country: 'UK', label: 'fourth'}
+    , {id: 4, x: 5, y: 10, z: 15, country: 'UK', label: 'fifth'}
+    , {id: 5, x: 6, y: 12, z: 18, country: 'DE', label: 'sixth'}
   ]
 };
 
@@ -32,6 +32,8 @@ test('Memory Backend: createDataset', function () {
 
 test('Memory Backend: createDataset 2', function () {
   var dataset = recline.Backend.createDataset(memoryData.documents);
+  equal(dataset.fields.length, 6);
+  deepEqual(['id', 'x', 'y', 'z', 'country', 'label'], dataset.fields.pluck('id'));
   dataset.query();
   equal(memoryData.documents.length, dataset.currentDocuments.length);
 });
@@ -71,9 +73,32 @@ test('Memory Backend: query sort', function () {
       {'y': {order: 'desc'}}
     ]
   };
-  dataset.query(queryObj).then(function(docs) {
+  dataset.query(queryObj).then(function() {
     var doc0 = dataset.currentDocuments.models[0].toJSON();
     equal(doc0.x, 6);
+  });
+});
+
+test('Memory Backend: facet', function () {
+  var dataset = makeBackendDataset();
+  dataset.queryState.addFacet('country');
+  dataset.query().then(function() {
+    equal(dataset.facets.length, 1);
+    var exp = [
+      {
+        term: 'UK',
+        count: 3
+      },
+      {
+        term: 'DE',
+        count: 2
+      },
+      {
+        term: 'US',
+        count: 1
+      }
+    ];
+    deepEqual(dataset.facets.get('country').toJSON().terms, exp);
   });
 });
  
@@ -377,7 +402,6 @@ test("GDoc Backend", function() {
   );
 
   var stub = sinon.stub($, 'getJSON', function(options, cb) {
-    console.log('options are', options, cb);
     var partialUrl = 'spreadsheets.google.com';
     if (options.indexOf(partialUrl) != -1) {
       cb(sample_gdocs_spreadsheet_data)
@@ -385,12 +409,10 @@ test("GDoc Backend", function() {
   });
 
   dataset.fetch().then(function(dataset) {
-    console.log('inside dataset:', dataset, dataset.fields, dataset.get('data'));
     deepEqual(['column-2', 'column-1'], _.pluck(dataset.fields.toJSON(), 'id'));
     //equal(null, dataset.docCount)
     dataset.query().then(function(docList) {
       equal(3, docList.length);
-      console.log(docList.models[0]);
       equal("A", docList.models[0].get('column-1'));
       // needed only if not stubbing
       start();

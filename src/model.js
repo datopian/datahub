@@ -23,9 +23,11 @@ my.Dataset = Backbone.Model.extend({
     }
     this.fields = new my.FieldList();
     this.currentDocuments = new my.DocumentList();
+    this.facets = new my.FacetList();
     this.docCount = null;
     this.queryState = new my.Query();
     this.queryState.bind('change', this.query);
+    this.queryState.bind('facet:add', this.query);
   },
 
   // ### query
@@ -38,18 +40,26 @@ my.Dataset = Backbone.Model.extend({
   // Resulting DocumentList are used to reset this.currentDocuments and are
   // also returned.
   query: function(queryObj) {
-    this.trigger('query:start');
     var self = this;
-    this.queryState.set(queryObj);
+    this.trigger('query:start');
+    var actualQuery = self._prepareQuery(queryObj);
     var dfd = $.Deferred();
-    this.backend.query(this, this.queryState.toJSON()).done(function(rows) {
-      var docs = _.map(rows, function(row) {
-        var _doc = new my.Document(row);
+    this.backend.query(this, actualQuery).done(function(queryResult) {
+      self.docCount = queryResult.total;
+      var docs = _.map(queryResult.hits, function(hit) {
+        var _doc = new my.Document(hit._source);
         _doc.backend = self.backend;
         _doc.dataset = self;
         return _doc;
       });
       self.currentDocuments.reset(docs);
+      if (queryResult.facets) {
+        var facets = _.map(queryResult.facets, function(facetResult, facetId) {
+          facetResult.id = facetId;
+          return new my.Facet(facetResult);
+        });
+        self.facets.reset(facets);
+      }
       self.trigger('query:done');
       dfd.resolve(self.currentDocuments);
     })
@@ -58,6 +68,14 @@ my.Dataset = Backbone.Model.extend({
       dfd.reject(arguments);
     });
     return dfd.promise();
+  },
+
+  _prepareQuery: function(newQueryObj) {
+    if (newQueryObj) {
+      this.queryState.set(newQueryObj);
+    }
+    var out = this.queryState.toJSON();
+    return out;
   },
 
   toTemplateJSON: function() {
@@ -116,7 +134,45 @@ my.Query = Backbone.Model.extend({
   defaults: {
     size: 100
     , from: 0
+    , facets: {}
+  },
+  // Set (update or add) a terms filter
+  // http://www.elasticsearch.org/guide/reference/query-dsl/terms-filter.html
+  setFilter: function(fieldId, values) {
+  },
+  addFacet: function(fieldId) {
+    var facets = this.get('facets');
+    // Assume id and fieldId should be the same (TODO: this need not be true if we want to add two different type of facets on same field)
+    if (_.contains(_.keys(facets), fieldId)) {
+      return;
+    }
+    facets[fieldId] = {
+      terms: { field: fieldId }
+    };
+    this.set({facets: facets}, {silent: true});
+    this.trigger('facet:add', this);
   }
+});
+
+
+// ## A Facet (Result)
+my.Facet = Backbone.Model.extend({
+  defaults: {
+    _type: 'terms',
+    // total number of tokens in the facet
+    total: 0,
+    // number of facet values not included in the returned facets
+    other: 0,
+    // number of documents which have no value for the field
+    missing: 0,
+    // term object ({term: , count: ...})
+    terms: []
+  }
+});
+
+// ## A Collection/List of Facets
+my.FacetList = Backbone.Collection.extend({
+  model: my.Facet
 });
 
 // ## Backend registry

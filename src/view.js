@@ -168,6 +168,10 @@ my.DataExplorer = Backbone.View.extend({
       model: this.model.queryState
     });
     this.el.find('.header').append(queryEditor.el);
+    var queryFacetEditor = new my.FacetQueryEditor({
+      model: this.model
+    });
+    this.el.find('.header').append(queryFacetEditor.el);
   },
 
   setupRouting: function() {
@@ -275,6 +279,61 @@ my.QueryEditor = Backbone.View.extend({
   }
 });
 
+my.FacetQueryEditor = Backbone.View.extend({
+  className: 'recline-query-facet-editor', 
+  template: ' \
+    <div class="dropdown js-add-facet"> \
+      <a class="btn dropdown-toggle" data-toggle="dropdown" href=".js-add-facet">Add Facet On <i class="caret"></i></a> \
+      <ul class="dropdown-menu"> \
+        {{#fields}} \
+        <li><a href="#{{id}}">{{label}}</a></li> \
+        {{/fields}} \
+      </ul> \
+    </div> \
+    <div class="facets"> \
+      {{#facets}} \
+        <a class="btn js-facet-show-toggle" data-facet="{{id}}"><i class="icon-plus"></i> {{id}} {{label}}</a> \
+        <ul class="facet-items" data-facet="{{id}}" style="display: none;"> \
+        {{#terms}} \
+          <li>{{term}} ({{count}}) <input type="checkbox" class="facet-choice" data-facet="{{label}}" value="{{term}}" /></li> \
+        {{/terms}} \
+        </ul> \
+      {{/facets}} \
+    </div> \
+  ',
+
+  events: {
+    'click .js-add-facet .dropdown-menu a': 'onAddFacet',
+    'click .js-facet-show-toggle': 'onFacetShowToggle'
+  },
+  initialize: function(model) {
+    _.bindAll(this, 'render');
+    this.el = $(this.el);
+    this.model.facets.bind('all', this.render);
+    this.model.fields.bind('all', this.render);
+    this.render();
+  },
+  render: function() {
+    var tmplData = {
+      facets: this.model.facets.toJSON(),
+      fields: this.model.fields.toJSON()
+    };
+    var templated = $.mustache(this.template, tmplData);
+    this.el.html(templated);
+  },
+  onAddFacet: function(e) {
+    e.preventDefault();
+    var fieldId = $(e.target).attr('href').slice(1);
+    this.model.queryState.addFacet(fieldId);
+  },
+  onFacetShowToggle: function(e) {
+    e.preventDefault();
+    var $a = $(e.target);
+    var facetId = $a.attr('data-facet');
+    var $ul = this.el.find('.facet-items[data-facet="' + facetId + '"]');
+    $ul.toggle();
+  }
+});
 
 /* ========================================================== */
 // ## Miscellaneous Utilities

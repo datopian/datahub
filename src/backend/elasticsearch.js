@@ -19,7 +19,7 @@ this.recline.Backend = this.recline.Backend || {};
   // localhost:9200 with index twitter and type tweet it would be
   //
   // <pre>http://localhost:9200/twitter/tweet</pre>
-  my.ElasticSearch = Backbone.Model.extend({
+  my.ElasticSearch = my.Base.extend({
     _getESUrl: function(dataset) {
       var out = dataset.get('elasticsearch_url');
       if (out) return out;
@@ -39,7 +39,7 @@ this.recline.Backend = this.recline.Backend || {};
             dataType: 'jsonp'
           });
           var dfd = $.Deferred();
-          my.wrapInTimeout(jqxhr).done(function(schema) {
+          this._wrapInTimeout(jqxhr).done(function(schema) {
             // only one top level key in ES = the type so we can ignore it
             var key = _.keys(schema)[0];
             var fieldData = _.map(schema[key].properties, function(dict, fieldName) {
@@ -93,13 +93,15 @@ this.recline.Backend = this.recline.Backend || {};
       var dfd = $.Deferred();
       // TODO: fail case
       jqxhr.done(function(results) {
-        model.docCount = results.hits.total;
-        var docs = _.map(results.hits.hits, function(result) {
-          var _out = result._source;
-          _out.id = result._id;
-          return _out;
-        });
-        dfd.resolve(docs);
+        _.each(results.hits.hits, function(hit) {
+          if (!'id' in hit._source && hit._id) {
+            hit._source.id = hit._id;
+          }
+        })
+        if (results.facets) {
+          results.hits.facets = results.facets;
+        }
+        dfd.resolve(results.hits);
       });
       return dfd.promise();
     }
