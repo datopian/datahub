@@ -152,15 +152,25 @@ my.Query = Backbone.Model.extend({
     facets[fieldId] = {
       terms: { field: fieldId }
     };
-    this.set({facets: facets});
-    // for some reason this does not trigger automatically ...
-    this.trigger('change', this);
+    this.set({facets: facets}, {silent: true});
+    this.trigger('facet:add', this);
   }
 });
 
 
 // ## A Facet (Result)
 my.Facet = Backbone.Model.extend({
+  defaults: {
+    _type: 'terms',
+    // total number of tokens in the facet
+    total: 0,
+    // number of facet values not included in the returned facets
+    other: 0,
+    // number of documents which have no value for the field
+    missing: 0,
+    // term object ({term: , count: ...})
+    terms: []
+  }
 });
 
 // ## A Collection/List of Facets
