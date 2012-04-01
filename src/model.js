@@ -27,6 +27,7 @@ my.Dataset = Backbone.Model.extend({
     this.docCount = null;
     this.queryState = new my.Query();
     this.queryState.bind('change', this.query);
+    this.facets.bind('all', this.query);
   },
 
   // ### query
@@ -39,11 +40,15 @@ my.Dataset = Backbone.Model.extend({
   // Resulting DocumentList are used to reset this.currentDocuments and are
   // also returned.
   query: function(queryObj) {
-    this.trigger('query:start');
     var self = this;
-    this.queryState.set(queryObj);
+    this.trigger('query:start');
+    // HACK: query gets called on event changes and it appears that in those cases the type of event gets passed as first argument. The following handles those cases.
+    if (typeof(queryObj) != 'object') {
+      queryObj = null;
+    }
+    var actualQuery = self._prepareQuery(queryObj);
     var dfd = $.Deferred();
-    this.backend.query(this, this.queryState.toJSON()).done(function(queryResult) {
+    this.backend.query(this, actualQuery).done(function(queryResult) {
       self.docCount = queryResult.total;
       var docs = _.map(queryResult.hits, function(hit) {
         var _doc = new my.Document(hit._source);
@@ -52,6 +57,11 @@ my.Dataset = Backbone.Model.extend({
         return _doc;
       });
       self.currentDocuments.reset(docs);
+      if (queryResult.facets) {
+        _.each(queryResult.facets, function(facetResult, facetId) {
+          self.facets.get(facetId).set({result: facetResult});
+        });
+      }
       self.trigger('query:done');
       dfd.resolve(self.currentDocuments);
     })
@@ -60,6 +70,17 @@ my.Dataset = Backbone.Model.extend({
       dfd.reject(arguments);
     });
     return dfd.promise();
+  },
+
+  _prepareQuery: function(newQueryObj) {
+    if (newQueryObj) {
+      this.queryState.set(newQueryObj);
+    }
+    var out = this.queryState.toJSON();
+    _.each(this.facets.toJSON(), function(facet) {
+      out.facets[facet.id] = facet.query;
+    });
+    return out;
   },
 
   toTemplateJSON: function() {
@@ -137,7 +158,7 @@ my.FacetList = Backbone.Collection.extend({
   model: my.Facet,
   addFacet: function(fieldId) {
     // Assume id and fieldId should be the same (TODO: this need not be true if we want to add two different type of facets on same field)
-    if (fieldId in this) {
+    if (this.include(fieldId)) {
       return;
     }
     // TODO: utilize field info to determine facet type ??
