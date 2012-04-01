@@ -16,7 +16,7 @@ this.recline.Backend = this.recline.Backend || {};
   //   'gdocs'
   // );
   // </pre>
-  my.GDoc = Backbone.Model.extend({
+  my.GDoc = my.Base.extend({
     getUrl: function(dataset) {
       var url = dataset.get('url');
       if (url.indexOf('feeds/list') != -1) {
