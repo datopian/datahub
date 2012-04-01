@@ -40,16 +40,57 @@ this.recline.Backend = this.recline.Backend || {};
     
     // ### query
     //
-    // Query the backend for documents returning them in bulk. This method will be used by the Dataset.query method to search the backend for documents, retrieving the results in bulk. This method should also set the docCount attribute on the dataset.
+    // Query the backend for documents returning them in bulk. This method will
+    // be used by the Dataset.query method to search the backend for documents,
+    // retrieving the results in bulk.
     //
-    // <code>queryObj</code> should be either a recline.Model.Query
-    // object or a Hash. The structure of data in the Query object or
+    // @param {recline.model.Dataset} model: Dataset model.
+    //
+    // @param {Object} queryObj: object describing a query (usually produced by
+    // using recline.Model.Query and calling toJSON on it).
+    //
+    // The structure of data in the Query object or
     // Hash should follow that defined in <a
     // href="http://github.com/okfn/recline/issues/34">issue 34</a>.
     // (Of course, if you are writing your own backend, and hence
     // have control over the interpretation of the query object, you
     // can use whatever structure you like).
+    //
+    // @returns {Promise} promise API object. The promise resolve method will
+    // be called on query completion with a QueryResult object.
+    // 
+    // A QueryResult has the following structure (modelled closely on
+    // ElasticSearch - see <a
+    // href="https://github.com/okfn/recline/issues/57">this issue for more
+    // details</a>):
+    //
+    // <pre>
+    // {
+    //   total: // (required) total number of results (can be null)
+    //   hits: [ // (required) one entry for each result document
+    //     {
+    //        _score:   // (optional) match score for document
+    //        _type: // (optional) document type
+    //        _source: // (required) document/row object
+    //     } 
+    //   ],
+    //   facets: { // (optional) 
+    //     // facet results (as per <http://www.elasticsearch.org/guide/reference/api/search/facets/>)
+    //   }
+    // }
+    // </pre>
     query: function(model, queryObj) {
+    },
+
+    // convenience method to convert simple set of documents / rows to a QueryResult
+    _docsToQueryResult: function(rows) {
+      var hits = _.map(rows, function(row) {
+        return { _source: row };
+      });
+      return {
+        total: null,
+        hits: hits
+      };
     },
 
     // ## _wrapInTimeout

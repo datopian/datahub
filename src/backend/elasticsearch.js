@@ -93,13 +93,12 @@ this.recline.Backend = this.recline.Backend || {};
       var dfd = $.Deferred();
       // TODO: fail case
       jqxhr.done(function(results) {
-        model.docCount = results.hits.total;
-        var docs = _.map(results.hits.hits, function(result) {
-          var _out = result._source;
-          _out.id = result._id;
-          return _out;
-        });
-        dfd.resolve(docs);
+        _.each(results.hits.hits, function(hit) {
+          if (!'id' in hit._source && hit._id) {
+            hit._source.id = hit._id;
+          }
+        })
+        dfd.resolve(results.hits);
       });
       return dfd.promise();
     }

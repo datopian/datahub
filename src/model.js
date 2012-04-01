@@ -43,9 +43,10 @@ my.Dataset = Backbone.Model.extend({
     var self = this;
     this.queryState.set(queryObj);
     var dfd = $.Deferred();
-    this.backend.query(this, this.queryState.toJSON()).done(function(rows) {
-      var docs = _.map(rows, function(row) {
-        var _doc = new my.Document(row);
+    this.backend.query(this, this.queryState.toJSON()).done(function(queryResult) {
+      self.docCount = queryResult.total;
+      var docs = _.map(queryResult.hits, function(hit) {
+        var _doc = new my.Document(hit._source);
         _doc.backend = self.backend;
         _doc.dataset = self;
         return _doc;
