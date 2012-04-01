@@ -168,6 +168,7 @@ this.recline.Backend = this.recline.Backend || {};
           // want descending order
           return -item.count;
         });
+        tmp.terms = tmp.terms.slice(0, 10);
       });
       return facetResults;
     }
