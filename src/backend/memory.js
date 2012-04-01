@@ -69,7 +69,7 @@ this.recline.Backend = this.recline.Backend || {};
   //  dataset.fetch();
   //  etc ...
   //  </pre>
-  my.Memory = Backbone.Model.extend({
+  my.Memory = my.Base.extend({
     initialize: function() {
       this.datasets = {};
     },
