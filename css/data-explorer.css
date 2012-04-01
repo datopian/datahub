@@ -60,8 +60,12 @@
   clear: both;
 }
 
-.recline-query-facet-editor {
+.recline-facet-viewer {
   clear: both;
+}
+
+.recline-facet-viewer .facet-summary label {
+  display: inline;
 }
 
 /**********************************************************
