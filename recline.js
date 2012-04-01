@@ -91,9 +91,11 @@ my.Dataset = Backbone.Model.extend({
     }
     this.fields = new my.FieldList();
     this.currentDocuments = new my.DocumentList();
+    this.facets = new my.FacetList();
     this.docCount = null;
     this.queryState = new my.Query();
     this.queryState.bind('change', this.query);
+    this.queryState.bind('facet:add', this.query);
   },
 
   // ### query
@@ -106,18 +108,26 @@ my.Dataset = Backbone.Model.extend({
   // Resulting DocumentList are used to reset this.currentDocuments and are
   // also returned.
   query: function(queryObj) {
-    this.trigger('query:start');
     var self = this;
-    this.queryState.set(queryObj);
+    this.trigger('query:start');
+    var actualQuery = self._prepareQuery(queryObj);
     var dfd = $.Deferred();
-    this.backend.query(this, this.queryState.toJSON()).done(function(rows) {
-      var docs = _.map(rows, function(row) {
-        var _doc = new my.Document(row);
+    this.backend.query(this, actualQuery).done(function(queryResult) {
+      self.docCount = queryResult.total;
+      var docs = _.map(queryResult.hits, function(hit) {
+        var _doc = new my.Document(hit._source);
         _doc.backend = self.backend;
         _doc.dataset = self;
         return _doc;
       });
       self.currentDocuments.reset(docs);
+      if (queryResult.facets) {
+        var facets = _.map(queryResult.facets, function(facetResult, facetId) {
+          facetResult.id = facetId;
+          return new my.Facet(facetResult);
+        });
+        self.facets.reset(facets);
+      }
       self.trigger('query:done');
       dfd.resolve(self.currentDocuments);
     })
@@ -126,6 +136,14 @@ my.Dataset = Backbone.Model.extend({
       dfd.reject(arguments);
     });
     return dfd.promise();
+  },
+
+  _prepareQuery: function(newQueryObj) {
+    if (newQueryObj) {
+      this.queryState.set(newQueryObj);
+    }
+    var out = this.queryState.toJSON();
+    return out;
   },
 
   toTemplateJSON: function() {
@@ -184,7 +202,45 @@ my.Query = Backbone.Model.extend({
   defaults: {
     size: 100
     , from: 0
+    , facets: {}
+  },
+  // Set (update or add) a terms filter
+  // http://www.elasticsearch.org/guide/reference/query-dsl/terms-filter.html
+  setFilter: function(fieldId, values) {
+  },
+  addFacet: function(fieldId) {
+    var facets = this.get('facets');
+    // Assume id and fieldId should be the same (TODO: this need not be true if we want to add two different type of facets on same field)
+    if (_.contains(_.keys(facets), fieldId)) {
+      return;
+    }
+    facets[fieldId] = {
+      terms: { field: fieldId }
+    };
+    this.set({facets: facets}, {silent: true});
+    this.trigger('facet:add', this);
   }
+});
+
+
+// ## A Facet (Result)
+my.Facet = Backbone.Model.extend({
+  defaults: {
+    _type: 'terms',
+    // total number of tokens in the facet
+    total: 0,
+    // number of facet values not included in the returned facets
+    other: 0,
+    // number of documents which have no value for the field
+    missing: 0,
+    // term object ({term: , count: ...})
+    terms: []
+  }
+});
+
+// ## A Collection/List of Facets
+my.FacetList = Backbone.Collection.extend({
+  model: my.Facet
 });
 
 // ## Backend registry
@@ -769,25 +825,14 @@ my.DataGrid = Backbone.View.extend({
     e.preventDefault();
     var actions = {
       bulkEdit: function() { self.showTransformColumnDialog('bulkEdit', {name: self.state.currentColumn}) },
+      facet: function() { 
+        self.model.queryState.addFacet(self.state.currentColumn);
+      },
       transform: function() { self.showTransformDialog('transform') },
       sortAsc: function() { self.setColumnSort('asc') },
       sortDesc: function() { self.setColumnSort('desc') },
       hideColumn: function() { self.hideColumn() },
       showColumn: function() { self.showColumn(e) },
-      // TODO: Delete or re-implement ...
-      csv: function() { window.location.href = app.csvUrl },
-      json: function() { window.location.href = "_rewrite/api/json" },
-      urlImport: function() { showDialog('urlImport') },
-      pasteImport: function() { showDialog('pasteImport') },
-      uploadImport: function() { showDialog('uploadImport') },
-      // END TODO
-      deleteColumn: function() {
-        var msg = "Are you sure? This will delete '" + self.state.currentColumn + "' from all documents.";
-        // TODO:
-        alert('This function needs to be re-implemented');
-        return;
-        if (confirm(msg)) costco.deleteColumn(self.state.currentColumn);
-      },
       deleteRow: function() {
         var doc = _.find(self.model.currentDocuments.models, function(doc) {
           // important this is == as the currentRow will be string (as comes
@@ -873,11 +918,11 @@ my.DataGrid = Backbone.View.extend({
               <div class="btn-group column-header-menu"> \
                 <a class="btn dropdown-toggle" data-toggle="dropdown"><i class="icon-cog"></i><span class="caret"></span></a> \
                 <ul class="dropdown-menu data-table-menu pull-right"> \
-                  <li class="write-op"><a data-action="bulkEdit" href="JavaScript:void(0);">Transform...</a></li> \
-                  <li class="write-op"><a data-action="deleteColumn" href="JavaScript:void(0);">Delete this column</a></li> \
+                  <li><a data-action="facet" href="JavaScript:void(0);">Facet on this Field</a></li> \
                   <li><a data-action="sortAsc" href="JavaScript:void(0);">Sort ascending</a></li> \
                   <li><a data-action="sortDesc" href="JavaScript:void(0);">Sort descending</a></li> \
                   <li><a data-action="hideColumn" href="JavaScript:void(0);">Hide this column</a></li> \
+                  <li class="write-op"><a data-action="bulkEdit" href="JavaScript:void(0);">Transform...</a></li> \
                 </ul> \
               </div> \
               <span class="column-header-name">{{label}}</span> \
@@ -1420,6 +1465,10 @@ my.DataExplorer = Backbone.View.extend({
       model: this.model.queryState
     });
     this.el.find('.header').append(queryEditor.el);
+    var queryFacetEditor = new my.FacetViewer({
+      model: this.model
+    });
+    this.el.find('.header').append(queryFacetEditor.el);
   },
 
   setupRouting: function() {
@@ -1527,6 +1576,56 @@ my.QueryEditor = Backbone.View.extend({
   }
 });
 
+my.FacetViewer = Backbone.View.extend({
+  className: 'recline-facet-viewer well', 
+  template: ' \
+    <a class="close js-hide" href="#">&times;</a> \
+    <div class="facets row"> \
+      <div class="span1"> \
+        <h3>Facets</h3> \
+      </div> \
+      {{#facets}} \
+      <div class="facet-summary span2 dropdown" data-facet="{{id}}"> \
+        <a class="btn dropdown-toggle" data-toggle="dropdown" href="#"><i class="icon-chevron-down"></i> {{id}} {{label}}</a> \
+        <ul class="facet-items dropdown-menu"> \
+        {{#terms}} \
+          <li><input type="checkbox" class="facet-choice" value="{{term}}" name="{{term}}" /> <label for="{{term}}">{{term}} ({{count}})</label></li> \
+        {{/terms}} \
+        </ul> \
+      </div> \
+      {{/facets}} \
+    </div> \
+  ',
+
+  events: {
+    'click .js-hide': 'onHide'
+  },
+  initialize: function(model) {
+    _.bindAll(this, 'render');
+    this.el = $(this.el);
+    this.model.facets.bind('all', this.render);
+    this.model.fields.bind('all', this.render);
+    this.render();
+  },
+  render: function() {
+    var tmplData = {
+      facets: this.model.facets.toJSON(),
+      fields: this.model.fields.toJSON()
+    };
+    var templated = $.mustache(this.template, tmplData);
+    this.el.html(templated);
+    // are there actually any facets to show?
+    if (this.model.facets.length > 0) {
+      this.el.show();
+    } else {
+      this.el.hide();
+    }
+  },
+  onHide: function(e) {
+    e.preventDefault();
+    this.el.hide();
+  }
+});
 
 /* ========================================================== */
 // ## Miscellaneous Utilities
@@ -1644,7 +1743,7 @@ my.clearNotifications = function() {
 //
 // Backends are connectors to backend data sources and stores
 //
-// This is just the base module containing various convenience methods.
+// This is just the base module containing a template Base class and convenience methods.
 this.recline = this.recline || {};
 this.recline.Backend = this.recline.Backend || {};
 
@@ -1656,30 +1755,111 @@ this.recline.Backend = this.recline.Backend || {};
     return model.backend.sync(method, model, options);
   }
 
-  // ## wrapInTimeout
-  // 
-  // Crude way to catch backend errors
-  // Many of backends use JSONP and so will not get error messages and this is
-  // a crude way to catch those errors.
-  my.wrapInTimeout = function(ourFunction) {
-    var dfd = $.Deferred();
-    var timeout = 5000;
-    var timer = setTimeout(function() {
-      dfd.reject({
-        message: 'Request Error: Backend did not respond after ' + (timeout / 1000) + ' seconds'
+  // ## recline.Backend.Base
+  //
+  // Base class for backends providing a template and convenience functions.
+  // You do not have to inherit from this class but even when not it does provide guidance on the functions you must implement.
+  //
+  // Note also that while this (and other Backends) are implemented as Backbone models this is just a convenience.
+  my.Base = Backbone.Model.extend({
+
+    // ### sync
+    //
+    // An implementation of Backbone.sync that will be used to override
+    // Backbone.sync on operations for Datasets and Documents which are using this backend.
+    //
+    // For read-only implementations you will need only to implement read method
+    // for Dataset models (and even this can be a null operation). The read method
+    // should return relevant metadata for the Dataset. We do not require read support
+    // for Documents because they are loaded in bulk by the query method.
+    //
+    // For backends supporting write operations you must implement update and delete support for Document objects.
+    //
+    // All code paths should return an object conforming to the jquery promise API.
+    sync: function(method, model, options) {
+    },
+    
+    // ### query
+    //
+    // Query the backend for documents returning them in bulk. This method will
+    // be used by the Dataset.query method to search the backend for documents,
+    // retrieving the results in bulk.
+    //
+    // @param {recline.model.Dataset} model: Dataset model.
+    //
+    // @param {Object} queryObj: object describing a query (usually produced by
+    // using recline.Model.Query and calling toJSON on it).
+    //
+    // The structure of data in the Query object or
+    // Hash should follow that defined in <a
+    // href="http://github.com/okfn/recline/issues/34">issue 34</a>.
+    // (Of course, if you are writing your own backend, and hence
+    // have control over the interpretation of the query object, you
+    // can use whatever structure you like).
+    //
+    // @returns {Promise} promise API object. The promise resolve method will
+    // be called on query completion with a QueryResult object.
+    // 
+    // A QueryResult has the following structure (modelled closely on
+    // ElasticSearch - see <a
+    // href="https://github.com/okfn/recline/issues/57">this issue for more
+    // details</a>):
+    //
+    // <pre>
+    // {
+    //   total: // (required) total number of results (can be null)
+    //   hits: [ // (required) one entry for each result document
+    //     {
+    //        _score:   // (optional) match score for document
+    //        _type: // (optional) document type
+    //        _source: // (required) document/row object
+    //     } 
+    //   ],
+    //   facets: { // (optional) 
+    //     // facet results (as per <http://www.elasticsearch.org/guide/reference/api/search/facets/>)
+    //   }
+    // }
+    // </pre>
+    query: function(model, queryObj) {
+    },
+
+    // convenience method to convert simple set of documents / rows to a QueryResult
+    _docsToQueryResult: function(rows) {
+      var hits = _.map(rows, function(row) {
+        return { _source: row };
       });
-    }, timeout);
-    ourFunction.done(function(arguments) {
-        clearTimeout(timer);
-        dfd.resolve(arguments);
-      })
-      .fail(function(arguments) {
-        clearTimeout(timer);
-        dfd.reject(arguments);
-      })
-      ;
-    return dfd.promise();
-  }
+      return {
+        total: null,
+        hits: hits
+      };
+    },
+
+    // ## _wrapInTimeout
+    // 
+    // Convenience method providing a crude way to catch backend errors on JSONP calls.
+    // Many of backends use JSONP and so will not get error messages and this is
+    // a crude way to catch those errors.
+    _wrapInTimeout: function(ourFunction) {
+      var dfd = $.Deferred();
+      var timeout = 5000;
+      var timer = setTimeout(function() {
+        dfd.reject({
+          message: 'Request Error: Backend did not respond after ' + (timeout / 1000) + ' seconds'
+        });
+      }, timeout);
+      ourFunction.done(function(arguments) {
+          clearTimeout(timer);
+          dfd.resolve(arguments);
+        })
+        .fail(function(arguments) {
+          clearTimeout(timer);
+          dfd.reject(arguments);
+        })
+        ;
+      return dfd.promise();
+    }
+  });
+
 }(jQuery, this.recline.Backend));
 
 this.recline = this.recline || {};
@@ -1700,7 +1880,7 @@ this.recline.Backend = this.recline.Backend || {};
   // * format: (optional) csv | xls (defaults to csv if not specified)
   //
   // Note that this is a **read-only** backend.
-  my.DataProxy = Backbone.Model.extend({
+  my.DataProxy = my.Base.extend({
     defaults: {
       dataproxy_url: 'http://jsonpdataproxy.appspot.com'
     },
@@ -1719,6 +1899,7 @@ this.recline.Backend = this.recline.Backend || {};
       }
     },
     query: function(dataset, queryObj) {
+      var self = this;
       var base = this.get('dataproxy_url');
       var data = {
         url: dataset.get('url')
@@ -1731,7 +1912,7 @@ this.recline.Backend = this.recline.Backend || {};
         , dataType: 'jsonp'
       });
       var dfd = $.Deferred();
-      my.wrapInTimeout(jqxhr).done(function(results) {
+      this._wrapInTimeout(jqxhr).done(function(results) {
         if (results.error) {
           dfd.reject(results.error);
         }
@@ -1746,7 +1927,7 @@ this.recline.Backend = this.recline.Backend || {};
           });
           return tmp;
         });
-        dfd.resolve(_out);
+        dfd.resolve(self._docsToQueryResult(_out));
       })
       .fail(function(arguments) {
         dfd.reject(arguments);
@@ -1779,7 +1960,7 @@ this.recline.Backend = this.recline.Backend || {};
   // localhost:9200 with index twitter and type tweet it would be
   //
   // <pre>http://localhost:9200/twitter/tweet</pre>
-  my.ElasticSearch = Backbone.Model.extend({
+  my.ElasticSearch = my.Base.extend({
     _getESUrl: function(dataset) {
       var out = dataset.get('elasticsearch_url');
       if (out) return out;
@@ -1799,7 +1980,7 @@ this.recline.Backend = this.recline.Backend || {};
             dataType: 'jsonp'
           });
           var dfd = $.Deferred();
-          my.wrapInTimeout(jqxhr).done(function(schema) {
+          this._wrapInTimeout(jqxhr).done(function(schema) {
             // only one top level key in ES = the type so we can ignore it
             var key = _.keys(schema)[0];
             var fieldData = _.map(schema[key].properties, function(dict, fieldName) {
@@ -1853,13 +2034,15 @@ this.recline.Backend = this.recline.Backend || {};
       var dfd = $.Deferred();
       // TODO: fail case
       jqxhr.done(function(results) {
-        model.docCount = results.hits.total;
-        var docs = _.map(results.hits.hits, function(result) {
-          var _out = result._source;
-          _out.id = result._id;
-          return _out;
-        });
-        dfd.resolve(docs);
+        _.each(results.hits.hits, function(hit) {
+          if (!'id' in hit._source && hit._id) {
+            hit._source.id = hit._id;
+          }
+        })
+        if (results.facets) {
+          results.hits.facets = results.facets;
+        }
+        dfd.resolve(results.hits);
       });
       return dfd.promise();
     }
@@ -1886,7 +2069,7 @@ this.recline.Backend = this.recline.Backend || {};
   //   'gdocs'
   // );
   // </pre>
-  my.GDoc = Backbone.Model.extend({
+  my.GDoc = my.Base.extend({
     getUrl: function(dataset) {
       var url = dataset.get('url');
       if (url.indexOf('feeds/list') != -1) {
@@ -1937,7 +2120,7 @@ this.recline.Backend = this.recline.Backend || {};
         _.each(_.zip(fields, d), function (x) { obj[x[0]] = x[1]; })
         return obj;
       });
-      dfd.resolve(objs);
+      dfd.resolve(this._docsToQueryResult(objs));
       return dfd;
     },
     gdocsToJavascript:  function(gdocsSpreadsheet) {
@@ -2009,6 +2192,207 @@ this.recline = this.recline || {};
 this.recline.Backend = this.recline.Backend || {};
 
 (function($, my) {
+  my.loadFromCSVFile = function(file, callback) {
+    var metadata = {
+      id: file.name,
+      file: file
+    };
+    var reader = new FileReader();
+    // TODO
+    reader.onload = function(e) {
+      var dataset = my.csvToDataset(e.target.result);
+      callback(dataset);
+    };
+    reader.onerror = function (e) {
+      alert('Failed to load file. Code: ' + e.target.error.code);
+    }
+    reader.readAsText(file);
+  };
+
+  my.csvToDataset = function(csvString) {
+    var out = my.parseCSV(csvString);
+    fields = _.map(out[0], function(cell) {
+      return { id: cell, label: cell };
+    });
+    var data = _.map(out.slice(1), function(row) {
+      var _doc = {};
+      _.each(out[0], function(fieldId, idx) {
+        _doc[fieldId] = row[idx];
+      });
+      return _doc;
+    });
+    var dataset = recline.Backend.createDataset(data, fields);
+    return dataset;
+  }
+
+	// Converts a Comma Separated Values string into an array of arrays.
+	// Each line in the CSV becomes an array.
+  //
+	// Empty fields are converted to nulls and non-quoted numbers are converted to integers or floats.
+  //
+	// @return The CSV parsed as an array
+	// @type Array
+	// 
+	// @param {String} s The string to convert
+	// @param {Boolean} [trm=false] If set to True leading and trailing whitespace is stripped off of each non-quoted field as it is imported
+  //
+  // Heavily based on uselesscode's JS CSV parser (MIT Licensed):
+  // thttp://www.uselesscode.org/javascript/csv/
+	my.parseCSV= function(s, trm) {
+		// Get rid of any trailing \n
+		s = chomp(s);
+
+		var cur = '', // The character we are currently processing.
+			inQuote = false,
+			fieldQuoted = false,
+			field = '', // Buffer for building up the current field
+			row = [],
+			out = [],
+			i,
+			processField;
+
+		processField = function (field) {
+			if (fieldQuoted !== true) {
+				// If field is empty set to null
+				if (field === '') {
+					field = null;
+				// If the field was not quoted and we are trimming fields, trim it
+				} else if (trm === true) {
+					field = trim(field);
+				}
+
+				// Convert unquoted numbers to their appropriate types
+				if (rxIsInt.test(field)) {
+					field = parseInt(field, 10);
+				} else if (rxIsFloat.test(field)) {
+					field = parseFloat(field, 10);
+				}
+			}
+			return field;
+		};
+
+		for (i = 0; i < s.length; i += 1) {
+			cur = s.charAt(i);
+
+			// If we are at a EOF or EOR
+			if (inQuote === false && (cur === ',' || cur === "\n")) {
+				field = processField(field);
+				// Add the current field to the current row
+				row.push(field);
+				// If this is EOR append row to output and flush row
+				if (cur === "\n") {
+					out.push(row);
+					row = [];
+				}
+				// Flush the field buffer
+				field = '';
+				fieldQuoted = false;
+			} else {
+				// If it's not a ", add it to the field buffer
+				if (cur !== '"') {
+					field += cur;
+				} else {
+					if (!inQuote) {
+						// We are not in a quote, start a quote
+						inQuote = true;
+						fieldQuoted = true;
+					} else {
+						// Next char is ", this is an escaped "
+						if (s.charAt(i + 1) === '"') {
+							field += '"';
+							// Skip the next char
+							i += 1;
+						} else {
+							// It's not escaping, so end quote
+							inQuote = false;
+						}
+					}
+				}
+			}
+		}
+
+		// Add the last field
+		field = processField(field);
+		row.push(field);
+		out.push(row);
+
+		return out;
+	};
+
+	var rxIsInt = /^\d+$/,
+		rxIsFloat = /^\d*\.\d+$|^\d+\.\d*$/,
+		// If a string has leading or trailing space,
+		// contains a comma double quote or a newline
+		// it needs to be quoted in CSV output
+		rxNeedsQuoting = /^\s|\s$|,|"|\n/,
+		trim = (function () {
+			// Fx 3.1 has a native trim function, it's about 10x faster, use it if it exists
+			if (String.prototype.trim) {
+				return function (s) {
+					return s.trim();
+				};
+			} else {
+				return function (s) {
+					return s.replace(/^\s*/, '').replace(/\s*$/, '');
+				};
+			}
+		}());
+
+	function chomp(s) {
+		if (s.charAt(s.length - 1) !== "\n") {
+			// Does not end with \n, just return string
+			return s;
+		} else {
+			// Remove the \n
+			return s.substring(0, s.length - 1);
+		}
+	}
+
+
+}(jQuery, this.recline.Backend));
+this.recline = this.recline || {};
+this.recline.Backend = this.recline.Backend || {};
+
+(function($, my) {
+  // ## createDataset
+  //
+  // Convenience function to create a simple 'in-memory' dataset in one step.
+  //
+  // @param data: list of hashes for each document/row in the data ({key:
+  // value, key: value})
+  // @param fields: (optional) list of field hashes (each hash defining a hash
+  // as per recline.Model.Field). If fields not specified they will be taken
+  // from the data.
+  // @param metadata: (optional) dataset metadata - see recline.Model.Dataset.
+  // If not defined (or id not provided) id will be autogenerated.
+  my.createDataset = function(data, fields, metadata) {
+    if (!metadata) {
+      var metadata = {};
+    }
+    if (!metadata.id) {
+      metadata.id = String(Math.floor(Math.random() * 100000000) + 1);
+    }
+    var backend = recline.Model.backends['memory'];
+    var datasetInfo = {
+      documents: data,
+      metadata: metadata
+    };
+    if (fields) {
+      datasetInfo.fields = fields;
+    } else {
+      if (data) {
+        datasetInfo.fields = _.map(data[0], function(value, key) {
+          return {id: key};
+        });
+      }
+    }
+    backend.addDataset(datasetInfo);
+    var dataset = new recline.Model.Dataset({id: metadata.id}, 'memory');
+    dataset.fetch();
+    return dataset;
+  };
+
+
   // ## Memory Backend - uses in-memory data
   //
   // To use it you should provide in your constructor data:
@@ -2037,7 +2421,7 @@ this.recline.Backend = this.recline.Backend || {};
   //  dataset.fetch();
   //  etc ...
   //  </pre>
-  my.Memory = Backbone.Model.extend({
+  my.Memory = my.Base.extend({
     initialize: function() {
       this.datasets = {};
     },
@@ -2083,9 +2467,10 @@ this.recline.Backend = this.recline.Backend || {};
       }
     },
     query: function(model, queryObj) {
+      var dfd = $.Deferred();
+      var out = {};
       var numRows = queryObj.size;
       var start = queryObj.from;
-      var dfd = $.Deferred();
       results = this.datasets[model.id].documents;
       // not complete sorting!
       _.each(queryObj.sort, function(sortObj) {
@@ -2095,9 +2480,49 @@ this.recline.Backend = this.recline.Backend || {};
           return (sortObj[fieldName].order == 'asc') ? _out : -1*_out;
         });
       });
-      var results = results.slice(start, start+numRows);
-      dfd.resolve(results);
+      out.facets = this._computeFacets(results, queryObj);
+      var total = results.length;
+      resultsObj = this._docsToQueryResult(results.slice(start, start+numRows));
+      _.extend(out, resultsObj);
+      out.total = total;
+      dfd.resolve(out);
       return dfd.promise();
+    },
+
+    _computeFacets: function(documents, queryObj) {
+      var facetResults = {};
+      if (!queryObj.facets) {
+        return facetsResults;
+      }
+      _.each(queryObj.facets, function(query, facetId) {
+        facetResults[facetId] = new recline.Model.Facet({id: facetId}).toJSON();
+        facetResults[facetId].termsall = {};
+      });
+      // faceting
+      _.each(documents, function(doc) {
+        _.each(queryObj.facets, function(query, facetId) {
+          var fieldId = query.terms.field;
+          var val = doc[fieldId];
+          var tmp = facetResults[facetId];
+          if (val) {
+            tmp.termsall[val] = tmp.termsall[val] ? tmp.termsall[val] + 1 : 1;
+          } else {
+            tmp.missing = tmp.missing + 1;
+          }
+        });
+      });
+      _.each(queryObj.facets, function(query, facetId) {
+        var tmp = facetResults[facetId];
+        var terms = _.map(tmp.termsall, function(count, term) {
+          return { term: term, count: count };
+        });
+        tmp.terms = _.sortBy(terms, function(item) {
+          // want descending order
+          return -item.count;
+        });
+        tmp.terms = tmp.terms.slice(0, 10);
+      });
+      return facetResults;
     }
   });
   recline.Model.backends['memory'] = new my.Memory();
