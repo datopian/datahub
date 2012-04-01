@@ -27,7 +27,6 @@ my.Dataset = Backbone.Model.extend({
     this.docCount = null;
     this.queryState = new my.Query();
     this.queryState.bind('change', this.query);
-    this.facets.bind('all', this.query);
   },
 
   // ### query
@@ -58,9 +57,11 @@ my.Dataset = Backbone.Model.extend({
       });
       self.currentDocuments.reset(docs);
       if (queryResult.facets) {
-        _.each(queryResult.facets, function(facetResult, facetId) {
-          self.facets.get(facetId).set({result: facetResult});
+        var facets = _.map(queryResult.facets, function(facetResult, facetId) {
+          facetResult.id = facetId;
+          return new my.Facet(facetResult);
         });
+        self.facets.reset(facets);
       }
       self.trigger('query:done');
       dfd.resolve(self.currentDocuments);
@@ -77,9 +78,6 @@ my.Dataset = Backbone.Model.extend({
       this.queryState.set(newQueryObj);
     }
     var out = this.queryState.toJSON();
-    _.each(this.facets.toJSON(), function(facet) {
-      out.facets[facet.id] = facet.query;
-    });
     return out;
   },
 
@@ -144,34 +142,30 @@ my.Query = Backbone.Model.extend({
   // Set (update or add) a terms filter
   // http://www.elasticsearch.org/guide/reference/query-dsl/terms-filter.html
   setFilter: function(fieldId, values) {
-  }
-});
-
-my.Facet = Backbone.Model.extend({
-  defaults: {
-    query: null,
-    result: null
-  }
-});
-
-my.FacetList = Backbone.Collection.extend({
-  model: my.Facet,
+  },
   addFacet: function(fieldId) {
+    var facets = this.get('facets');
     // Assume id and fieldId should be the same (TODO: this need not be true if we want to add two different type of facets on same field)
-    if (this.include(fieldId)) {
+    if (_.contains(_.keys(facets), fieldId)) {
       return;
     }
-    // TODO: utilize field info to determine facet type ??
-    var facet = new my.Facet({
-      id: fieldId,
-      query: {
-        terms: {
-          field: fieldId
-        }
-      }
-    });
-    this.add(facet);
+    facets[fieldId] = {
+      terms: { field: fieldId }
+    };
+    this.set({facets: facets});
+    // for some reason this does not trigger automatically ...
+    this.trigger('change', this);
   }
+});
+
+
+// ## A Facet (Result)
+my.Facet = Backbone.Model.extend({
+});
+
+// ## A Collection/List of Facets
+my.FacetList = Backbone.Collection.extend({
+  model: my.Facet
 });
 
 // ## Backend registry

@@ -294,9 +294,9 @@ my.FacetQueryEditor = Backbone.View.extend({
       {{#facets}} \
         <a class="btn js-facet-show-toggle" data-facet="{{id}}"><i class="icon-plus"></i> {{id}} {{label}}</a> \
         <ul class="facet-items" data-facet="{{id}}" style="display: none;"> \
-        {{#result}} \
+        {{#terms}} \
           <li>{{term}} ({{count}}) <input type="checkbox" class="facet-choice" data-facet="{{label}}" value="{{term}}" /></li> \
-        {{/result}} \
+        {{/terms}} \
         </ul> \
       {{/facets}} \
     </div> \
@@ -324,7 +324,7 @@ my.FacetQueryEditor = Backbone.View.extend({
   onAddFacet: function(e) {
     e.preventDefault();
     var fieldId = $(e.target).attr('href').slice(1);
-    this.model.facets.addFacet(fieldId);
+    this.model.queryState.addFacet(fieldId);
   },
   onFacetShowToggle: function(e) {
     e.preventDefault();
