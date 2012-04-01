@@ -98,6 +98,9 @@ this.recline.Backend = this.recline.Backend || {};
             hit._source.id = hit._id;
           }
         })
+        if (results.facets) {
+          results.hits.facets = results.facets;
+        }
         dfd.resolve(results.hits);
       });
       return dfd.promise();
