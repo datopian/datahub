@@ -115,9 +115,10 @@ this.recline.Backend = this.recline.Backend || {};
       }
     },
     query: function(model, queryObj) {
+      var dfd = $.Deferred();
+      var out = {};
       var numRows = queryObj.size;
       var start = queryObj.from;
-      var dfd = $.Deferred();
       results = this.datasets[model.id].documents;
       // not complete sorting!
       _.each(queryObj.sort, function(sortObj) {
@@ -127,11 +128,48 @@ this.recline.Backend = this.recline.Backend || {};
           return (sortObj[fieldName].order == 'asc') ? _out : -1*_out;
         });
       });
+      out.facets = this._computeFacets(results, queryObj);
       var total = results.length;
-      var out = this._docsToQueryResult(results.slice(start, start+numRows));
+      resultsObj = this._docsToQueryResult(results.slice(start, start+numRows));
+      _.extend(out, resultsObj);
       out.total = total;
       dfd.resolve(out);
       return dfd.promise();
+    },
+
+    _computeFacets: function(documents, queryObj) {
+      var facetResults = {};
+      if (!queryObj.facets) {
+        return facetsResults;
+      }
+      _.each(queryObj.facets, function(query, facetId) {
+        facetResults[facetId] = new recline.Model.Facet({id: facetId}).toJSON();
+        facetResults[facetId].termsall = {};
+      });
+      // faceting
+      _.each(documents, function(doc) {
+        _.each(queryObj.facets, function(query, facetId) {
+          var fieldId = query.terms.field;
+          var val = doc[fieldId];
+          var tmp = facetResults[facetId];
+          if (val) {
+            tmp.termsall[val] = tmp.termsall[val] ? tmp.termsall[val] + 1 : 1;
+          } else {
+            tmp.missing = tmp.missing + 1;
+          }
+        });
+      });
+      _.each(queryObj.facets, function(query, facetId) {
+        var tmp = facetResults[facetId];
+        var terms = _.map(tmp.termsall, function(count, term) {
+          return { term: term, count: count };
+        });
+        tmp.terms = _.sortBy(terms, function(item) {
+          // want descending order
+          return -item.count;
+        });
+      });
+      return facetResults;
     }
   });
   recline.Model.backends['memory'] = new my.Memory();
