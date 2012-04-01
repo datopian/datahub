@@ -282,16 +282,11 @@ my.QueryEditor = Backbone.View.extend({
 my.FacetViewer = Backbone.View.extend({
   className: 'recline-facet-viewer well', 
   template: ' \
-    <a class="close" href="#"><i class="icon-chevron-up"></i></a> \
-    <div class="dropdown js-add-facet"> \
-      <a class="btn dropdown-toggle" data-toggle="dropdown" href=".js-add-facet">Add Facet On <i class="caret"></i></a> \
-      <ul class="dropdown-menu"> \
-        {{#fields}} \
-        <li><a href="#{{id}}">{{label}}</a></li> \
-        {{/fields}} \
-      </ul> \
-    </div> \
+    <a class="close js-hide" href="#">&times;</a> \
     <div class="facets row"> \
+      <div class="span1"> \
+        <h3>Facets</h3> \
+      </div> \
       {{#facets}} \
       <div class="facet-summary span2 dropdown" data-facet="{{id}}"> \
         <a class="btn dropdown-toggle" data-toggle="dropdown" href="#"><i class="icon-chevron-down"></i> {{id}} {{label}}</a> \
@@ -306,7 +301,7 @@ my.FacetViewer = Backbone.View.extend({
   ',
 
   events: {
-    'click .js-add-facet .dropdown-menu a': 'onAddFacet',
+    'click .js-hide': 'onHide'
   },
   initialize: function(model) {
     _.bindAll(this, 'render');
@@ -322,11 +317,16 @@ my.FacetViewer = Backbone.View.extend({
     };
     var templated = $.mustache(this.template, tmplData);
     this.el.html(templated);
+    // are there actually any facets to show?
+    if (this.model.facets.length > 0) {
+      this.el.show();
+    } else {
+      this.el.hide();
+    }
   },
-  onAddFacet: function(e) {
+  onHide: function(e) {
     e.preventDefault();
-    var fieldId = $(e.target).attr('href').slice(1);
-    this.model.queryState.addFacet(fieldId);
+    this.el.hide();
   }
 });
 
