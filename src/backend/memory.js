@@ -120,6 +120,12 @@ this.recline.Backend = this.recline.Backend || {};
       var numRows = queryObj.size;
       var start = queryObj.from;
       results = this.datasets[model.id].documents;
+      _.each(queryObj.filters, function(filter) {
+        results = _.filter(results, function(doc) {
+          var fieldId = _.keys(filter.term)[0];
+          return (doc[fieldId] == filter.term[fieldId]);
+        });
+      });
       // not complete sorting!
       _.each(queryObj.sort, function(sortObj) {
         var fieldName = _.keys(sortObj)[0];
