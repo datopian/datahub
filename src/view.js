@@ -292,7 +292,7 @@ my.FacetViewer = Backbone.View.extend({
         <a class="btn dropdown-toggle" data-toggle="dropdown" href="#"><i class="icon-chevron-down"></i> {{id}} {{label}}</a> \
         <ul class="facet-items dropdown-menu"> \
         {{#terms}} \
-          <li><input type="checkbox" class="facet-choice" value="{{term}}" name="{{term}}" /> <label for="{{term}}">{{term}} ({{count}})</label></li> \
+          <li><input type="checkbox" class="facet-choice js-facet-filter" value="{{term}}" name="{{term}}" /> <label for="{{term}}">{{term}} ({{count}})</label></li> \
         {{/terms}} \
         </ul> \
       </div> \
@@ -301,7 +301,8 @@ my.FacetViewer = Backbone.View.extend({
   ',
 
   events: {
-    'click .js-hide': 'onHide'
+    'click .js-hide': 'onHide',
+    'change .js-facet-filter': 'onFacetFilter'
   },
   initialize: function(model) {
     _.bindAll(this, 'render');
@@ -327,6 +328,13 @@ my.FacetViewer = Backbone.View.extend({
   onHide: function(e) {
     e.preventDefault();
     this.el.hide();
+  },
+  onFacetFilter: function(e) {
+    // todo: uncheck
+    var $checkbox = $(e.target);
+    var fieldId = $checkbox.closest('.facet-summary').attr('data-facet');
+    var value = $checkbox.val();
+    this.model.queryState.addTermFilter(fieldId, value);
   }
 });
 
