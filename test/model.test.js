@@ -69,4 +69,10 @@ test('Query', function () {
   deepEqual({terms: {field: 'xyz'}}, query.get('facets')['xyz']);
 });
 
+test('Query.addFilter', function () {
+  var query = new recline.Model.Query();
+  query.addTermFilter('xyz', 'this-value');
+  deepEqual({term: {xyz: 'this-value'}}, query.get('filters')[0]);
+});
+
 })(this.jQuery);
