@@ -79,6 +79,19 @@ this.recline.Backend = this.recline.Backend || {};
         }
         delete out.q;
       }
+      // now do filters (note the *plural*)
+      if (out.filters && out.filters.length) {
+        if (!out.filter) {
+          out.filter = {}
+        }
+        if (!out.filter.and) {
+          out.filter.and = [];
+        }
+        out.filter.and = out.filter.and.concat(out.filters);
+      }
+      if (out.filters != undefined) {
+        delete out.filters;
+      }
       return out;
     },
     query: function(model, queryObj) {
