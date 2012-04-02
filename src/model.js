@@ -131,14 +131,27 @@ my.FieldList = Backbone.Collection.extend({
 
 // ## A Query object storing Dataset Query state
 my.Query = Backbone.Model.extend({
-  defaults: {
-    size: 100
-    , from: 0
-    , facets: {}
+  defaults: function() {
+    return {
+      size: 100
+      , from: 0
+      , facets: {}
+      // http://www.elasticsearch.org/guide/reference/query-dsl/and-filter.html 
+      // , filter: {}
+      // list of simple filters which will be add to 'add' filter of filter
+      , filters: []
+    }
   },
   // Set (update or add) a terms filter
   // http://www.elasticsearch.org/guide/reference/query-dsl/terms-filter.html
-  setFilter: function(fieldId, values) {
+  addTermFilter: function(fieldId, value) {
+    var filters = this.get('filters');
+    var filter = { term: {} };
+    filter.term[fieldId] = value;
+    filters.push(filter);
+    this.set({filters: filters});
+    // change does not seem to be triggered ...
+    this.trigger('change');
   },
   addFacet: function(fieldId) {
     var facets = this.get('facets');
@@ -157,16 +170,18 @@ my.Query = Backbone.Model.extend({
 
 // ## A Facet (Result)
 my.Facet = Backbone.Model.extend({
-  defaults: {
-    _type: 'terms',
-    // total number of tokens in the facet
-    total: 0,
-    // number of facet values not included in the returned facets
-    other: 0,
-    // number of documents which have no value for the field
-    missing: 0,
-    // term object ({term: , count: ...})
-    terms: []
+  defaults: function() {
+    return {
+      _type: 'terms',
+      // total number of tokens in the facet
+      total: 0,
+      // number of facet values not included in the returned facets
+      other: 0,
+      // number of documents which have no value for the field
+      missing: 0,
+      // term object ({term: , count: ...})
+      terms: []
+    }
   }
 });
 
