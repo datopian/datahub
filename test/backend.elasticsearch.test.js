@@ -20,6 +20,12 @@ test("ElasticSearch queryNormalize", function() {
   in_.q = 'abc';
   var out = backend._normalizeQuery(in_);
   equal(out.query.query_string.query, 'abc');
+
+  var in_ = new recline.Model.Query();
+  in_.addTermFilter('xyz', 'XXX');
+  in_ = in_.toJSON();
+  var out = backend._normalizeQuery(in_);
+  deepEqual(out.filter.and[0], {term: { xyz: 'XXX'}});
 });
 
 var mapping_data = {
