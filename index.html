@@ -2,7 +2,7 @@
 <html>
 <head>
   <meta charset="utf-8" />
-  <title>Recline DataExplorer</title>
+  <title>Recline Data Explorer and Library</title>
 
   <!-- Le HTML5 shim, for IE6-8 support of HTML elements -->
   <!--[if lt IE 9]>
@@ -61,9 +61,9 @@
 <div class="navbar navbar-fixed-top">
   <div class="navbar-inner">
     <div class="container">
-      <a class="brand" href="#">Recline Data Explorer</a>
+      <a class="brand" href="#">Recline Data Explorer and Library</a>
       <ul class="nav">
-        <li><a href="demo/">Demo</a></li>
+        <li><a href="app/">Data Explorer</a></li>
         <li><a href="#docs">Docs</a></li>
         <li><a href="http://github.com/okfn/recline/">Code on GitHub</a></li>
       </ul>
@@ -81,15 +81,28 @@
   <div class="span9"><div class="content">
     <div class="page-header">
       <h1>
-        Recline Data Explorer<br />
-        <small>Powerful and extensible JS data grid and explorer built on <a href="http://backbonejs.org/">Backbone</a></small>
+        Recline Data Explorer and Library<br />
+        <small>
+          A. Powerful data explorer using only javascript and html
+          <br />
+          B. Suite of data components - grid, graphing and data connectors
+          <br />
+          &mdash; All built on <a href="http://backbonejs.org/">Backbone</a></small>
       </h1>
     </div>
-    <p><strong>Recline combines a data grid, Google Refine-style data transforms
-      and visualizations all in lightweight javascript and html.</strong></p>
-    <p>Designed for standalone use or as a library to integrate into your own
-    app. Recline builds on the powerful but lightweight Backbone framework
-    making it extremely easy to extend and adapt and its modular design means you only have to take what you need.</p>
+    <p>Recline is two things:</p>
+    <ul>
+      <li>Data Explorer combining a data grid, Google Refine-style data
+      transforms and visualizations all in lightweight javascript and html.</li>
+      <li>Simple but powerful library of extensible of data components - data
+      grid, graphing, and data connectors - which you can selectively use and
+      build on.</li>
+    </ul>
+    <p>The Explorer can be used standalone (just download and use) or can be
+    embedded into your own site. Recline builds on the powerful but lightweight
+    Backbone framework making it extremely easy to extend and adapt. The
+    library's modular design mean means you only have to take what you
+    need.</p>
 
     <h2 id="features">Main Features</h2>
     <ul>
@@ -108,10 +121,10 @@
     </ul>
 
     <h2>Screenshots</h2>
-    <p><a href="demo/"><img src="http://farm8.staticflickr.com/7020/6847468031_0f474de5f7_b.jpg" alt="Recline Data Explorer Screenshot" style="width: 700px; display: block; margin-bottom: 30px;" /></a></p>
+    <p><a href="app/"><img src="http://farm8.staticflickr.com/7020/6847468031_0f474de5f7_b.jpg" alt="Recline Data Explorer Screenshot" style="width: 700px; display: block; margin-bottom: 30px;" /></a></p>
 
     <h2 id="demo">Demo</h2>
-    <p><a href="demo/index.html" class="btn">For Recline Demo Click Here &raquo;</a></p>
+    <p><a href="app/index.html" class="btn">For demo see the Data Explorer &raquo;</a></p>
 
     <h2 id="docs">Documentation</h2>
     <h3 id="docs-using">Quickstart</h3>
@@ -136,8 +149,8 @@ var explorer = recline.View.DataExplorer({
 Backbone.history.start();
     </pre>
     <p>More details and examples: see docs below and the <a
-      href="demo/">Demo</a> -- just hit view source (NB: the javascript for the
-    demo is in: <a href="demo/js/app.js">app.js</a>).</p>
+      href="app/">Demo</a> -- just hit view source (NB: the javascript for the
+    demo is in: <a href="app/js/app.js">app.js</a>).</p>
 
     <h3 id="docs-concepts">Concepts and Structure</h3>
     <p>Recline has a simple structure layered on top of the basic Model/View
@@ -203,6 +216,8 @@ Backbone.history.start();
 </div></div> <!-- /span9 /content -->
   <div class="span3 sidebar">
     <div class="well sidebar-nav">
+      <h3 class="nav-header">Use It</h3>
+      <p class="getit-btn"><a href="app/" class="btn primary">Visit the Data Explorer &raquo;</a></p>
       <h3 class="nav-header">Get It</h3>
       <p class="getit-btn"><a href="recline.js" class="btn primary">Development Version<br />v0.3 (67k)</a></p>
       <h4>Dependencies</h4>
