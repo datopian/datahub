@@ -280,12 +280,6 @@ $(function() {
 
   // setup the loader menu in top bar
   setupLoader(createExplorer);
-
-  // set up readonly enabling in top bar
-  $('a.set-read-only').click(function() {
-    window.dataExplorer.setReadOnly();
-    alert('Read-only mode set');
-  });
 });
 
 // make Explorer creation / initialization in a function so we can call it
