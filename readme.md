@@ -1,5 +1,8 @@
 # Recline
 
+## Notice! This is no longer maintained and has been rewritten as a backbone app over at [http://github.com/okfn/recline](github.com/okfn/recline)
+
+
 A HTML5 port of Google Refine's UI that lets you bulk import, edit and export your data in and out of CouchDB
 
 ## Features
