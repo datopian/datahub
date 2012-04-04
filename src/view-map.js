@@ -8,6 +8,10 @@ my.Map = Backbone.View.extend({
   tagName:  'div',
   className: 'data-map-container',
 
+  latitudeFieldNames: ['lat','latitude'],
+  longitudeFieldNames: ['lon','longitude'],
+  geometryFieldNames: ['geom','the_geom','geometry','spatial'],
+
   //TODO: In case we want to change the default markers
   /*
   markerOptions: {
@@ -26,9 +30,15 @@ my.Map = Backbone.View.extend({
 ',
 
   initialize: function(options, config) {
+    var self = this;
+
     this.el = $(this.el);
     this.render();
+    this.model.bind('change', function() {
+      self._setupGeometryField();
+    });
 
+    this.mapReady = false;
   },
 
   render: function() {
@@ -37,11 +47,13 @@ my.Map = Backbone.View.extend({
 
     htmls = $.mustache(this.template, this.model.toTemplateJSON());
     $(this.el).html(htmls);
-    // now set a load of stuff up
     this.$map = this.el.find('.panel.map');
 
-
     this.model.bind('query:done', function() {
+      if (!self.geomReady){
+        self._setupGeometryField();
+      }
+
       if (!self.mapReady){
         self._setupMap();
       }
@@ -53,41 +65,73 @@ my.Map = Backbone.View.extend({
 
   redraw: function(){
 
-    //TODO: check fields or geom:
-    // why this doesn't work?
-    // var fields = this.model.fields.all();
+    var self = this;
 
-    if (this.model.fields.get('lon') && this.model.fields.get('lat')){
-        if (this.model.currentDocuments.length > 0){
-          this.features.clearLayers();
-          var attrs, latLon, marker;
+    if (this.geomReady){
+      if (this.model.currentDocuments.length > 0){
+        this.features.clearLayers();
+        var bounds = new L.LatLngBounds();
 
-          var bounds = new L.LatLngBounds();
-          for (var i = 0; i < this.model.currentDocuments.length; i++){
-            attrs = this.model.currentDocuments.models[i].attributes;
-            latLon = new L.LatLng(attrs['lat'], attrs['lon']);
-            marker = new L.Marker(latLon);
-            
+        this.model.currentDocuments.forEach(function(doc){
+          var feature = self._getGeometryFromDocument(doc);
+          if (feature){
             // Build popup contents
             // TODO: mustache?
             html = ''
-            for (key in attrs){
-              html += '<div><strong>' + key + '</strong>: '+ attrs[key] + '</div>'
-            }       
-            
-            marker.bindPopup(html);
+            for (key in doc.attributes){
+              html += '<div><strong>' + key + '</strong>: '+ doc.attributes[key] + '</div>'
+            }
+            feature.properties = {popupContent: html};
 
-            this.features.addLayer(marker);
+            self.features.addGeoJSON(feature);
 
-            // Looks like Leaflet does not provide a LayerGroup.getBounds method
-            // so we need to build the bounds ourselves
-            bounds.extend(latLon);
+            // TODO: bounds and center map
           }
-
-          // TODO: This does not work if the map div is not visible!
-          //this.map.fitBounds(bounds);
-        }
+        });
+      }
     }
+  },
+
+  _getGeometryFromDocument: function(doc){
+    if (this.geomReady){
+      if (this._geomFieldName){
+        // We assume that the contents of the field are a valid GeoJSON object
+        return doc.attributes[this._geomFieldName];
+      } else if (this._lonFieldName && this._latFieldName){
+        // We'll create a GeoJSON like point object from the two lat/lon fields
+        return {
+          type: 'Point',
+          coordinates: [
+            doc.attributes[this._lonFieldName],
+            doc.attributes[this._latFieldName],
+            ]
+        }
+      }
+      return null;
+    }
+  },
+
+  _setupGeometryField: function(){
+    var geomField, latField, lonField;
+
+    // Check if there is a field with GeoJSON geometries or alternatively,
+    // two fields with lat/lon values
+    this._geomFieldName = this._checkField(this.geometryFieldNames);
+    this._latFieldName = this._checkField(this.latitudeFieldNames);
+    this._lonFieldName = this._checkField(this.longitudeFieldNames);
+
+    // TODO: Allow users to choose the fields
+
+    this.geomReady = (this._geomFieldName || (this._latFieldName && this._lonFieldName));
+  },
+
+  _checkField: function(fieldNames){
+    var field;
+    for (var i = 0; i < fieldNames.length; i++){
+      field = this.model.fields.get(fieldNames[i]);
+      if (field) return field.id;
+    }
+    return null;
   },
 
   _setupMap: function(){
@@ -101,7 +145,12 @@ my.Map = Backbone.View.extend({
     this.map.addLayer(bg);
 
     // Layer to hold the features
-    this.features = new L.LayerGroup([]);
+    this.features = new L.GeoJSON();
+    this.features.on('featureparse', function (e) {
+      if (e.properties && e.properties.popupContent){
+        e.layer.bindPopup(e.properties.popupContent);
+       }
+    });
     this.map.addLayer(this.features);
 
     this.map.setView(new L.LatLng(0, 0), 2);
