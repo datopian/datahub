@@ -199,14 +199,27 @@ my.FieldList = Backbone.Collection.extend({
 
 // ## A Query object storing Dataset Query state
 my.Query = Backbone.Model.extend({
-  defaults: {
-    size: 100
-    , from: 0
-    , facets: {}
+  defaults: function() {
+    return {
+      size: 100
+      , from: 0
+      , facets: {}
+      // http://www.elasticsearch.org/guide/reference/query-dsl/and-filter.html 
+      // , filter: {}
+      // list of simple filters which will be add to 'add' filter of filter
+      , filters: []
+    }
   },
   // Set (update or add) a terms filter
   // http://www.elasticsearch.org/guide/reference/query-dsl/terms-filter.html
-  setFilter: function(fieldId, values) {
+  addTermFilter: function(fieldId, value) {
+    var filters = this.get('filters');
+    var filter = { term: {} };
+    filter.term[fieldId] = value;
+    filters.push(filter);
+    this.set({filters: filters});
+    // change does not seem to be triggered ...
+    this.trigger('change');
   },
   addFacet: function(fieldId) {
     var facets = this.get('facets');
@@ -225,16 +238,18 @@ my.Query = Backbone.Model.extend({
 
 // ## A Facet (Result)
 my.Facet = Backbone.Model.extend({
-  defaults: {
-    _type: 'terms',
-    // total number of tokens in the facet
-    total: 0,
-    // number of facet values not included in the returned facets
-    other: 0,
-    // number of documents which have no value for the field
-    missing: 0,
-    // term object ({term: , count: ...})
-    terms: []
+  defaults: function() {
+    return {
+      _type: 'terms',
+      // total number of tokens in the facet
+      total: 0,
+      // number of facet values not included in the returned facets
+      other: 0,
+      // number of documents which have no value for the field
+      missing: 0,
+      // term object ({term: , count: ...})
+      terms: []
+    }
   }
 });
 
@@ -1589,7 +1604,7 @@ my.FacetViewer = Backbone.View.extend({
         <a class="btn dropdown-toggle" data-toggle="dropdown" href="#"><i class="icon-chevron-down"></i> {{id}} {{label}}</a> \
         <ul class="facet-items dropdown-menu"> \
         {{#terms}} \
-          <li><input type="checkbox" class="facet-choice" value="{{term}}" name="{{term}}" /> <label for="{{term}}">{{term}} ({{count}})</label></li> \
+          <li><input type="checkbox" class="facet-choice js-facet-filter" value="{{term}}" name="{{term}}" /> <label for="{{term}}">{{term}} ({{count}})</label></li> \
         {{/terms}} \
         </ul> \
       </div> \
@@ -1598,7 +1613,8 @@ my.FacetViewer = Backbone.View.extend({
   ',
 
   events: {
-    'click .js-hide': 'onHide'
+    'click .js-hide': 'onHide',
+    'change .js-facet-filter': 'onFacetFilter'
   },
   initialize: function(model) {
     _.bindAll(this, 'render');
@@ -1624,6 +1640,13 @@ my.FacetViewer = Backbone.View.extend({
   onHide: function(e) {
     e.preventDefault();
     this.el.hide();
+  },
+  onFacetFilter: function(e) {
+    // todo: uncheck
+    var $checkbox = $(e.target);
+    var fieldId = $checkbox.closest('.facet-summary').attr('data-facet');
+    var value = $checkbox.val();
+    this.model.queryState.addTermFilter(fieldId, value);
   }
 });
 
@@ -2019,6 +2042,19 @@ this.recline.Backend = this.recline.Backend || {};
           }
         }
         delete out.q;
+      }
+      // now do filters (note the *plural*)
+      if (out.filters && out.filters.length) {
+        if (!out.filter) {
+          out.filter = {}
+        }
+        if (!out.filter.and) {
+          out.filter.and = [];
+        }
+        out.filter.and = out.filter.and.concat(out.filters);
+      }
+      if (out.filters != undefined) {
+        delete out.filters;
       }
       return out;
     },
@@ -2472,6 +2508,12 @@ this.recline.Backend = this.recline.Backend || {};
       var numRows = queryObj.size;
       var start = queryObj.from;
       results = this.datasets[model.id].documents;
+      _.each(queryObj.filters, function(filter) {
+        results = _.filter(results, function(doc) {
+          var fieldId = _.keys(filter.term)[0];
+          return (doc[fieldId] == filter.term[fieldId]);
+        });
+      });
       // not complete sorting!
       _.each(queryObj.sort, function(sortObj) {
         var fieldName = _.keys(sortObj)[0];
