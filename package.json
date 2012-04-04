@@ -13,5 +13,5 @@
   },
   "lib"           : "src",
   "main"          : "recline.js",
-  "version"       : "0.3a"
+  "version"       : "0.4a"
 }
