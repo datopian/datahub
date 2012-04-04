@@ -92,9 +92,9 @@
     </div>
     <p>Recline is two things:</p>
     <ul>
-      <li>Data Explorer combining a data grid, Google Refine-style data
+      <li>A Data Explorer combining a data grid, Google Refine-style data
       transforms and visualizations all in lightweight javascript and html.</li>
-      <li>Simple but powerful library of extensible of data components - data
+      <li>A simple but powerful library of extensible of data components - data
       grid, graphing, and data connectors - which you can selectively use and
       build on.</li>
     </ul>
@@ -126,19 +126,40 @@
     <h2 id="demo">Demo</h2>
     <p><a href="app/index.html" class="btn">For demo see the Data Explorer &raquo;</a></p>
 
-    <h2 id="docs">Documentation</h2>
-    <h3 id="docs-using">Quickstart</h3>
-    <pre>
-// Note: you should have included the relevant JS libraries (and CSS)
-// See above for dependencies
+    <h2 id="docs">Data Explorer Documentation</h2>
+    <p>Usage instructions are built into the <a href="app/">Data Explorer</a>
+    itself so no specific additional documentation is provided on usage.</p>
+    <p>To embed the data explorer in another site you can use a simple iframe
+    in your web page:</p>
+    <textarea class="span6">&lt;iframe src="http://okfnlabs.org/recline/app/" width="100%"&gt;&lt;/iframe&gt;</textarea>
+    <p>Alternatively, you can initialize the explorer yourself from javascript. To see how
+    to do this just take at look at the Explorer's initialization javascript
+    in: <a href="app/js/app.js">app.js</a>.</p>
 
-// Dataset is a Backbone model so the first hash become model attributes
-var dataset = recline.Model.Dataset({
-    id: 'my-id'
-  },
-  // Either a backend instance or string id for a backend in the registry
-  backend
-);
+
+    <h2 id="docs">Library Documentation</h2>
+
+    <h3 id="docs-using">Examples</h3>
+    <p><strong>Note:</strong> A quick read through of the Concepts section will
+    likely be useful in understanding the details of the examples.</p>
+    <p><strong>Note</strong>: for all the following examples you should have
+    included relevant Recline dependencies.</p>
+    <h4>Simple in-memory dataset.</h4>
+    <pre>
+// Some data you have
+// Your data must be in the form of list of documents / rows
+// Each document/row is an Object with keys and values
+var data = [
+    {id: 0, x: 1, y: 2, z: 3, country: 'UK', label: 'first'}
+    , {id: 1, x: 2, y: 4, z: 6, country: 'UK', label: 'second'}
+    , {id: 2, x: 3, y: 6, z: 9, country: 'US', label: 'third'}
+  ];
+
+// Create a Dataset object from local in-memory data
+// Dataset object is a Backbone model - more info on attributes in model docs below
+var dataset = recline.Backend.createDataset(data);
+
+// Now create the main explorer view (it will create other views as needed)
 // DataExplorer is a Backbone View
 var explorer = recline.View.DataExplorer({
   model: dataset,
@@ -147,10 +168,29 @@ var explorer = recline.View.DataExplorer({
 });
 // Start Backbone routing (if you want routing support)
 Backbone.history.start();
-    </pre>
-    <p>More details and examples: see docs below and the <a
-      href="app/">Demo</a> -- just hit view source (NB: the javascript for the
-    demo is in: <a href="app/js/app.js">app.js</a>).</p>
+</pre>
+
+    <h4>Creating a Dataset Explicitly with a Backend</h4>
+<pre>
+// Backend can be an instance or string id for a backend in the
+// recline.Model.backends registry
+var backend = 'elasticsearch'
+// alternatively you can create explicitly
+// var backend = new recline.Backend.ElasticSearch();
+// or even from your own backend ...
+// var backend = new myModule.Backend();
+
+// Dataset is a Backbone model so the first hash become model attributes
+var dataset = recline.Model.Dataset({
+    id: 'my-id',
+    // url for source of this dataset - will be used by backend
+    url: 'http://localhost:9200/my-index/my-type',
+    // any other metadata e.g.
+    title: 'My Dataset Title'
+  },
+  backend
+);
+</pre>
 
     <h3 id="docs-concepts">Concepts and Structure</h3>
     <p>Recline has a simple structure layered on top of the basic Model/View
