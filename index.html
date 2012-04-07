@@ -84,11 +84,11 @@
   <h1>
     Recline Data Explorer and Library<br />
     <small>
-      A. Powerful data explorer using only javascript and html
+      A. Powerful data explorer built in pure javascript and html
       <br />
       B. Suite of data components - grid, graphing and data connectors
       <br />
-      &mdash; All built on <a href="http://backbonejs.org/">Backbone</a></small>
+      &mdash; All built with <a href="http://backbonejs.org/">Backbone</a></small>
   </h1>
 </div>
 
@@ -207,20 +207,34 @@ var dataset = recline.Model.Dataset({
 <p>Recline has a simple structure layered on top of the basic Model/View
 distinction inherent in Backbone.</p>
 
-<p><strong>Models</strong>: there are two main model objects:</p>
+<h4>Models</h4>
+<p>There are two main model objects:</p>
 <ul>
-  <li><a href="docs/model.html#section-2">Dataset</a>: represents the dataset.
+  <li><a href="docs/model.html#dataset">Dataset</a>: represents the dataset.
   Holds dataset info and a pointer to list of data items (Documents in our
   terminology) which it can load from the relevant Backend.</li>
-  <li><a href="docs/model.html#section-4">Document</a>: an individual data item
+  <li><a href="docs/model.html#document">Document</a>: an individual data item
   (e.g. a row from a relational database or a spreadsheet, a document from from
   a document DB like CouchDB or MongoDB).</li>
+</ul>
+
+<p>Additional, related models:</p>
+<ul>
+  <li><a href="docs/model.html#field">Field</a>: a field/column on a
+  dataset.</li>
+  <li><a href="docs/model.html#query">Query</a>: an object to encapsulate a
+  query to the backend (useful both for creating queries and for storing and
+  manipulating query state - e.g. from a query editor).</li>
+  <li><a href="docs/model.html#facte">Facet</a>: Object to store Facet
+  information, that is summary information (e.g. values and counts) about a
+  field obtained by some faceting method on the backend.</li>
 </ul>
 
 <p>More detail of how these work can be found in the <a
   href="docs/model.html">Model source docs</a>.</p>
 
-<p><strong>Backends</strong> connect Dataset and Documents to data from a
+<h4>Backends</h4>
+<p>Backends connect Dataset and Documents to data from a
 specific 'Backend' data source. They provide methods for loading and saving
 Datasets and individuals Documents as well as for bulk loading via a query API
 and doing bulk transforms on the backend.</p>
@@ -231,7 +245,8 @@ methods a Backend must have and (optionally) provides a base 'class' for
 inheritance. You can also find detailed examples of backend implementations in
 the source documentation below.</p>
 
-<p><strong>Views</strong>: complementing the model are various Views (you can
+<h4>Views</h4>
+<p>Complementing the model are various Views (you can
 also easily write your own). Each view holds a pointer to a Dataset:</p>
 <ul>
   <li>DataExplorer: the parent view which manages the overall app and sets up
@@ -239,14 +254,28 @@ also easily write your own). Each view holds a pointer to a Dataset:</p>
   <li>DataGrid: the data grid view.</li>
   <li>FlotGraph: a simple graphing view using <a
     href="http://code.google.com/p/flot/">Flot</a>.</li>
+  <li>Map: a map view using Leaflet.</li>
 </ul>
 
+<p>There are additional views which do not display a whole dataset but which
+are useful:</p>
+<ul>
+  <li>QueryEditor: a query editor view</li>
+  <li>FacetViewer: display facets</li>
+</ul>
+
+
 <h3 id="docs-source">Source Docs (via Docco)</h3>
+<h4>Models and Views (Widgets)</h4>
 <ul>
   <li><a href="docs/model.html">Models</a></li>
   <li><a href="docs/view.html">DataExplorer View (plus common view code)</a></li>
   <li><a href="docs/view-grid.html">DataGrid View</a></li>
   <li><a href="docs/view-flot-graph.html">Graph View (based on Flot)</a></li>
+</ul>
+
+<h4>Backends</h4>
+<ul>
   <li><a href="docs/backend/base.html">Backend: Base (base class providing a template for backends)</a></li>
   <li><a href="docs/backend/memory.html">Backend: Memory (local data)</a></li>
   <li><a href="docs/backend/elasticsearch.html">Backend: ElasticSearch</a></li>
