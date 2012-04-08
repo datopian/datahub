@@ -60,8 +60,8 @@
   clear: both;
 }
 
-.recline-facet-viewer {
-  clear: both;
+.recline-filter-editor .filter-term .input-append a {
+  margin-left: -5px;
 }
 
 .recline-facet-viewer .facet-summary label {
