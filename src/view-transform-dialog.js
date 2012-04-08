@@ -1,3 +1,5 @@
+/*jshint multistr:true */
+
 this.recline = this.recline || {};
 this.recline.View = this.recline.View || {};
 

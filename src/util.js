@@ -1,3 +1,5 @@
+/*jshint multistr:true */
+
 var util = function() {
   var templates = {
     transformActions: '<li><a data-action="transform" class="menuAction" href="JavaScript:void(0);">Global transform...</a></li>'
