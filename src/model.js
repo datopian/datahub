@@ -217,6 +217,15 @@ my.Query = Backbone.Model.extend({
     // change does not seem to be triggered ...
     this.trigger('change');
   },
+  // ### removeFilter
+  //
+  // Remove a filter from filters at index filterIndex
+  removeFilter: function(filterIndex) {
+    var filters = this.get('filters');
+    filters.splice(filterIndex, 1);
+    this.set({filters: filters});
+    this.trigger('change');
+  },
   // ### addFacet
   //
   // Add a Facet to this query
