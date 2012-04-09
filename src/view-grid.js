@@ -15,7 +15,7 @@ this.recline.View = this.recline.View || {};
 // * cellRenderer: function used to render individual cells. See DataGridRow for more.
 my.DataGrid = Backbone.View.extend({
   tagName:  "div",
-  className: "data-table-container",
+  className: "recline-grid-container",
 
   initialize: function(modelEtc, options) {
     var self = this;
@@ -151,7 +151,7 @@ my.DataGrid = Backbone.View.extend({
   // ======================================================
   // #### Templating
   template: ' \
-    <table class="data-table table-striped table-condensed" cellspacing="0"> \
+    <table class="recline-grid table-striped table-condensed" cellspacing="0"> \
       <thead> \
         <tr> \
           {{#notEmpty}} \
