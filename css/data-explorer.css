@@ -1,18 +1,18 @@
-.data-explorer .header .navigation,
-.data-explorer .header .navigation li,
-.data-explorer .header .pagination,
-.data-explorer .header .pagination form
+.recline-data-explorer .header .navigation,
+.recline-data-explorer .header .navigation li,
+.recline-data-explorer .header .pagination,
+.recline-data-explorer .header .pagination form
 {
   display: inline;
 }
 
-.data-explorer .header .navigation {
+.recline-data-explorer .header .navigation {
   float: left;
   margin-left: 0;
   padding-left: 0;
 }
 
-.data-explorer .header .menu-right {
+.recline-data-explorer .header .menu-right {
   float: right;
   margin-left: 5px;
   padding-left: 5px;
@@ -54,7 +54,7 @@
   vertical-align: top;
 }
 
-.data-view-container {
+.recline-data-explorer .data-view-container {
   display: block;
   clear: both;
 }
@@ -71,7 +71,7 @@
   * Notifications
   *********************************************************/
 
-.notification-loader {
+.recline-data-explorer .notification-loader {
   width: 18px;
   margin-left: 5px;
   background: url(images/small-spinner.gif) no-repeat;
@@ -83,33 +83,33 @@
   * Data Table
   *********************************************************/
 
-.data-table .btn-group .dropdown-toggle {
+.recline-grid .btn-group .dropdown-toggle {
   padding: 1px 3px;
   line-height: auto;
 }
 
-.data-table-container {
+.recline-grid-container {
   overflow: auto;
   height: 550px;
 }
 
-.data-table {
+.recline-grid {
   border: 1px solid #ccc;
   width: 100%;
 }
 
-.data-table td, .data-table th {
+.recline-grid td, .recline-grid th {
   border-left: 1px solid #ccc;
   padding: 3px 4px;
   text-align: left;
 }
 
-.data-table tr td:first-child, .data-table tr th:first-child {
+.recline-grid tr td:first-child, .recline-grid tr th:first-child {
   width: 20px;
 }
 
 /* direct borrowing from twitter buttons */
-.data-table th,
+.recline-grid th,
 .transform-column-view .expression-preview-table-wrapper th
 {
   background-color: #e6e6e6;
@@ -196,7 +196,7 @@ a.data-table-cell-edit:hover {
   background-position: -25px 0px;
 }
 
-.data-table td:hover .data-table-cell-edit {
+.recline-grid td:hover .data-table-cell-edit {
   visibility: visible;
 }
 
@@ -440,8 +440,8 @@ td.expression-preview-value {
   * Read-only mode
   *********************************************************/
 
-.read-only .no-hidden .data-table tr td:first-child,
-.read-only .no-hidden .data-table tr th:first-child
+.read-only .no-hidden .recline-grid tr td:first-child,
+.read-only .no-hidden .recline-grid tr th:first-child
 {
   display: none;
 }

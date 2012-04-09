@@ -54,7 +54,7 @@ this.recline.View = this.recline.View || {};
 // FlotGraph subview.
 my.DataExplorer = Backbone.View.extend({
   template: ' \
-  <div class="data-explorer"> \
+  <div class="recline-data-explorer"> \
     <div class="alert-messages"></div> \
     \
     <div class="header"> \
@@ -534,7 +534,7 @@ my.notify = function(message, options) {
         {{/loader}} \
     </div>';
   var _templated = $.mustache(_template, tmplData); 
-  _templated = $(_templated).appendTo($('.data-explorer .alert-messages'));
+  _templated = $(_templated).appendTo($('.recline-data-explorer .alert-messages'));
   if (!options.persist) {
     setTimeout(function() {
       $(_templated).fadeOut(1000, function() {
@@ -548,7 +548,7 @@ my.notify = function(message, options) {
 //
 // Clear all existing notifications
 my.clearNotifications = function() {
-  var $notifications = $('.data-explorer .alert-messages .alert');
+  var $notifications = $('.recline-data-explorer .alert-messages .alert');
   $notifications.remove();
 }
 
