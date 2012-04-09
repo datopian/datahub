@@ -214,8 +214,13 @@ my.Query = Backbone.Model.extend({
     filter.term[fieldId] = value;
     filters.push(filter);
     this.set({filters: filters});
-    // change does not seem to be triggered ...
-    this.trigger('change');
+    // change does not seem to be triggered automatically
+    if (value) {
+      this.trigger('change');
+    } else {
+      // adding a new blank filter and do not want to trigger a new query
+      this.trigger('change:filters:new-blank');
+    }
   },
   // ### removeFilter
   //
