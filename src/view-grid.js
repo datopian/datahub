@@ -76,6 +76,9 @@ my.DataGrid = Backbone.View.extend({
       facet: function() { 
         self.model.queryState.addFacet(self.state.currentColumn);
       },
+      filter: function() {
+        self.model.queryState.addTermFilter(self.state.currentColumn, '');
+      },
       transform: function() { self.showTransformDialog('transform') },
       sortAsc: function() { self.setColumnSort('asc') },
       sortDesc: function() { self.setColumnSort('desc') },
@@ -167,9 +170,13 @@ my.DataGrid = Backbone.View.extend({
                 <a class="btn dropdown-toggle" data-toggle="dropdown"><i class="icon-cog"></i><span class="caret"></span></a> \
                 <ul class="dropdown-menu data-table-menu pull-right"> \
                   <li><a data-action="facet" href="JavaScript:void(0);">Facet on this Field</a></li> \
+                  <li><a data-action="filter" href="JavaScript:void(0);">Text Filter</a></li> \
+                  <li class="divider"></li> \
                   <li><a data-action="sortAsc" href="JavaScript:void(0);">Sort ascending</a></li> \
                   <li><a data-action="sortDesc" href="JavaScript:void(0);">Sort descending</a></li> \
+                  <li class="divider"></li> \
                   <li><a data-action="hideColumn" href="JavaScript:void(0);">Hide this column</a></li> \
+                  <li class="divider"></li> \
                   <li class="write-op"><a data-action="bulkEdit" href="JavaScript:void(0);">Transform...</a></li> \
                 </ul> \
               </div> \
