@@ -148,27 +148,6 @@
   display: none;
 }
 
-.column-header-recon-stats-bar {
-  margin-top: 10px;
-  height: 4px;
-  background: #ddd;
-  border: 1px solid #ccc;
-  position: relative;
-  width: 100%;
-}
-
-.column-header-recon-stats-matched {
-  position: absolute;
-  height: 100%;
-  background: #282;
-}
-
-.column-header-recon-stats-blanks {
-  position: absolute;
-  height: 100%;
-  background: #3d3;
-}
-
 div.data-table-cell-content {
   line-height: 1.2;
   color: #222;
@@ -213,21 +192,6 @@ div.data-table-cell-content-numeric > a.data-table-cell-edit {
   color: red;
 }
 
-/* TODO: not sure the rest of this is needed */
-.data-table-cell-editor, .data-table-topic-popup {
-  overflow: auto;
-  border: 1px solid #bcf;
-  background: #e3e9ff;
-  padding: 5px;
-  -moz-border-radius: 5px;
-  -webkit-border-radius: 5px;
-  border-radius: 5px;
-}
-
-.data-table-topic-popup-header {
-  padding: 0 0 5px;
-}
-
 .data-table-cell-editor-editor {
   overflow: hidden;
   display: block;
@@ -255,28 +219,6 @@ div.data-table-cell-content-numeric > a.data-table-cell-edit {
 .data-table-cell-editor-key {
   font-size: 0.8em;
   color: #999;
-}
-
-ul.sorting-dialog-blank-error-positions {
-  margin: 0;
-  padding: 5px;
-  height: 10em;
-  border: 1px solid #ccc;
-  -moz-border-radius: 3px;
-  -webkit-border-radius: 3px;
-  border-radius: 3px;
-}
-
-ul.sorting-dialog-blank-error-positions > li {
-  display: block;
-  border: 1px solid #ccc;
-  background: #eee;
-  padding: 5px;
-  margin: 2px;
-  cursor: move;
-  -moz-border-radius: 3px;
-  -webkit-border-radius: 3px;
-  border-radius: 3px;
 }
 
 
