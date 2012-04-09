@@ -218,28 +218,21 @@ my.QueryEditor = Backbone.View.extend({
       <div class="input-prepend text-query"> \
         <span class="add-on"><i class="icon-search"></i></span> \
         <input type="text" name="q" value="{{q}}" class="span2" placeholder="Search data ..." class="search-query" /> \
-        <div class="btn-group menu"> \
-          <a class="btn dropdown-toggle" data-toggle="dropdown"><i class="icon-cog"></i><span class="caret"></span></a> \
-          <ul class="dropdown-menu"> \
-            <li><a data-action="size" href="">Number of items to show ({{size}})</a></li> \
-            <li><a data-action="from" href="">Show from ({{from}})</a></li> \
-          </ul> \
-        </div> \
       </div> \
       <div class="pagination"> \
         <ul> \
           <li class="prev action-pagination-update"><a href="">&laquo;</a></li> \
-          <li class="active"><a>{{from}} &ndash; {{to}}</a></li> \
+          <li class="active"><a><input name="from" type="text" value="{{from}}" /> &ndash; <input name="to" type="text" value="{{to}}" /> </a></li> \
           <li class="next action-pagination-update"><a href="">&raquo;</a></li> \
         </ul> \
       </div> \
+      <button type="submit" class="btn">Go &raquo;</button> \
     </form> \
   ',
 
   events: {
     'submit form': 'onFormSubmit'
     , 'click .action-pagination-update': 'onPaginationUpdate'
-    , 'click .menu li a': 'onMenuItemClick'
   },
 
   initialize: function() {
@@ -251,7 +244,9 @@ my.QueryEditor = Backbone.View.extend({
   onFormSubmit: function(e) {
     e.preventDefault();
     var query = this.el.find('.text-query input').val();
-    this.model.set({q: query});
+    var newFrom = parseInt(this.el.find('input[name="from"]').val());
+    var newSize = parseInt(this.el.find('input[name="to"]').val()) - newFrom;
+    this.model.set({size: newSize, from: newFrom, q: query});
   },
   onPaginationUpdate: function(e) {
     e.preventDefault();
@@ -262,20 +257,6 @@ my.QueryEditor = Backbone.View.extend({
       var newFrom = this.model.get('from') + this.model.get('size');
     }
     this.model.set({from: newFrom});
-  },
-  onMenuItemClick: function(e) {
-    e.preventDefault();
-    var attrName = $(e.target).attr('data-action');
-    var msg = _.template('New value (<%= value %>)',
-        {value: this.model.get(attrName)}
-        );
-    var newValue = prompt(msg);
-    if (newValue) {
-      newValue = parseInt(newValue);
-      var update = {};
-      update[attrName] = newValue;
-      this.model.set(update);
-    }
   },
   render: function() {
     var tmplData = this.model.toJSON();
@@ -396,7 +377,7 @@ my.FacetViewer = Backbone.View.extend({
         <a class="btn dropdown-toggle" data-toggle="dropdown" href="#"><i class="icon-chevron-down"></i> {{id}} {{label}}</a> \
         <ul class="facet-items dropdown-menu"> \
         {{#terms}} \
-          <li><input type="checkbox" class="facet-choice js-facet-filter" value="{{term}}" name="{{term}}" /> <label for="{{term}}">{{term}} ({{count}})</label></li> \
+          <li><a class="facet-choice js-facet-filter" data-value="{{term}}">{{term}} ({{count}})</a></li> \
         {{/terms}} \
         </ul> \
       </div> \
@@ -406,7 +387,7 @@ my.FacetViewer = Backbone.View.extend({
 
   events: {
     'click .js-hide': 'onHide',
-    'change .js-facet-filter': 'onFacetFilter'
+    'click .js-facet-filter': 'onFacetFilter'
   },
   initialize: function(model) {
     _.bindAll(this, 'render');
@@ -434,10 +415,9 @@ my.FacetViewer = Backbone.View.extend({
     this.el.hide();
   },
   onFacetFilter: function(e) {
-    // todo: uncheck
-    var $checkbox = $(e.target);
-    var fieldId = $checkbox.closest('.facet-summary').attr('data-facet');
-    var value = $checkbox.val();
+    var $target= $(e.target);
+    var fieldId = $target.closest('.facet-summary').attr('data-facet');
+    var value = $target.attr('data-value');
     this.model.queryState.addTermFilter(fieldId, value);
   }
 });
