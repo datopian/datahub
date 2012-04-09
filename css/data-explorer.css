@@ -40,6 +40,7 @@
 
 .header .recline-query-editor .pagination a {
   line-height: 26px;
+  padding: 0 6px;
 }
 
 .header .recline-query-editor form button {
