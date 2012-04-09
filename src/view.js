@@ -66,6 +66,10 @@ my.DataExplorer = Backbone.View.extend({
       <div class="recline-results-info"> \
         Results found <span class="doc-count">{{docCount}}</span> \
       </div> \
+      <div class="menu-right"> \
+        <a href="#" class="btn" data-action="filters">Filters</a> \
+        <a href="#" class="btn" data-action="facets">Facets</a> \
+      </div> \
       <div class="query-editor-here" style="display:inline;"></div> \
       <div class="clearfix"></div> \
     </div> \
@@ -78,6 +82,9 @@ my.DataExplorer = Backbone.View.extend({
     </div> \
   </div> \
   ',
+  events: {
+    'click .menu-right a': 'onMenuClick'
+  },
 
   initialize: function(options) {
     var self = this;
@@ -174,10 +181,12 @@ my.DataExplorer = Backbone.View.extend({
     var filterEditor = new my.FilterEditor({
       model: this.model.queryState
     });
+    this.$filterEditor = filterEditor.el;
     this.el.find('.header').append(filterEditor.el);
     var facetViewer = new my.FacetViewer({
       model: this.model
     });
+    this.$facetViewer = facetViewer.el;
     this.el.find('.header').append(facetViewer.el);
   },
 
@@ -208,6 +217,16 @@ my.DataExplorer = Backbone.View.extend({
         view.view.el.hide();
       }
     });
+  },
+
+  onMenuClick: function(e) {
+    e.preventDefault();
+    var action = $(e.target).attr('data-action');
+    if (action === 'filters') {
+      this.$filterEditor.show();
+    } else if (action === 'facets') {
+      this.$facetViewer.show();
+    }
   }
 });
 
@@ -290,7 +309,8 @@ my.FilterEditor = Backbone.View.extend({
               </div> \
               {{/termFilters}} \
             </div> \
-          <div class="span2"> \
+          <div class="span4"> \
+            <p>To add a filter use the column menu in the grid view.</p> \
             <button type="submit" class="btn">Update</button> \
           </div> \
         </form> \
