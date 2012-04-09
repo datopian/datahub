@@ -12,6 +12,13 @@
   padding-left: 0;
 }
 
+.data-explorer .header .menu-right {
+  float: right;
+  margin-left: 5px;
+  padding-left: 5px;
+  border-left: solid 2px #ddd;
+}
+
 .header .recline-results-info {
   line-height: 28px;
   margin-left: 20px;
