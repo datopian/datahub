@@ -35,12 +35,16 @@ my.Map = Backbone.View.extend({
     var self = this;
 
     this.el = $(this.el);
-    this.render();
     this.model.bind('change', function() {
       self._setupGeometryField();
     });
+    this.model.currentDocuments.bind('add', function(doc){self.redraw('add',doc)});
+    this.model.currentDocuments.bind('remove', function(doc){self.redraw('remove',doc)});
+    this.model.currentDocuments.bind('reset', function(){self.redraw('reset')});
 
     this.mapReady = false;
+
+    this.render();
   },
 
   render: function() {
@@ -65,33 +69,71 @@ my.Map = Backbone.View.extend({
     return this;
   },
 
-  redraw: function(){
+  redraw: function(action,doc){
 
     var self = this;
 
+    action = action || 'refresh';
+
     if (this.geomReady){
-      if (this.model.currentDocuments.length > 0){
+      if (action == 'reset'){
+        // Clear all features
         this.features.clearLayers();
-        var bounds = new L.LatLngBounds();
+      } else if (action == 'add' && doc){
+        // Add one or n features
+        this._add(doc);
+      } else if (action == 'remove' && doc){
+        // Remove one or n features
+        this._remove(doc);
+      } else if (action == 'refresh'){
+        // Clear and rebuild all features
+        this.features.clearLayers();
+        this._add(this.model.currentDocuments.models);
 
-        this.model.currentDocuments.forEach(function(doc){
-          var feature = self._getGeometryFromDocument(doc);
-          if (feature){
-            // Build popup contents
-            // TODO: mustache?
-            html = ''
-            for (key in doc.attributes){
-              html += '<div><strong>' + key + '</strong>: '+ doc.attributes[key] + '</div>'
-            }
-            feature.properties = {popupContent: html};
-
-            self.features.addGeoJSON(feature);
-
-            // TODO: bounds and center map
-          }
-        });
       }
     }
+  },
+
+  _add: function(doc){
+
+    var self = this;
+
+    if (!(doc instanceof Array)) doc = [doc];
+
+    doc.forEach(function(doc){
+      var feature = self._getGeometryFromDocument(doc);
+      if (feature){
+        // Build popup contents
+        // TODO: mustache?
+        html = ''
+        for (key in doc.attributes){
+          html += '<div><strong>' + key + '</strong>: '+ doc.attributes[key] + '</div>'
+        }
+        feature.properties = {popupContent: html};
+
+        // Add a reference to the model id, which will allow us to
+        // link this Leaflet layer to a Recline doc
+        feature.properties.cid = doc.cid;
+
+        self.features.addGeoJSON(feature);
+      }
+    });
+  },
+
+  _remove: function(doc){
+
+    var self = this;
+
+    if (!(doc instanceof Array)) doc = [doc];
+
+    doc.forEach(function(doc){
+      for (key in self.features._layers){
+        if (self.features._layers[key].cid == doc.cid){
+          self.features.removeLayer(self.features._layers[key]);
+        }
+      }
+    });
+
   },
 
   _getGeometryFromDocument: function(doc){
@@ -152,6 +194,10 @@ my.Map = Backbone.View.extend({
       if (e.properties && e.properties.popupContent){
         e.layer.bindPopup(e.properties.popupContent);
        }
+      if (e.properties && e.properties.cid){
+        e.layer.cid = e.properties.cid;
+       }
+
     });
     this.map.addLayer(this.features);
 
