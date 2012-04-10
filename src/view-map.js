@@ -12,7 +12,7 @@ my.Map = Backbone.View.extend({
 
   latitudeFieldNames: ['lat','latitude'],
   longitudeFieldNames: ['lon','longitude'],
-  geometryFieldNames: ['geom','the_geom','geometry','spatial'],
+  geometryFieldNames: ['geom','the_geom','geometry','spatial','location'],
 
   //TODO: In case we want to change the default markers
   /*
@@ -171,9 +171,12 @@ my.Map = Backbone.View.extend({
 
   _checkField: function(fieldNames){
     var field;
+    var modelFieldNames = this.model.fields.pluck('id');
     for (var i = 0; i < fieldNames.length; i++){
-      field = this.model.fields.get(fieldNames[i]);
-      if (field) return field.id;
+      for (var j = 0; j < modelFieldNames.length; j++){
+        if (modelFieldNames[j].toLowerCase() == fieldNames[i].toLowerCase())
+          return modelFieldNames[j];
+      }
     }
     return null;
   },
