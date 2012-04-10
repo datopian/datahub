@@ -179,7 +179,7 @@ my.Field = Backbone.Model.extend({
     if ('0' in data) {
       throw new Error('Looks like you did not pass a proper hash with id to Field constructor');
     }
-    if (this.attributes.label == null) {
+    if (this.attributes.label === null) {
       this.set({label: this.id});
     }
     if (options) {
@@ -192,7 +192,7 @@ my.Field = Backbone.Model.extend({
   },
   defaultRenderers: {
     object: function(val, field, doc) {
-      return JSON.stringify(val)
+      return JSON.stringify(val);
     },
     'float': function(val, field, doc) {
       var format = field.get('format'); 
@@ -259,13 +259,13 @@ my.FieldList = Backbone.Collection.extend({
 my.Query = Backbone.Model.extend({
   defaults: function() {
     return {
-      size: 100
-      , from: 0
-      , facets: {}
+      size: 100,
+      from: 0,
+      facets: {},
       // <http://www.elasticsearch.org/guide/reference/query-dsl/and-filter.html>
       // , filter: {}
-      , filters: []
-    }
+      filters: []
+    };
   },
   // #### addTermFilter
   // 
@@ -372,7 +372,7 @@ my.Facet = Backbone.Model.extend({
       other: 0,
       missing: 0,
       terms: []
-    }
+    };
   }
 });
 

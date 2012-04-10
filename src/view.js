@@ -123,7 +123,7 @@ my.DataExplorer = Backbone.View.extend({
         my.notify('Data loaded', {category: 'success'});
         // update navigation
         var qs = my.parseHashQueryString();
-        qs['reclineQuery'] = JSON.stringify(self.model.queryState.toJSON());
+        qs.reclineQuery = JSON.stringify(self.model.queryState.toJSON());
         var out = my.getNewHashForQueryString(qs);
         self.router.navigate(out);
       });
@@ -172,7 +172,7 @@ my.DataExplorer = Backbone.View.extend({
     $(this.el).html(template);
     var $dataViewContainer = this.el.find('.data-view-container');
     _.each(this.pageViews, function(view, pageName) {
-      $dataViewContainer.append(view.view.el)
+      $dataViewContainer.append(view.view.el);
     });
     var queryEditor = new my.QueryEditor({
       model: this.model.queryState
@@ -252,8 +252,8 @@ my.QueryEditor = Backbone.View.extend({
   ',
 
   events: {
-    'submit form': 'onFormSubmit'
-    , 'click .action-pagination-update': 'onPaginationUpdate'
+    'submit form': 'onFormSubmit',
+    'click .action-pagination-update': 'onPaginationUpdate'
   },
 
   initialize: function() {
@@ -272,10 +272,11 @@ my.QueryEditor = Backbone.View.extend({
   onPaginationUpdate: function(e) {
     e.preventDefault();
     var $el = $(e.target);
+    var newFrom = 0;
     if ($el.parent().hasClass('prev')) {
-      var newFrom = this.model.get('from') - Math.max(0, this.model.get('size'));
+      newFrom = this.model.get('from') - Math.max(0, this.model.get('size'));
     } else {
-      var newFrom = this.model.get('from') + this.model.get('size');
+      newFrom = this.model.get('from') + this.model.get('size');
     }
     this.model.set({from: newFrom});
   },
@@ -348,7 +349,7 @@ my.FilterEditor = Backbone.View.extend({
         fieldId: fieldId,
         label: fieldId,
         value: filter.term[fieldId]
-      }
+      };
     });
     var out = $.mustache(this.template, tmplData);
     this.el.html(out);
@@ -464,15 +465,15 @@ var urlPathRegex = /^([^?]+)(\?.*)?/;
 // Parse the Hash section of a URL into path and query string
 my.parseHashUrl = function(hashUrl) {
   var parsed = urlPathRegex.exec(hashUrl);
-  if (parsed == null) {
+  if (parsed === null) {
     return {};
   } else {
     return {
       path: parsed[1],
       query: parsed[2] || ''
-    }
+    };
   }
-}
+};
 
 // Parse a URL query string (?xyz=abc...) into a dictionary.
 my.parseQueryString = function(q) {
@@ -493,13 +494,13 @@ my.parseQueryString = function(q) {
     urlParams[d(e[1])] = d(e[2]);
   }
   return urlParams;
-}
+};
 
 // Parse the query string out of the URL hash
 my.parseHashQueryString = function() {
   q = my.parseHashUrl(window.location.hash).query;
   return my.parseQueryString(q);
-}
+};
 
 // Compse a Query String
 my.composeQueryString = function(queryParams) {
@@ -510,7 +511,7 @@ my.composeQueryString = function(queryParams) {
   });
   queryString += items.join('&');
   return queryString;
-}
+};
 
 my.getNewHashForQueryString = function(queryParams) {
   var queryPart = my.composeQueryString(queryParams);
@@ -520,11 +521,11 @@ my.getNewHashForQueryString = function(queryParams) {
   } else {
     return queryPart;
   }
-}
+};
 
 my.setHashQueryString = function(queryParams) {
   window.location.hash = my.getNewHashForQueryString(queryParams);
-}
+};
 
 // ## notify
 //
@@ -534,7 +535,7 @@ my.setHashQueryString = function(queryParams) {
 // * persist: if true alert is persistent, o/w hidden after 3s (default = false)
 // * loader: if true show loading spinner
 my.notify = function(message, options) {
-  if (!options) var options = {};
+  if (!options) options = {};
   var tmplData = _.extend({
     msg: message,
     category: 'warning'
@@ -556,7 +557,7 @@ my.notify = function(message, options) {
       });
     }, 1000);
   }
-}
+};
 
 // ## clearNotifications
 //
@@ -564,7 +565,7 @@ my.notify = function(message, options) {
 my.clearNotifications = function() {
   var $notifications = $('.recline-data-explorer .alert-messages .alert');
   $notifications.remove();
-}
+};
 
 })(jQuery, recline.View);
 

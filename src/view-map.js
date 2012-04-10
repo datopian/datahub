@@ -69,7 +69,7 @@ my.Map = Backbone.View.extend({
       if (!self.mapReady){
         self._setupMap();
       }
-      self.redraw()
+      self.redraw();
     });
 
     return this;
@@ -94,8 +94,24 @@ my.Map = Backbone.View.extend({
       } else if (action == 'refresh'){
         // Clear and rebuild all features
         this.features.clearLayers();
-        this._add(this.model.currentDocuments.models);
+        var bounds = new L.LatLngBounds();
 
+        this.model.currentDocuments.forEach(function(doc){
+          var feature = self._getGeometryFromDocument(doc);
+          if (feature){
+            // Build popup contents
+            // TODO: mustache?
+            var html = '';
+            for (key in doc.attributes) {
+              html += '<div><strong>' + key + '</strong>: '+ doc.attributes[key] + '</div>';
+            }
+            feature.properties = {popupContent: html};
+
+            self.features.addGeoJSON(feature);
+
+            // TODO: bounds and center map
+          }
+        });
       }
     }
   },
@@ -153,9 +169,9 @@ my.Map = Backbone.View.extend({
           type: 'Point',
           coordinates: [
             doc.attributes[this._lonFieldName],
-            doc.attributes[this._latFieldName],
+            doc.attributes[this._latFieldName]
             ]
-        }
+        };
       }
       return null;
     }

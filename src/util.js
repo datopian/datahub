@@ -2,8 +2,8 @@
 
 var util = function() {
   var templates = {
-    transformActions: '<li><a data-action="transform" class="menuAction" href="JavaScript:void(0);">Global transform...</a></li>'
-    , cellEditor: ' \
+    transformActions: '<li><a data-action="transform" class="menuAction" href="JavaScript:void(0);">Global transform...</a></li>',
+    cellEditor: ' \
       <div class="menu-container data-table-cell-editor"> \
         <textarea class="data-table-cell-editor-editor" bind="textarea">{{value}}</textarea> \
         <div id="data-table-cell-editor-actions"> \
@@ -13,8 +13,8 @@ var util = function() {
           </div> \
         </div> \
       </div> \
-    '
-    , editPreview: ' \
+    ',
+    editPreview: ' \
       <div class="expression-preview-table-wrapper"> \
         <table> \
         <thead> \
@@ -63,7 +63,7 @@ var util = function() {
   function registerEmitter() {
     var Emitter = function(obj) {
       this.emit = function(obj, channel) { 
-        if (!channel) var channel = 'data';
+        if (!channel) channel = 'data';
         this.trigger(channel, obj); 
       };
     };
@@ -80,7 +80,7 @@ var util = function() {
 			104: "8", 105: "9", 106: "*", 107: "+", 109: "-", 110: ".", 111 : "/", 
 			112: "f1", 113: "f2", 114: "f3", 115: "f4", 116: "f5", 117: "f6", 118: "f7", 119: "f8", 
 			120: "f9", 121: "f10", 122: "f11", 123: "f12", 144: "numlock", 145: "scroll", 191: "/", 224: "meta"
-		}
+		};
     window.addEventListener("keyup", function(e) { 
       var pressed = shortcuts[e.keyCode];
       if(_.include(keys, pressed)) app.emitter.emit("keyup", pressed); 
@@ -126,10 +126,11 @@ var util = function() {
     if ( !options ) options = {data: {}};
     if ( !options.data ) options = {data: options};
     var html = $.mustache( templates[template], options.data );
+    var targetDom = null;
     if (target instanceof jQuery) {
-      var targetDom = target;
+      targetDom = target;
     } else {
-      var targetDom = $( "." + target + ":first" );      
+      targetDom = $( "." + target + ":first" );      
     }
     if( options.append ) {
       targetDom.append( html );
