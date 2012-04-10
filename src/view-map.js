@@ -42,6 +42,12 @@ my.Map = Backbone.View.extend({
     this.model.currentDocuments.bind('remove', function(doc){self.redraw('remove',doc)});
     this.model.currentDocuments.bind('reset', function(){self.redraw('reset')});
 
+    // If the div is hidden, Leaflet needs to recalculate some sizes
+    // to display properly
+    this.bind('view:show',function(){
+        self.map.invalidateSize();
+    });
+
     this.mapReady = false;
 
     this.render();
