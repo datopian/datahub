@@ -71,6 +71,9 @@ my.DataGrid = Backbone.View.extend({
       facet: function() { 
         self.model.queryState.addFacet(self.state.currentColumn);
       },
+      facet_histogram: function() {
+        self.model.queryState.addHistogramFacet(self.state.currentColumn);
+      },
       filter: function() {
         self.model.queryState.addTermFilter(self.state.currentColumn, '');
       },
@@ -164,7 +167,8 @@ my.DataGrid = Backbone.View.extend({
               <div class="btn-group column-header-menu"> \
                 <a class="btn dropdown-toggle" data-toggle="dropdown"><i class="icon-cog"></i><span class="caret"></span></a> \
                 <ul class="dropdown-menu data-table-menu pull-right"> \
-                  <li><a data-action="facet" href="JavaScript:void(0);">Facet on this Field</a></li> \
+                  <li><a data-action="facet" href="JavaScript:void(0);">Term Facet</a></li> \
+                  <li><a data-action="facet_histogram" href="JavaScript:void(0);">Date Histogram Facet</a></li> \
                   <li><a data-action="filter" href="JavaScript:void(0);">Text Filter</a></li> \
                   <li class="divider"></li> \
                   <li><a data-action="sortAsc" href="JavaScript:void(0);">Sort ascending</a></li> \
