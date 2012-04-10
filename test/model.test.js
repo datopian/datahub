@@ -38,7 +38,20 @@ test('Field: basics', function () {
   equal('XX', out[0].label);
 });
 
-test('Field: deriver and renderer', function () {
+test('Field: default renderers', function () {
+  var doc = new recline.Model.Document({x: 12.3, myobject: {a: 1, b: 2}});
+  var field = new recline.Model.Field({id: 'myobject', type: 'object'});
+  var out = doc.getFieldValue(field);
+  var exp = '{"a":1,"b":2}';
+  equal(out, exp);
+
+  var field = new recline.Model.Field({id: 'x', type: 'float', format: 'percentage'});
+  var out = doc.getFieldValue(field);
+  var exp = '12.3%';
+  equal(out, exp);
+});
+
+test('Field: custom deriver and renderer', function () {
   var doc = new recline.Model.Document({x: 123});
   var cellRenderer = function(value, field) {
     return '<span class="field-' + field.id + '">' + value + '</span>';

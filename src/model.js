@@ -186,6 +186,20 @@ my.Field = Backbone.Model.extend({
       this.renderer = options.renderer;
       this.deriver = options.deriver;
     }
+    if (!this.renderer) {
+      this.renderer = this.defaultRenderers[this.get('type')];
+    }
+  },
+  defaultRenderers: {
+    object: function(val, field, doc) {
+      return JSON.stringify(val)
+    },
+    'float': function(val, field, doc) {
+      var format = field.get('format'); 
+      if (format === 'percentage') {
+        return val + '%';
+      }
+    }
   }
 });
 
@@ -217,7 +231,7 @@ my.FieldList = Backbone.Collection.extend({
 //  * query: Query in ES Query DSL <http://www.elasticsearch.org/guide/reference/api/search/query.html>
 //  * filter: See filters and <a href="http://www.elasticsearch.org/guide/reference/query-dsl/filtered-query.html">Filtered Query</a>
 //  * fields: set of fields to return - http://www.elasticsearch.org/guide/reference/api/search/fields.html
-//  * facets: TODO - see http://www.elasticsearch.org/guide/reference/api/search/facets/
+//  * facets: specification of facets - see http://www.elasticsearch.org/guide/reference/api/search/facets/
 // 
 // Additions:
 // 
