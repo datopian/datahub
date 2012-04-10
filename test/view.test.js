@@ -20,20 +20,6 @@ test('new DataGridRow View', function () {
   var tds = $el.find('td');
   equal(tds.length, 3);
   equal($(tds[1]).attr('data-field'), 'a');
-
-  var view = new recline.View.DataGridRow({
-      model: doc
-      , el: $el
-      , fields: new recline.Model.FieldList([{id: 'a'}, {id: 'b'}])
-    },
-    {
-      cellRenderer: function(value, field) {
-        return '<span class="field-' + field.id + '">' + value + '</span>';
-    }
-  });
-  view.render();
-  var tds = $el.find('td .data-table-cell-value');
-  equal($(tds[0]).html(), '<span class="field-a">1</span>', 'Checking cellRenderer works');
 });
 
 })(this.jQuery);

@@ -8,16 +8,12 @@ this.recline.View = this.recline.View || {};
 //
 // Provides a tabular view on a Dataset.
 //
-// Initialize it with a recline.Dataset object.
-//
-// Additional options passed in second arguments. Options:
-//
-// * cellRenderer: function used to render individual cells. See DataGridRow for more.
+// Initialize it with a `recline.Model.Dataset`.
 my.DataGrid = Backbone.View.extend({
   tagName:  "div",
-  className: "data-table-container",
+  className: "recline-grid-container",
 
-  initialize: function(modelEtc, options) {
+  initialize: function(modelEtc) {
     var self = this;
     this.el = $(this.el);
     _.bindAll(this, 'render');
@@ -26,7 +22,6 @@ my.DataGrid = Backbone.View.extend({
     this.model.currentDocuments.bind('remove', this.render);
     this.state = {};
     this.hiddenFields = [];
-    this.options = options;
   },
 
   events: {
@@ -151,7 +146,7 @@ my.DataGrid = Backbone.View.extend({
   // ======================================================
   // #### Templating
   template: ' \
-    <table class="data-table table-striped table-condensed" cellspacing="0"> \
+    <table class="recline-grid table-striped table-condensed" cellspacing="0"> \
       <thead> \
         <tr> \
           {{#notEmpty}} \
@@ -210,9 +205,7 @@ my.DataGrid = Backbone.View.extend({
           model: doc,
           el: tr,
           fields: self.fields
-        },
-        self.options
-        );
+        });
       newView.render();
     });
     this.el.toggleClass('no-hidden', (self.hiddenFields.length == 0));
@@ -226,14 +219,6 @@ my.DataGrid = Backbone.View.extend({
 //
 // In addition you *must* pass in a FieldList in the constructor options. This should be list of fields for the DataGrid.
 //
-// Additional options can be passed in a second hash argument. Options:
-//
-// * cellRenderer: function to render cells. Signature: function(value,
-//   field, doc) where value is the value of this cell, field is
-//   corresponding field object and document is the document object. Note
-//   that implementing functions can ignore arguments (e.g.
-//   function(value) would be a valid cellRenderer function).
-//
 // Example:
 //
 // <pre>
@@ -241,22 +226,12 @@ my.DataGrid = Backbone.View.extend({
 //   model: dataset-document,
 //     el: dom-element,
 //     fields: mydatasets.fields // a FieldList object
-//   }, {
-//     cellRenderer: my-cell-renderer-function 
-//   }
-// );
+//   });
 // </pre>
 my.DataGridRow = Backbone.View.extend({
-  initialize: function(initData, options) {
+  initialize: function(initData) {
     _.bindAll(this, 'render');
     this._fields = initData.fields;
-    if (options && options.cellRenderer) {
-      this._cellRenderer = options.cellRenderer;
-    } else {
-      this._cellRenderer = function(value) {
-        return value;
-      }
-    }
     this.el = $(this.el);
     this.model.bind('change', this.render);
   },
@@ -291,7 +266,7 @@ my.DataGridRow = Backbone.View.extend({
     var cellData = this._fields.map(function(field) {
       return {
         field: field.id,
-        value: self._cellRenderer(doc.get(field.id), field, doc)
+        value: doc.getFieldValue(field)
       }
     })
     return { id: this.id, cells: cellData }

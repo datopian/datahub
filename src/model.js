@@ -106,7 +106,25 @@ my.Dataset = Backbone.Model.extend({
 // 
 // A single entry or row in the dataset
 my.Document = Backbone.Model.extend({
-  __type__: 'Document'
+  __type__: 'Document',
+  initialize: function() {
+    _.bindAll(this, 'getFieldValue');
+  },
+
+  // ### getFieldValue
+  //
+  // For the provided Field get the corresponding rendered computed data value
+  // for this document.
+  getFieldValue: function(field) {
+    var val = this.get(field.id);
+    if (field.deriver) {
+      val = field.deriver(val, field, this);
+    }
+    if (field.renderer) {
+      val = field.renderer(val, field, this);
+    }
+    return val;
+  }
 });
 
 // ## A Backbone collection of Documents
@@ -117,24 +135,56 @@ my.DocumentList = Backbone.Collection.extend({
 
 // ## <a id="field">A Field (aka Column) on a Dataset</a>
 // 
-// Following attributes as standard:
+// Following (Backbone) attributes as standard:
 //
-//  * id: a unique identifer for this field- usually this should match the key in the documents hash
-//  * label: the visible label used for this field
-//  * type: the type of the data
+// * id: a unique identifer for this field- usually this should match the key in the documents hash
+// * label: (optional: defaults to id) the visible label used for this field
+// * type: (optional: defaults to string) the type of the data in this field. Should be a string as per type names defined by ElasticSearch - see Types list on <http://www.elasticsearch.org/guide/reference/mapping/>
+// * format: (optional) used to indicate how the data should be formatted. For example:
+//   * type=date, format=yyyy-mm-dd
+//   * type=float, format=percentage
+//   * type=float, format='###,###.##'
+// * is_derived: (default: false) attribute indicating this field has no backend data but is just derived from other fields (see below).
+// 
+// Following additional instance properties:
+// 
+// @property {Function} renderer: a function to render the data for this field.
+// Signature: function(value, field, doc) where value is the value of this
+// cell, field is corresponding field object and document is the document
+// object. Note that implementing functions can ignore arguments (e.g.
+// function(value) would be a valid formatter function).
+// 
+// @property {Function} deriver: a function to derive/compute the value of data
+// in this field as a function of this field's value (if any) and the current
+// document, its signature and behaviour is the same as for renderer.  Use of
+// this function allows you to define an entirely new value for data in this
+// field. This provides support for a) 'derived/computed' fields: i.e. fields
+// whose data are functions of the data in other fields b) transforming the
+// value of this field prior to rendering.
 my.Field = Backbone.Model.extend({
+  // ### defaults - define default values
   defaults: {
-    id: null,
     label: null,
-    type: 'String'
+    type: 'string',
+    format: null,
+    is_derived: false
   },
-  initialize: function(data) {
+  // ### initialize
+  //
+  // @param {Object} data: standard Backbone model attributes
+  //
+  // @param {Object} options: renderer and/or deriver functions.
+  initialize: function(data, options) {
     // if a hash not passed in the first argument throw error
     if ('0' in data) {
       throw new Error('Looks like you did not pass a proper hash with id to Field constructor');
     }
     if (this.attributes.label == null) {
       this.set({label: this.id});
+    }
+    if (options) {
+      this.renderer = options.renderer;
+      this.deriver = options.deriver;
     }
   }
 });
