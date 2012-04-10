@@ -38,14 +38,14 @@ this.recline.Backend = this.recline.Backend || {};
       var self = this;
       var base = this.get('dataproxy_url');
       var data = {
-        url: dataset.get('url')
-        , 'max-results':  queryObj.size
-        , type: dataset.get('format')
+        url: dataset.get('url'),
+        'max-results':  queryObj.size,
+        type: dataset.get('format')
       };
       var jqxhr = $.ajax({
-        url: base
-        , data: data
-        , dataType: 'jsonp'
+        url: base,
+        data: data,
+        dataType: 'jsonp'
       });
       var dfd = $.Deferred();
       this._wrapInTimeout(jqxhr).done(function(results) {

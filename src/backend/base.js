@@ -12,7 +12,7 @@ this.recline.Backend = this.recline.Backend || {};
   // Override Backbone.sync to hand off to sync function in relevant backend
   Backbone.sync = function(method, model, options) {
     return model.backend.sync(method, model, options);
-  }
+  };
 
   // ## recline.Backend.Base
   //

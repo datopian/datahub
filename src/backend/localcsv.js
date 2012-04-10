@@ -15,7 +15,7 @@ this.recline.Backend = this.recline.Backend || {};
     };
     reader.onerror = function (e) {
       alert('Failed to load file. Code: ' + e.target.error.code);
-    }
+    };
     reader.readAsText(file);
   };
 
@@ -33,7 +33,7 @@ this.recline.Backend = this.recline.Backend || {};
     });
     var dataset = recline.Backend.createDataset(data, fields);
     return dataset;
-  }
+  };
 
 	// Converts a Comma Separated Values string into an array of arrays.
 	// Each line in the CSV becomes an array.
