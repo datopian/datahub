@@ -38,6 +38,37 @@ test('Field: basics', function () {
   equal('XX', out[0].label);
 });
 
+test('Field: deriver and renderer', function () {
+  var doc = new recline.Model.Document({x: 123});
+  var cellRenderer = function(value, field) {
+    return '<span class="field-' + field.id + '">' + value + '</span>';
+  }
+  var deriver = function(val, field, doc) {
+    return doc.get('x') * 2
+  }
+
+  var field = new recline.Model.Field({id: 'computed', is_derived: true}, {
+    deriver: deriver
+  });
+  var out = doc.getFieldValue(field);
+  var exp = 246;
+  equal(out, exp);
+
+  var field = new recline.Model.Field({id: 'x'}, {
+    renderer: cellRenderer
+  });
+  var out = doc.getFieldValue(field);
+  var exp = '<span class="field-x">123</span>'
+  equal(out, exp);
+
+  var field = new recline.Model.Field({id: 'computed'}, {
+    renderer: cellRenderer,
+    deriver: deriver
+  });
+  var out = doc.getFieldValue(field);
+  var exp = '<span class="field-computed">246</span>'
+  equal(out, exp);
+});
 
 // =================================
 // Dataset
