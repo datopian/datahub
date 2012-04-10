@@ -399,6 +399,9 @@ my.FacetViewer = Backbone.View.extend({
         {{#terms}} \
           <li><a class="facet-choice js-facet-filter" data-value="{{term}}">{{term}} ({{count}})</a></li> \
         {{/terms}} \
+        {{#entries}} \
+          <li><a class="facet-choice js-facet-filter" data-value="{{time}}">{{term}} ({{count}})</a></li> \
+        {{/entries}} \
         </ul> \
       </div> \
       {{/facets}} \
@@ -421,6 +424,15 @@ my.FacetViewer = Backbone.View.extend({
       facets: this.model.facets.toJSON(),
       fields: this.model.fields.toJSON()
     };
+    tmplData.facets = _.map(tmplData.facets, function(facet) {
+      if (facet._type === 'date_histogram') {
+        facet.entries = _.map(facet.entries, function(entry) {
+          entry.term = new Date(entry.time).toDateString();
+          return entry;
+        });
+      }
+      return facet;
+    });
     var templated = $.mustache(this.template, tmplData);
     this.el.html(templated);
     // are there actually any facets to show?

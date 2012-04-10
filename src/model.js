@@ -297,6 +297,17 @@ my.Query = Backbone.Model.extend({
     };
     this.set({facets: facets}, {silent: true});
     this.trigger('facet:add', this);
+  },
+  addHistogramFacet: function(fieldId) {
+    var facets = this.get('facets');
+    facets[fieldId] = {
+      date_histogram: {
+        field: fieldId,
+        interval: 'day'
+      }
+    };
+    this.set({facets: facets}, {silent: true});
+    this.trigger('facet:add', this);
   }
 });
 
