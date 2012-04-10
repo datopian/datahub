@@ -1,4 +1,5 @@
-<!DOCTYPE html>  <html> <head>   <title>view.js</title>   <meta http-equiv="content-type" content="text/html; charset=UTF-8">   <link rel="stylesheet" media="all" href="docco.css" /> </head> <body>   <div id="container">     <div id="background"></div>            <div id="jump_to">         Jump To &hellip;         <div id="jump_wrapper">           <div id="jump_page">                                           <a class="source" href="model.html">                 model.js               </a>                                           <a class="source" href="view-flot-graph.html">                 view-flot-graph.js               </a>                                           <a class="source" href="view-grid.html">                 view-grid.js               </a>                                           <a class="source" href="view.html">                 view.js               </a>                        </div>         </div>       </div>          <table cellpadding="0" cellspacing="0">       <thead>         <tr>           <th class="docs">             <h1>               view.js             </h1>           </th>           <th class="code">           </th>         </tr>       </thead>       <tbody>                               <tr id="section-1">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-1">&#182;</a>               </div>                            </td>             <td class="code">               <div class="highlight"><pre><span class="k">this</span><span class="p">.</span><span class="nx">recline</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">recline</span> <span class="o">||</span> <span class="p">{};</span>
+<!DOCTYPE html>  <html> <head>   <title>view.js</title>   <meta http-equiv="content-type" content="text/html; charset=UTF-8">   <link rel="stylesheet" media="all" href="docco.css" /> </head> <body>   <div id="container">     <div id="background"></div>            <div id="jump_to">         Jump To &hellip;         <div id="jump_wrapper">           <div id="jump_page">                                           <a class="source" href="model.html">                 model.js               </a>                                           <a class="source" href="view-flot-graph.html">                 view-flot-graph.js               </a>                                           <a class="source" href="view-grid.html">                 view-grid.js               </a>                                           <a class="source" href="view.html">                 view.js               </a>                        </div>         </div>       </div>          <table cellpadding="0" cellspacing="0">       <thead>         <tr>           <th class="docs">             <h1>               view.js             </h1>           </th>           <th class="code">           </th>         </tr>       </thead>       <tbody>                               <tr id="section-1">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-1">&#182;</a>               </div>                            </td>             <td class="code">               <div class="highlight"><pre><span class="cm">/*jshint multistr:true */</span>
+<span class="k">this</span><span class="p">.</span><span class="nx">recline</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">recline</span> <span class="o">||</span> <span class="p">{};</span>
 <span class="k">this</span><span class="p">.</span><span class="nx">recline</span><span class="p">.</span><span class="nx">View</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">recline</span><span class="p">.</span><span class="nx">View</span> <span class="o">||</span> <span class="p">{};</span>
 
 <span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">$</span><span class="p">,</span> <span class="nx">my</span><span class="p">)</span> <span class="p">{</span></pre></div>             </td>           </tr>                               <tr id="section-2">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-2">&#182;</a>               </div>               <h2>DataExplorer</h2>
@@ -53,7 +54,7 @@ operate in read-only mode (hiding all editing options).</li>
 <p>NB: the element already being in the DOM is important for rendering of
 FlotGraph subview.</p>             </td>             <td class="code">               <div class="highlight"><pre><span class="nx">my</span><span class="p">.</span><span class="nx">DataExplorer</span> <span class="o">=</span> <span class="nx">Backbone</span><span class="p">.</span><span class="nx">View</span><span class="p">.</span><span class="nx">extend</span><span class="p">({</span>
   <span class="nx">template</span><span class="o">:</span> <span class="s1">&#39; \</span>
-<span class="s1">  &lt;div class=&quot;data-explorer&quot;&gt; \</span>
+<span class="s1">  &lt;div class=&quot;recline-data-explorer&quot;&gt; \</span>
 <span class="s1">    &lt;div class=&quot;alert-messages&quot;&gt;&lt;/div&gt; \</span>
 <span class="s1">    \</span>
 <span class="s1">    &lt;div class=&quot;header&quot;&gt; \</span>
@@ -65,6 +66,12 @@ FlotGraph subview.</p>             </td>             <td class="code">          
 <span class="s1">      &lt;div class=&quot;recline-results-info&quot;&gt; \</span>
 <span class="s1">        Results found &lt;span class=&quot;doc-count&quot;&gt;{{docCount}}&lt;/span&gt; \</span>
 <span class="s1">      &lt;/div&gt; \</span>
+<span class="s1">      &lt;div class=&quot;menu-right&quot;&gt; \</span>
+<span class="s1">        &lt;a href=&quot;#&quot; class=&quot;btn&quot; data-action=&quot;filters&quot;&gt;Filters&lt;/a&gt; \</span>
+<span class="s1">        &lt;a href=&quot;#&quot; class=&quot;btn&quot; data-action=&quot;facets&quot;&gt;Facets&lt;/a&gt; \</span>
+<span class="s1">      &lt;/div&gt; \</span>
+<span class="s1">      &lt;div class=&quot;query-editor-here&quot; style=&quot;display:inline;&quot;&gt;&lt;/div&gt; \</span>
+<span class="s1">      &lt;div class=&quot;clearfix&quot;&gt;&lt;/div&gt; \</span>
 <span class="s1">    &lt;/div&gt; \</span>
 <span class="s1">    &lt;div class=&quot;data-view-container&quot;&gt;&lt;/div&gt; \</span>
 <span class="s1">    &lt;div class=&quot;dialog-overlay&quot; style=&quot;display: none; z-index: 101; &quot;&gt;&amp;nbsp;&lt;/div&gt; \</span>
@@ -75,6 +82,9 @@ FlotGraph subview.</p>             </td>             <td class="code">          
 <span class="s1">    &lt;/div&gt; \</span>
 <span class="s1">  &lt;/div&gt; \</span>
 <span class="s1">  &#39;</span><span class="p">,</span>
+  <span class="nx">events</span><span class="o">:</span> <span class="p">{</span>
+    <span class="s1">&#39;click .menu-right a&#39;</span><span class="o">:</span> <span class="s1">&#39;onMenuClick&#39;</span>
+  <span class="p">},</span>
 
   <span class="nx">initialize</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">options</span><span class="p">)</span> <span class="p">{</span>
     <span class="kd">var</span> <span class="nx">self</span> <span class="o">=</span> <span class="k">this</span><span class="p">;</span>
@@ -158,11 +168,17 @@ note this.model and dataset returned are the same</p>             </td>         
     <span class="kd">var</span> <span class="nx">queryEditor</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">my</span><span class="p">.</span><span class="nx">QueryEditor</span><span class="p">({</span>
       <span class="nx">model</span><span class="o">:</span> <span class="k">this</span><span class="p">.</span><span class="nx">model</span><span class="p">.</span><span class="nx">queryState</span>
     <span class="p">});</span>
-    <span class="k">this</span><span class="p">.</span><span class="nx">el</span><span class="p">.</span><span class="nx">find</span><span class="p">(</span><span class="s1">&#39;.header&#39;</span><span class="p">).</span><span class="nx">append</span><span class="p">(</span><span class="nx">queryEditor</span><span class="p">.</span><span class="nx">el</span><span class="p">);</span>
-    <span class="kd">var</span> <span class="nx">queryFacetEditor</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">my</span><span class="p">.</span><span class="nx">FacetViewer</span><span class="p">({</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">el</span><span class="p">.</span><span class="nx">find</span><span class="p">(</span><span class="s1">&#39;.query-editor-here&#39;</span><span class="p">).</span><span class="nx">append</span><span class="p">(</span><span class="nx">queryEditor</span><span class="p">.</span><span class="nx">el</span><span class="p">);</span>
+    <span class="kd">var</span> <span class="nx">filterEditor</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">my</span><span class="p">.</span><span class="nx">FilterEditor</span><span class="p">({</span>
+      <span class="nx">model</span><span class="o">:</span> <span class="k">this</span><span class="p">.</span><span class="nx">model</span><span class="p">.</span><span class="nx">queryState</span>
+    <span class="p">});</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">$filterEditor</span> <span class="o">=</span> <span class="nx">filterEditor</span><span class="p">.</span><span class="nx">el</span><span class="p">;</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">el</span><span class="p">.</span><span class="nx">find</span><span class="p">(</span><span class="s1">&#39;.header&#39;</span><span class="p">).</span><span class="nx">append</span><span class="p">(</span><span class="nx">filterEditor</span><span class="p">.</span><span class="nx">el</span><span class="p">);</span>
+    <span class="kd">var</span> <span class="nx">facetViewer</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">my</span><span class="p">.</span><span class="nx">FacetViewer</span><span class="p">({</span>
       <span class="nx">model</span><span class="o">:</span> <span class="k">this</span><span class="p">.</span><span class="nx">model</span>
     <span class="p">});</span>
-    <span class="k">this</span><span class="p">.</span><span class="nx">el</span><span class="p">.</span><span class="nx">find</span><span class="p">(</span><span class="s1">&#39;.header&#39;</span><span class="p">).</span><span class="nx">append</span><span class="p">(</span><span class="nx">queryFacetEditor</span><span class="p">.</span><span class="nx">el</span><span class="p">);</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">$facetViewer</span> <span class="o">=</span> <span class="nx">facetViewer</span><span class="p">.</span><span class="nx">el</span><span class="p">;</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">el</span><span class="p">.</span><span class="nx">find</span><span class="p">(</span><span class="s1">&#39;.header&#39;</span><span class="p">).</span><span class="nx">append</span><span class="p">(</span><span class="nx">facetViewer</span><span class="p">.</span><span class="nx">el</span><span class="p">);</span>
   <span class="p">},</span>
 
   <span class="nx">setupRouting</span><span class="o">:</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
@@ -188,9 +204,18 @@ note this.model and dataset returned are the same</p>             </td>         
         <span class="nx">view</span><span class="p">.</span><span class="nx">view</span><span class="p">.</span><span class="nx">el</span><span class="p">.</span><span class="nx">hide</span><span class="p">();</span>
       <span class="p">}</span>
     <span class="p">});</span>
+  <span class="p">},</span>
+
+  <span class="nx">onMenuClick</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">e</span><span class="p">)</span> <span class="p">{</span>
+    <span class="nx">e</span><span class="p">.</span><span class="nx">preventDefault</span><span class="p">();</span>
+    <span class="kd">var</span> <span class="nx">action</span> <span class="o">=</span> <span class="nx">$</span><span class="p">(</span><span class="nx">e</span><span class="p">.</span><span class="nx">target</span><span class="p">).</span><span class="nx">attr</span><span class="p">(</span><span class="s1">&#39;data-action&#39;</span><span class="p">);</span>
+    <span class="k">if</span> <span class="p">(</span><span class="nx">action</span> <span class="o">===</span> <span class="s1">&#39;filters&#39;</span><span class="p">)</span> <span class="p">{</span>
+      <span class="k">this</span><span class="p">.</span><span class="nx">$filterEditor</span><span class="p">.</span><span class="nx">show</span><span class="p">();</span>
+    <span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="nx">action</span> <span class="o">===</span> <span class="s1">&#39;facets&#39;</span><span class="p">)</span> <span class="p">{</span>
+      <span class="k">this</span><span class="p">.</span><span class="nx">$facetViewer</span><span class="p">.</span><span class="nx">show</span><span class="p">();</span>
+    <span class="p">}</span>
   <span class="p">}</span>
 <span class="p">});</span>
-
 
 <span class="nx">my</span><span class="p">.</span><span class="nx">QueryEditor</span> <span class="o">=</span> <span class="nx">Backbone</span><span class="p">.</span><span class="nx">View</span><span class="p">.</span><span class="nx">extend</span><span class="p">({</span>
   <span class="nx">className</span><span class="o">:</span> <span class="s1">&#39;recline-query-editor&#39;</span><span class="p">,</span> 
@@ -199,28 +224,21 @@ note this.model and dataset returned are the same</p>             </td>         
 <span class="s1">      &lt;div class=&quot;input-prepend text-query&quot;&gt; \</span>
 <span class="s1">        &lt;span class=&quot;add-on&quot;&gt;&lt;i class=&quot;icon-search&quot;&gt;&lt;/i&gt;&lt;/span&gt; \</span>
 <span class="s1">        &lt;input type=&quot;text&quot; name=&quot;q&quot; value=&quot;{{q}}&quot; class=&quot;span2&quot; placeholder=&quot;Search data ...&quot; class=&quot;search-query&quot; /&gt; \</span>
-<span class="s1">        &lt;div class=&quot;btn-group menu&quot;&gt; \</span>
-<span class="s1">          &lt;a class=&quot;btn dropdown-toggle&quot; data-toggle=&quot;dropdown&quot;&gt;&lt;i class=&quot;icon-cog&quot;&gt;&lt;/i&gt;&lt;span class=&quot;caret&quot;&gt;&lt;/span&gt;&lt;/a&gt; \</span>
-<span class="s1">          &lt;ul class=&quot;dropdown-menu&quot;&gt; \</span>
-<span class="s1">            &lt;li&gt;&lt;a data-action=&quot;size&quot; href=&quot;&quot;&gt;Number of items to show ({{size}})&lt;/a&gt;&lt;/li&gt; \</span>
-<span class="s1">            &lt;li&gt;&lt;a data-action=&quot;from&quot; href=&quot;&quot;&gt;Show from ({{from}})&lt;/a&gt;&lt;/li&gt; \</span>
-<span class="s1">          &lt;/ul&gt; \</span>
-<span class="s1">        &lt;/div&gt; \</span>
 <span class="s1">      &lt;/div&gt; \</span>
 <span class="s1">      &lt;div class=&quot;pagination&quot;&gt; \</span>
 <span class="s1">        &lt;ul&gt; \</span>
 <span class="s1">          &lt;li class=&quot;prev action-pagination-update&quot;&gt;&lt;a href=&quot;&quot;&gt;&amp;laquo;&lt;/a&gt;&lt;/li&gt; \</span>
-<span class="s1">          &lt;li class=&quot;active&quot;&gt;&lt;a&gt;{{from}} &amp;ndash; {{to}}&lt;/a&gt;&lt;/li&gt; \</span>
+<span class="s1">          &lt;li class=&quot;active&quot;&gt;&lt;a&gt;&lt;input name=&quot;from&quot; type=&quot;text&quot; value=&quot;{{from}}&quot; /&gt; &amp;ndash; &lt;input name=&quot;to&quot; type=&quot;text&quot; value=&quot;{{to}}&quot; /&gt; &lt;/a&gt;&lt;/li&gt; \</span>
 <span class="s1">          &lt;li class=&quot;next action-pagination-update&quot;&gt;&lt;a href=&quot;&quot;&gt;&amp;raquo;&lt;/a&gt;&lt;/li&gt; \</span>
 <span class="s1">        &lt;/ul&gt; \</span>
 <span class="s1">      &lt;/div&gt; \</span>
+<span class="s1">      &lt;button type=&quot;submit&quot; class=&quot;btn&quot;&gt;Go &amp;raquo;&lt;/button&gt; \</span>
 <span class="s1">    &lt;/form&gt; \</span>
 <span class="s1">  &#39;</span><span class="p">,</span>
 
   <span class="nx">events</span><span class="o">:</span> <span class="p">{</span>
     <span class="s1">&#39;submit form&#39;</span><span class="o">:</span> <span class="s1">&#39;onFormSubmit&#39;</span>
     <span class="p">,</span> <span class="s1">&#39;click .action-pagination-update&#39;</span><span class="o">:</span> <span class="s1">&#39;onPaginationUpdate&#39;</span>
-    <span class="p">,</span> <span class="s1">&#39;click .menu li a&#39;</span><span class="o">:</span> <span class="s1">&#39;onMenuItemClick&#39;</span>
   <span class="p">},</span>
 
   <span class="nx">initialize</span><span class="o">:</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
@@ -232,7 +250,9 @@ note this.model and dataset returned are the same</p>             </td>         
   <span class="nx">onFormSubmit</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">e</span><span class="p">)</span> <span class="p">{</span>
     <span class="nx">e</span><span class="p">.</span><span class="nx">preventDefault</span><span class="p">();</span>
     <span class="kd">var</span> <span class="nx">query</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">el</span><span class="p">.</span><span class="nx">find</span><span class="p">(</span><span class="s1">&#39;.text-query input&#39;</span><span class="p">).</span><span class="nx">val</span><span class="p">();</span>
-    <span class="k">this</span><span class="p">.</span><span class="nx">model</span><span class="p">.</span><span class="nx">set</span><span class="p">({</span><span class="nx">q</span><span class="o">:</span> <span class="nx">query</span><span class="p">});</span>
+    <span class="kd">var</span> <span class="nx">newFrom</span> <span class="o">=</span> <span class="nb">parseInt</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">el</span><span class="p">.</span><span class="nx">find</span><span class="p">(</span><span class="s1">&#39;input[name=&quot;from&quot;]&#39;</span><span class="p">).</span><span class="nx">val</span><span class="p">());</span>
+    <span class="kd">var</span> <span class="nx">newSize</span> <span class="o">=</span> <span class="nb">parseInt</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">el</span><span class="p">.</span><span class="nx">find</span><span class="p">(</span><span class="s1">&#39;input[name=&quot;to&quot;]&#39;</span><span class="p">).</span><span class="nx">val</span><span class="p">())</span> <span class="o">-</span> <span class="nx">newFrom</span><span class="p">;</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">model</span><span class="p">.</span><span class="nx">set</span><span class="p">({</span><span class="nx">size</span><span class="o">:</span> <span class="nx">newSize</span><span class="p">,</span> <span class="nx">from</span><span class="o">:</span> <span class="nx">newFrom</span><span class="p">,</span> <span class="nx">q</span><span class="o">:</span> <span class="nx">query</span><span class="p">});</span>
   <span class="p">},</span>
   <span class="nx">onPaginationUpdate</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">e</span><span class="p">)</span> <span class="p">{</span>
     <span class="nx">e</span><span class="p">.</span><span class="nx">preventDefault</span><span class="p">();</span>
@@ -244,25 +264,106 @@ note this.model and dataset returned are the same</p>             </td>         
     <span class="p">}</span>
     <span class="k">this</span><span class="p">.</span><span class="nx">model</span><span class="p">.</span><span class="nx">set</span><span class="p">({</span><span class="nx">from</span><span class="o">:</span> <span class="nx">newFrom</span><span class="p">});</span>
   <span class="p">},</span>
-  <span class="nx">onMenuItemClick</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">e</span><span class="p">)</span> <span class="p">{</span>
-    <span class="nx">e</span><span class="p">.</span><span class="nx">preventDefault</span><span class="p">();</span>
-    <span class="kd">var</span> <span class="nx">attrName</span> <span class="o">=</span> <span class="nx">$</span><span class="p">(</span><span class="nx">e</span><span class="p">.</span><span class="nx">target</span><span class="p">).</span><span class="nx">attr</span><span class="p">(</span><span class="s1">&#39;data-action&#39;</span><span class="p">);</span>
-    <span class="kd">var</span> <span class="nx">msg</span> <span class="o">=</span> <span class="nx">_</span><span class="p">.</span><span class="nx">template</span><span class="p">(</span><span class="s1">&#39;New value (&lt;%= value %&gt;)&#39;</span><span class="p">,</span>
-        <span class="p">{</span><span class="nx">value</span><span class="o">:</span> <span class="k">this</span><span class="p">.</span><span class="nx">model</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="nx">attrName</span><span class="p">)}</span>
-        <span class="p">);</span>
-    <span class="kd">var</span> <span class="nx">newValue</span> <span class="o">=</span> <span class="nx">prompt</span><span class="p">(</span><span class="nx">msg</span><span class="p">);</span>
-    <span class="k">if</span> <span class="p">(</span><span class="nx">newValue</span><span class="p">)</span> <span class="p">{</span>
-      <span class="nx">newValue</span> <span class="o">=</span> <span class="nb">parseInt</span><span class="p">(</span><span class="nx">newValue</span><span class="p">);</span>
-      <span class="kd">var</span> <span class="nx">update</span> <span class="o">=</span> <span class="p">{};</span>
-      <span class="nx">update</span><span class="p">[</span><span class="nx">attrName</span><span class="p">]</span> <span class="o">=</span> <span class="nx">newValue</span><span class="p">;</span>
-      <span class="k">this</span><span class="p">.</span><span class="nx">model</span><span class="p">.</span><span class="nx">set</span><span class="p">(</span><span class="nx">update</span><span class="p">);</span>
-    <span class="p">}</span>
-  <span class="p">},</span>
   <span class="nx">render</span><span class="o">:</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
     <span class="kd">var</span> <span class="nx">tmplData</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">model</span><span class="p">.</span><span class="nx">toJSON</span><span class="p">();</span>
     <span class="nx">tmplData</span><span class="p">.</span><span class="nx">to</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">model</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s1">&#39;from&#39;</span><span class="p">)</span> <span class="o">+</span> <span class="k">this</span><span class="p">.</span><span class="nx">model</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s1">&#39;size&#39;</span><span class="p">);</span>
     <span class="kd">var</span> <span class="nx">templated</span> <span class="o">=</span> <span class="nx">$</span><span class="p">.</span><span class="nx">mustache</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">template</span><span class="p">,</span> <span class="nx">tmplData</span><span class="p">);</span>
     <span class="k">this</span><span class="p">.</span><span class="nx">el</span><span class="p">.</span><span class="nx">html</span><span class="p">(</span><span class="nx">templated</span><span class="p">);</span>
+  <span class="p">}</span>
+<span class="p">});</span>
+
+<span class="nx">my</span><span class="p">.</span><span class="nx">FilterEditor</span> <span class="o">=</span> <span class="nx">Backbone</span><span class="p">.</span><span class="nx">View</span><span class="p">.</span><span class="nx">extend</span><span class="p">({</span>
+  <span class="nx">className</span><span class="o">:</span> <span class="s1">&#39;recline-filter-editor well&#39;</span><span class="p">,</span> 
+  <span class="nx">template</span><span class="o">:</span> <span class="s1">&#39; \</span>
+<span class="s1">    &lt;a class=&quot;close js-hide&quot; href=&quot;#&quot;&gt;&amp;times;&lt;/a&gt; \</span>
+<span class="s1">    &lt;div class=&quot;row filters&quot;&gt; \</span>
+<span class="s1">      &lt;div class=&quot;span1&quot;&gt; \</span>
+<span class="s1">        &lt;h3&gt;Filters&lt;/h3&gt; \</span>
+<span class="s1">      &lt;/div&gt; \</span>
+<span class="s1">      &lt;div class=&quot;span11&quot;&gt; \</span>
+<span class="s1">        &lt;form class=&quot;form-horizontal&quot;&gt; \</span>
+<span class="s1">          &lt;div class=&quot;row&quot;&gt; \</span>
+<span class="s1">            &lt;div class=&quot;span6&quot;&gt; \</span>
+<span class="s1">              {{#termFilters}} \</span>
+<span class="s1">              &lt;div class=&quot;control-group filter-term filter&quot; data-filter-id={{id}}&gt; \</span>
+<span class="s1">                &lt;label class=&quot;control-label&quot; for=&quot;&quot;&gt;{{label}}&lt;/label&gt; \</span>
+<span class="s1">                &lt;div class=&quot;controls&quot;&gt; \</span>
+<span class="s1">                  &lt;div class=&quot;input-append&quot;&gt; \</span>
+<span class="s1">                    &lt;input type=&quot;text&quot; value=&quot;{{value}}&quot; name=&quot;{{fieldId}}&quot; class=&quot;span4&quot; data-filter-field=&quot;{{fieldId}}&quot; data-filter-id=&quot;{{id}}&quot; data-filter-type=&quot;term&quot; /&gt; \</span>
+<span class="s1">                    &lt;a class=&quot;btn js-remove-filter&quot;&gt;&lt;i class=&quot;icon-remove&quot;&gt;&lt;/i&gt;&lt;/a&gt; \</span>
+<span class="s1">                  &lt;/div&gt; \</span>
+<span class="s1">                &lt;/div&gt; \</span>
+<span class="s1">              &lt;/div&gt; \</span>
+<span class="s1">              {{/termFilters}} \</span>
+<span class="s1">            &lt;/div&gt; \</span>
+<span class="s1">          &lt;div class=&quot;span4&quot;&gt; \</span>
+<span class="s1">            &lt;p&gt;To add a filter use the column menu in the grid view.&lt;/p&gt; \</span>
+<span class="s1">            &lt;button type=&quot;submit&quot; class=&quot;btn&quot;&gt;Update&lt;/button&gt; \</span>
+<span class="s1">          &lt;/div&gt; \</span>
+<span class="s1">        &lt;/form&gt; \</span>
+<span class="s1">      &lt;/div&gt; \</span>
+<span class="s1">    &lt;/div&gt; \</span>
+<span class="s1">  &#39;</span><span class="p">,</span>
+  <span class="nx">events</span><span class="o">:</span> <span class="p">{</span>
+    <span class="s1">&#39;click .js-hide&#39;</span><span class="o">:</span> <span class="s1">&#39;onHide&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;click .js-remove-filter&#39;</span><span class="o">:</span> <span class="s1">&#39;onRemoveFilter&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;submit form&#39;</span><span class="o">:</span> <span class="s1">&#39;onTermFiltersUpdate&#39;</span>
+  <span class="p">},</span>
+  <span class="nx">initialize</span><span class="o">:</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">el</span> <span class="o">=</span> <span class="nx">$</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">el</span><span class="p">);</span>
+    <span class="nx">_</span><span class="p">.</span><span class="nx">bindAll</span><span class="p">(</span><span class="k">this</span><span class="p">,</span> <span class="s1">&#39;render&#39;</span><span class="p">);</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">model</span><span class="p">.</span><span class="nx">bind</span><span class="p">(</span><span class="s1">&#39;change&#39;</span><span class="p">,</span> <span class="k">this</span><span class="p">.</span><span class="nx">render</span><span class="p">);</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">model</span><span class="p">.</span><span class="nx">bind</span><span class="p">(</span><span class="s1">&#39;change:filters:new-blank&#39;</span><span class="p">,</span> <span class="k">this</span><span class="p">.</span><span class="nx">render</span><span class="p">);</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">render</span><span class="p">();</span>
+  <span class="p">},</span>
+  <span class="nx">render</span><span class="o">:</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+    <span class="kd">var</span> <span class="nx">tmplData</span> <span class="o">=</span> <span class="nx">$</span><span class="p">.</span><span class="nx">extend</span><span class="p">(</span><span class="kc">true</span><span class="p">,</span> <span class="p">{},</span> <span class="k">this</span><span class="p">.</span><span class="nx">model</span><span class="p">.</span><span class="nx">toJSON</span><span class="p">());</span></pre></div>             </td>           </tr>                               <tr id="section-9">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-9">&#182;</a>               </div>               <p>we will use idx in list as there id ...</p>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="nx">tmplData</span><span class="p">.</span><span class="nx">filters</span> <span class="o">=</span> <span class="nx">_</span><span class="p">.</span><span class="nx">map</span><span class="p">(</span><span class="nx">tmplData</span><span class="p">.</span><span class="nx">filters</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">filter</span><span class="p">,</span> <span class="nx">idx</span><span class="p">)</span> <span class="p">{</span>
+      <span class="nx">filter</span><span class="p">.</span><span class="nx">id</span> <span class="o">=</span> <span class="nx">idx</span><span class="p">;</span>
+      <span class="k">return</span> <span class="nx">filter</span><span class="p">;</span>
+    <span class="p">});</span>
+    <span class="nx">tmplData</span><span class="p">.</span><span class="nx">termFilters</span> <span class="o">=</span> <span class="nx">_</span><span class="p">.</span><span class="nx">filter</span><span class="p">(</span><span class="nx">tmplData</span><span class="p">.</span><span class="nx">filters</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">filter</span><span class="p">)</span> <span class="p">{</span>
+      <span class="k">return</span> <span class="nx">filter</span><span class="p">.</span><span class="nx">term</span> <span class="o">!==</span> <span class="kc">undefined</span><span class="p">;</span>
+    <span class="p">});</span>
+    <span class="nx">tmplData</span><span class="p">.</span><span class="nx">termFilters</span> <span class="o">=</span> <span class="nx">_</span><span class="p">.</span><span class="nx">map</span><span class="p">(</span><span class="nx">tmplData</span><span class="p">.</span><span class="nx">termFilters</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">filter</span><span class="p">)</span> <span class="p">{</span>
+      <span class="kd">var</span> <span class="nx">fieldId</span> <span class="o">=</span> <span class="nx">_</span><span class="p">.</span><span class="nx">keys</span><span class="p">(</span><span class="nx">filter</span><span class="p">.</span><span class="nx">term</span><span class="p">)[</span><span class="mi">0</span><span class="p">];</span>
+      <span class="k">return</span> <span class="p">{</span>
+        <span class="nx">id</span><span class="o">:</span> <span class="nx">filter</span><span class="p">.</span><span class="nx">id</span><span class="p">,</span>
+        <span class="nx">fieldId</span><span class="o">:</span> <span class="nx">fieldId</span><span class="p">,</span>
+        <span class="nx">label</span><span class="o">:</span> <span class="nx">fieldId</span><span class="p">,</span>
+        <span class="nx">value</span><span class="o">:</span> <span class="nx">filter</span><span class="p">.</span><span class="nx">term</span><span class="p">[</span><span class="nx">fieldId</span><span class="p">]</span>
+      <span class="p">}</span>
+    <span class="p">});</span>
+    <span class="kd">var</span> <span class="nx">out</span> <span class="o">=</span> <span class="nx">$</span><span class="p">.</span><span class="nx">mustache</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">template</span><span class="p">,</span> <span class="nx">tmplData</span><span class="p">);</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">el</span><span class="p">.</span><span class="nx">html</span><span class="p">(</span><span class="nx">out</span><span class="p">);</span></pre></div>             </td>           </tr>                               <tr id="section-10">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-10">&#182;</a>               </div>               <p>are there actually any facets to show?</p>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="k">if</span> <span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">model</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s1">&#39;filters&#39;</span><span class="p">).</span><span class="nx">length</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+      <span class="k">this</span><span class="p">.</span><span class="nx">el</span><span class="p">.</span><span class="nx">show</span><span class="p">();</span>
+    <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+      <span class="k">this</span><span class="p">.</span><span class="nx">el</span><span class="p">.</span><span class="nx">hide</span><span class="p">();</span>
+    <span class="p">}</span>
+  <span class="p">},</span>
+  <span class="nx">onHide</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">e</span><span class="p">)</span> <span class="p">{</span>
+    <span class="nx">e</span><span class="p">.</span><span class="nx">preventDefault</span><span class="p">();</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">el</span><span class="p">.</span><span class="nx">hide</span><span class="p">();</span>
+  <span class="p">},</span>
+  <span class="nx">onRemoveFilter</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">e</span><span class="p">)</span> <span class="p">{</span>
+    <span class="nx">e</span><span class="p">.</span><span class="nx">preventDefault</span><span class="p">();</span>
+    <span class="kd">var</span> <span class="nx">$target</span> <span class="o">=</span> <span class="nx">$</span><span class="p">(</span><span class="nx">e</span><span class="p">.</span><span class="nx">target</span><span class="p">);</span>
+    <span class="kd">var</span> <span class="nx">filterId</span> <span class="o">=</span> <span class="nx">$target</span><span class="p">.</span><span class="nx">closest</span><span class="p">(</span><span class="s1">&#39;.filter&#39;</span><span class="p">).</span><span class="nx">attr</span><span class="p">(</span><span class="s1">&#39;data-filter-id&#39;</span><span class="p">);</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">model</span><span class="p">.</span><span class="nx">removeFilter</span><span class="p">(</span><span class="nx">filterId</span><span class="p">);</span>
+  <span class="p">},</span>
+  <span class="nx">onTermFiltersUpdate</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">e</span><span class="p">)</span> <span class="p">{</span>
+   <span class="kd">var</span> <span class="nx">self</span> <span class="o">=</span> <span class="k">this</span><span class="p">;</span>
+    <span class="nx">e</span><span class="p">.</span><span class="nx">preventDefault</span><span class="p">();</span>
+    <span class="kd">var</span> <span class="nx">filters</span> <span class="o">=</span> <span class="nx">self</span><span class="p">.</span><span class="nx">model</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s1">&#39;filters&#39;</span><span class="p">);</span>
+    <span class="kd">var</span> <span class="nx">$form</span> <span class="o">=</span> <span class="nx">$</span><span class="p">(</span><span class="nx">e</span><span class="p">.</span><span class="nx">target</span><span class="p">);</span>
+    <span class="nx">_</span><span class="p">.</span><span class="nx">each</span><span class="p">(</span><span class="nx">$form</span><span class="p">.</span><span class="nx">find</span><span class="p">(</span><span class="s1">&#39;input&#39;</span><span class="p">),</span> <span class="kd">function</span><span class="p">(</span><span class="nx">input</span><span class="p">)</span> <span class="p">{</span>
+      <span class="kd">var</span> <span class="nx">$input</span> <span class="o">=</span> <span class="nx">$</span><span class="p">(</span><span class="nx">input</span><span class="p">);</span>
+      <span class="kd">var</span> <span class="nx">filterIndex</span> <span class="o">=</span> <span class="nb">parseInt</span><span class="p">(</span><span class="nx">$input</span><span class="p">.</span><span class="nx">attr</span><span class="p">(</span><span class="s1">&#39;data-filter-id&#39;</span><span class="p">));</span>
+      <span class="kd">var</span> <span class="nx">value</span> <span class="o">=</span> <span class="nx">$input</span><span class="p">.</span><span class="nx">val</span><span class="p">();</span>
+      <span class="kd">var</span> <span class="nx">fieldId</span> <span class="o">=</span> <span class="nx">$input</span><span class="p">.</span><span class="nx">attr</span><span class="p">(</span><span class="s1">&#39;data-filter-field&#39;</span><span class="p">);</span>
+      <span class="nx">filters</span><span class="p">[</span><span class="nx">filterIndex</span><span class="p">].</span><span class="nx">term</span><span class="p">[</span><span class="nx">fieldId</span><span class="p">]</span> <span class="o">=</span> <span class="nx">value</span><span class="p">;</span>
+    <span class="p">});</span>
+    <span class="nx">self</span><span class="p">.</span><span class="nx">model</span><span class="p">.</span><span class="nx">set</span><span class="p">({</span><span class="nx">filters</span><span class="o">:</span> <span class="nx">filters</span><span class="p">});</span>
+    <span class="nx">self</span><span class="p">.</span><span class="nx">model</span><span class="p">.</span><span class="nx">trigger</span><span class="p">(</span><span class="s1">&#39;change&#39;</span><span class="p">);</span>
   <span class="p">}</span>
 <span class="p">});</span>
 
@@ -279,7 +380,7 @@ note this.model and dataset returned are the same</p>             </td>         
 <span class="s1">        &lt;a class=&quot;btn dropdown-toggle&quot; data-toggle=&quot;dropdown&quot; href=&quot;#&quot;&gt;&lt;i class=&quot;icon-chevron-down&quot;&gt;&lt;/i&gt; {{id}} {{label}}&lt;/a&gt; \</span>
 <span class="s1">        &lt;ul class=&quot;facet-items dropdown-menu&quot;&gt; \</span>
 <span class="s1">        {{#terms}} \</span>
-<span class="s1">          &lt;li&gt;&lt;input type=&quot;checkbox&quot; class=&quot;facet-choice js-facet-filter&quot; value=&quot;{{term}}&quot; name=&quot;{{term}}&quot; /&gt; &lt;label for=&quot;{{term}}&quot;&gt;{{term}} ({{count}})&lt;/label&gt;&lt;/li&gt; \</span>
+<span class="s1">          &lt;li&gt;&lt;a class=&quot;facet-choice js-facet-filter&quot; data-value=&quot;{{term}}&quot;&gt;{{term}} ({{count}})&lt;/a&gt;&lt;/li&gt; \</span>
 <span class="s1">        {{/terms}} \</span>
 <span class="s1">        &lt;/ul&gt; \</span>
 <span class="s1">      &lt;/div&gt; \</span>
@@ -289,7 +390,7 @@ note this.model and dataset returned are the same</p>             </td>         
 
   <span class="nx">events</span><span class="o">:</span> <span class="p">{</span>
     <span class="s1">&#39;click .js-hide&#39;</span><span class="o">:</span> <span class="s1">&#39;onHide&#39;</span><span class="p">,</span>
-    <span class="s1">&#39;change .js-facet-filter&#39;</span><span class="o">:</span> <span class="s1">&#39;onFacetFilter&#39;</span>
+    <span class="s1">&#39;click .js-facet-filter&#39;</span><span class="o">:</span> <span class="s1">&#39;onFacetFilter&#39;</span>
   <span class="p">},</span>
   <span class="nx">initialize</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">model</span><span class="p">)</span> <span class="p">{</span>
     <span class="nx">_</span><span class="p">.</span><span class="nx">bindAll</span><span class="p">(</span><span class="k">this</span><span class="p">,</span> <span class="s1">&#39;render&#39;</span><span class="p">);</span>
@@ -304,7 +405,7 @@ note this.model and dataset returned are the same</p>             </td>         
       <span class="nx">fields</span><span class="o">:</span> <span class="k">this</span><span class="p">.</span><span class="nx">model</span><span class="p">.</span><span class="nx">fields</span><span class="p">.</span><span class="nx">toJSON</span><span class="p">()</span>
     <span class="p">};</span>
     <span class="kd">var</span> <span class="nx">templated</span> <span class="o">=</span> <span class="nx">$</span><span class="p">.</span><span class="nx">mustache</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">template</span><span class="p">,</span> <span class="nx">tmplData</span><span class="p">);</span>
-    <span class="k">this</span><span class="p">.</span><span class="nx">el</span><span class="p">.</span><span class="nx">html</span><span class="p">(</span><span class="nx">templated</span><span class="p">);</span></pre></div>             </td>           </tr>                               <tr id="section-9">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-9">&#182;</a>               </div>               <p>are there actually any facets to show?</p>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="k">if</span> <span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">model</span><span class="p">.</span><span class="nx">facets</span><span class="p">.</span><span class="nx">length</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">el</span><span class="p">.</span><span class="nx">html</span><span class="p">(</span><span class="nx">templated</span><span class="p">);</span></pre></div>             </td>           </tr>                               <tr id="section-11">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-11">&#182;</a>               </div>               <p>are there actually any facets to show?</p>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="k">if</span> <span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">model</span><span class="p">.</span><span class="nx">facets</span><span class="p">.</span><span class="nx">length</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
       <span class="k">this</span><span class="p">.</span><span class="nx">el</span><span class="p">.</span><span class="nx">show</span><span class="p">();</span>
     <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
       <span class="k">this</span><span class="p">.</span><span class="nx">el</span><span class="p">.</span><span class="nx">hide</span><span class="p">();</span>
@@ -314,14 +415,15 @@ note this.model and dataset returned are the same</p>             </td>         
     <span class="nx">e</span><span class="p">.</span><span class="nx">preventDefault</span><span class="p">();</span>
     <span class="k">this</span><span class="p">.</span><span class="nx">el</span><span class="p">.</span><span class="nx">hide</span><span class="p">();</span>
   <span class="p">},</span>
-  <span class="nx">onFacetFilter</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">e</span><span class="p">)</span> <span class="p">{</span></pre></div>             </td>           </tr>                               <tr id="section-10">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-10">&#182;</a>               </div>               <p>todo: uncheck</p>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="kd">var</span> <span class="nx">$checkbox</span> <span class="o">=</span> <span class="nx">$</span><span class="p">(</span><span class="nx">e</span><span class="p">.</span><span class="nx">target</span><span class="p">);</span>
-    <span class="kd">var</span> <span class="nx">fieldId</span> <span class="o">=</span> <span class="nx">$checkbox</span><span class="p">.</span><span class="nx">closest</span><span class="p">(</span><span class="s1">&#39;.facet-summary&#39;</span><span class="p">).</span><span class="nx">attr</span><span class="p">(</span><span class="s1">&#39;data-facet&#39;</span><span class="p">);</span>
-    <span class="kd">var</span> <span class="nx">value</span> <span class="o">=</span> <span class="nx">$checkbox</span><span class="p">.</span><span class="nx">val</span><span class="p">();</span>
+  <span class="nx">onFacetFilter</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">e</span><span class="p">)</span> <span class="p">{</span>
+    <span class="kd">var</span> <span class="nx">$target</span><span class="o">=</span> <span class="nx">$</span><span class="p">(</span><span class="nx">e</span><span class="p">.</span><span class="nx">target</span><span class="p">);</span>
+    <span class="kd">var</span> <span class="nx">fieldId</span> <span class="o">=</span> <span class="nx">$target</span><span class="p">.</span><span class="nx">closest</span><span class="p">(</span><span class="s1">&#39;.facet-summary&#39;</span><span class="p">).</span><span class="nx">attr</span><span class="p">(</span><span class="s1">&#39;data-facet&#39;</span><span class="p">);</span>
+    <span class="kd">var</span> <span class="nx">value</span> <span class="o">=</span> <span class="nx">$target</span><span class="p">.</span><span class="nx">attr</span><span class="p">(</span><span class="s1">&#39;data-value&#39;</span><span class="p">);</span>
     <span class="k">this</span><span class="p">.</span><span class="nx">model</span><span class="p">.</span><span class="nx">queryState</span><span class="p">.</span><span class="nx">addTermFilter</span><span class="p">(</span><span class="nx">fieldId</span><span class="p">,</span> <span class="nx">value</span><span class="p">);</span>
   <span class="p">}</span>
 <span class="p">});</span>
 
-<span class="cm">/* ========================================================== */</span></pre></div>             </td>           </tr>                               <tr id="section-11">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-11">&#182;</a>               </div>               <h2>Miscellaneous Utilities</h2>             </td>             <td class="code">               <div class="highlight"><pre><span class="kd">var</span> <span class="nx">urlPathRegex</span> <span class="o">=</span> <span class="sr">/^([^?]+)(\?.*)?/</span><span class="p">;</span></pre></div>             </td>           </tr>                               <tr id="section-12">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-12">&#182;</a>               </div>               <p>Parse the Hash section of a URL into path and query string</p>             </td>             <td class="code">               <div class="highlight"><pre><span class="nx">my</span><span class="p">.</span><span class="nx">parseHashUrl</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">hashUrl</span><span class="p">)</span> <span class="p">{</span>
+<span class="cm">/* ========================================================== */</span></pre></div>             </td>           </tr>                               <tr id="section-12">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-12">&#182;</a>               </div>               <h2>Miscellaneous Utilities</h2>             </td>             <td class="code">               <div class="highlight"><pre><span class="kd">var</span> <span class="nx">urlPathRegex</span> <span class="o">=</span> <span class="sr">/^([^?]+)(\?.*)?/</span><span class="p">;</span></pre></div>             </td>           </tr>                               <tr id="section-13">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-13">&#182;</a>               </div>               <p>Parse the Hash section of a URL into path and query string</p>             </td>             <td class="code">               <div class="highlight"><pre><span class="nx">my</span><span class="p">.</span><span class="nx">parseHashUrl</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">hashUrl</span><span class="p">)</span> <span class="p">{</span>
   <span class="kd">var</span> <span class="nx">parsed</span> <span class="o">=</span> <span class="nx">urlPathRegex</span><span class="p">.</span><span class="nx">exec</span><span class="p">(</span><span class="nx">hashUrl</span><span class="p">);</span>
   <span class="k">if</span> <span class="p">(</span><span class="nx">parsed</span> <span class="o">==</span> <span class="kc">null</span><span class="p">)</span> <span class="p">{</span>
     <span class="k">return</span> <span class="p">{};</span>
@@ -331,7 +433,7 @@ note this.model and dataset returned are the same</p>             </td>         
       <span class="nx">query</span><span class="o">:</span> <span class="nx">parsed</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">||</span> <span class="s1">&#39;&#39;</span>
     <span class="p">}</span>
   <span class="p">}</span>
-<span class="p">}</span></pre></div>             </td>           </tr>                               <tr id="section-13">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-13">&#182;</a>               </div>               <p>Parse a URL query string (?xyz=abc...) into a dictionary.</p>             </td>             <td class="code">               <div class="highlight"><pre><span class="nx">my</span><span class="p">.</span><span class="nx">parseQueryString</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">q</span><span class="p">)</span> <span class="p">{</span>
+<span class="p">}</span></pre></div>             </td>           </tr>                               <tr id="section-14">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-14">&#182;</a>               </div>               <p>Parse a URL query string (?xyz=abc...) into a dictionary.</p>             </td>             <td class="code">               <div class="highlight"><pre><span class="nx">my</span><span class="p">.</span><span class="nx">parseQueryString</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">q</span><span class="p">)</span> <span class="p">{</span>
   <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="nx">q</span><span class="p">)</span> <span class="p">{</span>
     <span class="k">return</span> <span class="p">{};</span>
   <span class="p">}</span>
@@ -344,13 +446,13 @@ note this.model and dataset returned are the same</p>             </td>         
   <span class="k">if</span> <span class="p">(</span><span class="nx">q</span> <span class="o">&amp;&amp;</span> <span class="nx">q</span><span class="p">.</span><span class="nx">length</span> <span class="o">&amp;&amp;</span> <span class="nx">q</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">===</span> <span class="s1">&#39;?&#39;</span><span class="p">)</span> <span class="p">{</span>
     <span class="nx">q</span> <span class="o">=</span> <span class="nx">q</span><span class="p">.</span><span class="nx">slice</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span>
   <span class="p">}</span>
-  <span class="k">while</span> <span class="p">(</span><span class="nx">e</span> <span class="o">=</span> <span class="nx">r</span><span class="p">.</span><span class="nx">exec</span><span class="p">(</span><span class="nx">q</span><span class="p">))</span> <span class="p">{</span></pre></div>             </td>           </tr>                               <tr id="section-14">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-14">&#182;</a>               </div>               <p>TODO: have values be array as query string allow repetition of keys</p>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="nx">urlParams</span><span class="p">[</span><span class="nx">d</span><span class="p">(</span><span class="nx">e</span><span class="p">[</span><span class="mi">1</span><span class="p">])]</span> <span class="o">=</span> <span class="nx">d</span><span class="p">(</span><span class="nx">e</span><span class="p">[</span><span class="mi">2</span><span class="p">]);</span>
+  <span class="k">while</span> <span class="p">(</span><span class="nx">e</span> <span class="o">=</span> <span class="nx">r</span><span class="p">.</span><span class="nx">exec</span><span class="p">(</span><span class="nx">q</span><span class="p">))</span> <span class="p">{</span></pre></div>             </td>           </tr>                               <tr id="section-15">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-15">&#182;</a>               </div>               <p>TODO: have values be array as query string allow repetition of keys</p>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="nx">urlParams</span><span class="p">[</span><span class="nx">d</span><span class="p">(</span><span class="nx">e</span><span class="p">[</span><span class="mi">1</span><span class="p">])]</span> <span class="o">=</span> <span class="nx">d</span><span class="p">(</span><span class="nx">e</span><span class="p">[</span><span class="mi">2</span><span class="p">]);</span>
   <span class="p">}</span>
   <span class="k">return</span> <span class="nx">urlParams</span><span class="p">;</span>
-<span class="p">}</span></pre></div>             </td>           </tr>                               <tr id="section-15">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-15">&#182;</a>               </div>               <p>Parse the query string out of the URL hash</p>             </td>             <td class="code">               <div class="highlight"><pre><span class="nx">my</span><span class="p">.</span><span class="nx">parseHashQueryString</span> <span class="o">=</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+<span class="p">}</span></pre></div>             </td>           </tr>                               <tr id="section-16">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-16">&#182;</a>               </div>               <p>Parse the query string out of the URL hash</p>             </td>             <td class="code">               <div class="highlight"><pre><span class="nx">my</span><span class="p">.</span><span class="nx">parseHashQueryString</span> <span class="o">=</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
   <span class="nx">q</span> <span class="o">=</span> <span class="nx">my</span><span class="p">.</span><span class="nx">parseHashUrl</span><span class="p">(</span><span class="nb">window</span><span class="p">.</span><span class="nx">location</span><span class="p">.</span><span class="nx">hash</span><span class="p">).</span><span class="nx">query</span><span class="p">;</span>
   <span class="k">return</span> <span class="nx">my</span><span class="p">.</span><span class="nx">parseQueryString</span><span class="p">(</span><span class="nx">q</span><span class="p">);</span>
-<span class="p">}</span></pre></div>             </td>           </tr>                               <tr id="section-16">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-16">&#182;</a>               </div>               <p>Compse a Query String</p>             </td>             <td class="code">               <div class="highlight"><pre><span class="nx">my</span><span class="p">.</span><span class="nx">composeQueryString</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">queryParams</span><span class="p">)</span> <span class="p">{</span>
+<span class="p">}</span></pre></div>             </td>           </tr>                               <tr id="section-17">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-17">&#182;</a>               </div>               <p>Compse a Query String</p>             </td>             <td class="code">               <div class="highlight"><pre><span class="nx">my</span><span class="p">.</span><span class="nx">composeQueryString</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">queryParams</span><span class="p">)</span> <span class="p">{</span>
   <span class="kd">var</span> <span class="nx">queryString</span> <span class="o">=</span> <span class="s1">&#39;?&#39;</span><span class="p">;</span>
   <span class="kd">var</span> <span class="nx">items</span> <span class="o">=</span> <span class="p">[];</span>
   <span class="nx">$</span><span class="p">.</span><span class="nx">each</span><span class="p">(</span><span class="nx">queryParams</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">key</span><span class="p">,</span> <span class="nx">value</span><span class="p">)</span> <span class="p">{</span>
@@ -362,7 +464,7 @@ note this.model and dataset returned are the same</p>             </td>         
 
 <span class="nx">my</span><span class="p">.</span><span class="nx">getNewHashForQueryString</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">queryParams</span><span class="p">)</span> <span class="p">{</span>
   <span class="kd">var</span> <span class="nx">queryPart</span> <span class="o">=</span> <span class="nx">my</span><span class="p">.</span><span class="nx">composeQueryString</span><span class="p">(</span><span class="nx">queryParams</span><span class="p">);</span>
-  <span class="k">if</span> <span class="p">(</span><span class="nb">window</span><span class="p">.</span><span class="nx">location</span><span class="p">.</span><span class="nx">hash</span><span class="p">)</span> <span class="p">{</span></pre></div>             </td>           </tr>                               <tr id="section-17">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-17">&#182;</a>               </div>               <p>slice(1) to remove # at start</p>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="k">return</span> <span class="nb">window</span><span class="p">.</span><span class="nx">location</span><span class="p">.</span><span class="nx">hash</span><span class="p">.</span><span class="nx">split</span><span class="p">(</span><span class="s1">&#39;?&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">].</span><span class="nx">slice</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="o">+</span> <span class="nx">queryPart</span><span class="p">;</span>
+  <span class="k">if</span> <span class="p">(</span><span class="nb">window</span><span class="p">.</span><span class="nx">location</span><span class="p">.</span><span class="nx">hash</span><span class="p">)</span> <span class="p">{</span></pre></div>             </td>           </tr>                               <tr id="section-18">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-18">&#182;</a>               </div>               <p>slice(1) to remove # at start</p>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="k">return</span> <span class="nb">window</span><span class="p">.</span><span class="nx">location</span><span class="p">.</span><span class="nx">hash</span><span class="p">.</span><span class="nx">split</span><span class="p">(</span><span class="s1">&#39;?&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">].</span><span class="nx">slice</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="o">+</span> <span class="nx">queryPart</span><span class="p">;</span>
   <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
     <span class="k">return</span> <span class="nx">queryPart</span><span class="p">;</span>
   <span class="p">}</span>
@@ -370,7 +472,7 @@ note this.model and dataset returned are the same</p>             </td>         
 
 <span class="nx">my</span><span class="p">.</span><span class="nx">setHashQueryString</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">queryParams</span><span class="p">)</span> <span class="p">{</span>
   <span class="nb">window</span><span class="p">.</span><span class="nx">location</span><span class="p">.</span><span class="nx">hash</span> <span class="o">=</span> <span class="nx">my</span><span class="p">.</span><span class="nx">getNewHashForQueryString</span><span class="p">(</span><span class="nx">queryParams</span><span class="p">);</span>
-<span class="p">}</span></pre></div>             </td>           </tr>                               <tr id="section-18">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-18">&#182;</a>               </div>               <h2>notify</h2>
+<span class="p">}</span></pre></div>             </td>           </tr>                               <tr id="section-19">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-19">&#182;</a>               </div>               <h2>notify</h2>
 
 <p>Create a notification (a div.alert in div.alert-messsages) using provide messages and options. Options are:</p>
 
@@ -393,7 +495,7 @@ note this.model and dataset returned are the same</p>             </td>         
 <span class="s1">        {{/loader}} \</span>
 <span class="s1">    &lt;/div&gt;&#39;</span><span class="p">;</span>
   <span class="kd">var</span> <span class="nx">_templated</span> <span class="o">=</span> <span class="nx">$</span><span class="p">.</span><span class="nx">mustache</span><span class="p">(</span><span class="nx">_template</span><span class="p">,</span> <span class="nx">tmplData</span><span class="p">);</span> 
-  <span class="nx">_templated</span> <span class="o">=</span> <span class="nx">$</span><span class="p">(</span><span class="nx">_templated</span><span class="p">).</span><span class="nx">appendTo</span><span class="p">(</span><span class="nx">$</span><span class="p">(</span><span class="s1">&#39;.data-explorer .alert-messages&#39;</span><span class="p">));</span>
+  <span class="nx">_templated</span> <span class="o">=</span> <span class="nx">$</span><span class="p">(</span><span class="nx">_templated</span><span class="p">).</span><span class="nx">appendTo</span><span class="p">(</span><span class="nx">$</span><span class="p">(</span><span class="s1">&#39;.recline-data-explorer .alert-messages&#39;</span><span class="p">));</span>
   <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="nx">options</span><span class="p">.</span><span class="nx">persist</span><span class="p">)</span> <span class="p">{</span>
     <span class="nx">setTimeout</span><span class="p">(</span><span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
       <span class="nx">$</span><span class="p">(</span><span class="nx">_templated</span><span class="p">).</span><span class="nx">fadeOut</span><span class="p">(</span><span class="mi">1000</span><span class="p">,</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
@@ -401,10 +503,10 @@ note this.model and dataset returned are the same</p>             </td>         
       <span class="p">});</span>
     <span class="p">},</span> <span class="mi">1000</span><span class="p">);</span>
   <span class="p">}</span>
-<span class="p">}</span></pre></div>             </td>           </tr>                               <tr id="section-19">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-19">&#182;</a>               </div>               <h2>clearNotifications</h2>
+<span class="p">}</span></pre></div>             </td>           </tr>                               <tr id="section-20">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-20">&#182;</a>               </div>               <h2>clearNotifications</h2>
 
 <p>Clear all existing notifications</p>             </td>             <td class="code">               <div class="highlight"><pre><span class="nx">my</span><span class="p">.</span><span class="nx">clearNotifications</span> <span class="o">=</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
-  <span class="kd">var</span> <span class="nx">$notifications</span> <span class="o">=</span> <span class="nx">$</span><span class="p">(</span><span class="s1">&#39;.data-explorer .alert-messages .alert&#39;</span><span class="p">);</span>
+  <span class="kd">var</span> <span class="nx">$notifications</span> <span class="o">=</span> <span class="nx">$</span><span class="p">(</span><span class="s1">&#39;.recline-data-explorer .alert-messages .alert&#39;</span><span class="p">);</span>
   <span class="nx">$notifications</span><span class="p">.</span><span class="nx">remove</span><span class="p">();</span>
 <span class="p">}</span>
 
