@@ -132,8 +132,8 @@ my.ColumnTransform = Backbone.View.extend({
   ',
 
   events: {
-    'click .okButton': 'onSubmit'
-    , 'keydown .expression-preview-code': 'onEditorKeydown'
+    'click .okButton': 'onSubmit',
+    'keydown .expression-preview-code': 'onEditorKeydown'
   },
 
   initialize: function() {
@@ -143,7 +143,7 @@ my.ColumnTransform = Backbone.View.extend({
   render: function() {
     var htmls = $.mustache(this.template, 
       {name: this.state.currentColumn}
-      )
+      );
     this.el.html(htmls);
     // Put in the basic (identity) transform script
     // TODO: put this into the template?
@@ -181,7 +181,7 @@ my.ColumnTransform = Backbone.View.extend({
     _.each(toUpdate, function(editedDoc) {
       var realDoc = self.model.currentDocuments.get(editedDoc.id);
       realDoc.set(editedDoc);
-      realDoc.save().then(onCompletedUpdate).fail(onCompletedUpdate)
+      realDoc.save().then(onCompletedUpdate).fail(onCompletedUpdate);
     });
   },
 

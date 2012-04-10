@@ -25,10 +25,10 @@ my.DataGrid = Backbone.View.extend({
   },
 
   events: {
-    'click .column-header-menu': 'onColumnHeaderClick'
-    , 'click .row-header-menu': 'onRowHeaderClick'
-    , 'click .root-header-menu': 'onRootHeaderClick'
-    , 'click .data-table-menu li a': 'onMenuClick'
+    'click .column-header-menu': 'onColumnHeaderClick',
+    'click .row-header-menu': 'onRowHeaderClick',
+    'click .root-header-menu': 'onRootHeaderClick',
+    'click .data-table-menu li a': 'onMenuClick'
   },
 
   // TODO: delete or re-enable (currently this code is not used from anywhere except deprecated or disabled methods (see above)).
@@ -67,7 +67,7 @@ my.DataGrid = Backbone.View.extend({
     var self = this;
     e.preventDefault();
     var actions = {
-      bulkEdit: function() { self.showTransformColumnDialog('bulkEdit', {name: self.state.currentColumn}) },
+      bulkEdit: function() { self.showTransformColumnDialog('bulkEdit', {name: self.state.currentColumn}); },
       facet: function() { 
         self.model.queryState.addFacet(self.state.currentColumn);
       },
@@ -77,26 +77,25 @@ my.DataGrid = Backbone.View.extend({
       filter: function() {
         self.model.queryState.addTermFilter(self.state.currentColumn, '');
       },
-      transform: function() { self.showTransformDialog('transform') },
-      sortAsc: function() { self.setColumnSort('asc') },
-      sortDesc: function() { self.setColumnSort('desc') },
-      hideColumn: function() { self.hideColumn() },
-      showColumn: function() { self.showColumn(e) },
+      transform: function() { self.showTransformDialog('transform'); },
+      sortAsc: function() { self.setColumnSort('asc'); },
+      sortDesc: function() { self.setColumnSort('desc'); },
+      hideColumn: function() { self.hideColumn(); },
+      showColumn: function() { self.showColumn(e); },
       deleteRow: function() {
         var doc = _.find(self.model.currentDocuments.models, function(doc) {
           // important this is == as the currentRow will be string (as comes
           // from DOM) while id may be int
-          return doc.id == self.state.currentRow
+          return doc.id == self.state.currentRow;
         });
         doc.destroy().then(function() { 
             self.model.currentDocuments.remove(doc);
             my.notify("Row deleted successfully");
-          })
-          .fail(function(err) {
-            my.notify("Errorz! " + err)
-          })
+          }).fail(function(err) {
+            my.notify("Errorz! " + err);
+          });
       }
-    }
+    };
     actions[$(e.target).attr('data-action')]();
   },
 
@@ -112,7 +111,7 @@ my.DataGrid = Backbone.View.extend({
     $el.append(view.el);
     util.observeExit($el, function() {
       util.hide('dialog');
-    })
+    });
     $('.dialog').draggable({ handle: '.dialog-header', cursor: 'move' });
   },
 
@@ -126,7 +125,7 @@ my.DataGrid = Backbone.View.extend({
     $el.append(view.el);
     util.observeExit($el, function() {
       util.hide('dialog');
-    })
+    });
     $('.dialog').draggable({ handle: '.dialog-header', cursor: 'move' });
   },
 
@@ -189,10 +188,10 @@ my.DataGrid = Backbone.View.extend({
   ',
 
   toTemplateJSON: function() {
-    var modelData = this.model.toJSON()
-    modelData.notEmpty = ( this.fields.length > 0 )
+    var modelData = this.model.toJSON();
+    modelData.notEmpty = ( this.fields.length > 0 );
     // TODO: move this sort of thing into a toTemplateJSON method on Dataset?
-    modelData.fields = _.map(this.fields, function(field) { return field.toJSON() });
+    modelData.fields = _.map(this.fields, function(field) { return field.toJSON(); });
     return modelData;
   },
   render: function() {
@@ -212,7 +211,7 @@ my.DataGrid = Backbone.View.extend({
         });
       newView.render();
     });
-    this.el.toggleClass('no-hidden', (self.hiddenFields.length == 0));
+    this.el.toggleClass('no-hidden', (self.hiddenFields.length === 0));
     return this;
   }
 });
@@ -271,9 +270,9 @@ my.DataGridRow = Backbone.View.extend({
       return {
         field: field.id,
         value: doc.getFieldValue(field)
-      }
-    })
-    return { id: this.id, cells: cellData }
+      };
+    });
+    return { id: this.id, cells: cellData };
   },
 
   render: function() {
