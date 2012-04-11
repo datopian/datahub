@@ -1,30 +1,73 @@
-<!DOCTYPE html>  <html> <head>   <title>gdocs.js</title>   <meta http-equiv="content-type" content="text/html; charset=UTF-8">   <link rel="stylesheet" media="all" href="docco.css" /> </head> <body>   <div id="container">     <div id="background"></div>            <div id="jump_to">         Jump To &hellip;         <div id="jump_wrapper">           <div id="jump_page">                                           <a class="source" href="base.html">                 base.js               </a>                                           <a class="source" href="dataproxy.html">                 dataproxy.js               </a>                                           <a class="source" href="elasticsearch.html">                 elasticsearch.js               </a>                                           <a class="source" href="gdocs.html">                 gdocs.js               </a>                                           <a class="source" href="localcsv.html">                 localcsv.js               </a>                                           <a class="source" href="memory.html">                 memory.js               </a>                        </div>         </div>       </div>          <table cellpadding="0" cellspacing="0">       <thead>         <tr>           <th class="docs">             <h1>               gdocs.js             </h1>           </th>           <th class="code">           </th>         </tr>       </thead>       <tbody>                               <tr id="section-1">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-1">&#182;</a>               </div>                            </td>             <td class="code">               <div class="highlight"><pre><span class="k">this</span><span class="p">.</span><span class="nx">recline</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">recline</span> <span class="o">||</span> <span class="p">{};</span>
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="content-type" content="text/html;charset=utf-8">
+  <title>gdocs.js</title>
+  <link rel="stylesheet" href="pycco.css">
+</head>
+<body>
+<div id='container'>
+  <div id="background"></div>
+  <div class='section'>
+    <div class='docs'><h1>gdocs.js</h1></div>
+  </div>
+  <div class='clearall'>
+  <div class='section' id='section-0'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-0'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="k">this</span><span class="p">.</span><span class="nx">recline</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">recline</span> <span class="o">||</span> <span class="p">{};</span>
 <span class="k">this</span><span class="p">.</span><span class="nx">recline</span><span class="p">.</span><span class="nx">Backend</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">recline</span><span class="p">.</span><span class="nx">Backend</span> <span class="o">||</span> <span class="p">{};</span>
 
-<span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">$</span><span class="p">,</span> <span class="nx">my</span><span class="p">)</span> <span class="p">{</span></pre></div>             </td>           </tr>                               <tr id="section-2">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-2">&#182;</a>               </div>               <h2>Google spreadsheet backend</h2>
-
+<span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">$</span><span class="p">,</span> <span class="nx">my</span><span class="p">)</span> <span class="p">{</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-1'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-1'>#</a>
+      </div>
+      <h2>Google spreadsheet backend</h2>
 <p>Connect to Google Docs spreadsheet.</p>
-
 <p>Dataset must have a url attribute pointing to the Gdocs
 spreadsheet's JSON feed e.g.</p>
-
 <pre>
 var dataset = new recline.Model.Dataset({
     url: 'https://spreadsheets.google.com/feeds/list/0Aon3JiuouxLUdDQwZE1JdV94cUd6NWtuZ0IyWTBjLWc/od6/public/values?alt=json'
   },
   'gdocs'
 );
-</pre>             </td>             <td class="code">               <div class="highlight"><pre>  <span class="nx">my</span><span class="p">.</span><span class="nx">GDoc</span> <span class="o">=</span> <span class="nx">my</span><span class="p">.</span><span class="nx">Base</span><span class="p">.</span><span class="nx">extend</span><span class="p">({</span>
+</pre>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>  <span class="nx">my</span><span class="p">.</span><span class="nx">GDoc</span> <span class="o">=</span> <span class="nx">my</span><span class="p">.</span><span class="nx">Base</span><span class="p">.</span><span class="nx">extend</span><span class="p">({</span>
     <span class="nx">getUrl</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">dataset</span><span class="p">)</span> <span class="p">{</span>
       <span class="kd">var</span> <span class="nx">url</span> <span class="o">=</span> <span class="nx">dataset</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s1">&#39;url&#39;</span><span class="p">);</span>
       <span class="k">if</span> <span class="p">(</span><span class="nx">url</span><span class="p">.</span><span class="nx">indexOf</span><span class="p">(</span><span class="s1">&#39;feeds/list&#39;</span><span class="p">)</span> <span class="o">!=</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="p">{</span>
         <span class="k">return</span> <span class="nx">url</span><span class="p">;</span>
-      <span class="p">}</span> <span class="k">else</span> <span class="p">{</span></pre></div>             </td>           </tr>                               <tr id="section-3">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-3">&#182;</a>               </div>               <p>https://docs.google.com/spreadsheet/ccc?key=XXXX#gid=0</p>             </td>             <td class="code">               <div class="highlight"><pre>        <span class="kd">var</span> <span class="nx">regex</span> <span class="o">=</span> <span class="sr">/.*spreadsheet\/ccc?.*key=([^#?&amp;+]+).*/</span>
+      <span class="p">}</span> <span class="k">else</span> <span class="p">{</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-2'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-2'>#</a>
+      </div>
+      <p>https://docs.google.com/spreadsheet/ccc?key=XXXX#gid=0</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>        <span class="kd">var</span> <span class="nx">regex</span> <span class="o">=</span> <span class="sr">/.*spreadsheet\/ccc?.*key=([^#?&amp;+]+).*/</span><span class="p">;</span>
         <span class="kd">var</span> <span class="nx">matches</span> <span class="o">=</span> <span class="nx">url</span><span class="p">.</span><span class="nx">match</span><span class="p">(</span><span class="nx">regex</span><span class="p">);</span>
         <span class="k">if</span> <span class="p">(</span><span class="nx">matches</span><span class="p">)</span> <span class="p">{</span>
           <span class="kd">var</span> <span class="nx">key</span> <span class="o">=</span> <span class="nx">matches</span><span class="p">[</span><span class="mi">1</span><span class="p">];</span>
           <span class="kd">var</span> <span class="nx">worksheet</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
-          <span class="kd">var</span> <span class="nx">out</span> <span class="o">=</span> <span class="s1">&#39;https://spreadsheets.google.com/feeds/list/&#39;</span> <span class="o">+</span> <span class="nx">key</span> <span class="o">+</span> <span class="s1">&#39;/&#39;</span> <span class="o">+</span> <span class="nx">worksheet</span> <span class="o">+</span> <span class="s1">&#39;/public/values?alt=json&#39;</span>
+          <span class="kd">var</span> <span class="nx">out</span> <span class="o">=</span> <span class="s1">&#39;https://spreadsheets.google.com/feeds/list/&#39;</span> <span class="o">+</span> <span class="nx">key</span> <span class="o">+</span> <span class="s1">&#39;/&#39;</span> <span class="o">+</span> <span class="nx">worksheet</span> <span class="o">+</span> <span class="s1">&#39;/public/values?alt=json&#39;</span><span class="p">;</span>
           <span class="k">return</span> <span class="nx">out</span><span class="p">;</span>
         <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
           <span class="nx">alert</span><span class="p">(</span><span class="s1">&#39;Failed to extract gdocs key from &#39;</span> <span class="o">+</span> <span class="nx">url</span><span class="p">);</span>
@@ -44,58 +87,164 @@ var dataset = new recline.Model.Dataset({
           <span class="nx">model</span><span class="p">.</span><span class="nx">fields</span><span class="p">.</span><span class="nx">reset</span><span class="p">(</span><span class="nx">_</span><span class="p">.</span><span class="nx">map</span><span class="p">(</span><span class="nx">result</span><span class="p">.</span><span class="nx">field</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">fieldId</span><span class="p">)</span> <span class="p">{</span>
               <span class="k">return</span> <span class="p">{</span><span class="nx">id</span><span class="o">:</span> <span class="nx">fieldId</span><span class="p">};</span>
             <span class="p">})</span>
-          <span class="p">);</span></pre></div>             </td>           </tr>                               <tr id="section-4">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-4">&#182;</a>               </div>               <p>cache data onto dataset (we have loaded whole gdoc it seems!)</p>             </td>             <td class="code">               <div class="highlight"><pre>          <span class="nx">model</span><span class="p">.</span><span class="nx">_dataCache</span> <span class="o">=</span> <span class="nx">result</span><span class="p">.</span><span class="nx">data</span><span class="p">;</span>
+          <span class="p">);</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-3'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-3'>#</a>
+      </div>
+      <p>cache data onto dataset (we have loaded whole gdoc it seems!)</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>          <span class="nx">model</span><span class="p">.</span><span class="nx">_dataCache</span> <span class="o">=</span> <span class="nx">result</span><span class="p">.</span><span class="nx">data</span><span class="p">;</span>
           <span class="nx">dfd</span><span class="p">.</span><span class="nx">resolve</span><span class="p">(</span><span class="nx">model</span><span class="p">);</span>
-        <span class="p">})</span>
-        <span class="k">return</span> <span class="nx">dfd</span><span class="p">.</span><span class="nx">promise</span><span class="p">();</span> <span class="p">}</span>
+        <span class="p">});</span>
+        <span class="k">return</span> <span class="nx">dfd</span><span class="p">.</span><span class="nx">promise</span><span class="p">();</span>
+      <span class="p">}</span>
     <span class="p">},</span>
 
     <span class="nx">query</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">dataset</span><span class="p">,</span> <span class="nx">queryObj</span><span class="p">)</span> <span class="p">{</span> 
       <span class="kd">var</span> <span class="nx">dfd</span> <span class="o">=</span> <span class="nx">$</span><span class="p">.</span><span class="nx">Deferred</span><span class="p">();</span>
-      <span class="kd">var</span> <span class="nx">fields</span> <span class="o">=</span> <span class="nx">_</span><span class="p">.</span><span class="nx">pluck</span><span class="p">(</span><span class="nx">dataset</span><span class="p">.</span><span class="nx">fields</span><span class="p">.</span><span class="nx">toJSON</span><span class="p">(),</span> <span class="s1">&#39;id&#39;</span><span class="p">);</span></pre></div>             </td>           </tr>                               <tr id="section-5">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-5">&#182;</a>               </div>               <p>zip the fields with the data rows to produce js objs
-TODO: factor this out as a common method with other backends</p>             </td>             <td class="code">               <div class="highlight"><pre>      <span class="kd">var</span> <span class="nx">objs</span> <span class="o">=</span> <span class="nx">_</span><span class="p">.</span><span class="nx">map</span><span class="p">(</span><span class="nx">dataset</span><span class="p">.</span><span class="nx">_dataCache</span><span class="p">,</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">d</span><span class="p">)</span> <span class="p">{</span> 
+      <span class="kd">var</span> <span class="nx">fields</span> <span class="o">=</span> <span class="nx">_</span><span class="p">.</span><span class="nx">pluck</span><span class="p">(</span><span class="nx">dataset</span><span class="p">.</span><span class="nx">fields</span><span class="p">.</span><span class="nx">toJSON</span><span class="p">(),</span> <span class="s1">&#39;id&#39;</span><span class="p">);</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-4'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-4'>#</a>
+      </div>
+      <p>zip the fields with the data rows to produce js objs
+TODO: factor this out as a common method with other backends</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>      <span class="kd">var</span> <span class="nx">objs</span> <span class="o">=</span> <span class="nx">_</span><span class="p">.</span><span class="nx">map</span><span class="p">(</span><span class="nx">dataset</span><span class="p">.</span><span class="nx">_dataCache</span><span class="p">,</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">d</span><span class="p">)</span> <span class="p">{</span> 
         <span class="kd">var</span> <span class="nx">obj</span> <span class="o">=</span> <span class="p">{};</span>
-        <span class="nx">_</span><span class="p">.</span><span class="nx">each</span><span class="p">(</span><span class="nx">_</span><span class="p">.</span><span class="nx">zip</span><span class="p">(</span><span class="nx">fields</span><span class="p">,</span> <span class="nx">d</span><span class="p">),</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">x</span><span class="p">)</span> <span class="p">{</span> <span class="nx">obj</span><span class="p">[</span><span class="nx">x</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span> <span class="o">=</span> <span class="nx">x</span><span class="p">[</span><span class="mi">1</span><span class="p">];</span> <span class="p">})</span>
+        <span class="nx">_</span><span class="p">.</span><span class="nx">each</span><span class="p">(</span><span class="nx">_</span><span class="p">.</span><span class="nx">zip</span><span class="p">(</span><span class="nx">fields</span><span class="p">,</span> <span class="nx">d</span><span class="p">),</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">x</span><span class="p">)</span> <span class="p">{</span>
+          <span class="nx">obj</span><span class="p">[</span><span class="nx">x</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span> <span class="o">=</span> <span class="nx">x</span><span class="p">[</span><span class="mi">1</span><span class="p">];</span>
+        <span class="p">});</span>
         <span class="k">return</span> <span class="nx">obj</span><span class="p">;</span>
       <span class="p">});</span>
       <span class="nx">dfd</span><span class="p">.</span><span class="nx">resolve</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">_docsToQueryResult</span><span class="p">(</span><span class="nx">objs</span><span class="p">));</span>
       <span class="k">return</span> <span class="nx">dfd</span><span class="p">;</span>
     <span class="p">},</span>
-    <span class="nx">gdocsToJavascript</span><span class="o">:</span>  <span class="kd">function</span><span class="p">(</span><span class="nx">gdocsSpreadsheet</span><span class="p">)</span> <span class="p">{</span>
-      <span class="cm">/*</span>
-<span class="cm">         :options: (optional) optional argument dictionary:</span>
-<span class="cm">         columnsToUse: list of columns to use (specified by field names)</span>
-<span class="cm">         colTypes: dictionary (with column names as keys) specifying types (e.g. range, percent for use in conversion).</span>
-<span class="cm">         :return: tabular data object (hash with keys: field and data).</span>
-
-<span class="cm">         Issues: seems google docs return columns in rows in random order and not even sure whether consistent across rows.</span>
-<span class="cm">         */</span>
-      <span class="kd">var</span> <span class="nx">options</span> <span class="o">=</span> <span class="p">{};</span>
+    <span class="nx">gdocsToJavascript</span><span class="o">:</span>  <span class="kd">function</span><span class="p">(</span><span class="nx">gdocsSpreadsheet</span><span class="p">)</span> <span class="p">{</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-5'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-5'>#</a>
+      </div>
+      <p>:options: (optional) optional argument dictionary:
+   columnsToUse: list of columns to use (specified by field names)
+   colTypes: dictionary (with column names as keys) specifying types (e.g. range, percent for use in conversion).
+   :return: tabular data object (hash with keys: field and data).</p>
+<p>Issues: seems google docs return columns in rows in random order and not even sure whether consistent across rows.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>      <span class="kd">var</span> <span class="nx">options</span> <span class="o">=</span> <span class="p">{};</span>
       <span class="k">if</span> <span class="p">(</span><span class="nx">arguments</span><span class="p">.</span><span class="nx">length</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">)</span> <span class="p">{</span>
         <span class="nx">options</span> <span class="o">=</span> <span class="nx">arguments</span><span class="p">[</span><span class="mi">1</span><span class="p">];</span>
       <span class="p">}</span>
       <span class="kd">var</span> <span class="nx">results</span> <span class="o">=</span> <span class="p">{</span>
         <span class="s1">&#39;field&#39;</span><span class="o">:</span> <span class="p">[],</span>
         <span class="s1">&#39;data&#39;</span><span class="o">:</span> <span class="p">[]</span>
-      <span class="p">};</span></pre></div>             </td>           </tr>                               <tr id="section-6">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-6">&#182;</a>               </div>               <p>default is no special info on type of columns</p>             </td>             <td class="code">               <div class="highlight"><pre>      <span class="kd">var</span> <span class="nx">colTypes</span> <span class="o">=</span> <span class="p">{};</span>
+      <span class="p">};</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-6'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-6'>#</a>
+      </div>
+      <p>default is no special info on type of columns</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>      <span class="kd">var</span> <span class="nx">colTypes</span> <span class="o">=</span> <span class="p">{};</span>
       <span class="k">if</span> <span class="p">(</span><span class="nx">options</span><span class="p">.</span><span class="nx">colTypes</span><span class="p">)</span> <span class="p">{</span>
         <span class="nx">colTypes</span> <span class="o">=</span> <span class="nx">options</span><span class="p">.</span><span class="nx">colTypes</span><span class="p">;</span>
-      <span class="p">}</span></pre></div>             </td>           </tr>                               <tr id="section-7">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-7">&#182;</a>               </div>               <p>either extract column headings from spreadsheet directly, or used supplied ones</p>             </td>             <td class="code">               <div class="highlight"><pre>      <span class="k">if</span> <span class="p">(</span><span class="nx">options</span><span class="p">.</span><span class="nx">columnsToUse</span><span class="p">)</span> <span class="p">{</span></pre></div>             </td>           </tr>                               <tr id="section-8">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-8">&#182;</a>               </div>               <p>columns set to subset supplied</p>             </td>             <td class="code">               <div class="highlight"><pre>        <span class="nx">results</span><span class="p">.</span><span class="nx">field</span> <span class="o">=</span> <span class="nx">options</span><span class="p">.</span><span class="nx">columnsToUse</span><span class="p">;</span>
-      <span class="p">}</span> <span class="k">else</span> <span class="p">{</span></pre></div>             </td>           </tr>                               <tr id="section-9">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-9">&#182;</a>               </div>               <p>set columns to use to be all available</p>             </td>             <td class="code">               <div class="highlight"><pre>        <span class="k">if</span> <span class="p">(</span><span class="nx">gdocsSpreadsheet</span><span class="p">.</span><span class="nx">feed</span><span class="p">.</span><span class="nx">entry</span><span class="p">.</span><span class="nx">length</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+      <span class="p">}</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-7'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-7'>#</a>
+      </div>
+      <p>either extract column headings from spreadsheet directly, or used supplied ones</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>      <span class="k">if</span> <span class="p">(</span><span class="nx">options</span><span class="p">.</span><span class="nx">columnsToUse</span><span class="p">)</span> <span class="p">{</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-8'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-8'>#</a>
+      </div>
+      <p>columns set to subset supplied</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>        <span class="nx">results</span><span class="p">.</span><span class="nx">field</span> <span class="o">=</span> <span class="nx">options</span><span class="p">.</span><span class="nx">columnsToUse</span><span class="p">;</span>
+      <span class="p">}</span> <span class="k">else</span> <span class="p">{</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-9'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-9'>#</a>
+      </div>
+      <p>set columns to use to be all available</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>        <span class="k">if</span> <span class="p">(</span><span class="nx">gdocsSpreadsheet</span><span class="p">.</span><span class="nx">feed</span><span class="p">.</span><span class="nx">entry</span><span class="p">.</span><span class="nx">length</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
           <span class="k">for</span> <span class="p">(</span><span class="kd">var</span> <span class="nx">k</span> <span class="k">in</span> <span class="nx">gdocsSpreadsheet</span><span class="p">.</span><span class="nx">feed</span><span class="p">.</span><span class="nx">entry</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="p">{</span>
             <span class="k">if</span> <span class="p">(</span><span class="nx">k</span><span class="p">.</span><span class="nx">substr</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span> <span class="o">==</span> <span class="s1">&#39;gsx&#39;</span><span class="p">)</span> <span class="p">{</span>
-              <span class="kd">var</span> <span class="nx">col</span> <span class="o">=</span> <span class="nx">k</span><span class="p">.</span><span class="nx">substr</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span>
-                <span class="nx">results</span><span class="p">.</span><span class="nx">field</span><span class="p">.</span><span class="nx">push</span><span class="p">(</span><span class="nx">col</span><span class="p">);</span>
+              <span class="kd">var</span> <span class="nx">col</span> <span class="o">=</span> <span class="nx">k</span><span class="p">.</span><span class="nx">substr</span><span class="p">(</span><span class="mi">4</span><span class="p">);</span>
+              <span class="nx">results</span><span class="p">.</span><span class="nx">field</span><span class="p">.</span><span class="nx">push</span><span class="p">(</span><span class="nx">col</span><span class="p">);</span>
             <span class="p">}</span>
           <span class="p">}</span>
         <span class="p">}</span>
-      <span class="p">}</span></pre></div>             </td>           </tr>                               <tr id="section-10">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-10">&#182;</a>               </div>               <p>converts non numberical values that should be numerical (22.3%[string] -> 0.223[float])</p>             </td>             <td class="code">               <div class="highlight"><pre>      <span class="kd">var</span> <span class="nx">rep</span> <span class="o">=</span> <span class="sr">/^([\d\.\-]+)\%$/</span><span class="p">;</span>
+      <span class="p">}</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-10'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-10'>#</a>
+      </div>
+      <p>converts non numberical values that should be numerical (22.3%[string] -&gt; 0.223[float])</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>      <span class="kd">var</span> <span class="nx">rep</span> <span class="o">=</span> <span class="sr">/^([\d\.\-]+)\%$/</span><span class="p">;</span>
       <span class="nx">$</span><span class="p">.</span><span class="nx">each</span><span class="p">(</span><span class="nx">gdocsSpreadsheet</span><span class="p">.</span><span class="nx">feed</span><span class="p">.</span><span class="nx">entry</span><span class="p">,</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">i</span><span class="p">,</span> <span class="nx">entry</span><span class="p">)</span> <span class="p">{</span>
         <span class="kd">var</span> <span class="nx">row</span> <span class="o">=</span> <span class="p">[];</span>
         <span class="k">for</span> <span class="p">(</span><span class="kd">var</span> <span class="nx">k</span> <span class="k">in</span> <span class="nx">results</span><span class="p">.</span><span class="nx">field</span><span class="p">)</span> <span class="p">{</span>
           <span class="kd">var</span> <span class="nx">col</span> <span class="o">=</span> <span class="nx">results</span><span class="p">.</span><span class="nx">field</span><span class="p">[</span><span class="nx">k</span><span class="p">];</span>
           <span class="kd">var</span> <span class="nx">_keyname</span> <span class="o">=</span> <span class="s1">&#39;gsx$&#39;</span> <span class="o">+</span> <span class="nx">col</span><span class="p">;</span>
-          <span class="kd">var</span> <span class="nx">value</span> <span class="o">=</span> <span class="nx">entry</span><span class="p">[</span><span class="nx">_keyname</span><span class="p">][</span><span class="s1">&#39;$t&#39;</span><span class="p">];</span></pre></div>             </td>           </tr>                               <tr id="section-11">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-11">&#182;</a>               </div>               <p>if labelled as % and value contains %, convert</p>             </td>             <td class="code">               <div class="highlight"><pre>          <span class="k">if</span> <span class="p">(</span><span class="nx">colTypes</span><span class="p">[</span><span class="nx">col</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;percent&#39;</span><span class="p">)</span> <span class="p">{</span>
+          <span class="kd">var</span> <span class="nx">value</span> <span class="o">=</span> <span class="nx">entry</span><span class="p">[</span><span class="nx">_keyname</span><span class="p">][</span><span class="s1">&#39;$t&#39;</span><span class="p">];</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-11'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-11'>#</a>
+      </div>
+      <p>if labelled as % and value contains %, convert</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>          <span class="k">if</span> <span class="p">(</span><span class="nx">colTypes</span><span class="p">[</span><span class="nx">col</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;percent&#39;</span><span class="p">)</span> <span class="p">{</span>
             <span class="k">if</span> <span class="p">(</span><span class="nx">rep</span><span class="p">.</span><span class="nx">test</span><span class="p">(</span><span class="nx">value</span><span class="p">))</span> <span class="p">{</span>
               <span class="kd">var</span> <span class="nx">value2</span> <span class="o">=</span> <span class="nx">rep</span><span class="p">.</span><span class="nx">exec</span><span class="p">(</span><span class="nx">value</span><span class="p">);</span>
               <span class="kd">var</span> <span class="nx">value3</span> <span class="o">=</span> <span class="nb">parseFloat</span><span class="p">(</span><span class="nx">value2</span><span class="p">);</span>
@@ -113,4 +262,9 @@ TODO: factor this out as a common method with other backends</p>             </t
 
 <span class="p">}(</span><span class="nx">jQuery</span><span class="p">,</span> <span class="k">this</span><span class="p">.</span><span class="nx">recline</span><span class="p">.</span><span class="nx">Backend</span><span class="p">));</span>
 
-</pre></div>             </td>           </tr>                </tbody>     </table>   </div> </body> </html> 
+</pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+</div>
+</body>

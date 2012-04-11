@@ -213,8 +213,10 @@ my.DataExplorer = Backbone.View.extend({
     _.each(this.pageViews, function(view, idx) {
       if (view.id === pageName) {
         view.view.el.show();
+        view.view.trigger('view:show');
       } else {
         view.view.el.hide();
+        view.view.trigger('view:hide');
       }
     });
   },
