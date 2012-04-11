@@ -179,12 +179,26 @@ my.Field = Backbone.Model.extend({
     if ('0' in data) {
       throw new Error('Looks like you did not pass a proper hash with id to Field constructor');
     }
-    if (this.attributes.label == null) {
+    if (this.attributes.label === null) {
       this.set({label: this.id});
     }
     if (options) {
       this.renderer = options.renderer;
       this.deriver = options.deriver;
+    }
+    if (!this.renderer) {
+      this.renderer = this.defaultRenderers[this.get('type')];
+    }
+  },
+  defaultRenderers: {
+    object: function(val, field, doc) {
+      return JSON.stringify(val);
+    },
+    'float': function(val, field, doc) {
+      var format = field.get('format'); 
+      if (format === 'percentage') {
+        return val + '%';
+      }
     }
   }
 });
@@ -217,7 +231,7 @@ my.FieldList = Backbone.Collection.extend({
 //  * query: Query in ES Query DSL <http://www.elasticsearch.org/guide/reference/api/search/query.html>
 //  * filter: See filters and <a href="http://www.elasticsearch.org/guide/reference/query-dsl/filtered-query.html">Filtered Query</a>
 //  * fields: set of fields to return - http://www.elasticsearch.org/guide/reference/api/search/fields.html
-//  * facets: TODO - see http://www.elasticsearch.org/guide/reference/api/search/facets/
+//  * facets: specification of facets - see http://www.elasticsearch.org/guide/reference/api/search/facets/
 // 
 // Additions:
 // 
@@ -245,13 +259,13 @@ my.FieldList = Backbone.Collection.extend({
 my.Query = Backbone.Model.extend({
   defaults: function() {
     return {
-      size: 100
-      , from: 0
-      , facets: {}
+      size: 100,
+      from: 0,
+      facets: {},
       // <http://www.elasticsearch.org/guide/reference/query-dsl/and-filter.html>
       // , filter: {}
-      , filters: []
-    }
+      filters: []
+    };
   },
   // #### addTermFilter
   // 
@@ -294,6 +308,17 @@ my.Query = Backbone.Model.extend({
     }
     facets[fieldId] = {
       terms: { field: fieldId }
+    };
+    this.set({facets: facets}, {silent: true});
+    this.trigger('facet:add', this);
+  },
+  addHistogramFacet: function(fieldId) {
+    var facets = this.get('facets');
+    facets[fieldId] = {
+      date_histogram: {
+        field: fieldId,
+        interval: 'day'
+      }
     };
     this.set({facets: facets}, {silent: true});
     this.trigger('facet:add', this);
@@ -347,7 +372,7 @@ my.Facet = Backbone.Model.extend({
       other: 0,
       missing: 0,
       terms: []
-    }
+    };
   }
 });
 

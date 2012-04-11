@@ -59,7 +59,7 @@ my.Map = Backbone.View.extend({
       if (!self.mapReady){
         self._setupMap();
       }
-      self.redraw()
+      self.redraw();
     });
 
     return this;
@@ -79,9 +79,9 @@ my.Map = Backbone.View.extend({
           if (feature){
             // Build popup contents
             // TODO: mustache?
-            html = ''
-            for (key in doc.attributes){
-              html += '<div><strong>' + key + '</strong>: '+ doc.attributes[key] + '</div>'
+            var html = '';
+            for (key in doc.attributes) {
+              html += '<div><strong>' + key + '</strong>: '+ doc.attributes[key] + '</div>';
             }
             feature.properties = {popupContent: html};
 
@@ -105,9 +105,9 @@ my.Map = Backbone.View.extend({
           type: 'Point',
           coordinates: [
             doc.attributes[this._lonFieldName],
-            doc.attributes[this._latFieldName],
+            doc.attributes[this._latFieldName]
             ]
-        }
+        };
       }
       return null;
     }

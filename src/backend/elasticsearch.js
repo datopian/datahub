@@ -59,37 +59,33 @@ this.recline.Backend = this.recline.Backend || {};
       }
     },
     _normalizeQuery: function(queryObj) {
-      if (queryObj.toJSON) {
-        var out = queryObj.toJSON();
-      } else {
-        var out = _.extend({}, queryObj);
-      }
-      if (out.q != undefined && out.q.trim() === '') {
+      var out = queryObj.toJSON ? queryObj.toJSON() : _.extend({}, queryObj);
+      if (out.q !== undefined && out.q.trim() === '') {
         delete out.q;
       }
       if (!out.q) {
         out.query = {
           match_all: {}
-        }
+        };
       } else {
         out.query = {
           query_string: {
             query: out.q
           }
-        }
+        };
         delete out.q;
       }
       // now do filters (note the *plural*)
       if (out.filters && out.filters.length) {
         if (!out.filter) {
-          out.filter = {}
+          out.filter = {};
         }
         if (!out.filter.and) {
           out.filter.and = [];
         }
         out.filter.and = out.filter.and.concat(out.filters);
       }
-      if (out.filters != undefined) {
+      if (out.filters !== undefined) {
         delete out.filters;
       }
       return out;
@@ -107,10 +103,10 @@ this.recline.Backend = this.recline.Backend || {};
       // TODO: fail case
       jqxhr.done(function(results) {
         _.each(results.hits.hits, function(hit) {
-          if (!'id' in hit._source && hit._id) {
+          if (!('id' in hit._source) && hit._id) {
             hit._source.id = hit._id;
           }
-        })
+        });
         if (results.facets) {
           results.hits.facets = results.facets;
         }
