@@ -1,25 +1,55 @@
-<!DOCTYPE html>  <html> <head>   <title>view-flot-graph.js</title>   <meta http-equiv="content-type" content="text/html; charset=UTF-8">   <link rel="stylesheet" media="all" href="docco.css" /> </head> <body>   <div id="container">     <div id="background"></div>            <div id="jump_to">         Jump To &hellip;         <div id="jump_wrapper">           <div id="jump_page">                                           <a class="source" href="model.html">                 model.js               </a>                                           <a class="source" href="view-flot-graph.html">                 view-flot-graph.js               </a>                                           <a class="source" href="view-grid.html">                 view-grid.js               </a>                                           <a class="source" href="view.html">                 view.js               </a>                        </div>         </div>       </div>          <table cellpadding="0" cellspacing="0">       <thead>         <tr>           <th class="docs">             <h1>               view-flot-graph.js             </h1>           </th>           <th class="code">           </th>         </tr>       </thead>       <tbody>                               <tr id="section-1">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-1">&#182;</a>               </div>                            </td>             <td class="code">               <div class="highlight"><pre><span class="cm">/*jshint multistr:true */</span>
-
-<span class="k">this</span><span class="p">.</span><span class="nx">recline</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">recline</span> <span class="o">||</span> <span class="p">{};</span>
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="content-type" content="text/html;charset=utf-8">
+  <title>view-flot-graph.js</title>
+  <link rel="stylesheet" href="pycco.css">
+</head>
+<body>
+<div id='container'>
+  <div id="background"></div>
+  <div class='section'>
+    <div class='docs'><h1>view-flot-graph.js</h1></div>
+  </div>
+  <div class='clearall'>
+  <div class='section' id='section-0'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-0'>#</a>
+      </div>
+      <p>jshint multistr:true</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="k">this</span><span class="p">.</span><span class="nx">recline</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">recline</span> <span class="o">||</span> <span class="p">{};</span>
 <span class="k">this</span><span class="p">.</span><span class="nx">recline</span><span class="p">.</span><span class="nx">View</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">recline</span><span class="p">.</span><span class="nx">View</span> <span class="o">||</span> <span class="p">{};</span>
 
-<span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">$</span><span class="p">,</span> <span class="nx">my</span><span class="p">)</span> <span class="p">{</span></pre></div>             </td>           </tr>                               <tr id="section-2">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-2">&#182;</a>               </div>               <h2>Graph view for a Dataset using Flot graphing library.</h2>
-
+<span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">$</span><span class="p">,</span> <span class="nx">my</span><span class="p">)</span> <span class="p">{</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-1'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-1'>#</a>
+      </div>
+      <h2>Graph view for a Dataset using Flot graphing library.</h2>
 <p>Initialization arguments:</p>
-
 <ul>
 <li>model: recline.Model.Dataset</li>
-<li><p>config: (optional) graph configuration hash of form:</p>
-
+<li>
+<p>config: (optional) graph configuration hash of form:</p>
 <p>{ 
      group: {column name for x-axis},
      series: [{column name for series A}, {column name series B}, ... ],
      graphType: 'line'
-   }</p></li>
+   }</p>
+</li>
 </ul>
-
 <p>NB: should <em>not</em> provide an el argument to the view but must let the view
-generate the element itself (you can then append view.el to the DOM.</p>             </td>             <td class="code">               <div class="highlight"><pre><span class="nx">my</span><span class="p">.</span><span class="nx">FlotGraph</span> <span class="o">=</span> <span class="nx">Backbone</span><span class="p">.</span><span class="nx">View</span><span class="p">.</span><span class="nx">extend</span><span class="p">({</span>
+generate the element itself (you can then append view.el to the DOM.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="nx">my</span><span class="p">.</span><span class="nx">FlotGraph</span> <span class="o">=</span> <span class="nx">Backbone</span><span class="p">.</span><span class="nx">View</span><span class="p">.</span><span class="nx">extend</span><span class="p">({</span>
 
   <span class="nx">tagName</span><span class="o">:</span>  <span class="s2">&quot;div&quot;</span><span class="p">,</span>
   <span class="nx">className</span><span class="o">:</span> <span class="s2">&quot;data-graph-container&quot;</span><span class="p">,</span>
@@ -79,16 +109,28 @@ generate the element itself (you can then append view.el to the DOM.</p>        
 <span class="s1">&#39;</span><span class="p">,</span>
 
   <span class="nx">events</span><span class="o">:</span> <span class="p">{</span>
-    <span class="s1">&#39;change form select&#39;</span><span class="o">:</span> <span class="s1">&#39;onEditorSubmit&#39;</span>
-    <span class="p">,</span> <span class="s1">&#39;click .editor-add&#39;</span><span class="o">:</span> <span class="s1">&#39;addSeries&#39;</span>
-    <span class="p">,</span> <span class="s1">&#39;click .action-remove-series&#39;</span><span class="o">:</span> <span class="s1">&#39;removeSeries&#39;</span>
-    <span class="p">,</span> <span class="s1">&#39;click .action-toggle-help&#39;</span><span class="o">:</span> <span class="s1">&#39;toggleHelp&#39;</span>
+    <span class="s1">&#39;change form select&#39;</span><span class="o">:</span> <span class="s1">&#39;onEditorSubmit&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;click .editor-add&#39;</span><span class="o">:</span> <span class="s1">&#39;addSeries&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;click .action-remove-series&#39;</span><span class="o">:</span> <span class="s1">&#39;removeSeries&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;click .action-toggle-help&#39;</span><span class="o">:</span> <span class="s1">&#39;toggleHelp&#39;</span>
   <span class="p">},</span>
 
   <span class="nx">initialize</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">options</span><span class="p">,</span> <span class="nx">config</span><span class="p">)</span> <span class="p">{</span>
     <span class="kd">var</span> <span class="nx">self</span> <span class="o">=</span> <span class="k">this</span><span class="p">;</span>
     <span class="k">this</span><span class="p">.</span><span class="nx">el</span> <span class="o">=</span> <span class="nx">$</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">el</span><span class="p">);</span>
-    <span class="nx">_</span><span class="p">.</span><span class="nx">bindAll</span><span class="p">(</span><span class="k">this</span><span class="p">,</span> <span class="s1">&#39;render&#39;</span><span class="p">,</span> <span class="s1">&#39;redraw&#39;</span><span class="p">);</span></pre></div>             </td>           </tr>                               <tr id="section-3">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-3">&#182;</a>               </div>               <p>we need the model.fields to render properly</p>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="k">this</span><span class="p">.</span><span class="nx">model</span><span class="p">.</span><span class="nx">bind</span><span class="p">(</span><span class="s1">&#39;change&#39;</span><span class="p">,</span> <span class="k">this</span><span class="p">.</span><span class="nx">render</span><span class="p">);</span>
+    <span class="nx">_</span><span class="p">.</span><span class="nx">bindAll</span><span class="p">(</span><span class="k">this</span><span class="p">,</span> <span class="s1">&#39;render&#39;</span><span class="p">,</span> <span class="s1">&#39;redraw&#39;</span><span class="p">);</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-2'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-2'>#</a>
+      </div>
+      <p>we need the model.fields to render properly</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="k">this</span><span class="p">.</span><span class="nx">model</span><span class="p">.</span><span class="nx">bind</span><span class="p">(</span><span class="s1">&#39;change&#39;</span><span class="p">,</span> <span class="k">this</span><span class="p">.</span><span class="nx">render</span><span class="p">);</span>
     <span class="k">this</span><span class="p">.</span><span class="nx">model</span><span class="p">.</span><span class="nx">fields</span><span class="p">.</span><span class="nx">bind</span><span class="p">(</span><span class="s1">&#39;reset&#39;</span><span class="p">,</span> <span class="k">this</span><span class="p">.</span><span class="nx">render</span><span class="p">);</span>
     <span class="k">this</span><span class="p">.</span><span class="nx">model</span><span class="p">.</span><span class="nx">fields</span><span class="p">.</span><span class="nx">bind</span><span class="p">(</span><span class="s1">&#39;add&#39;</span><span class="p">,</span> <span class="k">this</span><span class="p">.</span><span class="nx">render</span><span class="p">);</span>
     <span class="k">this</span><span class="p">.</span><span class="nx">model</span><span class="p">.</span><span class="nx">currentDocuments</span><span class="p">.</span><span class="nx">bind</span><span class="p">(</span><span class="s1">&#39;add&#39;</span><span class="p">,</span> <span class="k">this</span><span class="p">.</span><span class="nx">redraw</span><span class="p">);</span>
@@ -110,8 +152,32 @@ generate the element itself (you can then append view.el to the DOM.</p>        
 
   <span class="nx">render</span><span class="o">:</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
     <span class="nx">htmls</span> <span class="o">=</span> <span class="nx">$</span><span class="p">.</span><span class="nx">mustache</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">template</span><span class="p">,</span> <span class="k">this</span><span class="p">.</span><span class="nx">model</span><span class="p">.</span><span class="nx">toTemplateJSON</span><span class="p">());</span>
-    <span class="nx">$</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">el</span><span class="p">).</span><span class="nx">html</span><span class="p">(</span><span class="nx">htmls</span><span class="p">);</span></pre></div>             </td>           </tr>                               <tr id="section-4">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-4">&#182;</a>               </div>               <p>now set a load of stuff up</p>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="k">this</span><span class="p">.</span><span class="nx">$graph</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">el</span><span class="p">.</span><span class="nx">find</span><span class="p">(</span><span class="s1">&#39;.panel.graph&#39;</span><span class="p">);</span></pre></div>             </td>           </tr>                               <tr id="section-5">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-5">&#182;</a>               </div>               <p>for use later when adding additional series
-could be simpler just to have a common template!</p>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="k">this</span><span class="p">.</span><span class="nx">$seriesClone</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">el</span><span class="p">.</span><span class="nx">find</span><span class="p">(</span><span class="s1">&#39;.editor-series&#39;</span><span class="p">).</span><span class="nx">clone</span><span class="p">();</span>
+    <span class="nx">$</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">el</span><span class="p">).</span><span class="nx">html</span><span class="p">(</span><span class="nx">htmls</span><span class="p">);</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-3'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-3'>#</a>
+      </div>
+      <p>now set a load of stuff up</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="k">this</span><span class="p">.</span><span class="nx">$graph</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">el</span><span class="p">.</span><span class="nx">find</span><span class="p">(</span><span class="s1">&#39;.panel.graph&#39;</span><span class="p">);</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-4'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-4'>#</a>
+      </div>
+      <p>for use later when adding additional series
+could be simpler just to have a common template!</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="k">this</span><span class="p">.</span><span class="nx">$seriesClone</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">el</span><span class="p">.</span><span class="nx">find</span><span class="p">(</span><span class="s1">&#39;.editor-series&#39;</span><span class="p">).</span><span class="nx">clone</span><span class="p">();</span>
     <span class="k">this</span><span class="p">.</span><span class="nx">_updateSeries</span><span class="p">();</span>
     <span class="k">return</span> <span class="k">this</span><span class="p">;</span>
   <span class="p">},</span>
@@ -122,27 +188,71 @@ could be simpler just to have a common template!</p>             </td>          
     <span class="kd">var</span> <span class="nx">series</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">$series</span><span class="p">.</span><span class="nx">map</span><span class="p">(</span><span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
       <span class="k">return</span> <span class="nx">$</span><span class="p">(</span><span class="k">this</span><span class="p">).</span><span class="nx">val</span><span class="p">();</span>
     <span class="p">});</span>
-    <span class="k">this</span><span class="p">.</span><span class="nx">chartConfig</span><span class="p">.</span><span class="nx">series</span> <span class="o">=</span> <span class="nx">$</span><span class="p">.</span><span class="nx">makeArray</span><span class="p">(</span><span class="nx">series</span><span class="p">)</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">chartConfig</span><span class="p">.</span><span class="nx">series</span> <span class="o">=</span> <span class="nx">$</span><span class="p">.</span><span class="nx">makeArray</span><span class="p">(</span><span class="nx">series</span><span class="p">);</span>
     <span class="k">this</span><span class="p">.</span><span class="nx">chartConfig</span><span class="p">.</span><span class="nx">group</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">el</span><span class="p">.</span><span class="nx">find</span><span class="p">(</span><span class="s1">&#39;.editor-group select&#39;</span><span class="p">).</span><span class="nx">val</span><span class="p">();</span>
-    <span class="k">this</span><span class="p">.</span><span class="nx">chartConfig</span><span class="p">.</span><span class="nx">graphType</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">el</span><span class="p">.</span><span class="nx">find</span><span class="p">(</span><span class="s1">&#39;.editor-type select&#39;</span><span class="p">).</span><span class="nx">val</span><span class="p">();</span></pre></div>             </td>           </tr>                               <tr id="section-6">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-6">&#182;</a>               </div>               <p>update navigation</p>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="kd">var</span> <span class="nx">qs</span> <span class="o">=</span> <span class="nx">my</span><span class="p">.</span><span class="nx">parseHashQueryString</span><span class="p">();</span>
-    <span class="nx">qs</span><span class="p">[</span><span class="s1">&#39;graph&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nx">JSON</span><span class="p">.</span><span class="nx">stringify</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">chartConfig</span><span class="p">);</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">chartConfig</span><span class="p">.</span><span class="nx">graphType</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">el</span><span class="p">.</span><span class="nx">find</span><span class="p">(</span><span class="s1">&#39;.editor-type select&#39;</span><span class="p">).</span><span class="nx">val</span><span class="p">();</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-5'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-5'>#</a>
+      </div>
+      <p>update navigation</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="kd">var</span> <span class="nx">qs</span> <span class="o">=</span> <span class="nx">my</span><span class="p">.</span><span class="nx">parseHashQueryString</span><span class="p">();</span>
+    <span class="nx">qs</span><span class="p">.</span><span class="nx">graph</span> <span class="o">=</span> <span class="nx">JSON</span><span class="p">.</span><span class="nx">stringify</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">chartConfig</span><span class="p">);</span>
     <span class="nx">my</span><span class="p">.</span><span class="nx">setHashQueryString</span><span class="p">(</span><span class="nx">qs</span><span class="p">);</span>
     <span class="k">this</span><span class="p">.</span><span class="nx">redraw</span><span class="p">();</span>
   <span class="p">},</span>
 
-  <span class="nx">redraw</span><span class="o">:</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span></pre></div>             </td>           </tr>                               <tr id="section-7">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-7">&#182;</a>               </div>               <p>There appear to be issues generating a Flot graph if either:</p>             </td>             <td class="code">               <div class="highlight"><pre></pre></div>             </td>           </tr>                               <tr id="section-8">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-8">&#182;</a>               </div>               <ul>
-<li><p>The relevant div that graph attaches to his hidden at the moment of creating the plot -- Flot will complain with</p>
-
-<p>Uncaught Invalid dimensions for plot, width = 0, height = 0</p></li>
-<li>There is no data for the plot -- either same error or may have issues later with errors like 'non-existent node-value' </li>
-</ul>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="kd">var</span> <span class="nx">areWeVisible</span> <span class="o">=</span> <span class="o">!</span><span class="nx">jQuery</span><span class="p">.</span><span class="nx">expr</span><span class="p">.</span><span class="nx">filters</span><span class="p">.</span><span class="nx">hidden</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">el</span><span class="p">[</span><span class="mi">0</span><span class="p">]);</span>
-    <span class="k">if</span> <span class="p">((</span><span class="o">!</span><span class="nx">areWeVisible</span> <span class="o">||</span> <span class="k">this</span><span class="p">.</span><span class="nx">model</span><span class="p">.</span><span class="nx">currentDocuments</span><span class="p">.</span><span class="nx">length</span> <span class="o">==</span> <span class="mi">0</span><span class="p">))</span> <span class="p">{</span>
-      <span class="k">return</span>
+  <span class="nx">redraw</span><span class="o">:</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-6'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-6'>#</a>
+      </div>
+      <p>There appear to be issues generating a Flot graph if either:</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-7'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-7'>#</a>
+      </div>
+      <ul>
+<li>The relevant div that graph attaches to his hidden at the moment of creating the plot -- Flot will complain with</li>
+</ul>
+<p>Uncaught Invalid dimensions for plot, width = 0, height = 0
+* There is no data for the plot -- either same error or may have issues later with errors like 'non-existent node-value' </p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="kd">var</span> <span class="nx">areWeVisible</span> <span class="o">=</span> <span class="o">!</span><span class="nx">jQuery</span><span class="p">.</span><span class="nx">expr</span><span class="p">.</span><span class="nx">filters</span><span class="p">.</span><span class="nx">hidden</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">el</span><span class="p">[</span><span class="mi">0</span><span class="p">]);</span>
+    <span class="k">if</span> <span class="p">((</span><span class="o">!</span><span class="nx">areWeVisible</span> <span class="o">||</span> <span class="k">this</span><span class="p">.</span><span class="nx">model</span><span class="p">.</span><span class="nx">currentDocuments</span><span class="p">.</span><span class="nx">length</span> <span class="o">===</span> <span class="mi">0</span><span class="p">))</span> <span class="p">{</span>
+      <span class="k">return</span><span class="p">;</span>
     <span class="p">}</span>
     <span class="kd">var</span> <span class="nx">series</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">createSeries</span><span class="p">();</span>
     <span class="kd">var</span> <span class="nx">options</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">getGraphOptions</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">chartConfig</span><span class="p">.</span><span class="nx">graphType</span><span class="p">);</span>
     <span class="k">this</span><span class="p">.</span><span class="nx">plot</span> <span class="o">=</span> <span class="nx">$</span><span class="p">.</span><span class="nx">plot</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">$graph</span><span class="p">,</span> <span class="nx">series</span><span class="p">,</span> <span class="nx">options</span><span class="p">);</span>
-    <span class="k">this</span><span class="p">.</span><span class="nx">setupTooltips</span><span class="p">();</span></pre></div>             </td>           </tr>                               <tr id="section-9">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-9">&#182;</a>               </div>               <p>create this.plot and cache it
+    <span class="k">this</span><span class="p">.</span><span class="nx">setupTooltips</span><span class="p">();</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-8'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-8'>#</a>
+      </div>
+      <p>create this.plot and cache it
    if (!this.plot) {
      this.plot = $.plot(this.$graph, series, options);
    } else {
@@ -151,39 +261,90 @@ could be simpler just to have a common template!</p>             </td>          
      this.plot.resize();
      this.plot.setupGrid();
      this.plot.draw();
-   }</p>             </td>             <td class="code">               <div class="highlight"><pre>  <span class="p">},</span></pre></div>             </td>           </tr>                               <tr id="section-10">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-10">&#182;</a>               </div>               <p>needs to be function as can depend on state</p>             </td>             <td class="code">               <div class="highlight"><pre>  <span class="nx">getGraphOptions</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">typeId</span><span class="p">)</span> <span class="p">{</span> 
-    <span class="kd">var</span> <span class="nx">self</span> <span class="o">=</span> <span class="k">this</span><span class="p">;</span></pre></div>             </td>           </tr>                               <tr id="section-11">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-11">&#182;</a>               </div>               <p>special tickformatter to show labels rather than numbers</p>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="kd">var</span> <span class="nx">tickFormatter</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">val</span><span class="p">)</span> <span class="p">{</span>
+   }</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>  <span class="p">},</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-9'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-9'>#</a>
+      </div>
+      <p>needs to be function as can depend on state</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>  <span class="nx">getGraphOptions</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">typeId</span><span class="p">)</span> <span class="p">{</span> 
+    <span class="kd">var</span> <span class="nx">self</span> <span class="o">=</span> <span class="k">this</span><span class="p">;</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-10'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-10'>#</a>
+      </div>
+      <p>special tickformatter to show labels rather than numbers</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="kd">var</span> <span class="nx">tickFormatter</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">val</span><span class="p">)</span> <span class="p">{</span>
       <span class="k">if</span> <span class="p">(</span><span class="nx">self</span><span class="p">.</span><span class="nx">model</span><span class="p">.</span><span class="nx">currentDocuments</span><span class="p">.</span><span class="nx">models</span><span class="p">[</span><span class="nx">val</span><span class="p">])</span> <span class="p">{</span>
-        <span class="kd">var</span> <span class="nx">out</span> <span class="o">=</span> <span class="nx">self</span><span class="p">.</span><span class="nx">model</span><span class="p">.</span><span class="nx">currentDocuments</span><span class="p">.</span><span class="nx">models</span><span class="p">[</span><span class="nx">val</span><span class="p">].</span><span class="nx">get</span><span class="p">(</span><span class="nx">self</span><span class="p">.</span><span class="nx">chartConfig</span><span class="p">.</span><span class="nx">group</span><span class="p">);</span></pre></div>             </td>           </tr>                               <tr id="section-12">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-12">&#182;</a>               </div>               <p>if the value was in fact a number we want that not the </p>             </td>             <td class="code">               <div class="highlight"><pre>        <span class="k">if</span> <span class="p">(</span><span class="k">typeof</span><span class="p">(</span><span class="nx">out</span><span class="p">)</span> <span class="o">==</span> <span class="s1">&#39;number&#39;</span><span class="p">)</span> <span class="p">{</span>
+        <span class="kd">var</span> <span class="nx">out</span> <span class="o">=</span> <span class="nx">self</span><span class="p">.</span><span class="nx">model</span><span class="p">.</span><span class="nx">currentDocuments</span><span class="p">.</span><span class="nx">models</span><span class="p">[</span><span class="nx">val</span><span class="p">].</span><span class="nx">get</span><span class="p">(</span><span class="nx">self</span><span class="p">.</span><span class="nx">chartConfig</span><span class="p">.</span><span class="nx">group</span><span class="p">);</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-11'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-11'>#</a>
+      </div>
+      <p>if the value was in fact a number we want that not the </p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>        <span class="k">if</span> <span class="p">(</span><span class="k">typeof</span><span class="p">(</span><span class="nx">out</span><span class="p">)</span> <span class="o">==</span> <span class="s1">&#39;number&#39;</span><span class="p">)</span> <span class="p">{</span>
           <span class="k">return</span> <span class="nx">val</span><span class="p">;</span>
         <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
           <span class="k">return</span> <span class="nx">out</span><span class="p">;</span>
         <span class="p">}</span>
       <span class="p">}</span>
       <span class="k">return</span> <span class="nx">val</span><span class="p">;</span>
-    <span class="p">}</span></pre></div>             </td>           </tr>                               <tr id="section-13">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-13">&#182;</a>               </div>               <p>TODO: we should really use tickFormatter and 1 interval ticks if (and
+    <span class="p">};</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-12'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-12'>#</a>
+      </div>
+      <p>TODO: we should really use tickFormatter and 1 interval ticks if (and
 only if) x-axis values are non-numeric
 However, that is non-trivial to work out from a dataset (datasets may
-have no field type info). Thus at present we only do this for bars.</p>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="kd">var</span> <span class="nx">options</span> <span class="o">=</span> <span class="p">{</span> 
+have no field type info). Thus at present we only do this for bars.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="kd">var</span> <span class="nx">options</span> <span class="o">=</span> <span class="p">{</span> 
       <span class="nx">lines</span><span class="o">:</span> <span class="p">{</span>
          <span class="nx">series</span><span class="o">:</span> <span class="p">{</span> 
            <span class="nx">lines</span><span class="o">:</span> <span class="p">{</span> <span class="nx">show</span><span class="o">:</span> <span class="kc">true</span> <span class="p">}</span>
          <span class="p">}</span>
-      <span class="p">}</span>
-      <span class="p">,</span> <span class="nx">points</span><span class="o">:</span> <span class="p">{</span>
+      <span class="p">},</span>
+      <span class="nx">points</span><span class="o">:</span> <span class="p">{</span>
         <span class="nx">series</span><span class="o">:</span> <span class="p">{</span>
           <span class="nx">points</span><span class="o">:</span> <span class="p">{</span> <span class="nx">show</span><span class="o">:</span> <span class="kc">true</span> <span class="p">}</span>
         <span class="p">},</span>
         <span class="nx">grid</span><span class="o">:</span> <span class="p">{</span> <span class="nx">hoverable</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span> <span class="nx">clickable</span><span class="o">:</span> <span class="kc">true</span> <span class="p">}</span>
-      <span class="p">}</span>
-      <span class="p">,</span> <span class="s1">&#39;lines-and-points&#39;</span><span class="o">:</span> <span class="p">{</span>
+      <span class="p">},</span>
+      <span class="s1">&#39;lines-and-points&#39;</span><span class="o">:</span> <span class="p">{</span>
         <span class="nx">series</span><span class="o">:</span> <span class="p">{</span>
           <span class="nx">points</span><span class="o">:</span> <span class="p">{</span> <span class="nx">show</span><span class="o">:</span> <span class="kc">true</span> <span class="p">},</span>
           <span class="nx">lines</span><span class="o">:</span> <span class="p">{</span> <span class="nx">show</span><span class="o">:</span> <span class="kc">true</span> <span class="p">}</span>
         <span class="p">},</span>
         <span class="nx">grid</span><span class="o">:</span> <span class="p">{</span> <span class="nx">hoverable</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span> <span class="nx">clickable</span><span class="o">:</span> <span class="kc">true</span> <span class="p">}</span>
-      <span class="p">}</span>
-      <span class="p">,</span> <span class="nx">bars</span><span class="o">:</span> <span class="p">{</span>
+      <span class="p">},</span>
+      <span class="nx">bars</span><span class="o">:</span> <span class="p">{</span>
         <span class="nx">series</span><span class="o">:</span> <span class="p">{</span>
           <span class="nx">lines</span><span class="o">:</span> <span class="p">{</span><span class="nx">show</span><span class="o">:</span> <span class="kc">false</span><span class="p">},</span>
           <span class="nx">bars</span><span class="o">:</span> <span class="p">{</span>
@@ -203,7 +364,7 @@ have no field type info). Thus at present we only do this for bars.</p>         
           <span class="nx">max</span><span class="o">:</span> <span class="nx">self</span><span class="p">.</span><span class="nx">model</span><span class="p">.</span><span class="nx">currentDocuments</span><span class="p">.</span><span class="nx">length</span> <span class="o">-</span> <span class="mf">0.5</span>
         <span class="p">}</span>
       <span class="p">}</span>
-    <span class="p">}</span>
+    <span class="p">};</span>
     <span class="k">return</span> <span class="nx">options</span><span class="p">[</span><span class="nx">typeId</span><span class="p">];</span>
   <span class="p">},</span>
 
@@ -230,7 +391,19 @@ have no field type info). Thus at present we only do this for bars.</p>         
           
           <span class="nx">$</span><span class="p">(</span><span class="s2">&quot;#flot-tooltip&quot;</span><span class="p">).</span><span class="nx">remove</span><span class="p">();</span>
           <span class="kd">var</span> <span class="nx">x</span> <span class="o">=</span> <span class="nx">item</span><span class="p">.</span><span class="nx">datapoint</span><span class="p">[</span><span class="mi">0</span><span class="p">];</span>
-          <span class="kd">var</span> <span class="nx">y</span> <span class="o">=</span> <span class="nx">item</span><span class="p">.</span><span class="nx">datapoint</span><span class="p">[</span><span class="mi">1</span><span class="p">];</span></pre></div>             </td>           </tr>                               <tr id="section-14">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-14">&#182;</a>               </div>               <p>convert back from 'index' value on x-axis (e.g. in cases where non-number values)</p>             </td>             <td class="code">               <div class="highlight"><pre>          <span class="k">if</span> <span class="p">(</span><span class="nx">self</span><span class="p">.</span><span class="nx">model</span><span class="p">.</span><span class="nx">currentDocuments</span><span class="p">.</span><span class="nx">models</span><span class="p">[</span><span class="nx">x</span><span class="p">])</span> <span class="p">{</span>
+          <span class="kd">var</span> <span class="nx">y</span> <span class="o">=</span> <span class="nx">item</span><span class="p">.</span><span class="nx">datapoint</span><span class="p">[</span><span class="mi">1</span><span class="p">];</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-13'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-13'>#</a>
+      </div>
+      <p>convert back from 'index' value on x-axis (e.g. in cases where non-number values)</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>          <span class="k">if</span> <span class="p">(</span><span class="nx">self</span><span class="p">.</span><span class="nx">model</span><span class="p">.</span><span class="nx">currentDocuments</span><span class="p">.</span><span class="nx">models</span><span class="p">[</span><span class="nx">x</span><span class="p">])</span> <span class="p">{</span>
             <span class="nx">x</span> <span class="o">=</span> <span class="nx">self</span><span class="p">.</span><span class="nx">model</span><span class="p">.</span><span class="nx">currentDocuments</span><span class="p">.</span><span class="nx">models</span><span class="p">[</span><span class="nx">x</span><span class="p">].</span><span class="nx">get</span><span class="p">(</span><span class="nx">self</span><span class="p">.</span><span class="nx">chartConfig</span><span class="p">.</span><span class="nx">group</span><span class="p">);</span>
           <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
             <span class="nx">x</span> <span class="o">=</span> <span class="nx">x</span><span class="p">.</span><span class="nx">toFixed</span><span class="p">(</span><span class="mi">2</span><span class="p">);</span>
@@ -264,7 +437,19 @@ have no field type info). Thus at present we only do this for bars.</p>         
           <span class="kd">var</span> <span class="nx">y</span> <span class="o">=</span> <span class="nx">doc</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="nx">field</span><span class="p">);</span>
           <span class="k">if</span> <span class="p">(</span><span class="k">typeof</span> <span class="nx">x</span> <span class="o">===</span> <span class="s1">&#39;string&#39;</span><span class="p">)</span> <span class="p">{</span>
             <span class="nx">x</span> <span class="o">=</span> <span class="nx">index</span><span class="p">;</span>
-          <span class="p">}</span></pre></div>             </td>           </tr>                               <tr id="section-15">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-15">&#182;</a>               </div>               <p>horizontal bar chart</p>             </td>             <td class="code">               <div class="highlight"><pre>          <span class="k">if</span> <span class="p">(</span><span class="nx">self</span><span class="p">.</span><span class="nx">chartConfig</span><span class="p">.</span><span class="nx">graphType</span> <span class="o">==</span> <span class="s1">&#39;bars&#39;</span><span class="p">)</span> <span class="p">{</span>
+          <span class="p">}</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-14'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-14'>#</a>
+      </div>
+      <p>horizontal bar chart</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>          <span class="k">if</span> <span class="p">(</span><span class="nx">self</span><span class="p">.</span><span class="nx">chartConfig</span><span class="p">.</span><span class="nx">graphType</span> <span class="o">==</span> <span class="s1">&#39;bars&#39;</span><span class="p">)</span> <span class="p">{</span>
             <span class="nx">points</span><span class="p">.</span><span class="nx">push</span><span class="p">([</span><span class="nx">y</span><span class="p">,</span> <span class="nx">x</span><span class="p">]);</span>
           <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
             <span class="nx">points</span><span class="p">.</span><span class="nx">push</span><span class="p">([</span><span class="nx">x</span><span class="p">,</span> <span class="nx">y</span><span class="p">]);</span>
@@ -274,12 +459,22 @@ have no field type info). Thus at present we only do this for bars.</p>         
       <span class="p">});</span>
     <span class="p">}</span>
     <span class="k">return</span> <span class="nx">series</span><span class="p">;</span>
-  <span class="p">},</span></pre></div>             </td>           </tr>                               <tr id="section-16">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-16">&#182;</a>               </div>               <p>Public: Adds a new empty series select box to the editor.</p>
-
+  <span class="p">},</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-15'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-15'>#</a>
+      </div>
+      <p>Public: Adds a new empty series select box to the editor.</p>
 <p>All but the first select box will have a remove button that allows them
 to be removed.</p>
-
-<p>Returns itself.</p>             </td>             <td class="code">               <div class="highlight"><pre>  <span class="nx">addSeries</span><span class="o">:</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">e</span><span class="p">)</span> <span class="p">{</span>
+<p>Returns itself.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>  <span class="nx">addSeries</span><span class="o">:</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">e</span><span class="p">)</span> <span class="p">{</span>
     <span class="nx">e</span><span class="p">.</span><span class="nx">preventDefault</span><span class="p">();</span>
     <span class="kd">var</span> <span class="nx">element</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">$seriesClone</span><span class="p">.</span><span class="nx">clone</span><span class="p">(),</span>
         <span class="nx">label</span>   <span class="o">=</span> <span class="nx">element</span><span class="p">.</span><span class="nx">find</span><span class="p">(</span><span class="s1">&#39;label&#39;</span><span class="p">),</span>
@@ -290,9 +485,20 @@ to be removed.</p>
     <span class="nx">label</span><span class="p">.</span><span class="nx">append</span><span class="p">(</span><span class="s1">&#39; [&lt;a href=&quot;#remove&quot; class=&quot;action-remove-series&quot;&gt;Remove&lt;/a&gt;]&#39;</span><span class="p">);</span>
     <span class="nx">label</span><span class="p">.</span><span class="nx">find</span><span class="p">(</span><span class="s1">&#39;span&#39;</span><span class="p">).</span><span class="nx">text</span><span class="p">(</span><span class="nb">String</span><span class="p">.</span><span class="nx">fromCharCode</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">$series</span><span class="p">.</span><span class="nx">length</span> <span class="o">+</span> <span class="mi">64</span><span class="p">));</span>
     <span class="k">return</span> <span class="k">this</span><span class="p">;</span>
-  <span class="p">},</span></pre></div>             </td>           </tr>                               <tr id="section-17">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-17">&#182;</a>               </div>               <p>Public: Removes a series list item from the editor.</p>
-
-<p>Also updates the labels of the remaining series elements.</p>             </td>             <td class="code">               <div class="highlight"><pre>  <span class="nx">removeSeries</span><span class="o">:</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">e</span><span class="p">)</span> <span class="p">{</span>
+  <span class="p">},</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-16'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-16'>#</a>
+      </div>
+      <p>Public: Removes a series list item from the editor.</p>
+<p>Also updates the labels of the remaining series elements.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>  <span class="nx">removeSeries</span><span class="o">:</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">e</span><span class="p">)</span> <span class="p">{</span>
     <span class="nx">e</span><span class="p">.</span><span class="nx">preventDefault</span><span class="p">();</span>
     <span class="kd">var</span> <span class="nx">$el</span> <span class="o">=</span> <span class="nx">$</span><span class="p">(</span><span class="nx">e</span><span class="p">.</span><span class="nx">target</span><span class="p">);</span>
     <span class="nx">$el</span><span class="p">.</span><span class="nx">parent</span><span class="p">().</span><span class="nx">parent</span><span class="p">().</span><span class="nx">remove</span><span class="p">();</span>
@@ -308,13 +514,29 @@ to be removed.</p>
 
   <span class="nx">toggleHelp</span><span class="o">:</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
     <span class="k">this</span><span class="p">.</span><span class="nx">el</span><span class="p">.</span><span class="nx">find</span><span class="p">(</span><span class="s1">&#39;.editor-info&#39;</span><span class="p">).</span><span class="nx">toggleClass</span><span class="p">(</span><span class="s1">&#39;editor-hide-info&#39;</span><span class="p">);</span>
-  <span class="p">},</span></pre></div>             </td>           </tr>                               <tr id="section-18">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-18">&#182;</a>               </div>               <p>Private: Resets the series property to reference the select elements.</p>
-
-<p>Returns itself.</p>             </td>             <td class="code">               <div class="highlight"><pre>  <span class="nx">_updateSeries</span><span class="o">:</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
+  <span class="p">},</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-17'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-17'>#</a>
+      </div>
+      <p>Private: Resets the series property to reference the select elements.</p>
+<p>Returns itself.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>  <span class="nx">_updateSeries</span><span class="o">:</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
     <span class="k">this</span><span class="p">.</span><span class="nx">$series</span>  <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">el</span><span class="p">.</span><span class="nx">find</span><span class="p">(</span><span class="s1">&#39;.editor-series select&#39;</span><span class="p">);</span>
   <span class="p">}</span>
 <span class="p">});</span>
 
 <span class="p">})(</span><span class="nx">jQuery</span><span class="p">,</span> <span class="nx">recline</span><span class="p">.</span><span class="nx">View</span><span class="p">);</span>
 
-</pre></div>             </td>           </tr>                </tbody>     </table>   </div> </body> </html> 
+</pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+</div>
+</body>
