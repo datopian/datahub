@@ -80,10 +80,10 @@ my.FlotGraph = Backbone.View.extend({
 ',
 
   events: {
-    'change form select': 'onEditorSubmit'
-    , 'click .editor-add': 'addSeries'
-    , 'click .action-remove-series': 'removeSeries'
-    , 'click .action-toggle-help': 'toggleHelp'
+    'change form select': 'onEditorSubmit',
+    'click .editor-add': 'addSeries',
+    'click .action-remove-series': 'removeSeries',
+    'click .action-toggle-help': 'toggleHelp'
   },
 
   initialize: function(options, config) {
@@ -129,12 +129,12 @@ my.FlotGraph = Backbone.View.extend({
     var series = this.$series.map(function () {
       return $(this).val();
     });
-    this.chartConfig.series = $.makeArray(series)
+    this.chartConfig.series = $.makeArray(series);
     this.chartConfig.group = this.el.find('.editor-group select').val();
     this.chartConfig.graphType = this.el.find('.editor-type select').val();
     // update navigation
     var qs = my.parseHashQueryString();
-    qs['graph'] = JSON.stringify(this.chartConfig);
+    qs.graph = JSON.stringify(this.chartConfig);
     my.setHashQueryString(qs);
     this.redraw();
   },
@@ -147,8 +147,8 @@ my.FlotGraph = Backbone.View.extend({
     //   Uncaught Invalid dimensions for plot, width = 0, height = 0
     // * There is no data for the plot -- either same error or may have issues later with errors like 'non-existent node-value' 
     var areWeVisible = !jQuery.expr.filters.hidden(this.el[0]);
-    if ((!areWeVisible || this.model.currentDocuments.length == 0)) {
-      return
+    if ((!areWeVisible || this.model.currentDocuments.length === 0)) {
+      return;
     }
     var series = this.createSeries();
     var options = this.getGraphOptions(this.chartConfig.graphType);
@@ -181,7 +181,7 @@ my.FlotGraph = Backbone.View.extend({
         }
       }
       return val;
-    }
+    };
     // TODO: we should really use tickFormatter and 1 interval ticks if (and
     // only if) x-axis values are non-numeric
     // However, that is non-trivial to work out from a dataset (datasets may
@@ -191,21 +191,21 @@ my.FlotGraph = Backbone.View.extend({
          series: { 
            lines: { show: true }
          }
-      }
-      , points: {
+      },
+      points: {
         series: {
           points: { show: true }
         },
         grid: { hoverable: true, clickable: true }
-      }
-      , 'lines-and-points': {
+      },
+      'lines-and-points': {
         series: {
           points: { show: true },
           lines: { show: true }
         },
         grid: { hoverable: true, clickable: true }
-      }
-      , bars: {
+      },
+      bars: {
         series: {
           lines: {show: false},
           bars: {
@@ -225,7 +225,7 @@ my.FlotGraph = Backbone.View.extend({
           max: self.model.currentDocuments.length - 0.5
         }
       }
-    }
+    };
     return options[typeId];
   },
 

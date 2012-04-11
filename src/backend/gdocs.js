@@ -23,12 +23,12 @@ this.recline.Backend = this.recline.Backend || {};
         return url;
       } else {
         // https://docs.google.com/spreadsheet/ccc?key=XXXX#gid=0
-        var regex = /.*spreadsheet\/ccc?.*key=([^#?&+]+).*/
+        var regex = /.*spreadsheet\/ccc?.*key=([^#?&+]+).*/;
         var matches = url.match(regex);
         if (matches) {
           var key = matches[1];
           var worksheet = 1;
-          var out = 'https://spreadsheets.google.com/feeds/list/' + key + '/' + worksheet + '/public/values?alt=json'
+          var out = 'https://spreadsheets.google.com/feeds/list/' + key + '/' + worksheet + '/public/values?alt=json';
           return out;
         } else {
           alert('Failed to extract gdocs key from ' + url);
@@ -52,8 +52,9 @@ this.recline.Backend = this.recline.Backend || {};
           // cache data onto dataset (we have loaded whole gdoc it seems!)
           model._dataCache = result.data;
           dfd.resolve(model);
-        })
-        return dfd.promise(); }
+        });
+        return dfd.promise();
+      }
     },
 
     query: function(dataset, queryObj) { 
@@ -64,7 +65,9 @@ this.recline.Backend = this.recline.Backend || {};
       // TODO: factor this out as a common method with other backends
       var objs = _.map(dataset._dataCache, function (d) { 
         var obj = {};
-        _.each(_.zip(fields, d), function (x) { obj[x[0]] = x[1]; })
+        _.each(_.zip(fields, d), function (x) {
+          obj[x[0]] = x[1];
+        });
         return obj;
       });
       dfd.resolve(this._docsToQueryResult(objs));
@@ -101,8 +104,8 @@ this.recline.Backend = this.recline.Backend || {};
         if (gdocsSpreadsheet.feed.entry.length > 0) {
           for (var k in gdocsSpreadsheet.feed.entry[0]) {
             if (k.substr(0, 3) == 'gsx') {
-              var col = k.substr(4)
-                results.field.push(col);
+              var col = k.substr(4);
+              results.field.push(col);
             }
           }
         }

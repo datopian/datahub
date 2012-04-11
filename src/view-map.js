@@ -69,7 +69,7 @@ my.Map = Backbone.View.extend({
       if (!self.mapReady){
         self._setupMap();
       }
-      self.redraw()
+      self.redraw();
     });
 
     return this;
@@ -95,7 +95,6 @@ my.Map = Backbone.View.extend({
         // Clear and rebuild all features
         this.features.clearLayers();
         this._add(this.model.currentDocuments.models);
-
       }
     }
   },
@@ -153,9 +152,9 @@ my.Map = Backbone.View.extend({
           type: 'Point',
           coordinates: [
             doc.attributes[this._lonFieldName],
-            doc.attributes[this._latFieldName],
+            doc.attributes[this._latFieldName]
             ]
-        }
+        };
       }
       return null;
     }

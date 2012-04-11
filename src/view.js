@@ -54,7 +54,7 @@ this.recline.View = this.recline.View || {};
 // FlotGraph subview.
 my.DataExplorer = Backbone.View.extend({
   template: ' \
-  <div class="data-explorer"> \
+  <div class="recline-data-explorer"> \
     <div class="alert-messages"></div> \
     \
     <div class="header"> \
@@ -65,6 +65,10 @@ my.DataExplorer = Backbone.View.extend({
       </ul> \
       <div class="recline-results-info"> \
         Results found <span class="doc-count">{{docCount}}</span> \
+      </div> \
+      <div class="menu-right"> \
+        <a href="#" class="btn" data-action="filters">Filters</a> \
+        <a href="#" class="btn" data-action="facets">Facets</a> \
       </div> \
       <div class="query-editor-here" style="display:inline;"></div> \
       <div class="clearfix"></div> \
@@ -78,6 +82,9 @@ my.DataExplorer = Backbone.View.extend({
     </div> \
   </div> \
   ',
+  events: {
+    'click .menu-right a': 'onMenuClick'
+  },
 
   initialize: function(options) {
     var self = this;
@@ -116,7 +123,7 @@ my.DataExplorer = Backbone.View.extend({
         my.notify('Data loaded', {category: 'success'});
         // update navigation
         var qs = my.parseHashQueryString();
-        qs['reclineQuery'] = JSON.stringify(self.model.queryState.toJSON());
+        qs.reclineQuery = JSON.stringify(self.model.queryState.toJSON());
         var out = my.getNewHashForQueryString(qs);
         self.router.navigate(out);
       });
@@ -165,7 +172,7 @@ my.DataExplorer = Backbone.View.extend({
     $(this.el).html(template);
     var $dataViewContainer = this.el.find('.data-view-container');
     _.each(this.pageViews, function(view, pageName) {
-      $dataViewContainer.append(view.view.el)
+      $dataViewContainer.append(view.view.el);
     });
     var queryEditor = new my.QueryEditor({
       model: this.model.queryState
@@ -174,10 +181,12 @@ my.DataExplorer = Backbone.View.extend({
     var filterEditor = new my.FilterEditor({
       model: this.model.queryState
     });
+    this.$filterEditor = filterEditor.el;
     this.el.find('.header').append(filterEditor.el);
     var facetViewer = new my.FacetViewer({
       model: this.model
     });
+    this.$facetViewer = facetViewer.el;
     this.el.find('.header').append(facetViewer.el);
   },
 
@@ -210,6 +219,16 @@ my.DataExplorer = Backbone.View.extend({
         view.view.trigger('view:hide');
       }
     });
+  },
+
+  onMenuClick: function(e) {
+    e.preventDefault();
+    var action = $(e.target).attr('data-action');
+    if (action === 'filters') {
+      this.$filterEditor.show();
+    } else if (action === 'facets') {
+      this.$facetViewer.show();
+    }
   }
 });
 
@@ -220,28 +239,21 @@ my.QueryEditor = Backbone.View.extend({
       <div class="input-prepend text-query"> \
         <span class="add-on"><i class="icon-search"></i></span> \
         <input type="text" name="q" value="{{q}}" class="span2" placeholder="Search data ..." class="search-query" /> \
-        <div class="btn-group menu"> \
-          <a class="btn dropdown-toggle" data-toggle="dropdown"><i class="icon-cog"></i><span class="caret"></span></a> \
-          <ul class="dropdown-menu"> \
-            <li><a data-action="size" href="">Number of items to show ({{size}})</a></li> \
-            <li><a data-action="from" href="">Show from ({{from}})</a></li> \
-          </ul> \
-        </div> \
       </div> \
       <div class="pagination"> \
         <ul> \
           <li class="prev action-pagination-update"><a href="">&laquo;</a></li> \
-          <li class="active"><a>{{from}} &ndash; {{to}}</a></li> \
+          <li class="active"><a><input name="from" type="text" value="{{from}}" /> &ndash; <input name="to" type="text" value="{{to}}" /> </a></li> \
           <li class="next action-pagination-update"><a href="">&raquo;</a></li> \
         </ul> \
       </div> \
+      <button type="submit" class="btn">Go &raquo;</button> \
     </form> \
   ',
 
   events: {
-    'submit form': 'onFormSubmit'
-    , 'click .action-pagination-update': 'onPaginationUpdate'
-    , 'click .menu li a': 'onMenuItemClick'
+    'submit form': 'onFormSubmit',
+    'click .action-pagination-update': 'onPaginationUpdate'
   },
 
   initialize: function() {
@@ -253,31 +265,20 @@ my.QueryEditor = Backbone.View.extend({
   onFormSubmit: function(e) {
     e.preventDefault();
     var query = this.el.find('.text-query input').val();
-    this.model.set({q: query});
+    var newFrom = parseInt(this.el.find('input[name="from"]').val());
+    var newSize = parseInt(this.el.find('input[name="to"]').val()) - newFrom;
+    this.model.set({size: newSize, from: newFrom, q: query});
   },
   onPaginationUpdate: function(e) {
     e.preventDefault();
     var $el = $(e.target);
+    var newFrom = 0;
     if ($el.parent().hasClass('prev')) {
-      var newFrom = this.model.get('from') - Math.max(0, this.model.get('size'));
+      newFrom = this.model.get('from') - Math.max(0, this.model.get('size'));
     } else {
-      var newFrom = this.model.get('from') + this.model.get('size');
+      newFrom = this.model.get('from') + this.model.get('size');
     }
     this.model.set({from: newFrom});
-  },
-  onMenuItemClick: function(e) {
-    e.preventDefault();
-    var attrName = $(e.target).attr('data-action');
-    var msg = _.template('New value (<%= value %>)',
-        {value: this.model.get(attrName)}
-        );
-    var newValue = prompt(msg);
-    if (newValue) {
-      newValue = parseInt(newValue);
-      var update = {};
-      update[attrName] = newValue;
-      this.model.set(update);
-    }
   },
   render: function() {
     var tmplData = this.model.toJSON();
@@ -311,7 +312,8 @@ my.FilterEditor = Backbone.View.extend({
               </div> \
               {{/termFilters}} \
             </div> \
-          <div class="span2"> \
+          <div class="span4"> \
+            <p>To add a filter use the column menu in the grid view.</p> \
             <button type="submit" class="btn">Update</button> \
           </div> \
         </form> \
@@ -347,7 +349,7 @@ my.FilterEditor = Backbone.View.extend({
         fieldId: fieldId,
         label: fieldId,
         value: filter.term[fieldId]
-      }
+      };
     });
     var out = $.mustache(this.template, tmplData);
     this.el.html(out);
@@ -398,8 +400,11 @@ my.FacetViewer = Backbone.View.extend({
         <a class="btn dropdown-toggle" data-toggle="dropdown" href="#"><i class="icon-chevron-down"></i> {{id}} {{label}}</a> \
         <ul class="facet-items dropdown-menu"> \
         {{#terms}} \
-          <li><input type="checkbox" class="facet-choice js-facet-filter" value="{{term}}" name="{{term}}" /> <label for="{{term}}">{{term}} ({{count}})</label></li> \
+          <li><a class="facet-choice js-facet-filter" data-value="{{term}}">{{term}} ({{count}})</a></li> \
         {{/terms}} \
+        {{#entries}} \
+          <li><a class="facet-choice js-facet-filter" data-value="{{time}}">{{term}} ({{count}})</a></li> \
+        {{/entries}} \
         </ul> \
       </div> \
       {{/facets}} \
@@ -408,7 +413,7 @@ my.FacetViewer = Backbone.View.extend({
 
   events: {
     'click .js-hide': 'onHide',
-    'change .js-facet-filter': 'onFacetFilter'
+    'click .js-facet-filter': 'onFacetFilter'
   },
   initialize: function(model) {
     _.bindAll(this, 'render');
@@ -422,6 +427,15 @@ my.FacetViewer = Backbone.View.extend({
       facets: this.model.facets.toJSON(),
       fields: this.model.fields.toJSON()
     };
+    tmplData.facets = _.map(tmplData.facets, function(facet) {
+      if (facet._type === 'date_histogram') {
+        facet.entries = _.map(facet.entries, function(entry) {
+          entry.term = new Date(entry.time).toDateString();
+          return entry;
+        });
+      }
+      return facet;
+    });
     var templated = $.mustache(this.template, tmplData);
     this.el.html(templated);
     // are there actually any facets to show?
@@ -436,10 +450,9 @@ my.FacetViewer = Backbone.View.extend({
     this.el.hide();
   },
   onFacetFilter: function(e) {
-    // todo: uncheck
-    var $checkbox = $(e.target);
-    var fieldId = $checkbox.closest('.facet-summary').attr('data-facet');
-    var value = $checkbox.val();
+    var $target= $(e.target);
+    var fieldId = $target.closest('.facet-summary').attr('data-facet');
+    var value = $target.attr('data-value');
     this.model.queryState.addTermFilter(fieldId, value);
   }
 });
@@ -452,15 +465,15 @@ var urlPathRegex = /^([^?]+)(\?.*)?/;
 // Parse the Hash section of a URL into path and query string
 my.parseHashUrl = function(hashUrl) {
   var parsed = urlPathRegex.exec(hashUrl);
-  if (parsed == null) {
+  if (parsed === null) {
     return {};
   } else {
     return {
       path: parsed[1],
       query: parsed[2] || ''
-    }
+    };
   }
-}
+};
 
 // Parse a URL query string (?xyz=abc...) into a dictionary.
 my.parseQueryString = function(q) {
@@ -481,13 +494,13 @@ my.parseQueryString = function(q) {
     urlParams[d(e[1])] = d(e[2]);
   }
   return urlParams;
-}
+};
 
 // Parse the query string out of the URL hash
 my.parseHashQueryString = function() {
   q = my.parseHashUrl(window.location.hash).query;
   return my.parseQueryString(q);
-}
+};
 
 // Compse a Query String
 my.composeQueryString = function(queryParams) {
@@ -498,7 +511,7 @@ my.composeQueryString = function(queryParams) {
   });
   queryString += items.join('&');
   return queryString;
-}
+};
 
 my.getNewHashForQueryString = function(queryParams) {
   var queryPart = my.composeQueryString(queryParams);
@@ -508,11 +521,11 @@ my.getNewHashForQueryString = function(queryParams) {
   } else {
     return queryPart;
   }
-}
+};
 
 my.setHashQueryString = function(queryParams) {
   window.location.hash = my.getNewHashForQueryString(queryParams);
-}
+};
 
 // ## notify
 //
@@ -522,7 +535,7 @@ my.setHashQueryString = function(queryParams) {
 // * persist: if true alert is persistent, o/w hidden after 3s (default = false)
 // * loader: if true show loading spinner
 my.notify = function(message, options) {
-  if (!options) var options = {};
+  if (!options) options = {};
   var tmplData = _.extend({
     msg: message,
     category: 'warning'
@@ -536,7 +549,7 @@ my.notify = function(message, options) {
         {{/loader}} \
     </div>';
   var _templated = $.mustache(_template, tmplData); 
-  _templated = $(_templated).appendTo($('.data-explorer .alert-messages'));
+  _templated = $(_templated).appendTo($('.recline-data-explorer .alert-messages'));
   if (!options.persist) {
     setTimeout(function() {
       $(_templated).fadeOut(1000, function() {
@@ -544,15 +557,15 @@ my.notify = function(message, options) {
       });
     }, 1000);
   }
-}
+};
 
 // ## clearNotifications
 //
 // Clear all existing notifications
 my.clearNotifications = function() {
-  var $notifications = $('.data-explorer .alert-messages .alert');
+  var $notifications = $('.recline-data-explorer .alert-messages .alert');
   $notifications.remove();
-}
+};
 
 })(jQuery, recline.View);
 

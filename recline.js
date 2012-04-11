@@ -72,17 +72,33 @@ this.recline.Model = this.recline.Model || {};
 
 (function($, my) {
 
-// ## A Dataset model
+// ## <a id="dataset">A Dataset model</a>
 //
 // A model has the following (non-Backbone) attributes:
 //
-// * fields: (aka columns) is a FieldList listing all the fields on this
-//   Dataset (this can be set explicitly, or, will be set by Dataset.fetch() or Dataset.query()
-// * currentDocuments: a DocumentList containing the Documents we have
-//   currently loaded for viewing (you update currentDocuments by calling query)
-// * docCount: total number of documents in this dataset
+// @property {FieldList} fields: (aka columns) is a `FieldList` listing all the
+// fields on this Dataset (this can be set explicitly, or, will be set by
+// Dataset.fetch() or Dataset.query()
+//
+// @property {DocumentList} currentDocuments: a `DocumentList` containing the
+// Documents we have currently loaded for viewing (updated by calling query
+// method)
+//
+// @property {number} docCount: total number of documents in this dataset
+//
+// @property {Backend} backend: the Backend (instance) for this Dataset
+//
+// @property {Query} queryState: `Query` object which stores current
+// queryState. queryState may be edited by other components (e.g. a query
+// editor view) changes will trigger a Dataset query.
+//
+// @property {FacetList} facets: FacetList object containing all current
+// Facets.
 my.Dataset = Backbone.Model.extend({
   __type__: 'Dataset',
+  // ### initialize
+  // 
+  // Sets up instance properties (see above)
   initialize: function(model, backend) {
     _.bindAll(this, 'query');
     this.backend = backend;
@@ -154,11 +170,29 @@ my.Dataset = Backbone.Model.extend({
   }
 });
 
-// ## A Document (aka Row)
+// ## <a id="document">A Document (aka Row)</a>
 // 
 // A single entry or row in the dataset
 my.Document = Backbone.Model.extend({
-  __type__: 'Document'
+  __type__: 'Document',
+  initialize: function() {
+    _.bindAll(this, 'getFieldValue');
+  },
+
+  // ### getFieldValue
+  //
+  // For the provided Field get the corresponding rendered computed data value
+  // for this document.
+  getFieldValue: function(field) {
+    var val = this.get(field.id);
+    if (field.deriver) {
+      val = field.deriver(val, field, this);
+    }
+    if (field.renderer) {
+      val = field.renderer(val, field, this);
+    }
+    return val;
+  }
 });
 
 // ## A Backbone collection of Documents
@@ -167,28 +201,58 @@ my.DocumentList = Backbone.Collection.extend({
   model: my.Document
 });
 
-// ## A Field (aka Column) on a Dataset
+// ## <a id="field">A Field (aka Column) on a Dataset</a>
 // 
-// Following attributes as standard:
+// Following (Backbone) attributes as standard:
 //
-//  * id: a unique identifer for this field- usually this should match the key in the documents hash
-//  * label: the visible label used for this field
-//  * type: the type of the data
+// * id: a unique identifer for this field- usually this should match the key in the documents hash
+// * label: (optional: defaults to id) the visible label used for this field
+// * type: (optional: defaults to string) the type of the data in this field. Should be a string as per type names defined by ElasticSearch - see Types list on <http://www.elasticsearch.org/guide/reference/mapping/>
+// * format: (optional) used to indicate how the data should be formatted. For example:
+//   * type=date, format=yyyy-mm-dd
+//   * type=float, format=percentage
+//   * type=float, format='###,###.##'
+// * is_derived: (default: false) attribute indicating this field has no backend data but is just derived from other fields (see below).
+// 
+// Following additional instance properties:
+// 
+// @property {Function} renderer: a function to render the data for this field.
+// Signature: function(value, field, doc) where value is the value of this
+// cell, field is corresponding field object and document is the document
+// object. Note that implementing functions can ignore arguments (e.g.
+// function(value) would be a valid formatter function).
+// 
+// @property {Function} deriver: a function to derive/compute the value of data
+// in this field as a function of this field's value (if any) and the current
+// document, its signature and behaviour is the same as for renderer.  Use of
+// this function allows you to define an entirely new value for data in this
+// field. This provides support for a) 'derived/computed' fields: i.e. fields
+// whose data are functions of the data in other fields b) transforming the
+// value of this field prior to rendering.
 my.Field = Backbone.Model.extend({
+  // ### defaults - define default values
   defaults: {
-    id: null,
     label: null,
-    type: 'String'
+    type: 'string',
+    format: null,
+    is_derived: false
   },
-  // In addition to normal backbone initialization via a Hash you can also
-  // just pass a single argument representing id to the ctor
-  initialize: function(data) {
-    // if a hash not passed in the first argument is set as value for key 0
+  // ### initialize
+  //
+  // @param {Object} data: standard Backbone model attributes
+  //
+  // @param {Object} options: renderer and/or deriver functions.
+  initialize: function(data, options) {
+    // if a hash not passed in the first argument throw error
     if ('0' in data) {
       throw new Error('Looks like you did not pass a proper hash with id to Field constructor');
     }
     if (this.attributes.label == null) {
       this.set({label: this.id});
+    }
+    if (options) {
+      this.renderer = options.renderer;
+      this.deriver = options.deriver;
     }
   }
 });
@@ -197,30 +261,99 @@ my.FieldList = Backbone.Collection.extend({
   model: my.Field
 });
 
-// ## A Query object storing Dataset Query state
+// ## <a id="query">Query</a>
+//
+// Query instances encapsulate a query to the backend (see <a
+// href="backend/base.html">query method on backend</a>). Useful both
+// for creating queries and for storing and manipulating query state -
+// e.g. from a query editor).
+//
+// **Query Structure and format**
+//
+// Query structure should follow that of [ElasticSearch query
+// language](http://www.elasticsearch.org/guide/reference/api/search/).
+//
+// **NB: It is up to specific backends how to implement and support this query
+// structure. Different backends might choose to implement things differently
+// or not support certain features. Please check your backend for details.**
+//
+// Query object has the following key attributes:
+// 
+//  * size (=limit): number of results to return
+//  * from (=offset): offset into result set - http://www.elasticsearch.org/guide/reference/api/search/from-size.html
+//  * sort: sort order - <http://www.elasticsearch.org/guide/reference/api/search/sort.html>
+//  * query: Query in ES Query DSL <http://www.elasticsearch.org/guide/reference/api/search/query.html>
+//  * filter: See filters and <a href="http://www.elasticsearch.org/guide/reference/query-dsl/filtered-query.html">Filtered Query</a>
+//  * fields: set of fields to return - http://www.elasticsearch.org/guide/reference/api/search/fields.html
+//  * facets: TODO - see http://www.elasticsearch.org/guide/reference/api/search/facets/
+// 
+// Additions:
+// 
+//  * q: either straight text or a hash will map directly onto a [query_string
+//  query](http://www.elasticsearch.org/guide/reference/query-dsl/query-string-query.html)
+//  in backend
+//
+//   * Of course this can be re-interpreted by different backends. E.g. some
+//   may just pass this straight through e.g. for an SQL backend this could be
+//   the full SQL query
+//
+//  * filters: dict of ElasticSearch filters. These will be and-ed together for
+//  execution.
+// 
+// **Examples**
+// 
+// <pre>
+// {
+//    q: 'quick brown fox',
+//    filters: [
+//      { term: { 'owner': 'jones' } }
+//    ]
+// }
+// </pre>
 my.Query = Backbone.Model.extend({
   defaults: function() {
     return {
       size: 100
       , from: 0
       , facets: {}
-      // http://www.elasticsearch.org/guide/reference/query-dsl/and-filter.html 
+      // <http://www.elasticsearch.org/guide/reference/query-dsl/and-filter.html>
       // , filter: {}
-      // list of simple filters which will be add to 'add' filter of filter
       , filters: []
     }
   },
-  // Set (update or add) a terms filter
-  // http://www.elasticsearch.org/guide/reference/query-dsl/terms-filter.html
+  // #### addTermFilter
+  // 
+  // Set (update or add) a terms filter to filters
+  //
+  // See <http://www.elasticsearch.org/guide/reference/query-dsl/terms-filter.html>
   addTermFilter: function(fieldId, value) {
     var filters = this.get('filters');
     var filter = { term: {} };
     filter.term[fieldId] = value;
     filters.push(filter);
     this.set({filters: filters});
-    // change does not seem to be triggered ...
+    // change does not seem to be triggered automatically
+    if (value) {
+      this.trigger('change');
+    } else {
+      // adding a new blank filter and do not want to trigger a new query
+      this.trigger('change:filters:new-blank');
+    }
+  },
+  // ### removeFilter
+  //
+  // Remove a filter from filters at index filterIndex
+  removeFilter: function(filterIndex) {
+    var filters = this.get('filters');
+    filters.splice(filterIndex, 1);
+    this.set({filters: filters});
     this.trigger('change');
   },
+  // ### addFacet
+  //
+  // Add a Facet to this query
+  //
+  // See <http://www.elasticsearch.org/guide/reference/api/search/facets/>
   addFacet: function(fieldId) {
     var facets = this.get('facets');
     // Assume id and fieldId should be the same (TODO: this need not be true if we want to add two different type of facets on same field)
@@ -236,18 +369,51 @@ my.Query = Backbone.Model.extend({
 });
 
 
-// ## A Facet (Result)
+// ## <a id="facet">A Facet (Result)</a>
+//
+// Object to store Facet information, that is summary information (e.g. values
+// and counts) about a field obtained by some faceting method on the
+// backend.
+//
+// Structure of a facet follows that of Facet results in ElasticSearch, see:
+// <http://www.elasticsearch.org/guide/reference/api/search/facets/>
+//
+// Specifically the object structure of a facet looks like (there is one
+// addition compared to ElasticSearch: the "id" field which corresponds to the
+// key used to specify this facet in the facet query):
+//
+// <pre>
+// {
+//   "id": "id-of-facet",
+//   // type of this facet (terms, range, histogram etc)
+//   "_type" : "terms",
+//   // total number of tokens in the facet
+//   "total": 5,
+//   // @property {number} number of documents which have no value for the field
+//   "missing" : 0,
+//   // number of facet values not included in the returned facets
+//   "other": 0,
+//   // term object ({term: , count: ...})
+//   "terms" : [ {
+//       "term" : "foo",
+//       "count" : 2
+//     }, {
+//       "term" : "bar",
+//       "count" : 2
+//     }, {
+//       "term" : "baz",
+//       "count" : 1
+//     }
+//   ]
+// }
+// </pre>
 my.Facet = Backbone.Model.extend({
   defaults: function() {
     return {
       _type: 'terms',
-      // total number of tokens in the facet
       total: 0,
-      // number of facet values not included in the returned facets
       other: 0,
-      // number of documents which have no value for the field
       missing: 0,
-      // term object ({term: , count: ...})
       terms: []
     }
   }
@@ -264,6 +430,8 @@ my.FacetList = Backbone.Collection.extend({
 my.backends = {};
 
 }(jQuery, this.recline.Model));
+
+/*jshint multistr:true */
 
 var util = function() {
   var templates = {
@@ -415,6 +583,8 @@ var util = function() {
     observeExit: observeExit
   };
 }();
+/*jshint multistr:true */
+
 this.recline = this.recline || {};
 this.recline.View = this.recline.View || {};
 
@@ -767,6 +937,8 @@ my.FlotGraph = Backbone.View.extend({
 
 })(jQuery, recline.View);
 
+/*jshint multistr:true */
+
 this.recline = this.recline || {};
 this.recline.View = this.recline.View || {};
 
@@ -775,16 +947,12 @@ this.recline.View = this.recline.View || {};
 //
 // Provides a tabular view on a Dataset.
 //
-// Initialize it with a recline.Dataset object.
-//
-// Additional options passed in second arguments. Options:
-//
-// * cellRenderer: function used to render individual cells. See DataGridRow for more.
+// Initialize it with a `recline.Model.Dataset`.
 my.DataGrid = Backbone.View.extend({
   tagName:  "div",
-  className: "data-table-container",
+  className: "recline-grid-container",
 
-  initialize: function(modelEtc, options) {
+  initialize: function(modelEtc) {
     var self = this;
     this.el = $(this.el);
     _.bindAll(this, 'render');
@@ -793,7 +961,6 @@ my.DataGrid = Backbone.View.extend({
     this.model.currentDocuments.bind('remove', this.render);
     this.state = {};
     this.hiddenFields = [];
-    this.options = options;
   },
 
   events: {
@@ -842,6 +1009,9 @@ my.DataGrid = Backbone.View.extend({
       bulkEdit: function() { self.showTransformColumnDialog('bulkEdit', {name: self.state.currentColumn}) },
       facet: function() { 
         self.model.queryState.addFacet(self.state.currentColumn);
+      },
+      filter: function() {
+        self.model.queryState.addTermFilter(self.state.currentColumn, '');
       },
       transform: function() { self.showTransformDialog('transform') },
       sortAsc: function() { self.setColumnSort('asc') },
@@ -915,7 +1085,7 @@ my.DataGrid = Backbone.View.extend({
   // ======================================================
   // #### Templating
   template: ' \
-    <table class="data-table table-striped table-condensed" cellspacing="0"> \
+    <table class="recline-grid table-striped table-condensed" cellspacing="0"> \
       <thead> \
         <tr> \
           {{#notEmpty}} \
@@ -934,9 +1104,13 @@ my.DataGrid = Backbone.View.extend({
                 <a class="btn dropdown-toggle" data-toggle="dropdown"><i class="icon-cog"></i><span class="caret"></span></a> \
                 <ul class="dropdown-menu data-table-menu pull-right"> \
                   <li><a data-action="facet" href="JavaScript:void(0);">Facet on this Field</a></li> \
+                  <li><a data-action="filter" href="JavaScript:void(0);">Text Filter</a></li> \
+                  <li class="divider"></li> \
                   <li><a data-action="sortAsc" href="JavaScript:void(0);">Sort ascending</a></li> \
                   <li><a data-action="sortDesc" href="JavaScript:void(0);">Sort descending</a></li> \
+                  <li class="divider"></li> \
                   <li><a data-action="hideColumn" href="JavaScript:void(0);">Hide this column</a></li> \
+                  <li class="divider"></li> \
                   <li class="write-op"><a data-action="bulkEdit" href="JavaScript:void(0);">Transform...</a></li> \
                 </ul> \
               </div> \
@@ -970,9 +1144,7 @@ my.DataGrid = Backbone.View.extend({
           model: doc,
           el: tr,
           fields: self.fields
-        },
-        self.options
-        );
+        });
       newView.render();
     });
     this.el.toggleClass('no-hidden', (self.hiddenFields.length == 0));
@@ -986,14 +1158,6 @@ my.DataGrid = Backbone.View.extend({
 //
 // In addition you *must* pass in a FieldList in the constructor options. This should be list of fields for the DataGrid.
 //
-// Additional options can be passed in a second hash argument. Options:
-//
-// * cellRenderer: function to render cells. Signature: function(value,
-//   field, doc) where value is the value of this cell, field is
-//   corresponding field object and document is the document object. Note
-//   that implementing functions can ignore arguments (e.g.
-//   function(value) would be a valid cellRenderer function).
-//
 // Example:
 //
 // <pre>
@@ -1001,22 +1165,12 @@ my.DataGrid = Backbone.View.extend({
 //   model: dataset-document,
 //     el: dom-element,
 //     fields: mydatasets.fields // a FieldList object
-//   }, {
-//     cellRenderer: my-cell-renderer-function 
-//   }
-// );
+//   });
 // </pre>
 my.DataGridRow = Backbone.View.extend({
-  initialize: function(initData, options) {
+  initialize: function(initData) {
     _.bindAll(this, 'render');
     this._fields = initData.fields;
-    if (options && options.cellRenderer) {
-      this._cellRenderer = options.cellRenderer;
-    } else {
-      this._cellRenderer = function(value) {
-        return value;
-      }
-    }
     this.el = $(this.el);
     this.model.bind('change', this.render);
   },
@@ -1051,7 +1205,7 @@ my.DataGridRow = Backbone.View.extend({
     var cellData = this._fields.map(function(field) {
       return {
         field: field.id,
-        value: self._cellRenderer(doc.get(field.id), field, doc)
+        value: doc.getFieldValue(field)
       }
     })
     return { id: this.id, cells: cellData }
@@ -1104,6 +1258,174 @@ my.DataGridRow = Backbone.View.extend({
 });
 
 })(jQuery, recline.View);
+/*jshint multistr:true */
+
+this.recline = this.recline || {};
+this.recline.View = this.recline.View || {};
+
+(function($, my) {
+
+my.Map = Backbone.View.extend({
+
+  tagName:  'div',
+  className: 'data-map-container',
+
+  latitudeFieldNames: ['lat','latitude'],
+  longitudeFieldNames: ['lon','longitude'],
+  geometryFieldNames: ['geom','the_geom','geometry','spatial'],
+
+  //TODO: In case we want to change the default markers
+  /*
+  markerOptions: {
+    radius: 5,
+    color: 'grey',
+    fillColor: 'orange',
+    weight: 2,
+    opacity: 1,
+    fillOpacity: 1
+  },
+  */
+
+  template: ' \
+<div class="panel map"> \
+</div> \
+',
+
+  initialize: function(options, config) {
+    var self = this;
+
+    this.el = $(this.el);
+    this.render();
+    this.model.bind('change', function() {
+      self._setupGeometryField();
+    });
+
+    this.mapReady = false;
+  },
+
+  render: function() {
+
+    var self = this;
+
+    htmls = $.mustache(this.template, this.model.toTemplateJSON());
+    $(this.el).html(htmls);
+    this.$map = this.el.find('.panel.map');
+
+    this.model.bind('query:done', function() {
+      if (!self.geomReady){
+        self._setupGeometryField();
+      }
+
+      if (!self.mapReady){
+        self._setupMap();
+      }
+      self.redraw()
+    });
+
+    return this;
+  },
+
+  redraw: function(){
+
+    var self = this;
+
+    if (this.geomReady){
+      if (this.model.currentDocuments.length > 0){
+        this.features.clearLayers();
+        var bounds = new L.LatLngBounds();
+
+        this.model.currentDocuments.forEach(function(doc){
+          var feature = self._getGeometryFromDocument(doc);
+          if (feature){
+            // Build popup contents
+            // TODO: mustache?
+            html = ''
+            for (key in doc.attributes){
+              html += '<div><strong>' + key + '</strong>: '+ doc.attributes[key] + '</div>'
+            }
+            feature.properties = {popupContent: html};
+
+            self.features.addGeoJSON(feature);
+
+            // TODO: bounds and center map
+          }
+        });
+      }
+    }
+  },
+
+  _getGeometryFromDocument: function(doc){
+    if (this.geomReady){
+      if (this._geomFieldName){
+        // We assume that the contents of the field are a valid GeoJSON object
+        return doc.attributes[this._geomFieldName];
+      } else if (this._lonFieldName && this._latFieldName){
+        // We'll create a GeoJSON like point object from the two lat/lon fields
+        return {
+          type: 'Point',
+          coordinates: [
+            doc.attributes[this._lonFieldName],
+            doc.attributes[this._latFieldName],
+            ]
+        }
+      }
+      return null;
+    }
+  },
+
+  _setupGeometryField: function(){
+    var geomField, latField, lonField;
+
+    // Check if there is a field with GeoJSON geometries or alternatively,
+    // two fields with lat/lon values
+    this._geomFieldName = this._checkField(this.geometryFieldNames);
+    this._latFieldName = this._checkField(this.latitudeFieldNames);
+    this._lonFieldName = this._checkField(this.longitudeFieldNames);
+
+    // TODO: Allow users to choose the fields
+
+    this.geomReady = (this._geomFieldName || (this._latFieldName && this._lonFieldName));
+  },
+
+  _checkField: function(fieldNames){
+    var field;
+    for (var i = 0; i < fieldNames.length; i++){
+      field = this.model.fields.get(fieldNames[i]);
+      if (field) return field.id;
+    }
+    return null;
+  },
+
+  _setupMap: function(){
+
+    this.map = new L.Map(this.$map.get(0));
+
+    // MapQuest OpenStreetMap base map
+    var mapUrl = "http://otile{s}.mqcdn.com/tiles/1.0.0/osm/{z}/{x}/{y}.png";
+    var osmAttribution = 'Map data &copy; 2011 OpenStreetMap contributors, Tiles Courtesy of <a href="http://www.mapquest.com/" target="_blank">MapQuest</a> <img src="http://developer.mapquest.com/content/osm/mq_logo.png">';
+    var bg = new L.TileLayer(mapUrl, {maxZoom: 18, attribution: osmAttribution ,subdomains: '1234'});
+    this.map.addLayer(bg);
+
+    // Layer to hold the features
+    this.features = new L.GeoJSON();
+    this.features.on('featureparse', function (e) {
+      if (e.properties && e.properties.popupContent){
+        e.layer.bindPopup(e.properties.popupContent);
+       }
+    });
+    this.map.addLayer(this.features);
+
+    this.map.setView(new L.LatLng(0, 0), 2);
+
+    this.mapReady = true;
+  }
+
+ });
+
+})(jQuery, recline.View);
+
+/*jshint multistr:true */
+
 this.recline = this.recline || {};
 this.recline.View = this.recline.View || {};
 
@@ -1310,6 +1632,7 @@ my.ColumnTransform = Backbone.View.extend({
 });
 
 })(jQuery, recline.View);
+/*jshint multistr:true */
 this.recline = this.recline || {};
 this.recline.View = this.recline.View || {};
 
@@ -1365,7 +1688,7 @@ this.recline.View = this.recline.View || {};
 // FlotGraph subview.
 my.DataExplorer = Backbone.View.extend({
   template: ' \
-  <div class="data-explorer"> \
+  <div class="recline-data-explorer"> \
     <div class="alert-messages"></div> \
     \
     <div class="header"> \
@@ -1377,6 +1700,12 @@ my.DataExplorer = Backbone.View.extend({
       <div class="recline-results-info"> \
         Results found <span class="doc-count">{{docCount}}</span> \
       </div> \
+      <div class="menu-right"> \
+        <a href="#" class="btn" data-action="filters">Filters</a> \
+        <a href="#" class="btn" data-action="facets">Facets</a> \
+      </div> \
+      <div class="query-editor-here" style="display:inline;"></div> \
+      <div class="clearfix"></div> \
     </div> \
     <div class="data-view-container"></div> \
     <div class="dialog-overlay" style="display: none; z-index: 101; ">&nbsp;</div> \
@@ -1387,6 +1716,9 @@ my.DataExplorer = Backbone.View.extend({
     </div> \
   </div> \
   ',
+  events: {
+    'click .menu-right a': 'onMenuClick'
+  },
 
   initialize: function(options) {
     var self = this;
@@ -1479,11 +1811,17 @@ my.DataExplorer = Backbone.View.extend({
     var queryEditor = new my.QueryEditor({
       model: this.model.queryState
     });
-    this.el.find('.header').append(queryEditor.el);
-    var queryFacetEditor = new my.FacetViewer({
+    this.el.find('.query-editor-here').append(queryEditor.el);
+    var filterEditor = new my.FilterEditor({
+      model: this.model.queryState
+    });
+    this.$filterEditor = filterEditor.el;
+    this.el.find('.header').append(filterEditor.el);
+    var facetViewer = new my.FacetViewer({
       model: this.model
     });
-    this.el.find('.header').append(queryFacetEditor.el);
+    this.$facetViewer = facetViewer.el;
+    this.el.find('.header').append(facetViewer.el);
   },
 
   setupRouting: function() {
@@ -1513,9 +1851,18 @@ my.DataExplorer = Backbone.View.extend({
         view.view.el.hide();
       }
     });
+  },
+
+  onMenuClick: function(e) {
+    e.preventDefault();
+    var action = $(e.target).attr('data-action');
+    if (action === 'filters') {
+      this.$filterEditor.show();
+    } else if (action === 'facets') {
+      this.$facetViewer.show();
+    }
   }
 });
-
 
 my.QueryEditor = Backbone.View.extend({
   className: 'recline-query-editor', 
@@ -1524,28 +1871,21 @@ my.QueryEditor = Backbone.View.extend({
       <div class="input-prepend text-query"> \
         <span class="add-on"><i class="icon-search"></i></span> \
         <input type="text" name="q" value="{{q}}" class="span2" placeholder="Search data ..." class="search-query" /> \
-        <div class="btn-group menu"> \
-          <a class="btn dropdown-toggle" data-toggle="dropdown"><i class="icon-cog"></i><span class="caret"></span></a> \
-          <ul class="dropdown-menu"> \
-            <li><a data-action="size" href="">Number of items to show ({{size}})</a></li> \
-            <li><a data-action="from" href="">Show from ({{from}})</a></li> \
-          </ul> \
-        </div> \
       </div> \
       <div class="pagination"> \
         <ul> \
           <li class="prev action-pagination-update"><a href="">&laquo;</a></li> \
-          <li class="active"><a>{{from}} &ndash; {{to}}</a></li> \
+          <li class="active"><a><input name="from" type="text" value="{{from}}" /> &ndash; <input name="to" type="text" value="{{to}}" /> </a></li> \
           <li class="next action-pagination-update"><a href="">&raquo;</a></li> \
         </ul> \
       </div> \
+      <button type="submit" class="btn">Go &raquo;</button> \
     </form> \
   ',
 
   events: {
     'submit form': 'onFormSubmit'
     , 'click .action-pagination-update': 'onPaginationUpdate'
-    , 'click .menu li a': 'onMenuItemClick'
   },
 
   initialize: function() {
@@ -1557,7 +1897,9 @@ my.QueryEditor = Backbone.View.extend({
   onFormSubmit: function(e) {
     e.preventDefault();
     var query = this.el.find('.text-query input').val();
-    this.model.set({q: query});
+    var newFrom = parseInt(this.el.find('input[name="from"]').val());
+    var newSize = parseInt(this.el.find('input[name="to"]').val()) - newFrom;
+    this.model.set({size: newSize, from: newFrom, q: query});
   },
   onPaginationUpdate: function(e) {
     e.preventDefault();
@@ -1569,25 +1911,110 @@ my.QueryEditor = Backbone.View.extend({
     }
     this.model.set({from: newFrom});
   },
-  onMenuItemClick: function(e) {
-    e.preventDefault();
-    var attrName = $(e.target).attr('data-action');
-    var msg = _.template('New value (<%= value %>)',
-        {value: this.model.get(attrName)}
-        );
-    var newValue = prompt(msg);
-    if (newValue) {
-      newValue = parseInt(newValue);
-      var update = {};
-      update[attrName] = newValue;
-      this.model.set(update);
-    }
-  },
   render: function() {
     var tmplData = this.model.toJSON();
     tmplData.to = this.model.get('from') + this.model.get('size');
     var templated = $.mustache(this.template, tmplData);
     this.el.html(templated);
+  }
+});
+
+my.FilterEditor = Backbone.View.extend({
+  className: 'recline-filter-editor well', 
+  template: ' \
+    <a class="close js-hide" href="#">&times;</a> \
+    <div class="row filters"> \
+      <div class="span1"> \
+        <h3>Filters</h3> \
+      </div> \
+      <div class="span11"> \
+        <form class="form-horizontal"> \
+          <div class="row"> \
+            <div class="span6"> \
+              {{#termFilters}} \
+              <div class="control-group filter-term filter" data-filter-id={{id}}> \
+                <label class="control-label" for="">{{label}}</label> \
+                <div class="controls"> \
+                  <div class="input-append"> \
+                    <input type="text" value="{{value}}" name="{{fieldId}}" class="span4" data-filter-field="{{fieldId}}" data-filter-id="{{id}}" data-filter-type="term" /> \
+                    <a class="btn js-remove-filter"><i class="icon-remove"></i></a> \
+                  </div> \
+                </div> \
+              </div> \
+              {{/termFilters}} \
+            </div> \
+          <div class="span4"> \
+            <p>To add a filter use the column menu in the grid view.</p> \
+            <button type="submit" class="btn">Update</button> \
+          </div> \
+        </form> \
+      </div> \
+    </div> \
+  ',
+  events: {
+    'click .js-hide': 'onHide',
+    'click .js-remove-filter': 'onRemoveFilter',
+    'submit form': 'onTermFiltersUpdate'
+  },
+  initialize: function() {
+    this.el = $(this.el);
+    _.bindAll(this, 'render');
+    this.model.bind('change', this.render);
+    this.model.bind('change:filters:new-blank', this.render);
+    this.render();
+  },
+  render: function() {
+    var tmplData = $.extend(true, {}, this.model.toJSON());
+    // we will use idx in list as there id ...
+    tmplData.filters = _.map(tmplData.filters, function(filter, idx) {
+      filter.id = idx;
+      return filter;
+    });
+    tmplData.termFilters = _.filter(tmplData.filters, function(filter) {
+      return filter.term !== undefined;
+    });
+    tmplData.termFilters = _.map(tmplData.termFilters, function(filter) {
+      var fieldId = _.keys(filter.term)[0];
+      return {
+        id: filter.id,
+        fieldId: fieldId,
+        label: fieldId,
+        value: filter.term[fieldId]
+      }
+    });
+    var out = $.mustache(this.template, tmplData);
+    this.el.html(out);
+    // are there actually any facets to show?
+    if (this.model.get('filters').length > 0) {
+      this.el.show();
+    } else {
+      this.el.hide();
+    }
+  },
+  onHide: function(e) {
+    e.preventDefault();
+    this.el.hide();
+  },
+  onRemoveFilter: function(e) {
+    e.preventDefault();
+    var $target = $(e.target);
+    var filterId = $target.closest('.filter').attr('data-filter-id');
+    this.model.removeFilter(filterId);
+  },
+  onTermFiltersUpdate: function(e) {
+   var self = this;
+    e.preventDefault();
+    var filters = self.model.get('filters');
+    var $form = $(e.target);
+    _.each($form.find('input'), function(input) {
+      var $input = $(input);
+      var filterIndex = parseInt($input.attr('data-filter-id'));
+      var value = $input.val();
+      var fieldId = $input.attr('data-filter-field');
+      filters[filterIndex].term[fieldId] = value;
+    });
+    self.model.set({filters: filters});
+    self.model.trigger('change');
   }
 });
 
@@ -1604,7 +2031,7 @@ my.FacetViewer = Backbone.View.extend({
         <a class="btn dropdown-toggle" data-toggle="dropdown" href="#"><i class="icon-chevron-down"></i> {{id}} {{label}}</a> \
         <ul class="facet-items dropdown-menu"> \
         {{#terms}} \
-          <li><input type="checkbox" class="facet-choice js-facet-filter" value="{{term}}" name="{{term}}" /> <label for="{{term}}">{{term}} ({{count}})</label></li> \
+          <li><a class="facet-choice js-facet-filter" data-value="{{term}}">{{term}} ({{count}})</a></li> \
         {{/terms}} \
         </ul> \
       </div> \
@@ -1614,7 +2041,7 @@ my.FacetViewer = Backbone.View.extend({
 
   events: {
     'click .js-hide': 'onHide',
-    'change .js-facet-filter': 'onFacetFilter'
+    'click .js-facet-filter': 'onFacetFilter'
   },
   initialize: function(model) {
     _.bindAll(this, 'render');
@@ -1642,10 +2069,9 @@ my.FacetViewer = Backbone.View.extend({
     this.el.hide();
   },
   onFacetFilter: function(e) {
-    // todo: uncheck
-    var $checkbox = $(e.target);
-    var fieldId = $checkbox.closest('.facet-summary').attr('data-facet');
-    var value = $checkbox.val();
+    var $target= $(e.target);
+    var fieldId = $target.closest('.facet-summary').attr('data-facet');
+    var value = $target.attr('data-value');
     this.model.queryState.addTermFilter(fieldId, value);
   }
 });
@@ -1742,7 +2168,7 @@ my.notify = function(message, options) {
         {{/loader}} \
     </div>';
   var _templated = $.mustache(_template, tmplData); 
-  _templated = $(_templated).appendTo($('.data-explorer .alert-messages'));
+  _templated = $(_templated).appendTo($('.recline-data-explorer .alert-messages'));
   if (!options.persist) {
     setTimeout(function() {
       $(_templated).fadeOut(1000, function() {
@@ -1756,7 +2182,7 @@ my.notify = function(message, options) {
 //
 // Clear all existing notifications
 my.clearNotifications = function() {
-  var $notifications = $('.data-explorer .alert-messages .alert');
+  var $notifications = $('.recline-data-explorer .alert-messages .alert');
   $notifications.remove();
 }
 

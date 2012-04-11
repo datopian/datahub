@@ -8,16 +8,12 @@ this.recline.View = this.recline.View || {};
 //
 // Provides a tabular view on a Dataset.
 //
-// Initialize it with a recline.Dataset object.
-//
-// Additional options passed in second arguments. Options:
-//
-// * cellRenderer: function used to render individual cells. See DataGridRow for more.
+// Initialize it with a `recline.Model.Dataset`.
 my.DataGrid = Backbone.View.extend({
   tagName:  "div",
-  className: "data-table-container",
+  className: "recline-grid-container",
 
-  initialize: function(modelEtc, options) {
+  initialize: function(modelEtc) {
     var self = this;
     this.el = $(this.el);
     _.bindAll(this, 'render');
@@ -26,14 +22,13 @@ my.DataGrid = Backbone.View.extend({
     this.model.currentDocuments.bind('remove', this.render);
     this.state = {};
     this.hiddenFields = [];
-    this.options = options;
   },
 
   events: {
-    'click .column-header-menu': 'onColumnHeaderClick'
-    , 'click .row-header-menu': 'onRowHeaderClick'
-    , 'click .root-header-menu': 'onRootHeaderClick'
-    , 'click .data-table-menu li a': 'onMenuClick'
+    'click .column-header-menu': 'onColumnHeaderClick',
+    'click .row-header-menu': 'onRowHeaderClick',
+    'click .root-header-menu': 'onRootHeaderClick',
+    'click .data-table-menu li a': 'onMenuClick'
   },
 
   // TODO: delete or re-enable (currently this code is not used from anywhere except deprecated or disabled methods (see above)).
@@ -72,33 +67,35 @@ my.DataGrid = Backbone.View.extend({
     var self = this;
     e.preventDefault();
     var actions = {
-      bulkEdit: function() { self.showTransformColumnDialog('bulkEdit', {name: self.state.currentColumn}) },
+      bulkEdit: function() { self.showTransformColumnDialog('bulkEdit', {name: self.state.currentColumn}); },
       facet: function() { 
         self.model.queryState.addFacet(self.state.currentColumn);
+      },
+      facet_histogram: function() {
+        self.model.queryState.addHistogramFacet(self.state.currentColumn);
       },
       filter: function() {
         self.model.queryState.addTermFilter(self.state.currentColumn, '');
       },
-      transform: function() { self.showTransformDialog('transform') },
-      sortAsc: function() { self.setColumnSort('asc') },
-      sortDesc: function() { self.setColumnSort('desc') },
-      hideColumn: function() { self.hideColumn() },
-      showColumn: function() { self.showColumn(e) },
+      transform: function() { self.showTransformDialog('transform'); },
+      sortAsc: function() { self.setColumnSort('asc'); },
+      sortDesc: function() { self.setColumnSort('desc'); },
+      hideColumn: function() { self.hideColumn(); },
+      showColumn: function() { self.showColumn(e); },
       deleteRow: function() {
         var doc = _.find(self.model.currentDocuments.models, function(doc) {
           // important this is == as the currentRow will be string (as comes
           // from DOM) while id may be int
-          return doc.id == self.state.currentRow
+          return doc.id == self.state.currentRow;
         });
         doc.destroy().then(function() { 
             self.model.currentDocuments.remove(doc);
             my.notify("Row deleted successfully");
-          })
-          .fail(function(err) {
-            my.notify("Errorz! " + err)
-          })
+          }).fail(function(err) {
+            my.notify("Errorz! " + err);
+          });
       }
-    }
+    };
     actions[$(e.target).attr('data-action')]();
   },
 
@@ -114,7 +111,7 @@ my.DataGrid = Backbone.View.extend({
     $el.append(view.el);
     util.observeExit($el, function() {
       util.hide('dialog');
-    })
+    });
     $('.dialog').draggable({ handle: '.dialog-header', cursor: 'move' });
   },
 
@@ -128,7 +125,7 @@ my.DataGrid = Backbone.View.extend({
     $el.append(view.el);
     util.observeExit($el, function() {
       util.hide('dialog');
-    })
+    });
     $('.dialog').draggable({ handle: '.dialog-header', cursor: 'move' });
   },
 
@@ -151,7 +148,7 @@ my.DataGrid = Backbone.View.extend({
   // ======================================================
   // #### Templating
   template: ' \
-    <table class="data-table table-striped table-condensed" cellspacing="0"> \
+    <table class="recline-grid table-striped table-condensed" cellspacing="0"> \
       <thead> \
         <tr> \
           {{#notEmpty}} \
@@ -169,7 +166,8 @@ my.DataGrid = Backbone.View.extend({
               <div class="btn-group column-header-menu"> \
                 <a class="btn dropdown-toggle" data-toggle="dropdown"><i class="icon-cog"></i><span class="caret"></span></a> \
                 <ul class="dropdown-menu data-table-menu pull-right"> \
-                  <li><a data-action="facet" href="JavaScript:void(0);">Facet on this Field</a></li> \
+                  <li><a data-action="facet" href="JavaScript:void(0);">Term Facet</a></li> \
+                  <li><a data-action="facet_histogram" href="JavaScript:void(0);">Date Histogram Facet</a></li> \
                   <li><a data-action="filter" href="JavaScript:void(0);">Text Filter</a></li> \
                   <li class="divider"></li> \
                   <li><a data-action="sortAsc" href="JavaScript:void(0);">Sort ascending</a></li> \
@@ -190,10 +188,10 @@ my.DataGrid = Backbone.View.extend({
   ',
 
   toTemplateJSON: function() {
-    var modelData = this.model.toJSON()
-    modelData.notEmpty = ( this.fields.length > 0 )
+    var modelData = this.model.toJSON();
+    modelData.notEmpty = ( this.fields.length > 0 );
     // TODO: move this sort of thing into a toTemplateJSON method on Dataset?
-    modelData.fields = _.map(this.fields, function(field) { return field.toJSON() });
+    modelData.fields = _.map(this.fields, function(field) { return field.toJSON(); });
     return modelData;
   },
   render: function() {
@@ -210,12 +208,10 @@ my.DataGrid = Backbone.View.extend({
           model: doc,
           el: tr,
           fields: self.fields
-        },
-        self.options
-        );
+        });
       newView.render();
     });
-    this.el.toggleClass('no-hidden', (self.hiddenFields.length == 0));
+    this.el.toggleClass('no-hidden', (self.hiddenFields.length === 0));
     return this;
   }
 });
@@ -226,14 +222,6 @@ my.DataGrid = Backbone.View.extend({
 //
 // In addition you *must* pass in a FieldList in the constructor options. This should be list of fields for the DataGrid.
 //
-// Additional options can be passed in a second hash argument. Options:
-//
-// * cellRenderer: function to render cells. Signature: function(value,
-//   field, doc) where value is the value of this cell, field is
-//   corresponding field object and document is the document object. Note
-//   that implementing functions can ignore arguments (e.g.
-//   function(value) would be a valid cellRenderer function).
-//
 // Example:
 //
 // <pre>
@@ -241,22 +229,12 @@ my.DataGrid = Backbone.View.extend({
 //   model: dataset-document,
 //     el: dom-element,
 //     fields: mydatasets.fields // a FieldList object
-//   }, {
-//     cellRenderer: my-cell-renderer-function 
-//   }
-// );
+//   });
 // </pre>
 my.DataGridRow = Backbone.View.extend({
-  initialize: function(initData, options) {
+  initialize: function(initData) {
     _.bindAll(this, 'render');
     this._fields = initData.fields;
-    if (options && options.cellRenderer) {
-      this._cellRenderer = options.cellRenderer;
-    } else {
-      this._cellRenderer = function(value) {
-        return value;
-      }
-    }
     this.el = $(this.el);
     this.model.bind('change', this.render);
   },
@@ -291,10 +269,10 @@ my.DataGridRow = Backbone.View.extend({
     var cellData = this._fields.map(function(field) {
       return {
         field: field.id,
-        value: self._cellRenderer(doc.get(field.id), field, doc)
-      }
-    })
-    return { id: this.id, cells: cellData }
+        value: doc.getFieldValue(field)
+      };
+    });
+    return { id: this.id, cells: cellData };
   },
 
   render: function() {

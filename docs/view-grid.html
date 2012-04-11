@@ -1,21 +1,17 @@
-<!DOCTYPE html>  <html> <head>   <title>view-grid.js</title>   <meta http-equiv="content-type" content="text/html; charset=UTF-8">   <link rel="stylesheet" media="all" href="docco.css" /> </head> <body>   <div id="container">     <div id="background"></div>            <div id="jump_to">         Jump To &hellip;         <div id="jump_wrapper">           <div id="jump_page">                                           <a class="source" href="model.html">                 model.js               </a>                                           <a class="source" href="view-flot-graph.html">                 view-flot-graph.js               </a>                                           <a class="source" href="view-grid.html">                 view-grid.js               </a>                                           <a class="source" href="view.html">                 view.js               </a>                        </div>         </div>       </div>          <table cellpadding="0" cellspacing="0">       <thead>         <tr>           <th class="docs">             <h1>               view-grid.js             </h1>           </th>           <th class="code">           </th>         </tr>       </thead>       <tbody>                               <tr id="section-1">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-1">&#182;</a>               </div>                            </td>             <td class="code">               <div class="highlight"><pre><span class="k">this</span><span class="p">.</span><span class="nx">recline</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">recline</span> <span class="o">||</span> <span class="p">{};</span>
+<!DOCTYPE html>  <html> <head>   <title>view-grid.js</title>   <meta http-equiv="content-type" content="text/html; charset=UTF-8">   <link rel="stylesheet" media="all" href="docco.css" /> </head> <body>   <div id="container">     <div id="background"></div>            <div id="jump_to">         Jump To &hellip;         <div id="jump_wrapper">           <div id="jump_page">                                           <a class="source" href="model.html">                 model.js               </a>                                           <a class="source" href="view-flot-graph.html">                 view-flot-graph.js               </a>                                           <a class="source" href="view-grid.html">                 view-grid.js               </a>                                           <a class="source" href="view.html">                 view.js               </a>                        </div>         </div>       </div>          <table cellpadding="0" cellspacing="0">       <thead>         <tr>           <th class="docs">             <h1>               view-grid.js             </h1>           </th>           <th class="code">           </th>         </tr>       </thead>       <tbody>                               <tr id="section-1">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-1">&#182;</a>               </div>                            </td>             <td class="code">               <div class="highlight"><pre><span class="cm">/*jshint multistr:true */</span>
+
+<span class="k">this</span><span class="p">.</span><span class="nx">recline</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">recline</span> <span class="o">||</span> <span class="p">{};</span>
 <span class="k">this</span><span class="p">.</span><span class="nx">recline</span><span class="p">.</span><span class="nx">View</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">recline</span><span class="p">.</span><span class="nx">View</span> <span class="o">||</span> <span class="p">{};</span>
 
 <span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">$</span><span class="p">,</span> <span class="nx">my</span><span class="p">)</span> <span class="p">{</span></pre></div>             </td>           </tr>                               <tr id="section-2">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-2">&#182;</a>               </div>               <h2>DataGrid</h2>
 
 <p>Provides a tabular view on a Dataset.</p>
 
-<p>Initialize it with a recline.Dataset object.</p>
-
-<p>Additional options passed in second arguments. Options:</p>
-
-<ul>
-<li>cellRenderer: function used to render individual cells. See DataGridRow for more.</li>
-</ul>             </td>             <td class="code">               <div class="highlight"><pre><span class="nx">my</span><span class="p">.</span><span class="nx">DataGrid</span> <span class="o">=</span> <span class="nx">Backbone</span><span class="p">.</span><span class="nx">View</span><span class="p">.</span><span class="nx">extend</span><span class="p">({</span>
+<p>Initialize it with a <code>recline.Model.Dataset</code>.</p>             </td>             <td class="code">               <div class="highlight"><pre><span class="nx">my</span><span class="p">.</span><span class="nx">DataGrid</span> <span class="o">=</span> <span class="nx">Backbone</span><span class="p">.</span><span class="nx">View</span><span class="p">.</span><span class="nx">extend</span><span class="p">({</span>
   <span class="nx">tagName</span><span class="o">:</span>  <span class="s2">&quot;div&quot;</span><span class="p">,</span>
-  <span class="nx">className</span><span class="o">:</span> <span class="s2">&quot;data-table-container&quot;</span><span class="p">,</span>
+  <span class="nx">className</span><span class="o">:</span> <span class="s2">&quot;recline-grid-container&quot;</span><span class="p">,</span>
 
-  <span class="nx">initialize</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">modelEtc</span><span class="p">,</span> <span class="nx">options</span><span class="p">)</span> <span class="p">{</span>
+  <span class="nx">initialize</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">modelEtc</span><span class="p">)</span> <span class="p">{</span>
     <span class="kd">var</span> <span class="nx">self</span> <span class="o">=</span> <span class="k">this</span><span class="p">;</span>
     <span class="k">this</span><span class="p">.</span><span class="nx">el</span> <span class="o">=</span> <span class="nx">$</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">el</span><span class="p">);</span>
     <span class="nx">_</span><span class="p">.</span><span class="nx">bindAll</span><span class="p">(</span><span class="k">this</span><span class="p">,</span> <span class="s1">&#39;render&#39;</span><span class="p">);</span>
@@ -24,7 +20,6 @@
     <span class="k">this</span><span class="p">.</span><span class="nx">model</span><span class="p">.</span><span class="nx">currentDocuments</span><span class="p">.</span><span class="nx">bind</span><span class="p">(</span><span class="s1">&#39;remove&#39;</span><span class="p">,</span> <span class="k">this</span><span class="p">.</span><span class="nx">render</span><span class="p">);</span>
     <span class="k">this</span><span class="p">.</span><span class="nx">state</span> <span class="o">=</span> <span class="p">{};</span>
     <span class="k">this</span><span class="p">.</span><span class="nx">hiddenFields</span> <span class="o">=</span> <span class="p">[];</span>
-    <span class="k">this</span><span class="p">.</span><span class="nx">options</span> <span class="o">=</span> <span class="nx">options</span><span class="p">;</span>
   <span class="p">},</span>
 
   <span class="nx">events</span><span class="o">:</span> <span class="p">{</span>
@@ -66,6 +61,9 @@ Column and row menus</p>             </td>             <td class="code">        
       <span class="nx">bulkEdit</span><span class="o">:</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span> <span class="nx">self</span><span class="p">.</span><span class="nx">showTransformColumnDialog</span><span class="p">(</span><span class="s1">&#39;bulkEdit&#39;</span><span class="p">,</span> <span class="p">{</span><span class="nx">name</span><span class="o">:</span> <span class="nx">self</span><span class="p">.</span><span class="nx">state</span><span class="p">.</span><span class="nx">currentColumn</span><span class="p">})</span> <span class="p">},</span>
       <span class="nx">facet</span><span class="o">:</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span> 
         <span class="nx">self</span><span class="p">.</span><span class="nx">model</span><span class="p">.</span><span class="nx">queryState</span><span class="p">.</span><span class="nx">addFacet</span><span class="p">(</span><span class="nx">self</span><span class="p">.</span><span class="nx">state</span><span class="p">.</span><span class="nx">currentColumn</span><span class="p">);</span>
+      <span class="p">},</span>
+      <span class="nx">filter</span><span class="o">:</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+        <span class="nx">self</span><span class="p">.</span><span class="nx">model</span><span class="p">.</span><span class="nx">queryState</span><span class="p">.</span><span class="nx">addTermFilter</span><span class="p">(</span><span class="nx">self</span><span class="p">.</span><span class="nx">state</span><span class="p">.</span><span class="nx">currentColumn</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">);</span>
       <span class="p">},</span>
       <span class="nx">transform</span><span class="o">:</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span> <span class="nx">self</span><span class="p">.</span><span class="nx">showTransformDialog</span><span class="p">(</span><span class="s1">&#39;transform&#39;</span><span class="p">)</span> <span class="p">},</span>
       <span class="nx">sortAsc</span><span class="o">:</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span> <span class="nx">self</span><span class="p">.</span><span class="nx">setColumnSort</span><span class="p">(</span><span class="s1">&#39;asc&#39;</span><span class="p">)</span> <span class="p">},</span>
@@ -135,7 +133,7 @@ from DOM) while id may be int</p>             </td>             <td class="code"
   <span class="p">},</span></pre></div>             </td>           </tr>                               <tr id="section-6">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-6">&#182;</a>               </div>               <p>======================================================</p>
 
 <h4>Templating</h4>             </td>             <td class="code">               <div class="highlight"><pre>  <span class="nx">template</span><span class="o">:</span> <span class="s1">&#39; \</span>
-<span class="s1">    &lt;table class=&quot;data-table table-striped table-condensed&quot; cellspacing=&quot;0&quot;&gt; \</span>
+<span class="s1">    &lt;table class=&quot;recline-grid table-striped table-condensed&quot; cellspacing=&quot;0&quot;&gt; \</span>
 <span class="s1">      &lt;thead&gt; \</span>
 <span class="s1">        &lt;tr&gt; \</span>
 <span class="s1">          {{#notEmpty}} \</span>
@@ -154,9 +152,13 @@ from DOM) while id may be int</p>             </td>             <td class="code"
 <span class="s1">                &lt;a class=&quot;btn dropdown-toggle&quot; data-toggle=&quot;dropdown&quot;&gt;&lt;i class=&quot;icon-cog&quot;&gt;&lt;/i&gt;&lt;span class=&quot;caret&quot;&gt;&lt;/span&gt;&lt;/a&gt; \</span>
 <span class="s1">                &lt;ul class=&quot;dropdown-menu data-table-menu pull-right&quot;&gt; \</span>
 <span class="s1">                  &lt;li&gt;&lt;a data-action=&quot;facet&quot; href=&quot;JavaScript:void(0);&quot;&gt;Facet on this Field&lt;/a&gt;&lt;/li&gt; \</span>
+<span class="s1">                  &lt;li&gt;&lt;a data-action=&quot;filter&quot; href=&quot;JavaScript:void(0);&quot;&gt;Text Filter&lt;/a&gt;&lt;/li&gt; \</span>
+<span class="s1">                  &lt;li class=&quot;divider&quot;&gt;&lt;/li&gt; \</span>
 <span class="s1">                  &lt;li&gt;&lt;a data-action=&quot;sortAsc&quot; href=&quot;JavaScript:void(0);&quot;&gt;Sort ascending&lt;/a&gt;&lt;/li&gt; \</span>
 <span class="s1">                  &lt;li&gt;&lt;a data-action=&quot;sortDesc&quot; href=&quot;JavaScript:void(0);&quot;&gt;Sort descending&lt;/a&gt;&lt;/li&gt; \</span>
+<span class="s1">                  &lt;li class=&quot;divider&quot;&gt;&lt;/li&gt; \</span>
 <span class="s1">                  &lt;li&gt;&lt;a data-action=&quot;hideColumn&quot; href=&quot;JavaScript:void(0);&quot;&gt;Hide this column&lt;/a&gt;&lt;/li&gt; \</span>
+<span class="s1">                  &lt;li class=&quot;divider&quot;&gt;&lt;/li&gt; \</span>
 <span class="s1">                  &lt;li class=&quot;write-op&quot;&gt;&lt;a data-action=&quot;bulkEdit&quot; href=&quot;JavaScript:void(0);&quot;&gt;Transform...&lt;/a&gt;&lt;/li&gt; \</span>
 <span class="s1">                &lt;/ul&gt; \</span>
 <span class="s1">              &lt;/div&gt; \</span>
@@ -188,9 +190,7 @@ from DOM) while id may be int</p>             </td>             <td class="code"
           <span class="nx">model</span><span class="o">:</span> <span class="nx">doc</span><span class="p">,</span>
           <span class="nx">el</span><span class="o">:</span> <span class="nx">tr</span><span class="p">,</span>
           <span class="nx">fields</span><span class="o">:</span> <span class="nx">self</span><span class="p">.</span><span class="nx">fields</span>
-        <span class="p">},</span>
-        <span class="nx">self</span><span class="p">.</span><span class="nx">options</span>
-        <span class="p">);</span>
+        <span class="p">});</span>
       <span class="nx">newView</span><span class="p">.</span><span class="nx">render</span><span class="p">();</span>
     <span class="p">});</span>
     <span class="k">this</span><span class="p">.</span><span class="nx">el</span><span class="p">.</span><span class="nx">toggleClass</span><span class="p">(</span><span class="s1">&#39;no-hidden&#39;</span><span class="p">,</span> <span class="p">(</span><span class="nx">self</span><span class="p">.</span><span class="nx">hiddenFields</span><span class="p">.</span><span class="nx">length</span> <span class="o">==</span> <span class="mi">0</span><span class="p">));</span>
@@ -202,16 +202,6 @@ from DOM) while id may be int</p>             </td>             <td class="code"
 
 <p>In addition you <em>must</em> pass in a FieldList in the constructor options. This should be list of fields for the DataGrid.</p>
 
-<p>Additional options can be passed in a second hash argument. Options:</p>
-
-<ul>
-<li>cellRenderer: function to render cells. Signature: function(value,
-field, doc) where value is the value of this cell, field is
-corresponding field object and document is the document object. Note
-that implementing functions can ignore arguments (e.g.
-function(value) would be a valid cellRenderer function).</li>
-</ul>
-
 <p>Example:</p>
 
 <pre>
@@ -219,21 +209,11 @@ var row = new DataGridRow({
   model: dataset-document,
     el: dom-element,
     fields: mydatasets.fields // a FieldList object
-  }, {
-    cellRenderer: my-cell-renderer-function 
-  }
-);
+  });
 </pre>             </td>             <td class="code">               <div class="highlight"><pre><span class="nx">my</span><span class="p">.</span><span class="nx">DataGridRow</span> <span class="o">=</span> <span class="nx">Backbone</span><span class="p">.</span><span class="nx">View</span><span class="p">.</span><span class="nx">extend</span><span class="p">({</span>
-  <span class="nx">initialize</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">initData</span><span class="p">,</span> <span class="nx">options</span><span class="p">)</span> <span class="p">{</span>
+  <span class="nx">initialize</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">initData</span><span class="p">)</span> <span class="p">{</span>
     <span class="nx">_</span><span class="p">.</span><span class="nx">bindAll</span><span class="p">(</span><span class="k">this</span><span class="p">,</span> <span class="s1">&#39;render&#39;</span><span class="p">);</span>
     <span class="k">this</span><span class="p">.</span><span class="nx">_fields</span> <span class="o">=</span> <span class="nx">initData</span><span class="p">.</span><span class="nx">fields</span><span class="p">;</span>
-    <span class="k">if</span> <span class="p">(</span><span class="nx">options</span> <span class="o">&amp;&amp;</span> <span class="nx">options</span><span class="p">.</span><span class="nx">cellRenderer</span><span class="p">)</span> <span class="p">{</span>
-      <span class="k">this</span><span class="p">.</span><span class="nx">_cellRenderer</span> <span class="o">=</span> <span class="nx">options</span><span class="p">.</span><span class="nx">cellRenderer</span><span class="p">;</span>
-    <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
-      <span class="k">this</span><span class="p">.</span><span class="nx">_cellRenderer</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">value</span><span class="p">)</span> <span class="p">{</span>
-        <span class="k">return</span> <span class="nx">value</span><span class="p">;</span>
-      <span class="p">}</span>
-    <span class="p">}</span>
     <span class="k">this</span><span class="p">.</span><span class="nx">el</span> <span class="o">=</span> <span class="nx">$</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">el</span><span class="p">);</span>
     <span class="k">this</span><span class="p">.</span><span class="nx">model</span><span class="p">.</span><span class="nx">bind</span><span class="p">(</span><span class="s1">&#39;change&#39;</span><span class="p">,</span> <span class="k">this</span><span class="p">.</span><span class="nx">render</span><span class="p">);</span>
   <span class="p">},</span>
@@ -268,7 +248,7 @@ var row = new DataGridRow({
     <span class="kd">var</span> <span class="nx">cellData</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">_fields</span><span class="p">.</span><span class="nx">map</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">field</span><span class="p">)</span> <span class="p">{</span>
       <span class="k">return</span> <span class="p">{</span>
         <span class="nx">field</span><span class="o">:</span> <span class="nx">field</span><span class="p">.</span><span class="nx">id</span><span class="p">,</span>
-        <span class="nx">value</span><span class="o">:</span> <span class="nx">self</span><span class="p">.</span><span class="nx">_cellRenderer</span><span class="p">(</span><span class="nx">doc</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="nx">field</span><span class="p">.</span><span class="nx">id</span><span class="p">),</span> <span class="nx">field</span><span class="p">,</span> <span class="nx">doc</span><span class="p">)</span>
+        <span class="nx">value</span><span class="o">:</span> <span class="nx">doc</span><span class="p">.</span><span class="nx">getFieldValue</span><span class="p">(</span><span class="nx">field</span><span class="p">)</span>
       <span class="p">}</span>
     <span class="p">})</span>
     <span class="k">return</span> <span class="p">{</span> <span class="nx">id</span><span class="o">:</span> <span class="k">this</span><span class="p">.</span><span class="nx">id</span><span class="p">,</span> <span class="nx">cells</span><span class="o">:</span> <span class="nx">cellData</span> <span class="p">}</span>
