@@ -239,15 +239,18 @@ my.Map = Backbone.View.extend({
   //
   // Each feature will have a popup associated with all the document fields.
   //
-  _add: function(doc){
+  _add: function(docs){
 
     var self = this;
 
-    if (!(doc instanceof Array)) doc = [doc];
+    if (!(docs instanceof Array)) docs = [docs];
 
-    doc.forEach(function(doc){
+    _.every(docs,function(doc){
       var feature = self._getGeometryFromDocument(doc);
-      if (feature instanceof Object){
+      if (typeof feature === 'undefined'){
+        // Empty field
+        return true;
+      } else if (feature instanceof Object){
         // Build popup contents
         // TODO: mustache?
         html = ''
@@ -266,24 +269,25 @@ my.Map = Backbone.View.extend({
             var msg = 'Wrong geometry value';
             if (except.message) msg += ' (' + except.message + ')';
             my.notify(msg,{category:'error'});
-            _.breakLoop();
+            return false;
         }
       } else {
         my.notify('Wrong geometry value',{category:'error'});
-        _.breakLoop();
+        return false;
       }
+      return true;
     });
   },
 
   // Private: Remove one or n features to the map
   //
-  _remove: function(doc){
+  _remove: function(docs){
 
     var self = this;
 
-    if (!(doc instanceof Array)) doc = [doc];
+    if (!(docs instanceof Array)) docs = [docs];
 
-    doc.forEach(function(doc){
+    _.each(doc,function(doc){
       for (key in self.features._layers){
         if (self.features._layers[key].cid == doc.cid){
           self.features.removeLayer(self.features._layers[key]);
