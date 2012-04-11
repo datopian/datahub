@@ -27,9 +27,65 @@ my.Map = Backbone.View.extend({
   */
 
   template: ' \
+  <div class="editor"> \
+    <form class="form-stacked"> \
+      <div class="clearfix"> \
+        <div class="editor-field-type"> \
+            <label class="radio"> \
+              <input type="radio" id="editor-field-type-latlon" name="editor-field-type" value="latlon" checked="checked"/> \
+              Latitude / Longitude fields</label> \
+            <label class="radio"> \
+              <input type="radio" id="editor-field-type-geom" name="editor-field-type" value="geom" /> \
+              GeoJSON field</label> \
+        </div> \
+        <div class="editor-field-type-latlon"> \
+          <label>Latitude field</label> \
+          <div class="input editor-lat-field"> \
+            <select> \
+            <option value=""></option> \
+            {{#fields}} \
+            <option value="{{id}}">{{label}}</option> \
+            {{/fields}} \
+            </select> \
+          </div> \
+          <label>Longitude field</label> \
+          <div class="input editor-lon-field"> \
+            <select> \
+            <option value=""></option> \
+            {{#fields}} \
+            <option value="{{id}}">{{label}}</option> \
+            {{/fields}} \
+            </select> \
+          </div> \
+        </div> \
+        <div class="editor-field-type-geom" style="display:none"> \
+          <label>Geometry field (GeoJSON)</label> \
+          <div class="input editor-geom-field"> \
+            <select> \
+            <option value=""></option> \
+            {{#fields}} \
+            <option value="{{id}}">{{label}}</option> \
+            {{/fields}} \
+            </select> \
+          </div> \
+        </div> \
+      </div> \
+      <div class="editor-buttons"> \
+        <button class="btn editor-update-map">Update</button> \
+      </div> \
+      <input type="hidden" class="editor-id" value="map-1" /> \
+      </div> \
+    </form> \
+  </div> \
 <div class="panel map"> \
 </div> \
 ',
+
+  events: {
+    'click .editor-update-map': 'onEditorSubmit',
+    'change .editor-field-type': 'onFieldTypeChange'
+  },
+
 
   initialize: function(options, config) {
     var self = this;
@@ -37,6 +93,11 @@ my.Map = Backbone.View.extend({
     this.el = $(this.el);
     this.model.bind('change', function() {
       self._setupGeometryField();
+    });
+    this.model.fields.bind('add', this.render);
+    this.model.fields.bind('reset', function(){
+      self._setupGeometryField()
+      self.render()
     });
     this.model.currentDocuments.bind('add', function(doc){self.redraw('add',doc)});
     this.model.currentDocuments.bind('remove', function(doc){self.redraw('remove',doc)});
@@ -58,8 +119,21 @@ my.Map = Backbone.View.extend({
     var self = this;
 
     htmls = $.mustache(this.template, this.model.toTemplateJSON());
+
     $(this.el).html(htmls);
     this.$map = this.el.find('.panel.map');
+
+    // Setup editor fields
+    if (this.geomReady && this.model.fields.length){
+      if (this._geomFieldName){
+        this._selectOption('editor-geom-field',this._geomFieldName);
+        $('#editor-field-type-geom').attr('checked','checked').change();
+      } else{
+        this._selectOption('editor-lon-field',this._lonFieldName);
+        this._selectOption('editor-lat-field',this._latFieldName);
+        $('#editor-field-type-latlon').attr('checked','checked').change();
+      }
+    }
 
     this.model.bind('query:done', function() {
       if (!self.geomReady){
@@ -81,7 +155,7 @@ my.Map = Backbone.View.extend({
 
     action = action || 'refresh';
 
-    if (this.geomReady){
+    if (this.geomReady && this.mapReady){
       if (action == 'reset'){
         // Clear all features
         this.features.clearLayers();
@@ -116,6 +190,34 @@ my.Map = Backbone.View.extend({
     }
   },
 
+  /* UI Event handlers */
+
+  onEditorSubmit: function(e){
+    e.preventDefault();
+    if ($('#editor-field-type-geom').attr('checked')){
+        this._geomFieldName = $('.editor-geom-field > select > option:selected').val();
+        this._latFieldName = this._lonFieldName = false;
+    } else {
+        this._geomFieldName = false;
+        this._latFieldName = $('.editor-lat-field > select > option:selected').val();
+        this._lonFieldName = $('.editor-lon-field > select > option:selected').val();
+    }
+    this.geomReady = (this._geomFieldName || (this._latFieldName && this._lonFieldName));
+    this.redraw();
+
+    return false;
+  },
+
+  onFieldTypeChange: function(e){
+    if (e.target.value == 'geom'){
+        $('.editor-field-type-geom').show();
+        $('.editor-field-type-latlon').hide();
+    } else {
+        $('.editor-field-type-geom').hide();
+        $('.editor-field-type-latlon').show();
+    }
+  },
+
   _add: function(doc){
 
     var self = this;
@@ -124,7 +226,7 @@ my.Map = Backbone.View.extend({
 
     doc.forEach(function(doc){
       var feature = self._getGeometryFromDocument(doc);
-      if (feature){
+      if (feature instanceof Object){
         // Build popup contents
         // TODO: mustache?
         html = ''
@@ -137,7 +239,17 @@ my.Map = Backbone.View.extend({
         // link this Leaflet layer to a Recline doc
         feature.properties.cid = doc.cid;
 
-        self.features.addGeoJSON(feature);
+        try {
+            self.features.addGeoJSON(feature);
+        } catch (except) {
+            var msg = 'Wrong geometry value';
+            if (except.message) msg += ' (' + except.message + ')';
+            my.notify(msg,{category:'error'});
+            _.breakLoop();
+        }
+      } else {
+        my.notify('Wrong geometry value',{category:'error'});
+        _.breakLoop();
       }
     });
   },
@@ -186,8 +298,6 @@ my.Map = Backbone.View.extend({
     this._latFieldName = this._checkField(this.latitudeFieldNames);
     this._lonFieldName = this._checkField(this.longitudeFieldNames);
 
-    // TODO: Allow users to choose the fields
-
     this.geomReady = (this._geomFieldName || (this._latFieldName && this._lonFieldName));
   },
 
@@ -229,6 +339,18 @@ my.Map = Backbone.View.extend({
     this.map.setView(new L.LatLng(0, 0), 2);
 
     this.mapReady = true;
+  },
+
+  _selectOption: function(id,value){
+    var options = $('.' + id + ' > select > option');
+    if (options){
+      options.each(function(opt){
+        if (this.value == value) {
+          $(this).attr('selected','selected');
+          return false;
+        }
+      });
+    }
   }
 
  });
