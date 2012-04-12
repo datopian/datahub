@@ -304,7 +304,7 @@ my.Map = Backbone.View.extend({
 
     if (!(docs instanceof Array)) docs = [docs];
 
-    _.each(doc,function(doc){
+    _.each(docs,function(doc){
       for (key in self.features._layers){
         if (self.features._layers[key].cid == doc.cid){
           self.features.removeLayer(self.features._layers[key]);
