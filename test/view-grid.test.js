@@ -1,6 +1,6 @@
 (function ($) {
 
-module("View");
+module("View - Grid");
 
 test('new DataGridRow View', function () {
   var $el = $('<tr />');
