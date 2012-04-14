@@ -79,6 +79,20 @@ test('Memory Backend: query sort', function () {
   });
 });
 
+test('Memory Backend: query string', function () {
+  var dataset = makeBackendDataset();
+  dataset.fetch();
+  dataset.query({q: 'UK'}).then(function() {
+    equal(dataset.currentDocuments.length, 3);
+    deepEqual(dataset.currentDocuments.pluck('country'), ['UK', 'UK', 'UK']);
+  });
+
+  dataset.query({q: 'UK 6'}).then(function() {
+    equal(dataset.currentDocuments.length, 1);
+    deepEqual(dataset.currentDocuments.models[0].id, 1);
+  });
+});
+
 test('Memory Backend: filters', function () {
   var dataset = makeBackendDataset();
   dataset.queryState.addTermFilter('country', 'UK');
