@@ -3,6 +3,8 @@ this.recline.Backend = this.recline.Backend || {};
 
 (function($, my) {
   my.loadFromCSVFile = function(file, callback, options) {
+    var encoding = options.encoding || 'UTF-8';
+    
     var metadata = {
       id: file.name,
       file: file
@@ -16,7 +18,7 @@ this.recline.Backend = this.recline.Backend || {};
     reader.onerror = function (e) {
       alert('Failed to load file. Code: ' + e.target.error.code);
     };
-    reader.readAsText(file);
+    reader.readAsText(file, encoding);
   };
 
   my.csvToDataset = function(csvString, options) {
