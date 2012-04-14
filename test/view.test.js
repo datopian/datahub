@@ -24,8 +24,9 @@ test('getState', function () {
     el: $el
   });
   var state = explorer.getState();
-  ok(state.queryState);
-  equal(state.queryState.size, 100);
+  ok(state.query);
+  equal(state.query.size, 100);
+  deepEqual(state['view-grid'].hiddenFields, []);
   $el.remove();
 });
 

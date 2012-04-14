@@ -1,6 +1,6 @@
 (function ($) {
 
-module("View - Grid");
+module("View - DataGrid");
 
 function assertPresent(selector) {
   var found = $(selector);
@@ -12,7 +12,7 @@ function assertNotPresent(selector) {
   equal(found.length, 0);
 }
 
-test('DataGrid - menu - hideColumn', function () {
+test('menu - hideColumn', function () {
   var dataset = Fixture.getDataset();
   var view = new recline.View.DataGrid({
     model: dataset
@@ -24,6 +24,24 @@ test('DataGrid - menu - hideColumn', function () {
   var hideColumn = view.el.find('.column-header[data-field="x"] a[data-action="hideColumn"]');
   hideColumn.trigger('click');
   assertNotPresent('.column-header[data-field="x"]');
+
+  // also test a bit of state
+  deepEqual(view.state.toJSON(), {hiddenFields: ['x']});
+  view.remove();
+});
+
+test('state', function () {
+  var dataset = Fixture.getDataset();
+  var view = new recline.View.DataGrid({
+    model: dataset,
+    state: {
+      hiddenFields: ['z']
+    }
+  });
+  $('.fixtures .test-datatable').append(view.el);
+  view.render();
+  assertPresent('.column-header[data-field="x"]');
+  assertNotPresent('.column-header[data-field="z"]');
   view.remove();
 });
 

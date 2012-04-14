@@ -108,12 +108,8 @@ my.DataExplorer = Backbone.View.extend({
           })
       }];
     }
-    this.state = {
-      dataset: null,
-      queryState: this.model.queryState.toJSON(),
-      currentView: null
-    };
-    this._setupStateManagement();
+    this.state = {};
+    this._setupState();
     // this must be called after pageViews are created
     this.render();
 
@@ -237,15 +233,21 @@ my.DataExplorer = Backbone.View.extend({
     }
   },
 
-  _setupStateManagement: function() {
+  _setupState: function() {
     var self = this;
+    this.state = {
+      dataset: null,
+      query: this.model.queryState.toJSON(),
+      currentView: null
+    };
     this.model.queryState.bind('change', function() {
       self.state.queryState = this.model.queryState.toJSON();
     });
     _.each(this.pageViews, function(pageView) {
       if (pageView.view.state && pageView.view.state.bind) {
+        self.state['view-' + pageView.id] = pageView.view.state.toJSON();
         pageView.view.state.bind('change', function() {
-          self.state['view-' + pageView.view.id] = pageView.view.state.toJSON();
+          self.state['view-' + pageView.id] = pageView.view.state.toJSON();
         });
       }
     });
