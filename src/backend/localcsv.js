@@ -2,7 +2,7 @@ this.recline = this.recline || {};
 this.recline.Backend = this.recline.Backend || {};
 
 (function($, my) {
-  my.loadFromCSVFile = function(file, callback) {
+  my.loadFromCSVFile = function(file, callback, options) {
     var metadata = {
       id: file.name,
       file: file
@@ -19,7 +19,7 @@ this.recline.Backend = this.recline.Backend || {};
     reader.readAsText(file);
   };
 
-  my.csvToDataset = function(csvString) {
+  my.csvToDataset = function(csvString, options) {
     var out = my.parseCSV(csvString);
     fields = _.map(out[0], function(cell) {
       return { id: cell, label: cell };
@@ -44,14 +44,19 @@ this.recline.Backend = this.recline.Backend || {};
   // @type Array
   // 
   // @param {String} s The string to convert
-  // @param {Boolean} [trm=false] If set to True leading and trailing whitespace is stripped off of each non-quoted field as it is imported
-  //
+  // @param {Object} options Options for loading CSV including
+  // 	@param {Boolean} [trim=false] If set to True leading and trailing whitespace is stripped off of each non-quoted field as it is imported
+  //	@param {String} [separator=','] Separator for CSV file
   // Heavily based on uselesscode's JS CSV parser (MIT Licensed):
   // thttp://www.uselesscode.org/javascript/csv/
-  my.parseCSV= function(s, trm) {
+  my.parseCSV= function(s, options) {
     // Get rid of any trailing \n
     s = chomp(s);
 
+    var options = options || {};
+    var trm = options.trim;
+    var separator = options.separator || ',';
+    
     var cur = '', // The character we are currently processing.
       inQuote = false,
       fieldQuoted = false,
@@ -85,7 +90,7 @@ this.recline.Backend = this.recline.Backend || {};
       cur = s.charAt(i);
 
       // If we are at a EOF or EOR
-      if (inQuote === false && (cur === ',' || cur === "\n")) {
+      if (inQuote === false && (cur === separator || cur === "\n")) {
         field = processField(field);
         // Add the current field to the current row
         row.push(field);
