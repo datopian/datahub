@@ -10,7 +10,7 @@ this.recline.Backend = this.recline.Backend || {};
     var reader = new FileReader();
     // TODO
     reader.onload = function(e) {
-      var dataset = my.csvToDataset(e.target.result);
+      var dataset = my.csvToDataset(e.target.result, options);
       callback(dataset);
     };
     reader.onerror = function (e) {
@@ -20,7 +20,7 @@ this.recline.Backend = this.recline.Backend || {};
   };
 
   my.csvToDataset = function(csvString, options) {
-    var out = my.parseCSV(csvString);
+    var out = my.parseCSV(csvString, options);
     fields = _.map(out[0], function(cell) {
       return { id: cell, label: cell };
     });
@@ -91,7 +91,7 @@ this.recline.Backend = this.recline.Backend || {};
 
       // If we are at a EOF or EOR
       if (inQuote === false && (cur === separator || cur === "\n")) {
-        field = processField(field);
+	field = processField(field);
         // Add the current field to the current row
         row.push(field);
         // If this is EOR append row to output and flush row

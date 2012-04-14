@@ -390,9 +390,12 @@ function setupLoader(callback) {
     $('.modal.js-import-dialog-file').modal('hide');
     var $file = $form.find('input[type="file"]')[0];
     var file = $file.files[0];
+    var options = {
+        separator : $form.find('input[name="separator"]').val()
+    };
     recline.Backend.loadFromCSVFile(file, function(dataset) {
       callback(dataset)
-    });
+    }, options);
   });
 }
 
