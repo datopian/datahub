@@ -381,6 +381,13 @@ my.FacetList = Backbone.Collection.extend({
   model: my.Facet
 });
 
+// ## Object State
+//
+// Convenience Backbone model for storing (configuration) state of objects like Views.
+my.ObjectState = Backbone.Model.extend({
+});
+
+
 // ## Backend registry
 //
 // Backends will register themselves by id into this registry
