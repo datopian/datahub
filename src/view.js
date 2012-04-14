@@ -108,6 +108,12 @@ my.DataExplorer = Backbone.View.extend({
           })
       }];
     }
+    this.state = {
+      dataset: null,
+      queryState: this.model.queryState.toJSON(),
+      currentView: null
+    };
+    this._setupStateManagement();
     // this must be called after pageViews are created
     this.render();
 
@@ -229,6 +235,25 @@ my.DataExplorer = Backbone.View.extend({
     } else if (action === 'facets') {
       this.$facetViewer.show();
     }
+  },
+
+  _setupStateManagement: function() {
+    var self = this;
+    this.model.queryState.bind('change', function() {
+      self.state.queryState = this.model.queryState.toJSON();
+    });
+    _.each(this.pageViews, function(pageView) {
+      if (pageView.view.state && pageView.view.state.bind) {
+        pageView.view.state.bind('change', function() {
+          self.state['view-' + pageView.view.id] = pageView.view.state.toJSON();
+        });
+      }
+    });
+  },
+
+  // Get the current state of dataset and views 
+  getState: function() {
+    return this.state;
   }
 });
 

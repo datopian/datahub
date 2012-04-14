@@ -23,7 +23,9 @@ test('getState', function () {
     model: dataset,
     el: $el
   });
-  // explorer.getState();
+  var state = explorer.getState();
+  ok(state.queryState);
+  equal(state.queryState.size, 100);
   $el.remove();
 });
 
