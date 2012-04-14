@@ -2,6 +2,31 @@
 
 module("View - Grid");
 
+function assertPresent(selector) {
+  var found = $(selector);
+  ok(found.length > 0);
+}
+
+function assertNotPresent(selector) {
+  var found = $(selector);
+  equal(found.length, 0);
+}
+
+test('DataGrid - menu - hideColumn', function () {
+  var dataset = Fixture.getDataset();
+  var view = new recline.View.DataGrid({
+    model: dataset
+  });
+  $('.fixtures .test-datatable').append(view.el);
+  view.render();
+
+  assertPresent('.column-header[data-field="x"]');
+  var hideColumn = view.el.find('.column-header[data-field="x"] a[data-action="hideColumn"]');
+  hideColumn.trigger('click');
+  assertNotPresent('.column-header[data-field="x"]');
+  view.remove();
+});
+
 test('new DataGridRow View', function () {
   var $el = $('<tr />');
   $('.fixtures .test-datatable').append($el);

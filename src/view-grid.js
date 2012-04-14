@@ -25,7 +25,7 @@ my.DataGrid = Backbone.View.extend({
   },
 
   events: {
-    'click .column-header-menu': 'onColumnHeaderClick',
+    'click .column-header-menu .data-table-menu li a': 'onColumnHeaderClick',
     'click .row-header-menu': 'onRowHeaderClick',
     'click .root-header-menu': 'onRootHeaderClick',
     'click .data-table-menu li a': 'onMenuClick'
