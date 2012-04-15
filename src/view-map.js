@@ -26,7 +26,7 @@ this.recline.View = this.recline.View || {};
 my.Map = Backbone.View.extend({
 
   tagName:  'div',
-  className: 'data-map-container',
+  className: 'recline-map',
 
   template: ' \
   <div class="editor"> \
