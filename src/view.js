@@ -154,7 +154,7 @@ my.DataExplorer = Backbone.View.extend({
     <div class="header"> \
       <ul class="navigation"> \
         {{#views}} \
-        <li><a href="#{{id}}" class="btn">{{label}}</a> \
+        <li><a href="#{{id}}" data-view="{{id}}" class="btn">{{label}}</a> \
         {{/views}} \
       </ul> \
       <div class="recline-results-info"> \
@@ -177,7 +177,8 @@ my.DataExplorer = Backbone.View.extend({
   </div> \
   ',
   events: {
-    'click .menu-right a': 'onMenuClick'
+    'click .menu-right a': '_onMenuClick',
+    'click .navigation a': '_onSwitchView'
   },
 
   initialize: function(options) {
@@ -207,10 +208,10 @@ my.DataExplorer = Backbone.View.extend({
         })
       }];
     }
-    this.state = new recline.Model.ObjectState();
     // these must be called after pageViews are created
-    this._setupState(options.state);
     this.render();
+    // should come after render as may need to interact with elements in the view
+    this._setupState(options.state);
 
     this.router = new Backbone.Router();
     this.setupRouting();
@@ -299,10 +300,10 @@ my.DataExplorer = Backbone.View.extend({
     });
   },
 
-  updateNav: function(pageName, queryString) {
+  updateNav: function(pageName) {
     this.el.find('.navigation li').removeClass('active');
     this.el.find('.navigation li a').removeClass('disabled');
-    var $el = this.el.find('.navigation li a[href=#' + pageName + ']');
+    var $el = this.el.find('.navigation li a[data-view="' + pageName + '"]');
     $el.parent().addClass('active');
     $el.addClass('disabled');
     // show the specific page
@@ -317,7 +318,7 @@ my.DataExplorer = Backbone.View.extend({
     });
   },
 
-  onMenuClick: function(e) {
+  _onMenuClick: function(e) {
     e.preventDefault();
     var action = $(e.target).attr('data-action');
     if (action === 'filters') {
@@ -327,28 +328,46 @@ my.DataExplorer = Backbone.View.extend({
     }
   },
 
+  _onSwitchView: function(e) {
+    e.preventDefault();
+    var viewName = $(e.target).attr('data-view');
+    this.updateNav(viewName);
+    this.state.set({currentView: viewName});
+  },
+
+  // create a state object for this view and do the job of
+  // 
+  // a) initializing it from both data passed in and other sources (e.g. hash url)
+  //
+  // b) ensure the state object is updated in responese to changes in subviews, query etc.
   _setupState: function(initialState) {
     var self = this;
+    // get data from the query string / hash url plus some defaults
     var qs = my.parseHashQueryString();
     var query = qs.reclineQuery;
     query = query ? JSON.parse(query) : self.model.queryState.toJSON();
     // backwards compatability (now named view-graph but was named graph)
     var graphState = qs['view-graph'] || qs.graph;
     graphState = graphState ? JSON.parse(graphState) : {};
+
+    // now get default data + hash url plus initial state and initial our state object with it
     var stateData = _.extend({
         query: query,
         'view-graph': graphState,
         backend: this.model.backend.__type__,
         dataset: this.model.toJSON(),
-        currentView: null,
+        currentView: this.pageViews[0].id,
         readOnly: false
       },
       initialState);
-    this.state.set(stateData);
+    this.state = new recline.Model.ObjectState(stateData);
 
     // now do updates based on state
     if (this.state.get('readOnly')) {
       this.setReadOnly();
+    }
+    if (this.state.get('currentView')) {
+      this.updateNav(this.state.get('currentView'));
     }
     _.each(this.pageViews, function(pageView) {
       var viewId = 'view-' + pageView.id;
@@ -357,7 +376,7 @@ my.DataExplorer = Backbone.View.extend({
       }
     });
 
-    // bind for changes state in associated objects
+    // finally ensure we update our state object when state of sub-object changes so that state is always up to date
     this.model.queryState.bind('change', function() {
       self.state.set({queryState: self.model.queryState.toJSON()});
     });
@@ -376,7 +395,7 @@ my.DataExplorer = Backbone.View.extend({
   }
 });
 
-// ## restore
+// ### DataExplorer.restore
 //
 // Restore a DataExplorer instance from a serialized state including the associated dataset
 my.DataExplorer.restore = function(state) {

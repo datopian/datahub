@@ -26,6 +26,7 @@ test('get State', function () {
   var state = explorer.state;
   ok(state.get('query'));
   equal(state.get('readOnly'), false);
+  equal(state.get('currentView'), 'grid');
   equal(state.get('query').size, 100);
   deepEqual(state.get('view-grid').hiddenFields, []);
   equal(state.get('backend'), 'memory');
@@ -34,17 +35,29 @@ test('get State', function () {
 });
 
 test('initialize state', function () {
+  var $el = $('<div class="test-view-explorer-init-state" />');
+  $('.fixtures .data-explorer-here').append($el);
   var dataset = Fixture.getDataset();
   var explorer = new recline.View.DataExplorer({
     model: dataset,
+    el: $el,
     state: {
       readOnly: true,
+      currentView: 'graph',
       'view-grid': {
         hiddenFields: ['x']
       }
     }
   });
   ok(explorer.state.get('readOnly'));
+  ok(explorer.state.get('currentView'), 'graph');
+  // check the correct view is visible
+  var css = explorer.el.find('.navigation a[data-view="graph"]').attr('class').split(' ');
+  ok(_.contains(css, 'disabled'), css);
+
+  var css = explorer.el.find('.navigation a[data-view="grid"]').attr('class').split(' ');
+  ok(!(_.contains(css, 'disabled')), css);
+  $el.remove();
 });
 
 test('restore (from serialized state)', function() {
