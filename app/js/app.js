@@ -314,7 +314,7 @@ function standardViews(dataset) {
     {
       id: 'grid',
       label: 'Grid',
-      view: new recline.View.DataGrid({
+      view: new recline.View.Grid({
         model: dataset
       })
     },
