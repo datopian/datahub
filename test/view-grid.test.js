@@ -1,10 +1,10 @@
 (function ($) {
 
-module("View - DataGrid");
+module("View - Grid");
 
 test('menu - hideColumn', function () {
   var dataset = Fixture.getDataset();
-  var view = new recline.View.DataGrid({
+  var view = new recline.View.Grid({
     model: dataset
   });
   $('.fixtures .test-datatable').append(view.el);
@@ -22,7 +22,7 @@ test('menu - hideColumn', function () {
 
 test('state', function () {
   var dataset = Fixture.getDataset();
-  var view = new recline.View.DataGrid({
+  var view = new recline.View.Grid({
     model: dataset,
     state: {
       hiddenFields: ['z']
@@ -35,7 +35,7 @@ test('state', function () {
   view.remove();
 });
 
-test('new DataGridRow View', function () {
+test('new GridRow View', function () {
   var $el = $('<tr />');
   $('.fixtures .test-datatable').append($el);
   var doc = new recline.Model.Document({
@@ -43,7 +43,7 @@ test('new DataGridRow View', function () {
     'b': '2',
     'a': '1'
     });
-  var view = new recline.View.DataGridRow({
+  var view = new recline.View.GridRow({
     model: doc
     , el: $el
     , fields: new recline.Model.FieldList([{id: 'a'}, {id: 'b'}])

@@ -4,12 +4,12 @@ this.recline = this.recline || {};
 this.recline.View = this.recline.View || {};
 
 (function($, my) {
-// ## DataGrid
+// ## (Data) Grid Dataset View
 //
 // Provides a tabular view on a Dataset.
 //
 // Initialize it with a `recline.Model.Dataset`.
-my.DataGrid = Backbone.View.extend({
+my.Grid = Backbone.View.extend({
   tagName:  "div",
   className: "recline-grid-container",
 
@@ -211,7 +211,7 @@ my.DataGrid = Backbone.View.extend({
     this.model.currentDocuments.forEach(function(doc) {
       var tr = $('<tr />');
       self.el.find('tbody').append(tr);
-      var newView = new my.DataGridRow({
+      var newView = new my.GridRow({
           model: doc,
           el: tr,
           fields: self.fields
@@ -223,22 +223,22 @@ my.DataGrid = Backbone.View.extend({
   }
 });
 
-// ## DataGridRow View for rendering an individual document.
+// ## GridRow View for rendering an individual document.
 //
 // Since we want this to update in place it is up to creator to provider the element to attach to.
 //
-// In addition you *must* pass in a FieldList in the constructor options. This should be list of fields for the DataGrid.
+// In addition you *must* pass in a FieldList in the constructor options. This should be list of fields for the Grid.
 //
 // Example:
 //
 // <pre>
-// var row = new DataGridRow({
+// var row = new GridRow({
 //   model: dataset-document,
 //     el: dom-element,
 //     fields: mydatasets.fields // a FieldList object
 //   });
 // </pre>
-my.DataGridRow = Backbone.View.extend({
+my.GridRow = Backbone.View.extend({
   initialize: function(initData) {
     _.bindAll(this, 'render');
     this._fields = initData.fields;
