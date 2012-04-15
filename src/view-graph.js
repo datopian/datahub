@@ -23,7 +23,7 @@ this.recline.View = this.recline.View || {};
 my.Graph = Backbone.View.extend({
 
   tagName:  "div",
-  className: "data-graph-container",
+  className: "recline-graph-container",
 
   template: ' \
   <div class="editor"> \
