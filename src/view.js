@@ -105,7 +105,8 @@ this.recline.View = this.recline.View || {};
 //
 // **views**: (optional) the dataset views (Grid, Graph etc) for
 // DataExplorer to show. This is an array of view hashes. If not provided
-// just initialize a Grid with id 'grid'. Example:
+// initialize with (recline.View.)Grid, Graph, and Map views (with obvious id
+// and labels!).
 //
 // <pre>
 // var views = [
@@ -142,8 +143,9 @@ this.recline.View = this.recline.View || {};
 // </pre>
 //
 // Note that at present we do *not* serialize information about the actual set
-// of views in use -- e.g. those specified by the views argument. Instead we
-// expect the client to have initialized the DataExplorer with the relevant views.
+// of views in use -- e.g. those specified by the views argument -- but instead 
+// expect either that the default views are fine or that the client to have
+// initialized the DataExplorer with the relevant views themselves.
 my.DataExplorer = Backbone.View.extend({
   template: ' \
   <div class="recline-data-explorer"> \
@@ -189,8 +191,20 @@ my.DataExplorer = Backbone.View.extend({
         id: 'grid',
         label: 'Grid',
         view: new my.Grid({
-            model: this.model
-          })
+          model: this.model
+        })
+      }, {
+        id: 'graph',
+        label: 'Graph',
+        view: new my.Graph({
+          model: this.model
+        })
+      }, {
+        id: 'map',
+        label: 'Map',
+        view: new my.Map({
+          model: this.model
+        })
       }];
     }
     this.state = new recline.Model.ObjectState();
