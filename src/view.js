@@ -155,11 +155,7 @@ my.DataExplorer = Backbone.View.extend({
     // note this.model and dataset returned are the same
     this.model.fetch()
       .done(function(dataset) {
-        var queryState = my.parseHashQueryString().reclineQuery;
-        if (queryState) {
-          queryState = JSON.parse(queryState);
-        }
-        self.model.query(queryState);
+        self.model.query(self.state.get('query'));
       })
       .fail(function(error) {
         my.notify(error.message, {category: 'error', persist: true});
@@ -238,16 +234,33 @@ my.DataExplorer = Backbone.View.extend({
 
   _setupState: function(initialState) {
     var self = this;
+    var qs = my.parseHashQueryString();
+    var query = qs.reclineQuery;
+    query = query ? JSON.parse(query) : self.model.queryState.toJSON();
+    // backwards compatability (now named view-graph but was named graph)
+    var graphState = qs['view-graph'] || qs.graph;
+    graphState = graphState ? JSON.parse(graphState) : {};
     var stateData = _.extend({
         readOnly: false,
-        query: self.model.queryState.toJSON(),
+        query: query,
+        'view-graph': graphState,
         currentView: null
       },
       initialState);
     this.state.set(stateData);
+
+    // now do updates based on state
     if (this.state.get('readOnly')) {
       this.setReadOnly();
     }
+    _.each(this.pageViews, function(pageView) {
+      var viewId = 'view-' + pageView.id;
+      if (viewId in self.state.attributes) {
+        pageView.view.state.set(self.state.get(viewId));
+      }
+    });
+
+    // bind for changes state in associated objects
     this.model.queryState.bind('change', function() {
       self.state.set({queryState: self.model.queryState.toJSON()});
     });
