@@ -318,10 +318,12 @@ my.DataExplorer = Backbone.View.extend({
     var graphState = qs['view-graph'] || qs.graph;
     graphState = graphState ? JSON.parse(graphState) : {};
     var stateData = _.extend({
-        readOnly: false,
         query: query,
         'view-graph': graphState,
-        currentView: null
+        backend: this.model.backend.__type__,
+        dataset: this.model.toJSON(),
+        currentView: null,
+        readOnly: false
       },
       initialState);
     this.state.set(stateData);
@@ -353,15 +355,33 @@ my.DataExplorer = Backbone.View.extend({
         });
       }
     });
-  },
-
-  // ### getState
-  //
-  // Get the current state of dataset and views (see discussion of state above)
-  getState: function() {
-    return this.state;
   }
 });
+
+// ## restore
+//
+// Restore a DataExplorer instance from a serialized state including the associated dataset
+my.DataExplorer.restore = function(state) {
+  // hack-y - restoring a memory dataset does not mean much ...
+  var dataset = null;
+  if (state.backend === 'memory') {
+    dataset = recline.Backend.createDataset(
+      [{stub: 'this is a stub dataset because we do not restore memory datasets'}],
+      [],
+      state.dataset
+    );
+  } else {
+    dataset = new recline.Model.Dataset(
+      state.dataset,
+      state.backend
+    );
+  }
+  var explorer = new my.DataExplorer({
+    model: dataset,
+    state: state
+  });
+  return explorer;
+}
 
 my.QueryEditor = Backbone.View.extend({
   className: 'recline-query-editor', 
