@@ -20,7 +20,7 @@ this.recline.View = this.recline.View || {};
 //
 // NB: should *not* provide an el argument to the view but must let the view
 // generate the element itself (you can then append view.el to the DOM.
-my.FlotGraph = Backbone.View.extend({
+my.Graph = Backbone.View.extend({
 
   tagName:  "div",
   className: "data-graph-container",

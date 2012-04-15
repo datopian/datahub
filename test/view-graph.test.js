@@ -1,8 +1,8 @@
-module("View - FlotGraph");
+module("View - Graph");
 
 test('basics', function () {
   var dataset = Fixture.getDataset();
-  var view = new recline.View.FlotGraph({
+  var view = new recline.View.Graph({
     model: dataset
   });
   $('.fixtures').append(view.el);

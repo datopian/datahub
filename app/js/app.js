@@ -321,7 +321,7 @@ function standardViews(dataset) {
     {
       id: 'graph',
       label: 'Graph',
-      view: new recline.View.FlotGraph({
+      view: new recline.View.Graph({
         model: dataset
       })
     },
