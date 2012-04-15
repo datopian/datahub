@@ -275,9 +275,9 @@ my.Graph = Backbone.View.extend({
   createSeries: function () {
     var self = this;
     var series = [];
-    $.each(this.state.attributes.series, function (seriesIndex, field) {
+    _.each(this.state.attributes.series, function(field) {
       var points = [];
-      $.each(self.model.currentDocuments.models, function (index, doc) {
+      _.each(self.model.currentDocuments.models, function(doc, index) {
         var x = doc.get(self.state.attributes.group);
         var y = doc.get(field);
         if (typeof x === 'string') {
