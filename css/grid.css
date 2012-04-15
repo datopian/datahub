@@ -63,10 +63,6 @@
   float: right;
 }
 
-.read-only a.row-header-menu {
-  display: none;
-}
-
 div.data-table-cell-content {
   line-height: 1.2;
   color: #222;
@@ -301,15 +297,19 @@ td.expression-preview-value {
   * Read-only mode
   *********************************************************/
 
-.read-only .no-hidden .recline-grid tr td:first-child,
-.read-only .no-hidden .recline-grid tr th:first-child
+.recline-read-only .no-hidden .recline-grid tr td:first-child,
+.recline-read-only .no-hidden .recline-grid tr th:first-child
 {
   display: none;
 }
 
-.read-only .recline-grid .write-op,
-.read-only .recline-grid a.data-table-cell-edit
+.recline-read-only .recline-grid .write-op,
+.recline-read-only .recline-grid a.data-table-cell-edit
 {
+  display: none;
+}
+
+.recline-read-only a.row-header-menu {
   display: none;
 }
 

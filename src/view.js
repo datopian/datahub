@@ -163,7 +163,7 @@ my.DataExplorer = Backbone.View.extend({
   },
 
   setReadOnly: function() {
-    this.el.addClass('read-only');
+    this.el.addClass('recline-read-only');
   },
 
   render: function() {
