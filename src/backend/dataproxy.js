@@ -17,6 +17,7 @@ this.recline.Backend = this.recline.Backend || {};
   //
   // Note that this is a **read-only** backend.
   my.DataProxy = my.Base.extend({
+    __type__: 'dataproxy',
     defaults: {
       dataproxy_url: 'http://jsonpdataproxy.appspot.com'
     },
@@ -71,7 +72,5 @@ this.recline.Backend = this.recline.Backend || {};
       return dfd.promise();
     }
   });
-  recline.Model.backends['dataproxy'] = new my.DataProxy();
-
 
 }(jQuery, this.recline.Backend));

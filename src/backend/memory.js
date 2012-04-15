@@ -20,7 +20,7 @@ this.recline.Backend = this.recline.Backend || {};
     if (!metadata.id) {
       metadata.id = String(Math.floor(Math.random() * 100000000) + 1);
     }
-    var backend = recline.Model.backends['memory'];
+    var backend = new recline.Backend.Memory();
     var datasetInfo = {
       documents: data,
       metadata: metadata
@@ -35,7 +35,7 @@ this.recline.Backend = this.recline.Backend || {};
       }
     }
     backend.addDataset(datasetInfo);
-    var dataset = new recline.Model.Dataset({id: metadata.id}, 'memory');
+    var dataset = new recline.Model.Dataset({id: metadata.id}, backend);
     dataset.fetch();
     return dataset;
   };
@@ -70,6 +70,7 @@ this.recline.Backend = this.recline.Backend || {};
   //  etc ...
   //  </pre>
   my.Memory = my.Base.extend({
+    __type__: 'memory',
     initialize: function() {
       this.datasets = {};
     },
@@ -209,6 +210,5 @@ this.recline.Backend = this.recline.Backend || {};
       return facetResults;
     }
   });
-  recline.Model.backends['memory'] = new my.Memory();
 
 }(jQuery, this.recline.Backend));

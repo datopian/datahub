@@ -108,10 +108,11 @@ var sample_data = {
 };
 
 test("ElasticSearch", function() { 
+  var backend = new recline.Backend.ElasticSearch();
   var dataset = new recline.Model.Dataset({
       url: 'https://localhost:9200/my-es-db/my-es-type'
     },
-    'elasticsearch'
+    backend
   );
 
   var stub = sinon.stub($, 'ajax', function(options) {
