@@ -141,6 +141,36 @@ my.Dataset = Backbone.Model.extend({
   }
 });
 
+
+// ### Dataset.restore
+//
+// Restore a Dataset instance from a serialized state. Serialized state for a
+// Dataset is an Object like:
+// 
+// <pre>
+// {
+//   backend: {backend type - i.e. value of dataset.backend.__type__}
+//   dataset: {result of dataset.toJSON()}
+//   ...
+// }
+my.Dataset.restore = function(state) {
+  // hack-y - restoring a memory dataset does not mean much ...
+  var dataset = null;
+  if (state.backend === 'memory') {
+    dataset = recline.Backend.createDataset(
+      [{stub: 'this is a stub dataset because we do not restore memory datasets'}],
+      [],
+      state.dataset
+    );
+  } else {
+    dataset = new recline.Model.Dataset(
+      state.dataset,
+      state.backend
+    );
+  }
+  return dataset;
+};
+
 // ## <a id="document">A Document (aka Row)</a>
 // 
 // A single entry or row in the dataset
