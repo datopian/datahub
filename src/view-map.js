@@ -12,17 +12,17 @@ this.recline.View = this.recline.View || {};
 // [GeoJSON](http://geojson.org) objects or two fields with latitude and
 // longitude coordinates.
 //
-// Initialization arguments:
+// Initialization arguments are as standard for Dataset Views. State object may
+// have the following (optional) configuration options:
 //
-// * options: initial options. They must contain a model:
-//
-//      {
-//          model: {recline.Model.Dataset}
-//      }
-//
-// * config: (optional) map configuration hash (not yet used)
-//
-//
+// <pre>
+//   {
+//     // geomField if specified will be used in preference to lat/lon 
+//     geomField: {id of field containing geometry in the dataset}
+//     lonField: {id of field containing longitude in the dataset}
+//     latField: {id of field containing latitude in the dataset}
+//   }
+// </pre>
 my.Map = Backbone.View.extend({
 
   tagName:  'div',
@@ -95,14 +95,12 @@ my.Map = Backbone.View.extend({
     'change .editor-field-type': 'onFieldTypeChange'
   },
 
-
-  initialize: function(options, config) {
+  initialize: function(options) {
     var self = this;
-
     this.el = $(this.el);
 
     // Listen to changes in the fields
-    this.model.bind('change', function() {
+    this.model.fields.bind('change', function() {
       self._setupGeometryField();
     });
     this.model.fields.bind('add', this.render);
@@ -122,8 +120,16 @@ my.Map = Backbone.View.extend({
         self.map.invalidateSize();
     });
 
-    this.mapReady = false;
+    var stateData = _.extend({
+        geomField: null,
+        lonField: null,
+        latField: null
+      },
+      options.state
+    );
+    this.state = new recline.Model.ObjectState(stateData);
 
+    this.mapReady = false;
     this.render();
   },
 
@@ -140,12 +146,12 @@ my.Map = Backbone.View.extend({
     this.$map = this.el.find('.panel.map');
 
     if (this.geomReady && this.model.fields.length){
-      if (this._geomFieldName){
-        this._selectOption('editor-geom-field',this._geomFieldName);
+      if (this.state.get('geomField')){
+        this._selectOption('editor-geom-field',this.state.get('geomField'));
         $('#editor-field-type-geom').attr('checked','checked').change();
       } else{
-        this._selectOption('editor-lon-field',this._lonFieldName);
-        this._selectOption('editor-lat-field',this._latFieldName);
+        this._selectOption('editor-lon-field',this.state.get('lonField'));
+        this._selectOption('editor-lat-field',this.state.get('latField'));
         $('#editor-field-type-latlon').attr('checked','checked').change();
       }
     }
@@ -174,9 +180,7 @@ my.Map = Backbone.View.extend({
   // * refresh: Clear existing features and add all current documents
   //
   redraw: function(action,doc){
-
     var self = this;
-
     action = action || 'refresh';
 
     if (this.geomReady && this.mapReady){
@@ -205,14 +209,19 @@ my.Map = Backbone.View.extend({
   onEditorSubmit: function(e){
     e.preventDefault();
     if ($('#editor-field-type-geom').attr('checked')){
-        this._geomFieldName = $('.editor-geom-field > select > option:selected').val();
-        this._latFieldName = this._lonFieldName = false;
+      this.state.set({
+        geomField: $('.editor-geom-field > select > option:selected').val(),
+        lonField: null,
+        latField: null
+      });
     } else {
-        this._geomFieldName = false;
-        this._latFieldName = $('.editor-lat-field > select > option:selected').val();
-        this._lonFieldName = $('.editor-lon-field > select > option:selected').val();
+      this.state.set({
+        geomField: null,
+        lonField: $('.editor-lon-field > select > option:selected').val(),
+        latField: $('.editor-lat-field > select > option:selected').val()
+      });
     }
-    this.geomReady = (this._geomFieldName || (this._latFieldName && this._lonFieldName));
+    this.geomReady = (this.state.get('geomField') || (this.state.get('latField') && this.state.get('lonField')));
     this.redraw();
 
     return false;
@@ -301,16 +310,16 @@ my.Map = Backbone.View.extend({
   //
   _getGeometryFromDocument: function(doc){
     if (this.geomReady){
-      if (this._geomFieldName){
+      if (this.state.get('geomField')){
         // We assume that the contents of the field are a valid GeoJSON object
-        return doc.attributes[this._geomFieldName];
-      } else if (this._lonFieldName && this._latFieldName){
+        return doc.attributes[this.state.get('geomField')];
+      } else if (this.state.get('lonField') && this.state.get('latField')){
         // We'll create a GeoJSON like point object from the two lat/lon fields
         return {
           type: 'Point',
           coordinates: [
-            doc.attributes[this._lonFieldName],
-            doc.attributes[this._latFieldName]
+            doc.attributes[this.state.get('lonField')],
+            doc.attributes[this.state.get('latField')]
             ]
         };
       }
@@ -324,12 +333,12 @@ my.Map = Backbone.View.extend({
   // If not found, the user can define them via the UI form.
   _setupGeometryField: function(){
     var geomField, latField, lonField;
-
-    this._geomFieldName = this._checkField(this.geometryFieldNames);
-    this._latFieldName = this._checkField(this.latitudeFieldNames);
-    this._lonFieldName = this._checkField(this.longitudeFieldNames);
-
-    this.geomReady = (this._geomFieldName || (this._latFieldName && this._lonFieldName));
+    this.state.set({
+      geomField: this._checkField(this.geometryFieldNames),
+      latField: this._checkField(this.latitudeFieldNames),
+      lonField: this._checkField(this.longitudeFieldNames)
+    });
+    this.geomReady = (this.state.get('geomField') || (this.state.get('latField') && this.state.get('lonField')));
   },
 
   // Private: Check if a field in the current model exists in the provided
