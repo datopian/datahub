@@ -116,10 +116,18 @@ my.Map = Backbone.View.extend({
     this.model.currentDocuments.bind('remove', function(doc){self.redraw('remove',doc)});
     this.model.currentDocuments.bind('reset', function(){self.redraw('reset')});
 
-    // If the div was hidden, Leaflet needs to recalculate some sizes
-    // to display properly
     this.bind('view:show',function(){
-        self.map.invalidateSize();
+      // If the div was hidden, Leaflet needs to recalculate some sizes
+      // to display properly
+      self.map.invalidateSize();
+      if (self._zoomPending) {
+        self._zoomToFeatures();
+        self._zoomPending = false;
+      }
+      self.visible = true;
+    });
+    this.bind('view:hide',function(){
+      self.visible = false;
     });
 
     this.mapReady = false;
@@ -189,6 +197,11 @@ my.Map = Backbone.View.extend({
       } else if (action == 'refresh'){
         this.features.clearLayers();
         this._add(this.model.currentDocuments.models);
+      }
+      if (this.visible){
+        this._zoomToFeatures();
+      } else {
+        this._zoomPending = true;
       }
     }
   },
@@ -348,6 +361,18 @@ my.Map = Backbone.View.extend({
     return null;
   },
 
+  // Private: Zoom to map to current features extent if any, or to the full
+  // extent if none.
+  //
+  _zoomToFeatures: function(){
+    var bounds = this.features.getBounds();
+    if (bounds){
+      this.map.fitBounds(bounds);
+    } else {
+      this.map.setView(new L.LatLng(0, 0), 2);
+    }
+  },
+
   // Private: Sets up the Leaflet map control and the features layer.
   //
   // The map uses a base layer from [MapQuest](http://www.mapquest.com) based
@@ -372,6 +397,17 @@ my.Map = Backbone.View.extend({
        }
 
     });
+
+    // This will be available in the next Leaflet stable release.
+    // In the meantime we add it manually to our layer.
+    this.features.getBounds = function(){
+      var bounds = new L.LatLngBounds();
+      this._iterateLayers(function (layer) {
+        bounds.extend(layer instanceof L.Marker ? layer.getLatLng() : layer.getBounds());
+      }, this);
+      return (typeof bounds.getNorthEast() !== 'undefined') ? bounds : null;
+    }
+
     this.map.addLayer(this.features);
 
     this.map.setView(new L.LatLng(0, 0), 2);
