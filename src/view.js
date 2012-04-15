@@ -1,4 +1,16 @@
 /*jshint multistr:true */
+
+// # Core View Functionality plus Data Explorer
+//
+// ## Common view concepts
+//
+// ### State
+//
+// TODO
+//
+// ### Read-only
+//
+// TODO
 this.recline = this.recline || {};
 this.recline.View = this.recline.View || {};
 
@@ -11,19 +23,21 @@ this.recline.View = this.recline.View || {};
 // var myExplorer = new model.recline.DataExplorer({
 //   model: {{recline.Model.Dataset instance}}
 //   el: {{an existing dom element}}
-//   views: {{page views}}
-//   config: {{config options -- see below}}
+//   views: {{dataset views}}
+//   state: {{state configuration -- see below}}
 // });
 // </pre> 
 //
 // ### Parameters
 // 
-// **model**: (required) Dataset instance.
+// **model**: (required) recline.model.Dataset instance.
 //
-// **el**: (required) DOM element.
+// **el**: (required) DOM element to bind to. NB: the element already
+// being in the DOM is important for rendering of some subviews (e.g.
+// FlotGraph).
 //
-// **views**: (optional) the views (Grid, Graph etc) for DataExplorer to
-// show. This is an array of view hashes. If not provided
+// **views**: (optional) the dataset views (Grid, Graph etc) for
+// DataExplorer to show. This is an array of view hashes. If not provided
 // just initialize a DataGrid with id 'grid'. Example:
 //
 // <pre>
@@ -45,13 +59,10 @@ this.recline.View = this.recline.View || {};
 // ];
 // </pre>
 //
-// **config**: Config options like:
+// **state**: state config for this view. Options are:
 //
 //   * readOnly: true/false (default: false) value indicating whether to
 //     operate in read-only mode (hiding all editing options).
-//
-// NB: the element already being in the DOM is important for rendering of
-// FlotGraph subview.
 my.DataExplorer = Backbone.View.extend({
   template: ' \
   <div class="recline-data-explorer"> \
@@ -89,13 +100,6 @@ my.DataExplorer = Backbone.View.extend({
   initialize: function(options) {
     var self = this;
     this.el = $(this.el);
-    this.config = _.extend({
-        readOnly: false
-      },
-      options.config);
-    if (this.config.readOnly) {
-      this.setReadOnly();
-    }
     // Hash of 'page' views (i.e. those for whole page) keyed by page name
     if (options.views) {
       this.pageViews = options.views;
@@ -108,9 +112,9 @@ my.DataExplorer = Backbone.View.extend({
           })
       }];
     }
-    this.state = {};
-    this._setupState();
-    // this must be called after pageViews are created
+    this.state = new recline.Model.ObjectState();
+    // these must be called after pageViews are created
+    this._setupState(options.state);
     this.render();
 
     this.router = new Backbone.Router();
@@ -168,7 +172,6 @@ my.DataExplorer = Backbone.View.extend({
 
   render: function() {
     var tmplData = this.model.toTemplateJSON();
-    tmplData.displayCount = this.config.displayCount;
     tmplData.views = this.pageViews;
     var template = $.mustache(this.template, tmplData);
     $(this.el).html(template);
@@ -233,21 +236,30 @@ my.DataExplorer = Backbone.View.extend({
     }
   },
 
-  _setupState: function() {
+  _setupState: function(initialState) {
     var self = this;
-    this.state = {
-      dataset: null,
-      query: this.model.queryState.toJSON(),
-      currentView: null
-    };
+    var stateData = _.extend({
+        readOnly: false,
+        query: self.model.queryState.toJSON(),
+        currentView: null
+      },
+      initialState);
+    this.state.set(stateData);
+    if (this.state.get('readOnly')) {
+      this.setReadOnly();
+    }
     this.model.queryState.bind('change', function() {
-      self.state.queryState = this.model.queryState.toJSON();
+      self.state.set({queryState: self.model.queryState.toJSON()});
     });
     _.each(this.pageViews, function(pageView) {
       if (pageView.view.state && pageView.view.state.bind) {
-        self.state['view-' + pageView.id] = pageView.view.state.toJSON();
+        var update = {};
+        update['view-' + pageView.id] = pageView.view.state.toJSON();
+        self.state.set(update);
         pageView.view.state.bind('change', function() {
-          self.state['view-' + pageView.id] = pageView.view.state.toJSON();
+          var update = {};
+          update['view-' + pageView.id] = pageView.view.state.toJSON();
+          self.state.set(update);
         });
       }
     });
