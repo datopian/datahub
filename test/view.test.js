@@ -36,7 +36,10 @@ test('initialize state', function () {
   var explorer = new recline.View.DataExplorer({
     model: dataset,
     state: {
-      readOnly: true
+      readOnly: true,
+      'view-grid': {
+        hiddenFields: ['x']
+      }
     }
   });
   var state = explorer.getState();

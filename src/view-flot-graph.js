@@ -7,10 +7,10 @@ this.recline.View = this.recline.View || {};
 
 // ## Graph view for a Dataset using Flot graphing library.
 //
-// Initialization arguments:
+// Initialization arguments (in a hash in first parameter):
 //
 // * model: recline.Model.Dataset
-// * config: (optional) graph configuration hash of form:
+// * state: (optional) configuration hash of form:
 //
 //        { 
 //          group: {column name for x-axis},
@@ -86,7 +86,7 @@ my.FlotGraph = Backbone.View.extend({
     'click .action-toggle-help': 'toggleHelp'
   },
 
-  initialize: function(options, config) {
+  initialize: function(options) {
     var self = this;
     this.el = $(this.el);
     _.bindAll(this, 'render', 'redraw');
@@ -96,18 +96,14 @@ my.FlotGraph = Backbone.View.extend({
     this.model.fields.bind('add', this.render);
     this.model.currentDocuments.bind('add', this.redraw);
     this.model.currentDocuments.bind('reset', this.redraw);
-    var configFromHash = my.parseHashQueryString().graph;
-    if (configFromHash) {
-      configFromHash = JSON.parse(configFromHash);
-    }
-    this.chartConfig = _.extend({
+    var stateData = _.extend({
         group: null,
         series: [],
         graphType: 'lines-and-points'
       },
-      configFromHash,
-      config
-      );
+      options.state
+    );
+    this.state = new recline.Model.ObjectState(stateData);
     this.render();
   },
 
@@ -129,13 +125,12 @@ my.FlotGraph = Backbone.View.extend({
     var series = this.$series.map(function () {
       return $(this).val();
     });
-    this.chartConfig.series = $.makeArray(series);
-    this.chartConfig.group = this.el.find('.editor-group select').val();
-    this.chartConfig.graphType = this.el.find('.editor-type select').val();
-    // update navigation
-    var qs = my.parseHashQueryString();
-    qs.graph = JSON.stringify(this.chartConfig);
-    my.setHashQueryString(qs);
+    var updatedState = {
+      series: $.makeArray(series),
+      group: this.el.find('.editor-group select').val(),
+      graphType: this.el.find('.editor-type select').val()
+    };
+    this.state.set(updatedState);
     this.redraw();
   },
 
@@ -151,7 +146,7 @@ my.FlotGraph = Backbone.View.extend({
       return;
     }
     var series = this.createSeries();
-    var options = this.getGraphOptions(this.chartConfig.graphType);
+    var options = this.getGraphOptions(this.state.attributes.graphType);
     this.plot = $.plot(this.$graph, series, options);
     this.setupTooltips();
     // create this.plot and cache it
@@ -172,7 +167,7 @@ my.FlotGraph = Backbone.View.extend({
     // special tickformatter to show labels rather than numbers
     var tickFormatter = function (val) {
       if (self.model.currentDocuments.models[val]) {
-        var out = self.model.currentDocuments.models[val].get(self.chartConfig.group);
+        var out = self.model.currentDocuments.models[val].get(self.state.attributes.group);
         // if the value was in fact a number we want that not the 
         if (typeof(out) == 'number') {
           return val;
@@ -255,14 +250,14 @@ my.FlotGraph = Backbone.View.extend({
           var y = item.datapoint[1];
           // convert back from 'index' value on x-axis (e.g. in cases where non-number values)
           if (self.model.currentDocuments.models[x]) {
-            x = self.model.currentDocuments.models[x].get(self.chartConfig.group);
+            x = self.model.currentDocuments.models[x].get(self.state.attributes.group);
           } else {
             x = x.toFixed(2);
           }
           y = y.toFixed(2);
           
           var content = _.template('<%= group %> = <%= x %>, <%= series %> = <%= y %>', {
-            group: self.chartConfig.group,
+            group: self.state.attributes.group,
             x: x,
             series: item.series.label,
             y: y
@@ -280,25 +275,23 @@ my.FlotGraph = Backbone.View.extend({
   createSeries: function () {
     var self = this;
     var series = [];
-    if (this.chartConfig) {
-      $.each(this.chartConfig.series, function (seriesIndex, field) {
-        var points = [];
-        $.each(self.model.currentDocuments.models, function (index, doc) {
-          var x = doc.get(self.chartConfig.group);
-          var y = doc.get(field);
-          if (typeof x === 'string') {
-            x = index;
-          }
-          // horizontal bar chart
-          if (self.chartConfig.graphType == 'bars') {
-            points.push([y, x]);
-          } else {
-            points.push([x, y]);
-          }
-        });
-        series.push({data: points, label: field});
+    $.each(this.state.attributes.series, function (seriesIndex, field) {
+      var points = [];
+      $.each(self.model.currentDocuments.models, function (index, doc) {
+        var x = doc.get(self.state.attributes.group);
+        var y = doc.get(field);
+        if (typeof x === 'string') {
+          x = index;
+        }
+        // horizontal bar chart
+        if (self.state.attributes.graphType == 'bars') {
+          points.push([y, x]);
+        } else {
+          points.push([x, y]);
+        }
       });
-    }
+      series.push({data: points, label: field});
+    });
     return series;
   },
 

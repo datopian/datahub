@@ -14,3 +14,14 @@ var Fixture = {
   }
 };
 
+function assertPresent(selector, el) {
+  var found = el ? $(el).find(selector) : $(selector);
+  ok(found.length > 0);
+}
+
+function assertNotPresent(selector, el) {
+  var found = el ? $(el).find(selector) : $(selector);
+  ok(found.length > 0);
+  equal(found.length, 0);
+}
+

@@ -2,16 +2,6 @@
 
 module("View - DataGrid");
 
-function assertPresent(selector) {
-  var found = $(selector);
-  ok(found.length > 0);
-}
-
-function assertNotPresent(selector) {
-  var found = $(selector);
-  equal(found.length, 0);
-}
-
 test('menu - hideColumn', function () {
   var dataset = Fixture.getDataset();
   var view = new recline.View.DataGrid({
