@@ -140,6 +140,10 @@ this.recline.View = this.recline.View || {};
 //     readOnly: (default: false) run in read-only mode
 // }
 // </pre>
+//
+// Note that at present we do *not* serialize information about the actual set
+// of views in use -- e.g. those specified by the views argument. Instead we
+// expect the client to have initialized the DataExplorer with the relevant views.
 my.DataExplorer = Backbone.View.extend({
   template: ' \
   <div class="recline-data-explorer"> \
@@ -362,20 +366,7 @@ my.DataExplorer = Backbone.View.extend({
 //
 // Restore a DataExplorer instance from a serialized state including the associated dataset
 my.DataExplorer.restore = function(state) {
-  // hack-y - restoring a memory dataset does not mean much ...
-  var dataset = null;
-  if (state.backend === 'memory') {
-    dataset = recline.Backend.createDataset(
-      [{stub: 'this is a stub dataset because we do not restore memory datasets'}],
-      [],
-      state.dataset
-    );
-  } else {
-    dataset = new recline.Model.Dataset(
-      state.dataset,
-      state.backend
-    );
-  }
+  var dataset = recline.Model.Dataset.restore(state);
   var explorer = new my.DataExplorer({
     model: dataset,
     state: state
