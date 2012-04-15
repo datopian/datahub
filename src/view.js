@@ -34,7 +34,7 @@ this.recline.View = this.recline.View || {};
 //
 // **el**: (required) DOM element to bind to. NB: the element already
 // being in the DOM is important for rendering of some subviews (e.g.
-// FlotGraph).
+// Graph).
 //
 // **views**: (optional) the dataset views (Grid, Graph etc) for
 // DataExplorer to show. This is an array of view hashes. If not provided
@@ -52,7 +52,7 @@ this.recline.View = this.recline.View || {};
 //   {
 //     id: 'graph',
 //     label: 'Graph',
-//     view: new recline.View.FlotGraph({
+//     view: new recline.View.Graph({
 //       model: dataset
 //     })
 //   }

@@ -13,7 +13,7 @@ test('menu - hideColumn', function () {
   assertPresent('.column-header[data-field="x"]');
   var hideColumn = view.el.find('.column-header[data-field="x"] a[data-action="hideColumn"]');
   hideColumn.trigger('click');
-  assertNotPresent('.column-header[data-field="x"]');
+  assertNotPresent('.column-header[data-field="x"]', view.el);
 
   // also test a bit of state
   deepEqual(view.state.toJSON(), {hiddenFields: ['x']});

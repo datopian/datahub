@@ -13,7 +13,7 @@ def docs():
     print("** Building docs")
 
     docco_executable = os.environ.get('DOCCO_EXECUTABLE','docco')
-    cmd = '%s src/model.js src/view.js src/view-grid.js src/view-flot-graph.js src/view-map.js' % (docco_executable)
+    cmd = '%s src/model.js src/view.js src/view-grid.js src/view-graph.js src/view-map.js' % (docco_executable)
     os.system(cmd)
     if os.path.exists('/tmp/recline-docs'):
       shutil.rmtree('/tmp/recline-docs')
