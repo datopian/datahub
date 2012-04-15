@@ -103,7 +103,6 @@ test('Memory Backend: filters', function () {
 });
 
 test('Memory Backend: facet', function () {
-  console.log('here');
   var dataset = makeBackendDataset();
   dataset.queryState.addFacet('country');
   dataset.query().then(function() {
