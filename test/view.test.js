@@ -24,10 +24,23 @@ test('getState', function () {
     el: $el
   });
   var state = explorer.getState();
-  ok(state.query);
-  equal(state.query.size, 100);
-  deepEqual(state['view-grid'].hiddenFields, []);
+  ok(state.get('query'));
+  equal(state.get('readOnly'), false);
+  equal(state.get('query').size, 100);
+  deepEqual(state.get('view-grid').hiddenFields, []);
   $el.remove();
+});
+
+test('initialize state', function () {
+  var dataset = Fixture.getDataset();
+  var explorer = new recline.View.DataExplorer({
+    model: dataset,
+    state: {
+      readOnly: true
+    }
+  });
+  var state = explorer.getState();
+  ok(state.get('readOnly'));
 });
 
 })(this.jQuery);
