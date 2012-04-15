@@ -21,7 +21,6 @@ function assertPresent(selector, el) {
 
 function assertNotPresent(selector, el) {
   var found = el ? $(el).find(selector) : $(selector);
-  ok(found.length > 0);
   equal(found.length, 0);
 }
 
