@@ -217,10 +217,11 @@ var dataProxyData = {
 test('DataProxy Backend', function() {
   // needed only if not stubbing
   // stop();
+  var backend = new recline.Backend.DataProxy();
   var dataset = new recline.Model.Dataset({
       url: 'http://webstore.thedatahub.org/rufuspollock/gold_prices/data.csv'
     },
-    'dataproxy'
+    backend
   );
 
   var stub = sinon.stub($, 'ajax', function(options) {
@@ -419,10 +420,11 @@ var sample_gdocs_spreadsheet_data = {
 }
 
 test("GDoc Backend", function() { 
+  var backend = new recline.Backend.GDoc();
   var dataset = new recline.Model.Dataset({
       url: 'https://spreadsheets.google.com/feeds/list/0Aon3JiuouxLUdDQwZE1JdV94cUd6NWtuZ0IyWTBjLWc/od6/public/values?alt=json'
     },
-    'gdocs'
+    backend
   );
 
   var stub = sinon.stub($, 'getJSON', function(options, cb) {
@@ -450,7 +452,7 @@ test("GDoc Backend.getUrl", function() {
   var dataset = new recline.Model.Dataset({
     url: 'https://docs.google.com/spreadsheet/ccc?key=' + key + '#gid=0'
   });
-  var backend = recline.Model.backends['gdocs'];
+  var backend = new recline.Backend.GDoc();
   var out = backend.getUrl(dataset);
   var exp = 'https://spreadsheets.google.com/feeds/list/' + key + '/1/public/values?alt=json'
   equal(exp, out);

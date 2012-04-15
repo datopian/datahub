@@ -17,10 +17,20 @@ this.recline.Backend = this.recline.Backend || {};
   // ## recline.Backend.Base
   //
   // Base class for backends providing a template and convenience functions.
-  // You do not have to inherit from this class but even when not it does provide guidance on the functions you must implement.
+  // You do not have to inherit from this class but even when not it does
+  // provide guidance on the functions you must implement.
   //
   // Note also that while this (and other Backends) are implemented as Backbone models this is just a convenience.
   my.Base = Backbone.Model.extend({
+    // ### __type__
+    //
+    // 'type' of this backend. This should be either the class path for this
+    // object as a string (e.g. recline.Backend.Memory) or for Backends within
+    // recline.Backend module it may be their class name.
+    //
+    // This value is used as an identifier for this backend when initializing
+    // backends (see recline.Model.Dataset.initialize).
+    __type__: 'base',
 
     // ### sync
     //
