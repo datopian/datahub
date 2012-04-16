@@ -185,6 +185,7 @@ my.DataExplorer = Backbone.View.extend({
     var self = this;
     this.el = $(this.el);
     // Hash of 'page' views (i.e. those for whole page) keyed by page name
+    this._setupState(options.state);
     if (options.views) {
       this.pageViews = options.views;
     } else {
@@ -192,26 +193,35 @@ my.DataExplorer = Backbone.View.extend({
         id: 'grid',
         label: 'Grid',
         view: new my.Grid({
-          model: this.model
-        })
+          model: this.model,
+          state: this.state.get('view-grid')
+        }),
       }, {
         id: 'graph',
         label: 'Graph',
         view: new my.Graph({
-          model: this.model
-        })
+          model: this.model,
+          state: this.state.get('view-graph')
+        }),
       }, {
         id: 'map',
         label: 'Map',
         view: new my.Map({
-          model: this.model
-        })
+          model: this.model,
+          state: this.state.get('view-map')
+        }),
       }];
     }
     // these must be called after pageViews are created
     this.render();
-    // should come after render as may need to interact with elements in the view
-    this._setupState(options.state);
+    this._bindStateChanges();
+    // now do updates based on state (need to come after render)
+    if (this.state.get('readOnly')) {
+      this.setReadOnly();
+    }
+    if (this.state.get('currentView')) {
+      this.updateNav(this.state.get('currentView'));
+    }
 
     this.router = new Backbone.Router();
     this.setupRouting();
@@ -227,7 +237,7 @@ my.DataExplorer = Backbone.View.extend({
         var qs = my.parseHashQueryString();
         qs.reclineQuery = JSON.stringify(self.model.queryState.toJSON());
         var out = my.getNewHashForQueryString(qs);
-        self.router.navigate(out);
+        // self.router.navigate(out);
       });
     this.model.bind('query:fail', function(error) {
         my.clearNotifications();
@@ -290,13 +300,15 @@ my.DataExplorer = Backbone.View.extend({
   setupRouting: function() {
     var self = this;
     // Default route
-    this.router.route(/^(\?.*)?$/, this.pageViews[0].id, function(queryString) {
-      self.updateNav(self.pageViews[0].id, queryString);
-    });
-    $.each(this.pageViews, function(idx, view) {
-      self.router.route(/^([^?]+)(\?.*)?/, 'view', function(viewId, queryString) {
-        self.updateNav(viewId, queryString);
-      });
+//    this.router.route(/^(\?.*)?$/, this.pageViews[0].id, function(queryString) {
+//      self.updateNav(self.pageViews[0].id, queryString);
+//    });
+//    $.each(this.pageViews, function(idx, view) {
+//      self.router.route(/^([^?]+)(\?.*)?/, 'view', function(viewId, queryString) {
+//        self.updateNav(viewId, queryString);
+//      });
+//    });
+    this.router.route(/.*/, 'view', function() {
     });
   },
 
@@ -356,29 +368,18 @@ my.DataExplorer = Backbone.View.extend({
         'view-graph': graphState,
         backend: this.model.backend.__type__,
         dataset: this.model.toJSON(),
-        currentView: this.pageViews[0].id,
+        currentView: null,
         readOnly: false
       },
       initialState);
     this.state = new recline.Model.ObjectState(stateData);
+  },
 
-    // now do updates based on state
-    if (this.state.get('readOnly')) {
-      this.setReadOnly();
-    }
-    if (this.state.get('currentView')) {
-      this.updateNav(this.state.get('currentView'));
-    }
-    _.each(this.pageViews, function(pageView) {
-      var viewId = 'view-' + pageView.id;
-      if (viewId in self.state.attributes) {
-        pageView.view.state.set(self.state.get(viewId));
-      }
-    });
-
+  _bindStateChanges: function() {
+    var self = this;
     // finally ensure we update our state object when state of sub-object changes so that state is always up to date
     this.model.queryState.bind('change', function() {
-      self.state.set({queryState: self.model.queryState.toJSON()});
+      self.state.set({query: self.model.queryState.toJSON()});
     });
     _.each(this.pageViews, function(pageView) {
       if (pageView.view.state && pageView.view.state.bind) {
