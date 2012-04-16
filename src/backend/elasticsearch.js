@@ -20,6 +20,7 @@ this.recline.Backend = this.recline.Backend || {};
   //
   // <pre>http://localhost:9200/twitter/tweet</pre>
   my.ElasticSearch = my.Base.extend({
+    __type__: 'elasticsearch',
     _getESUrl: function(dataset) {
       var out = dataset.get('elasticsearch_url');
       if (out) return out;
@@ -115,7 +116,6 @@ this.recline.Backend = this.recline.Backend || {};
       return dfd.promise();
     }
   });
-  recline.Model.backends['elasticsearch'] = new my.ElasticSearch();
 
 }(jQuery, this.recline.Backend));
 

@@ -247,12 +247,26 @@ my.Field = Backbone.Model.extend({
     if ('0' in data) {
       throw new Error('Looks like you did not pass a proper hash with id to Field constructor');
     }
-    if (this.attributes.label == null) {
+    if (this.attributes.label === null) {
       this.set({label: this.id});
     }
     if (options) {
       this.renderer = options.renderer;
       this.deriver = options.deriver;
+    }
+    if (!this.renderer) {
+      this.renderer = this.defaultRenderers[this.get('type')];
+    }
+  },
+  defaultRenderers: {
+    object: function(val, field, doc) {
+      return JSON.stringify(val);
+    },
+    'float': function(val, field, doc) {
+      var format = field.get('format'); 
+      if (format === 'percentage') {
+        return val + '%';
+      }
     }
   }
 });
@@ -285,7 +299,7 @@ my.FieldList = Backbone.Collection.extend({
 //  * query: Query in ES Query DSL <http://www.elasticsearch.org/guide/reference/api/search/query.html>
 //  * filter: See filters and <a href="http://www.elasticsearch.org/guide/reference/query-dsl/filtered-query.html">Filtered Query</a>
 //  * fields: set of fields to return - http://www.elasticsearch.org/guide/reference/api/search/fields.html
-//  * facets: TODO - see http://www.elasticsearch.org/guide/reference/api/search/facets/
+//  * facets: specification of facets - see http://www.elasticsearch.org/guide/reference/api/search/facets/
 // 
 // Additions:
 // 
@@ -313,13 +327,13 @@ my.FieldList = Backbone.Collection.extend({
 my.Query = Backbone.Model.extend({
   defaults: function() {
     return {
-      size: 100
-      , from: 0
-      , facets: {}
+      size: 100,
+      from: 0,
+      facets: {},
       // <http://www.elasticsearch.org/guide/reference/query-dsl/and-filter.html>
       // , filter: {}
-      , filters: []
-    }
+      filters: []
+    };
   },
   // #### addTermFilter
   // 
@@ -362,6 +376,17 @@ my.Query = Backbone.Model.extend({
     }
     facets[fieldId] = {
       terms: { field: fieldId }
+    };
+    this.set({facets: facets}, {silent: true});
+    this.trigger('facet:add', this);
+  },
+  addHistogramFacet: function(fieldId) {
+    var facets = this.get('facets');
+    facets[fieldId] = {
+      date_histogram: {
+        field: fieldId,
+        interval: 'day'
+      }
     };
     this.set({facets: facets}, {silent: true});
     this.trigger('facet:add', this);
@@ -415,7 +440,7 @@ my.Facet = Backbone.Model.extend({
       other: 0,
       missing: 0,
       terms: []
-    }
+    };
   }
 });
 
@@ -435,8 +460,8 @@ my.backends = {};
 
 var util = function() {
   var templates = {
-    transformActions: '<li><a data-action="transform" class="menuAction" href="JavaScript:void(0);">Global transform...</a></li>'
-    , cellEditor: ' \
+    transformActions: '<li><a data-action="transform" class="menuAction" href="JavaScript:void(0);">Global transform...</a></li>',
+    cellEditor: ' \
       <div class="menu-container data-table-cell-editor"> \
         <textarea class="data-table-cell-editor-editor" bind="textarea">{{value}}</textarea> \
         <div id="data-table-cell-editor-actions"> \
@@ -446,8 +471,8 @@ var util = function() {
           </div> \
         </div> \
       </div> \
-    '
-    , editPreview: ' \
+    ',
+    editPreview: ' \
       <div class="expression-preview-table-wrapper"> \
         <table> \
         <thead> \
@@ -496,7 +521,7 @@ var util = function() {
   function registerEmitter() {
     var Emitter = function(obj) {
       this.emit = function(obj, channel) { 
-        if (!channel) var channel = 'data';
+        if (!channel) channel = 'data';
         this.trigger(channel, obj); 
       };
     };
@@ -513,7 +538,7 @@ var util = function() {
 			104: "8", 105: "9", 106: "*", 107: "+", 109: "-", 110: ".", 111 : "/", 
 			112: "f1", 113: "f2", 114: "f3", 115: "f4", 116: "f5", 117: "f6", 118: "f7", 119: "f8", 
 			120: "f9", 121: "f10", 122: "f11", 123: "f12", 144: "numlock", 145: "scroll", 191: "/", 224: "meta"
-		}
+		};
     window.addEventListener("keyup", function(e) { 
       var pressed = shortcuts[e.keyCode];
       if(_.include(keys, pressed)) app.emitter.emit("keyup", pressed); 
@@ -559,10 +584,11 @@ var util = function() {
     if ( !options ) options = {data: {}};
     if ( !options.data ) options = {data: options};
     var html = $.mustache( templates[template], options.data );
+    var targetDom = null;
     if (target instanceof jQuery) {
-      var targetDom = target;
+      targetDom = target;
     } else {
-      var targetDom = $( "." + target + ":first" );      
+      targetDom = $( "." + target + ":first" );      
     }
     if( options.append ) {
       targetDom.append( html );
@@ -665,10 +691,10 @@ my.FlotGraph = Backbone.View.extend({
 ',
 
   events: {
-    'change form select': 'onEditorSubmit'
-    , 'click .editor-add': 'addSeries'
-    , 'click .action-remove-series': 'removeSeries'
-    , 'click .action-toggle-help': 'toggleHelp'
+    'change form select': 'onEditorSubmit',
+    'click .editor-add': 'addSeries',
+    'click .action-remove-series': 'removeSeries',
+    'click .action-toggle-help': 'toggleHelp'
   },
 
   initialize: function(options, config) {
@@ -714,12 +740,12 @@ my.FlotGraph = Backbone.View.extend({
     var series = this.$series.map(function () {
       return $(this).val();
     });
-    this.chartConfig.series = $.makeArray(series)
+    this.chartConfig.series = $.makeArray(series);
     this.chartConfig.group = this.el.find('.editor-group select').val();
     this.chartConfig.graphType = this.el.find('.editor-type select').val();
     // update navigation
     var qs = my.parseHashQueryString();
-    qs['graph'] = JSON.stringify(this.chartConfig);
+    qs.graph = JSON.stringify(this.chartConfig);
     my.setHashQueryString(qs);
     this.redraw();
   },
@@ -732,8 +758,8 @@ my.FlotGraph = Backbone.View.extend({
     //   Uncaught Invalid dimensions for plot, width = 0, height = 0
     // * There is no data for the plot -- either same error or may have issues later with errors like 'non-existent node-value' 
     var areWeVisible = !jQuery.expr.filters.hidden(this.el[0]);
-    if ((!areWeVisible || this.model.currentDocuments.length == 0)) {
-      return
+    if ((!areWeVisible || this.model.currentDocuments.length === 0)) {
+      return;
     }
     var series = this.createSeries();
     var options = this.getGraphOptions(this.chartConfig.graphType);
@@ -766,7 +792,7 @@ my.FlotGraph = Backbone.View.extend({
         }
       }
       return val;
-    }
+    };
     // TODO: we should really use tickFormatter and 1 interval ticks if (and
     // only if) x-axis values are non-numeric
     // However, that is non-trivial to work out from a dataset (datasets may
@@ -776,21 +802,21 @@ my.FlotGraph = Backbone.View.extend({
          series: { 
            lines: { show: true }
          }
-      }
-      , points: {
+      },
+      points: {
         series: {
           points: { show: true }
         },
         grid: { hoverable: true, clickable: true }
-      }
-      , 'lines-and-points': {
+      },
+      'lines-and-points': {
         series: {
           points: { show: true },
           lines: { show: true }
         },
         grid: { hoverable: true, clickable: true }
-      }
-      , bars: {
+      },
+      bars: {
         series: {
           lines: {show: false},
           bars: {
@@ -810,7 +836,7 @@ my.FlotGraph = Backbone.View.extend({
           max: self.model.currentDocuments.length - 0.5
         }
       }
-    }
+    };
     return options[typeId];
   },
 
@@ -964,10 +990,10 @@ my.DataGrid = Backbone.View.extend({
   },
 
   events: {
-    'click .column-header-menu': 'onColumnHeaderClick'
-    , 'click .row-header-menu': 'onRowHeaderClick'
-    , 'click .root-header-menu': 'onRootHeaderClick'
-    , 'click .data-table-menu li a': 'onMenuClick'
+    'click .column-header-menu': 'onColumnHeaderClick',
+    'click .row-header-menu': 'onRowHeaderClick',
+    'click .root-header-menu': 'onRootHeaderClick',
+    'click .data-table-menu li a': 'onMenuClick'
   },
 
   // TODO: delete or re-enable (currently this code is not used from anywhere except deprecated or disabled methods (see above)).
@@ -1006,33 +1032,35 @@ my.DataGrid = Backbone.View.extend({
     var self = this;
     e.preventDefault();
     var actions = {
-      bulkEdit: function() { self.showTransformColumnDialog('bulkEdit', {name: self.state.currentColumn}) },
+      bulkEdit: function() { self.showTransformColumnDialog('bulkEdit', {name: self.state.currentColumn}); },
       facet: function() { 
         self.model.queryState.addFacet(self.state.currentColumn);
+      },
+      facet_histogram: function() {
+        self.model.queryState.addHistogramFacet(self.state.currentColumn);
       },
       filter: function() {
         self.model.queryState.addTermFilter(self.state.currentColumn, '');
       },
-      transform: function() { self.showTransformDialog('transform') },
-      sortAsc: function() { self.setColumnSort('asc') },
-      sortDesc: function() { self.setColumnSort('desc') },
-      hideColumn: function() { self.hideColumn() },
-      showColumn: function() { self.showColumn(e) },
+      transform: function() { self.showTransformDialog('transform'); },
+      sortAsc: function() { self.setColumnSort('asc'); },
+      sortDesc: function() { self.setColumnSort('desc'); },
+      hideColumn: function() { self.hideColumn(); },
+      showColumn: function() { self.showColumn(e); },
       deleteRow: function() {
         var doc = _.find(self.model.currentDocuments.models, function(doc) {
           // important this is == as the currentRow will be string (as comes
           // from DOM) while id may be int
-          return doc.id == self.state.currentRow
+          return doc.id == self.state.currentRow;
         });
         doc.destroy().then(function() { 
             self.model.currentDocuments.remove(doc);
             my.notify("Row deleted successfully");
-          })
-          .fail(function(err) {
-            my.notify("Errorz! " + err)
-          })
+          }).fail(function(err) {
+            my.notify("Errorz! " + err);
+          });
       }
-    }
+    };
     actions[$(e.target).attr('data-action')]();
   },
 
@@ -1048,7 +1076,7 @@ my.DataGrid = Backbone.View.extend({
     $el.append(view.el);
     util.observeExit($el, function() {
       util.hide('dialog');
-    })
+    });
     $('.dialog').draggable({ handle: '.dialog-header', cursor: 'move' });
   },
 
@@ -1062,7 +1090,7 @@ my.DataGrid = Backbone.View.extend({
     $el.append(view.el);
     util.observeExit($el, function() {
       util.hide('dialog');
-    })
+    });
     $('.dialog').draggable({ handle: '.dialog-header', cursor: 'move' });
   },
 
@@ -1103,7 +1131,8 @@ my.DataGrid = Backbone.View.extend({
               <div class="btn-group column-header-menu"> \
                 <a class="btn dropdown-toggle" data-toggle="dropdown"><i class="icon-cog"></i><span class="caret"></span></a> \
                 <ul class="dropdown-menu data-table-menu pull-right"> \
-                  <li><a data-action="facet" href="JavaScript:void(0);">Facet on this Field</a></li> \
+                  <li><a data-action="facet" href="JavaScript:void(0);">Term Facet</a></li> \
+                  <li><a data-action="facet_histogram" href="JavaScript:void(0);">Date Histogram Facet</a></li> \
                   <li><a data-action="filter" href="JavaScript:void(0);">Text Filter</a></li> \
                   <li class="divider"></li> \
                   <li><a data-action="sortAsc" href="JavaScript:void(0);">Sort ascending</a></li> \
@@ -1124,10 +1153,10 @@ my.DataGrid = Backbone.View.extend({
   ',
 
   toTemplateJSON: function() {
-    var modelData = this.model.toJSON()
-    modelData.notEmpty = ( this.fields.length > 0 )
+    var modelData = this.model.toJSON();
+    modelData.notEmpty = ( this.fields.length > 0 );
     // TODO: move this sort of thing into a toTemplateJSON method on Dataset?
-    modelData.fields = _.map(this.fields, function(field) { return field.toJSON() });
+    modelData.fields = _.map(this.fields, function(field) { return field.toJSON(); });
     return modelData;
   },
   render: function() {
@@ -1147,7 +1176,7 @@ my.DataGrid = Backbone.View.extend({
         });
       newView.render();
     });
-    this.el.toggleClass('no-hidden', (self.hiddenFields.length == 0));
+    this.el.toggleClass('no-hidden', (self.hiddenFields.length === 0));
     return this;
   }
 });
@@ -1206,9 +1235,9 @@ my.DataGridRow = Backbone.View.extend({
       return {
         field: field.id,
         value: doc.getFieldValue(field)
-      }
-    })
-    return { id: this.id, cells: cellData }
+      };
+    });
+    return { id: this.id, cells: cellData };
   },
 
   render: function() {
@@ -1265,51 +1294,150 @@ this.recline.View = this.recline.View || {};
 
 (function($, my) {
 
+// ## Map view for a Dataset using Leaflet mapping library.
+//
+// This view allows to plot gereferenced documents on a map. The location
+// information can be provided either via a field with
+// [GeoJSON](http://geojson.org) objects or two fields with latitude and
+// longitude coordinates.
+//
+// Initialization arguments:
+//
+// * options: initial options. They must contain a model:
+//
+//      {
+//          model: {recline.Model.Dataset}
+//      }
+//
+// * config: (optional) map configuration hash (not yet used)
+//
+//
 my.Map = Backbone.View.extend({
 
   tagName:  'div',
   className: 'data-map-container',
 
-  latitudeFieldNames: ['lat','latitude'],
-  longitudeFieldNames: ['lon','longitude'],
-  geometryFieldNames: ['geom','the_geom','geometry','spatial'],
-
-  //TODO: In case we want to change the default markers
-  /*
-  markerOptions: {
-    radius: 5,
-    color: 'grey',
-    fillColor: 'orange',
-    weight: 2,
-    opacity: 1,
-    fillOpacity: 1
-  },
-  */
-
   template: ' \
+  <div class="editor"> \
+    <form class="form-stacked"> \
+      <div class="clearfix"> \
+        <div class="editor-field-type"> \
+            <label class="radio"> \
+              <input type="radio" id="editor-field-type-latlon" name="editor-field-type" value="latlon" checked="checked"/> \
+              Latitude / Longitude fields</label> \
+            <label class="radio"> \
+              <input type="radio" id="editor-field-type-geom" name="editor-field-type" value="geom" /> \
+              GeoJSON field</label> \
+        </div> \
+        <div class="editor-field-type-latlon"> \
+          <label>Latitude field</label> \
+          <div class="input editor-lat-field"> \
+            <select> \
+            <option value=""></option> \
+            {{#fields}} \
+            <option value="{{id}}">{{label}}</option> \
+            {{/fields}} \
+            </select> \
+          </div> \
+          <label>Longitude field</label> \
+          <div class="input editor-lon-field"> \
+            <select> \
+            <option value=""></option> \
+            {{#fields}} \
+            <option value="{{id}}">{{label}}</option> \
+            {{/fields}} \
+            </select> \
+          </div> \
+        </div> \
+        <div class="editor-field-type-geom" style="display:none"> \
+          <label>Geometry field (GeoJSON)</label> \
+          <div class="input editor-geom-field"> \
+            <select> \
+            <option value=""></option> \
+            {{#fields}} \
+            <option value="{{id}}">{{label}}</option> \
+            {{/fields}} \
+            </select> \
+          </div> \
+        </div> \
+      </div> \
+      <div class="editor-buttons"> \
+        <button class="btn editor-update-map">Update</button> \
+      </div> \
+      <input type="hidden" class="editor-id" value="map-1" /> \
+      </div> \
+    </form> \
+  </div> \
 <div class="panel map"> \
 </div> \
 ',
+
+  // These are the default field names that will be used if found.
+  // If not found, the user will need to define the fields via the editor.
+  latitudeFieldNames: ['lat','latitude'],
+  longitudeFieldNames: ['lon','longitude'],
+  geometryFieldNames: ['geom','the_geom','geometry','spatial','location'],
+
+  // Define here events for UI elements
+  events: {
+    'click .editor-update-map': 'onEditorSubmit',
+    'change .editor-field-type': 'onFieldTypeChange'
+  },
+
 
   initialize: function(options, config) {
     var self = this;
 
     this.el = $(this.el);
-    this.render();
+
+    // Listen to changes in the fields
     this.model.bind('change', function() {
       self._setupGeometryField();
     });
+    this.model.fields.bind('add', this.render);
+    this.model.fields.bind('reset', function(){
+      self._setupGeometryField()
+      self.render()
+    });
+
+    // Listen to changes in the documents
+    this.model.currentDocuments.bind('add', function(doc){self.redraw('add',doc)});
+    this.model.currentDocuments.bind('remove', function(doc){self.redraw('remove',doc)});
+    this.model.currentDocuments.bind('reset', function(){self.redraw('reset')});
+
+    // If the div was hidden, Leaflet needs to recalculate some sizes
+    // to display properly
+    this.bind('view:show',function(){
+        self.map.invalidateSize();
+    });
 
     this.mapReady = false;
+
+    this.render();
   },
 
+  // Public: Adds the necessary elements to the page.
+  //
+  // Also sets up the editor fields and the map if necessary.
   render: function() {
 
     var self = this;
 
     htmls = $.mustache(this.template, this.model.toTemplateJSON());
+
     $(this.el).html(htmls);
     this.$map = this.el.find('.panel.map');
+
+    if (this.geomReady && this.model.fields.length){
+      if (this._geomFieldName){
+        this._selectOption('editor-geom-field',this._geomFieldName);
+        $('#editor-field-type-geom').attr('checked','checked').change();
+      } else{
+        this._selectOption('editor-lon-field',this._lonFieldName);
+        this._selectOption('editor-lat-field',this._latFieldName);
+        $('#editor-field-type-latlon').attr('checked','checked').change();
+      }
+    }
 
     this.model.bind('query:done', function() {
       if (!self.geomReady){
@@ -1319,41 +1447,147 @@ my.Map = Backbone.View.extend({
       if (!self.mapReady){
         self._setupMap();
       }
-      self.redraw()
+      self.redraw();
     });
 
     return this;
   },
 
-  redraw: function(){
+  // Public: Redraws the features on the map according to the action provided
+  //
+  // Actions can be:
+  //
+  // * reset: Clear all features
+  // * add: Add one or n features (documents)
+  // * remove: Remove one or n features (documents)
+  // * refresh: Clear existing features and add all current documents
+  //
+  redraw: function(action,doc){
 
     var self = this;
 
-    if (this.geomReady){
-      if (this.model.currentDocuments.length > 0){
+    action = action || 'refresh';
+
+    if (this.geomReady && this.mapReady){
+      if (action == 'reset'){
         this.features.clearLayers();
-        var bounds = new L.LatLngBounds();
-
-        this.model.currentDocuments.forEach(function(doc){
-          var feature = self._getGeometryFromDocument(doc);
-          if (feature){
-            // Build popup contents
-            // TODO: mustache?
-            html = ''
-            for (key in doc.attributes){
-              html += '<div><strong>' + key + '</strong>: '+ doc.attributes[key] + '</div>'
-            }
-            feature.properties = {popupContent: html};
-
-            self.features.addGeoJSON(feature);
-
-            // TODO: bounds and center map
-          }
-        });
+      } else if (action == 'add' && doc){
+        this._add(doc);
+      } else if (action == 'remove' && doc){
+        this._remove(doc);
+      } else if (action == 'refresh'){
+        this.features.clearLayers();
+        this._add(this.model.currentDocuments.models);
       }
     }
   },
 
+  //
+  // UI Event handlers
+  //
+
+  // Public: Update map with user options
+  //
+  // Right now the only configurable option is what field(s) contains the
+  // location information.
+  //
+  onEditorSubmit: function(e){
+    e.preventDefault();
+    if ($('#editor-field-type-geom').attr('checked')){
+        this._geomFieldName = $('.editor-geom-field > select > option:selected').val();
+        this._latFieldName = this._lonFieldName = false;
+    } else {
+        this._geomFieldName = false;
+        this._latFieldName = $('.editor-lat-field > select > option:selected').val();
+        this._lonFieldName = $('.editor-lon-field > select > option:selected').val();
+    }
+    this.geomReady = (this._geomFieldName || (this._latFieldName && this._lonFieldName));
+    this.redraw();
+
+    return false;
+  },
+
+  // Public: Shows the relevant select lists depending on the location field
+  // type selected.
+  //
+  onFieldTypeChange: function(e){
+    if (e.target.value == 'geom'){
+        $('.editor-field-type-geom').show();
+        $('.editor-field-type-latlon').hide();
+    } else {
+        $('.editor-field-type-geom').hide();
+        $('.editor-field-type-latlon').show();
+    }
+  },
+
+  // Private: Add one or n features to the map
+  //
+  // For each document passed, a GeoJSON geometry will be extracted and added
+  // to the features layer. If an exception is thrown, the process will be
+  // stopped and an error notification shown.
+  //
+  // Each feature will have a popup associated with all the document fields.
+  //
+  _add: function(docs){
+
+    var self = this;
+
+    if (!(docs instanceof Array)) docs = [docs];
+
+    _.every(docs,function(doc){
+      var feature = self._getGeometryFromDocument(doc);
+      if (typeof feature === 'undefined'){
+        // Empty field
+        return true;
+      } else if (feature instanceof Object){
+        // Build popup contents
+        // TODO: mustache?
+        html = ''
+        for (key in doc.attributes){
+          html += '<div><strong>' + key + '</strong>: '+ doc.attributes[key] + '</div>'
+        }
+        feature.properties = {popupContent: html};
+
+        // Add a reference to the model id, which will allow us to
+        // link this Leaflet layer to a Recline doc
+        feature.properties.cid = doc.cid;
+
+        try {
+            self.features.addGeoJSON(feature);
+        } catch (except) {
+            var msg = 'Wrong geometry value';
+            if (except.message) msg += ' (' + except.message + ')';
+            my.notify(msg,{category:'error'});
+            return false;
+        }
+      } else {
+        my.notify('Wrong geometry value',{category:'error'});
+        return false;
+      }
+      return true;
+    });
+  },
+
+  // Private: Remove one or n features to the map
+  //
+  _remove: function(docs){
+
+    var self = this;
+
+    if (!(docs instanceof Array)) docs = [docs];
+
+    _.each(doc,function(doc){
+      for (key in self.features._layers){
+        if (self.features._layers[key].cid == doc.cid){
+          self.features.removeLayer(self.features._layers[key]);
+        }
+      }
+    });
+
+  },
+
+  // Private: Return a GeoJSON geomtry extracted from the document fields
+  //
   _getGeometryFromDocument: function(doc){
     if (this.geomReady){
       if (this._geomFieldName){
@@ -1365,59 +1599,87 @@ my.Map = Backbone.View.extend({
           type: 'Point',
           coordinates: [
             doc.attributes[this._lonFieldName],
-            doc.attributes[this._latFieldName],
+            doc.attributes[this._latFieldName]
             ]
-        }
+        };
       }
       return null;
     }
   },
 
+  // Private: Check if there is a field with GeoJSON geometries or alternatively,
+  // two fields with lat/lon values.
+  //
+  // If not found, the user can define them via the UI form.
   _setupGeometryField: function(){
     var geomField, latField, lonField;
 
-    // Check if there is a field with GeoJSON geometries or alternatively,
-    // two fields with lat/lon values
     this._geomFieldName = this._checkField(this.geometryFieldNames);
     this._latFieldName = this._checkField(this.latitudeFieldNames);
     this._lonFieldName = this._checkField(this.longitudeFieldNames);
 
-    // TODO: Allow users to choose the fields
-
     this.geomReady = (this._geomFieldName || (this._latFieldName && this._lonFieldName));
   },
 
+  // Private: Check if a field in the current model exists in the provided
+  // list of names.
+  //
+  //
   _checkField: function(fieldNames){
     var field;
+    var modelFieldNames = this.model.fields.pluck('id');
     for (var i = 0; i < fieldNames.length; i++){
-      field = this.model.fields.get(fieldNames[i]);
-      if (field) return field.id;
+      for (var j = 0; j < modelFieldNames.length; j++){
+        if (modelFieldNames[j].toLowerCase() == fieldNames[i].toLowerCase())
+          return modelFieldNames[j];
+      }
     }
     return null;
   },
 
+  // Private: Sets up the Leaflet map control and the features layer.
+  //
+  // The map uses a base layer from [MapQuest](http://www.mapquest.com) based
+  // on [OpenStreetMap](http://openstreetmap.org).
+  //
   _setupMap: function(){
 
     this.map = new L.Map(this.$map.get(0));
 
-    // MapQuest OpenStreetMap base map
     var mapUrl = "http://otile{s}.mqcdn.com/tiles/1.0.0/osm/{z}/{x}/{y}.png";
     var osmAttribution = 'Map data &copy; 2011 OpenStreetMap contributors, Tiles Courtesy of <a href="http://www.mapquest.com/" target="_blank">MapQuest</a> <img src="http://developer.mapquest.com/content/osm/mq_logo.png">';
     var bg = new L.TileLayer(mapUrl, {maxZoom: 18, attribution: osmAttribution ,subdomains: '1234'});
     this.map.addLayer(bg);
 
-    // Layer to hold the features
     this.features = new L.GeoJSON();
     this.features.on('featureparse', function (e) {
       if (e.properties && e.properties.popupContent){
         e.layer.bindPopup(e.properties.popupContent);
        }
+      if (e.properties && e.properties.cid){
+        e.layer.cid = e.properties.cid;
+       }
+
     });
     this.map.addLayer(this.features);
 
     this.map.setView(new L.LatLng(0, 0), 2);
 
     this.mapReady = true;
+  },
+
+  // Private: Helper function to select an option from a select list
+  //
+  _selectOption: function(id,value){
+    var options = $('.' + id + ' > select > option');
+    if (options){
+      options.each(function(opt){
+        if (this.value == value) {
+          $(this).attr('selected','selected');
+          return false;
+        }
+      });
+    }
   }
 
  });
@@ -1558,8 +1820,8 @@ my.ColumnTransform = Backbone.View.extend({
   ',
 
   events: {
-    'click .okButton': 'onSubmit'
-    , 'keydown .expression-preview-code': 'onEditorKeydown'
+    'click .okButton': 'onSubmit',
+    'keydown .expression-preview-code': 'onEditorKeydown'
   },
 
   initialize: function() {
@@ -1569,7 +1831,7 @@ my.ColumnTransform = Backbone.View.extend({
   render: function() {
     var htmls = $.mustache(this.template, 
       {name: this.state.currentColumn}
-      )
+      );
     this.el.html(htmls);
     // Put in the basic (identity) transform script
     // TODO: put this into the template?
@@ -1607,7 +1869,7 @@ my.ColumnTransform = Backbone.View.extend({
     _.each(toUpdate, function(editedDoc) {
       var realDoc = self.model.currentDocuments.get(editedDoc.id);
       realDoc.set(editedDoc);
-      realDoc.save().then(onCompletedUpdate).fail(onCompletedUpdate)
+      realDoc.save().then(onCompletedUpdate).fail(onCompletedUpdate);
     });
   },
 
@@ -1757,7 +2019,7 @@ my.DataExplorer = Backbone.View.extend({
         my.notify('Data loaded', {category: 'success'});
         // update navigation
         var qs = my.parseHashQueryString();
-        qs['reclineQuery'] = JSON.stringify(self.model.queryState.toJSON());
+        qs.reclineQuery = JSON.stringify(self.model.queryState.toJSON());
         var out = my.getNewHashForQueryString(qs);
         self.router.navigate(out);
       });
@@ -1806,7 +2068,7 @@ my.DataExplorer = Backbone.View.extend({
     $(this.el).html(template);
     var $dataViewContainer = this.el.find('.data-view-container');
     _.each(this.pageViews, function(view, pageName) {
-      $dataViewContainer.append(view.view.el)
+      $dataViewContainer.append(view.view.el);
     });
     var queryEditor = new my.QueryEditor({
       model: this.model.queryState
@@ -1847,8 +2109,10 @@ my.DataExplorer = Backbone.View.extend({
     _.each(this.pageViews, function(view, idx) {
       if (view.id === pageName) {
         view.view.el.show();
+        view.view.trigger('view:show');
       } else {
         view.view.el.hide();
+        view.view.trigger('view:hide');
       }
     });
   },
@@ -1884,8 +2148,8 @@ my.QueryEditor = Backbone.View.extend({
   ',
 
   events: {
-    'submit form': 'onFormSubmit'
-    , 'click .action-pagination-update': 'onPaginationUpdate'
+    'submit form': 'onFormSubmit',
+    'click .action-pagination-update': 'onPaginationUpdate'
   },
 
   initialize: function() {
@@ -1904,10 +2168,11 @@ my.QueryEditor = Backbone.View.extend({
   onPaginationUpdate: function(e) {
     e.preventDefault();
     var $el = $(e.target);
+    var newFrom = 0;
     if ($el.parent().hasClass('prev')) {
-      var newFrom = this.model.get('from') - Math.max(0, this.model.get('size'));
+      newFrom = this.model.get('from') - Math.max(0, this.model.get('size'));
     } else {
-      var newFrom = this.model.get('from') + this.model.get('size');
+      newFrom = this.model.get('from') + this.model.get('size');
     }
     this.model.set({from: newFrom});
   },
@@ -1980,7 +2245,7 @@ my.FilterEditor = Backbone.View.extend({
         fieldId: fieldId,
         label: fieldId,
         value: filter.term[fieldId]
-      }
+      };
     });
     var out = $.mustache(this.template, tmplData);
     this.el.html(out);
@@ -2033,6 +2298,9 @@ my.FacetViewer = Backbone.View.extend({
         {{#terms}} \
           <li><a class="facet-choice js-facet-filter" data-value="{{term}}">{{term}} ({{count}})</a></li> \
         {{/terms}} \
+        {{#entries}} \
+          <li><a class="facet-choice js-facet-filter" data-value="{{time}}">{{term}} ({{count}})</a></li> \
+        {{/entries}} \
         </ul> \
       </div> \
       {{/facets}} \
@@ -2055,6 +2323,15 @@ my.FacetViewer = Backbone.View.extend({
       facets: this.model.facets.toJSON(),
       fields: this.model.fields.toJSON()
     };
+    tmplData.facets = _.map(tmplData.facets, function(facet) {
+      if (facet._type === 'date_histogram') {
+        facet.entries = _.map(facet.entries, function(entry) {
+          entry.term = new Date(entry.time).toDateString();
+          return entry;
+        });
+      }
+      return facet;
+    });
     var templated = $.mustache(this.template, tmplData);
     this.el.html(templated);
     // are there actually any facets to show?
@@ -2084,15 +2361,15 @@ var urlPathRegex = /^([^?]+)(\?.*)?/;
 // Parse the Hash section of a URL into path and query string
 my.parseHashUrl = function(hashUrl) {
   var parsed = urlPathRegex.exec(hashUrl);
-  if (parsed == null) {
+  if (parsed === null) {
     return {};
   } else {
     return {
       path: parsed[1],
       query: parsed[2] || ''
-    }
+    };
   }
-}
+};
 
 // Parse a URL query string (?xyz=abc...) into a dictionary.
 my.parseQueryString = function(q) {
@@ -2113,13 +2390,13 @@ my.parseQueryString = function(q) {
     urlParams[d(e[1])] = d(e[2]);
   }
   return urlParams;
-}
+};
 
 // Parse the query string out of the URL hash
 my.parseHashQueryString = function() {
   q = my.parseHashUrl(window.location.hash).query;
   return my.parseQueryString(q);
-}
+};
 
 // Compse a Query String
 my.composeQueryString = function(queryParams) {
@@ -2130,7 +2407,7 @@ my.composeQueryString = function(queryParams) {
   });
   queryString += items.join('&');
   return queryString;
-}
+};
 
 my.getNewHashForQueryString = function(queryParams) {
   var queryPart = my.composeQueryString(queryParams);
@@ -2140,11 +2417,11 @@ my.getNewHashForQueryString = function(queryParams) {
   } else {
     return queryPart;
   }
-}
+};
 
 my.setHashQueryString = function(queryParams) {
   window.location.hash = my.getNewHashForQueryString(queryParams);
-}
+};
 
 // ## notify
 //
@@ -2154,7 +2431,7 @@ my.setHashQueryString = function(queryParams) {
 // * persist: if true alert is persistent, o/w hidden after 3s (default = false)
 // * loader: if true show loading spinner
 my.notify = function(message, options) {
-  if (!options) var options = {};
+  if (!options) options = {};
   var tmplData = _.extend({
     msg: message,
     category: 'warning'
@@ -2176,7 +2453,7 @@ my.notify = function(message, options) {
       });
     }, 1000);
   }
-}
+};
 
 // ## clearNotifications
 //
@@ -2184,7 +2461,7 @@ my.notify = function(message, options) {
 my.clearNotifications = function() {
   var $notifications = $('.recline-data-explorer .alert-messages .alert');
   $notifications.remove();
-}
+};
 
 })(jQuery, recline.View);
 
@@ -2202,7 +2479,7 @@ this.recline.Backend = this.recline.Backend || {};
   // Override Backbone.sync to hand off to sync function in relevant backend
   Backbone.sync = function(method, model, options) {
     return model.backend.sync(method, model, options);
-  }
+  };
 
   // ## recline.Backend.Base
   //
@@ -2351,14 +2628,14 @@ this.recline.Backend = this.recline.Backend || {};
       var self = this;
       var base = this.get('dataproxy_url');
       var data = {
-        url: dataset.get('url')
-        , 'max-results':  queryObj.size
-        , type: dataset.get('format')
+        url: dataset.get('url'),
+        'max-results':  queryObj.size,
+        type: dataset.get('format')
       };
       var jqxhr = $.ajax({
-        url: base
-        , data: data
-        , dataType: 'jsonp'
+        url: base,
+        data: data,
+        dataType: 'jsonp'
       });
       var dfd = $.Deferred();
       this._wrapInTimeout(jqxhr).done(function(results) {
@@ -2449,37 +2726,33 @@ this.recline.Backend = this.recline.Backend || {};
       }
     },
     _normalizeQuery: function(queryObj) {
-      if (queryObj.toJSON) {
-        var out = queryObj.toJSON();
-      } else {
-        var out = _.extend({}, queryObj);
-      }
-      if (out.q != undefined && out.q.trim() === '') {
+      var out = queryObj.toJSON ? queryObj.toJSON() : _.extend({}, queryObj);
+      if (out.q !== undefined && out.q.trim() === '') {
         delete out.q;
       }
       if (!out.q) {
         out.query = {
           match_all: {}
-        }
+        };
       } else {
         out.query = {
           query_string: {
             query: out.q
           }
-        }
+        };
         delete out.q;
       }
       // now do filters (note the *plural*)
       if (out.filters && out.filters.length) {
         if (!out.filter) {
-          out.filter = {}
+          out.filter = {};
         }
         if (!out.filter.and) {
           out.filter.and = [];
         }
         out.filter.and = out.filter.and.concat(out.filters);
       }
-      if (out.filters != undefined) {
+      if (out.filters !== undefined) {
         delete out.filters;
       }
       return out;
@@ -2497,10 +2770,10 @@ this.recline.Backend = this.recline.Backend || {};
       // TODO: fail case
       jqxhr.done(function(results) {
         _.each(results.hits.hits, function(hit) {
-          if (!'id' in hit._source && hit._id) {
+          if (!('id' in hit._source) && hit._id) {
             hit._source.id = hit._id;
           }
-        })
+        });
         if (results.facets) {
           results.hits.facets = results.facets;
         }
@@ -2538,12 +2811,12 @@ this.recline.Backend = this.recline.Backend || {};
         return url;
       } else {
         // https://docs.google.com/spreadsheet/ccc?key=XXXX#gid=0
-        var regex = /.*spreadsheet\/ccc?.*key=([^#?&+]+).*/
+        var regex = /.*spreadsheet\/ccc?.*key=([^#?&+]+).*/;
         var matches = url.match(regex);
         if (matches) {
           var key = matches[1];
           var worksheet = 1;
-          var out = 'https://spreadsheets.google.com/feeds/list/' + key + '/' + worksheet + '/public/values?alt=json'
+          var out = 'https://spreadsheets.google.com/feeds/list/' + key + '/' + worksheet + '/public/values?alt=json';
           return out;
         } else {
           alert('Failed to extract gdocs key from ' + url);
@@ -2567,8 +2840,9 @@ this.recline.Backend = this.recline.Backend || {};
           // cache data onto dataset (we have loaded whole gdoc it seems!)
           model._dataCache = result.data;
           dfd.resolve(model);
-        })
-        return dfd.promise(); }
+        });
+        return dfd.promise();
+      }
     },
 
     query: function(dataset, queryObj) { 
@@ -2579,7 +2853,9 @@ this.recline.Backend = this.recline.Backend || {};
       // TODO: factor this out as a common method with other backends
       var objs = _.map(dataset._dataCache, function (d) { 
         var obj = {};
-        _.each(_.zip(fields, d), function (x) { obj[x[0]] = x[1]; })
+        _.each(_.zip(fields, d), function (x) {
+          obj[x[0]] = x[1];
+        });
         return obj;
       });
       dfd.resolve(this._docsToQueryResult(objs));
@@ -2616,8 +2892,8 @@ this.recline.Backend = this.recline.Backend || {};
         if (gdocsSpreadsheet.feed.entry.length > 0) {
           for (var k in gdocsSpreadsheet.feed.entry[0]) {
             if (k.substr(0, 3) == 'gsx') {
-              var col = k.substr(4)
-                results.field.push(col);
+              var col = k.substr(4);
+              results.field.push(col);
             }
           }
         }
@@ -2667,7 +2943,7 @@ this.recline.Backend = this.recline.Backend || {};
     };
     reader.onerror = function (e) {
       alert('Failed to load file. Code: ' + e.target.error.code);
-    }
+    };
     reader.readAsText(file);
   };
 
@@ -2685,7 +2961,7 @@ this.recline.Backend = this.recline.Backend || {};
     });
     var dataset = recline.Backend.createDataset(data, fields);
     return dataset;
-  }
+  };
 
 	// Converts a Comma Separated Values string into an array of arrays.
 	// Each line in the CSV becomes an array.
@@ -2829,7 +3105,7 @@ this.recline.Backend = this.recline.Backend || {};
   // If not defined (or id not provided) id will be autogenerated.
   my.createDataset = function(data, fields, metadata) {
     if (!metadata) {
-      var metadata = {};
+      metadata = {};
     }
     if (!metadata.id) {
       metadata.id = String(Math.floor(Math.random() * 100000000) + 1);
@@ -2892,8 +3168,8 @@ this.recline.Backend = this.recline.Backend || {};
     },
     sync: function(method, model, options) {
       var self = this;
+      var dfd = $.Deferred();
       if (method === "read") {
-        var dfd = $.Deferred();
         if (model.__type__ == 'Dataset') {
           var rawDataset = this.datasets[model.id];
           model.set(rawDataset.metadata);
@@ -2903,7 +3179,6 @@ this.recline.Backend = this.recline.Backend || {};
         }
         return dfd.promise();
       } else if (method === 'update') {
-        var dfd = $.Deferred();
         if (model.__type__ == 'Document') {
           _.each(self.datasets[model.dataset.id].documents, function(doc, idx) {
             if(doc.id === model.id) {
@@ -2914,7 +3189,6 @@ this.recline.Backend = this.recline.Backend || {};
         }
         return dfd.promise();
       } else if (method === 'delete') {
-        var dfd = $.Deferred();
         if (model.__type__ == 'Document') {
           var rawDataset = self.datasets[model.dataset.id];
           var newdocs = _.reject(rawDataset.documents, function(doc) {

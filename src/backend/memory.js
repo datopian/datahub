@@ -20,7 +20,7 @@ this.recline.Backend = this.recline.Backend || {};
     if (!metadata.id) {
       metadata.id = String(Math.floor(Math.random() * 100000000) + 1);
     }
-    var backend = recline.Model.backends['memory'];
+    var backend = new recline.Backend.Memory();
     var datasetInfo = {
       documents: data,
       metadata: metadata
@@ -35,7 +35,7 @@ this.recline.Backend = this.recline.Backend || {};
       }
     }
     backend.addDataset(datasetInfo);
-    var dataset = new recline.Model.Dataset({id: metadata.id}, 'memory');
+    var dataset = new recline.Model.Dataset({id: metadata.id}, backend);
     dataset.fetch();
     return dataset;
   };
@@ -70,6 +70,7 @@ this.recline.Backend = this.recline.Backend || {};
   //  etc ...
   //  </pre>
   my.Memory = my.Base.extend({
+    __type__: 'memory',
     initialize: function() {
       this.datasets = {};
     },
@@ -117,13 +118,9 @@ this.recline.Backend = this.recline.Backend || {};
       var out = {};
       var numRows = queryObj.size;
       var start = queryObj.from;
-      results = this.datasets[model.id].documents;
-      _.each(queryObj.filters, function(filter) {
-        results = _.filter(results, function(doc) {
-          var fieldId = _.keys(filter.term)[0];
-          return (doc[fieldId] == filter.term[fieldId]);
-        });
-      });
+      var results = this.datasets[model.id].documents;
+      results = this._applyFilters(results, queryObj);
+      results = this._applyFreeTextQuery(model, results, queryObj);
       // not complete sorting!
       _.each(queryObj.sort, function(sortObj) {
         var fieldName = _.keys(sortObj)[0];
@@ -139,6 +136,42 @@ this.recline.Backend = this.recline.Backend || {};
       out.total = total;
       dfd.resolve(out);
       return dfd.promise();
+    },
+
+    // in place filtering
+    _applyFilters: function(results, queryObj) {
+      _.each(queryObj.filters, function(filter) {
+        results = _.filter(results, function(doc) {
+          var fieldId = _.keys(filter.term)[0];
+          return (doc[fieldId] == filter.term[fieldId]);
+        });
+      });
+      return results;
+    },
+
+    // we OR across fields but AND across terms in query string
+    _applyFreeTextQuery: function(dataset, results, queryObj) {
+      if (queryObj.q) {
+        var terms = queryObj.q.split(' ');
+        results = _.filter(results, function(rawdoc) {
+          var matches = true;
+          _.each(terms, function(term) {
+            var foundmatch = false;
+            dataset.fields.each(function(field) {
+              var value = rawdoc[field.id].toString();
+              // TODO regexes?
+              foundmatch = foundmatch || (value === term);
+              // TODO: early out (once we are true should break to spare unnecessary testing)
+              // if (foundmatch) return true;
+            });
+            matches = matches && foundmatch;
+            // TODO: early out (once false should break to spare unnecessary testing)
+            // if (!matches) return false;
+          });
+          return matches;
+        });
+      }
+      return results;
     },
 
     _computeFacets: function(documents, queryObj) {
@@ -177,6 +210,5 @@ this.recline.Backend = this.recline.Backend || {};
       return facetResults;
     }
   });
-  recline.Model.backends['memory'] = new my.Memory();
 
 }(jQuery, this.recline.Backend));

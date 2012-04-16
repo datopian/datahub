@@ -11,7 +11,9 @@ def cat():
 def docs():
     # build docs
     print("** Building docs")
-    cmd = 'docco src/model.js src/view.js src/view-grid.js src/view-flot-graph.js'
+
+    docco_executable = os.environ.get('DOCCO_EXECUTABLE','docco')
+    cmd = '%s src/model.js src/view.js src/view-grid.js src/view-graph.js src/view-map.js' % (docco_executable)
     os.system(cmd)
     if os.path.exists('/tmp/recline-docs'):
       shutil.rmtree('/tmp/recline-docs')
@@ -19,7 +21,7 @@ def docs():
     os.system('mkdir -p docs/backend')
     files = '%s/src/backend/*.js' % os.getcwd()
     dest = '%s/docs/backend' % os.getcwd()
-    os.system('cd /tmp/recline-docs && docco %s && mv docs/* %s' % (files, dest))
+    os.system('cd /tmp/recline-docs && %s %s && mv docs/* %s' % (docco_executable,files, dest))
     print("** Docs built ok")
 
 if __name__ == '__main__':

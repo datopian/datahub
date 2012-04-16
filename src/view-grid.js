@@ -4,12 +4,12 @@ this.recline = this.recline || {};
 this.recline.View = this.recline.View || {};
 
 (function($, my) {
-// ## DataGrid
+// ## (Data) Grid Dataset View
 //
 // Provides a tabular view on a Dataset.
 //
 // Initialize it with a `recline.Model.Dataset`.
-my.DataGrid = Backbone.View.extend({
+my.Grid = Backbone.View.extend({
   tagName:  "div",
   className: "recline-grid-container",
 
@@ -20,12 +20,16 @@ my.DataGrid = Backbone.View.extend({
     this.model.currentDocuments.bind('add', this.render);
     this.model.currentDocuments.bind('reset', this.render);
     this.model.currentDocuments.bind('remove', this.render);
-    this.state = {};
-    this.hiddenFields = [];
+    this.tempState = {};
+    var state = _.extend({
+        hiddenFields: []
+      }, modelEtc.state
+    ); 
+    this.state = new recline.Model.ObjectState(state);
   },
 
   events: {
-    'click .column-header-menu': 'onColumnHeaderClick',
+    'click .column-header-menu .data-table-menu li a': 'onColumnHeaderClick',
     'click .row-header-menu': 'onRowHeaderClick',
     'click .root-header-menu': 'onRootHeaderClick',
     'click .data-table-menu li a': 'onMenuClick'
@@ -47,11 +51,11 @@ my.DataGrid = Backbone.View.extend({
   // Column and row menus
 
   onColumnHeaderClick: function(e) {
-    this.state.currentColumn = $(e.target).closest('.column-header').attr('data-field');
+    this.tempState.currentColumn = $(e.target).closest('.column-header').attr('data-field');
   },
 
   onRowHeaderClick: function(e) {
-    this.state.currentRow = $(e.target).parents('tr:first').attr('data-id');
+    this.tempState.currentRow = $(e.target).parents('tr:first').attr('data-id');
   },
   
   onRootHeaderClick: function(e) {
@@ -59,7 +63,7 @@ my.DataGrid = Backbone.View.extend({
         {{#columns}} \
         <li><a data-action="showColumn" data-column="{{.}}" href="JavaScript:void(0);">Show column: {{.}}</a></li> \
         {{/columns}}';
-    var tmp = $.mustache(tmpl, {'columns': this.hiddenFields});
+    var tmp = $.mustache(tmpl, {'columns': this.state.get('hiddenFields')});
     this.el.find('.root-header-menu .dropdown-menu').html(tmp);
   },
 
@@ -67,15 +71,15 @@ my.DataGrid = Backbone.View.extend({
     var self = this;
     e.preventDefault();
     var actions = {
-      bulkEdit: function() { self.showTransformColumnDialog('bulkEdit', {name: self.state.currentColumn}); },
+      bulkEdit: function() { self.showTransformColumnDialog('bulkEdit', {name: self.tempState.currentColumn}); },
       facet: function() { 
-        self.model.queryState.addFacet(self.state.currentColumn);
+        self.model.queryState.addFacet(self.tempState.currentColumn);
       },
       facet_histogram: function() {
-        self.model.queryState.addHistogramFacet(self.state.currentColumn);
+        self.model.queryState.addHistogramFacet(self.tempState.currentColumn);
       },
       filter: function() {
-        self.model.queryState.addTermFilter(self.state.currentColumn, '');
+        self.model.queryState.addTermFilter(self.tempState.currentColumn, '');
       },
       transform: function() { self.showTransformDialog('transform'); },
       sortAsc: function() { self.setColumnSort('asc'); },
@@ -86,7 +90,7 @@ my.DataGrid = Backbone.View.extend({
         var doc = _.find(self.model.currentDocuments.models, function(doc) {
           // important this is == as the currentRow will be string (as comes
           // from DOM) while id may be int
-          return doc.id == self.state.currentRow;
+          return doc.id == self.tempState.currentRow;
         });
         doc.destroy().then(function() { 
             self.model.currentDocuments.remove(doc);
@@ -105,7 +109,7 @@ my.DataGrid = Backbone.View.extend({
     var view = new my.ColumnTransform({
       model: this.model
     });
-    view.state = this.state;
+    view.state = this.tempState;
     view.render();
     $el.empty();
     $el.append(view.el);
@@ -131,17 +135,20 @@ my.DataGrid = Backbone.View.extend({
 
   setColumnSort: function(order) {
     var sort = [{}];
-    sort[0][this.state.currentColumn] = {order: order};
+    sort[0][this.tempState.currentColumn] = {order: order};
     this.model.query({sort: sort});
   },
   
   hideColumn: function() {
-    this.hiddenFields.push(this.state.currentColumn);
+    var hiddenFields = this.state.get('hiddenFields');
+    hiddenFields.push(this.tempState.currentColumn);
+    this.state.set({hiddenFields: hiddenFields});
     this.render();
   },
   
   showColumn: function(e) {
-    this.hiddenFields = _.without(this.hiddenFields, $(e.target).data('column'));
+    var hiddenFields = _.without(this.state.get('hiddenFields'), $(e.target).data('column'));
+    this.state.set({hiddenFields: hiddenFields});
     this.render();
   },
 
@@ -197,41 +204,41 @@ my.DataGrid = Backbone.View.extend({
   render: function() {
     var self = this;
     this.fields = this.model.fields.filter(function(field) {
-      return _.indexOf(self.hiddenFields, field.id) == -1;
+      return _.indexOf(self.state.get('hiddenFields'), field.id) == -1;
     });
     var htmls = $.mustache(this.template, this.toTemplateJSON());
     this.el.html(htmls);
     this.model.currentDocuments.forEach(function(doc) {
       var tr = $('<tr />');
       self.el.find('tbody').append(tr);
-      var newView = new my.DataGridRow({
+      var newView = new my.GridRow({
           model: doc,
           el: tr,
           fields: self.fields
         });
       newView.render();
     });
-    this.el.toggleClass('no-hidden', (self.hiddenFields.length === 0));
+    this.el.toggleClass('no-hidden', (self.state.get('hiddenFields').length === 0));
     return this;
   }
 });
 
-// ## DataGridRow View for rendering an individual document.
+// ## GridRow View for rendering an individual document.
 //
 // Since we want this to update in place it is up to creator to provider the element to attach to.
 //
-// In addition you *must* pass in a FieldList in the constructor options. This should be list of fields for the DataGrid.
+// In addition you *must* pass in a FieldList in the constructor options. This should be list of fields for the Grid.
 //
 // Example:
 //
 // <pre>
-// var row = new DataGridRow({
+// var row = new GridRow({
 //   model: dataset-document,
 //     el: dom-element,
 //     fields: mydatasets.fields // a FieldList object
 //   });
 // </pre>
-my.DataGridRow = Backbone.View.extend({
+my.GridRow = Backbone.View.extend({
   initialize: function(initData) {
     _.bindAll(this, 'render');
     this._fields = initData.fields;

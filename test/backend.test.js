@@ -79,6 +79,20 @@ test('Memory Backend: query sort', function () {
   });
 });
 
+test('Memory Backend: query string', function () {
+  var dataset = makeBackendDataset();
+  dataset.fetch();
+  dataset.query({q: 'UK'}).then(function() {
+    equal(dataset.currentDocuments.length, 3);
+    deepEqual(dataset.currentDocuments.pluck('country'), ['UK', 'UK', 'UK']);
+  });
+
+  dataset.query({q: 'UK 6'}).then(function() {
+    equal(dataset.currentDocuments.length, 1);
+    deepEqual(dataset.currentDocuments.models[0].id, 1);
+  });
+});
+
 test('Memory Backend: filters', function () {
   var dataset = makeBackendDataset();
   dataset.queryState.addTermFilter('country', 'UK');
@@ -89,7 +103,6 @@ test('Memory Backend: filters', function () {
 });
 
 test('Memory Backend: facet', function () {
-  console.log('here');
   var dataset = makeBackendDataset();
   dataset.queryState.addFacet('country');
   dataset.query().then(function() {
@@ -203,10 +216,11 @@ var dataProxyData = {
 test('DataProxy Backend', function() {
   // needed only if not stubbing
   // stop();
+  var backend = new recline.Backend.DataProxy();
   var dataset = new recline.Model.Dataset({
       url: 'http://webstore.thedatahub.org/rufuspollock/gold_prices/data.csv'
     },
-    'dataproxy'
+    backend
   );
 
   var stub = sinon.stub($, 'ajax', function(options) {
@@ -405,10 +419,11 @@ var sample_gdocs_spreadsheet_data = {
 }
 
 test("GDoc Backend", function() { 
+  var backend = new recline.Backend.GDoc();
   var dataset = new recline.Model.Dataset({
       url: 'https://spreadsheets.google.com/feeds/list/0Aon3JiuouxLUdDQwZE1JdV94cUd6NWtuZ0IyWTBjLWc/od6/public/values?alt=json'
     },
-    'gdocs'
+    backend
   );
 
   var stub = sinon.stub($, 'getJSON', function(options, cb) {
@@ -436,7 +451,7 @@ test("GDoc Backend.getUrl", function() {
   var dataset = new recline.Model.Dataset({
     url: 'https://docs.google.com/spreadsheet/ccc?key=' + key + '#gid=0'
   });
-  var backend = recline.Model.backends['gdocs'];
+  var backend = new recline.Backend.GDoc();
   var out = backend.getUrl(dataset);
   var exp = 'https://spreadsheets.google.com/feeds/list/' + key + '/1/public/values?alt=json'
   equal(exp, out);

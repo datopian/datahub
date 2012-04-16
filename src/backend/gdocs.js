@@ -17,6 +17,7 @@ this.recline.Backend = this.recline.Backend || {};
   // );
   // </pre>
   my.GDoc = my.Base.extend({
+    __type__: 'gdoc',
     getUrl: function(dataset) {
       var url = dataset.get('url');
       if (url.indexOf('feeds/list') != -1) {
@@ -134,7 +135,6 @@ this.recline.Backend = this.recline.Backend || {};
       return results;
     }
   });
-  recline.Model.backends['gdocs'] = new my.GDoc();
 
 }(jQuery, this.recline.Backend));
 

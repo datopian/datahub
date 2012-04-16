@@ -18,7 +18,7 @@ this.recline.Model = this.recline.Model || {};
 //
 // @property {number} docCount: total number of documents in this dataset
 //
-// @property {Backend} backend: the Backend (instance) for this Dataset
+// @property {Backend} backend: the Backend (instance) for this Dataset.
 //
 // @property {Query} queryState: `Query` object which stores current
 // queryState. queryState may be edited by other components (e.g. a query
@@ -28,14 +28,24 @@ this.recline.Model = this.recline.Model || {};
 // Facets.
 my.Dataset = Backbone.Model.extend({
   __type__: 'Dataset',
+
   // ### initialize
   // 
   // Sets up instance properties (see above)
+  //
+  // @param {Object} model: standard set of model attributes passed to Backbone models
+  //
+  // @param {Object or String} backend: Backend instance (see
+  // `recline.Backend.Base`) or a string specifying that instance. The
+  // string specifying may be a full class path e.g.
+  // 'recline.Backend.ElasticSearch' or a simple name e.g.
+  // 'elasticsearch' or 'ElasticSearch' (in this case must be a Backend in
+  // recline.Backend module)
   initialize: function(model, backend) {
     _.bindAll(this, 'query');
     this.backend = backend;
-    if (backend && backend.constructor == String) {
-      this.backend = my.backends[backend];
+    if (typeof(backend) === 'string') {
+      this.backend = this._backendFromString(backend);
     }
     this.fields = new my.FieldList();
     this.currentDocuments = new my.DocumentList();
@@ -99,8 +109,72 @@ my.Dataset = Backbone.Model.extend({
     data.docCount = this.docCount;
     data.fields = this.fields.toJSON();
     return data;
+  },
+
+  // ### _backendFromString(backendString)
+  //
+  // See backend argument to initialize for details
+  _backendFromString: function(backendString) {
+    var parts = backendString.split('.');
+    // walk through the specified path xxx.yyy.zzz to get the final object which should be backend class
+    var current = window;
+    for(ii=0;ii<parts.length;ii++) {
+      if (!current) {
+        break;
+      }
+      current = current[parts[ii]];
+    }
+    if (current) {
+      return new current();
+    }
+
+    // alternatively we just had a simple string
+    var backend = null;
+    if (recline && recline.Backend) {
+      _.each(_.keys(recline.Backend), function(name) {
+        if (name.toLowerCase() === backendString.toLowerCase()) {
+          backend = new recline.Backend[name]();
+        }
+      });
+    }
+    return backend;
   }
 });
+
+
+// ### Dataset.restore
+//
+// Restore a Dataset instance from a serialized state. Serialized state for a
+// Dataset is an Object like:
+// 
+// <pre>
+// {
+//   backend: {backend type - i.e. value of dataset.backend.__type__}
+//   dataset: {dataset info needed for loading -- result of dataset.toJSON() would be sufficient but can be simpler }
+//   // convenience - if url provided and dataste not this be used as dataset url
+//   url: {dataset url}
+//   ...
+// }
+my.Dataset.restore = function(state) {
+  // hack-y - restoring a memory dataset does not mean much ...
+  var dataset = null;
+  if (state.url && !state.dataset) {
+    state.dataset = {url: state.url};
+  }
+  if (state.backend === 'memory') {
+    dataset = recline.Backend.createDataset(
+      [{stub: 'this is a stub dataset because we do not restore memory datasets'}],
+      [],
+      state.dataset // metadata
+    );
+  } else {
+    dataset = new recline.Model.Dataset(
+      state.dataset,
+      state.backend
+    );
+  }
+  return dataset;
+};
 
 // ## <a id="document">A Document (aka Row)</a>
 // 
@@ -380,6 +454,13 @@ my.Facet = Backbone.Model.extend({
 my.FacetList = Backbone.Collection.extend({
   model: my.Facet
 });
+
+// ## Object State
+//
+// Convenience Backbone model for storing (configuration) state of objects like Views.
+my.ObjectState = Backbone.Model.extend({
+});
+
 
 // ## Backend registry
 //

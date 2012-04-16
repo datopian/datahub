@@ -1,78 +1,120 @@
-$(function() {
-  var qs = recline.View.parseQueryString(window.location.search);
-  if (qs.url) {
-    var dataset = new recline.Model.Dataset({
-        id: 'my-dataset',
-        url: qs.url,
-        webstore_url: qs.url 
-      },
-      qs.backend || 'elasticsearch'
-    );
-  } else {
-    dataset = localDataset();
-  }
-
-  createExplorer(dataset);
+jQuery(function($) {
+  var app = new ExplorerApp({
+    el: $('.recline-app')
+  })
   Backbone.history.start();
-
-  // setup the loader menu in top bar
-  setupLoader(createExplorer);
 });
 
-// make Explorer creation / initialization in a function so we can call it
-// again and again
-function createExplorer(dataset) {
-  // remove existing data explorer view
-  var reload = false;
-  if (window.dataExplorer) {
-    window.dataExplorer.remove();
-    reload = true;
-  }
-  window.dataExplorer = null;
-  var $el = $('<div />');
-  $el.appendTo($('.data-explorer-here'));
-  var views = standardViews(dataset);
-  window.dataExplorer = new recline.View.DataExplorer({
-    el: $el
-    , model: dataset
-    , views: views
-  });
-  // HACK (a bit). Issue is that Backbone will not trigger the route
-  // if you are already at that location so we have to make sure we genuinely switch
-  if (reload) {
-    window.dataExplorer.router.navigate('graph');
-    window.dataExplorer.router.navigate('', true);
-  }
-}
+var ExplorerApp = Backbone.View.extend({
+  events: {
+    'submit form.js-import-url': '_onImportURL',
+    'submit .js-import-dialog-file form': '_onImportFile'
+  },
 
-// convenience function
-function standardViews(dataset) {
-  var views = [
-    {
-      id: 'grid',
-      label: 'Grid',
-      view: new recline.View.DataGrid({
-        model: dataset
-      })
-    },
-    {
-      id: 'graph',
-      label: 'Graph',
-      view: new recline.View.FlotGraph({
-        model: dataset
-      })
-    },
-    {
-      id: 'map',
-      label: 'Map',
-      view: new recline.View.Map({
-        model: dataset
-      })
+  initialize: function() {
+    this.el = $(this.el);
+    this.explorer = null;
+    this.explorerDiv = $('.data-explorer-here');
+
+    var state = recline.View.parseQueryString(window.location.search);
+    if (state) {
+      _.each(state, function(value, key) {
+        try {
+          value = JSON.parse(value);
+        } catch(e) {}
+        state[key] = value;
+      });
     }
+    var dataset = null;
+    if (state.dataset || state.url) {
+      dataset = recline.Model.Dataset.restore(state);
+    } else {
+      dataset = localDataset();
+    }
+    this.createExplorer(dataset, state);
+  },
 
-  ];
-  return views;
-}
+  // make Explorer creation / initialization in a function so we can call it
+  // again and again
+  createExplorer: function(dataset, state) {
+    var self = this;
+    // remove existing data explorer view
+    var reload = false;
+    if (this.dataExplorer) {
+      this.dataExplorer.remove();
+      reload = true;
+    }
+    this.dataExplorer = null;
+    var $el = $('<div />');
+    $el.appendTo(this.explorerDiv);
+    this.dataExplorer = new recline.View.DataExplorer({
+      model: dataset,
+      el: $el,
+      state: state
+    });
+    this._setupPermaLink(this.dataExplorer);
+
+    // HACK (a bit). Issue is that Backbone will not trigger the route
+    // if you are already at that location so we have to make sure we genuinely switch
+    if (reload) {
+      this.dataExplorer.router.navigate('graph');
+      this.dataExplorer.router.navigate('', true);
+    }
+  },
+
+  _setupPermaLink: function(explorer) {
+    var $viewLink = this.el.find('.js-share-and-embed-dialog .view-link');
+    function makePermaLink(state) {
+      var qs = recline.View.composeQueryString(state.toJSON());
+      return window.location.origin + window.location.pathname + qs;
+    }
+    explorer.state.bind('change', function() {
+      $viewLink.val(makePermaLink(explorer.state));
+    });
+    $viewLink.val(makePermaLink(explorer.state));
+  },
+
+  // setup the loader menu in top bar
+  setupLoader: function(callback) {
+    // pre-populate webstore load form with an example url
+    var demoUrl = 'http://thedatahub.org/api/data/b9aae52b-b082-4159-b46f-7bb9c158d013';
+    $('form.js-import-url input[name="source"]').val(demoUrl);
+  },
+
+  _onImportURL: function(e) {
+    e.preventDefault();
+    $('.modal.js-import-dialog-url').modal('hide');
+    var $form = $(e.target);
+    var source = $form.find('input[name="source"]').val();
+    var type = $form.find('select[name="backend_type"]').val();
+    var dataset = new recline.Model.Dataset({
+        id: 'my-dataset',
+        url: source,
+        webstore_url: source
+      },
+      type
+    );
+    this.createExplorer(dataset);
+  },
+
+  _onImportFile: function(e) {
+    var self = this;
+    e.preventDefault();
+    var $form = $(e.target);
+    $('.modal.js-import-dialog-file').modal('hide');
+    var $file = $form.find('input[type="file"]')[0];
+    var file = $file.files[0];
+    var options = {
+      separator : $form.find('input[name="separator"]').val(),
+      encoding : $form.find('input[name="encoding"]').val()
+    };
+    recline.Backend.loadFromCSVFile(file, function(dataset) {
+        self.createExplorer(dataset)
+      },
+      options
+    );
+  }
+});
 
 // provide a demonstration in memory dataset
 function localDataset() {
@@ -83,7 +125,7 @@ function localDataset() {
       , name: '1-my-test-dataset' 
       , id: datasetId
     },
-fields: [{id: 'x'}, {id: 'y'}, {id: 'z'}, {id: 'country'}, {id: 'label'},{id: 'lat'},{id: 'lon'}],
+    fields: [{id: 'x'}, {id: 'y'}, {id: 'z'}, {id: 'country'}, {id: 'label'},{id: 'lat'},{id: 'lon'}],
     documents: [
       {id: 0, x: 1, y: 2, z: 3, country: 'DE', label: 'first', lat:52.56, lon:13.40}
       , {id: 1, x: 2, y: 4, z: 6, country: 'UK', label: 'second', lat:54.97, lon:-1.60}
@@ -98,38 +140,5 @@ fields: [{id: 'x'}, {id: 'y'}, {id: 'z'}, {id: 'country'}, {id: 'label'},{id: 'l
   var dataset = new recline.Model.Dataset({id: datasetId}, backend);
   dataset.queryState.addFacet('country');
   return dataset;
-}
-
-// setup the loader menu in top bar
-function setupLoader(callback) {
-  // pre-populate webstore load form with an example url
-  var demoUrl = 'http://thedatahub.org/api/data/b9aae52b-b082-4159-b46f-7bb9c158d013';
-  $('form.js-import-url input[name="source"]').val(demoUrl);
-  $('form.js-import-url').submit(function(e) {
-    e.preventDefault();
-    $('.modal.js-import-dialog-url').modal('hide');
-    var $form = $(e.target);
-    var source = $form.find('input[name="source"]').val();
-    var type = $form.find('select[name="backend_type"]').val();
-    var dataset = new recline.Model.Dataset({
-        id: 'my-dataset',
-        url: source,
-        webstore_url: source
-      },
-      type
-    );
-    callback(dataset);
-  });
-
-  $('.js-import-dialog-file form').submit(function(e) {
-    e.preventDefault();
-    var $form = $(e.target);
-    $('.modal.js-import-dialog-file').modal('hide');
-    var $file = $form.find('input[type="file"]')[0];
-    var file = $file.files[0];
-    recline.Backend.loadFromCSVFile(file, function(dataset) {
-      callback(dataset)
-    });
-  });
 }
 
