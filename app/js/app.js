@@ -335,8 +335,8 @@ var ExplorerApp = Backbone.View.extend({
     // HACK (a bit). Issue is that Backbone will not trigger the route
     // if you are already at that location so we have to make sure we genuinely switch
     if (reload) {
-      this.dataExplorer.router.navigate('graph');
-      this.dataExplorer.router.navigate('', true);
+      // this.dataExplorer.router.navigate('graph');
+      // this.dataExplorer.router.navigate('', true);
     }
   },
 
