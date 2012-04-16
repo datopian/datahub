@@ -1,20 +1,5 @@
 jQuery(function($) {
-  var qs = recline.View.parseQueryString(window.location.search);
-  var dataest = null;
-  if (qs.url) {
-    dataset = new recline.Model.Dataset({
-        id: 'my-dataset',
-        url: qs.url,
-        webstore_url: qs.url 
-      },
-      qs.backend || 'elasticsearch'
-    );
-  } else {
-    dataset = localDataset();
-  }
-
   var app = new ExplorerApp({
-    model: dataset,
     el: $('.recline-app')
   })
   Backbone.history.start();
@@ -27,14 +12,32 @@ var ExplorerApp = Backbone.View.extend({
   },
 
   initialize: function() {
+    this.el = $(this.el);
     this.explorer = null;
     this.explorerDiv = $('.data-explorer-here');
-    this.createExplorer(this.model);
+
+    var state = recline.View.parseQueryString(window.location.search);
+    if (state) {
+      _.each(state, function(value, key) {
+        try {
+          value = JSON.parse(value);
+        } catch(e) {}
+        state[key] = value;
+      });
+    }
+    var dataset = null;
+    if (state.dataset || state.url) {
+      dataset = recline.Model.Dataset.restore(state);
+    } else {
+      dataset = localDataset();
+    }
+    this.createExplorer(dataset, state);
   },
 
   // make Explorer creation / initialization in a function so we can call it
   // again and again
-  createExplorer: function(dataset) {
+  createExplorer: function(dataset, state) {
+    var self = this;
     // remove existing data explorer view
     var reload = false;
     if (this.dataExplorer) {
@@ -45,15 +48,30 @@ var ExplorerApp = Backbone.View.extend({
     var $el = $('<div />');
     $el.appendTo(this.explorerDiv);
     this.dataExplorer = new recline.View.DataExplorer({
-      el: $el
-      , model: dataset
+      model: dataset,
+      el: $el,
+      state: state
     });
+    this._setupPermaLink(this.dataExplorer);
+
     // HACK (a bit). Issue is that Backbone will not trigger the route
     // if you are already at that location so we have to make sure we genuinely switch
     if (reload) {
       this.dataExplorer.router.navigate('graph');
       this.dataExplorer.router.navigate('', true);
     }
+  },
+
+  _setupPermaLink: function(explorer) {
+    var $viewLink = this.el.find('.js-share-and-embed-dialog .view-link');
+    function makePermaLink(state) {
+      var qs = recline.View.composeQueryString(state.toJSON());
+      return window.location.origin + window.location.pathname + qs;
+    }
+    explorer.state.bind('change', function() {
+      $viewLink.val(makePermaLink(explorer.state));
+    });
+    $viewLink.val(makePermaLink(explorer.state));
   },
 
   // setup the loader menu in top bar
