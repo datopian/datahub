@@ -53,6 +53,7 @@ test('new GridRow View', function () {
   var tds = $el.find('td');
   equal(tds.length, 3);
   equal($(tds[1]).attr('data-field'), 'a');
+  view.remove();
 });
 
 })(this.jQuery);

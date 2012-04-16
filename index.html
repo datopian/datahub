@@ -182,13 +182,9 @@ Backbone.history.start();
 
 <h4>Creating a Dataset Explicitly with a Backend</h4>
 <pre>
-// Backend can be an instance or string id for a backend in the
-// recline.Model.backends registry
-var backend = 'elasticsearch'
-// alternatively you can create explicitly
-// var backend = new recline.Backend.ElasticSearch();
-// or even from your own backend ...
-// var backend = new myModule.Backend();
+// Connect to ElasticSearch index/type as our data source
+// There are many other backends you can use (and you can write your own)
+var backend = new recline.Backend.ElasticSearch();
 
 // Dataset is a Backbone model so the first hash become model attributes
 var dataset = recline.Model.Dataset({

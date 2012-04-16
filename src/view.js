@@ -1,16 +1,83 @@
 /*jshint multistr:true */
 
-// # Core View Functionality plus Data Explorer
+// # Recline Views
 //
-// ## Common view concepts
+// Recline Views are Backbone Views and in keeping with normal Backbone views
+// are Widgets / Components displaying something in the DOM. Like all Backbone
+// views they have a pointer to a model or a collection and is bound to an
+// element.
+//
+// Views provided by core Recline are crudely divided into two types:
+//
+// * Dataset Views: a View intended for displaying a recline.Model.Dataset
+//   in some fashion. Examples are the Grid, Graph and Map views.
+// * Widget Views: a widget used for displaying some specific (and
+//   smaller) aspect of a dataset or the application. Examples are
+//   QueryEditor and FilterEditor which both provide a way for editing (a
+//   part of) a `recline.Model.Query` associated to a Dataset.
+//
+// ## Dataset View
+//
+// These views are just Backbone views with a few additional conventions:
+//
+// 1. The model passed to the View should always be a recline.Model.Dataset instance
+// 2. Views should generate their own root element rather than having it passed
+//    in.
+// 3. Views should apply a css class named 'recline-{view-name-lower-cased} to
+//    the root element (and for all CSS for this view to be qualified using this
+//    CSS class)
+// 4. Read-only mode: CSS for this view should respect/utilize
+//    recline-read-only class to trigger read-only behaviour (this class will
+//    usually be set on some parent element of the view's root element.
+// 5. State: state (configuration) information for the view should be stored on
+//    an attribute named state that is an instance of a Backbone Model (or, more
+//    speficially, be an instance of `recline.Model.ObjectState`). In addition,
+//    a state attribute may be specified in the Hash passed to a View on
+//    iniitialization and this information should be used to set the initial
+//    state of the view.
+//
+//    Example of state would be the set of fields being plotted in a graph
+//    view.
+//
+//    More information about State can be found below.
+//
+// To summarize some of this, the initialize function for a Dataset View should
+// look like:
+//
+// <pre>
+//    initialize: {
+//        model: {a recline.Model.Dataset instance}
+//        // el: {do not specify - instead view should create}
+//        state: {(optional) Object / Hash specifying initial state}
+//        ...
+//    }
+// </pre>
+//
+// Note: Dataset Views in core Recline have a common layout on disk as
+// follows, where ViewName is the named of View class:
+//
+// <pre>
+// src/view-{lower-case-ViewName}.js
+// css/{lower-case-ViewName}.css
+// test/view-{lower-case-ViewName}.js
+// </pre>
 //
 // ### State
 //
-// TODO
+// State information exists in order to support state serialization into the
+// url or elsewhere and reloading of application from a stored state.
 //
-// ### Read-only
+// State is available not only for individual views (as described above) but
+// for the dataset (e.g. the current query). For an example of pulling together
+// state from across multiple components see `recline.View.DataExplorer`.
+// 
+// ### Writing your own Views
 //
-// TODO
+// See the existing Views.
+//
+// ----
+
+// Standard JS module setup
 this.recline = this.recline || {};
 this.recline.View = this.recline.View || {};
 
@@ -38,7 +105,8 @@ this.recline.View = this.recline.View || {};
 //
 // **views**: (optional) the dataset views (Grid, Graph etc) for
 // DataExplorer to show. This is an array of view hashes. If not provided
-// just initialize a Grid with id 'grid'. Example:
+// initialize with (recline.View.)Grid, Graph, and Map views (with obvious id
+// and labels!).
 //
 // <pre>
 // var views = [
@@ -59,10 +127,25 @@ this.recline.View = this.recline.View || {};
 // ];
 // </pre>
 //
-// **state**: state config for this view. Options are:
+// **state**: standard state config for this view. This state is slightly
+//  special as it includes config of many of the subviews.
 //
-//   * readOnly: true/false (default: false) value indicating whether to
-//     operate in read-only mode (hiding all editing options).
+// <pre>
+// state = {
+//     query: {dataset query state - see dataset.queryState object}
+//     view-{id1}: {view-state for this view}
+//     view-{id2}: {view-state for }
+//     ...
+//     // Explorer
+//     currentView: id of current view (defaults to first view if not specified)
+//     readOnly: (default: false) run in read-only mode
+// }
+// </pre>
+//
+// Note that at present we do *not* serialize information about the actual set
+// of views in use -- e.g. those specified by the views argument -- but instead 
+// expect either that the default views are fine or that the client to have
+// initialized the DataExplorer with the relevant views themselves.
 my.DataExplorer = Backbone.View.extend({
   template: ' \
   <div class="recline-data-explorer"> \
@@ -71,7 +154,7 @@ my.DataExplorer = Backbone.View.extend({
     <div class="header"> \
       <ul class="navigation"> \
         {{#views}} \
-        <li><a href="#{{id}}" class="btn">{{label}}</a> \
+        <li><a href="#{{id}}" data-view="{{id}}" class="btn">{{label}}</a> \
         {{/views}} \
       </ul> \
       <div class="recline-results-info"> \
@@ -94,7 +177,8 @@ my.DataExplorer = Backbone.View.extend({
   </div> \
   ',
   events: {
-    'click .menu-right a': 'onMenuClick'
+    'click .menu-right a': '_onMenuClick',
+    'click .navigation a': '_onSwitchView'
   },
 
   initialize: function(options) {
@@ -108,14 +192,26 @@ my.DataExplorer = Backbone.View.extend({
         id: 'grid',
         label: 'Grid',
         view: new my.Grid({
-            model: this.model
-          })
+          model: this.model
+        })
+      }, {
+        id: 'graph',
+        label: 'Graph',
+        view: new my.Graph({
+          model: this.model
+        })
+      }, {
+        id: 'map',
+        label: 'Map',
+        view: new my.Map({
+          model: this.model
+        })
       }];
     }
-    this.state = new recline.Model.ObjectState();
     // these must be called after pageViews are created
-    this._setupState(options.state);
     this.render();
+    // should come after render as may need to interact with elements in the view
+    this._setupState(options.state);
 
     this.router = new Backbone.Router();
     this.setupRouting();
@@ -163,7 +259,7 @@ my.DataExplorer = Backbone.View.extend({
   },
 
   setReadOnly: function() {
-    this.el.addClass('read-only');
+    this.el.addClass('recline-read-only');
   },
 
   render: function() {
@@ -204,10 +300,10 @@ my.DataExplorer = Backbone.View.extend({
     });
   },
 
-  updateNav: function(pageName, queryString) {
+  updateNav: function(pageName) {
     this.el.find('.navigation li').removeClass('active');
     this.el.find('.navigation li a').removeClass('disabled');
-    var $el = this.el.find('.navigation li a[href=#' + pageName + ']');
+    var $el = this.el.find('.navigation li a[data-view="' + pageName + '"]');
     $el.parent().addClass('active');
     $el.addClass('disabled');
     // show the specific page
@@ -222,7 +318,7 @@ my.DataExplorer = Backbone.View.extend({
     });
   },
 
-  onMenuClick: function(e) {
+  _onMenuClick: function(e) {
     e.preventDefault();
     var action = $(e.target).attr('data-action');
     if (action === 'filters') {
@@ -232,26 +328,46 @@ my.DataExplorer = Backbone.View.extend({
     }
   },
 
+  _onSwitchView: function(e) {
+    e.preventDefault();
+    var viewName = $(e.target).attr('data-view');
+    this.updateNav(viewName);
+    this.state.set({currentView: viewName});
+  },
+
+  // create a state object for this view and do the job of
+  // 
+  // a) initializing it from both data passed in and other sources (e.g. hash url)
+  //
+  // b) ensure the state object is updated in responese to changes in subviews, query etc.
   _setupState: function(initialState) {
     var self = this;
+    // get data from the query string / hash url plus some defaults
     var qs = my.parseHashQueryString();
     var query = qs.reclineQuery;
     query = query ? JSON.parse(query) : self.model.queryState.toJSON();
     // backwards compatability (now named view-graph but was named graph)
     var graphState = qs['view-graph'] || qs.graph;
     graphState = graphState ? JSON.parse(graphState) : {};
+
+    // now get default data + hash url plus initial state and initial our state object with it
     var stateData = _.extend({
-        readOnly: false,
         query: query,
         'view-graph': graphState,
-        currentView: null
+        backend: this.model.backend.__type__,
+        dataset: this.model.toJSON(),
+        currentView: this.pageViews[0].id,
+        readOnly: false
       },
       initialState);
-    this.state.set(stateData);
+    this.state = new recline.Model.ObjectState(stateData);
 
     // now do updates based on state
     if (this.state.get('readOnly')) {
       this.setReadOnly();
+    }
+    if (this.state.get('currentView')) {
+      this.updateNav(this.state.get('currentView'));
     }
     _.each(this.pageViews, function(pageView) {
       var viewId = 'view-' + pageView.id;
@@ -260,7 +376,7 @@ my.DataExplorer = Backbone.View.extend({
       }
     });
 
-    // bind for changes state in associated objects
+    // finally ensure we update our state object when state of sub-object changes so that state is always up to date
     this.model.queryState.bind('change', function() {
       self.state.set({queryState: self.model.queryState.toJSON()});
     });
@@ -276,13 +392,20 @@ my.DataExplorer = Backbone.View.extend({
         });
       }
     });
-  },
-
-  // Get the current state of dataset and views 
-  getState: function() {
-    return this.state;
   }
 });
+
+// ### DataExplorer.restore
+//
+// Restore a DataExplorer instance from a serialized state including the associated dataset
+my.DataExplorer.restore = function(state) {
+  var dataset = recline.Model.Dataset.restore(state);
+  var explorer = new my.DataExplorer({
+    model: dataset,
+    state: state
+  });
+  return explorer;
+}
 
 my.QueryEditor = Backbone.View.extend({
   className: 'recline-query-editor', 

@@ -103,6 +103,16 @@ test('Dataset _prepareQuery', function () {
   deepEqual(out, exp);
 });
 
+test('Dataset _backendFromString', function () {
+  var dataset = new recline.Model.Dataset();
+
+  var out = dataset._backendFromString('recline.Backend.Memory');
+  equal(out.__type__, 'memory');
+
+  var out = dataset._backendFromString('dataproxy');
+  equal(out.__type__, 'dataproxy');
+});
+
 
 // =================================
 // Query

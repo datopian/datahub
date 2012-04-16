@@ -4,12 +4,15 @@
 <head>
   <title>Qunit Tests</title>
   <link rel="stylesheet" href="qunit/qunit.css" type="text/css" media="screen" />
+  <!-- need this stylesheet because flot will complain if canvas does not have a height -->
+  <link rel="stylesheet" href="../css/graph.css" type="text/css" media="screen" />
 
   <script type="text/javascript" src="../vendor/jquery-1.7.1.js"></script>
   <script type="text/javascript" src="../vendor/underscore-1.1.6.js"></script>
   <script type="text/javascript" src="../vendor/backbone-0.5.1.js"></script>
   <script type="text/javascript" src="../vendor/jquery-ui-1.8.14.custom.min.js"></script>
   <script type="text/javascript" src="../vendor/jquery.flot-0.7.js"></script>
+  <script type="text/javascript" src="../vendor/leaflet/0.3.1/leaflet.js"></script>
   <script type="text/javascript" src="../vendor/jquery.mustache.js"></script>
 
   <script type="text/javascript" src="qunit/qunit.js"></script>
@@ -19,20 +22,23 @@
   <script type="text/javascript" src="base.js"></script>
 
   <script type="text/javascript" src="../src/model.js"></script>
-  <script type="text/javascript" src="model.test.js"></script>
   <script type="text/javascript" src="../src/backend/base.js"></script>
   <script type="text/javascript" src="../src/backend/memory.js"></script>
   <script type="text/javascript" src="../src/backend/dataproxy.js"></script>
   <script type="text/javascript" src="../src/backend/gdocs.js"></script>
   <script type="text/javascript" src="../src/backend/elasticsearch.js"></script>
   <script type="text/javascript" src="../src/backend/localcsv.js"></script>
+  <script type="text/javascript" src="model.test.js"></script>
   <script type="text/javascript" src="backend.test.js"></script>
   <script type="text/javascript" src="backend.elasticsearch.test.js"></script>
   <script type="text/javascript" src="backend.localcsv.test.js"></script>
+
   <script type="text/javascript" src="../src/view.js"></script>
   <script type="text/javascript" src="../src/view-grid.js"></script>
   <script type="text/javascript" src="../src/view-transform-dialog.js"></script>
   <script type="text/javascript" src="../src/view-graph.js"></script>
+  <script type="text/javascript" src="../src/view-map.js"></script>
+
   <script type="text/javascript" src="view-grid.test.js"></script>
   <script type="text/javascript" src="view-graph.test.js"></script>
   <script type="text/javascript" src="view.test.js"></script>
