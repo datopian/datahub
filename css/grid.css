@@ -23,6 +23,10 @@
   text-align: left;
 }
 
+.recline-grid td {
+  vertical-align: top;
+}
+
 .recline-grid tr td:first-child, .recline-grid tr th:first-child {
   width: 20px;
 }
