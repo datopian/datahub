@@ -75,6 +75,11 @@ my.Map = Backbone.View.extend({
       <div class="editor-buttons"> \
         <button class="btn editor-update-map">Update</button> \
       </div> \
+      <div class="editor-options" > \
+        <label class="checkbox"> \
+          <input type="checkbox" id="editor-auto-zoom" checked="checked" /> \
+          Auto zoom to features</label> \
+      </div> \
       <input type="hidden" class="editor-id" value="map-1" /> \
       </div> \
     </form> \
@@ -92,7 +97,8 @@ my.Map = Backbone.View.extend({
   // Define here events for UI elements
   events: {
     'click .editor-update-map': 'onEditorSubmit',
-    'change .editor-field-type': 'onFieldTypeChange'
+    'change .editor-field-type': 'onFieldTypeChange',
+    'change #editor-auto-zoom': 'onAutoZoomChange'
   },
 
 
@@ -120,7 +126,7 @@ my.Map = Backbone.View.extend({
       // If the div was hidden, Leaflet needs to recalculate some sizes
       // to display properly
       self.map.invalidateSize();
-      if (self._zoomPending) {
+      if (self._zoomPending && self.autoZoom) {
         self._zoomToFeatures();
         self._zoomPending = false;
       }
@@ -130,6 +136,7 @@ my.Map = Backbone.View.extend({
       self.visible = false;
     });
 
+    this.autoZoom = true;
     this.mapReady = false;
 
     this.render();
@@ -198,10 +205,12 @@ my.Map = Backbone.View.extend({
         this.features.clearLayers();
         this._add(this.model.currentDocuments.models);
       }
-      if (this.visible){
-        this._zoomToFeatures();
-      } else {
-        this._zoomPending = true;
+      if (action != 'reset' && this.autoZoom){
+        if (this.visible){
+          this._zoomToFeatures();
+        } else {
+          this._zoomPending = true;
+        }
       }
     }
   },
@@ -242,6 +251,10 @@ my.Map = Backbone.View.extend({
         $('.editor-field-type-geom').hide();
         $('.editor-field-type-latlon').show();
     }
+  },
+
+  onAutoZoomChange: function(e){
+    this.autoZoom = !this.autoZoom;
   },
 
   // Private: Add one or n features to the map
