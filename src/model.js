@@ -150,17 +150,22 @@ my.Dataset = Backbone.Model.extend({
 // <pre>
 // {
 //   backend: {backend type - i.e. value of dataset.backend.__type__}
-//   dataset: {result of dataset.toJSON()}
+//   dataset: {dataset info needed for loading -- result of dataset.toJSON() would be sufficient but can be simpler }
+//   // convenience - if url provided and dataste not this be used as dataset url
+//   url: {dataset url}
 //   ...
 // }
 my.Dataset.restore = function(state) {
   // hack-y - restoring a memory dataset does not mean much ...
   var dataset = null;
+  if (state.url && !state.dataset) {
+    state.dataset = {url: state.url};
+  }
   if (state.backend === 'memory') {
     dataset = recline.Backend.createDataset(
       [{stub: 'this is a stub dataset because we do not restore memory datasets'}],
       [],
-      state.dataset
+      state.dataset // metadata
     );
   } else {
     dataset = new recline.Model.Dataset(
