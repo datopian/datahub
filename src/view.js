@@ -682,6 +682,9 @@ my.composeQueryString = function(queryParams) {
   var queryString = '?';
   var items = [];
   $.each(queryParams, function(key, value) {
+    if (typeof(value) === 'object') {
+      value = JSON.stringify(value);
+    }
     items.push(key + '=' + value);
   });
   queryString += items.join('&');
