@@ -117,7 +117,9 @@ my.Map = Backbone.View.extend({
     // If the div was hidden, Leaflet needs to recalculate some sizes
     // to display properly
     this.bind('view:show',function(){
-        self.map.invalidateSize();
+        if (self.map) {
+          self.map.invalidateSize();
+        }
     });
 
     var stateData = _.extend({
