@@ -221,6 +221,8 @@ my.DataExplorer = Backbone.View.extend({
     }
     if (this.state.get('currentView')) {
       this.updateNav(this.state.get('currentView'));
+    } else {
+      this.updateNav(this.pageViews[0].id);
     }
 
     this.router = new Backbone.Router();
