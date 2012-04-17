@@ -1,109 +1,67 @@
-<!DOCTYPE html>
-<html>
-<head>
-  <meta http-equiv="content-type" content="text/html;charset=utf-8">
-  <title>base.js</title>
-  <link rel="stylesheet" href="pycco.css">
-</head>
-<body>
-<div id='container'>
-  <div id="background"></div>
-  <div class='section'>
-    <div class='docs'><h1>base.js</h1></div>
-  </div>
-  <div class='clearall'>
-  <div class='section' id='section-0'>
-    <div class='docs'>
-      <div class='octowrap'>
-        <a class='octothorpe' href='#section-0'>#</a>
-      </div>
-      <h1>Recline Backends</h1>
+<!DOCTYPE html>  <html> <head>   <title>base.js</title>   <meta http-equiv="content-type" content="text/html; charset=UTF-8">   <link rel="stylesheet" media="all" href="docco.css" /> </head> <body>   <div id="container">     <div id="background"></div>            <div id="jump_to">         Jump To &hellip;         <div id="jump_wrapper">           <div id="jump_page">                                           <a class="source" href="base.html">                 base.js               </a>                                           <a class="source" href="dataproxy.html">                 dataproxy.js               </a>                                           <a class="source" href="elasticsearch.html">                 elasticsearch.js               </a>                                           <a class="source" href="gdocs.html">                 gdocs.js               </a>                                           <a class="source" href="localcsv.html">                 localcsv.js               </a>                                           <a class="source" href="memory.html">                 memory.js               </a>                        </div>         </div>       </div>          <table cellpadding="0" cellspacing="0">       <thead>         <tr>           <th class="docs">             <h1>               base.js             </h1>           </th>           <th class="code">           </th>         </tr>       </thead>       <tbody>                               <tr id="section-1">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-1">&#182;</a>               </div>               <h1>Recline Backends</h1>
+
 <p>Backends are connectors to backend data sources and stores</p>
-<p>This is just the base module containing a template Base class and convenience methods.</p>
-    </div>
-    <div class='code'>
-      <div class="highlight"><pre><span class="k">this</span><span class="p">.</span><span class="nx">recline</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">recline</span> <span class="o">||</span> <span class="p">{};</span>
+
+<p>This is just the base module containing a template Base class and convenience methods.</p>             </td>             <td class="code">               <div class="highlight"><pre><span class="k">this</span><span class="p">.</span><span class="nx">recline</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">recline</span> <span class="o">||</span> <span class="p">{};</span>
 <span class="k">this</span><span class="p">.</span><span class="nx">recline</span><span class="p">.</span><span class="nx">Backend</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">recline</span><span class="p">.</span><span class="nx">Backend</span> <span class="o">||</span> <span class="p">{};</span>
 
-<span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">$</span><span class="p">,</span> <span class="nx">my</span><span class="p">)</span> <span class="p">{</span></pre></div>
-    </div>
-  </div>
-  <div class='clearall'></div>
-  <div class='section' id='section-1'>
-    <div class='docs'>
-      <div class='octowrap'>
-        <a class='octothorpe' href='#section-1'>#</a>
-      </div>
-      <h2>Backbone.sync</h2>
-<p>Override Backbone.sync to hand off to sync function in relevant backend</p>
-    </div>
-    <div class='code'>
-      <div class="highlight"><pre>  <span class="nx">Backbone</span><span class="p">.</span><span class="nx">sync</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">method</span><span class="p">,</span> <span class="nx">model</span><span class="p">,</span> <span class="nx">options</span><span class="p">)</span> <span class="p">{</span>
+<span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">$</span><span class="p">,</span> <span class="nx">my</span><span class="p">)</span> <span class="p">{</span></pre></div>             </td>           </tr>                               <tr id="section-2">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-2">&#182;</a>               </div>               <h2>Backbone.sync</h2>
+
+<p>Override Backbone.sync to hand off to sync function in relevant backend</p>             </td>             <td class="code">               <div class="highlight"><pre>  <span class="nx">Backbone</span><span class="p">.</span><span class="nx">sync</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">method</span><span class="p">,</span> <span class="nx">model</span><span class="p">,</span> <span class="nx">options</span><span class="p">)</span> <span class="p">{</span>
     <span class="k">return</span> <span class="nx">model</span><span class="p">.</span><span class="nx">backend</span><span class="p">.</span><span class="nx">sync</span><span class="p">(</span><span class="nx">method</span><span class="p">,</span> <span class="nx">model</span><span class="p">,</span> <span class="nx">options</span><span class="p">);</span>
-  <span class="p">};</span></pre></div>
-    </div>
-  </div>
-  <div class='clearall'></div>
-  <div class='section' id='section-2'>
-    <div class='docs'>
-      <div class='octowrap'>
-        <a class='octothorpe' href='#section-2'>#</a>
-      </div>
-      <h2>recline.Backend.Base</h2>
+  <span class="p">};</span></pre></div>             </td>           </tr>                               <tr id="section-3">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-3">&#182;</a>               </div>               <h2>recline.Backend.Base</h2>
+
 <p>Base class for backends providing a template and convenience functions.
-You do not have to inherit from this class but even when not it does provide guidance on the functions you must implement.</p>
-<p>Note also that while this (and other Backends) are implemented as Backbone models this is just a convenience.</p>
-    </div>
-    <div class='code'>
-      <div class="highlight"><pre>  <span class="nx">my</span><span class="p">.</span><span class="nx">Base</span> <span class="o">=</span> <span class="nx">Backbone</span><span class="p">.</span><span class="nx">Model</span><span class="p">.</span><span class="nx">extend</span><span class="p">({</span></pre></div>
-    </div>
-  </div>
-  <div class='clearall'></div>
-  <div class='section' id='section-3'>
-    <div class='docs'>
-      <div class='octowrap'>
-        <a class='octothorpe' href='#section-3'>#</a>
-      </div>
-      <h3>sync</h3>
+You do not have to inherit from this class but even when not it does
+provide guidance on the functions you must implement.</p>
+
+<p>Note also that while this (and other Backends) are implemented as Backbone models this is just a convenience.</p>             </td>             <td class="code">               <div class="highlight"><pre>  <span class="nx">my</span><span class="p">.</span><span class="nx">Base</span> <span class="o">=</span> <span class="nx">Backbone</span><span class="p">.</span><span class="nx">Model</span><span class="p">.</span><span class="nx">extend</span><span class="p">({</span></pre></div>             </td>           </tr>                               <tr id="section-4">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-4">&#182;</a>               </div>               <h3><strong>type</strong></h3>
+
+<p>'type' of this backend. This should be either the class path for this
+object as a string (e.g. recline.Backend.Memory) or for Backends within
+recline.Backend module it may be their class name.</p>
+
+<p>This value is used as an identifier for this backend when initializing
+backends (see recline.Model.Dataset.initialize).</p>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="nx">__type__</span><span class="o">:</span> <span class="s1">&#39;base&#39;</span><span class="p">,</span></pre></div>             </td>           </tr>                               <tr id="section-5">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-5">&#182;</a>               </div>               <h3>sync</h3>
+
 <p>An implementation of Backbone.sync that will be used to override
 Backbone.sync on operations for Datasets and Documents which are using this backend.</p>
+
 <p>For read-only implementations you will need only to implement read method
 for Dataset models (and even this can be a null operation). The read method
 should return relevant metadata for the Dataset. We do not require read support
 for Documents because they are loaded in bulk by the query method.</p>
+
 <p>For backends supporting write operations you must implement update and delete support for Document objects.</p>
-<p>All code paths should return an object conforming to the jquery promise API.</p>
-    </div>
-    <div class='code'>
-      <div class="highlight"><pre>    <span class="nx">sync</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">method</span><span class="p">,</span> <span class="nx">model</span><span class="p">,</span> <span class="nx">options</span><span class="p">)</span> <span class="p">{</span>
-    <span class="p">},</span></pre></div>
-    </div>
-  </div>
-  <div class='clearall'></div>
-  <div class='section' id='section-4'>
-    <div class='docs'>
-      <div class='octowrap'>
-        <a class='octothorpe' href='#section-4'>#</a>
-      </div>
-      <h3>query</h3>
+
+<p>All code paths should return an object conforming to the jquery promise API.</p>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="nx">sync</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">method</span><span class="p">,</span> <span class="nx">model</span><span class="p">,</span> <span class="nx">options</span><span class="p">)</span> <span class="p">{</span>
+    <span class="p">},</span>
+    </pre></div>             </td>           </tr>                               <tr id="section-6">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-6">&#182;</a>               </div>               <h3>query</h3>
+
 <p>Query the backend for documents returning them in bulk. This method will
 be used by the Dataset.query method to search the backend for documents,
 retrieving the results in bulk.</p>
+
 <p>@param {recline.model.Dataset} model: Dataset model.</p>
+
 <p>@param {Object} queryObj: object describing a query (usually produced by
 using recline.Model.Query and calling toJSON on it).</p>
+
 <p>The structure of data in the Query object or
 Hash should follow that defined in <a
 href="http://github.com/okfn/recline/issues/34">issue 34</a>.
 (Of course, if you are writing your own backend, and hence
 have control over the interpretation of the query object, you
 can use whatever structure you like).</p>
+
 <p>@returns {Promise} promise API object. The promise resolve method will
 be called on query completion with a QueryResult object.</p>
+
 <p>A QueryResult has the following structure (modelled closely on
 ElasticSearch - see <a
 href="https://github.com/okfn/recline/issues/57">this issue for more
 details</a>):</p>
+
 <pre>
 {
   total: // (required) total number of results (can be null)
@@ -118,23 +76,8 @@ details</a>):</p>
     // facet results (as per <http://www.elasticsearch.org/guide/reference/api/search/facets/>)
   }
 }
-</pre>
-    </div>
-    <div class='code'>
-      <div class="highlight"><pre>    <span class="nx">query</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">model</span><span class="p">,</span> <span class="nx">queryObj</span><span class="p">)</span> <span class="p">{</span>
-    <span class="p">},</span></pre></div>
-    </div>
-  </div>
-  <div class='clearall'></div>
-  <div class='section' id='section-5'>
-    <div class='docs'>
-      <div class='octowrap'>
-        <a class='octothorpe' href='#section-5'>#</a>
-      </div>
-      <p>convenience method to convert simple set of documents / rows to a QueryResult</p>
-    </div>
-    <div class='code'>
-      <div class="highlight"><pre>    <span class="nx">_docsToQueryResult</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">rows</span><span class="p">)</span> <span class="p">{</span>
+</pre>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="nx">query</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">model</span><span class="p">,</span> <span class="nx">queryObj</span><span class="p">)</span> <span class="p">{</span>
+    <span class="p">},</span></pre></div>             </td>           </tr>                               <tr id="section-7">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-7">&#182;</a>               </div>               <p>convenience method to convert simple set of documents / rows to a QueryResult</p>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="nx">_docsToQueryResult</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">rows</span><span class="p">)</span> <span class="p">{</span>
       <span class="kd">var</span> <span class="nx">hits</span> <span class="o">=</span> <span class="nx">_</span><span class="p">.</span><span class="nx">map</span><span class="p">(</span><span class="nx">rows</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">row</span><span class="p">)</span> <span class="p">{</span>
         <span class="k">return</span> <span class="p">{</span> <span class="nx">_source</span><span class="o">:</span> <span class="nx">row</span> <span class="p">};</span>
       <span class="p">});</span>
@@ -142,22 +85,11 @@ details</a>):</p>
         <span class="nx">total</span><span class="o">:</span> <span class="kc">null</span><span class="p">,</span>
         <span class="nx">hits</span><span class="o">:</span> <span class="nx">hits</span>
       <span class="p">};</span>
-    <span class="p">},</span></pre></div>
-    </div>
-  </div>
-  <div class='clearall'></div>
-  <div class='section' id='section-6'>
-    <div class='docs'>
-      <div class='octowrap'>
-        <a class='octothorpe' href='#section-6'>#</a>
-      </div>
-      <h2>_wrapInTimeout</h2>
+    <span class="p">},</span></pre></div>             </td>           </tr>                               <tr id="section-8">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-8">&#182;</a>               </div>               <h2>_wrapInTimeout</h2>
+
 <p>Convenience method providing a crude way to catch backend errors on JSONP calls.
 Many of backends use JSONP and so will not get error messages and this is
-a crude way to catch those errors.</p>
-    </div>
-    <div class='code'>
-      <div class="highlight"><pre>    <span class="nx">_wrapInTimeout</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">ourFunction</span><span class="p">)</span> <span class="p">{</span>
+a crude way to catch those errors.</p>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="nx">_wrapInTimeout</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">ourFunction</span><span class="p">)</span> <span class="p">{</span>
       <span class="kd">var</span> <span class="nx">dfd</span> <span class="o">=</span> <span class="nx">$</span><span class="p">.</span><span class="nx">Deferred</span><span class="p">();</span>
       <span class="kd">var</span> <span class="nx">timeout</span> <span class="o">=</span> <span class="mi">5000</span><span class="p">;</span>
       <span class="kd">var</span> <span class="nx">timer</span> <span class="o">=</span> <span class="nx">setTimeout</span><span class="p">(</span><span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
@@ -180,9 +112,4 @@ a crude way to catch those errors.</p>
 
 <span class="p">}(</span><span class="nx">jQuery</span><span class="p">,</span> <span class="k">this</span><span class="p">.</span><span class="nx">recline</span><span class="p">.</span><span class="nx">Backend</span><span class="p">));</span>
 
-</pre></div>
-    </div>
-  </div>
-  <div class='clearall'></div>
-</div>
-</body>
+</pre></div>             </td>           </tr>                </tbody>     </table>   </div> </body> </html> 
