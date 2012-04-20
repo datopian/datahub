@@ -280,7 +280,8 @@ jQuery(function($) {
   var app = new ExplorerApp({
     el: $('.recline-app')
   })
-  Backbone.history.start();
+  // this is causing an error, race condition maybe?
+  // Backbone.history.start();
 });
 
 var ExplorerApp = Backbone.View.extend({
@@ -290,6 +291,7 @@ var ExplorerApp = Backbone.View.extend({
   },
 
   initialize: function() {
+    var self = this
     this.el = $(this.el);
     this.explorer = null;
     this.explorerDiv = $('.data-explorer-here');
@@ -307,13 +309,14 @@ var ExplorerApp = Backbone.View.extend({
         $('body').attr('style', 'padding-top: 0px');
       }
     }
-    var dataset = null;
     if (state.dataset || state.url) {
-      dataset = recline.Model.Dataset.restore(state);
+      var dataset = recline.Model.Dataset.restore(state);
+      self.createExplorer(dataset, state);
     } else {
-      dataset = localDataset();
+      localDataset(function(dataset) {
+        self.createExplorer(dataset, state);
+      })
     }
-    this.createExplorer(dataset, state);
   },
 
   // make Explorer creation / initialization in a function so we can call it
@@ -417,7 +420,7 @@ var ExplorerApp = Backbone.View.extend({
 });
 
 // provide a demonstration in memory dataset
-function localDataset() {
+function localDataset(callback) {
   var datasetId = 'test-dataset';
   var inData = {
     metadata: {
@@ -435,10 +438,11 @@ function localDataset() {
       , {id: 5, x: 6, y: 12, z: 18, country: 'DE', label: 'sixth', lat:51.04, lon:7.9}
     ]
   };
-  var backend = new recline.Backend.Memory();
-  backend.addDataset(inData);
-  var dataset = new recline.Model.Dataset({id: datasetId}, backend);
-  dataset.queryState.addFacet('country');
-  return dataset;
+  var backend = new recline.Backend.PouchFilter();
+  backend.addDataset(inData, function(err, resp) {
+    var dataset = new recline.Model.Dataset({id: datasetId}, backend);
+    // dataset.queryState.addFacet('country');
+    callback(dataset);
+  });
 }
 
