@@ -71,6 +71,7 @@ this.recline.Backend = this.recline.Backend || {};
   //  </pre>
   my.Memory = my.Base.extend({
     __type__: 'memory',
+    readonly: false,
     initialize: function() {
       this.datasets = {};
     },

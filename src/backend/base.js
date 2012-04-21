@@ -32,6 +32,13 @@ this.recline.Backend = this.recline.Backend || {};
     // backends (see recline.Model.Dataset.initialize).
     __type__: 'base',
 
+
+    // ### readonly
+    //
+    // Class level attribute indicating that this backend is read-only (that
+    // is, cannot be written to).
+    readonly: true,
+
     // ### sync
     //
     // An implementation of Backbone.sync that will be used to override
