@@ -71,6 +71,7 @@ this.recline.Backend = this.recline.Backend || {};
   //  </pre>
   my.Memory = my.Base.extend({
     __type__: 'memory',
+    readonly: false,
     initialize: function() {
       this.datasets = {};
     },
@@ -158,7 +159,8 @@ this.recline.Backend = this.recline.Backend || {};
           _.each(terms, function(term) {
             var foundmatch = false;
             dataset.fields.each(function(field) {
-              var value = rawdoc[field.id].toString();
+              var value = rawdoc[field.id];
+              if (value !== null) { value = value.toString(); }
               // TODO regexes?
               foundmatch = foundmatch || (value === term);
               // TODO: early out (once we are true should break to spare unnecessary testing)

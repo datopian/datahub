@@ -39,7 +39,12 @@ test('Field: basics', function () {
 });
 
 test('Field: default renderers', function () {
-  var doc = new recline.Model.Document({x: 12.3, myobject: {a: 1, b: 2}});
+  var doc = new recline.Model.Document({
+    x: 12.3,
+    myobject: {a: 1, b: 2},
+    link: 'http://abc.com/',
+    markdown: '### ABC'
+  });
   var field = new recline.Model.Field({id: 'myobject', type: 'object'});
   var out = doc.getFieldValue(field);
   var exp = '{"a":1,"b":2}';
@@ -48,6 +53,17 @@ test('Field: default renderers', function () {
   var field = new recline.Model.Field({id: 'x', type: 'float', format: 'percentage'});
   var out = doc.getFieldValue(field);
   var exp = '12.3%';
+  equal(out, exp);
+
+  var field = new recline.Model.Field({id: 'link', type: 'string', format: 'link'});
+  var out = doc.getFieldValue(field);
+  var exp = '<a href="http://abc.com/">http://abc.com/</a>';
+  equal(out, exp);
+
+  var field = new recline.Model.Field({id: 'markdown', type: 'string', format: 'markdown'});
+  var out = doc.getFieldValue(field);
+  // Showdown is not installed so nothing should happen
+  var exp = doc.get('markdown');
   equal(out, exp);
 });
 

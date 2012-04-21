@@ -256,9 +256,12 @@ my.Map = Backbone.View.extend({
 
     if (!(docs instanceof Array)) docs = [docs];
 
+    var count = 0;
+    var wrongSoFar = 0;
     _.every(docs,function(doc){
+      count += 1;
       var feature = self._getGeometryFromDocument(doc);
-      if (typeof feature === 'undefined'){
+      if (typeof feature === 'undefined' || feature === null){
         // Empty field
         return true;
       } else if (feature instanceof Object){
@@ -275,16 +278,20 @@ my.Map = Backbone.View.extend({
         feature.properties.cid = doc.cid;
 
         try {
-            self.features.addGeoJSON(feature);
+          self.features.addGeoJSON(feature);
         } catch (except) {
-            var msg = 'Wrong geometry value';
-            if (except.message) msg += ' (' + except.message + ')';
+          wrongSoFar += 1;
+          var msg = 'Wrong geometry value';
+          if (except.message) msg += ' (' + except.message + ')';
+          if (wrongSoFar <= 10) {
             my.notify(msg,{category:'error'});
-            return false;
+          }
         }
       } else {
-        my.notify('Wrong geometry value',{category:'error'});
-        return false;
+        wrongSoFar += 1
+        if (wrongSoFar <= 10) {
+          my.notify('Wrong geometry value',{category:'error'});
+        }
       }
       return true;
     });
@@ -317,13 +324,17 @@ my.Map = Backbone.View.extend({
         return doc.attributes[this.state.get('geomField')];
       } else if (this.state.get('lonField') && this.state.get('latField')){
         // We'll create a GeoJSON like point object from the two lat/lon fields
-        return {
-          type: 'Point',
-          coordinates: [
-            doc.attributes[this.state.get('lonField')],
-            doc.attributes[this.state.get('latField')]
-            ]
-        };
+        var lon = doc.get(this.state.get('lonField'));
+        var lat = doc.get(this.state.get('latField'));
+        if (lon && lat) {
+          return {
+            type: 'Point',
+            coordinates: [
+              doc.attributes[this.state.get('lonField')],
+              doc.attributes[this.state.get('latField')]
+              ]
+          };
+        }
       }
       return null;
     }
@@ -335,12 +346,16 @@ my.Map = Backbone.View.extend({
   // If not found, the user can define them via the UI form.
   _setupGeometryField: function(){
     var geomField, latField, lonField;
-    this.state.set({
-      geomField: this._checkField(this.geometryFieldNames),
-      latField: this._checkField(this.latitudeFieldNames),
-      lonField: this._checkField(this.longitudeFieldNames)
-    });
     this.geomReady = (this.state.get('geomField') || (this.state.get('latField') && this.state.get('lonField')));
+    // should not overwrite if we have already set this (e.g. explicitly via state)
+    if (!this.geomReady) {
+      this.state.set({
+        geomField: this._checkField(this.geometryFieldNames),
+        latField: this._checkField(this.latitudeFieldNames),
+        lonField: this._checkField(this.longitudeFieldNames)
+      });
+      this.geomReady = (this.state.get('geomField') || (this.state.get('latField') && this.state.get('lonField')));
+    }
   },
 
   // Private: Check if a field in the current model exists in the provided

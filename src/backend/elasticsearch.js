@@ -21,6 +21,7 @@ this.recline.Backend = this.recline.Backend || {};
   // <pre>http://localhost:9200/twitter/tweet</pre>
   my.ElasticSearch = my.Base.extend({
     __type__: 'elasticsearch',
+    readonly: true,
     _getESUrl: function(dataset) {
       var out = dataset.get('elasticsearch_url');
       if (out) return out;

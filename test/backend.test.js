@@ -25,6 +25,11 @@ function makeBackendDataset() {
   return dataset;
 }
 
+test('Memory Backend: readonly', function () {
+  var backend = new recline.Backend.Memory();
+  equal(backend.readonly, false);
+});
+
 test('Memory Backend: createDataset', function () {
   var dataset = recline.Backend.createDataset(memoryData.documents, memoryData.fields, memoryData.metadata);
   equal(memoryData.metadata.id, dataset.id);
@@ -217,6 +222,8 @@ test('DataProxy Backend', function() {
   // needed only if not stubbing
   // stop();
   var backend = new recline.Backend.DataProxy();
+  ok(backend.readonly, false);
+
   var dataset = new recline.Model.Dataset({
       url: 'http://webstore.thedatahub.org/rufuspollock/gold_prices/data.csv'
     },
