@@ -217,7 +217,8 @@ my.DocumentList = Backbone.Collection.extend({
 // * format: (optional) used to indicate how the data should be formatted. For example:
 //   * type=date, format=yyyy-mm-dd
 //   * type=float, format=percentage
-//   * type=float, format='###,###.##'
+//   * type=string, format=link (render as hyperlink)
+//   * type=string, format=markdown (render as markdown if Showdown available)
 // * is_derived: (default: false) attribute indicating this field has no backend data but is just derived from other fields (see below).
 // 
 // Following additional instance properties:
@@ -273,6 +274,22 @@ my.Field = Backbone.Model.extend({
       if (format === 'percentage') {
         return val + '%';
       }
+      return val;
+    },
+    'string': function(val, field, doc) {
+      var format = field.get('format');
+      if (format === 'link') {
+        return '<a href="VAL">VAL</a>'.replace(/VAL/g, val);
+      } else if (format === 'markdown') {
+        if (typeof Showdown !== 'undefined') {
+          var showdown = new Showdown.converter();
+          out = showdown.makeHtml(val);
+          return out;
+        } else {
+          return val;
+        }
+      }
+      return val;
     }
   }
 });
