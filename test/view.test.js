@@ -47,17 +47,26 @@ test('initialize state', function () {
       currentView: 'graph',
       'view-grid': {
         hiddenFields: ['x']
+      },
+      'view-map': {
+        latField: 'lat1',
+        lonField: 'lon1'
       }
     }
   });
   ok(explorer.state.get('readOnly'));
   ok(explorer.state.get('currentView'), 'graph');
+
   // check the correct view is visible
   var css = explorer.el.find('.navigation a[data-view="graph"]').attr('class').split(' ');
   ok(_.contains(css, 'disabled'), css);
-
   var css = explorer.el.find('.navigation a[data-view="grid"]').attr('class').split(' ');
   ok(!(_.contains(css, 'disabled')), css);
+
+  // check pass through of view config
+  deepEqual(explorer.state.get('view-grid')['hiddenFields'], ['x']);
+  equal(explorer.state.get('view-map')['lonField'], 'lon1');
+
   $el.remove();
 });
 

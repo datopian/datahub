@@ -335,12 +335,16 @@ my.Map = Backbone.View.extend({
   // If not found, the user can define them via the UI form.
   _setupGeometryField: function(){
     var geomField, latField, lonField;
-    this.state.set({
-      geomField: this._checkField(this.geometryFieldNames),
-      latField: this._checkField(this.latitudeFieldNames),
-      lonField: this._checkField(this.longitudeFieldNames)
-    });
     this.geomReady = (this.state.get('geomField') || (this.state.get('latField') && this.state.get('lonField')));
+    // should not overwrite if we have already set this (e.g. explicitly via state)
+    if (!this.geomReady) {
+      this.state.set({
+        geomField: this._checkField(this.geometryFieldNames),
+        latField: this._checkField(this.latitudeFieldNames),
+        lonField: this._checkField(this.longitudeFieldNames)
+      });
+      this.geomReady = (this.state.get('geomField') || (this.state.get('latField') && this.state.get('lonField')));
+    }
   },
 
   // Private: Check if a field in the current model exists in the provided

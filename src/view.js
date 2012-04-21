@@ -184,8 +184,8 @@ my.DataExplorer = Backbone.View.extend({
   initialize: function(options) {
     var self = this;
     this.el = $(this.el);
-    // Hash of 'page' views (i.e. those for whole page) keyed by page name
     this._setupState(options.state);
+    // Hash of 'page' views (i.e. those for whole page) keyed by page name
     if (options.views) {
       this.pageViews = options.views;
     } else {
