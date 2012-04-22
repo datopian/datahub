@@ -285,7 +285,8 @@ my.DocumentList = Backbone.Collection.extend({
 // * format: (optional) used to indicate how the data should be formatted. For example:
 //   * type=date, format=yyyy-mm-dd
 //   * type=float, format=percentage
-//   * type=float, format='###,###.##'
+//   * type=string, format=link (render as hyperlink)
+//   * type=string, format=markdown (render as markdown if Showdown available)
 // * is_derived: (default: false) attribute indicating this field has no backend data but is just derived from other fields (see below).
 // 
 // Following additional instance properties:
@@ -341,6 +342,22 @@ my.Field = Backbone.Model.extend({
       if (format === 'percentage') {
         return val + '%';
       }
+      return val;
+    },
+    'string': function(val, field, doc) {
+      var format = field.get('format');
+      if (format === 'link') {
+        return '<a href="VAL">VAL</a>'.replace(/VAL/g, val);
+      } else if (format === 'markdown') {
+        if (typeof Showdown !== 'undefined') {
+          var showdown = new Showdown.converter();
+          out = showdown.makeHtml(val);
+          return out;
+        } else {
+          return val;
+        }
+      }
+      return val;
     }
   }
 });
@@ -1626,9 +1643,12 @@ my.Map = Backbone.View.extend({
 
     if (!(docs instanceof Array)) docs = [docs];
 
+    var count = 0;
+    var wrongSoFar = 0;
     _.every(docs,function(doc){
+      count += 1;
       var feature = self._getGeometryFromDocument(doc);
-      if (typeof feature === 'undefined'){
+      if (typeof feature === 'undefined' || feature === null){
         // Empty field
         return true;
       } else if (feature instanceof Object){
@@ -1645,16 +1665,20 @@ my.Map = Backbone.View.extend({
         feature.properties.cid = doc.cid;
 
         try {
-            self.features.addGeoJSON(feature);
+          self.features.addGeoJSON(feature);
         } catch (except) {
-            var msg = 'Wrong geometry value';
-            if (except.message) msg += ' (' + except.message + ')';
+          wrongSoFar += 1;
+          var msg = 'Wrong geometry value';
+          if (except.message) msg += ' (' + except.message + ')';
+          if (wrongSoFar <= 10) {
             my.notify(msg,{category:'error'});
-            return false;
+          }
         }
       } else {
-        my.notify('Wrong geometry value',{category:'error'});
-        return false;
+        wrongSoFar += 1
+        if (wrongSoFar <= 10) {
+          my.notify('Wrong geometry value',{category:'error'});
+        }
       }
       return true;
     });
@@ -1687,13 +1711,17 @@ my.Map = Backbone.View.extend({
         return doc.attributes[this.state.get('geomField')];
       } else if (this.state.get('lonField') && this.state.get('latField')){
         // We'll create a GeoJSON like point object from the two lat/lon fields
-        return {
-          type: 'Point',
-          coordinates: [
-            doc.attributes[this.state.get('lonField')],
-            doc.attributes[this.state.get('latField')]
-            ]
-        };
+        var lon = doc.get(this.state.get('lonField'));
+        var lat = doc.get(this.state.get('latField'));
+        if (lon && lat) {
+          return {
+            type: 'Point',
+            coordinates: [
+              doc.attributes[this.state.get('lonField')],
+              doc.attributes[this.state.get('latField')]
+              ]
+          };
+        }
       }
       return null;
     }
@@ -1705,12 +1733,16 @@ my.Map = Backbone.View.extend({
   // If not found, the user can define them via the UI form.
   _setupGeometryField: function(){
     var geomField, latField, lonField;
-    this.state.set({
-      geomField: this._checkField(this.geometryFieldNames),
-      latField: this._checkField(this.latitudeFieldNames),
-      lonField: this._checkField(this.longitudeFieldNames)
-    });
     this.geomReady = (this.state.get('geomField') || (this.state.get('latField') && this.state.get('lonField')));
+    // should not overwrite if we have already set this (e.g. explicitly via state)
+    if (!this.geomReady) {
+      this.state.set({
+        geomField: this._checkField(this.geometryFieldNames),
+        latField: this._checkField(this.latitudeFieldNames),
+        lonField: this._checkField(this.longitudeFieldNames)
+      });
+      this.geomReady = (this.state.get('geomField') || (this.state.get('latField') && this.state.get('lonField')));
+    }
   },
 
   // Private: Check if a field in the current model exists in the provided
@@ -2172,8 +2204,8 @@ my.DataExplorer = Backbone.View.extend({
   initialize: function(options) {
     var self = this;
     this.el = $(this.el);
-    // Hash of 'page' views (i.e. those for whole page) keyed by page name
     this._setupState(options.state);
+    // Hash of 'page' views (i.e. those for whole page) keyed by page name
     if (options.views) {
       this.pageViews = options.views;
     } else {
@@ -2772,6 +2804,13 @@ this.recline.Backend = this.recline.Backend || {};
     // backends (see recline.Model.Dataset.initialize).
     __type__: 'base',
 
+
+    // ### readonly
+    //
+    // Class level attribute indicating that this backend is read-only (that
+    // is, cannot be written to).
+    readonly: true,
+
     // ### sync
     //
     // An implementation of Backbone.sync that will be used to override
@@ -2891,6 +2930,7 @@ this.recline.Backend = this.recline.Backend || {};
   // Note that this is a **read-only** backend.
   my.DataProxy = my.Base.extend({
     __type__: 'dataproxy',
+    readonly: true,
     defaults: {
       dataproxy_url: 'http://jsonpdataproxy.appspot.com'
     },
@@ -2970,6 +3010,7 @@ this.recline.Backend = this.recline.Backend || {};
   // <pre>http://localhost:9200/twitter/tweet</pre>
   my.ElasticSearch = my.Base.extend({
     __type__: 'elasticsearch',
+    readonly: true,
     _getESUrl: function(dataset) {
       var out = dataset.get('elasticsearch_url');
       if (out) return out;
@@ -3088,6 +3129,7 @@ this.recline.Backend = this.recline.Backend || {};
   // </pre>
   my.GDoc = my.Base.extend({
     __type__: 'gdoc',
+    readonly: true,
     getUrl: function(dataset) {
       var url = dataset.get('url');
       if (url.indexOf('feeds/list') != -1) {
@@ -3450,6 +3492,7 @@ this.recline.Backend = this.recline.Backend || {};
   //  </pre>
   my.Memory = my.Base.extend({
     __type__: 'memory',
+    readonly: false,
     initialize: function() {
       this.datasets = {};
     },
@@ -3537,7 +3580,8 @@ this.recline.Backend = this.recline.Backend || {};
           _.each(terms, function(term) {
             var foundmatch = false;
             dataset.fields.each(function(field) {
-              var value = rawdoc[field.id].toString();
+              var value = rawdoc[field.id];
+              if (value !== null) { value = value.toString(); }
               // TODO regexes?
               foundmatch = foundmatch || (value === term);
               // TODO: early out (once we are true should break to spare unnecessary testing)
