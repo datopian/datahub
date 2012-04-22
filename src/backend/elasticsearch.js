@@ -21,7 +21,7 @@ this.recline.Backend = this.recline.Backend || {};
   // <pre>http://localhost:9200/twitter/tweet</pre>
   my.ElasticSearch = my.Base.extend({
     __type__: 'elasticsearch',
-    readonly: true,
+    readonly: false,
     _getESUrl: function(dataset) {
       var out = dataset.get('elasticsearch_url');
       if (out) return out;
@@ -55,9 +55,36 @@ this.recline.Backend = this.recline.Backend || {};
             dfd.reject(arguments);
           });
           return dfd.promise();
+        } else if (model.__type__ == 'Document') {
+          var base = this._getESUrl(model.dataset) + '/' + model.id;
+          return $.ajax({
+            url: base,
+            dataType: 'json'
+          });
         }
-      } else {
-        alert('This backend currently only supports read operations');
+      } else if (method === 'update') {
+        if (model.__type__ == 'Document') {
+          var data = JSON.stringify(model.toJSON());
+          var base = this._getESUrl(model.dataset);
+          if (model.id) {
+            base += '/' + model.id;
+          }
+          return $.ajax({
+            url: base,
+            type: 'POST',
+            data: data,
+            dataType: 'json'
+          });
+        }
+      } else if (method === 'delete') {
+        if (model.__type__ == 'Document') {
+          var base = this._getESUrl(model.dataset) + '/' + model.id;
+          return $.ajax({
+            url: base,
+            type: 'DELETE',
+            dataType: 'json'
+          });
+        }
       }
     },
     _normalizeQuery: function(queryObj) {

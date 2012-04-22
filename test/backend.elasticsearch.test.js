@@ -107,7 +107,7 @@ var sample_data = {
   "took": 2
 };
 
-test("ElasticSearch", function() { 
+test("ElasticSearch query", function() { 
   var backend = new recline.Backend.ElasticSearch();
   var dataset = new recline.Model.Dataset({
       url: 'https://localhost:9200/my-es-db/my-es-type'
@@ -147,6 +147,66 @@ test("ElasticSearch", function() {
     });
   });
   $.ajax.restore();
+});
+
+test("ElasticSearch write", function() { 
+  var backend = new recline.Backend.ElasticSearch();
+  var dataset = new recline.Model.Dataset({
+      url: 'http://localhost:9200/recline-test/es-write'
+    },
+    backend
+  );
+
+  stop();
+
+  var id = parseInt(Math.random()*100000000).toString();
+  var doc = new recline.Model.Document({
+    id: id,
+    title: 'my title'
+  });
+  doc.backend = backend;
+  doc.dataset = dataset;
+  dataset.currentDocuments.add(doc);
+  var jqxhr = doc.save();
+  jqxhr.done(function(data) {
+    ok(data.ok);
+    equal(data._id, id);
+    equal(data._type, 'es-write');
+    equal(data._version, 1);
+    
+    // update
+    doc.set({title: 'new title'});
+    var jqxhr = doc.save();
+    jqxhr.done(function(data) {
+      equal(data._version, 2);
+
+      // delete
+      var jqxhr = doc.destroy();
+      jqxhr.done(function(data) {
+        ok(data.ok);
+        doc = null;
+
+        // try to get ...
+        var olddoc = new recline.Model.Document({id: id});
+        equal(olddoc.get('title'), null);
+        olddoc.dataset = dataset;
+        olddoc.backend = backend;
+        var jqxhr = olddoc.fetch();
+        jqxhr.done(function(data) {
+          // should not be here
+          ok(false, 'Should have got 404');
+        }).error(function(error) {
+          equal(error.status, 404);
+          equal(typeof olddoc.get('title'), 'undefined');
+          start();
+        });
+      });
+    });
+  }).fail(function(error) {
+    console.log(error);
+    ok(false, 'Basic request failed - is ElasticSearch running locally on port 9200 (required for this test!)');
+    start();
+  });
 });
 
 })(this.jQuery);
