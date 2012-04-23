@@ -17,7 +17,7 @@ this.recline.View = this.recline.View || {};
 //
 // <pre>
 //   {
-//     // geomField if specified will be used in preference to lat/lon 
+//     // geomField if specified will be used in preference to lat/lon
 //     geomField: {id of field containing geometry in the dataset}
 //     lonField: {id of field containing longitude in the dataset}
 //     latField: {id of field containing latitude in the dataset}
@@ -344,8 +344,14 @@ my.Map = Backbone.View.extend({
   _getGeometryFromDocument: function(doc){
     if (this.geomReady){
       if (this.state.get('geomField')){
-        // We assume that the contents of the field are a valid GeoJSON object
-        return doc.attributes[this.state.get('geomField')];
+        var value = doc.get(this.state.get('geomField'));
+        if (typeof(value) === 'string'){
+          // We have a GeoJSON string representation
+          return $.parseJSON(value);
+        } else {
+          // We assume that the contents of the field are a valid GeoJSON object
+          return value;
+        }
       } else if (this.state.get('lonField') && this.state.get('latField')){
         // We'll create a GeoJSON like point object from the two lat/lon fields
         var lon = doc.get(this.state.get('lonField'));
@@ -353,10 +359,7 @@ my.Map = Backbone.View.extend({
         if (lon && lat) {
           return {
             type: 'Point',
-            coordinates: [
-              doc.attributes[this.state.get('lonField')],
-              doc.attributes[this.state.get('latField')]
-              ]
+            coordinates: [lon,lat]
           };
         }
       }
@@ -440,7 +443,12 @@ my.Map = Backbone.View.extend({
     this.features.getBounds = function(){
       var bounds = new L.LatLngBounds();
       this._iterateLayers(function (layer) {
-        bounds.extend(layer instanceof L.Marker ? layer.getLatLng() : layer.getBounds());
+        if (layer instanceof L.Marker){
+          bounds.extend(layer.getLatLng());
+        } else {
+          bounds.extend(layer.getBounds().getNorthEast());
+          bounds.extend(layer.getBounds().getSouthWest());
+        }
       }, this);
       return (typeof bounds.getNorthEast() !== 'undefined') ? bounds : null;
     }

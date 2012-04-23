@@ -128,6 +128,7 @@ var ExplorerApp = Backbone.View.extend({
     var file = $file.files[0];
     var options = {
       separator : $form.find('input[name="separator"]').val(),
+      delimiter : $form.find('input[name="delimiter"]').val(),
       encoding : $form.find('input[name="encoding"]').val()
     };
     recline.Backend.loadFromCSVFile(file, function(dataset) {
