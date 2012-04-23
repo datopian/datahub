@@ -58,7 +58,9 @@ this.recline.Backend = this.recline.Backend || {};
     var options = options || {};
     var trm = options.trim;
     var separator = options.separator || ',';
-    
+    var delimiter = options.delimiter || '"';
+
+
     var cur = '', // The character we are currently processing.
       inQuote = false,
       fieldQuoted = false,
@@ -105,8 +107,8 @@ this.recline.Backend = this.recline.Backend || {};
         field = '';
         fieldQuoted = false;
       } else {
-        // If it's not a ", add it to the field buffer
-        if (cur !== '"') {
+        // If it's not a delimiter, add it to the field buffer
+        if (cur !== delimiter) {
           field += cur;
         } else {
           if (!inQuote) {
@@ -114,9 +116,9 @@ this.recline.Backend = this.recline.Backend || {};
             inQuote = true;
             fieldQuoted = true;
           } else {
-            // Next char is ", this is an escaped "
-            if (s.charAt(i + 1) === '"') {
-              field += '"';
+            // Next char is delimiter, this is an escaped delimiter
+            if (s.charAt(i + 1) === delimiter) {
+              field += delimiter;
               // Skip the next char
               i += 1;
             } else {
