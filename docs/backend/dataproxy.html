@@ -20,6 +20,7 @@
 
 <p>Note that this is a <strong>read-only</strong> backend.</p>             </td>             <td class="code">               <div class="highlight"><pre>  <span class="nx">my</span><span class="p">.</span><span class="nx">DataProxy</span> <span class="o">=</span> <span class="nx">my</span><span class="p">.</span><span class="nx">Base</span><span class="p">.</span><span class="nx">extend</span><span class="p">({</span>
     <span class="nx">__type__</span><span class="o">:</span> <span class="s1">&#39;dataproxy&#39;</span><span class="p">,</span>
+    <span class="nx">readonly</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span>
     <span class="nx">defaults</span><span class="o">:</span> <span class="p">{</span>
       <span class="nx">dataproxy_url</span><span class="o">:</span> <span class="s1">&#39;http://jsonpdataproxy.appspot.com&#39;</span>
     <span class="p">},</span>

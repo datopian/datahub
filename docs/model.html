@@ -183,7 +183,8 @@ for this document.</p>             </td>             <td class="code">          
 <li>format: (optional) used to indicate how the data should be formatted. For example:
 <ul><li>type=date, format=yyyy-mm-dd</li>
 <li>type=float, format=percentage</li>
-<li>type=float, format='###,###.##'</li></ul></li>
+<li>type=string, format=link (render as hyperlink)</li>
+<li>type=string, format=markdown (render as markdown if Showdown available)</li></ul></li>
 <li>is_derived: (default: false) attribute indicating this field has no backend data but is just derived from other fields (see below).</li>
 </ul>
 
@@ -233,6 +234,22 @@ value of this field prior to rendering.</p>             </td>             <td cl
       <span class="k">if</span> <span class="p">(</span><span class="nx">format</span> <span class="o">===</span> <span class="s1">&#39;percentage&#39;</span><span class="p">)</span> <span class="p">{</span>
         <span class="k">return</span> <span class="nx">val</span> <span class="o">+</span> <span class="s1">&#39;%&#39;</span><span class="p">;</span>
       <span class="p">}</span>
+      <span class="k">return</span> <span class="nx">val</span><span class="p">;</span>
+    <span class="p">},</span>
+    <span class="s1">&#39;string&#39;</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">val</span><span class="p">,</span> <span class="nx">field</span><span class="p">,</span> <span class="nx">doc</span><span class="p">)</span> <span class="p">{</span>
+      <span class="kd">var</span> <span class="nx">format</span> <span class="o">=</span> <span class="nx">field</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s1">&#39;format&#39;</span><span class="p">);</span>
+      <span class="k">if</span> <span class="p">(</span><span class="nx">format</span> <span class="o">===</span> <span class="s1">&#39;link&#39;</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">return</span> <span class="s1">&#39;&lt;a href=&quot;VAL&quot;&gt;VAL&lt;/a&gt;&#39;</span><span class="p">.</span><span class="nx">replace</span><span class="p">(</span><span class="sr">/VAL/g</span><span class="p">,</span> <span class="nx">val</span><span class="p">);</span>
+      <span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="nx">format</span> <span class="o">===</span> <span class="s1">&#39;markdown&#39;</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">if</span> <span class="p">(</span><span class="k">typeof</span> <span class="nx">Showdown</span> <span class="o">!==</span> <span class="s1">&#39;undefined&#39;</span><span class="p">)</span> <span class="p">{</span>
+          <span class="kd">var</span> <span class="nx">showdown</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Showdown</span><span class="p">.</span><span class="nx">converter</span><span class="p">();</span>
+          <span class="nx">out</span> <span class="o">=</span> <span class="nx">showdown</span><span class="p">.</span><span class="nx">makeHtml</span><span class="p">(</span><span class="nx">val</span><span class="p">);</span>
+          <span class="k">return</span> <span class="nx">out</span><span class="p">;</span>
+        <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+          <span class="k">return</span> <span class="nx">val</span><span class="p">;</span>
+        <span class="p">}</span>
+      <span class="p">}</span>
+      <span class="k">return</span> <span class="nx">val</span><span class="p">;</span>
     <span class="p">}</span>
   <span class="p">}</span>
 <span class="p">});</span>

@@ -5,35 +5,38 @@
 
 <p>Connecting to <a href="http://www.elasticsearch.org/">ElasticSearch</a>.</p>
 
-<p>To use this backend ensure your Dataset has one of the following
-attributes (first one found is used):</p>
+<p>Usage:</p>
+
+<pre>
+var backend = new recline.Backend.ElasticSearch({
+  // optional as can also be provided by Dataset/Document
+  url: {url to ElasticSearch endpoint i.e. ES 'type/table' url - more info below}
+  // optional
+  headers: {dict of headers to add to each request}
+});
+
+@param {String} url: url for ElasticSearch type/table, e.g. for ES running
+on localhost:9200 with index // twitter and type tweet it would be:
+
+<pre>http://localhost:9200/twitter/tweet</pre>
+
+This url is optional since the ES endpoint url may be specified on the the
+dataset (and on a Document by the document having a dataset attribute) by
+having one of the following (see also `_getESUrl` function):
 
 <pre>
 elasticsearch_url
 webstore_url
 url
-</pre>
-
-<p>This should point to the ES type url. E.G. for ES running on
-localhost:9200 with index twitter and type tweet it would be</p>
-
-<pre>http://localhost:9200/twitter/tweet</pre>             </td>             <td class="code">               <div class="highlight"><pre>  <span class="nx">my</span><span class="p">.</span><span class="nx">ElasticSearch</span> <span class="o">=</span> <span class="nx">my</span><span class="p">.</span><span class="nx">Base</span><span class="p">.</span><span class="nx">extend</span><span class="p">({</span>
+</pre>             </td>             <td class="code">               <div class="highlight"><pre>  <span class="nx">my</span><span class="p">.</span><span class="nx">ElasticSearch</span> <span class="o">=</span> <span class="nx">my</span><span class="p">.</span><span class="nx">Base</span><span class="p">.</span><span class="nx">extend</span><span class="p">({</span>
     <span class="nx">__type__</span><span class="o">:</span> <span class="s1">&#39;elasticsearch&#39;</span><span class="p">,</span>
-    <span class="nx">_getESUrl</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">dataset</span><span class="p">)</span> <span class="p">{</span>
-      <span class="kd">var</span> <span class="nx">out</span> <span class="o">=</span> <span class="nx">dataset</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s1">&#39;elasticsearch_url&#39;</span><span class="p">);</span>
-      <span class="k">if</span> <span class="p">(</span><span class="nx">out</span><span class="p">)</span> <span class="k">return</span> <span class="nx">out</span><span class="p">;</span>
-      <span class="nx">out</span> <span class="o">=</span> <span class="nx">dataset</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s1">&#39;webstore_url&#39;</span><span class="p">);</span>
-      <span class="k">if</span> <span class="p">(</span><span class="nx">out</span><span class="p">)</span> <span class="k">return</span> <span class="nx">out</span><span class="p">;</span>
-      <span class="nx">out</span> <span class="o">=</span> <span class="nx">dataset</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s1">&#39;url&#39;</span><span class="p">);</span>
-      <span class="k">return</span> <span class="nx">out</span><span class="p">;</span>
-    <span class="p">},</span>
+    <span class="nx">readonly</span><span class="o">:</span> <span class="kc">false</span><span class="p">,</span>
     <span class="nx">sync</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">method</span><span class="p">,</span> <span class="nx">model</span><span class="p">,</span> <span class="nx">options</span><span class="p">)</span> <span class="p">{</span>
       <span class="kd">var</span> <span class="nx">self</span> <span class="o">=</span> <span class="k">this</span><span class="p">;</span>
       <span class="k">if</span> <span class="p">(</span><span class="nx">method</span> <span class="o">===</span> <span class="s2">&quot;read&quot;</span><span class="p">)</span> <span class="p">{</span>
         <span class="k">if</span> <span class="p">(</span><span class="nx">model</span><span class="p">.</span><span class="nx">__type__</span> <span class="o">==</span> <span class="s1">&#39;Dataset&#39;</span><span class="p">)</span> <span class="p">{</span>
-          <span class="kd">var</span> <span class="nx">base</span> <span class="o">=</span> <span class="nx">self</span><span class="p">.</span><span class="nx">_getESUrl</span><span class="p">(</span><span class="nx">model</span><span class="p">);</span>
-          <span class="kd">var</span> <span class="nx">schemaUrl</span> <span class="o">=</span> <span class="nx">base</span> <span class="o">+</span> <span class="s1">&#39;/_mapping&#39;</span><span class="p">;</span>
-          <span class="kd">var</span> <span class="nx">jqxhr</span> <span class="o">=</span> <span class="nx">$</span><span class="p">.</span><span class="nx">ajax</span><span class="p">({</span>
+          <span class="kd">var</span> <span class="nx">schemaUrl</span> <span class="o">=</span> <span class="nx">self</span><span class="p">.</span><span class="nx">_getESUrl</span><span class="p">(</span><span class="nx">model</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;/_mapping&#39;</span><span class="p">;</span>
+          <span class="kd">var</span> <span class="nx">jqxhr</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">_makeRequest</span><span class="p">({</span>
             <span class="nx">url</span><span class="o">:</span> <span class="nx">schemaUrl</span><span class="p">,</span>
             <span class="nx">dataType</span><span class="o">:</span> <span class="s1">&#39;jsonp&#39;</span>
           <span class="p">});</span>
@@ -50,10 +53,67 @@ localhost:9200 with index twitter and type tweet it would be</p>
             <span class="nx">dfd</span><span class="p">.</span><span class="nx">reject</span><span class="p">(</span><span class="nx">arguments</span><span class="p">);</span>
           <span class="p">});</span>
           <span class="k">return</span> <span class="nx">dfd</span><span class="p">.</span><span class="nx">promise</span><span class="p">();</span>
+        <span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="nx">model</span><span class="p">.</span><span class="nx">__type__</span> <span class="o">==</span> <span class="s1">&#39;Document&#39;</span><span class="p">)</span> <span class="p">{</span>
+          <span class="kd">var</span> <span class="nx">base</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">_getESUrl</span><span class="p">(</span><span class="nx">model</span><span class="p">.</span><span class="nx">dataset</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;/&#39;</span> <span class="o">+</span> <span class="nx">model</span><span class="p">.</span><span class="nx">id</span><span class="p">;</span>
+          <span class="k">return</span> <span class="k">this</span><span class="p">.</span><span class="nx">_makeRequest</span><span class="p">({</span>
+            <span class="nx">url</span><span class="o">:</span> <span class="nx">base</span><span class="p">,</span>
+            <span class="nx">dataType</span><span class="o">:</span> <span class="s1">&#39;json&#39;</span>
+          <span class="p">});</span>
         <span class="p">}</span>
-      <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
-        <span class="nx">alert</span><span class="p">(</span><span class="s1">&#39;This backend currently only supports read operations&#39;</span><span class="p">);</span>
+      <span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="nx">method</span> <span class="o">===</span> <span class="s1">&#39;update&#39;</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">if</span> <span class="p">(</span><span class="nx">model</span><span class="p">.</span><span class="nx">__type__</span> <span class="o">==</span> <span class="s1">&#39;Document&#39;</span><span class="p">)</span> <span class="p">{</span>
+          <span class="k">return</span> <span class="k">this</span><span class="p">.</span><span class="nx">upsert</span><span class="p">(</span><span class="nx">model</span><span class="p">.</span><span class="nx">toJSON</span><span class="p">(),</span> <span class="k">this</span><span class="p">.</span><span class="nx">_getESUrl</span><span class="p">(</span><span class="nx">model</span><span class="p">.</span><span class="nx">dataset</span><span class="p">));</span>
+        <span class="p">}</span>
+      <span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="nx">method</span> <span class="o">===</span> <span class="s1">&#39;delete&#39;</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">if</span> <span class="p">(</span><span class="nx">model</span><span class="p">.</span><span class="nx">__type__</span> <span class="o">==</span> <span class="s1">&#39;Document&#39;</span><span class="p">)</span> <span class="p">{</span>
+          <span class="kd">var</span> <span class="nx">url</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">_getESUrl</span><span class="p">(</span><span class="nx">model</span><span class="p">.</span><span class="nx">dataset</span><span class="p">);</span>
+          <span class="k">return</span> <span class="k">this</span><span class="p">.</span><span class="k">delete</span><span class="p">(</span><span class="nx">model</span><span class="p">.</span><span class="nx">id</span><span class="p">,</span> <span class="nx">url</span><span class="p">);</span>
+        <span class="p">}</span>
       <span class="p">}</span>
+    <span class="p">},</span></pre></div>             </td>           </tr>                               <tr id="section-4">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-4">&#182;</a>               </div>               <h3>upsert</h3>
+
+<p>create / update a document to ElasticSearch backend</p>
+
+<p>@param {Object} doc an object to insert to the index.
+@param {string} url (optional) url for ElasticSearch endpoint (if not
+defined called this._getESUrl()</p>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="nx">upsert</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">doc</span><span class="p">,</span> <span class="nx">url</span><span class="p">)</span> <span class="p">{</span>
+      <span class="kd">var</span> <span class="nx">data</span> <span class="o">=</span> <span class="nx">JSON</span><span class="p">.</span><span class="nx">stringify</span><span class="p">(</span><span class="nx">doc</span><span class="p">);</span>
+      <span class="nx">url</span> <span class="o">=</span> <span class="nx">url</span> <span class="o">?</span> <span class="nx">url</span> <span class="o">:</span> <span class="k">this</span><span class="p">.</span><span class="nx">_getESUrl</span><span class="p">();</span>
+      <span class="k">if</span> <span class="p">(</span><span class="nx">doc</span><span class="p">.</span><span class="nx">id</span><span class="p">)</span> <span class="p">{</span>
+        <span class="nx">url</span> <span class="o">+=</span> <span class="s1">&#39;/&#39;</span> <span class="o">+</span> <span class="nx">doc</span><span class="p">.</span><span class="nx">id</span><span class="p">;</span>
+      <span class="p">}</span>
+      <span class="k">return</span> <span class="k">this</span><span class="p">.</span><span class="nx">_makeRequest</span><span class="p">({</span>
+        <span class="nx">url</span><span class="o">:</span> <span class="nx">url</span><span class="p">,</span>
+        <span class="nx">type</span><span class="o">:</span> <span class="s1">&#39;POST&#39;</span><span class="p">,</span>
+        <span class="nx">data</span><span class="o">:</span> <span class="nx">data</span><span class="p">,</span>
+        <span class="nx">dataType</span><span class="o">:</span> <span class="s1">&#39;json&#39;</span>
+      <span class="p">});</span>
+    <span class="p">},</span></pre></div>             </td>           </tr>                               <tr id="section-5">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-5">&#182;</a>               </div>               <h3>delete</h3>
+
+<p>Delete a document from the ElasticSearch backend.</p>
+
+<p>@param {Object} id id of object to delete
+@param {string} url (optional) url for ElasticSearch endpoint (if not
+provided called this._getESUrl()</p>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="k">delete</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">id</span><span class="p">,</span> <span class="nx">url</span><span class="p">)</span> <span class="p">{</span>
+      <span class="nx">url</span> <span class="o">=</span> <span class="nx">url</span> <span class="o">?</span> <span class="nx">url</span> <span class="o">:</span> <span class="k">this</span><span class="p">.</span><span class="nx">_getESUrl</span><span class="p">();</span>
+      <span class="nx">url</span> <span class="o">+=</span> <span class="s1">&#39;/&#39;</span> <span class="o">+</span> <span class="nx">id</span><span class="p">;</span>
+      <span class="k">return</span> <span class="k">this</span><span class="p">.</span><span class="nx">_makeRequest</span><span class="p">({</span>
+        <span class="nx">url</span><span class="o">:</span> <span class="nx">url</span><span class="p">,</span>
+        <span class="nx">type</span><span class="o">:</span> <span class="s1">&#39;DELETE&#39;</span><span class="p">,</span>
+        <span class="nx">dataType</span><span class="o">:</span> <span class="s1">&#39;json&#39;</span>
+      <span class="p">});</span>
+    <span class="p">},</span></pre></div>             </td>           </tr>                               <tr id="section-6">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-6">&#182;</a>               </div>               <h3>_getESUrl</h3>
+
+<p>get url to ElasticSearch endpoint (see above)</p>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="nx">_getESUrl</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">dataset</span><span class="p">)</span> <span class="p">{</span>
+      <span class="k">if</span> <span class="p">(</span><span class="nx">dataset</span><span class="p">)</span> <span class="p">{</span>
+        <span class="kd">var</span> <span class="nx">out</span> <span class="o">=</span> <span class="nx">dataset</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s1">&#39;elasticsearch_url&#39;</span><span class="p">);</span>
+        <span class="k">if</span> <span class="p">(</span><span class="nx">out</span><span class="p">)</span> <span class="k">return</span> <span class="nx">out</span><span class="p">;</span>
+        <span class="nx">out</span> <span class="o">=</span> <span class="nx">dataset</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s1">&#39;webstore_url&#39;</span><span class="p">);</span>
+        <span class="k">if</span> <span class="p">(</span><span class="nx">out</span><span class="p">)</span> <span class="k">return</span> <span class="nx">out</span><span class="p">;</span>
+        <span class="nx">out</span> <span class="o">=</span> <span class="nx">dataset</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s1">&#39;url&#39;</span><span class="p">);</span>
+        <span class="k">return</span> <span class="nx">out</span><span class="p">;</span>
+      <span class="p">}</span>
+      <span class="k">return</span> <span class="k">this</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s1">&#39;url&#39;</span><span class="p">);</span>
     <span class="p">},</span>
     <span class="nx">_normalizeQuery</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">queryObj</span><span class="p">)</span> <span class="p">{</span>
       <span class="kd">var</span> <span class="nx">out</span> <span class="o">=</span> <span class="nx">queryObj</span><span class="p">.</span><span class="nx">toJSON</span> <span class="o">?</span> <span class="nx">queryObj</span><span class="p">.</span><span class="nx">toJSON</span><span class="p">()</span> <span class="o">:</span> <span class="nx">_</span><span class="p">.</span><span class="nx">extend</span><span class="p">({},</span> <span class="nx">queryObj</span><span class="p">);</span>
@@ -71,7 +131,7 @@ localhost:9200 with index twitter and type tweet it would be</p>
           <span class="p">}</span>
         <span class="p">};</span>
         <span class="k">delete</span> <span class="nx">out</span><span class="p">.</span><span class="nx">q</span><span class="p">;</span>
-      <span class="p">}</span></pre></div>             </td>           </tr>                               <tr id="section-4">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-4">&#182;</a>               </div>               <p>now do filters (note the <em>plural</em>)</p>             </td>             <td class="code">               <div class="highlight"><pre>      <span class="k">if</span> <span class="p">(</span><span class="nx">out</span><span class="p">.</span><span class="nx">filters</span> <span class="o">&amp;&amp;</span> <span class="nx">out</span><span class="p">.</span><span class="nx">filters</span><span class="p">.</span><span class="nx">length</span><span class="p">)</span> <span class="p">{</span>
+      <span class="p">}</span></pre></div>             </td>           </tr>                               <tr id="section-7">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-7">&#182;</a>               </div>               <p>now do filters (note the <em>plural</em>)</p>             </td>             <td class="code">               <div class="highlight"><pre>      <span class="k">if</span> <span class="p">(</span><span class="nx">out</span><span class="p">.</span><span class="nx">filters</span> <span class="o">&amp;&amp;</span> <span class="nx">out</span><span class="p">.</span><span class="nx">filters</span><span class="p">.</span><span class="nx">length</span><span class="p">)</span> <span class="p">{</span>
         <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="nx">out</span><span class="p">.</span><span class="nx">filter</span><span class="p">)</span> <span class="p">{</span>
           <span class="nx">out</span><span class="p">.</span><span class="nx">filter</span> <span class="o">=</span> <span class="p">{};</span>
         <span class="p">}</span>
@@ -89,12 +149,12 @@ localhost:9200 with index twitter and type tweet it would be</p>
       <span class="kd">var</span> <span class="nx">queryNormalized</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">_normalizeQuery</span><span class="p">(</span><span class="nx">queryObj</span><span class="p">);</span>
       <span class="kd">var</span> <span class="nx">data</span> <span class="o">=</span> <span class="p">{</span><span class="nx">source</span><span class="o">:</span> <span class="nx">JSON</span><span class="p">.</span><span class="nx">stringify</span><span class="p">(</span><span class="nx">queryNormalized</span><span class="p">)};</span>
       <span class="kd">var</span> <span class="nx">base</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">_getESUrl</span><span class="p">(</span><span class="nx">model</span><span class="p">);</span>
-      <span class="kd">var</span> <span class="nx">jqxhr</span> <span class="o">=</span> <span class="nx">$</span><span class="p">.</span><span class="nx">ajax</span><span class="p">({</span>
+      <span class="kd">var</span> <span class="nx">jqxhr</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">_makeRequest</span><span class="p">({</span>
         <span class="nx">url</span><span class="o">:</span> <span class="nx">base</span> <span class="o">+</span> <span class="s1">&#39;/_search&#39;</span><span class="p">,</span>
         <span class="nx">data</span><span class="o">:</span> <span class="nx">data</span><span class="p">,</span>
         <span class="nx">dataType</span><span class="o">:</span> <span class="s1">&#39;jsonp&#39;</span>
       <span class="p">});</span>
-      <span class="kd">var</span> <span class="nx">dfd</span> <span class="o">=</span> <span class="nx">$</span><span class="p">.</span><span class="nx">Deferred</span><span class="p">();</span></pre></div>             </td>           </tr>                               <tr id="section-5">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-5">&#182;</a>               </div>               <p>TODO: fail case</p>             </td>             <td class="code">               <div class="highlight"><pre>      <span class="nx">jqxhr</span><span class="p">.</span><span class="nx">done</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">results</span><span class="p">)</span> <span class="p">{</span>
+      <span class="kd">var</span> <span class="nx">dfd</span> <span class="o">=</span> <span class="nx">$</span><span class="p">.</span><span class="nx">Deferred</span><span class="p">();</span></pre></div>             </td>           </tr>                               <tr id="section-8">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-8">&#182;</a>               </div>               <p>TODO: fail case</p>             </td>             <td class="code">               <div class="highlight"><pre>      <span class="nx">jqxhr</span><span class="p">.</span><span class="nx">done</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">results</span><span class="p">)</span> <span class="p">{</span>
         <span class="nx">_</span><span class="p">.</span><span class="nx">each</span><span class="p">(</span><span class="nx">results</span><span class="p">.</span><span class="nx">hits</span><span class="p">.</span><span class="nx">hits</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">hit</span><span class="p">)</span> <span class="p">{</span>
           <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="p">(</span><span class="s1">&#39;id&#39;</span> <span class="k">in</span> <span class="nx">hit</span><span class="p">.</span><span class="nx">_source</span><span class="p">)</span> <span class="o">&amp;&amp;</span> <span class="nx">hit</span><span class="p">.</span><span class="nx">_id</span><span class="p">)</span> <span class="p">{</span>
             <span class="nx">hit</span><span class="p">.</span><span class="nx">_source</span><span class="p">.</span><span class="nx">id</span> <span class="o">=</span> <span class="nx">hit</span><span class="p">.</span><span class="nx">_id</span><span class="p">;</span>

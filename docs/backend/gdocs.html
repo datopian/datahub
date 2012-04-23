@@ -16,6 +16,7 @@ var dataset = new recline.Model.Dataset({
 );
 </pre>             </td>             <td class="code">               <div class="highlight"><pre>  <span class="nx">my</span><span class="p">.</span><span class="nx">GDoc</span> <span class="o">=</span> <span class="nx">my</span><span class="p">.</span><span class="nx">Base</span><span class="p">.</span><span class="nx">extend</span><span class="p">({</span>
     <span class="nx">__type__</span><span class="o">:</span> <span class="s1">&#39;gdoc&#39;</span><span class="p">,</span>
+    <span class="nx">readonly</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span>
     <span class="nx">getUrl</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">dataset</span><span class="p">)</span> <span class="p">{</span>
       <span class="kd">var</span> <span class="nx">url</span> <span class="o">=</span> <span class="nx">dataset</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s1">&#39;url&#39;</span><span class="p">);</span>
       <span class="k">if</span> <span class="p">(</span><span class="nx">url</span><span class="p">.</span><span class="nx">indexOf</span><span class="p">(</span><span class="s1">&#39;feeds/list&#39;</span><span class="p">)</span> <span class="o">!=</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="p">{</span>
