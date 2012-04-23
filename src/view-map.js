@@ -75,6 +75,11 @@ my.Map = Backbone.View.extend({
       <div class="editor-buttons"> \
         <button class="btn editor-update-map">Update</button> \
       </div> \
+      <div class="editor-options" > \
+        <label class="checkbox"> \
+          <input type="checkbox" id="editor-auto-zoom" checked="checked" /> \
+          Auto zoom to features</label> \
+      </div> \
       <input type="hidden" class="editor-id" value="map-1" /> \
       </div> \
     </form> \
@@ -92,7 +97,8 @@ my.Map = Backbone.View.extend({
   // Define here events for UI elements
   events: {
     'click .editor-update-map': 'onEditorSubmit',
-    'change .editor-field-type': 'onFieldTypeChange'
+    'change .editor-field-type': 'onFieldTypeChange',
+    'change #editor-auto-zoom': 'onAutoZoomChange'
   },
 
   initialize: function(options) {
@@ -114,12 +120,18 @@ my.Map = Backbone.View.extend({
     this.model.currentDocuments.bind('remove', function(doc){self.redraw('remove',doc)});
     this.model.currentDocuments.bind('reset', function(){self.redraw('reset')});
 
-    // If the div was hidden, Leaflet needs to recalculate some sizes
-    // to display properly
     this.bind('view:show',function(){
-        if (self.map) {
-          self.map.invalidateSize();
-        }
+      // If the div was hidden, Leaflet needs to recalculate some sizes
+      // to display properly
+      self.map.invalidateSize();
+      if (self._zoomPending && self.autoZoom) {
+        self._zoomToFeatures();
+        self._zoomPending = false;
+      }
+      self.visible = true;
+    });
+    this.bind('view:hide',function(){
+      self.visible = false;
     });
 
     var stateData = _.extend({
@@ -131,6 +143,7 @@ my.Map = Backbone.View.extend({
     );
     this.state = new recline.Model.ObjectState(stateData);
 
+    this.autoZoom = true;
     this.mapReady = false;
     this.render();
   },
@@ -196,6 +209,13 @@ my.Map = Backbone.View.extend({
         this.features.clearLayers();
         this._add(this.model.currentDocuments.models);
       }
+      if (action != 'reset' && this.autoZoom){
+        if (this.visible){
+          this._zoomToFeatures();
+        } else {
+          this._zoomPending = true;
+        }
+      }
     }
   },
 
@@ -240,6 +260,10 @@ my.Map = Backbone.View.extend({
         $('.editor-field-type-geom').hide();
         $('.editor-field-type-latlon').show();
     }
+  },
+
+  onAutoZoomChange: function(e){
+    this.autoZoom = !this.autoZoom;
   },
 
   // Private: Add one or n features to the map
@@ -374,6 +398,18 @@ my.Map = Backbone.View.extend({
     return null;
   },
 
+  // Private: Zoom to map to current features extent if any, or to the full
+  // extent if none.
+  //
+  _zoomToFeatures: function(){
+    var bounds = this.features.getBounds();
+    if (bounds){
+      this.map.fitBounds(bounds);
+    } else {
+      this.map.setView(new L.LatLng(0, 0), 2);
+    }
+  },
+
   // Private: Sets up the Leaflet map control and the features layer.
   //
   // The map uses a base layer from [MapQuest](http://www.mapquest.com) based
@@ -398,6 +434,17 @@ my.Map = Backbone.View.extend({
        }
 
     });
+
+    // This will be available in the next Leaflet stable release.
+    // In the meantime we add it manually to our layer.
+    this.features.getBounds = function(){
+      var bounds = new L.LatLngBounds();
+      this._iterateLayers(function (layer) {
+        bounds.extend(layer instanceof L.Marker ? layer.getLatLng() : layer.getBounds());
+      }, this);
+      return (typeof bounds.getNorthEast() !== 'undefined') ? bounds : null;
+    }
+
     this.map.addLayer(this.features);
 
     this.map.setView(new L.LatLng(0, 0), 2);
