@@ -18,6 +18,7 @@ this.recline.Backend = this.recline.Backend || {};
   // </pre>
   my.GDoc = my.Base.extend({
     __type__: 'gdoc',
+    readonly: true,
     getUrl: function(dataset) {
       var url = dataset.get('url');
       if (url.indexOf('feeds/list') != -1) {

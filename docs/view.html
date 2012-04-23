@@ -1,83 +1,149 @@
-<!DOCTYPE html>
-<html>
-<head>
-  <meta http-equiv="content-type" content="text/html;charset=utf-8">
-  <title>view.js</title>
-  <link rel="stylesheet" href="pycco.css">
-</head>
-<body>
-<div id='container'>
-  <div id="background"></div>
-  <div class='section'>
-    <div class='docs'><h1>view.js</h1></div>
-  </div>
-  <div class='clearall'>
-  <div class='section' id='section-0'>
-    <div class='docs'>
-      <div class='octowrap'>
-        <a class='octothorpe' href='#section-0'>#</a>
-      </div>
-      <p>jshint multistr:true</p>
-    </div>
-    <div class='code'>
-      <div class="highlight"><pre><span class="k">this</span><span class="p">.</span><span class="nx">recline</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">recline</span> <span class="o">||</span> <span class="p">{};</span>
+<!DOCTYPE html>  <html> <head>   <title>view.js</title>   <meta http-equiv="content-type" content="text/html; charset=UTF-8">   <link rel="stylesheet" media="all" href="docco.css" /> </head> <body>   <div id="container">     <div id="background"></div>            <div id="jump_to">         Jump To &hellip;         <div id="jump_wrapper">           <div id="jump_page">                                           <a class="source" href="model.html">                 model.js               </a>                                           <a class="source" href="view-graph.html">                 view-graph.js               </a>                                           <a class="source" href="view-grid.html">                 view-grid.js               </a>                                           <a class="source" href="view-map.html">                 view-map.js               </a>                                           <a class="source" href="view.html">                 view.js               </a>                        </div>         </div>       </div>          <table cellpadding="0" cellspacing="0">       <thead>         <tr>           <th class="docs">             <h1>               view.js             </h1>           </th>           <th class="code">           </th>         </tr>       </thead>       <tbody>                               <tr id="section-1">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-1">&#182;</a>               </div>                            </td>             <td class="code">               <div class="highlight"><pre><span class="cm">/*jshint multistr:true */</span></pre></div>             </td>           </tr>                               <tr id="section-2">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-2">&#182;</a>               </div>               <h1>Recline Views</h1>
+
+<p>Recline Views are Backbone Views and in keeping with normal Backbone views
+are Widgets / Components displaying something in the DOM. Like all Backbone
+views they have a pointer to a model or a collection and is bound to an
+element.</p>
+
+<p>Views provided by core Recline are crudely divided into two types:</p>
+
+<ul>
+<li>Dataset Views: a View intended for displaying a recline.Model.Dataset
+in some fashion. Examples are the Grid, Graph and Map views.</li>
+<li>Widget Views: a widget used for displaying some specific (and
+smaller) aspect of a dataset or the application. Examples are
+QueryEditor and FilterEditor which both provide a way for editing (a
+part of) a <code>recline.Model.Query</code> associated to a Dataset.</li>
+</ul>
+
+<h2>Dataset View</h2>
+
+<p>These views are just Backbone views with a few additional conventions:</p>
+
+<ol>
+<li>The model passed to the View should always be a recline.Model.Dataset instance</li>
+<li>Views should generate their own root element rather than having it passed
+in.</li>
+<li>Views should apply a css class named 'recline-{view-name-lower-cased} to
+the root element (and for all CSS for this view to be qualified using this
+CSS class)</li>
+<li>Read-only mode: CSS for this view should respect/utilize
+recline-read-only class to trigger read-only behaviour (this class will
+usually be set on some parent element of the view's root element.</li>
+<li><p>State: state (configuration) information for the view should be stored on
+an attribute named state that is an instance of a Backbone Model (or, more
+speficially, be an instance of <code>recline.Model.ObjectState</code>). In addition,
+a state attribute may be specified in the Hash passed to a View on
+iniitialization and this information should be used to set the initial
+state of the view.</p>
+
+<p>Example of state would be the set of fields being plotted in a graph
+view.</p>
+
+<p>More information about State can be found below.</p></li>
+</ol>
+
+<p>To summarize some of this, the initialize function for a Dataset View should
+look like:</p>
+
+<pre>
+   initialize: {
+       model: {a recline.Model.Dataset instance}
+       // el: {do not specify - instead view should create}
+       state: {(optional) Object / Hash specifying initial state}
+       ...
+   }
+</pre>
+
+<p>Note: Dataset Views in core Recline have a common layout on disk as
+follows, where ViewName is the named of View class:</p>
+
+<pre>
+src/view-{lower-case-ViewName}.js
+css/{lower-case-ViewName}.css
+test/view-{lower-case-ViewName}.js
+</pre>
+
+<h3>State</h3>
+
+<p>State information exists in order to support state serialization into the
+url or elsewhere and reloading of application from a stored state.</p>
+
+<p>State is available not only for individual views (as described above) but
+for the dataset (e.g. the current query). For an example of pulling together
+state from across multiple components see <code>recline.View.DataExplorer</code>.</p>
+
+<h3>Writing your own Views</h3>
+
+<p>See the existing Views.</p>
+
+<hr />             </td>             <td class="code">               <div class="highlight"><pre></pre></div>             </td>           </tr>                               <tr id="section-3">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-3">&#182;</a>               </div>               <p>Standard JS module setup</p>             </td>             <td class="code">               <div class="highlight"><pre><span class="k">this</span><span class="p">.</span><span class="nx">recline</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">recline</span> <span class="o">||</span> <span class="p">{};</span>
 <span class="k">this</span><span class="p">.</span><span class="nx">recline</span><span class="p">.</span><span class="nx">View</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">recline</span><span class="p">.</span><span class="nx">View</span> <span class="o">||</span> <span class="p">{};</span>
 
-<span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">$</span><span class="p">,</span> <span class="nx">my</span><span class="p">)</span> <span class="p">{</span></pre></div>
-    </div>
-  </div>
-  <div class='clearall'></div>
-  <div class='section' id='section-1'>
-    <div class='docs'>
-      <div class='octowrap'>
-        <a class='octothorpe' href='#section-1'>#</a>
-      </div>
-      <h2>DataExplorer</h2>
+<span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">$</span><span class="p">,</span> <span class="nx">my</span><span class="p">)</span> <span class="p">{</span></pre></div>             </td>           </tr>                               <tr id="section-4">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-4">&#182;</a>               </div>               <h2>DataExplorer</h2>
+
 <p>The primary view for the entire application. Usage:</p>
+
 <pre>
 var myExplorer = new model.recline.DataExplorer({
   model: {{recline.Model.Dataset instance}}
   el: {{an existing dom element}}
-  views: {{page views}}
-  config: {{config options -- see below}}
+  views: {{dataset views}}
+  state: {{state configuration -- see below}}
 });
-</pre>
+</pre> 
 
 <h3>Parameters</h3>
-<p><strong>model</strong>: (required) Dataset instance.</p>
-<p><strong>el</strong>: (required) DOM element.</p>
-<p><strong>views</strong>: (optional) the views (Grid, Graph etc) for DataExplorer to
-show. This is an array of view hashes. If not provided
-just initialize a DataGrid with id 'grid'. Example:</p>
+
+<p><strong>model</strong>: (required) recline.model.Dataset instance.</p>
+
+<p><strong>el</strong>: (required) DOM element to bind to. NB: the element already
+being in the DOM is important for rendering of some subviews (e.g.
+Graph).</p>
+
+<p><strong>views</strong>: (optional) the dataset views (Grid, Graph etc) for
+DataExplorer to show. This is an array of view hashes. If not provided
+initialize with (recline.View.)Grid, Graph, and Map views (with obvious id
+and labels!).</p>
+
 <pre>
 var views = [
   {
     id: 'grid', // used for routing
     label: 'Grid', // used for view switcher
-    view: new recline.View.DataGrid({
+    view: new recline.View.Grid({
       model: dataset
     })
   },
   {
     id: 'graph',
     label: 'Graph',
-    view: new recline.View.FlotGraph({
+    view: new recline.View.Graph({
       model: dataset
     })
   }
 ];
 </pre>
 
-<p><strong>config</strong>: Config options like:</p>
-<ul>
-<li>readOnly: true/false (default: false) value indicating whether to
-    operate in read-only mode (hiding all editing options).</li>
-</ul>
-<p>NB: the element already being in the DOM is important for rendering of
-FlotGraph subview.</p>
-    </div>
-    <div class='code'>
-      <div class="highlight"><pre><span class="nx">my</span><span class="p">.</span><span class="nx">DataExplorer</span> <span class="o">=</span> <span class="nx">Backbone</span><span class="p">.</span><span class="nx">View</span><span class="p">.</span><span class="nx">extend</span><span class="p">({</span>
+<p><strong>state</strong>: standard state config for this view. This state is slightly
+ special as it includes config of many of the subviews.</p>
+
+<pre>
+state = {
+    query: {dataset query state - see dataset.queryState object}
+    view-{id1}: {view-state for this view}
+    view-{id2}: {view-state for }
+    ...
+    // Explorer
+    currentView: id of current view (defaults to first view if not specified)
+    readOnly: (default: false) run in read-only mode
+}
+</pre>
+
+<p>Note that at present we do <em>not</em> serialize information about the actual set
+of views in use -- e.g. those specified by the views argument -- but instead 
+expect either that the default views are fine or that the client to have
+initialized the DataExplorer with the relevant views themselves.</p>             </td>             <td class="code">               <div class="highlight"><pre><span class="nx">my</span><span class="p">.</span><span class="nx">DataExplorer</span> <span class="o">=</span> <span class="nx">Backbone</span><span class="p">.</span><span class="nx">View</span><span class="p">.</span><span class="nx">extend</span><span class="p">({</span>
   <span class="nx">template</span><span class="o">:</span> <span class="s1">&#39; \</span>
 <span class="s1">  &lt;div class=&quot;recline-data-explorer&quot;&gt; \</span>
 <span class="s1">    &lt;div class=&quot;alert-messages&quot;&gt;&lt;/div&gt; \</span>
@@ -85,7 +151,7 @@ FlotGraph subview.</p>
 <span class="s1">    &lt;div class=&quot;header&quot;&gt; \</span>
 <span class="s1">      &lt;ul class=&quot;navigation&quot;&gt; \</span>
 <span class="s1">        {{#views}} \</span>
-<span class="s1">        &lt;li&gt;&lt;a href=&quot;#{{id}}&quot; class=&quot;btn&quot;&gt;{{label}}&lt;/a&gt; \</span>
+<span class="s1">        &lt;li&gt;&lt;a href=&quot;#{{id}}&quot; data-view=&quot;{{id}}&quot; class=&quot;btn&quot;&gt;{{label}}&lt;/a&gt; \</span>
 <span class="s1">        {{/views}} \</span>
 <span class="s1">      &lt;/ul&gt; \</span>
 <span class="s1">      &lt;div class=&quot;recline-results-info&quot;&gt; \</span>
@@ -108,53 +174,47 @@ FlotGraph subview.</p>
 <span class="s1">  &lt;/div&gt; \</span>
 <span class="s1">  &#39;</span><span class="p">,</span>
   <span class="nx">events</span><span class="o">:</span> <span class="p">{</span>
-    <span class="s1">&#39;click .menu-right a&#39;</span><span class="o">:</span> <span class="s1">&#39;onMenuClick&#39;</span>
+    <span class="s1">&#39;click .menu-right a&#39;</span><span class="o">:</span> <span class="s1">&#39;_onMenuClick&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;click .navigation a&#39;</span><span class="o">:</span> <span class="s1">&#39;_onSwitchView&#39;</span>
   <span class="p">},</span>
 
   <span class="nx">initialize</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">options</span><span class="p">)</span> <span class="p">{</span>
     <span class="kd">var</span> <span class="nx">self</span> <span class="o">=</span> <span class="k">this</span><span class="p">;</span>
     <span class="k">this</span><span class="p">.</span><span class="nx">el</span> <span class="o">=</span> <span class="nx">$</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">el</span><span class="p">);</span>
-    <span class="k">this</span><span class="p">.</span><span class="nx">config</span> <span class="o">=</span> <span class="nx">_</span><span class="p">.</span><span class="nx">extend</span><span class="p">({</span>
-        <span class="nx">readOnly</span><span class="o">:</span> <span class="kc">false</span>
-      <span class="p">},</span>
-      <span class="nx">options</span><span class="p">.</span><span class="nx">config</span><span class="p">);</span>
-    <span class="k">if</span> <span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">config</span><span class="p">.</span><span class="nx">readOnly</span><span class="p">)</span> <span class="p">{</span>
-      <span class="k">this</span><span class="p">.</span><span class="nx">setReadOnly</span><span class="p">();</span>
-    <span class="p">}</span></pre></div>
-    </div>
-  </div>
-  <div class='clearall'></div>
-  <div class='section' id='section-2'>
-    <div class='docs'>
-      <div class='octowrap'>
-        <a class='octothorpe' href='#section-2'>#</a>
-      </div>
-      <p>Hash of 'page' views (i.e. those for whole page) keyed by page name</p>
-    </div>
-    <div class='code'>
-      <div class="highlight"><pre>    <span class="k">if</span> <span class="p">(</span><span class="nx">options</span><span class="p">.</span><span class="nx">views</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">_setupState</span><span class="p">(</span><span class="nx">options</span><span class="p">.</span><span class="nx">state</span><span class="p">);</span></pre></div>             </td>           </tr>                               <tr id="section-5">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-5">&#182;</a>               </div>               <p>Hash of 'page' views (i.e. those for whole page) keyed by page name</p>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="k">if</span> <span class="p">(</span><span class="nx">options</span><span class="p">.</span><span class="nx">views</span><span class="p">)</span> <span class="p">{</span>
       <span class="k">this</span><span class="p">.</span><span class="nx">pageViews</span> <span class="o">=</span> <span class="nx">options</span><span class="p">.</span><span class="nx">views</span><span class="p">;</span>
     <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
       <span class="k">this</span><span class="p">.</span><span class="nx">pageViews</span> <span class="o">=</span> <span class="p">[{</span>
         <span class="nx">id</span><span class="o">:</span> <span class="s1">&#39;grid&#39;</span><span class="p">,</span>
         <span class="nx">label</span><span class="o">:</span> <span class="s1">&#39;Grid&#39;</span><span class="p">,</span>
-        <span class="nx">view</span><span class="o">:</span> <span class="k">new</span> <span class="nx">my</span><span class="p">.</span><span class="nx">DataGrid</span><span class="p">({</span>
-            <span class="nx">model</span><span class="o">:</span> <span class="k">this</span><span class="p">.</span><span class="nx">model</span>
-          <span class="p">})</span>
+        <span class="nx">view</span><span class="o">:</span> <span class="k">new</span> <span class="nx">my</span><span class="p">.</span><span class="nx">Grid</span><span class="p">({</span>
+          <span class="nx">model</span><span class="o">:</span> <span class="k">this</span><span class="p">.</span><span class="nx">model</span><span class="p">,</span>
+          <span class="nx">state</span><span class="o">:</span> <span class="k">this</span><span class="p">.</span><span class="nx">state</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s1">&#39;view-grid&#39;</span><span class="p">)</span>
+        <span class="p">}),</span>
+      <span class="p">},</span> <span class="p">{</span>
+        <span class="nx">id</span><span class="o">:</span> <span class="s1">&#39;graph&#39;</span><span class="p">,</span>
+        <span class="nx">label</span><span class="o">:</span> <span class="s1">&#39;Graph&#39;</span><span class="p">,</span>
+        <span class="nx">view</span><span class="o">:</span> <span class="k">new</span> <span class="nx">my</span><span class="p">.</span><span class="nx">Graph</span><span class="p">({</span>
+          <span class="nx">model</span><span class="o">:</span> <span class="k">this</span><span class="p">.</span><span class="nx">model</span><span class="p">,</span>
+          <span class="nx">state</span><span class="o">:</span> <span class="k">this</span><span class="p">.</span><span class="nx">state</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s1">&#39;view-graph&#39;</span><span class="p">)</span>
+        <span class="p">}),</span>
+      <span class="p">},</span> <span class="p">{</span>
+        <span class="nx">id</span><span class="o">:</span> <span class="s1">&#39;map&#39;</span><span class="p">,</span>
+        <span class="nx">label</span><span class="o">:</span> <span class="s1">&#39;Map&#39;</span><span class="p">,</span>
+        <span class="nx">view</span><span class="o">:</span> <span class="k">new</span> <span class="nx">my</span><span class="p">.</span><span class="nx">Map</span><span class="p">({</span>
+          <span class="nx">model</span><span class="o">:</span> <span class="k">this</span><span class="p">.</span><span class="nx">model</span><span class="p">,</span>
+          <span class="nx">state</span><span class="o">:</span> <span class="k">this</span><span class="p">.</span><span class="nx">state</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s1">&#39;view-map&#39;</span><span class="p">)</span>
+        <span class="p">}),</span>
       <span class="p">}];</span>
-    <span class="p">}</span></pre></div>
-    </div>
-  </div>
-  <div class='clearall'></div>
-  <div class='section' id='section-3'>
-    <div class='docs'>
-      <div class='octowrap'>
-        <a class='octothorpe' href='#section-3'>#</a>
-      </div>
-      <p>this must be called after pageViews are created</p>
-    </div>
-    <div class='code'>
-      <div class="highlight"><pre>    <span class="k">this</span><span class="p">.</span><span class="nx">render</span><span class="p">();</span>
+    <span class="p">}</span></pre></div>             </td>           </tr>                               <tr id="section-6">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-6">&#182;</a>               </div>               <p>these must be called after pageViews are created</p>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="k">this</span><span class="p">.</span><span class="nx">render</span><span class="p">();</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">_bindStateChanges</span><span class="p">();</span></pre></div>             </td>           </tr>                               <tr id="section-7">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-7">&#182;</a>               </div>               <p>now do updates based on state (need to come after render)</p>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="k">if</span> <span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">state</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s1">&#39;readOnly&#39;</span><span class="p">))</span> <span class="p">{</span>
+      <span class="k">this</span><span class="p">.</span><span class="nx">setReadOnly</span><span class="p">();</span>
+    <span class="p">}</span>
+    <span class="k">if</span> <span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">state</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s1">&#39;currentView&#39;</span><span class="p">))</span> <span class="p">{</span>
+      <span class="k">this</span><span class="p">.</span><span class="nx">updateNav</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">state</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s1">&#39;currentView&#39;</span><span class="p">));</span>
+    <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+      <span class="k">this</span><span class="p">.</span><span class="nx">updateNav</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">pageViews</span><span class="p">[</span><span class="mi">0</span><span class="p">].</span><span class="nx">id</span><span class="p">);</span>
+    <span class="p">}</span>
 
     <span class="k">this</span><span class="p">.</span><span class="nx">router</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Backbone</span><span class="p">.</span><span class="nx">Router</span><span class="p">();</span>
     <span class="k">this</span><span class="p">.</span><span class="nx">setupRouting</span><span class="p">();</span>
@@ -165,23 +225,9 @@ FlotGraph subview.</p>
     <span class="k">this</span><span class="p">.</span><span class="nx">model</span><span class="p">.</span><span class="nx">bind</span><span class="p">(</span><span class="s1">&#39;query:done&#39;</span><span class="p">,</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
         <span class="nx">my</span><span class="p">.</span><span class="nx">clearNotifications</span><span class="p">();</span>
         <span class="nx">self</span><span class="p">.</span><span class="nx">el</span><span class="p">.</span><span class="nx">find</span><span class="p">(</span><span class="s1">&#39;.doc-count&#39;</span><span class="p">).</span><span class="nx">text</span><span class="p">(</span><span class="nx">self</span><span class="p">.</span><span class="nx">model</span><span class="p">.</span><span class="nx">docCount</span> <span class="o">||</span> <span class="s1">&#39;Unknown&#39;</span><span class="p">);</span>
-        <span class="nx">my</span><span class="p">.</span><span class="nx">notify</span><span class="p">(</span><span class="s1">&#39;Data loaded&#39;</span><span class="p">,</span> <span class="p">{</span><span class="nx">category</span><span class="o">:</span> <span class="s1">&#39;success&#39;</span><span class="p">});</span></pre></div>
-    </div>
-  </div>
-  <div class='clearall'></div>
-  <div class='section' id='section-4'>
-    <div class='docs'>
-      <div class='octowrap'>
-        <a class='octothorpe' href='#section-4'>#</a>
-      </div>
-      <p>update navigation</p>
-    </div>
-    <div class='code'>
-      <div class="highlight"><pre>        <span class="kd">var</span> <span class="nx">qs</span> <span class="o">=</span> <span class="nx">my</span><span class="p">.</span><span class="nx">parseHashQueryString</span><span class="p">();</span>
+        <span class="nx">my</span><span class="p">.</span><span class="nx">notify</span><span class="p">(</span><span class="s1">&#39;Data loaded&#39;</span><span class="p">,</span> <span class="p">{</span><span class="nx">category</span><span class="o">:</span> <span class="s1">&#39;success&#39;</span><span class="p">});</span></pre></div>             </td>           </tr>                               <tr id="section-8">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-8">&#182;</a>               </div>               <p>update navigation</p>             </td>             <td class="code">               <div class="highlight"><pre>        <span class="kd">var</span> <span class="nx">qs</span> <span class="o">=</span> <span class="nx">my</span><span class="p">.</span><span class="nx">parseHashQueryString</span><span class="p">();</span>
         <span class="nx">qs</span><span class="p">.</span><span class="nx">reclineQuery</span> <span class="o">=</span> <span class="nx">JSON</span><span class="p">.</span><span class="nx">stringify</span><span class="p">(</span><span class="nx">self</span><span class="p">.</span><span class="nx">model</span><span class="p">.</span><span class="nx">queryState</span><span class="p">.</span><span class="nx">toJSON</span><span class="p">());</span>
-        <span class="kd">var</span> <span class="nx">out</span> <span class="o">=</span> <span class="nx">my</span><span class="p">.</span><span class="nx">getNewHashForQueryString</span><span class="p">(</span><span class="nx">qs</span><span class="p">);</span>
-        <span class="nx">self</span><span class="p">.</span><span class="nx">router</span><span class="p">.</span><span class="nx">navigate</span><span class="p">(</span><span class="nx">out</span><span class="p">);</span>
-      <span class="p">});</span>
+        <span class="kd">var</span> <span class="nx">out</span> <span class="o">=</span> <span class="nx">my</span><span class="p">.</span><span class="nx">getNewHashForQueryString</span><span class="p">(</span><span class="nx">qs</span><span class="p">);</span></pre></div>             </td>           </tr>                               <tr id="section-9">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-9">&#182;</a>               </div>               <p>self.router.navigate(out);</p>             </td>             <td class="code">               <div class="highlight"><pre>      <span class="p">});</span>
     <span class="k">this</span><span class="p">.</span><span class="nx">model</span><span class="p">.</span><span class="nx">bind</span><span class="p">(</span><span class="s1">&#39;query:fail&#39;</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">error</span><span class="p">)</span> <span class="p">{</span>
         <span class="nx">my</span><span class="p">.</span><span class="nx">clearNotifications</span><span class="p">();</span>
         <span class="kd">var</span> <span class="nx">msg</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="p">;</span>
@@ -198,26 +244,10 @@ FlotGraph subview.</p>
           <span class="nx">msg</span> <span class="o">=</span> <span class="s1">&#39;There was an error querying the backend&#39;</span><span class="p">;</span>
         <span class="p">}</span>
         <span class="nx">my</span><span class="p">.</span><span class="nx">notify</span><span class="p">(</span><span class="nx">msg</span><span class="p">,</span> <span class="p">{</span><span class="nx">category</span><span class="o">:</span> <span class="s1">&#39;error&#39;</span><span class="p">,</span> <span class="nx">persist</span><span class="o">:</span> <span class="kc">true</span><span class="p">});</span>
-      <span class="p">});</span></pre></div>
-    </div>
-  </div>
-  <div class='clearall'></div>
-  <div class='section' id='section-5'>
-    <div class='docs'>
-      <div class='octowrap'>
-        <a class='octothorpe' href='#section-5'>#</a>
-      </div>
-      <p>retrieve basic data like fields etc
-note this.model and dataset returned are the same</p>
-    </div>
-    <div class='code'>
-      <div class="highlight"><pre>    <span class="k">this</span><span class="p">.</span><span class="nx">model</span><span class="p">.</span><span class="nx">fetch</span><span class="p">()</span>
+      <span class="p">});</span></pre></div>             </td>           </tr>                               <tr id="section-10">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-10">&#182;</a>               </div>               <p>retrieve basic data like fields etc
+note this.model and dataset returned are the same</p>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="k">this</span><span class="p">.</span><span class="nx">model</span><span class="p">.</span><span class="nx">fetch</span><span class="p">()</span>
       <span class="p">.</span><span class="nx">done</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">dataset</span><span class="p">)</span> <span class="p">{</span>
-        <span class="kd">var</span> <span class="nx">queryState</span> <span class="o">=</span> <span class="nx">my</span><span class="p">.</span><span class="nx">parseHashQueryString</span><span class="p">().</span><span class="nx">reclineQuery</span><span class="p">;</span>
-        <span class="k">if</span> <span class="p">(</span><span class="nx">queryState</span><span class="p">)</span> <span class="p">{</span>
-          <span class="nx">queryState</span> <span class="o">=</span> <span class="nx">JSON</span><span class="p">.</span><span class="nx">parse</span><span class="p">(</span><span class="nx">queryState</span><span class="p">);</span>
-        <span class="p">}</span>
-        <span class="nx">self</span><span class="p">.</span><span class="nx">model</span><span class="p">.</span><span class="nx">query</span><span class="p">(</span><span class="nx">queryState</span><span class="p">);</span>
+        <span class="nx">self</span><span class="p">.</span><span class="nx">model</span><span class="p">.</span><span class="nx">query</span><span class="p">(</span><span class="nx">self</span><span class="p">.</span><span class="nx">state</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s1">&#39;query&#39;</span><span class="p">));</span>
       <span class="p">})</span>
       <span class="p">.</span><span class="nx">fail</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">error</span><span class="p">)</span> <span class="p">{</span>
         <span class="nx">my</span><span class="p">.</span><span class="nx">notify</span><span class="p">(</span><span class="nx">error</span><span class="p">.</span><span class="nx">message</span><span class="p">,</span> <span class="p">{</span><span class="nx">category</span><span class="o">:</span> <span class="s1">&#39;error&#39;</span><span class="p">,</span> <span class="nx">persist</span><span class="o">:</span> <span class="kc">true</span><span class="p">});</span>
@@ -225,12 +255,11 @@ note this.model and dataset returned are the same</p>
   <span class="p">},</span>
 
   <span class="nx">setReadOnly</span><span class="o">:</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
-    <span class="k">this</span><span class="p">.</span><span class="nx">el</span><span class="p">.</span><span class="nx">addClass</span><span class="p">(</span><span class="s1">&#39;read-only&#39;</span><span class="p">);</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">el</span><span class="p">.</span><span class="nx">addClass</span><span class="p">(</span><span class="s1">&#39;recline-read-only&#39;</span><span class="p">);</span>
   <span class="p">},</span>
 
   <span class="nx">render</span><span class="o">:</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
     <span class="kd">var</span> <span class="nx">tmplData</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">model</span><span class="p">.</span><span class="nx">toTemplateJSON</span><span class="p">();</span>
-    <span class="nx">tmplData</span><span class="p">.</span><span class="nx">displayCount</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">config</span><span class="p">.</span><span class="nx">displayCount</span><span class="p">;</span>
     <span class="nx">tmplData</span><span class="p">.</span><span class="nx">views</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">pageViews</span><span class="p">;</span>
     <span class="kd">var</span> <span class="nx">template</span> <span class="o">=</span> <span class="nx">$</span><span class="p">.</span><span class="nx">mustache</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">template</span><span class="p">,</span> <span class="nx">tmplData</span><span class="p">);</span>
     <span class="nx">$</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">el</span><span class="p">).</span><span class="nx">html</span><span class="p">(</span><span class="nx">template</span><span class="p">);</span>
@@ -255,46 +284,24 @@ note this.model and dataset returned are the same</p>
   <span class="p">},</span>
 
   <span class="nx">setupRouting</span><span class="o">:</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
-    <span class="kd">var</span> <span class="nx">self</span> <span class="o">=</span> <span class="k">this</span><span class="p">;</span></pre></div>
-    </div>
-  </div>
-  <div class='clearall'></div>
-  <div class='section' id='section-6'>
-    <div class='docs'>
-      <div class='octowrap'>
-        <a class='octothorpe' href='#section-6'>#</a>
-      </div>
-      <p>Default route</p>
-    </div>
-    <div class='code'>
-      <div class="highlight"><pre>    <span class="k">this</span><span class="p">.</span><span class="nx">router</span><span class="p">.</span><span class="nx">route</span><span class="p">(</span><span class="sr">/^(\?.*)?$/</span><span class="p">,</span> <span class="k">this</span><span class="p">.</span><span class="nx">pageViews</span><span class="p">[</span><span class="mi">0</span><span class="p">].</span><span class="nx">id</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">queryString</span><span class="p">)</span> <span class="p">{</span>
-      <span class="nx">self</span><span class="p">.</span><span class="nx">updateNav</span><span class="p">(</span><span class="nx">self</span><span class="p">.</span><span class="nx">pageViews</span><span class="p">[</span><span class="mi">0</span><span class="p">].</span><span class="nx">id</span><span class="p">,</span> <span class="nx">queryString</span><span class="p">);</span>
-    <span class="p">});</span>
-    <span class="nx">$</span><span class="p">.</span><span class="nx">each</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">pageViews</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">idx</span><span class="p">,</span> <span class="nx">view</span><span class="p">)</span> <span class="p">{</span>
-      <span class="nx">self</span><span class="p">.</span><span class="nx">router</span><span class="p">.</span><span class="nx">route</span><span class="p">(</span><span class="sr">/^([^?]+)(\?.*)?/</span><span class="p">,</span> <span class="s1">&#39;view&#39;</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">viewId</span><span class="p">,</span> <span class="nx">queryString</span><span class="p">)</span> <span class="p">{</span>
-        <span class="nx">self</span><span class="p">.</span><span class="nx">updateNav</span><span class="p">(</span><span class="nx">viewId</span><span class="p">,</span> <span class="nx">queryString</span><span class="p">);</span>
-      <span class="p">});</span>
+    <span class="kd">var</span> <span class="nx">self</span> <span class="o">=</span> <span class="k">this</span><span class="p">;</span></pre></div>             </td>           </tr>                               <tr id="section-11">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-11">&#182;</a>               </div>               <p>Default route
+   this.router.route(/^(\?.<em>)?$/, this.pageViews[0].id, function(queryString) {
+     self.updateNav(self.pageViews[0].id, queryString);
+   });
+   $.each(this.pageViews, function(idx, view) {
+     self.router.route(/^([^?]+)(\?.</em>)?/, 'view', function(viewId, queryString) {
+       self.updateNav(viewId, queryString);
+     });
+   });</p>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="k">this</span><span class="p">.</span><span class="nx">router</span><span class="p">.</span><span class="nx">route</span><span class="p">(</span><span class="sr">/.*/</span><span class="p">,</span> <span class="s1">&#39;view&#39;</span><span class="p">,</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
     <span class="p">});</span>
   <span class="p">},</span>
 
-  <span class="nx">updateNav</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">pageName</span><span class="p">,</span> <span class="nx">queryString</span><span class="p">)</span> <span class="p">{</span>
+  <span class="nx">updateNav</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">pageName</span><span class="p">)</span> <span class="p">{</span>
     <span class="k">this</span><span class="p">.</span><span class="nx">el</span><span class="p">.</span><span class="nx">find</span><span class="p">(</span><span class="s1">&#39;.navigation li&#39;</span><span class="p">).</span><span class="nx">removeClass</span><span class="p">(</span><span class="s1">&#39;active&#39;</span><span class="p">);</span>
     <span class="k">this</span><span class="p">.</span><span class="nx">el</span><span class="p">.</span><span class="nx">find</span><span class="p">(</span><span class="s1">&#39;.navigation li a&#39;</span><span class="p">).</span><span class="nx">removeClass</span><span class="p">(</span><span class="s1">&#39;disabled&#39;</span><span class="p">);</span>
-    <span class="kd">var</span> <span class="nx">$el</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">el</span><span class="p">.</span><span class="nx">find</span><span class="p">(</span><span class="s1">&#39;.navigation li a[href=#&#39;</span> <span class="o">+</span> <span class="nx">pageName</span> <span class="o">+</span> <span class="s1">&#39;]&#39;</span><span class="p">);</span>
+    <span class="kd">var</span> <span class="nx">$el</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">el</span><span class="p">.</span><span class="nx">find</span><span class="p">(</span><span class="s1">&#39;.navigation li a[data-view=&quot;&#39;</span> <span class="o">+</span> <span class="nx">pageName</span> <span class="o">+</span> <span class="s1">&#39;&quot;]&#39;</span><span class="p">);</span>
     <span class="nx">$el</span><span class="p">.</span><span class="nx">parent</span><span class="p">().</span><span class="nx">addClass</span><span class="p">(</span><span class="s1">&#39;active&#39;</span><span class="p">);</span>
-    <span class="nx">$el</span><span class="p">.</span><span class="nx">addClass</span><span class="p">(</span><span class="s1">&#39;disabled&#39;</span><span class="p">);</span></pre></div>
-    </div>
-  </div>
-  <div class='clearall'></div>
-  <div class='section' id='section-7'>
-    <div class='docs'>
-      <div class='octowrap'>
-        <a class='octothorpe' href='#section-7'>#</a>
-      </div>
-      <p>show the specific page</p>
-    </div>
-    <div class='code'>
-      <div class="highlight"><pre>    <span class="nx">_</span><span class="p">.</span><span class="nx">each</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">pageViews</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">view</span><span class="p">,</span> <span class="nx">idx</span><span class="p">)</span> <span class="p">{</span>
+    <span class="nx">$el</span><span class="p">.</span><span class="nx">addClass</span><span class="p">(</span><span class="s1">&#39;disabled&#39;</span><span class="p">);</span></pre></div>             </td>           </tr>                               <tr id="section-12">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-12">&#182;</a>               </div>               <p>show the specific page</p>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="nx">_</span><span class="p">.</span><span class="nx">each</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">pageViews</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">view</span><span class="p">,</span> <span class="nx">idx</span><span class="p">)</span> <span class="p">{</span>
       <span class="k">if</span> <span class="p">(</span><span class="nx">view</span><span class="p">.</span><span class="nx">id</span> <span class="o">===</span> <span class="nx">pageName</span><span class="p">)</span> <span class="p">{</span>
         <span class="nx">view</span><span class="p">.</span><span class="nx">view</span><span class="p">.</span><span class="nx">el</span><span class="p">.</span><span class="nx">show</span><span class="p">();</span>
         <span class="nx">view</span><span class="p">.</span><span class="nx">view</span><span class="p">.</span><span class="nx">trigger</span><span class="p">(</span><span class="s1">&#39;view:show&#39;</span><span class="p">);</span>
@@ -305,7 +312,7 @@ note this.model and dataset returned are the same</p>
     <span class="p">});</span>
   <span class="p">},</span>
 
-  <span class="nx">onMenuClick</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">e</span><span class="p">)</span> <span class="p">{</span>
+  <span class="nx">_onMenuClick</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">e</span><span class="p">)</span> <span class="p">{</span>
     <span class="nx">e</span><span class="p">.</span><span class="nx">preventDefault</span><span class="p">();</span>
     <span class="kd">var</span> <span class="nx">action</span> <span class="o">=</span> <span class="nx">$</span><span class="p">(</span><span class="nx">e</span><span class="p">.</span><span class="nx">target</span><span class="p">).</span><span class="nx">attr</span><span class="p">(</span><span class="s1">&#39;data-action&#39;</span><span class="p">);</span>
     <span class="k">if</span> <span class="p">(</span><span class="nx">action</span> <span class="o">===</span> <span class="s1">&#39;filters&#39;</span><span class="p">)</span> <span class="p">{</span>
@@ -313,8 +320,60 @@ note this.model and dataset returned are the same</p>
     <span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="nx">action</span> <span class="o">===</span> <span class="s1">&#39;facets&#39;</span><span class="p">)</span> <span class="p">{</span>
       <span class="k">this</span><span class="p">.</span><span class="nx">$facetViewer</span><span class="p">.</span><span class="nx">show</span><span class="p">();</span>
     <span class="p">}</span>
+  <span class="p">},</span>
+
+  <span class="nx">_onSwitchView</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">e</span><span class="p">)</span> <span class="p">{</span>
+    <span class="nx">e</span><span class="p">.</span><span class="nx">preventDefault</span><span class="p">();</span>
+    <span class="kd">var</span> <span class="nx">viewName</span> <span class="o">=</span> <span class="nx">$</span><span class="p">(</span><span class="nx">e</span><span class="p">.</span><span class="nx">target</span><span class="p">).</span><span class="nx">attr</span><span class="p">(</span><span class="s1">&#39;data-view&#39;</span><span class="p">);</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">updateNav</span><span class="p">(</span><span class="nx">viewName</span><span class="p">);</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">state</span><span class="p">.</span><span class="nx">set</span><span class="p">({</span><span class="nx">currentView</span><span class="o">:</span> <span class="nx">viewName</span><span class="p">});</span>
+  <span class="p">},</span></pre></div>             </td>           </tr>                               <tr id="section-13">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-13">&#182;</a>               </div>               <p>create a state object for this view and do the job of</p>
+
+<p>a) initializing it from both data passed in and other sources (e.g. hash url)</p>
+
+<p>b) ensure the state object is updated in responese to changes in subviews, query etc.</p>             </td>             <td class="code">               <div class="highlight"><pre>  <span class="nx">_setupState</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">initialState</span><span class="p">)</span> <span class="p">{</span>
+    <span class="kd">var</span> <span class="nx">self</span> <span class="o">=</span> <span class="k">this</span><span class="p">;</span></pre></div>             </td>           </tr>                               <tr id="section-14">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-14">&#182;</a>               </div>               <p>get data from the query string / hash url plus some defaults</p>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="kd">var</span> <span class="nx">qs</span> <span class="o">=</span> <span class="nx">my</span><span class="p">.</span><span class="nx">parseHashQueryString</span><span class="p">();</span>
+    <span class="kd">var</span> <span class="nx">query</span> <span class="o">=</span> <span class="nx">qs</span><span class="p">.</span><span class="nx">reclineQuery</span><span class="p">;</span>
+    <span class="nx">query</span> <span class="o">=</span> <span class="nx">query</span> <span class="o">?</span> <span class="nx">JSON</span><span class="p">.</span><span class="nx">parse</span><span class="p">(</span><span class="nx">query</span><span class="p">)</span> <span class="o">:</span> <span class="nx">self</span><span class="p">.</span><span class="nx">model</span><span class="p">.</span><span class="nx">queryState</span><span class="p">.</span><span class="nx">toJSON</span><span class="p">();</span></pre></div>             </td>           </tr>                               <tr id="section-15">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-15">&#182;</a>               </div>               <p>backwards compatability (now named view-graph but was named graph)</p>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="kd">var</span> <span class="nx">graphState</span> <span class="o">=</span> <span class="nx">qs</span><span class="p">[</span><span class="s1">&#39;view-graph&#39;</span><span class="p">]</span> <span class="o">||</span> <span class="nx">qs</span><span class="p">.</span><span class="nx">graph</span><span class="p">;</span>
+    <span class="nx">graphState</span> <span class="o">=</span> <span class="nx">graphState</span> <span class="o">?</span> <span class="nx">JSON</span><span class="p">.</span><span class="nx">parse</span><span class="p">(</span><span class="nx">graphState</span><span class="p">)</span> <span class="o">:</span> <span class="p">{};</span></pre></div>             </td>           </tr>                               <tr id="section-16">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-16">&#182;</a>               </div>               <p>now get default data + hash url plus initial state and initial our state object with it</p>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="kd">var</span> <span class="nx">stateData</span> <span class="o">=</span> <span class="nx">_</span><span class="p">.</span><span class="nx">extend</span><span class="p">({</span>
+        <span class="nx">query</span><span class="o">:</span> <span class="nx">query</span><span class="p">,</span>
+        <span class="s1">&#39;view-graph&#39;</span><span class="o">:</span> <span class="nx">graphState</span><span class="p">,</span>
+        <span class="nx">backend</span><span class="o">:</span> <span class="k">this</span><span class="p">.</span><span class="nx">model</span><span class="p">.</span><span class="nx">backend</span><span class="p">.</span><span class="nx">__type__</span><span class="p">,</span>
+        <span class="nx">dataset</span><span class="o">:</span> <span class="k">this</span><span class="p">.</span><span class="nx">model</span><span class="p">.</span><span class="nx">toJSON</span><span class="p">(),</span>
+        <span class="nx">currentView</span><span class="o">:</span> <span class="kc">null</span><span class="p">,</span>
+        <span class="nx">readOnly</span><span class="o">:</span> <span class="kc">false</span>
+      <span class="p">},</span>
+      <span class="nx">initialState</span><span class="p">);</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">state</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">recline</span><span class="p">.</span><span class="nx">Model</span><span class="p">.</span><span class="nx">ObjectState</span><span class="p">(</span><span class="nx">stateData</span><span class="p">);</span>
+  <span class="p">},</span>
+
+  <span class="nx">_bindStateChanges</span><span class="o">:</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+    <span class="kd">var</span> <span class="nx">self</span> <span class="o">=</span> <span class="k">this</span><span class="p">;</span></pre></div>             </td>           </tr>                               <tr id="section-17">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-17">&#182;</a>               </div>               <p>finally ensure we update our state object when state of sub-object changes so that state is always up to date</p>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="k">this</span><span class="p">.</span><span class="nx">model</span><span class="p">.</span><span class="nx">queryState</span><span class="p">.</span><span class="nx">bind</span><span class="p">(</span><span class="s1">&#39;change&#39;</span><span class="p">,</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+      <span class="nx">self</span><span class="p">.</span><span class="nx">state</span><span class="p">.</span><span class="nx">set</span><span class="p">({</span><span class="nx">query</span><span class="o">:</span> <span class="nx">self</span><span class="p">.</span><span class="nx">model</span><span class="p">.</span><span class="nx">queryState</span><span class="p">.</span><span class="nx">toJSON</span><span class="p">()});</span>
+    <span class="p">});</span>
+    <span class="nx">_</span><span class="p">.</span><span class="nx">each</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">pageViews</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">pageView</span><span class="p">)</span> <span class="p">{</span>
+      <span class="k">if</span> <span class="p">(</span><span class="nx">pageView</span><span class="p">.</span><span class="nx">view</span><span class="p">.</span><span class="nx">state</span> <span class="o">&amp;&amp;</span> <span class="nx">pageView</span><span class="p">.</span><span class="nx">view</span><span class="p">.</span><span class="nx">state</span><span class="p">.</span><span class="nx">bind</span><span class="p">)</span> <span class="p">{</span>
+        <span class="kd">var</span> <span class="nx">update</span> <span class="o">=</span> <span class="p">{};</span>
+        <span class="nx">update</span><span class="p">[</span><span class="s1">&#39;view-&#39;</span> <span class="o">+</span> <span class="nx">pageView</span><span class="p">.</span><span class="nx">id</span><span class="p">]</span> <span class="o">=</span> <span class="nx">pageView</span><span class="p">.</span><span class="nx">view</span><span class="p">.</span><span class="nx">state</span><span class="p">.</span><span class="nx">toJSON</span><span class="p">();</span>
+        <span class="nx">self</span><span class="p">.</span><span class="nx">state</span><span class="p">.</span><span class="nx">set</span><span class="p">(</span><span class="nx">update</span><span class="p">);</span>
+        <span class="nx">pageView</span><span class="p">.</span><span class="nx">view</span><span class="p">.</span><span class="nx">state</span><span class="p">.</span><span class="nx">bind</span><span class="p">(</span><span class="s1">&#39;change&#39;</span><span class="p">,</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+          <span class="kd">var</span> <span class="nx">update</span> <span class="o">=</span> <span class="p">{};</span>
+          <span class="nx">update</span><span class="p">[</span><span class="s1">&#39;view-&#39;</span> <span class="o">+</span> <span class="nx">pageView</span><span class="p">.</span><span class="nx">id</span><span class="p">]</span> <span class="o">=</span> <span class="nx">pageView</span><span class="p">.</span><span class="nx">view</span><span class="p">.</span><span class="nx">state</span><span class="p">.</span><span class="nx">toJSON</span><span class="p">();</span>
+          <span class="nx">self</span><span class="p">.</span><span class="nx">state</span><span class="p">.</span><span class="nx">set</span><span class="p">(</span><span class="nx">update</span><span class="p">);</span>
+        <span class="p">});</span>
+      <span class="p">}</span>
+    <span class="p">});</span>
   <span class="p">}</span>
-<span class="p">});</span>
+<span class="p">});</span></pre></div>             </td>           </tr>                               <tr id="section-18">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-18">&#182;</a>               </div>               <h3>DataExplorer.restore</h3>
+
+<p>Restore a DataExplorer instance from a serialized state including the associated dataset</p>             </td>             <td class="code">               <div class="highlight"><pre><span class="nx">my</span><span class="p">.</span><span class="nx">DataExplorer</span><span class="p">.</span><span class="nx">restore</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">state</span><span class="p">)</span> <span class="p">{</span>
+  <span class="kd">var</span> <span class="nx">dataset</span> <span class="o">=</span> <span class="nx">recline</span><span class="p">.</span><span class="nx">Model</span><span class="p">.</span><span class="nx">Dataset</span><span class="p">.</span><span class="nx">restore</span><span class="p">(</span><span class="nx">state</span><span class="p">);</span>
+  <span class="kd">var</span> <span class="nx">explorer</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">my</span><span class="p">.</span><span class="nx">DataExplorer</span><span class="p">({</span>
+    <span class="nx">model</span><span class="o">:</span> <span class="nx">dataset</span><span class="p">,</span>
+    <span class="nx">state</span><span class="o">:</span> <span class="nx">state</span>
+  <span class="p">});</span>
+  <span class="k">return</span> <span class="nx">explorer</span><span class="p">;</span>
+<span class="p">}</span>
 
 <span class="nx">my</span><span class="p">.</span><span class="nx">QueryEditor</span> <span class="o">=</span> <span class="nx">Backbone</span><span class="p">.</span><span class="nx">View</span><span class="p">.</span><span class="nx">extend</span><span class="p">({</span>
   <span class="nx">className</span><span class="o">:</span> <span class="s1">&#39;recline-query-editor&#39;</span><span class="p">,</span> 
@@ -417,19 +476,7 @@ note this.model and dataset returned are the same</p>
     <span class="k">this</span><span class="p">.</span><span class="nx">render</span><span class="p">();</span>
   <span class="p">},</span>
   <span class="nx">render</span><span class="o">:</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
-    <span class="kd">var</span> <span class="nx">tmplData</span> <span class="o">=</span> <span class="nx">$</span><span class="p">.</span><span class="nx">extend</span><span class="p">(</span><span class="kc">true</span><span class="p">,</span> <span class="p">{},</span> <span class="k">this</span><span class="p">.</span><span class="nx">model</span><span class="p">.</span><span class="nx">toJSON</span><span class="p">());</span></pre></div>
-    </div>
-  </div>
-  <div class='clearall'></div>
-  <div class='section' id='section-8'>
-    <div class='docs'>
-      <div class='octowrap'>
-        <a class='octothorpe' href='#section-8'>#</a>
-      </div>
-      <p>we will use idx in list as there id ...</p>
-    </div>
-    <div class='code'>
-      <div class="highlight"><pre>    <span class="nx">tmplData</span><span class="p">.</span><span class="nx">filters</span> <span class="o">=</span> <span class="nx">_</span><span class="p">.</span><span class="nx">map</span><span class="p">(</span><span class="nx">tmplData</span><span class="p">.</span><span class="nx">filters</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">filter</span><span class="p">,</span> <span class="nx">idx</span><span class="p">)</span> <span class="p">{</span>
+    <span class="kd">var</span> <span class="nx">tmplData</span> <span class="o">=</span> <span class="nx">$</span><span class="p">.</span><span class="nx">extend</span><span class="p">(</span><span class="kc">true</span><span class="p">,</span> <span class="p">{},</span> <span class="k">this</span><span class="p">.</span><span class="nx">model</span><span class="p">.</span><span class="nx">toJSON</span><span class="p">());</span></pre></div>             </td>           </tr>                               <tr id="section-19">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-19">&#182;</a>               </div>               <p>we will use idx in list as there id ...</p>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="nx">tmplData</span><span class="p">.</span><span class="nx">filters</span> <span class="o">=</span> <span class="nx">_</span><span class="p">.</span><span class="nx">map</span><span class="p">(</span><span class="nx">tmplData</span><span class="p">.</span><span class="nx">filters</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">filter</span><span class="p">,</span> <span class="nx">idx</span><span class="p">)</span> <span class="p">{</span>
       <span class="nx">filter</span><span class="p">.</span><span class="nx">id</span> <span class="o">=</span> <span class="nx">idx</span><span class="p">;</span>
       <span class="k">return</span> <span class="nx">filter</span><span class="p">;</span>
     <span class="p">});</span>
@@ -446,19 +493,7 @@ note this.model and dataset returned are the same</p>
       <span class="p">};</span>
     <span class="p">});</span>
     <span class="kd">var</span> <span class="nx">out</span> <span class="o">=</span> <span class="nx">$</span><span class="p">.</span><span class="nx">mustache</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">template</span><span class="p">,</span> <span class="nx">tmplData</span><span class="p">);</span>
-    <span class="k">this</span><span class="p">.</span><span class="nx">el</span><span class="p">.</span><span class="nx">html</span><span class="p">(</span><span class="nx">out</span><span class="p">);</span></pre></div>
-    </div>
-  </div>
-  <div class='clearall'></div>
-  <div class='section' id='section-9'>
-    <div class='docs'>
-      <div class='octowrap'>
-        <a class='octothorpe' href='#section-9'>#</a>
-      </div>
-      <p>are there actually any facets to show?</p>
-    </div>
-    <div class='code'>
-      <div class="highlight"><pre>    <span class="k">if</span> <span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">model</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s1">&#39;filters&#39;</span><span class="p">).</span><span class="nx">length</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">el</span><span class="p">.</span><span class="nx">html</span><span class="p">(</span><span class="nx">out</span><span class="p">);</span></pre></div>             </td>           </tr>                               <tr id="section-20">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-20">&#182;</a>               </div>               <p>are there actually any facets to show?</p>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="k">if</span> <span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">model</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s1">&#39;filters&#39;</span><span class="p">).</span><span class="nx">length</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
       <span class="k">this</span><span class="p">.</span><span class="nx">el</span><span class="p">.</span><span class="nx">show</span><span class="p">();</span>
     <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
       <span class="k">this</span><span class="p">.</span><span class="nx">el</span><span class="p">.</span><span class="nx">hide</span><span class="p">();</span>
@@ -541,19 +576,7 @@ note this.model and dataset returned are the same</p>
       <span class="k">return</span> <span class="nx">facet</span><span class="p">;</span>
     <span class="p">});</span>
     <span class="kd">var</span> <span class="nx">templated</span> <span class="o">=</span> <span class="nx">$</span><span class="p">.</span><span class="nx">mustache</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">template</span><span class="p">,</span> <span class="nx">tmplData</span><span class="p">);</span>
-    <span class="k">this</span><span class="p">.</span><span class="nx">el</span><span class="p">.</span><span class="nx">html</span><span class="p">(</span><span class="nx">templated</span><span class="p">);</span></pre></div>
-    </div>
-  </div>
-  <div class='clearall'></div>
-  <div class='section' id='section-10'>
-    <div class='docs'>
-      <div class='octowrap'>
-        <a class='octothorpe' href='#section-10'>#</a>
-      </div>
-      <h1>are there actually any facets to show?</h1>
-    </div>
-    <div class='code'>
-      <div class="highlight"><pre>    <span class="k">if</span> <span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">model</span><span class="p">.</span><span class="nx">facets</span><span class="p">.</span><span class="nx">length</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">el</span><span class="p">.</span><span class="nx">html</span><span class="p">(</span><span class="nx">templated</span><span class="p">);</span></pre></div>             </td>           </tr>                               <tr id="section-21">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-21">&#182;</a>               </div>               <p>are there actually any facets to show?</p>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="k">if</span> <span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">model</span><span class="p">.</span><span class="nx">facets</span><span class="p">.</span><span class="nx">length</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
       <span class="k">this</span><span class="p">.</span><span class="nx">el</span><span class="p">.</span><span class="nx">show</span><span class="p">();</span>
     <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
       <span class="k">this</span><span class="p">.</span><span class="nx">el</span><span class="p">.</span><span class="nx">hide</span><span class="p">();</span>
@@ -569,31 +592,9 @@ note this.model and dataset returned are the same</p>
     <span class="kd">var</span> <span class="nx">value</span> <span class="o">=</span> <span class="nx">$target</span><span class="p">.</span><span class="nx">attr</span><span class="p">(</span><span class="s1">&#39;data-value&#39;</span><span class="p">);</span>
     <span class="k">this</span><span class="p">.</span><span class="nx">model</span><span class="p">.</span><span class="nx">queryState</span><span class="p">.</span><span class="nx">addTermFilter</span><span class="p">(</span><span class="nx">fieldId</span><span class="p">,</span> <span class="nx">value</span><span class="p">);</span>
   <span class="p">}</span>
-<span class="p">});</span></pre></div>
-    </div>
-  </div>
-  <div class='clearall'></div>
-  <div class='section' id='section-11'>
-    <div class='docs'>
-      <div class='octowrap'>
-        <a class='octothorpe' href='#section-11'>#</a>
-      </div>
-      <h2>Miscellaneous Utilities</h2>
-    </div>
-    <div class='code'>
-      <div class="highlight"><pre><span class="kd">var</span> <span class="nx">urlPathRegex</span> <span class="o">=</span> <span class="sr">/^([^?]+)(\?.*)?/</span><span class="p">;</span></pre></div>
-    </div>
-  </div>
-  <div class='clearall'></div>
-  <div class='section' id='section-12'>
-    <div class='docs'>
-      <div class='octowrap'>
-        <a class='octothorpe' href='#section-12'>#</a>
-      </div>
-      <p>Parse the Hash section of a URL into path and query string</p>
-    </div>
-    <div class='code'>
-      <div class="highlight"><pre><span class="nx">my</span><span class="p">.</span><span class="nx">parseHashUrl</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">hashUrl</span><span class="p">)</span> <span class="p">{</span>
+<span class="p">});</span>
+
+<span class="cm">/* ========================================================== */</span></pre></div>             </td>           </tr>                               <tr id="section-22">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-22">&#182;</a>               </div>               <h2>Miscellaneous Utilities</h2>             </td>             <td class="code">               <div class="highlight"><pre><span class="kd">var</span> <span class="nx">urlPathRegex</span> <span class="o">=</span> <span class="sr">/^([^?]+)(\?.*)?/</span><span class="p">;</span></pre></div>             </td>           </tr>                               <tr id="section-23">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-23">&#182;</a>               </div>               <p>Parse the Hash section of a URL into path and query string</p>             </td>             <td class="code">               <div class="highlight"><pre><span class="nx">my</span><span class="p">.</span><span class="nx">parseHashUrl</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">hashUrl</span><span class="p">)</span> <span class="p">{</span>
   <span class="kd">var</span> <span class="nx">parsed</span> <span class="o">=</span> <span class="nx">urlPathRegex</span><span class="p">.</span><span class="nx">exec</span><span class="p">(</span><span class="nx">hashUrl</span><span class="p">);</span>
   <span class="k">if</span> <span class="p">(</span><span class="nx">parsed</span> <span class="o">===</span> <span class="kc">null</span><span class="p">)</span> <span class="p">{</span>
     <span class="k">return</span> <span class="p">{};</span>
@@ -603,19 +604,7 @@ note this.model and dataset returned are the same</p>
       <span class="nx">query</span><span class="o">:</span> <span class="nx">parsed</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">||</span> <span class="s1">&#39;&#39;</span>
     <span class="p">};</span>
   <span class="p">}</span>
-<span class="p">};</span></pre></div>
-    </div>
-  </div>
-  <div class='clearall'></div>
-  <div class='section' id='section-13'>
-    <div class='docs'>
-      <div class='octowrap'>
-        <a class='octothorpe' href='#section-13'>#</a>
-      </div>
-      <p>Parse a URL query string (?xyz=abc...) into a dictionary.</p>
-    </div>
-    <div class='code'>
-      <div class="highlight"><pre><span class="nx">my</span><span class="p">.</span><span class="nx">parseQueryString</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">q</span><span class="p">)</span> <span class="p">{</span>
+<span class="p">};</span></pre></div>             </td>           </tr>                               <tr id="section-24">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-24">&#182;</a>               </div>               <p>Parse a URL query string (?xyz=abc...) into a dictionary.</p>             </td>             <td class="code">               <div class="highlight"><pre><span class="nx">my</span><span class="p">.</span><span class="nx">parseQueryString</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">q</span><span class="p">)</span> <span class="p">{</span>
   <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="nx">q</span><span class="p">)</span> <span class="p">{</span>
     <span class="k">return</span> <span class="p">{};</span>
   <span class="p">}</span>
@@ -628,52 +617,19 @@ note this.model and dataset returned are the same</p>
   <span class="k">if</span> <span class="p">(</span><span class="nx">q</span> <span class="o">&amp;&amp;</span> <span class="nx">q</span><span class="p">.</span><span class="nx">length</span> <span class="o">&amp;&amp;</span> <span class="nx">q</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">===</span> <span class="s1">&#39;?&#39;</span><span class="p">)</span> <span class="p">{</span>
     <span class="nx">q</span> <span class="o">=</span> <span class="nx">q</span><span class="p">.</span><span class="nx">slice</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span>
   <span class="p">}</span>
-  <span class="k">while</span> <span class="p">(</span><span class="nx">e</span> <span class="o">=</span> <span class="nx">r</span><span class="p">.</span><span class="nx">exec</span><span class="p">(</span><span class="nx">q</span><span class="p">))</span> <span class="p">{</span></pre></div>
-    </div>
-  </div>
-  <div class='clearall'></div>
-  <div class='section' id='section-14'>
-    <div class='docs'>
-      <div class='octowrap'>
-        <a class='octothorpe' href='#section-14'>#</a>
-      </div>
-      <p>TODO: have values be array as query string allow repetition of keys</p>
-    </div>
-    <div class='code'>
-      <div class="highlight"><pre>    <span class="nx">urlParams</span><span class="p">[</span><span class="nx">d</span><span class="p">(</span><span class="nx">e</span><span class="p">[</span><span class="mi">1</span><span class="p">])]</span> <span class="o">=</span> <span class="nx">d</span><span class="p">(</span><span class="nx">e</span><span class="p">[</span><span class="mi">2</span><span class="p">]);</span>
+  <span class="k">while</span> <span class="p">(</span><span class="nx">e</span> <span class="o">=</span> <span class="nx">r</span><span class="p">.</span><span class="nx">exec</span><span class="p">(</span><span class="nx">q</span><span class="p">))</span> <span class="p">{</span></pre></div>             </td>           </tr>                               <tr id="section-25">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-25">&#182;</a>               </div>               <p>TODO: have values be array as query string allow repetition of keys</p>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="nx">urlParams</span><span class="p">[</span><span class="nx">d</span><span class="p">(</span><span class="nx">e</span><span class="p">[</span><span class="mi">1</span><span class="p">])]</span> <span class="o">=</span> <span class="nx">d</span><span class="p">(</span><span class="nx">e</span><span class="p">[</span><span class="mi">2</span><span class="p">]);</span>
   <span class="p">}</span>
   <span class="k">return</span> <span class="nx">urlParams</span><span class="p">;</span>
-<span class="p">};</span></pre></div>
-    </div>
-  </div>
-  <div class='clearall'></div>
-  <div class='section' id='section-15'>
-    <div class='docs'>
-      <div class='octowrap'>
-        <a class='octothorpe' href='#section-15'>#</a>
-      </div>
-      <p>Parse the query string out of the URL hash</p>
-    </div>
-    <div class='code'>
-      <div class="highlight"><pre><span class="nx">my</span><span class="p">.</span><span class="nx">parseHashQueryString</span> <span class="o">=</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+<span class="p">};</span></pre></div>             </td>           </tr>                               <tr id="section-26">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-26">&#182;</a>               </div>               <p>Parse the query string out of the URL hash</p>             </td>             <td class="code">               <div class="highlight"><pre><span class="nx">my</span><span class="p">.</span><span class="nx">parseHashQueryString</span> <span class="o">=</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
   <span class="nx">q</span> <span class="o">=</span> <span class="nx">my</span><span class="p">.</span><span class="nx">parseHashUrl</span><span class="p">(</span><span class="nb">window</span><span class="p">.</span><span class="nx">location</span><span class="p">.</span><span class="nx">hash</span><span class="p">).</span><span class="nx">query</span><span class="p">;</span>
   <span class="k">return</span> <span class="nx">my</span><span class="p">.</span><span class="nx">parseQueryString</span><span class="p">(</span><span class="nx">q</span><span class="p">);</span>
-<span class="p">};</span></pre></div>
-    </div>
-  </div>
-  <div class='clearall'></div>
-  <div class='section' id='section-16'>
-    <div class='docs'>
-      <div class='octowrap'>
-        <a class='octothorpe' href='#section-16'>#</a>
-      </div>
-      <p>Compse a Query String</p>
-    </div>
-    <div class='code'>
-      <div class="highlight"><pre><span class="nx">my</span><span class="p">.</span><span class="nx">composeQueryString</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">queryParams</span><span class="p">)</span> <span class="p">{</span>
+<span class="p">};</span></pre></div>             </td>           </tr>                               <tr id="section-27">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-27">&#182;</a>               </div>               <p>Compse a Query String</p>             </td>             <td class="code">               <div class="highlight"><pre><span class="nx">my</span><span class="p">.</span><span class="nx">composeQueryString</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">queryParams</span><span class="p">)</span> <span class="p">{</span>
   <span class="kd">var</span> <span class="nx">queryString</span> <span class="o">=</span> <span class="s1">&#39;?&#39;</span><span class="p">;</span>
   <span class="kd">var</span> <span class="nx">items</span> <span class="o">=</span> <span class="p">[];</span>
   <span class="nx">$</span><span class="p">.</span><span class="nx">each</span><span class="p">(</span><span class="nx">queryParams</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">key</span><span class="p">,</span> <span class="nx">value</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">if</span> <span class="p">(</span><span class="k">typeof</span><span class="p">(</span><span class="nx">value</span><span class="p">)</span> <span class="o">===</span> <span class="s1">&#39;object&#39;</span><span class="p">)</span> <span class="p">{</span>
+      <span class="nx">value</span> <span class="o">=</span> <span class="nx">JSON</span><span class="p">.</span><span class="nx">stringify</span><span class="p">(</span><span class="nx">value</span><span class="p">);</span>
+    <span class="p">}</span>
     <span class="nx">items</span><span class="p">.</span><span class="nx">push</span><span class="p">(</span><span class="nx">key</span> <span class="o">+</span> <span class="s1">&#39;=&#39;</span> <span class="o">+</span> <span class="nx">value</span><span class="p">);</span>
   <span class="p">});</span>
   <span class="nx">queryString</span> <span class="o">+=</span> <span class="nx">items</span><span class="p">.</span><span class="nx">join</span><span class="p">(</span><span class="s1">&#39;&amp;&#39;</span><span class="p">);</span>
@@ -682,19 +638,7 @@ note this.model and dataset returned are the same</p>
 
 <span class="nx">my</span><span class="p">.</span><span class="nx">getNewHashForQueryString</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">queryParams</span><span class="p">)</span> <span class="p">{</span>
   <span class="kd">var</span> <span class="nx">queryPart</span> <span class="o">=</span> <span class="nx">my</span><span class="p">.</span><span class="nx">composeQueryString</span><span class="p">(</span><span class="nx">queryParams</span><span class="p">);</span>
-  <span class="k">if</span> <span class="p">(</span><span class="nb">window</span><span class="p">.</span><span class="nx">location</span><span class="p">.</span><span class="nx">hash</span><span class="p">)</span> <span class="p">{</span></pre></div>
-    </div>
-  </div>
-  <div class='clearall'></div>
-  <div class='section' id='section-17'>
-    <div class='docs'>
-      <div class='octowrap'>
-        <a class='octothorpe' href='#section-17'>#</a>
-      </div>
-      <p>slice(1) to remove # at start</p>
-    </div>
-    <div class='code'>
-      <div class="highlight"><pre>    <span class="k">return</span> <span class="nb">window</span><span class="p">.</span><span class="nx">location</span><span class="p">.</span><span class="nx">hash</span><span class="p">.</span><span class="nx">split</span><span class="p">(</span><span class="s1">&#39;?&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">].</span><span class="nx">slice</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="o">+</span> <span class="nx">queryPart</span><span class="p">;</span>
+  <span class="k">if</span> <span class="p">(</span><span class="nb">window</span><span class="p">.</span><span class="nx">location</span><span class="p">.</span><span class="nx">hash</span><span class="p">)</span> <span class="p">{</span></pre></div>             </td>           </tr>                               <tr id="section-28">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-28">&#182;</a>               </div>               <p>slice(1) to remove # at start</p>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="k">return</span> <span class="nb">window</span><span class="p">.</span><span class="nx">location</span><span class="p">.</span><span class="nx">hash</span><span class="p">.</span><span class="nx">split</span><span class="p">(</span><span class="s1">&#39;?&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">].</span><span class="nx">slice</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="o">+</span> <span class="nx">queryPart</span><span class="p">;</span>
   <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
     <span class="k">return</span> <span class="nx">queryPart</span><span class="p">;</span>
   <span class="p">}</span>
@@ -702,25 +646,15 @@ note this.model and dataset returned are the same</p>
 
 <span class="nx">my</span><span class="p">.</span><span class="nx">setHashQueryString</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">queryParams</span><span class="p">)</span> <span class="p">{</span>
   <span class="nb">window</span><span class="p">.</span><span class="nx">location</span><span class="p">.</span><span class="nx">hash</span> <span class="o">=</span> <span class="nx">my</span><span class="p">.</span><span class="nx">getNewHashForQueryString</span><span class="p">(</span><span class="nx">queryParams</span><span class="p">);</span>
-<span class="p">};</span></pre></div>
-    </div>
-  </div>
-  <div class='clearall'></div>
-  <div class='section' id='section-18'>
-    <div class='docs'>
-      <div class='octowrap'>
-        <a class='octothorpe' href='#section-18'>#</a>
-      </div>
-      <h2>notify</h2>
+<span class="p">};</span></pre></div>             </td>           </tr>                               <tr id="section-29">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-29">&#182;</a>               </div>               <h2>notify</h2>
+
 <p>Create a notification (a div.alert in div.alert-messsages) using provide messages and options. Options are:</p>
+
 <ul>
 <li>category: warning (default), success, error</li>
 <li>persist: if true alert is persistent, o/w hidden after 3s (default = false)</li>
 <li>loader: if true show loading spinner</li>
-</ul>
-    </div>
-    <div class='code'>
-      <div class="highlight"><pre><span class="nx">my</span><span class="p">.</span><span class="nx">notify</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">message</span><span class="p">,</span> <span class="nx">options</span><span class="p">)</span> <span class="p">{</span>
+</ul>             </td>             <td class="code">               <div class="highlight"><pre><span class="nx">my</span><span class="p">.</span><span class="nx">notify</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">message</span><span class="p">,</span> <span class="nx">options</span><span class="p">)</span> <span class="p">{</span>
   <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="nx">options</span><span class="p">)</span> <span class="nx">options</span> <span class="o">=</span> <span class="p">{};</span>
   <span class="kd">var</span> <span class="nx">tmplData</span> <span class="o">=</span> <span class="nx">_</span><span class="p">.</span><span class="nx">extend</span><span class="p">({</span>
     <span class="nx">msg</span><span class="o">:</span> <span class="nx">message</span><span class="p">,</span>
@@ -728,7 +662,7 @@ note this.model and dataset returned are the same</p>
     <span class="p">},</span>
     <span class="nx">options</span><span class="p">);</span>
   <span class="kd">var</span> <span class="nx">_template</span> <span class="o">=</span> <span class="s1">&#39; \</span>
-<span class="s1">    &lt;div class=&quot;alert alert-{{category}} fade in&quot; data-alert=&quot;alert&quot;&gt;&lt;a class=&quot;close&quot; data-dismiss=&quot;alert&quot; href=&quot;#&quot;&gt;Ã&lt;/a&gt; \</span>
+<span class="s1">    &lt;div class=&quot;alert alert-{{category}} fade in&quot; data-alert=&quot;alert&quot;&gt;&lt;a class=&quot;close&quot; data-dismiss=&quot;alert&quot; href=&quot;#&quot;&gt;×&lt;/a&gt; \</span>
 <span class="s1">      {{msg}} \</span>
 <span class="s1">        {{#loader}} \</span>
 <span class="s1">        &lt;span class=&quot;notification-loader&quot;&gt;&amp;nbsp;&lt;/span&gt; \</span>
@@ -743,29 +677,13 @@ note this.model and dataset returned are the same</p>
       <span class="p">});</span>
     <span class="p">},</span> <span class="mi">1000</span><span class="p">);</span>
   <span class="p">}</span>
-<span class="p">};</span></pre></div>
-    </div>
-  </div>
-  <div class='clearall'></div>
-  <div class='section' id='section-19'>
-    <div class='docs'>
-      <div class='octowrap'>
-        <a class='octothorpe' href='#section-19'>#</a>
-      </div>
-      <h2>clearNotifications</h2>
-<p>Clear all existing notifications</p>
-    </div>
-    <div class='code'>
-      <div class="highlight"><pre><span class="nx">my</span><span class="p">.</span><span class="nx">clearNotifications</span> <span class="o">=</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+<span class="p">};</span></pre></div>             </td>           </tr>                               <tr id="section-30">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-30">&#182;</a>               </div>               <h2>clearNotifications</h2>
+
+<p>Clear all existing notifications</p>             </td>             <td class="code">               <div class="highlight"><pre><span class="nx">my</span><span class="p">.</span><span class="nx">clearNotifications</span> <span class="o">=</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
   <span class="kd">var</span> <span class="nx">$notifications</span> <span class="o">=</span> <span class="nx">$</span><span class="p">(</span><span class="s1">&#39;.recline-data-explorer .alert-messages .alert&#39;</span><span class="p">);</span>
   <span class="nx">$notifications</span><span class="p">.</span><span class="nx">remove</span><span class="p">();</span>
 <span class="p">};</span>
 
 <span class="p">})(</span><span class="nx">jQuery</span><span class="p">,</span> <span class="nx">recline</span><span class="p">.</span><span class="nx">View</span><span class="p">);</span>
 
-</pre></div>
-    </div>
-  </div>
-  <div class='clearall'></div>
-</div>
-</body>
+</pre></div>             </td>           </tr>                </tbody>     </table>   </div> </body> </html> 

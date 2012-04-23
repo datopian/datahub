@@ -150,17 +150,22 @@ my.Dataset = Backbone.Model.extend({
 // <pre>
 // {
 //   backend: {backend type - i.e. value of dataset.backend.__type__}
-//   dataset: {result of dataset.toJSON()}
+//   dataset: {dataset info needed for loading -- result of dataset.toJSON() would be sufficient but can be simpler }
+//   // convenience - if url provided and dataste not this be used as dataset url
+//   url: {dataset url}
 //   ...
 // }
 my.Dataset.restore = function(state) {
   // hack-y - restoring a memory dataset does not mean much ...
   var dataset = null;
+  if (state.url && !state.dataset) {
+    state.dataset = {url: state.url};
+  }
   if (state.backend === 'memory') {
     dataset = recline.Backend.createDataset(
       [{stub: 'this is a stub dataset because we do not restore memory datasets'}],
       [],
-      state.dataset
+      state.dataset // metadata
     );
   } else {
     dataset = new recline.Model.Dataset(
@@ -212,7 +217,8 @@ my.DocumentList = Backbone.Collection.extend({
 // * format: (optional) used to indicate how the data should be formatted. For example:
 //   * type=date, format=yyyy-mm-dd
 //   * type=float, format=percentage
-//   * type=float, format='###,###.##'
+//   * type=string, format=link (render as hyperlink)
+//   * type=string, format=markdown (render as markdown if Showdown available)
 // * is_derived: (default: false) attribute indicating this field has no backend data but is just derived from other fields (see below).
 // 
 // Following additional instance properties:
@@ -268,6 +274,22 @@ my.Field = Backbone.Model.extend({
       if (format === 'percentage') {
         return val + '%';
       }
+      return val;
+    },
+    'string': function(val, field, doc) {
+      var format = field.get('format');
+      if (format === 'link') {
+        return '<a href="VAL">VAL</a>'.replace(/VAL/g, val);
+      } else if (format === 'markdown') {
+        if (typeof Showdown !== 'undefined') {
+          var showdown = new Showdown.converter();
+          out = showdown.makeHtml(val);
+          return out;
+        } else {
+          return val;
+        }
+      }
+      return val;
     }
   }
 });

@@ -26,9 +26,10 @@ test('get State', function () {
   var state = explorer.state;
   ok(state.get('query'));
   equal(state.get('readOnly'), false);
-  equal(state.get('currentView'), 'grid');
+  equal(state.get('currentView'), null);
   equal(state.get('query').size, 100);
   deepEqual(state.get('view-grid').hiddenFields, []);
+  deepEqual(state.get('view-graph').group, null);
   equal(state.get('backend'), 'memory');
   ok(state.get('dataset').id !== null);
   $el.remove();
@@ -46,17 +47,26 @@ test('initialize state', function () {
       currentView: 'graph',
       'view-grid': {
         hiddenFields: ['x']
+      },
+      'view-map': {
+        latField: 'lat1',
+        lonField: 'lon1'
       }
     }
   });
   ok(explorer.state.get('readOnly'));
   ok(explorer.state.get('currentView'), 'graph');
+
   // check the correct view is visible
   var css = explorer.el.find('.navigation a[data-view="graph"]').attr('class').split(' ');
   ok(_.contains(css, 'disabled'), css);
-
   var css = explorer.el.find('.navigation a[data-view="grid"]').attr('class').split(' ');
   ok(!(_.contains(css, 'disabled')), css);
+
+  // check pass through of view config
+  deepEqual(explorer.state.get('view-grid')['hiddenFields'], ['x']);
+  equal(explorer.state.get('view-map')['lonField'], 'lon1');
+
   $el.remove();
 });
 

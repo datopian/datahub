@@ -18,6 +18,7 @@ this.recline.Backend = this.recline.Backend || {};
   // Note that this is a **read-only** backend.
   my.DataProxy = my.Base.extend({
     __type__: 'dataproxy',
+    readonly: true,
     defaults: {
       dataproxy_url: 'http://jsonpdataproxy.appspot.com'
     },

@@ -32,6 +32,13 @@ this.recline.Backend = this.recline.Backend || {};
     // backends (see recline.Model.Dataset.initialize).
     __type__: 'base',
 
+
+    // ### readonly
+    //
+    // Class level attribute indicating that this backend is read-only (that
+    // is, cannot be written to).
+    readonly: true,
+
     // ### sync
     //
     // An implementation of Backbone.sync that will be used to override
@@ -90,6 +97,32 @@ this.recline.Backend = this.recline.Backend || {};
     // }
     // </pre>
     query: function(model, queryObj) {
+    },
+
+    // ### _makeRequest
+    // 
+    // Just $.ajax but in any headers in the 'headers' attribute of this
+    // Backend instance. Example:
+    //
+    // <pre>
+    // var jqxhr = this._makeRequest({
+    //   url: the-url
+    // });
+    // </pre>
+    _makeRequest: function(data) {
+      var headers = this.get('headers');
+      var extras = {};
+      if (headers) {
+        extras = {
+          beforeSend: function(req) {
+            _.each(headers, function(value, key) {
+              req.setRequestHeader(key, value);
+            });
+          }
+        };
+      }
+      var data = _.extend(extras, data);
+      return $.ajax(data);
     },
 
     // convenience method to convert simple set of documents / rows to a QueryResult
