@@ -117,6 +117,10 @@ my.Map = Backbone.View.extend({
 
     // Listen to changes in the documents
     this.model.currentDocuments.bind('add', function(doc){self.redraw('add',doc)});
+    this.model.currentDocuments.bind('change', function(doc){
+        self.redraw('remove',doc);
+        self.redraw('add',doc);
+    });
     this.model.currentDocuments.bind('remove', function(doc){self.redraw('remove',doc)});
     this.model.currentDocuments.bind('reset', function(){self.redraw('reset')});
 
@@ -293,7 +297,9 @@ my.Map = Backbone.View.extend({
         // TODO: mustache?
         html = ''
         for (key in doc.attributes){
-          html += '<div><strong>' + key + '</strong>: '+ doc.attributes[key] + '</div>'
+          if (!(self.state.get('geomField') && key == self.state.get('geomField'))){
+            html += '<div><strong>' + key + '</strong>: '+ doc.attributes[key] + '</div>';
+          }
         }
         feature.properties = {popupContent: html};
 
@@ -356,7 +362,7 @@ my.Map = Backbone.View.extend({
         // We'll create a GeoJSON like point object from the two lat/lon fields
         var lon = doc.get(this.state.get('lonField'));
         var lat = doc.get(this.state.get('latField'));
-        if (lon && lat) {
+        if (!isNaN(parseFloat(lon)) && !isNaN(parseFloat(lat))) {
           return {
             type: 'Point',
             coordinates: [lon,lat]
@@ -446,8 +452,10 @@ my.Map = Backbone.View.extend({
         if (layer instanceof L.Marker){
           bounds.extend(layer.getLatLng());
         } else {
-          bounds.extend(layer.getBounds().getNorthEast());
-          bounds.extend(layer.getBounds().getSouthWest());
+          if (layer.getBounds){
+            bounds.extend(layer.getBounds().getNorthEast());
+            bounds.extend(layer.getBounds().getSouthWest());
+          }
         }
       }, this);
       return (typeof bounds.getNorthEast() !== 'undefined') ? bounds : null;
