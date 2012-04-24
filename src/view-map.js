@@ -293,7 +293,9 @@ my.Map = Backbone.View.extend({
         // TODO: mustache?
         html = ''
         for (key in doc.attributes){
-          html += '<div><strong>' + key + '</strong>: '+ doc.attributes[key] + '</div>'
+          if (!(self.state.get('geomField') && key == self.state.get('geomField'))){
+            html += '<div><strong>' + key + '</strong>: '+ doc.attributes[key] + '</div>';
+          }
         }
         feature.properties = {popupContent: html};
 

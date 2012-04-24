@@ -111,8 +111,11 @@ test('Popup', function () {
   assertPresent(popup);
 
   var text = popup.text();
+  ok((text.indexOf('geom') === -1))
   _.each(view.model.fields.toJSON(),function(field){
-    ok((text.indexOf(field.id) !== -1))
+    if (field.id != 'geom'){
+      ok((text.indexOf(field.id) !== -1))
+    }
   });
 
   view.remove();
