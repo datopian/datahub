@@ -448,8 +448,10 @@ my.Map = Backbone.View.extend({
         if (layer instanceof L.Marker){
           bounds.extend(layer.getLatLng());
         } else {
-          bounds.extend(layer.getBounds().getNorthEast());
-          bounds.extend(layer.getBounds().getSouthWest());
+          if (layer.getBounds){
+            bounds.extend(layer.getBounds().getNorthEast());
+            bounds.extend(layer.getBounds().getSouthWest());
+          }
         }
       }, this);
       return (typeof bounds.getNorthEast() !== 'undefined') ? bounds : null;
