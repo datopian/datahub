@@ -356,7 +356,7 @@ my.Map = Backbone.View.extend({
         // We'll create a GeoJSON like point object from the two lat/lon fields
         var lon = doc.get(this.state.get('lonField'));
         var lat = doc.get(this.state.get('latField'));
-        if (lon && lat) {
+        if (!isNaN(parseFloat(lon)) && !isNaN(parseFloat(lat))) {
           return {
             type: 'Point',
             coordinates: [lon,lat]
