@@ -117,6 +117,10 @@ my.Map = Backbone.View.extend({
 
     // Listen to changes in the documents
     this.model.currentDocuments.bind('add', function(doc){self.redraw('add',doc)});
+    this.model.currentDocuments.bind('change', function(doc){
+        self.redraw('remove',doc);
+        self.redraw('add',doc);
+    });
     this.model.currentDocuments.bind('remove', function(doc){self.redraw('remove',doc)});
     this.model.currentDocuments.bind('reset', function(){self.redraw('reset')});
 
