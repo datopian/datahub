@@ -90,6 +90,7 @@ this.recline.Backend = this.recline.Backend || {};
         }
         return dfd.promise();
       } else if (method === 'update') {
+        console.log('update')
         if (model.__type__ == 'Document') {
           _.each(self.datasets[model.dataset.id].documents, function(doc, idx) {
             if(doc.id === model.id) {

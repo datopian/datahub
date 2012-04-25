@@ -83,7 +83,7 @@ this.recline.Backend = this.recline.Backend || {};
       var results = {}
       _.each(_.keys(this.datasets), function(dataset) {
         results[dataset] = function(done) {
-          pouch.open(dataset, done)
+          new Pouch('idb://' + dataset, done)
         }
       })
 
@@ -96,13 +96,14 @@ this.recline.Backend = this.recline.Backend || {};
       var self = this
       this.datasets[data.metadata.id] = $.extend(true, {}, data);
       localStorage.setItem('datasets', JSON.stringify(this.datasets))
-      pouch.open(data.metadata.id, function(err, db) {
+      new Pouch('idb://' + data.metadata.id, function(err, db) {
         if (err) return callback(err)
         self.pouch[data.metadata.id] = db
         callback(false, db)
       })
     },
     sync: function(method, model, options) {
+      
       var self = this;
       var dfd = $.Deferred();
       if (method === "read") {
@@ -110,22 +111,19 @@ this.recline.Backend = this.recline.Backend || {};
           var datasets = localStorage.getItem('datasets')
           if (datasets) var rawDataset = JSON.parse(datasets)[model.id]
           else var rawDataset = {}
-          
-          self.pouch[model.id].allDocs(function(err, resp) {
-            self.crossfilter[model.id] = crossfilter([resp.rows])
+          self.pouch[model.id].allDocs({include_docs: true}, function(err, resp) {
+            self.crossfilter[model.id] = crossfilter(_.map(resp.rows, function(r) { return r.doc }))
             model.docCount = resp.total_rows
             dfd.resolve(model)
           })
           
           model.set(rawDataset.metadata);
           model.fields.reset(rawDataset.fields);
-
         }
         return dfd.promise();
       } else if (method === 'update') {
         if (model.__type__ == 'Document') {
           this.pouch[model.dataset.id].put(_.extend({}, model.toJSON(), {_id: model.id}), function(err, resp) {
-            console.log('update', err, resp)
             dfd.resolve(model)
           })
         }
@@ -143,12 +141,14 @@ this.recline.Backend = this.recline.Backend || {};
       }
     },
     query: function(model, queryObj) {
+      var self = this
       var dfd = $.Deferred();
       var out = {};
       var numRows = queryObj.size;
       var start = queryObj.from;
       
-      var results = this._applyFilters(model, results, queryObj);
+      console.log(self.crossfilter[model.id])
+      results = this._applyFilters(model, results, queryObj);
       // this._applyFreeTextQuery(model, results, queryObj);
       
       // not complete sorting!
