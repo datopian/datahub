@@ -66,7 +66,13 @@ my.Graph = Backbone.View.extend({
       </div> \
     </form> \
   </div> \
-  <div class="panel graph"></div> \
+  <div class="panel graph"> \
+    <div class="js-temp-notice alert alert-block"> \
+      <h3 class="alert-heading">Hey there!</h3> \
+      <p>There\'s no graph here yet because we don\'t know what fields you\'d like to see plotted.</p> \
+      <p>Please tell us by <strong>using the menu on the right</strong> and a graph will automatically appear.</p> \
+    </div> \
+  </div> \
 </div> \
 ',
   templateSeriesEditor: ' \
