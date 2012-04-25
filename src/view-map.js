@@ -17,7 +17,7 @@ this.recline.View = this.recline.View || {};
 //
 // <pre>
 //   {
-//     // geomField if specified will be used in preference to lat/lon 
+//     // geomField if specified will be used in preference to lat/lon
 //     geomField: {id of field containing geometry in the dataset}
 //     lonField: {id of field containing longitude in the dataset}
 //     latField: {id of field containing latitude in the dataset}
@@ -75,6 +75,11 @@ my.Map = Backbone.View.extend({
       <div class="editor-buttons"> \
         <button class="btn editor-update-map">Update</button> \
       </div> \
+      <div class="editor-options" > \
+        <label class="checkbox"> \
+          <input type="checkbox" id="editor-auto-zoom" checked="checked" /> \
+          Auto zoom to features</label> \
+      </div> \
       <input type="hidden" class="editor-id" value="map-1" /> \
       </div> \
     </form> \
@@ -92,7 +97,8 @@ my.Map = Backbone.View.extend({
   // Define here events for UI elements
   events: {
     'click .editor-update-map': 'onEditorSubmit',
-    'change .editor-field-type': 'onFieldTypeChange'
+    'change .editor-field-type': 'onFieldTypeChange',
+    'change #editor-auto-zoom': 'onAutoZoomChange'
   },
 
   initialize: function(options) {
@@ -111,15 +117,25 @@ my.Map = Backbone.View.extend({
 
     // Listen to changes in the documents
     this.model.currentDocuments.bind('add', function(doc){self.redraw('add',doc)});
+    this.model.currentDocuments.bind('change', function(doc){
+        self.redraw('remove',doc);
+        self.redraw('add',doc);
+    });
     this.model.currentDocuments.bind('remove', function(doc){self.redraw('remove',doc)});
     this.model.currentDocuments.bind('reset', function(){self.redraw('reset')});
 
-    // If the div was hidden, Leaflet needs to recalculate some sizes
-    // to display properly
     this.bind('view:show',function(){
-        if (self.map) {
-          self.map.invalidateSize();
-        }
+      // If the div was hidden, Leaflet needs to recalculate some sizes
+      // to display properly
+      self.map.invalidateSize();
+      if (self._zoomPending && self.autoZoom) {
+        self._zoomToFeatures();
+        self._zoomPending = false;
+      }
+      self.visible = true;
+    });
+    this.bind('view:hide',function(){
+      self.visible = false;
     });
 
     var stateData = _.extend({
@@ -131,6 +147,7 @@ my.Map = Backbone.View.extend({
     );
     this.state = new recline.Model.ObjectState(stateData);
 
+    this.autoZoom = true;
     this.mapReady = false;
     this.render();
   },
@@ -194,24 +211,14 @@ my.Map = Backbone.View.extend({
         this._remove(doc);
       } else if (action == 'refresh'){
         this.features.clearLayers();
-        var bounds = new L.LatLngBounds();
-
-        this.model.currentDocuments.forEach(function(doc){
-          var feature = self._getGeometryFromDocument(doc);
-          if (feature){
-            // Build popup contents
-            // TODO: mustache?
-            var html = '';
-            for (key in doc.attributes) {
-              html += '<div><strong>' + key + '</strong>: '+ doc.attributes[key] + '</div>';
-            }
-            feature.properties = {popupContent: html};
-
-            self.features.addGeoJSON(feature);
-
-            // TODO: bounds and center map
-          }
-        });
+        this._add(this.model.currentDocuments.models);
+      }
+      if (action != 'reset' && this.autoZoom){
+        if (this.visible){
+          this._zoomToFeatures();
+        } else {
+          this._zoomPending = true;
+        }
       }
     }
   },
@@ -259,6 +266,10 @@ my.Map = Backbone.View.extend({
     }
   },
 
+  onAutoZoomChange: function(e){
+    this.autoZoom = !this.autoZoom;
+  },
+
   // Private: Add one or n features to the map
   //
   // For each document passed, a GeoJSON geometry will be extracted and added
@@ -273,9 +284,12 @@ my.Map = Backbone.View.extend({
 
     if (!(docs instanceof Array)) docs = [docs];
 
+    var count = 0;
+    var wrongSoFar = 0;
     _.every(docs,function(doc){
+      count += 1;
       var feature = self._getGeometryFromDocument(doc);
-      if (typeof feature === 'undefined'){
+      if (typeof feature === 'undefined' || feature === null){
         // Empty field
         return true;
       } else if (feature instanceof Object){
@@ -283,7 +297,9 @@ my.Map = Backbone.View.extend({
         // TODO: mustache?
         html = ''
         for (key in doc.attributes){
-          html += '<div><strong>' + key + '</strong>: '+ doc.attributes[key] + '</div>'
+          if (!(self.state.get('geomField') && key == self.state.get('geomField'))){
+            html += '<div><strong>' + key + '</strong>: '+ doc.attributes[key] + '</div>';
+          }
         }
         feature.properties = {popupContent: html};
 
@@ -292,16 +308,20 @@ my.Map = Backbone.View.extend({
         feature.properties.cid = doc.cid;
 
         try {
-            self.features.addGeoJSON(feature);
+          self.features.addGeoJSON(feature);
         } catch (except) {
-            var msg = 'Wrong geometry value';
-            if (except.message) msg += ' (' + except.message + ')';
+          wrongSoFar += 1;
+          var msg = 'Wrong geometry value';
+          if (except.message) msg += ' (' + except.message + ')';
+          if (wrongSoFar <= 10) {
             my.notify(msg,{category:'error'});
-            return false;
+          }
         }
       } else {
-        my.notify('Wrong geometry value',{category:'error'});
-        return false;
+        wrongSoFar += 1
+        if (wrongSoFar <= 10) {
+          my.notify('Wrong geometry value',{category:'error'});
+        }
       }
       return true;
     });
@@ -330,17 +350,24 @@ my.Map = Backbone.View.extend({
   _getGeometryFromDocument: function(doc){
     if (this.geomReady){
       if (this.state.get('geomField')){
-        // We assume that the contents of the field are a valid GeoJSON object
-        return doc.attributes[this.state.get('geomField')];
+        var value = doc.get(this.state.get('geomField'));
+        if (typeof(value) === 'string'){
+          // We have a GeoJSON string representation
+          return $.parseJSON(value);
+        } else {
+          // We assume that the contents of the field are a valid GeoJSON object
+          return value;
+        }
       } else if (this.state.get('lonField') && this.state.get('latField')){
         // We'll create a GeoJSON like point object from the two lat/lon fields
-        return {
-          type: 'Point',
-          coordinates: [
-            doc.attributes[this.state.get('lonField')],
-            doc.attributes[this.state.get('latField')]
-            ]
-        };
+        var lon = doc.get(this.state.get('lonField'));
+        var lat = doc.get(this.state.get('latField'));
+        if (!isNaN(parseFloat(lon)) && !isNaN(parseFloat(lat))) {
+          return {
+            type: 'Point',
+            coordinates: [lon,lat]
+          };
+        }
       }
       return null;
     }
@@ -352,12 +379,16 @@ my.Map = Backbone.View.extend({
   // If not found, the user can define them via the UI form.
   _setupGeometryField: function(){
     var geomField, latField, lonField;
-    this.state.set({
-      geomField: this._checkField(this.geometryFieldNames),
-      latField: this._checkField(this.latitudeFieldNames),
-      lonField: this._checkField(this.longitudeFieldNames)
-    });
     this.geomReady = (this.state.get('geomField') || (this.state.get('latField') && this.state.get('lonField')));
+    // should not overwrite if we have already set this (e.g. explicitly via state)
+    if (!this.geomReady) {
+      this.state.set({
+        geomField: this._checkField(this.geometryFieldNames),
+        latField: this._checkField(this.latitudeFieldNames),
+        lonField: this._checkField(this.longitudeFieldNames)
+      });
+      this.geomReady = (this.state.get('geomField') || (this.state.get('latField') && this.state.get('lonField')));
+    }
   },
 
   // Private: Check if a field in the current model exists in the provided
@@ -374,6 +405,18 @@ my.Map = Backbone.View.extend({
       }
     }
     return null;
+  },
+
+  // Private: Zoom to map to current features extent if any, or to the full
+  // extent if none.
+  //
+  _zoomToFeatures: function(){
+    var bounds = this.features.getBounds();
+    if (bounds){
+      this.map.fitBounds(bounds);
+    } else {
+      this.map.setView(new L.LatLng(0, 0), 2);
+    }
   },
 
   // Private: Sets up the Leaflet map control and the features layer.
@@ -400,6 +443,24 @@ my.Map = Backbone.View.extend({
        }
 
     });
+
+    // This will be available in the next Leaflet stable release.
+    // In the meantime we add it manually to our layer.
+    this.features.getBounds = function(){
+      var bounds = new L.LatLngBounds();
+      this._iterateLayers(function (layer) {
+        if (layer instanceof L.Marker){
+          bounds.extend(layer.getLatLng());
+        } else {
+          if (layer.getBounds){
+            bounds.extend(layer.getBounds().getNorthEast());
+            bounds.extend(layer.getBounds().getSouthWest());
+          }
+        }
+      }, this);
+      return (typeof bounds.getNorthEast() !== 'undefined') ? bounds : null;
+    }
+
     this.map.addLayer(this.features);
 
     this.map.setView(new L.LatLng(0, 0), 2);
