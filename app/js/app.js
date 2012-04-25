@@ -30,7 +30,11 @@ var ExplorerApp = Backbone.View.extend({
       }
     }
     var dataset = null;
-    if (state.dataset || state.url) {
+    if (
+        (state.dataset || state.url) &&
+        // special cases for demo / memory dataset
+        !(state.url === 'demo' || state.backend === 'memory'))
+      {
       dataset = recline.Model.Dataset.restore(state);
     } else {
       dataset = localDataset();
