@@ -2,7 +2,7 @@
 <html>
 <head>
   <meta charset="utf-8" />
-  <title>Recline Data Explorer Demo</title>
+  <title>Recline Data Explorer (Built Sources)</title>
   <meta name="description" content="A demo of the Recline Data Explorer">
   <meta name="author" content="Rufus Pollock and Max Ogden">
 
@@ -11,38 +11,151 @@
     <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
   <![endif]-->
   <link rel="stylesheet" href="../vendor/bootstrap/2.0.2/css/bootstrap.css">
+  <link rel="stylesheet" href="../vendor/leaflet/0.3.1/leaflet.css">
+  <!--[if lte IE 8]>
+  <link rel="stylesheet" href="../vendor/leaflet/0.3.1/leaflet.ie.css" />
+  <![endif]-->
+
+  <!-- Recline CSS components -->
   <link rel="stylesheet" href="../css/data-explorer.css">
+  <link rel="stylesheet" href="../css/grid.css">
   <link rel="stylesheet" href="../css/graph.css">
+  <link rel="stylesheet" href="../css/map.css">
+  <!-- /Recline CSS components -->
+
+  <!-- Custom CSS for the Data Explorer Online App -->
   <link rel="stylesheet" href="style/demo.css">
 
-  <script type="text/javascript" src="../vendor/jquery-1.7.1.js"></script>
-  <script type="text/javascript" src="../vendor/underscore-1.1.6.js"></script>
-  <script type="text/javascript" src="../vendor/backbone-0.5.1.js"></script>
+  <link rel="stylesheet" href="../vendor/bootstrap/2.0.2/css/bootstrap-responsive.css">
+
+  <!-- 3rd party JS libraries -->
+  <script type="text/javascript" src="../vendor/jquery/1.7.1/jquery.js"></script>
+  <script type="text/javascript" src="../vendor/underscore/1.1.6/underscore.js"></script>
+  <script type="text/javascript" src="../vendor/backbone/0.5.1/backbone.js"></script>
   <script type="text/javascript" src="../vendor/jquery-ui-1.8.14.custom.min.js"></script>
-  <script type="text/javascript" src="../vendor/jquery.flot-0.7.js"></script>
+  <script type="text/javascript" src="../vendor/jquery.flot/0.7/jquery.flot.js"></script>
   <script type="text/javascript" src="../vendor/jquery.mustache.js"></script>
   <script type="text/javascript" src="../vendor/bootstrap/2.0.2/bootstrap.js"></script>
+  <script type="text/javascript" src="../vendor/leaflet/0.3.1/leaflet.js"></script>
 
+  <!-- recline library -->
   <script type="text/javascript" src="../recline.js"></script>
+
+  <!-- non-library javascript specific to this demo -->
   <script type="text/javascript" src="js/app.js"></script>
-</head> 
+</head>
 <body>
+<div class="recline-app">
   <div class="navbar navbar-fixed-top">
     <div class="navbar-inner">
       <div class="container-fluid">
-        <a class="brand" href="#">Recline Data Explorer</a>
-        <ul class="nav pull-right">
-          <li><a class="set-read-only" title="Put into read-only mode">Read-only</a></li>
+        <a class="brand" href="../">Recline Data Explorer</a>
+        <ul class="nav">
+          <li><a href="../#docs">Documentation</a></li>
         </ul>
-        <form class="webstore-load pull-right navbar-search" title="Update from the specified webstore dataset">
-          <input type="text" name="source" size="50" />
-          <select name="backend_type">
-            <option value="elasticsearch">ElasticSearch</option>
-            <option value="dataproxy">DataProxy</option>
-            <option value="gdocs">Google Spreadsheets</option>
-          </select>
-        </form>
+        <ul class="nav pull-right">
+          <li class="dropdown">
+            <a data-toggle="dropdown" class="dropdown-toggle">
+              Import <b class="caret"></b></a>
+            <ul class="dropdown-menu js-import">
+              <li>
+                <a data-toggle="modal" href=".js-import-dialog-url">Import from URL</a>
+              </li>
+              <li>
+                <a data-toggle="modal" href=".js-import-dialog-file">Import from File</a>
+              </li>
+            </ul>
+          </li>
+          <li>
+          <a href=".js-share-and-embed-dialog" data-toggle="modal">
+              Share and Embed
+              <i class="icon-share icon-white"></i>
+            </a>
+          </li>
+        </ul>
       </div>
+    </div>
+  </div>
+
+  <div class="modal fade in js-import-dialog-url" style="display: none;">
+    <div class="modal-header">
+      <a class="close" data-dismiss="modal">×</a>
+      <h3>Import from URL</h3> 
+    </div>
+    <div class="modal-body">
+      <form class="js-import-url form-horizontal">
+        <div class="control-group">
+          <label class="control-label">URL</label>
+          <div class="controls">
+            <input type="text" name="source" class="input-xlarge" />
+          </div>
+        </div>
+        <div class="control-group">
+          <label class="control-label">Type of data</label>
+          <div class="controls">
+            <select name="backend_type">
+              <option value="elasticsearch">ElasticSearch</option>
+              <option value="dataproxy">CSV or Excel</option>
+              <option value="gdocs">Google Spreadsheet</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-actions">
+          <button type="submit" class="btn btn-primary">Import &raquo;</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div class="modal fade in js-import-dialog-file" style="display: none;">
+    <div class="modal-header">
+      <a class="close" data-dismiss="modal">×</a>
+      <h3>Import from File</h3> 
+    </div>
+    <div class="modal-body">
+      <form class="form-horizontal">
+        <div class="control-group">
+          <label class="control-label">File</label>
+          <div class="controls">
+            <input type="file" name="source" />
+          </div>
+        </div>
+        <div class="control-group">
+          <label class="control-label">Separator</label>
+          <div class="controls">
+            <input type="text" name="separator" value="," class="spam1"/>
+          </div>
+        </div>
+        <div class="control-group">
+          <label class="control-label">Text delimiter</label>
+          <div class="controls">
+            <input type="text" name="delimiter" value='"' />
+          </div>
+        </div>
+
+        <div class="control-group">
+          <label class="control-label">Encoding</label>
+          <div class="controls">
+            <input type="text" name="encoding" value="UTF-8" />
+          </div>
+        </div>
+        <div class="form-actions">
+          <button type="submit" class="btn btn-primary">Import &raquo;</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div class="modal fade in js-share-and-embed-dialog" style="display: none;">
+    <div class="modal-header">
+      <a class="close" data-dismiss="modal">×</a>
+      <h3>Share and Embed</h3> 
+    </div>
+    <div class="modal-body">
+      <h4>Sharable Link to current View</h4>
+      <textarea class="view-link" style="width: 100%; height: 100px;"></textarea>
+      <h4>Embed this View</h4>
+      <textarea class="view-embed" style="width: 100%; height: 200px;"></textarea>
     </div>
   </div>
 
@@ -51,6 +164,8 @@
       <div class="data-explorer-here"></div>
     </div>
   </div>
+</div>
+
 </body>
 </html>
 
