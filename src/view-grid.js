@@ -143,6 +143,8 @@ my.Grid = Backbone.View.extend({
     var hiddenFields = this.state.get('hiddenFields');
     hiddenFields.push(this.tempState.currentColumn);
     this.state.set({hiddenFields: hiddenFields});
+    // change event not being triggered (because it is an array?) so trigger manually
+    this.state.trigger('change');
     this.render();
   },
   
