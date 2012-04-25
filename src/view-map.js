@@ -127,10 +127,12 @@ my.Map = Backbone.View.extend({
     this.bind('view:show',function(){
       // If the div was hidden, Leaflet needs to recalculate some sizes
       // to display properly
-      self.map.invalidateSize();
-      if (self._zoomPending && self.autoZoom) {
-        self._zoomToFeatures();
-        self._zoomPending = false;
+      if (self.map){
+        self.map.invalidateSize();
+        if (self._zoomPending && self.autoZoom) {
+          self._zoomToFeatures();
+          self._zoomPending = false;
+        }
       }
       self.visible = true;
     });
