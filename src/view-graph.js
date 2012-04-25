@@ -198,10 +198,20 @@ my.Graph = Backbone.View.extend({
 //    }
   },
 
+  // ### getGraphOptions
+  //
+  // Get options for Flot Graph
+  //
   // needs to be function as can depend on state
+  //
+  // @param typeId graphType id (lines, lines-and-points etc)
   getGraphOptions: function(typeId) { 
     var self = this;
     // special tickformatter to show labels rather than numbers
+    // TODO: we should really use tickFormatter and 1 interval ticks if (and
+    // only if) x-axis values are non-numeric
+    // However, that is non-trivial to work out from a dataset (datasets may
+    // have no field type info). Thus at present we only do this for bars.
     var tickFormatter = function (val) {
       if (self.model.currentDocuments.models[val]) {
         var out = self.model.currentDocuments.models[val].get(self.state.attributes.group);
@@ -214,20 +224,25 @@ my.Graph = Backbone.View.extend({
       }
       return val;
     };
-    // TODO: we should really use tickFormatter and 1 interval ticks if (and
-    // only if) x-axis values are non-numeric
-    // However, that is non-trivial to work out from a dataset (datasets may
-    // have no field type info). Thus at present we only do this for bars.
-    var options = { 
+
+    var xaxis = {};
+    // check for time series on x-axis
+    if (this.model.fields.get(this.state.get('group')).get('type') === 'date') {
+      xaxis.mode = 'time';
+      xaxis.timeformat = '%y-%b';
+    }
+    var optionsPerGraphType = { 
       lines: {
-         series: { 
-           lines: { show: true }
-         }
+        series: { 
+          lines: { show: true }
+        },
+        xaxis: xaxis
       },
       points: {
         series: {
           points: { show: true }
         },
+        xaxis: xaxis,
         grid: { hoverable: true, clickable: true }
       },
       'lines-and-points': {
@@ -235,6 +250,7 @@ my.Graph = Backbone.View.extend({
           points: { show: true },
           lines: { show: true }
         },
+        xaxis: xaxis,
         grid: { hoverable: true, clickable: true }
       },
       bars: {
@@ -258,7 +274,7 @@ my.Graph = Backbone.View.extend({
         }
       }
     };
-    return options[typeId];
+    return optionsPerGraphType[typeId];
   },
 
   setupTooltips: function() {
@@ -315,8 +331,15 @@ my.Graph = Backbone.View.extend({
     _.each(this.state.attributes.series, function(field) {
       var points = [];
       _.each(self.model.currentDocuments.models, function(doc, index) {
-        var x = doc.get(self.state.attributes.group);
-        var y = doc.get(field);
+        var xfield = self.model.fields.get(self.state.attributes.group);
+        var x = doc.getFieldValue(xfield);
+        // time series
+        var isDateTime = xfield.get('type') === 'date';
+        if (isDateTime) {
+          x = new Date(x);
+        }
+        var yfield = self.model.fields.get(field);
+        var y = doc.getFieldValue(yfield);
         if (typeof x === 'string') {
           x = index;
         }

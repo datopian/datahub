@@ -34,5 +34,20 @@ test('initialize', function () {
   });
   deepEqual(out, ['y', 'z']);
 
+  view.remove();
+});
+
+test('dates in graph view', function () {
+  var dataset = Fixture.getDataset();
+  var view = new recline.View.Graph({
+    model: dataset,
+    state: {
+      'graphType': 'lines',
+      'group': 'date',
+      'series': ['y', 'z']
+    }
+  });
+  $('.fixtures').append(view.el);
+
   // view.remove();
 });
