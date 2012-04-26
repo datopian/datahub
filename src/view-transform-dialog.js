@@ -121,6 +121,35 @@ my.ColumnTransform = Backbone.View.extend({
     this.el.remove();
   },
 
+  editPreviewTemplate: ' \
+    <div class="expression-preview-table-wrapper"> \
+      <table class="table table-condensed"> \
+      <thead> \
+      <tr> \
+        <th class="expression-preview-heading"> \
+          before \
+        </th> \
+        <th class="expression-preview-heading"> \
+          after \
+        </th> \
+      </tr> \
+      </thead> \
+      <tbody> \
+      {{#rows}} \
+      <tr> \
+        <td class="expression-preview-value"> \
+          {{before}} \
+        </td> \
+        <td class="expression-preview-value"> \
+          {{after}} \
+        </td> \
+      </tr> \
+      {{/rows}} \
+      </tbody> \
+      </table> \
+    </div> \
+  ',
+
   onEditorKeydown: function(e) {
     var self = this;
     // if you don't setTimeout it won't grab the latest character if you call e.target.value
@@ -133,7 +162,9 @@ my.ColumnTransform = Backbone.View.extend({
           return doc.toJSON();
         });
         var previewData = costco.previewTransform(docs, editFunc, self.state.currentColumn);
-        util.render('editPreview', 'expression-preview-container', {rows: previewData});
+        var $el = self.el.find('.expression-preview-container');
+        var templated = $.mustache(self.editPreviewTemplate, {rows: previewData.slice(0,4)});
+        $el.html(templated);
       } else {
         errors.text(editFunc.errorMessage);
       }

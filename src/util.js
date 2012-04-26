@@ -1,38 +1,6 @@
 /*jshint multistr:true */
 
 var util = function() {
-  var templates = {
-    transformActions: '<li><a data-action="transform" class="menuAction" href="JavaScript:void(0);">Global transform...</a></li>',
-    editPreview: ' \
-      <div class="expression-preview-table-wrapper"> \
-        <table> \
-        <thead> \
-        <tr> \
-          <th class="expression-preview-heading"> \
-            before \
-          </th> \
-          <th class="expression-preview-heading"> \
-            after \
-          </th> \
-        </tr> \
-        </thead> \
-        <tbody> \
-        {{#rows}} \
-        <tr> \
-          <td class="expression-preview-value"> \
-            {{before}} \
-          </td> \
-          <td class="expression-preview-value"> \
-            {{after}} \
-          </td> \
-        </tr> \
-        {{/rows}} \
-        </tbody> \
-        </table> \
-      </div> \
-    '
-  };
-
   $.fn.serializeObject = function() {
     var o = {};
     var a = this.serializeArray();
@@ -62,27 +30,7 @@ var util = function() {
     $('.' + thing).show().css({top: position.top + $(elem.target).height(), left: position.left});
   }
 
-  function render( template, target, options ) {
-    if ( !options ) options = {data: {}};
-    if ( !options.data ) options = {data: options};
-    var html = $.mustache( templates[template], options.data );
-    var targetDom = null;
-    if (target instanceof jQuery) {
-      targetDom = target;
-    } else {
-      targetDom = $( "." + target + ":first" );      
-    }
-    if( options.append ) {
-      targetDom.append( html );
-    } else {
-      targetDom.html( html );
-    }
-    // TODO: remove (commented out as part of Backbon-i-fication
-    // if (template in app.after) app.after[template]();
-  }
-
   return {
-    position: position,
-    render: render
+    position: position
   };
 }();
