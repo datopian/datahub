@@ -232,10 +232,6 @@ my.DataExplorer = Backbone.View.extend({
         my.clearNotifications();
         self.el.find('.doc-count').text(self.model.docCount || 'Unknown');
         my.notify('Data loaded', {category: 'success'});
-        // update navigation
-        var qs = my.parseHashQueryString();
-        qs.reclineQuery = JSON.stringify(self.model.queryState.toJSON());
-        var out = my.getNewHashForQueryString(qs);
       });
     this.model.bind('query:fail', function(error) {
         my.clearNotifications();
@@ -338,7 +334,7 @@ my.DataExplorer = Backbone.View.extend({
   _setupState: function(initialState) {
     var self = this;
     // get data from the query string / hash url plus some defaults
-    var qs = my.parseHashQueryString();
+    var qs = recline.Util.parseHashQueryString();
     var query = qs.reclineQuery;
     query = query ? JSON.parse(query) : self.model.queryState.toJSON();
     // backwards compatability (now named view-graph but was named graph)
@@ -618,78 +614,6 @@ my.FacetViewer = Backbone.View.extend({
   }
 });
 
-/* ========================================================== */
-// ## Miscellaneous Utilities
-
-var urlPathRegex = /^([^?]+)(\?.*)?/;
-
-// Parse the Hash section of a URL into path and query string
-my.parseHashUrl = function(hashUrl) {
-  var parsed = urlPathRegex.exec(hashUrl);
-  if (parsed === null) {
-    return {};
-  } else {
-    return {
-      path: parsed[1],
-      query: parsed[2] || ''
-    };
-  }
-};
-
-// Parse a URL query string (?xyz=abc...) into a dictionary.
-my.parseQueryString = function(q) {
-  if (!q) {
-    return {};
-  }
-  var urlParams = {},
-    e, d = function (s) {
-      return unescape(s.replace(/\+/g, " "));
-    },
-    r = /([^&=]+)=?([^&]*)/g;
-
-  if (q && q.length && q[0] === '?') {
-    q = q.slice(1);
-  }
-  while (e = r.exec(q)) {
-    // TODO: have values be array as query string allow repetition of keys
-    urlParams[d(e[1])] = d(e[2]);
-  }
-  return urlParams;
-};
-
-// Parse the query string out of the URL hash
-my.parseHashQueryString = function() {
-  q = my.parseHashUrl(window.location.hash).query;
-  return my.parseQueryString(q);
-};
-
-// Compse a Query String
-my.composeQueryString = function(queryParams) {
-  var queryString = '?';
-  var items = [];
-  $.each(queryParams, function(key, value) {
-    if (typeof(value) === 'object') {
-      value = JSON.stringify(value);
-    }
-    items.push(key + '=' + value);
-  });
-  queryString += items.join('&');
-  return queryString;
-};
-
-my.getNewHashForQueryString = function(queryParams) {
-  var queryPart = my.composeQueryString(queryParams);
-  if (window.location.hash) {
-    // slice(1) to remove # at start
-    return window.location.hash.split('?')[0].slice(1) + queryPart;
-  } else {
-    return queryPart;
-  }
-};
-
-my.setHashQueryString = function(queryParams) {
-  window.location.hash = my.getNewHashForQueryString(queryParams);
-};
 
 // ## notify
 //
