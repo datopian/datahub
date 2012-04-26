@@ -168,12 +168,6 @@ my.DataExplorer = Backbone.View.extend({
       <div class="clearfix"></div> \
     </div> \
     <div class="data-view-container"></div> \
-    <div class="dialog-overlay" style="display: none; z-index: 101; ">&nbsp;</div> \
-    <div class="dialog ui-draggable" style="display: none; z-index: 102; top: 101px; "> \
-      <div class="dialog-frame" style="width: 700px; visibility: visible; "> \
-        <div class="dialog-content dialog-border"></div> \
-      </div> \
-    </div> \
   </div> \
   ',
   events: {
