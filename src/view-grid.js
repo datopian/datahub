@@ -35,18 +35,6 @@ my.Grid = Backbone.View.extend({
     'click .data-table-menu li a': 'onMenuClick'
   },
 
-  // TODO: delete or re-enable (currently this code is not used from anywhere except deprecated or disabled methods (see above)).
-  // showDialog: function(template, data) {
-  //   if (!data) data = {};
-  //   util.show('dialog');
-  //   util.render(template, 'dialog-content', data);
-  //   util.observeExit($('.dialog-content'), function() {
-  //     util.hide('dialog');
-  //   })
-  //   $('.dialog').draggable({ handle: '.dialog-header', cursor: 'move' });
-  // },
-
-
   // ======================================================
   // Column and row menus
 
