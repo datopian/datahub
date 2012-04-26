@@ -225,9 +225,6 @@ my.DataExplorer = Backbone.View.extend({
       this.updateNav(this.pageViews[0].id);
     }
 
-    this.router = new Backbone.Router();
-    this.setupRouting();
-
     this.model.bind('query:start', function() {
         my.notify('Loading data', {loader: true});
       });
@@ -239,7 +236,6 @@ my.DataExplorer = Backbone.View.extend({
         var qs = my.parseHashQueryString();
         qs.reclineQuery = JSON.stringify(self.model.queryState.toJSON());
         var out = my.getNewHashForQueryString(qs);
-        // self.router.navigate(out);
       });
     this.model.bind('query:fail', function(error) {
         my.clearNotifications();
@@ -297,21 +293,6 @@ my.DataExplorer = Backbone.View.extend({
     });
     this.$facetViewer = facetViewer.el;
     this.el.find('.header').append(facetViewer.el);
-  },
-
-  setupRouting: function() {
-    var self = this;
-    // Default route
-//    this.router.route(/^(\?.*)?$/, this.pageViews[0].id, function(queryString) {
-//      self.updateNav(self.pageViews[0].id, queryString);
-//    });
-//    $.each(this.pageViews, function(idx, view) {
-//      self.router.route(/^([^?]+)(\?.*)?/, 'view', function(viewId, queryString) {
-//        self.updateNav(viewId, queryString);
-//      });
-//    });
-    this.router.route(/.*/, 'view', function() {
-    });
   },
 
   updateNav: function(pageName) {
