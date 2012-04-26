@@ -260,6 +260,19 @@ my.GridRow = Backbone.View.extend({
 
   // ===================
   // Cell Editor methods
+
+  cellEditorTemplate: ' \
+    <div class="menu-container data-table-cell-editor"> \
+      <textarea class="data-table-cell-editor-editor" bind="textarea">{{value}}</textarea> \
+      <div id="data-table-cell-editor-actions"> \
+        <div class="data-table-cell-editor-action"> \
+          <button class="okButton btn primary">Update</button> \
+          <button class="cancelButton btn danger">Cancel</button> \
+        </div> \
+      </div> \
+    </div> \
+  ',
+
   onEditClick: function(e) {
     var editing = this.el.find('.data-table-cell-editor-editor');
     if (editing.length > 0) {
@@ -268,7 +281,8 @@ my.GridRow = Backbone.View.extend({
     $(e.target).addClass("hidden");
     var cell = $(e.target).siblings('.data-table-cell-value');
     cell.data("previousContents", cell.text());
-    util.render('cellEditor', cell, {value: cell.text()});
+    var templated = $.mustache(this.cellEditorTemplate, {value: cell.text()});
+    cell.html(templated);
   },
 
   onEditorOK: function(e) {
