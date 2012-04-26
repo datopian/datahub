@@ -76,12 +76,13 @@ my.DataTransform = Backbone.View.extend({
 
 // View (Dialog) for doing data transformations (on columns of data).
 my.ColumnTransform = Backbone.View.extend({
-  className: 'transform-column-view',
+  className: 'transform-column-view modal fade in',
   template: ' \
-    <div class="dialog-header"> \
-      Functional transform on column {{name}} \
+    <div class="modal-header"> \
+      <a class="close" data-dismiss="modal">×</a> \
+      <h3>Functional transform on column {{name}}</h3> \
     </div> \
-    <div class="dialog-body"> \
+    <div class="modal-body"> \
       <div class="grid-layout layout-tight layout-full"> \
         <table> \
         <tbody> \
@@ -107,10 +108,10 @@ my.ColumnTransform = Backbone.View.extend({
               </tr> \
               <tr> \
                 <td colspan="4"> \
-                  <div id="expression-preview-tabs" class="refine-tabs ui-tabs ui-widget ui-widget-content ui-corner-all"> \
+                  <div id="expression-preview-tabs"> \
                     <span>Preview</span> \
-                    <div id="expression-preview-tabs-preview" class="ui-tabs-panel ui-widget-content ui-corner-bottom"> \
-                      <div class="expression-preview-container" style="width: 652px; "> \
+                    <div id="expression-preview-tabs-preview"> \
+                      <div class="expression-preview-container"> \
                       </div> \
                     </div> \
                   </div> \
@@ -125,7 +126,7 @@ my.ColumnTransform = Backbone.View.extend({
         </table> \
       </div> \
     </div> \
-    <div class="dialog-footer"> \
+    <div class="modal-footer"> \
       <button class="okButton btn primary">&nbsp;&nbsp;Update All&nbsp;&nbsp;</button> \
       <button class="cancelButton btn danger">Cancel</button> \
     </div> \
@@ -161,7 +162,7 @@ my.ColumnTransform = Backbone.View.extend({
       my.notify("Error with function! " + editFunc.errorMessage);
       return;
     }
-    util.hide('dialog');
+    this.el.modal('hide');
     my.notify("Updating all visible docs. This could take a while...", {persist: true, loader: true});
       var docs = self.model.currentDocuments.map(function(doc) {
        return doc.toJSON();

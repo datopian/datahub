@@ -104,19 +104,13 @@ my.Grid = Backbone.View.extend({
   },
 
   showTransformColumnDialog: function() {
-    var $el = $('.dialog-content');
-    util.show('dialog');
     var view = new my.ColumnTransform({
       model: this.model
     });
     view.state = this.tempState;
     view.render();
-    $el.empty();
-    $el.append(view.el);
-    util.observeExit($el, function() {
-      util.hide('dialog');
-    });
-    $('.dialog').draggable({ handle: '.dialog-header', cursor: 'move' });
+    this.el.append(view.el);
+    view.el.modal();
   },
 
   showTransformDialog: function() {
