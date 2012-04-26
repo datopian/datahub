@@ -81,7 +81,6 @@ my.Grid = Backbone.View.extend({
       filter: function() {
         self.model.queryState.addTermFilter(self.tempState.currentColumn, '');
       },
-      transform: function() { self.showTransformDialog('transform'); },
       sortAsc: function() { self.setColumnSort('asc'); },
       sortDesc: function() { self.setColumnSort('desc'); },
       hideColumn: function() { self.hideColumn(); },
@@ -111,20 +110,6 @@ my.Grid = Backbone.View.extend({
     view.render();
     this.el.append(view.el);
     view.el.modal();
-  },
-
-  showTransformDialog: function() {
-    var $el = $('.dialog-content');
-    util.show('dialog');
-    var view = new recline.View.DataTransform({
-    });
-    view.render();
-    $el.empty();
-    $el.append(view.el);
-    util.observeExit($el, function() {
-      util.hide('dialog');
-    });
-    $('.dialog').draggable({ handle: '.dialog-header', cursor: 'move' });
   },
 
   setColumnSort: function(order) {

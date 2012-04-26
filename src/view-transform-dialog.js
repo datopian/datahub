@@ -6,74 +6,8 @@ this.recline.View = this.recline.View || {};
 // Views module following classic module pattern
 (function($, my) {
 
-// View (Dialog) for doing data transformations on whole dataset.
-my.DataTransform = Backbone.View.extend({
-  className: 'transform-view',
-  template: ' \
-    <div class="dialog-header"> \
-      Recursive transform on all rows \
-    </div> \
-    <div class="dialog-body"> \
-      <div class="grid-layout layout-full"> \
-        <p class="info">Traverse and transform objects by visiting every node on a recursive walk using <a href="https://github.com/substack/js-traverse">js-traverse</a>.</p> \
-        <table> \
-        <tbody> \
-        <tr> \
-          <td colspan="4"> \
-            <div class="grid-layout layout-tight layout-full"> \
-              <table rows="4" cols="4"> \
-              <tbody> \
-              <tr style="vertical-align: bottom;"> \
-                <td colspan="4"> \
-                  Expression \
-                </td> \
-              </tr> \
-              <tr> \
-                <td colspan="3"> \
-                  <div class="input-container"> \
-                    <textarea class="expression-preview-code"></textarea> \
-                  </div> \
-                </td> \
-                <td class="expression-preview-parsing-status" width="150" style="vertical-align: top;"> \
-                  No syntax error. \
-                </td> \
-              </tr> \
-              <tr> \
-                <td colspan="4"> \
-                  <div id="expression-preview-tabs" class="refine-tabs ui-tabs ui-widget ui-widget-content ui-corner-all"> \
-                    <span>Preview</span> \
-                    <div id="expression-preview-tabs-preview" class="ui-tabs-panel ui-widget-content ui-corner-bottom"> \
-                      <div class="expression-preview-container" style="width: 652px; "> \
-                      </div> \
-                    </div> \
-                  </div> \
-                </td> \
-              </tr> \
-              </tbody> \
-              </table> \
-            </div> \
-          </td> \
-        </tr> \
-        </tbody> \
-        </table> \
-      </div> \
-    </div> \
-    <div class="dialog-footer"> \
-      <button class="okButton button">&nbsp;&nbsp;Update All&nbsp;&nbsp;</button> \
-      <button class="cancelButton button">Cancel</button> \
-    </div> \
-  ',
-
-  initialize: function() {
-    this.el = $(this.el);
-  },
-
-  render: function() {
-    this.el.html(this.template);
-  }
-});
-
-
+// ## ColumnTransform
+//
 // View (Dialog) for doing data transformations (on columns of data).
 my.ColumnTransform = Backbone.View.extend({
   className: 'transform-column-view modal fade in',
