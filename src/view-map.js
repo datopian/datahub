@@ -281,7 +281,6 @@ my.Map = Backbone.View.extend({
   // Each feature will have a popup associated with all the document fields.
   //
   _add: function(docs){
-
     var self = this;
 
     if (!(docs instanceof Array)) docs = [docs];
@@ -316,13 +315,13 @@ my.Map = Backbone.View.extend({
           var msg = 'Wrong geometry value';
           if (except.message) msg += ' (' + except.message + ')';
           if (wrongSoFar <= 10) {
-            my.notify(msg,{category:'error'});
+            self.trigger('recline:flash', {message: msg, category:'error'});
           }
         }
       } else {
         wrongSoFar += 1
         if (wrongSoFar <= 10) {
-          my.notify('Wrong geometry value',{category:'error'});
+          self.trigger('recline:flash', {message: 'Wrong geometry value', category:'error'});
         }
       }
       return true;

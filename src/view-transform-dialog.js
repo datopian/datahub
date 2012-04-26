@@ -93,11 +93,11 @@ my.ColumnTransform = Backbone.View.extend({
     var funcText = this.el.find('.expression-preview-code').val();
     var editFunc = costco.evalFunction(funcText);
     if (editFunc.errorMessage) {
-      my.notify("Error with function! " + editFunc.errorMessage);
+      this.trigger('recline:flash', {message: "Error with function! " + editFunc.errorMessage});
       return;
     }
     this.el.modal('hide');
-    my.notify("Updating all visible docs. This could take a while...", {persist: true, loader: true});
+    this.trigger('recline:flash', {message: "Updating all visible docs. This could take a while...", persist: true, loader: true});
       var docs = self.model.currentDocuments.map(function(doc) {
        return doc.toJSON();
       });
@@ -107,7 +107,7 @@ my.ColumnTransform = Backbone.View.extend({
     function onCompletedUpdate() {
       totalToUpdate += -1;
       if (totalToUpdate === 0) {
-        my.notify(toUpdate.length + " documents updated successfully");
+        self.trigger('recline:flash', {message: toUpdate.length + " documents updated successfully"});
         alert('WARNING: We have only updated the docs in this view. (Updating of all docs not yet implemented!)');
         self.remove();
       }

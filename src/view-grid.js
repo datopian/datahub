@@ -74,6 +74,7 @@ my.Grid = Backbone.View.extend({
       hideColumn: function() { self.hideColumn(); },
       showColumn: function() { self.showColumn(e); },
       deleteRow: function() {
+        var self = this;
         var doc = _.find(self.model.currentDocuments.models, function(doc) {
           // important this is == as the currentRow will be string (as comes
           // from DOM) while id may be int
@@ -81,9 +82,9 @@ my.Grid = Backbone.View.extend({
         });
         doc.destroy().then(function() { 
             self.model.currentDocuments.remove(doc);
-            my.notify("Row deleted successfully");
+            self.trigger('recline:flash', {message: "Row deleted successfully"});
           }).fail(function(err) {
-            my.notify("Errorz! " + err);
+            self.trigger('recline:flash', {message: "Errorz! " + err});
           });
       }
     };
@@ -91,8 +92,13 @@ my.Grid = Backbone.View.extend({
   },
 
   showTransformColumnDialog: function() {
+    var self = this;
     var view = new my.ColumnTransform({
       model: this.model
+    });
+    // pass the flash message up the chain
+    view.bind('recline:flash', function(flash) {
+      self.trigger('recline:flash', flash);
     });
     view.state = this.tempState;
     view.render();
@@ -286,6 +292,7 @@ my.GridRow = Backbone.View.extend({
   },
 
   onEditorOK: function(e) {
+    var self = this;
     var cell = $(e.target);
     var rowId = cell.parents('tr').attr('data-id');
     var field = cell.parents('td').attr('data-field');
@@ -293,12 +300,13 @@ my.GridRow = Backbone.View.extend({
     var newData = {};
     newData[field] = newValue;
     this.model.set(newData);
-    my.notify("Updating row...", {loader: true});
+    this.trigger('recline:flash', {message: "Updating row...", loader: true});
     this.model.save().then(function(response) {
-        my.notify("Row updated successfully", {category: 'success'});
+        this.trigger('recline:flash', {message: "Row updated successfully", category: 'success'});
       })
       .fail(function() {
-        my.notify('Error saving row', {
+        this.trigger('recline:flash', {
+          message: 'Error saving row',
           category: 'error',
           persist: true
         });

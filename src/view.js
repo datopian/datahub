@@ -209,6 +209,7 @@ my.DataExplorer = Backbone.View.extend({
     // these must be called after pageViews are created
     this.render();
     this._bindStateChanges();
+    this._bindFlashNotifications();
     // now do updates based on state (need to come after render)
     if (this.state.get('readOnly')) {
       this.setReadOnly();
@@ -220,15 +221,15 @@ my.DataExplorer = Backbone.View.extend({
     }
 
     this.model.bind('query:start', function() {
-        my.notify('Loading data', {loader: true});
+        self.notify({message: 'Loading data', loader: true});
       });
     this.model.bind('query:done', function() {
-        my.clearNotifications();
+        self.clearNotifications();
         self.el.find('.doc-count').text(self.model.docCount || 'Unknown');
-        my.notify('Data loaded', {category: 'success'});
+        self.notify({message: 'Data loaded', category: 'success'});
       });
     this.model.bind('query:fail', function(error) {
-        my.clearNotifications();
+        self.clearNotifications();
         var msg = '';
         if (typeof(error) == 'string') {
           msg = error;
@@ -242,7 +243,7 @@ my.DataExplorer = Backbone.View.extend({
         } else {
           msg = 'There was an error querying the backend';
         }
-        my.notify(msg, {category: 'error', persist: true});
+        self.notify({message: msg, category: 'error', persist: true});
       });
 
     // retrieve basic data like fields etc
@@ -252,7 +253,7 @@ my.DataExplorer = Backbone.View.extend({
         self.model.query(self.state.get('query'));
       })
       .fail(function(error) {
-        my.notify(error.message, {category: 'error', persist: true});
+        self.notify({message: error.message, category: 'error', persist: true});
       });
   },
 
@@ -368,6 +369,57 @@ my.DataExplorer = Backbone.View.extend({
         });
       }
     });
+  },
+
+  _bindFlashNotifications: function() {
+    var self = this;
+    _.each(this.pageViews, function(pageView) {
+      pageView.view.bind('recline:flash', function(flash) {
+        self.notify(flash); 
+      });
+    });
+  },
+
+  // ### notify
+  //
+  // Create a notification (a div.alert in div.alert-messsages) using provided
+  // flash object. Flash attributes (all are optional):
+  //
+  // * message: message to show.
+  // * category: warning (default), success, error
+  // * persist: if true alert is persistent, o/w hidden after 3s (default = false)
+  // * loader: if true show loading spinner
+  notify: function(flash) {
+    var tmplData = _.extend({
+      message: '',
+      category: 'warning'
+      },
+      flash
+    );
+    var _template = ' \
+      <div class="alert alert-{{category}} fade in" data-alert="alert"><a class="close" data-dismiss="alert" href="#">×</a> \
+        {{message}} \
+          {{#loader}} \
+          <span class="notification-loader">&nbsp;</span> \
+          {{/loader}} \
+      </div>';
+    var _templated = $.mustache(_template, tmplData); 
+    _templated = $(_templated).appendTo($('.recline-data-explorer .alert-messages'));
+    if (!flash.persist) {
+      setTimeout(function() {
+        $(_templated).fadeOut(1000, function() {
+          $(this).remove();
+        });
+      }, 1000);
+    }
+  },
+
+  // ### clearNotifications
+  //
+  // Clear all existing notifications
+  clearNotifications: function() {
+    var $notifications = $('.recline-data-explorer .alert-messages .alert');
+    $notifications.remove();
   }
 });
 
@@ -608,46 +660,6 @@ my.FacetViewer = Backbone.View.extend({
   }
 });
 
-
-// ## notify
-//
-// Create a notification (a div.alert in div.alert-messsages) using provide messages and options. Options are:
-//
-// * category: warning (default), success, error
-// * persist: if true alert is persistent, o/w hidden after 3s (default = false)
-// * loader: if true show loading spinner
-my.notify = function(message, options) {
-  if (!options) options = {};
-  var tmplData = _.extend({
-    msg: message,
-    category: 'warning'
-    },
-    options);
-  var _template = ' \
-    <div class="alert alert-{{category}} fade in" data-alert="alert"><a class="close" data-dismiss="alert" href="#">×</a> \
-      {{msg}} \
-        {{#loader}} \
-        <span class="notification-loader">&nbsp;</span> \
-        {{/loader}} \
-    </div>';
-  var _templated = $.mustache(_template, tmplData); 
-  _templated = $(_templated).appendTo($('.recline-data-explorer .alert-messages'));
-  if (!options.persist) {
-    setTimeout(function() {
-      $(_templated).fadeOut(1000, function() {
-        $(this).remove();
-      });
-    }, 1000);
-  }
-};
-
-// ## clearNotifications
-//
-// Clear all existing notifications
-my.clearNotifications = function() {
-  var $notifications = $('.recline-data-explorer .alert-messages .alert');
-  $notifications.remove();
-};
 
 })(jQuery, recline.View);
 
