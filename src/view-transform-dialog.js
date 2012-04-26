@@ -184,6 +184,7 @@ my.ColumnTransform = Backbone.View.extend({
       realDoc.set(editedDoc);
       realDoc.save().then(onCompletedUpdate).fail(onCompletedUpdate);
     });
+    this.el.remove();
   },
 
   onEditorKeydown: function(e) {
