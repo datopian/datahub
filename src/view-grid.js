@@ -35,18 +35,6 @@ my.Grid = Backbone.View.extend({
     'click .data-table-menu li a': 'onMenuClick'
   },
 
-  // TODO: delete or re-enable (currently this code is not used from anywhere except deprecated or disabled methods (see above)).
-  // showDialog: function(template, data) {
-  //   if (!data) data = {};
-  //   util.show('dialog');
-  //   util.render(template, 'dialog-content', data);
-  //   util.observeExit($('.dialog-content'), function() {
-  //     util.hide('dialog');
-  //   })
-  //   $('.dialog').draggable({ handle: '.dialog-header', cursor: 'move' });
-  // },
-
-
   // ======================================================
   // Column and row menus
 
@@ -81,12 +69,12 @@ my.Grid = Backbone.View.extend({
       filter: function() {
         self.model.queryState.addTermFilter(self.tempState.currentColumn, '');
       },
-      transform: function() { self.showTransformDialog('transform'); },
       sortAsc: function() { self.setColumnSort('asc'); },
       sortDesc: function() { self.setColumnSort('desc'); },
       hideColumn: function() { self.hideColumn(); },
       showColumn: function() { self.showColumn(e); },
       deleteRow: function() {
+        var self = this;
         var doc = _.find(self.model.currentDocuments.models, function(doc) {
           // important this is == as the currentRow will be string (as comes
           // from DOM) while id may be int
@@ -94,9 +82,9 @@ my.Grid = Backbone.View.extend({
         });
         doc.destroy().then(function() { 
             self.model.currentDocuments.remove(doc);
-            my.notify("Row deleted successfully");
+            self.trigger('recline:flash', {message: "Row deleted successfully"});
           }).fail(function(err) {
-            my.notify("Errorz! " + err);
+            self.trigger('recline:flash', {message: "Errorz! " + err});
           });
       }
     };
@@ -104,33 +92,18 @@ my.Grid = Backbone.View.extend({
   },
 
   showTransformColumnDialog: function() {
-    var $el = $('.dialog-content');
-    util.show('dialog');
+    var self = this;
     var view = new my.ColumnTransform({
       model: this.model
     });
+    // pass the flash message up the chain
+    view.bind('recline:flash', function(flash) {
+      self.trigger('recline:flash', flash);
+    });
     view.state = this.tempState;
     view.render();
-    $el.empty();
-    $el.append(view.el);
-    util.observeExit($el, function() {
-      util.hide('dialog');
-    });
-    $('.dialog').draggable({ handle: '.dialog-header', cursor: 'move' });
-  },
-
-  showTransformDialog: function() {
-    var $el = $('.dialog-content');
-    util.show('dialog');
-    var view = new recline.View.DataTransform({
-    });
-    view.render();
-    $el.empty();
-    $el.append(view.el);
-    util.observeExit($el, function() {
-      util.hide('dialog');
-    });
-    $('.dialog').draggable({ handle: '.dialog-header', cursor: 'move' });
+    this.el.append(view.el);
+    view.el.modal();
   },
 
   setColumnSort: function(order) {
@@ -293,6 +266,19 @@ my.GridRow = Backbone.View.extend({
 
   // ===================
   // Cell Editor methods
+
+  cellEditorTemplate: ' \
+    <div class="menu-container data-table-cell-editor"> \
+      <textarea class="data-table-cell-editor-editor" bind="textarea">{{value}}</textarea> \
+      <div id="data-table-cell-editor-actions"> \
+        <div class="data-table-cell-editor-action"> \
+          <button class="okButton btn primary">Update</button> \
+          <button class="cancelButton btn danger">Cancel</button> \
+        </div> \
+      </div> \
+    </div> \
+  ',
+
   onEditClick: function(e) {
     var editing = this.el.find('.data-table-cell-editor-editor');
     if (editing.length > 0) {
@@ -301,10 +287,12 @@ my.GridRow = Backbone.View.extend({
     $(e.target).addClass("hidden");
     var cell = $(e.target).siblings('.data-table-cell-value');
     cell.data("previousContents", cell.text());
-    util.render('cellEditor', cell, {value: cell.text()});
+    var templated = $.mustache(this.cellEditorTemplate, {value: cell.text()});
+    cell.html(templated);
   },
 
   onEditorOK: function(e) {
+    var self = this;
     var cell = $(e.target);
     var rowId = cell.parents('tr').attr('data-id');
     var field = cell.parents('td').attr('data-field');
@@ -312,12 +300,13 @@ my.GridRow = Backbone.View.extend({
     var newData = {};
     newData[field] = newValue;
     this.model.set(newData);
-    my.notify("Updating row...", {loader: true});
+    this.trigger('recline:flash', {message: "Updating row...", loader: true});
     this.model.save().then(function(response) {
-        my.notify("Row updated successfully", {category: 'success'});
+        this.trigger('recline:flash', {message: "Row updated successfully", category: 'success'});
       })
       .fail(function() {
-        my.notify('Error saving row', {
+        this.trigger('recline:flash', {
+          message: 'Error saving row',
           category: 'error',
           persist: true
         });

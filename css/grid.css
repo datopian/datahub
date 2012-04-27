@@ -210,10 +210,6 @@ div.data-table-cell-content-numeric > a.data-table-cell-edit {
   * Transform Dialog
   *********************************************************/
 
-#expression-preview-tabs .ui-tabs-nav li a {
-  padding: 0.15em 1em;
-}
-
 textarea.expression-preview-code {
   font-family: monospace;
   height: 5em;

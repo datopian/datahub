@@ -168,12 +168,6 @@ my.DataExplorer = Backbone.View.extend({
       <div class="clearfix"></div> \
     </div> \
     <div class="data-view-container"></div> \
-    <div class="dialog-overlay" style="display: none; z-index: 101; ">&nbsp;</div> \
-    <div class="dialog ui-draggable" style="display: none; z-index: 102; top: 101px; "> \
-      <div class="dialog-frame" style="width: 700px; visibility: visible; "> \
-        <div class="dialog-content dialog-border"></div> \
-      </div> \
-    </div> \
   </div> \
   ',
   events: {
@@ -215,6 +209,7 @@ my.DataExplorer = Backbone.View.extend({
     // these must be called after pageViews are created
     this.render();
     this._bindStateChanges();
+    this._bindFlashNotifications();
     // now do updates based on state (need to come after render)
     if (this.state.get('readOnly')) {
       this.setReadOnly();
@@ -225,24 +220,16 @@ my.DataExplorer = Backbone.View.extend({
       this.updateNav(this.pageViews[0].id);
     }
 
-    this.router = new Backbone.Router();
-    this.setupRouting();
-
     this.model.bind('query:start', function() {
-        my.notify('Loading data', {loader: true});
+        self.notify({message: 'Loading data', loader: true});
       });
     this.model.bind('query:done', function() {
-        my.clearNotifications();
+        self.clearNotifications();
         self.el.find('.doc-count').text(self.model.docCount || 'Unknown');
-        my.notify('Data loaded', {category: 'success'});
-        // update navigation
-        var qs = my.parseHashQueryString();
-        qs.reclineQuery = JSON.stringify(self.model.queryState.toJSON());
-        var out = my.getNewHashForQueryString(qs);
-        // self.router.navigate(out);
+        self.notify({message: 'Data loaded', category: 'success'});
       });
     this.model.bind('query:fail', function(error) {
-        my.clearNotifications();
+        self.clearNotifications();
         var msg = '';
         if (typeof(error) == 'string') {
           msg = error;
@@ -256,7 +243,7 @@ my.DataExplorer = Backbone.View.extend({
         } else {
           msg = 'There was an error querying the backend';
         }
-        my.notify(msg, {category: 'error', persist: true});
+        self.notify({message: msg, category: 'error', persist: true});
       });
 
     // retrieve basic data like fields etc
@@ -266,7 +253,7 @@ my.DataExplorer = Backbone.View.extend({
         self.model.query(self.state.get('query'));
       })
       .fail(function(error) {
-        my.notify(error.message, {category: 'error', persist: true});
+        self.notify({message: error.message, category: 'error', persist: true});
       });
   },
 
@@ -297,21 +284,6 @@ my.DataExplorer = Backbone.View.extend({
     });
     this.$facetViewer = facetViewer.el;
     this.el.find('.header').append(facetViewer.el);
-  },
-
-  setupRouting: function() {
-    var self = this;
-    // Default route
-//    this.router.route(/^(\?.*)?$/, this.pageViews[0].id, function(queryString) {
-//      self.updateNav(self.pageViews[0].id, queryString);
-//    });
-//    $.each(this.pageViews, function(idx, view) {
-//      self.router.route(/^([^?]+)(\?.*)?/, 'view', function(viewId, queryString) {
-//        self.updateNav(viewId, queryString);
-//      });
-//    });
-    this.router.route(/.*/, 'view', function() {
-    });
   },
 
   updateNav: function(pageName) {
@@ -357,7 +329,7 @@ my.DataExplorer = Backbone.View.extend({
   _setupState: function(initialState) {
     var self = this;
     // get data from the query string / hash url plus some defaults
-    var qs = my.parseHashQueryString();
+    var qs = recline.Util.parseHashQueryString();
     var query = qs.reclineQuery;
     query = query ? JSON.parse(query) : self.model.queryState.toJSON();
     // backwards compatability (now named view-graph but was named graph)
@@ -397,6 +369,57 @@ my.DataExplorer = Backbone.View.extend({
         });
       }
     });
+  },
+
+  _bindFlashNotifications: function() {
+    var self = this;
+    _.each(this.pageViews, function(pageView) {
+      pageView.view.bind('recline:flash', function(flash) {
+        self.notify(flash); 
+      });
+    });
+  },
+
+  // ### notify
+  //
+  // Create a notification (a div.alert in div.alert-messsages) using provided
+  // flash object. Flash attributes (all are optional):
+  //
+  // * message: message to show.
+  // * category: warning (default), success, error
+  // * persist: if true alert is persistent, o/w hidden after 3s (default = false)
+  // * loader: if true show loading spinner
+  notify: function(flash) {
+    var tmplData = _.extend({
+      message: '',
+      category: 'warning'
+      },
+      flash
+    );
+    var _template = ' \
+      <div class="alert alert-{{category}} fade in" data-alert="alert"><a class="close" data-dismiss="alert" href="#">×</a> \
+        {{message}} \
+          {{#loader}} \
+          <span class="notification-loader">&nbsp;</span> \
+          {{/loader}} \
+      </div>';
+    var _templated = $.mustache(_template, tmplData); 
+    _templated = $(_templated).appendTo($('.recline-data-explorer .alert-messages'));
+    if (!flash.persist) {
+      setTimeout(function() {
+        $(_templated).fadeOut(1000, function() {
+          $(this).remove();
+        });
+      }, 1000);
+    }
+  },
+
+  // ### clearNotifications
+  //
+  // Clear all existing notifications
+  clearNotifications: function() {
+    var $notifications = $('.recline-data-explorer .alert-messages .alert');
+    $notifications.remove();
   }
 });
 
@@ -637,118 +660,6 @@ my.FacetViewer = Backbone.View.extend({
   }
 });
 
-/* ========================================================== */
-// ## Miscellaneous Utilities
-
-var urlPathRegex = /^([^?]+)(\?.*)?/;
-
-// Parse the Hash section of a URL into path and query string
-my.parseHashUrl = function(hashUrl) {
-  var parsed = urlPathRegex.exec(hashUrl);
-  if (parsed === null) {
-    return {};
-  } else {
-    return {
-      path: parsed[1],
-      query: parsed[2] || ''
-    };
-  }
-};
-
-// Parse a URL query string (?xyz=abc...) into a dictionary.
-my.parseQueryString = function(q) {
-  if (!q) {
-    return {};
-  }
-  var urlParams = {},
-    e, d = function (s) {
-      return unescape(s.replace(/\+/g, " "));
-    },
-    r = /([^&=]+)=?([^&]*)/g;
-
-  if (q && q.length && q[0] === '?') {
-    q = q.slice(1);
-  }
-  while (e = r.exec(q)) {
-    // TODO: have values be array as query string allow repetition of keys
-    urlParams[d(e[1])] = d(e[2]);
-  }
-  return urlParams;
-};
-
-// Parse the query string out of the URL hash
-my.parseHashQueryString = function() {
-  q = my.parseHashUrl(window.location.hash).query;
-  return my.parseQueryString(q);
-};
-
-// Compse a Query String
-my.composeQueryString = function(queryParams) {
-  var queryString = '?';
-  var items = [];
-  $.each(queryParams, function(key, value) {
-    if (typeof(value) === 'object') {
-      value = JSON.stringify(value);
-    }
-    items.push(key + '=' + value);
-  });
-  queryString += items.join('&');
-  return queryString;
-};
-
-my.getNewHashForQueryString = function(queryParams) {
-  var queryPart = my.composeQueryString(queryParams);
-  if (window.location.hash) {
-    // slice(1) to remove # at start
-    return window.location.hash.split('?')[0].slice(1) + queryPart;
-  } else {
-    return queryPart;
-  }
-};
-
-my.setHashQueryString = function(queryParams) {
-  window.location.hash = my.getNewHashForQueryString(queryParams);
-};
-
-// ## notify
-//
-// Create a notification (a div.alert in div.alert-messsages) using provide messages and options. Options are:
-//
-// * category: warning (default), success, error
-// * persist: if true alert is persistent, o/w hidden after 3s (default = false)
-// * loader: if true show loading spinner
-my.notify = function(message, options) {
-  if (!options) options = {};
-  var tmplData = _.extend({
-    msg: message,
-    category: 'warning'
-    },
-    options);
-  var _template = ' \
-    <div class="alert alert-{{category}} fade in" data-alert="alert"><a class="close" data-dismiss="alert" href="#">×</a> \
-      {{msg}} \
-        {{#loader}} \
-        <span class="notification-loader">&nbsp;</span> \
-        {{/loader}} \
-    </div>';
-  var _templated = $.mustache(_template, tmplData); 
-  _templated = $(_templated).appendTo($('.recline-data-explorer .alert-messages'));
-  if (!options.persist) {
-    setTimeout(function() {
-      $(_templated).fadeOut(1000, function() {
-        $(this).remove();
-      });
-    }, 1000);
-  }
-};
-
-// ## clearNotifications
-//
-// Clear all existing notifications
-my.clearNotifications = function() {
-  var $notifications = $('.recline-data-explorer .alert-messages .alert');
-  $notifications.remove();
-};
 
 })(jQuery, recline.View);
 

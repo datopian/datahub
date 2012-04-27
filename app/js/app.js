@@ -2,7 +2,6 @@ jQuery(function($) {
   var app = new ExplorerApp({
     el: $('.recline-app')
   })
-  Backbone.history.start();
 });
 
 var ExplorerApp = Backbone.View.extend({
@@ -15,8 +14,14 @@ var ExplorerApp = Backbone.View.extend({
     this.el = $(this.el);
     this.explorer = null;
     this.explorerDiv = $('.data-explorer-here');
+    _.bindAll(this, 'viewExplorer', 'viewHome');
 
-    var state = recline.View.parseQueryString(window.location.search);
+    this.router = new Backbone.Router();
+    this.router.route('', 'home', this.viewHome);
+    this.router.route(/explorer/, 'explorer', this.viewExplorer);
+    Backbone.history.start();
+
+    var state = recline.Util.parseQueryString(window.location.search);
     if (state) {
       _.each(state, function(value, key) {
         try {
@@ -30,17 +35,33 @@ var ExplorerApp = Backbone.View.extend({
       }
     }
     var dataset = null;
-    if (
-        (state.dataset || state.url) &&
-        // special cases for demo / memory dataset
-        !(state.url === 'demo' || state.backend === 'memory'))
-      {
-      dataset = recline.Model.Dataset.restore(state);
-    } else {
+    // special cases for demo / memory dataset
+    if (state.url === 'demo' || state.backend === 'memory') {
       dataset = localDataset();
     }
-    this.createExplorer(dataset, state);
+    else if (state.dataset || state.url) {
+      dataset = recline.Model.Dataset.restore(state);
+    }
+    if (dataset) {
+      this.createExplorer(dataset, state);
+    }
   },
+
+  viewHome: function() {
+    this.switchView('home');
+  },
+
+  viewExplorer: function() {
+    this.router.navigate('explorer');
+    this.switchView('explorer');
+  },
+
+  switchView: function(path) {
+    $('.backbone-page').hide(); 
+    var cssClass = path.replace('/', '-');
+    $('.page-' + cssClass).show();
+  },
+
 
   // make Explorer creation / initialization in a function so we can call it
   // again and again
@@ -63,12 +84,7 @@ var ExplorerApp = Backbone.View.extend({
     this._setupPermaLink(this.dataExplorer);
     this._setupEmbed(this.dataExplorer);
 
-    // HACK (a bit). Issue is that Backbone will not trigger the route
-    // if you are already at that location so we have to make sure we genuinely switch
-    if (reload) {
-      // this.dataExplorer.router.navigate('graph');
-      // this.dataExplorer.router.navigate('', true);
-    }
+    this.viewExplorer();
   },
 
   _setupPermaLink: function(explorer) {
@@ -96,7 +112,7 @@ var ExplorerApp = Backbone.View.extend({
   },
 
   makePermaLink: function(state) {
-    var qs = recline.View.composeQueryString(state.toJSON());
+    var qs = recline.Util.composeQueryString(state.toJSON());
     return window.location.origin + window.location.pathname + qs;
   },
 
