@@ -757,22 +757,13 @@ my.Graph = Backbone.View.extend({
         <label>Group Column (x-axis)</label> \
         <div class="input editor-group"> \
           <select> \
+          <option value="">Please choose ...</option> \
           {{#fields}} \
           <option value="{{id}}">{{label}}</option> \
           {{/fields}} \
           </select> \
         </div> \
         <div class="editor-series-group"> \
-          <div class="editor-series"> \
-            <label>Series <span>A (y-axis)</span></label> \
-            <div class="input"> \
-              <select> \
-              {{#fields}} \
-              <option value="{{id}}">{{label}}</option> \
-              {{/fields}} \
-              </select> \
-            </div> \
-          </div> \
         </div> \
       </div> \
       <div class="editor-buttons"> \
@@ -784,13 +775,34 @@ my.Graph = Backbone.View.extend({
       </div> \
     </form> \
   </div> \
-  <div class="panel graph"></div> \
+  <div class="panel graph"> \
+    <div class="js-temp-notice alert alert-block"> \
+      <h3 class="alert-heading">Hey there!</h3> \
+      <p>There\'s no graph here yet because we don\'t know what fields you\'d like to see plotted.</p> \
+      <p>Please tell us by <strong>using the menu on the right</strong> and a graph will automatically appear.</p> \
+    </div> \
+  </div> \
 </div> \
 ',
+  templateSeriesEditor: ' \
+    <div class="editor-series js-series-{{seriesIndex}}"> \
+      <label>Series <span>{{seriesName}} (y-axis)</span> \
+        [<a href="#remove" class="action-remove-series">Remove</a>] \
+      </label> \
+      <div class="input"> \
+        <select> \
+        <option value="">Please choose ...</option> \
+        {{#fields}} \
+        <option value="{{id}}">{{label}}</option> \
+        {{/fields}} \
+        </select> \
+      </div> \
+    </div> \
+  ',
 
   events: {
     'change form select': 'onEditorSubmit',
-    'click .editor-add': 'addSeries',
+    'click .editor-add': '_onAddSeries',
     'click .action-remove-series': 'removeSeries',
     'click .action-toggle-help': 'toggleHelp'
   },
@@ -807,7 +819,8 @@ my.Graph = Backbone.View.extend({
     this.model.currentDocuments.bind('reset', this.redraw);
     var stateData = _.extend({
         group: null,
-        series: [],
+        // so that at least one series chooser box shows up
+        series: [""],
         graphType: 'lines-and-points'
       },
       options.state
@@ -817,21 +830,45 @@ my.Graph = Backbone.View.extend({
   },
 
   render: function() {
-    htmls = $.mustache(this.template, this.model.toTemplateJSON());
+    var self = this;
+    var tmplData = this.model.toTemplateJSON();
+    var htmls = $.mustache(this.template, tmplData);
     $(this.el).html(htmls);
-    // now set a load of stuff up
     this.$graph = this.el.find('.panel.graph');
-    // for use later when adding additional series
-    // could be simpler just to have a common template!
-    this.$seriesClone = this.el.find('.editor-series').clone();
-    this._updateSeries();
+
+    // set up editor from state
+    if (this.state.get('graphType')) {
+      this._selectOption('.editor-type', this.state.get('graphType'));
+    }
+    if (this.state.get('group')) {
+      this._selectOption('.editor-group', this.state.get('group'));
+    }
+    _.each(this.state.get('series'), function(series, idx) {
+      self.addSeries(idx);
+      self._selectOption('.editor-series.js-series-' + idx, series);
+    });
     return this;
+  },
+
+  // Private: Helper function to select an option from a select list
+  //
+  _selectOption: function(id,value){
+    var options = this.el.find(id + ' select > option');
+    if (options) {
+      options.each(function(opt){
+        if (this.value == value) {
+          $(this).attr('selected','selected');
+          return false;
+        }
+      });
+    }
   },
 
   onEditorSubmit: function(e) {
     var select = this.el.find('.editor-group select');
-    $editor = this;
-    var series = this.$series.map(function () {
+    var $editor = this;
+    var $series  = this.el.find('.editor-series select');
+    var series = $series.map(function () {
       return $(this).val();
     });
     var updatedState = {
@@ -870,10 +907,20 @@ my.Graph = Backbone.View.extend({
 //    }
   },
 
+  // ### getGraphOptions
+  //
+  // Get options for Flot Graph
+  //
   // needs to be function as can depend on state
+  //
+  // @param typeId graphType id (lines, lines-and-points etc)
   getGraphOptions: function(typeId) { 
     var self = this;
     // special tickformatter to show labels rather than numbers
+    // TODO: we should really use tickFormatter and 1 interval ticks if (and
+    // only if) x-axis values are non-numeric
+    // However, that is non-trivial to work out from a dataset (datasets may
+    // have no field type info). Thus at present we only do this for bars.
     var tickFormatter = function (val) {
       if (self.model.currentDocuments.models[val]) {
         var out = self.model.currentDocuments.models[val].get(self.state.attributes.group);
@@ -886,20 +933,25 @@ my.Graph = Backbone.View.extend({
       }
       return val;
     };
-    // TODO: we should really use tickFormatter and 1 interval ticks if (and
-    // only if) x-axis values are non-numeric
-    // However, that is non-trivial to work out from a dataset (datasets may
-    // have no field type info). Thus at present we only do this for bars.
-    var options = { 
+
+    var xaxis = {};
+    // check for time series on x-axis
+    if (this.model.fields.get(this.state.get('group')).get('type') === 'date') {
+      xaxis.mode = 'time';
+      xaxis.timeformat = '%y-%b';
+    }
+    var optionsPerGraphType = { 
       lines: {
-         series: { 
-           lines: { show: true }
-         }
+        series: { 
+          lines: { show: true }
+        },
+        xaxis: xaxis
       },
       points: {
         series: {
           points: { show: true }
         },
+        xaxis: xaxis,
         grid: { hoverable: true, clickable: true }
       },
       'lines-and-points': {
@@ -907,6 +959,7 @@ my.Graph = Backbone.View.extend({
           points: { show: true },
           lines: { show: true }
         },
+        xaxis: xaxis,
         grid: { hoverable: true, clickable: true }
       },
       bars: {
@@ -930,7 +983,7 @@ my.Graph = Backbone.View.extend({
         }
       }
     };
-    return options[typeId];
+    return optionsPerGraphType[typeId];
   },
 
   setupTooltips: function() {
@@ -987,8 +1040,15 @@ my.Graph = Backbone.View.extend({
     _.each(this.state.attributes.series, function(field) {
       var points = [];
       _.each(self.model.currentDocuments.models, function(doc, index) {
-        var x = doc.get(self.state.attributes.group);
-        var y = doc.get(field);
+        var xfield = self.model.fields.get(self.state.attributes.group);
+        var x = doc.getFieldValue(xfield);
+        // time series
+        var isDateTime = xfield.get('type') === 'date';
+        if (isDateTime) {
+          x = new Date(x);
+        }
+        var yfield = self.model.fields.get(field);
+        var y = doc.getFieldValue(yfield);
         if (typeof x === 'string') {
           x = index;
         }
@@ -1006,21 +1066,23 @@ my.Graph = Backbone.View.extend({
 
   // Public: Adds a new empty series select box to the editor.
   //
-  // All but the first select box will have a remove button that allows them
-  // to be removed.
+  // @param [int] idx index of this series in the list of series
   //
   // Returns itself.
-  addSeries: function (e) {
-    e.preventDefault();
-    var element = this.$seriesClone.clone(),
-        label   = element.find('label'),
-        index   = this.$series.length;
+  addSeries: function (idx) {
+    var data = _.extend({
+      seriesIndex: idx,
+      seriesName: String.fromCharCode(idx + 64 + 1),
+    }, this.model.toTemplateJSON());
 
-    this.el.find('.editor-series-group').append(element);
-    this._updateSeries();
-    label.append(' [<a href="#remove" class="action-remove-series">Remove</a>]');
-    label.find('span').text(String.fromCharCode(this.$series.length + 64));
+    var htmls = $.mustache(this.templateSeriesEditor, data);
+    this.el.find('.editor-series-group').append(htmls);
     return this;
+  },
+
+  _onAddSeries: function(e) {
+    e.preventDefault();
+    this.addSeries(this.state.get('series').length);
   },
 
   // Public: Removes a series list item from the editor.
@@ -1030,26 +1092,12 @@ my.Graph = Backbone.View.extend({
     e.preventDefault();
     var $el = $(e.target);
     $el.parent().parent().remove();
-    this._updateSeries();
-    this.$series.each(function (index) {
-      if (index > 0) {
-        var labelSpan = $(this).prev().find('span');
-        labelSpan.text(String.fromCharCode(index + 65));
-      }
-    });
     this.onEditorSubmit();
   },
 
   toggleHelp: function() {
     this.el.find('.editor-info').toggleClass('editor-hide-info');
   },
-
-  // Private: Resets the series property to reference the select elements.
-  //
-  // Returns itself.
-  _updateSeries: function () {
-    this.$series  = this.el.find('.editor-series select');
-  }
 });
 
 })(jQuery, recline.View);
@@ -1199,6 +1247,8 @@ my.Grid = Backbone.View.extend({
     var hiddenFields = this.state.get('hiddenFields');
     hiddenFields.push(this.tempState.currentColumn);
     this.state.set({hiddenFields: hiddenFields});
+    // change event not being triggered (because it is an array?) so trigger manually
+    this.state.trigger('change');
     this.render();
   },
   
@@ -1404,7 +1454,7 @@ this.recline.View = this.recline.View || {};
 //
 // <pre>
 //   {
-//     // geomField if specified will be used in preference to lat/lon 
+//     // geomField if specified will be used in preference to lat/lon
 //     geomField: {id of field containing geometry in the dataset}
 //     lonField: {id of field containing longitude in the dataset}
 //     latField: {id of field containing latitude in the dataset}
@@ -1462,6 +1512,11 @@ my.Map = Backbone.View.extend({
       <div class="editor-buttons"> \
         <button class="btn editor-update-map">Update</button> \
       </div> \
+      <div class="editor-options" > \
+        <label class="checkbox"> \
+          <input type="checkbox" id="editor-auto-zoom" checked="checked" /> \
+          Auto zoom to features</label> \
+      </div> \
       <input type="hidden" class="editor-id" value="map-1" /> \
       </div> \
     </form> \
@@ -1479,7 +1534,8 @@ my.Map = Backbone.View.extend({
   // Define here events for UI elements
   events: {
     'click .editor-update-map': 'onEditorSubmit',
-    'change .editor-field-type': 'onFieldTypeChange'
+    'change .editor-field-type': 'onFieldTypeChange',
+    'change #editor-auto-zoom': 'onAutoZoomChange'
   },
 
   initialize: function(options) {
@@ -1498,15 +1554,27 @@ my.Map = Backbone.View.extend({
 
     // Listen to changes in the documents
     this.model.currentDocuments.bind('add', function(doc){self.redraw('add',doc)});
+    this.model.currentDocuments.bind('change', function(doc){
+        self.redraw('remove',doc);
+        self.redraw('add',doc);
+    });
     this.model.currentDocuments.bind('remove', function(doc){self.redraw('remove',doc)});
     this.model.currentDocuments.bind('reset', function(){self.redraw('reset')});
 
-    // If the div was hidden, Leaflet needs to recalculate some sizes
-    // to display properly
     this.bind('view:show',function(){
-        if (self.map) {
-          self.map.invalidateSize();
+      // If the div was hidden, Leaflet needs to recalculate some sizes
+      // to display properly
+      if (self.map){
+        self.map.invalidateSize();
+        if (self._zoomPending && self.autoZoom) {
+          self._zoomToFeatures();
+          self._zoomPending = false;
         }
+      }
+      self.visible = true;
+    });
+    this.bind('view:hide',function(){
+      self.visible = false;
     });
 
     var stateData = _.extend({
@@ -1518,6 +1586,7 @@ my.Map = Backbone.View.extend({
     );
     this.state = new recline.Model.ObjectState(stateData);
 
+    this.autoZoom = true;
     this.mapReady = false;
     this.render();
   },
@@ -1583,6 +1652,13 @@ my.Map = Backbone.View.extend({
         this.features.clearLayers();
         this._add(this.model.currentDocuments.models);
       }
+      if (action != 'reset' && this.autoZoom){
+        if (this.visible){
+          this._zoomToFeatures();
+        } else {
+          this._zoomPending = true;
+        }
+      }
     }
   },
 
@@ -1629,6 +1705,10 @@ my.Map = Backbone.View.extend({
     }
   },
 
+  onAutoZoomChange: function(e){
+    this.autoZoom = !this.autoZoom;
+  },
+
   // Private: Add one or n features to the map
   //
   // For each document passed, a GeoJSON geometry will be extracted and added
@@ -1656,7 +1736,9 @@ my.Map = Backbone.View.extend({
         // TODO: mustache?
         html = ''
         for (key in doc.attributes){
-          html += '<div><strong>' + key + '</strong>: '+ doc.attributes[key] + '</div>'
+          if (!(self.state.get('geomField') && key == self.state.get('geomField'))){
+            html += '<div><strong>' + key + '</strong>: '+ doc.attributes[key] + '</div>';
+          }
         }
         feature.properties = {popupContent: html};
 
@@ -1707,19 +1789,22 @@ my.Map = Backbone.View.extend({
   _getGeometryFromDocument: function(doc){
     if (this.geomReady){
       if (this.state.get('geomField')){
-        // We assume that the contents of the field are a valid GeoJSON object
-        return doc.attributes[this.state.get('geomField')];
+        var value = doc.get(this.state.get('geomField'));
+        if (typeof(value) === 'string'){
+          // We have a GeoJSON string representation
+          return $.parseJSON(value);
+        } else {
+          // We assume that the contents of the field are a valid GeoJSON object
+          return value;
+        }
       } else if (this.state.get('lonField') && this.state.get('latField')){
         // We'll create a GeoJSON like point object from the two lat/lon fields
         var lon = doc.get(this.state.get('lonField'));
         var lat = doc.get(this.state.get('latField'));
-        if (lon && lat) {
+        if (!isNaN(parseFloat(lon)) && !isNaN(parseFloat(lat))) {
           return {
             type: 'Point',
-            coordinates: [
-              doc.attributes[this.state.get('lonField')],
-              doc.attributes[this.state.get('latField')]
-              ]
+            coordinates: [lon,lat]
           };
         }
       }
@@ -1761,6 +1846,18 @@ my.Map = Backbone.View.extend({
     return null;
   },
 
+  // Private: Zoom to map to current features extent if any, or to the full
+  // extent if none.
+  //
+  _zoomToFeatures: function(){
+    var bounds = this.features.getBounds();
+    if (bounds){
+      this.map.fitBounds(bounds);
+    } else {
+      this.map.setView(new L.LatLng(0, 0), 2);
+    }
+  },
+
   // Private: Sets up the Leaflet map control and the features layer.
   //
   // The map uses a base layer from [MapQuest](http://www.mapquest.com) based
@@ -1785,6 +1882,24 @@ my.Map = Backbone.View.extend({
        }
 
     });
+
+    // This will be available in the next Leaflet stable release.
+    // In the meantime we add it manually to our layer.
+    this.features.getBounds = function(){
+      var bounds = new L.LatLngBounds();
+      this._iterateLayers(function (layer) {
+        if (layer instanceof L.Marker){
+          bounds.extend(layer.getLatLng());
+        } else {
+          if (layer.getBounds){
+            bounds.extend(layer.getBounds().getNorthEast());
+            bounds.extend(layer.getBounds().getSouthWest());
+          }
+        }
+      }, this);
+      return (typeof bounds.getNorthEast() !== 'undefined') ? bounds : null;
+    }
+
     this.map.addLayer(this.features);
 
     this.map.setView(new L.LatLng(0, 0), 2);
@@ -2411,7 +2526,9 @@ my.DataExplorer = Backbone.View.extend({
         pageView.view.state.bind('change', function() {
           var update = {};
           update['view-' + pageView.id] = pageView.view.state.toJSON();
-          self.state.set(update);
+          // had problems where change not being triggered for e.g. grid view so let's do it explicitly
+          self.state.set(update, {silent: true});
+          self.state.trigger('change');
         });
       }
     });
@@ -3404,7 +3521,9 @@ this.recline.Backend = this.recline.Backend || {};
     var options = options || {};
     var trm = options.trim;
     var separator = options.separator || ',';
-    
+    var delimiter = options.delimiter || '"';
+
+
     var cur = '', // The character we are currently processing.
       inQuote = false,
       fieldQuoted = false,
@@ -3451,8 +3570,8 @@ this.recline.Backend = this.recline.Backend || {};
         field = '';
         fieldQuoted = false;
       } else {
-        // If it's not a ", add it to the field buffer
-        if (cur !== '"') {
+        // If it's not a delimiter, add it to the field buffer
+        if (cur !== delimiter) {
           field += cur;
         } else {
           if (!inQuote) {
@@ -3460,9 +3579,9 @@ this.recline.Backend = this.recline.Backend || {};
             inQuote = true;
             fieldQuoted = true;
           } else {
-            // Next char is ", this is an escaped "
-            if (s.charAt(i + 1) === '"') {
-              field += '"';
+            // Next char is delimiter, this is an escaped delimiter
+            if (s.charAt(i + 1) === delimiter) {
+              field += delimiter;
               // Skip the next char
               i += 1;
             } else {

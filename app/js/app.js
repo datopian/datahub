@@ -2,7 +2,6 @@ jQuery(function($) {
   var app = new ExplorerApp({
     el: $('.recline-app')
   })
-  Backbone.history.start();
 });
 
 var ExplorerApp = Backbone.View.extend({
@@ -15,8 +14,14 @@ var ExplorerApp = Backbone.View.extend({
     this.el = $(this.el);
     this.explorer = null;
     this.explorerDiv = $('.data-explorer-here');
+    _.bindAll(this, 'viewExplorer', 'viewHome');
 
-    var state = recline.View.parseQueryString(window.location.search);
+    this.router = new Backbone.Router();
+    this.router.route('', 'home', this.viewHome);
+    this.router.route(/explorer/, 'explorer', this.viewExplorer);
+    Backbone.history.start();
+
+    var state = recline.Util.parseQueryString(window.location.search);
     if (state) {
       _.each(state, function(value, key) {
         try {
@@ -30,13 +35,33 @@ var ExplorerApp = Backbone.View.extend({
       }
     }
     var dataset = null;
-    if (state.dataset || state.url) {
-      dataset = recline.Model.Dataset.restore(state);
-    } else {
+    // special cases for demo / memory dataset
+    if (state.url === 'demo' || state.backend === 'memory') {
       dataset = localDataset();
     }
-    this.createExplorer(dataset, state);
+    else if (state.dataset || state.url) {
+      dataset = recline.Model.Dataset.restore(state);
+    }
+    if (dataset) {
+      this.createExplorer(dataset, state);
+    }
   },
+
+  viewHome: function() {
+    this.switchView('home');
+  },
+
+  viewExplorer: function() {
+    this.router.navigate('explorer');
+    this.switchView('explorer');
+  },
+
+  switchView: function(path) {
+    $('.backbone-page').hide(); 
+    var cssClass = path.replace('/', '-');
+    $('.page-' + cssClass).show();
+  },
+
 
   // make Explorer creation / initialization in a function so we can call it
   // again and again
@@ -59,12 +84,7 @@ var ExplorerApp = Backbone.View.extend({
     this._setupPermaLink(this.dataExplorer);
     this._setupEmbed(this.dataExplorer);
 
-    // HACK (a bit). Issue is that Backbone will not trigger the route
-    // if you are already at that location so we have to make sure we genuinely switch
-    if (reload) {
-      // this.dataExplorer.router.navigate('graph');
-      // this.dataExplorer.router.navigate('', true);
-    }
+    this.viewExplorer();
   },
 
   _setupPermaLink: function(explorer) {
@@ -92,7 +112,7 @@ var ExplorerApp = Backbone.View.extend({
   },
 
   makePermaLink: function(state) {
-    var qs = recline.View.composeQueryString(state.toJSON());
+    var qs = recline.Util.composeQueryString(state.toJSON());
     return window.location.origin + window.location.pathname + qs;
   },
 
@@ -128,6 +148,7 @@ var ExplorerApp = Backbone.View.extend({
     var file = $file.files[0];
     var options = {
       separator : $form.find('input[name="separator"]').val(),
+      delimiter : $form.find('input[name="delimiter"]').val(),
       encoding : $form.find('input[name="encoding"]').val()
     };
     recline.Backend.loadFromCSVFile(file, function(dataset) {
@@ -140,26 +161,7 @@ var ExplorerApp = Backbone.View.extend({
 
 // provide a demonstration in memory dataset
 function localDataset() {
-  var datasetId = 'test-dataset';
-  var inData = {
-    metadata: {
-      title: 'My Test Dataset'
-      , name: '1-my-test-dataset' 
-      , id: datasetId
-    },
-    fields: [{id: 'x'}, {id: 'y'}, {id: 'z'}, {id: 'country'}, {id: 'label'},{id: 'lat'},{id: 'lon'}],
-    documents: [
-      {id: 0, x: 1, y: 2, z: 3, country: 'DE', label: 'first', lat:52.56, lon:13.40}
-      , {id: 1, x: 2, y: 4, z: 6, country: 'UK', label: 'second', lat:54.97, lon:-1.60}
-      , {id: 2, x: 3, y: 6, z: 9, country: 'US', label: 'third', lat:40.00, lon:-75.5}
-      , {id: 3, x: 4, y: 8, z: 12, country: 'UK', label: 'fourth', lat:57.27, lon:-6.20}
-      , {id: 4, x: 5, y: 10, z: 15, country: 'UK', label: 'fifth', lat:51.58, lon:0}
-      , {id: 5, x: 6, y: 12, z: 18, country: 'DE', label: 'sixth', lat:51.04, lon:7.9}
-    ]
-  };
-  var backend = new recline.Backend.Memory();
-  backend.addDataset(inData);
-  var dataset = new recline.Model.Dataset({id: datasetId}, backend);
+  var dataset = Fixture.getDataset();
   dataset.queryState.addFacet('country');
   return dataset;
 }
