@@ -156,11 +156,7 @@ function localDataset(callback) {
     , {id: 5, x: 6, y: 12, z: 18, country: 'DE', label: 'sixth', lat:51.04, lon:7.9}
   ]
   var backend = new recline.Backend.PouchFilter();
-  // backend.addDataset(inData)
-  // var dataset = new recline.Model.Dataset({id: datasetId}, backend);
-  // callback(dataset)
   backend.addDataset(inData, function(err, db) {
-    console.log(JSON.stringify(documents))
     db.bulkDocs({docs: documents}, function(err, resp) {
       var dataset = new recline.Model.Dataset({id: datasetId}, backend);
       // dataset.queryState.addFacet('country');

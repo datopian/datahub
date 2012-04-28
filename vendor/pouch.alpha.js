@@ -474,26 +474,6 @@ Pouch.Errors = {
     return root;
   }
 
-  // Turn a tree into a list of rootToLeaf paths
-  function expandTree(all, current, pos, arr) {
-    current = current.slice(0);
-    current.push(arr[0]);
-    if (!arr[1].length) {
-      all.push({pos: pos, ids: current});
-    }
-    arr[1].forEach(function(child) {
-      expandTree(all, current, pos, child);
-    });
-  }
-
-  function rootToLeaf(tree) {
-    var all = [];
-    tree.forEach(function(path) {
-      expandTree(all, [], path.pos, path.ids);
-    });
-    return all;
-  }
-
   // To ensure we dont grow the revision tree infinitely, we stem old revisions
   function stem(tree, depth) {
     // First we break out the tree into a complete list of root to leaf paths,
@@ -830,6 +810,35 @@ var writeCheckpoint = function(src, target, checkpoint, callback) {
       callback();
     });
   });
+};
+
+// Turn a tree into a list of rootToLeaf paths
+function expandTree2(all, current, pos, arr) {
+  current = current.slice(0);
+  current.push(arr[0]);
+  if (!arr[1].length) {
+    all.push({pos: pos, ids: current});
+  }
+  arr[1].forEach(function(child) {
+    expandTree2(all, current, pos, child);
+  });
+}
+
+function rootToLeaf(tree) {
+  var all = [];
+  tree.forEach(function(path) {
+    expandTree2(all, [], path.pos, path.ids);
+  });
+  return all;
+}
+
+var arrayFirst = function(arr, callback) {
+  for (var i = 0; i < arr.length; i++) {
+    if (callback(arr[i], i) === true) {
+      return arr[i];
+    }
+  }
+  return false;
 };
 
 // Basic wrapper for localStorage
@@ -1396,11 +1405,17 @@ var IdbPouch = function(opts, callback) {
 
     cursReq.onsuccess = function(event) {
       var cursor = event.target.result;
-      if (cursor) {
+      if (cursor && buckets.length) {
         var bucket = buckets.shift();
-        update(cursor, cursor.value, bucket[0], function() {
-          markConflicts(bucket);
-        });
+        if (cursor.key === bucket[0].metadata.id) {
+          update(cursor, cursor.value, bucket[0], function() {
+            markConflicts(bucket);
+          });
+        } else {
+          insert(bucket[0], function() {
+            markConflicts(bucket);
+          });
+        }
       } else {
         // Cursor has exceeded the key range so the rest are inserts
         buckets.forEach(function(bucket) {
@@ -1458,6 +1473,16 @@ var IdbPouch = function(opts, callback) {
         delete doc._junk;
         doc._id = metadata.id;
         doc._rev = metadata.rev;
+        if (opts.revs) {
+          var path = arrayFirst(rootToLeaf(metadata.rev_tree), function(arr) {
+            return arr.ids.indexOf(metadata.rev.split('-')[1]) !== -1;
+          });
+          path.ids.reverse();
+          doc._revisions = {
+            start: (path.pos + path.ids.length) - 1,
+            ids: path.ids
+          };
+        }
         if (opts.revs_info) {
           doc._revs_info = metadata.rev_tree.reduce(function(prev, current) {
             return prev.concat(collectRevs(current));
