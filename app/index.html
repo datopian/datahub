@@ -93,36 +93,6 @@
     </div>
   </div>
 
-  <div class="modal fade in js-import-dialog-url" style="display: none;">
-    <div class="modal-header">
-      <a class="close" data-dismiss="modal">×</a>
-      <h3>Import from URL</h3> 
-    </div>
-    <div class="modal-body">
-      <form class="js-import-url form-horizontal">
-        <div class="control-group">
-          <label class="control-label">URL</label>
-          <div class="controls">
-            <input type="text" name="source" class="input-xlarge" />
-          </div>
-        </div>
-        <div class="control-group">
-          <label class="control-label">Type of data</label>
-          <div class="controls">
-            <select name="backend_type">
-              <option value="elasticsearch">ElasticSearch</option>
-              <option value="dataproxy">CSV or Excel</option>
-              <option value="gdocs">Google Spreadsheet</option>
-            </select>
-          </div>
-        </div>
-        <div class="form-actions">
-          <button type="submit" class="btn btn-primary">Import &raquo;</button>
-        </div>
-      </form>
-    </div>
-  </div>
-
   <div class="container-fluid">
     <div class="content">
       <div class="page-home backbone-page">
@@ -164,9 +134,38 @@
         <div class="data-explorer-here"></div>
       </div>
     </div>
-  </div>
 
   <!-- modals for menus -->
+  <div class="modal fade in js-import-dialog-url" style="display: none;">
+    <div class="modal-header">
+      <a class="close" data-dismiss="modal">×</a>
+      <h3>Import from URL</h3> 
+    </div>
+    <div class="modal-body">
+      <form class="js-import-url form-horizontal">
+        <div class="control-group">
+          <label class="control-label">URL</label>
+          <div class="controls">
+            <input type="text" name="source" class="input-xlarge" />
+          </div>
+        </div>
+        <div class="control-group">
+          <label class="control-label">Type of data</label>
+          <div class="controls">
+            <select name="backend_type">
+              <option value="elasticsearch">ElasticSearch</option>
+              <option value="dataproxy">CSV or Excel</option>
+              <option value="gdocs">Google Spreadsheet</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-actions">
+          <button type="submit" class="btn btn-primary">Import &raquo;</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
   <div class="modal fade in js-import-dialog-file" style="display: none;">
     <div class="modal-header">
       <a class="close" data-dismiss="modal">×</a>
