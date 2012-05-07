@@ -128,14 +128,17 @@ var ExplorerApp = Backbone.View.extend({
     $('.modal.js-import-dialog-url').modal('hide');
     var $form = $(e.target);
     var source = $form.find('input[name="source"]').val();
+    var datasetInfo = {
+      id: 'my-dataset',
+      url: source,
+      webstore_url: source
+    };
     var type = $form.find('select[name="backend_type"]').val();
-    var dataset = new recline.Model.Dataset({
-        id: 'my-dataset',
-        url: source,
-        webstore_url: source
-      },
-      type
-    );
+    if (type === 'csv' || type === 'excel') {
+      datasetInfo.format = type;
+      type = 'dataproxy';
+    }
+    var dataset = new recline.Model.Dataset(datasetInfo, type);
     this.createExplorer(dataset);
   },
 

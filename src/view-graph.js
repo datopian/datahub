@@ -301,6 +301,12 @@ my.Graph = Backbone.View.extend({
           $("#flot-tooltip").remove();
           var x = item.datapoint[0];
           var y = item.datapoint[1];
+          // it's horizontal so we have to flip
+          if (self.state.attributes.graphType === 'bars') {
+            var _tmp = x;
+            x = y;
+            y = _tmp;
+          }
           // convert back from 'index' value on x-axis (e.g. in cases where non-number values)
           if (self.model.currentDocuments.models[x]) {
             x = self.model.currentDocuments.models[x].get(self.state.attributes.group);

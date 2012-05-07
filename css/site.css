@@ -110,28 +110,10 @@ a.dotted:hover {
   background-color: #bc130e \9;
 }
 
-a.btn-large.showtitle[title] {
-	position:relative;
-	margin-bottom:26px;
-	min-width:117px;
-}
-a.btn-large.showtitle[title]:after {
-  content: attr(title);
-	position:absolute;
-	bottom:-26px;
-	left:0px;
-	font-size:12px;
-	height:26px;
-	line-height:26px;
-	min-width:145px;
-	text-align:center;
-}
-
 .btn-large .icon-large {
 	height:25px;
 	width:25px;
-	margin-top:-2px;
-	margin-left:-25px;
+	margin-top:-4px;
 	margin-right:7px;
 }
 .btn-large .icon-white.icon-large {
@@ -177,12 +159,16 @@ a.btn-large.showtitle[title]:after {
   box-shadow: none;
 }
 
+body {
+  padding-top: 60px;
+}
+
 section {
 	padding-top:20px;
 }
 
-.page-header {
-	margin-top:50px;
+.home-page.page-header {
+	margin-top:-10px;
 	background: #2d2d2d; /* Old browsers */
 	background: -moz-linear-gradient(top, #2d2d2d 0%, #040404 100%); /* FF3.6+ */
 	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#2d2d2d), color-stop(100%,#040404)); /* Chrome,Safari4+ */
@@ -197,45 +183,36 @@ section {
 	border:none;
 	font-family:'Open Sans', Helvetica, Arial, sans-serif;
 }
-.page-header a {
+.home-page.page-header a {
 	color:#FFF;
 }
-.page-header a.dotted {
+.home-page.page-header a.dotted {
 	border-color:#FFF;
 }
-.page-header .container {
+.home-page.page-header .container {
 	background-image: url(images/header-screen.png);
 	background-repeat: no-repeat;
 	background-position: -3px 0px;
 }
-.page-header .inner {
+.home-page.page-header .inner {
 	padding:0px 0px 30px 40px;
 	font-size:16px;
 }
-.page-header .inner ol {
+.home-page.page-header .inner ol {
 	list-style-type:upper-latin;
 	font-size:20px;
 	font-style:italic;
 }
-.page-header .inner .header-button {
+.home-page.page-header .inner .header-button {
 	display:inline-block;
 }
 
-.page-header:after {
+.home-page.page-header:after {
 	margin-top:-14px;
 }
 
 section.grey {
 	background-color:#f5f5f5;
-}
-
-section:after {
-	content: " ";
-	height:14px;
-	display:block;
-	background-image: url(images/zigzags.png);
-	background-repeat: repeat-x;
-	background-position: center 1px;
 }
 
 section.grey:after {
@@ -245,6 +222,7 @@ section.grey:after {
 .footer {
 	background-color:#040404;
 	color:#CCC;
+  margin-top: 30px;
 }
 .footer:before {
 	content: " ";
