@@ -83,37 +83,46 @@ this.recline.Backend = this.recline.Backend || {};
       var start = queryObj.from;
       
       var firstField = self.datasets[model.id].fields[0]
-      self._initializeFilter(model, firstField)
+      var filter = self._makeFilter(model, firstField)
+      
+      console.log('query', queryObj)
       
       // var results = this._applyFilters(model, queryObj);
       // this._applyFreeTextQuery(model, results, queryObj);
       
-      // not complete sorting!
-      // _.each(queryObj.sort, function(sortObj) {
-      //   var fieldName = _.keys(sortObj)[0];
-      //   results = _.sortBy(results, function(doc) {
-      //     var _out = doc[fieldName];
-      //     return (sortObj[fieldName].order == 'asc') ? _out : -1*_out;
-      //   });
-      // });
+      if (queryObj.sort && queryObj.sort.length > 0) {
+        // dont support multiple sorts for now but maintain api compat with ES
+        var sortObj = _.first(queryObj.sort)
+        var fieldName = _.keys(sortObj)[0]
+        filter = self._makeFilter(model, fieldName, sortObj)
+        var results = filter.top(queryObj.size)
+      } else {
+        var results = filter.top(numRows)
+      }
       
       // out.facets = this._computeFacets(results, queryObj);
       
-      var results = self.pouchfilters[model.id][firstField].top(numRows)
-      var total = results.length;
-      resultsObj = this._docsToQueryResult(results);
-      _.extend(out, resultsObj);
-      out.total = total;
+      var total = results.length
+      resultsObj = this._docsToQueryResult(results)
+      _.extend(out, resultsObj)
+      out.total = total
       console.log(out)
-      dfd.resolve(out);
-      return dfd.promise();
+      dfd.resolve(out)
+      return dfd.promise()
     },
     
-    _initializeFilter: function(model, field) {
-      var self = this
-      if (!self.pouchfilters[model.id]) self.pouchfilters[model.id] = {}
-      if (self.pouchfilters[model.id][field]) return
-      else self.pouchfilters[model.id][field] = this.crossfilter[model.id].dimension(function(r) { return r[field] })
+    // idempotent
+    _makeFilter: function(model, field, sortObj) {
+      var sort = "desc"
+      if (sortObj) sort = sortObj[field].order
+      if (!this.pouchfilters[model.id]) this.pouchfilters[model.id] = {}
+      var filters = this.pouchfilters[model.id]
+      if (!filters[field]) filters[field] = {}
+      if (filters[field][sort]) return filters[field][sort]
+      var dimension = function(r) { return r[field] }
+      if (sort == 'asc') dimension = function(r) { return -1 * r[field] }
+      filters[field][sort] = this.crossfilter[model.id].dimension(dimension)
+      return filters[field][sort]
     },
 
     // in place filtering
@@ -122,7 +131,7 @@ this.recline.Backend = this.recline.Backend || {};
       var rows = []
       _.each(queryObj.filters, function(filter) {
         var fieldId = _.keys(filter.term)[0]
-        self._initializeFilter(model, fieldId)
+        self._makeFilter(model, fieldId)
         rows.concat(self.pouchfilters[model.id][field].top(queryObj.size))
       })
       return rows;
