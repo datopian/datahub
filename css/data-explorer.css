@@ -38,6 +38,16 @@
   float: left;
 }
 
+/* needed for Chrome but not FF */
+.header .recline-query-editor .add-on {
+  margin-left: -27px;
+}
+
+/* needed for FF but not chrome */
+.header .recline-query-editor .input-prepend {
+  vertical-align: top;
+}
+
 .header .recline-query-editor .pagination input {
   width: 30px;
   height: 18px;
