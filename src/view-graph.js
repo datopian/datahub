@@ -111,7 +111,7 @@ my.Graph = Backbone.View.extend({
     var stateData = _.extend({
         group: null,
         // so that at least one series chooser box shows up
-        series: [""],
+        series: [],
         graphType: 'lines-and-points'
       },
       options.state
@@ -134,7 +134,12 @@ my.Graph = Backbone.View.extend({
     if (this.state.get('group')) {
       this._selectOption('.editor-group', this.state.get('group'));
     }
-    _.each(this.state.get('series'), function(series, idx) {
+    // ensure at least one series box shows up
+    var tmpSeries = [""];
+    if (this.state.get('series').length > 0) {
+      tmpSeries = this.state.get('series');
+    }
+    _.each(tmpSeries, function(series, idx) {
       self.addSeries(idx);
       self._selectOption('.editor-series.js-series-' + idx, series);
     });
@@ -182,20 +187,13 @@ my.Graph = Backbone.View.extend({
     if ((!areWeVisible || this.model.currentDocuments.length === 0)) {
       return;
     }
-    var series = this.createSeries();
-    var options = this.getGraphOptions(this.state.attributes.graphType);
-    this.plot = $.plot(this.$graph, series, options);
-    this.setupTooltips();
-    // create this.plot and cache it
-//    if (!this.plot) {
-//      this.plot = $.plot(this.$graph, series, options);
-//    } else {
-//      this.plot.parseOptions(options);
-//      this.plot.setData(this.createSeries());
-//      this.plot.resize();
-//      this.plot.setupGrid();
-//      this.plot.draw();
-//    }
+    // check we have something to plot
+    if (this.state.get('group') && this.state.get('series')) {
+      var series = this.createSeries();
+      var options = this.getGraphOptions(this.state.attributes.graphType);
+      this.plot = $.plot(this.$graph, series, options);
+      this.setupTooltips();
+    }
   },
 
   // ### getGraphOptions
