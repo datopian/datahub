@@ -82,7 +82,6 @@ my.Graph = Backbone.View.extend({
       </label> \
       <div class="input"> \
         <select> \
-        <option value="">Please choose ...</option> \
         {{#fields}} \
         <option value="{{id}}">{{label}}</option> \
         {{/fields}} \
@@ -102,16 +101,22 @@ my.Graph = Backbone.View.extend({
     var self = this;
     this.el = $(this.el);
     _.bindAll(this, 'render', 'redraw');
-    // we need the model.fields to render properly
+    this.needToRedraw = false;
     this.model.bind('change', this.render);
     this.model.fields.bind('reset', this.render);
     this.model.fields.bind('add', this.render);
     this.model.currentDocuments.bind('add', this.redraw);
     this.model.currentDocuments.bind('reset', this.redraw);
+    // because we cannot redraw when hidden we may need when becoming visible
+    this.bind('view:show', function() {
+      if (this.needToRedraw) {
+        self.redraw();
+      }
+    });
     var stateData = _.extend({
         group: null,
         // so that at least one series chooser box shows up
-        series: [""],
+        series: [],
         graphType: 'lines-and-points'
       },
       options.state
@@ -134,7 +139,12 @@ my.Graph = Backbone.View.extend({
     if (this.state.get('group')) {
       this._selectOption('.editor-group', this.state.get('group'));
     }
-    _.each(this.state.get('series'), function(series, idx) {
+    // ensure at least one series box shows up
+    var tmpSeries = [""];
+    if (this.state.get('series').length > 0) {
+      tmpSeries = this.state.get('series');
+    }
+    _.each(tmpSeries, function(series, idx) {
       self.addSeries(idx);
       self._selectOption('.editor-series.js-series-' + idx, series);
     });
@@ -180,22 +190,16 @@ my.Graph = Backbone.View.extend({
     // * There is no data for the plot -- either same error or may have issues later with errors like 'non-existent node-value' 
     var areWeVisible = !jQuery.expr.filters.hidden(this.el[0]);
     if ((!areWeVisible || this.model.currentDocuments.length === 0)) {
+      this.needToRedraw = true;
       return;
     }
-    var series = this.createSeries();
-    var options = this.getGraphOptions(this.state.attributes.graphType);
-    this.plot = $.plot(this.$graph, series, options);
-    this.setupTooltips();
-    // create this.plot and cache it
-//    if (!this.plot) {
-//      this.plot = $.plot(this.$graph, series, options);
-//    } else {
-//      this.plot.parseOptions(options);
-//      this.plot.setData(this.createSeries());
-//      this.plot.resize();
-//      this.plot.setupGrid();
-//      this.plot.draw();
-//    }
+    // check we have something to plot
+    if (this.state.get('group') && this.state.get('series')) {
+      var series = this.createSeries();
+      var options = this.getGraphOptions(this.state.attributes.graphType);
+      this.plot = $.plot(this.$graph, series, options);
+      this.setupTooltips();
+    }
   },
 
   // ### getGraphOptions
@@ -314,6 +318,13 @@ my.Graph = Backbone.View.extend({
             x = x.toFixed(2);
           }
           y = y.toFixed(2);
+
+          // is it time series
+          var xfield = self.model.fields.get(self.state.attributes.group);
+          var isDateTime = xfield.get('type') === 'date';
+          if (isDateTime) {
+            x = new Date(parseInt(x)).toLocaleDateString();
+          }
           
           var content = _.template('<%= group %> = <%= x %>, <%= series %> = <%= y %>', {
             group: self.state.attributes.group,
