@@ -318,6 +318,13 @@ my.Graph = Backbone.View.extend({
             x = x.toFixed(2);
           }
           y = y.toFixed(2);
+
+          // is it time series
+          var xfield = self.model.fields.get(self.state.attributes.group);
+          var isDateTime = xfield.get('type') === 'date';
+          if (isDateTime) {
+            x = new Date(parseInt(x)).toLocaleDateString();
+          }
           
           var content = _.template('<%= group %> = <%= x %>, <%= series %> = <%= y %>', {
             group: self.state.attributes.group,
