@@ -82,7 +82,6 @@ my.Graph = Backbone.View.extend({
       </label> \
       <div class="input"> \
         <select> \
-        <option value="">Please choose ...</option> \
         {{#fields}} \
         <option value="{{id}}">{{label}}</option> \
         {{/fields}} \
@@ -102,12 +101,18 @@ my.Graph = Backbone.View.extend({
     var self = this;
     this.el = $(this.el);
     _.bindAll(this, 'render', 'redraw');
-    // we need the model.fields to render properly
+    this.needToRedraw = false;
     this.model.bind('change', this.render);
     this.model.fields.bind('reset', this.render);
     this.model.fields.bind('add', this.render);
     this.model.currentDocuments.bind('add', this.redraw);
     this.model.currentDocuments.bind('reset', this.redraw);
+    // because we cannot redraw when hidden we may need when becoming visible
+    this.bind('view:show', function() {
+      if (this.needToRedraw) {
+        self.redraw();
+      }
+    });
     var stateData = _.extend({
         group: null,
         // so that at least one series chooser box shows up
@@ -185,6 +190,7 @@ my.Graph = Backbone.View.extend({
     // * There is no data for the plot -- either same error or may have issues later with errors like 'non-existent node-value' 
     var areWeVisible = !jQuery.expr.filters.hidden(this.el[0]);
     if ((!areWeVisible || this.model.currentDocuments.length === 0)) {
+      this.needToRedraw = true;
       return;
     }
     // check we have something to plot
