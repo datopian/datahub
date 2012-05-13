@@ -556,157 +556,83 @@ my.backends = {};
 
 /*jshint multistr:true */
 
-var util = function() {
-  var templates = {
-    transformActions: '<li><a data-action="transform" class="menuAction" href="JavaScript:void(0);">Global transform...</a></li>',
-    cellEditor: ' \
-      <div class="menu-container data-table-cell-editor"> \
-        <textarea class="data-table-cell-editor-editor" bind="textarea">{{value}}</textarea> \
-        <div id="data-table-cell-editor-actions"> \
-          <div class="data-table-cell-editor-action"> \
-            <button class="okButton btn primary">Update</button> \
-            <button class="cancelButton btn danger">Cancel</button> \
-          </div> \
-        </div> \
-      </div> \
-    ',
-    editPreview: ' \
-      <div class="expression-preview-table-wrapper"> \
-        <table> \
-        <thead> \
-        <tr> \
-          <th class="expression-preview-heading"> \
-            before \
-          </th> \
-          <th class="expression-preview-heading"> \
-            after \
-          </th> \
-        </tr> \
-        </thead> \
-        <tbody> \
-        {{#rows}} \
-        <tr> \
-          <td class="expression-preview-value"> \
-            {{before}} \
-          </td> \
-          <td class="expression-preview-value"> \
-            {{after}} \
-          </td> \
-        </tr> \
-        {{/rows}} \
-        </tbody> \
-        </table> \
-      </div> \
-    '
-  };
+this.recline = this.recline || {};
+this.recline.Util = this.recline.Util || {};
 
-  $.fn.serializeObject = function() {
-    var o = {};
-    var a = this.serializeArray();
-    $.each(a, function() {
-      if (o[this.name]) {
-        if (!o[this.name].push) {
-          o[this.name] = [o[this.name]];
-        }
-        o[this.name].push(this.value || '');
-      } else {
-        o[this.name] = this.value || '';
-      }
-    });
-    return o;
-  };
+(function(my) {
+// ## Miscellaneous Utilities
 
-  function registerEmitter() {
-    var Emitter = function(obj) {
-      this.emit = function(obj, channel) { 
-        if (!channel) channel = 'data';
-        this.trigger(channel, obj); 
-      };
+var urlPathRegex = /^([^?]+)(\?.*)?/;
+
+// Parse the Hash section of a URL into path and query string
+my.parseHashUrl = function(hashUrl) {
+  var parsed = urlPathRegex.exec(hashUrl);
+  if (parsed === null) {
+    return {};
+  } else {
+    return {
+      path: parsed[1],
+      query: parsed[2] || ''
     };
-    MicroEvent.mixin(Emitter);
-    return new Emitter();
   }
-  
-  function listenFor(keys) {
-    var shortcuts = { // from jquery.hotkeys.js
-			8: "backspace", 9: "tab", 13: "return", 16: "shift", 17: "ctrl", 18: "alt", 19: "pause",
-			20: "capslock", 27: "esc", 32: "space", 33: "pageup", 34: "pagedown", 35: "end", 36: "home",
-			37: "left", 38: "up", 39: "right", 40: "down", 45: "insert", 46: "del", 
-			96: "0", 97: "1", 98: "2", 99: "3", 100: "4", 101: "5", 102: "6", 103: "7",
-			104: "8", 105: "9", 106: "*", 107: "+", 109: "-", 110: ".", 111 : "/", 
-			112: "f1", 113: "f2", 114: "f3", 115: "f4", 116: "f5", 117: "f6", 118: "f7", 119: "f8", 
-			120: "f9", 121: "f10", 122: "f11", 123: "f12", 144: "numlock", 145: "scroll", 191: "/", 224: "meta"
-		};
-    window.addEventListener("keyup", function(e) { 
-      var pressed = shortcuts[e.keyCode];
-      if(_.include(keys, pressed)) app.emitter.emit("keyup", pressed); 
-    }, false);
-  }
-  
-  function observeExit(elem, callback) {
-    var cancelButton = elem.find('.cancelButton');
-    // TODO: remove (commented out as part of Backbon-i-fication
-    // app.emitter.on('esc', function() { 
-    //  cancelButton.click();
-    //  app.emitter.clear('esc');
-    // });
-    cancelButton.click(callback);
-  }
-  
-  function show( thing ) {
-    $('.' + thing ).show();
-    $('.' + thing + '-overlay').show();
-  }
+};
 
-  function hide( thing ) {
-    $('.' + thing ).hide();
-    $('.' + thing + '-overlay').hide();
-    // TODO: remove or replace (commented out as part of Backbon-i-fication
-    // if (thing === "dialog") app.emitter.clear('esc'); // todo more elegant solution
+// Parse a URL query string (?xyz=abc...) into a dictionary.
+my.parseQueryString = function(q) {
+  if (!q) {
+    return {};
   }
-  
-  function position( thing, elem, offset ) {
-    var position = $(elem.target).position();
-    if (offset) {
-      if (offset.top) position.top += offset.top;
-      if (offset.left) position.left += offset.left;
-    }
-    $('.' + thing + '-overlay').show().click(function(e) {
-      $(e.target).hide();
-      $('.' + thing).hide();
-    });
-    $('.' + thing).show().css({top: position.top + $(elem.target).height(), left: position.left});
-  }
+  var urlParams = {},
+    e, d = function (s) {
+      return unescape(s.replace(/\+/g, " "));
+    },
+    r = /([^&=]+)=?([^&]*)/g;
 
-  function render( template, target, options ) {
-    if ( !options ) options = {data: {}};
-    if ( !options.data ) options = {data: options};
-    var html = $.mustache( templates[template], options.data );
-    var targetDom = null;
-    if (target instanceof jQuery) {
-      targetDom = target;
-    } else {
-      targetDom = $( "." + target + ":first" );      
-    }
-    if( options.append ) {
-      targetDom.append( html );
-    } else {
-      targetDom.html( html );
-    }
-    // TODO: remove (commented out as part of Backbon-i-fication
-    // if (template in app.after) app.after[template]();
+  if (q && q.length && q[0] === '?') {
+    q = q.slice(1);
   }
+  while (e = r.exec(q)) {
+    // TODO: have values be array as query string allow repetition of keys
+    urlParams[d(e[1])] = d(e[2]);
+  }
+  return urlParams;
+};
 
-  return {
-    registerEmitter: registerEmitter,
-    listenFor: listenFor,
-    show: show,
-    hide: hide,
-    position: position,
-    render: render,
-    observeExit: observeExit
-  };
-}();
+// Parse the query string out of the URL hash
+my.parseHashQueryString = function() {
+  q = my.parseHashUrl(window.location.hash).query;
+  return my.parseQueryString(q);
+};
+
+// Compse a Query String
+my.composeQueryString = function(queryParams) {
+  var queryString = '?';
+  var items = [];
+  $.each(queryParams, function(key, value) {
+    if (typeof(value) === 'object') {
+      value = JSON.stringify(value);
+    }
+    items.push(key + '=' + value);
+  });
+  queryString += items.join('&');
+  return queryString;
+};
+
+my.getNewHashForQueryString = function(queryParams) {
+  var queryPart = my.composeQueryString(queryParams);
+  if (window.location.hash) {
+    // slice(1) to remove # at start
+    return window.location.hash.split('?')[0].slice(1) + queryPart;
+  } else {
+    return queryPart;
+  }
+};
+
+my.setHashQueryString = function(queryParams) {
+  window.location.hash = my.getNewHashForQueryString(queryParams);
+};
+})(this.recline.Util);
+
 /*jshint multistr:true */
 
 this.recline = this.recline || {};
@@ -791,7 +717,6 @@ my.Graph = Backbone.View.extend({
       </label> \
       <div class="input"> \
         <select> \
-        <option value="">Please choose ...</option> \
         {{#fields}} \
         <option value="{{id}}">{{label}}</option> \
         {{/fields}} \
@@ -811,16 +736,22 @@ my.Graph = Backbone.View.extend({
     var self = this;
     this.el = $(this.el);
     _.bindAll(this, 'render', 'redraw');
-    // we need the model.fields to render properly
+    this.needToRedraw = false;
     this.model.bind('change', this.render);
     this.model.fields.bind('reset', this.render);
     this.model.fields.bind('add', this.render);
     this.model.currentDocuments.bind('add', this.redraw);
     this.model.currentDocuments.bind('reset', this.redraw);
+    // because we cannot redraw when hidden we may need when becoming visible
+    this.bind('view:show', function() {
+      if (this.needToRedraw) {
+        self.redraw();
+      }
+    });
     var stateData = _.extend({
         group: null,
         // so that at least one series chooser box shows up
-        series: [""],
+        series: [],
         graphType: 'lines-and-points'
       },
       options.state
@@ -843,7 +774,12 @@ my.Graph = Backbone.View.extend({
     if (this.state.get('group')) {
       this._selectOption('.editor-group', this.state.get('group'));
     }
-    _.each(this.state.get('series'), function(series, idx) {
+    // ensure at least one series box shows up
+    var tmpSeries = [""];
+    if (this.state.get('series').length > 0) {
+      tmpSeries = this.state.get('series');
+    }
+    _.each(tmpSeries, function(series, idx) {
       self.addSeries(idx);
       self._selectOption('.editor-series.js-series-' + idx, series);
     });
@@ -889,22 +825,16 @@ my.Graph = Backbone.View.extend({
     // * There is no data for the plot -- either same error or may have issues later with errors like 'non-existent node-value' 
     var areWeVisible = !jQuery.expr.filters.hidden(this.el[0]);
     if ((!areWeVisible || this.model.currentDocuments.length === 0)) {
+      this.needToRedraw = true;
       return;
     }
-    var series = this.createSeries();
-    var options = this.getGraphOptions(this.state.attributes.graphType);
-    this.plot = $.plot(this.$graph, series, options);
-    this.setupTooltips();
-    // create this.plot and cache it
-//    if (!this.plot) {
-//      this.plot = $.plot(this.$graph, series, options);
-//    } else {
-//      this.plot.parseOptions(options);
-//      this.plot.setData(this.createSeries());
-//      this.plot.resize();
-//      this.plot.setupGrid();
-//      this.plot.draw();
-//    }
+    // check we have something to plot
+    if (this.state.get('group') && this.state.get('series')) {
+      var series = this.createSeries();
+      var options = this.getGraphOptions(this.state.attributes.graphType);
+      this.plot = $.plot(this.$graph, series, options);
+      this.setupTooltips();
+    }
   },
 
   // ### getGraphOptions
@@ -1010,6 +940,12 @@ my.Graph = Backbone.View.extend({
           $("#flot-tooltip").remove();
           var x = item.datapoint[0];
           var y = item.datapoint[1];
+          // it's horizontal so we have to flip
+          if (self.state.attributes.graphType === 'bars') {
+            var _tmp = x;
+            x = y;
+            y = _tmp;
+          }
           // convert back from 'index' value on x-axis (e.g. in cases where non-number values)
           if (self.model.currentDocuments.models[x]) {
             x = self.model.currentDocuments.models[x].get(self.state.attributes.group);
@@ -1017,6 +953,13 @@ my.Graph = Backbone.View.extend({
             x = x.toFixed(2);
           }
           y = y.toFixed(2);
+
+          // is it time series
+          var xfield = self.model.fields.get(self.state.attributes.group);
+          var isDateTime = xfield.get('type') === 'date';
+          if (isDateTime) {
+            x = new Date(parseInt(x)).toLocaleDateString();
+          }
           
           var content = _.template('<%= group %> = <%= x %>, <%= series %> = <%= y %>', {
             group: self.state.attributes.group,
@@ -1139,18 +1082,6 @@ my.Grid = Backbone.View.extend({
     'click .data-table-menu li a': 'onMenuClick'
   },
 
-  // TODO: delete or re-enable (currently this code is not used from anywhere except deprecated or disabled methods (see above)).
-  // showDialog: function(template, data) {
-  //   if (!data) data = {};
-  //   util.show('dialog');
-  //   util.render(template, 'dialog-content', data);
-  //   util.observeExit($('.dialog-content'), function() {
-  //     util.hide('dialog');
-  //   })
-  //   $('.dialog').draggable({ handle: '.dialog-header', cursor: 'move' });
-  // },
-
-
   // ======================================================
   // Column and row menus
 
@@ -1185,12 +1116,12 @@ my.Grid = Backbone.View.extend({
       filter: function() {
         self.model.queryState.addTermFilter(self.tempState.currentColumn, '');
       },
-      transform: function() { self.showTransformDialog('transform'); },
       sortAsc: function() { self.setColumnSort('asc'); },
       sortDesc: function() { self.setColumnSort('desc'); },
       hideColumn: function() { self.hideColumn(); },
       showColumn: function() { self.showColumn(e); },
       deleteRow: function() {
+        var self = this;
         var doc = _.find(self.model.currentDocuments.models, function(doc) {
           // important this is == as the currentRow will be string (as comes
           // from DOM) while id may be int
@@ -1198,9 +1129,9 @@ my.Grid = Backbone.View.extend({
         });
         doc.destroy().then(function() { 
             self.model.currentDocuments.remove(doc);
-            my.notify("Row deleted successfully");
+            self.trigger('recline:flash', {message: "Row deleted successfully"});
           }).fail(function(err) {
-            my.notify("Errorz! " + err);
+            self.trigger('recline:flash', {message: "Errorz! " + err});
           });
       }
     };
@@ -1208,33 +1139,18 @@ my.Grid = Backbone.View.extend({
   },
 
   showTransformColumnDialog: function() {
-    var $el = $('.dialog-content');
-    util.show('dialog');
+    var self = this;
     var view = new my.ColumnTransform({
       model: this.model
     });
+    // pass the flash message up the chain
+    view.bind('recline:flash', function(flash) {
+      self.trigger('recline:flash', flash);
+    });
     view.state = this.tempState;
     view.render();
-    $el.empty();
-    $el.append(view.el);
-    util.observeExit($el, function() {
-      util.hide('dialog');
-    });
-    $('.dialog').draggable({ handle: '.dialog-header', cursor: 'move' });
-  },
-
-  showTransformDialog: function() {
-    var $el = $('.dialog-content');
-    util.show('dialog');
-    var view = new recline.View.DataTransform({
-    });
-    view.render();
-    $el.empty();
-    $el.append(view.el);
-    util.observeExit($el, function() {
-      util.hide('dialog');
-    });
-    $('.dialog').draggable({ handle: '.dialog-header', cursor: 'move' });
+    this.el.append(view.el);
+    view.el.modal();
   },
 
   setColumnSort: function(order) {
@@ -1324,7 +1240,7 @@ my.Grid = Backbone.View.extend({
         });
       newView.render();
     });
-    this.el.toggleClass('no-hidden', (self.state.get('hiddenFields').length === 0));
+    this.el.find('.recline-grid').toggleClass('no-hidden', (self.state.get('hiddenFields').length === 0));
     return this;
   }
 });
@@ -1397,6 +1313,19 @@ my.GridRow = Backbone.View.extend({
 
   // ===================
   // Cell Editor methods
+
+  cellEditorTemplate: ' \
+    <div class="menu-container data-table-cell-editor"> \
+      <textarea class="data-table-cell-editor-editor" bind="textarea">{{value}}</textarea> \
+      <div id="data-table-cell-editor-actions"> \
+        <div class="data-table-cell-editor-action"> \
+          <button class="okButton btn primary">Update</button> \
+          <button class="cancelButton btn danger">Cancel</button> \
+        </div> \
+      </div> \
+    </div> \
+  ',
+
   onEditClick: function(e) {
     var editing = this.el.find('.data-table-cell-editor-editor');
     if (editing.length > 0) {
@@ -1405,10 +1334,12 @@ my.GridRow = Backbone.View.extend({
     $(e.target).addClass("hidden");
     var cell = $(e.target).siblings('.data-table-cell-value');
     cell.data("previousContents", cell.text());
-    util.render('cellEditor', cell, {value: cell.text()});
+    var templated = $.mustache(this.cellEditorTemplate, {value: cell.text()});
+    cell.html(templated);
   },
 
   onEditorOK: function(e) {
+    var self = this;
     var cell = $(e.target);
     var rowId = cell.parents('tr').attr('data-id');
     var field = cell.parents('td').attr('data-field');
@@ -1416,12 +1347,13 @@ my.GridRow = Backbone.View.extend({
     var newData = {};
     newData[field] = newValue;
     this.model.set(newData);
-    my.notify("Updating row...", {loader: true});
+    this.trigger('recline:flash', {message: "Updating row...", loader: true});
     this.model.save().then(function(response) {
-        my.notify("Row updated successfully", {category: 'success'});
+        this.trigger('recline:flash', {message: "Row updated successfully", category: 'success'});
       })
       .fail(function() {
-        my.notify('Error saving row', {
+        this.trigger('recline:flash', {
+          message: 'Error saving row',
           category: 'error',
           persist: true
         });
@@ -1718,7 +1650,6 @@ my.Map = Backbone.View.extend({
   // Each feature will have a popup associated with all the document fields.
   //
   _add: function(docs){
-
     var self = this;
 
     if (!(docs instanceof Array)) docs = [docs];
@@ -1753,13 +1684,13 @@ my.Map = Backbone.View.extend({
           var msg = 'Wrong geometry value';
           if (except.message) msg += ' (' + except.message + ')';
           if (wrongSoFar <= 10) {
-            my.notify(msg,{category:'error'});
+            self.trigger('recline:flash', {message: msg, category:'error'});
           }
         }
       } else {
         wrongSoFar += 1
         if (wrongSoFar <= 10) {
-          my.notify('Wrong geometry value',{category:'error'});
+          self.trigger('recline:flash', {message: 'Wrong geometry value', category:'error'});
         }
       }
       return true;
@@ -1864,7 +1795,7 @@ my.Map = Backbone.View.extend({
   // on [OpenStreetMap](http://openstreetmap.org).
   //
   _setupMap: function(){
-
+    var self = this;
     this.map = new L.Map(this.$map.get(0));
 
     var mapUrl = "http://otile{s}.mqcdn.com/tiles/1.0.0/osm/{z}/{x}/{y}.png";
@@ -1904,6 +1835,14 @@ my.Map = Backbone.View.extend({
 
     this.map.setView(new L.LatLng(0, 0), 2);
 
+    var popup = new L.Popup();
+    this.map.on('click', function(e) {
+      var latlngStr = '(' + e.latlng.lat.toFixed(3) + ', ' + e.latlng.lng.toFixed(3) + ')';
+      popup.setLatLng(e.latlng);
+      popup.setContent("You clicked the map at " + latlngStr);
+      self.map.openPopup(popup);
+    });
+
     this.mapReady = true;
   },
 
@@ -1933,82 +1872,17 @@ this.recline.View = this.recline.View || {};
 // Views module following classic module pattern
 (function($, my) {
 
-// View (Dialog) for doing data transformations on whole dataset.
-my.DataTransform = Backbone.View.extend({
-  className: 'transform-view',
-  template: ' \
-    <div class="dialog-header"> \
-      Recursive transform on all rows \
-    </div> \
-    <div class="dialog-body"> \
-      <div class="grid-layout layout-full"> \
-        <p class="info">Traverse and transform objects by visiting every node on a recursive walk using <a href="https://github.com/substack/js-traverse">js-traverse</a>.</p> \
-        <table> \
-        <tbody> \
-        <tr> \
-          <td colspan="4"> \
-            <div class="grid-layout layout-tight layout-full"> \
-              <table rows="4" cols="4"> \
-              <tbody> \
-              <tr style="vertical-align: bottom;"> \
-                <td colspan="4"> \
-                  Expression \
-                </td> \
-              </tr> \
-              <tr> \
-                <td colspan="3"> \
-                  <div class="input-container"> \
-                    <textarea class="expression-preview-code"></textarea> \
-                  </div> \
-                </td> \
-                <td class="expression-preview-parsing-status" width="150" style="vertical-align: top;"> \
-                  No syntax error. \
-                </td> \
-              </tr> \
-              <tr> \
-                <td colspan="4"> \
-                  <div id="expression-preview-tabs" class="refine-tabs ui-tabs ui-widget ui-widget-content ui-corner-all"> \
-                    <span>Preview</span> \
-                    <div id="expression-preview-tabs-preview" class="ui-tabs-panel ui-widget-content ui-corner-bottom"> \
-                      <div class="expression-preview-container" style="width: 652px; "> \
-                      </div> \
-                    </div> \
-                  </div> \
-                </td> \
-              </tr> \
-              </tbody> \
-              </table> \
-            </div> \
-          </td> \
-        </tr> \
-        </tbody> \
-        </table> \
-      </div> \
-    </div> \
-    <div class="dialog-footer"> \
-      <button class="okButton button">&nbsp;&nbsp;Update All&nbsp;&nbsp;</button> \
-      <button class="cancelButton button">Cancel</button> \
-    </div> \
-  ',
-
-  initialize: function() {
-    this.el = $(this.el);
-  },
-
-  render: function() {
-    this.el.html(this.template);
-  }
-});
-
-
+// ## ColumnTransform
+//
 // View (Dialog) for doing data transformations (on columns of data).
 my.ColumnTransform = Backbone.View.extend({
-  className: 'transform-column-view',
+  className: 'transform-column-view modal fade in',
   template: ' \
-    <div class="dialog-header"> \
-      Functional transform on column {{name}} \
+    <div class="modal-header"> \
+      <a class="close" data-dismiss="modal">×</a> \
+      <h3>Functional transform on column {{name}}</h3> \
     </div> \
-    <div class="dialog-body"> \
+    <div class="modal-body"> \
       <div class="grid-layout layout-tight layout-full"> \
         <table> \
         <tbody> \
@@ -2034,10 +1908,10 @@ my.ColumnTransform = Backbone.View.extend({
               </tr> \
               <tr> \
                 <td colspan="4"> \
-                  <div id="expression-preview-tabs" class="refine-tabs ui-tabs ui-widget ui-widget-content ui-corner-all"> \
+                  <div id="expression-preview-tabs"> \
                     <span>Preview</span> \
-                    <div id="expression-preview-tabs-preview" class="ui-tabs-panel ui-widget-content ui-corner-bottom"> \
-                      <div class="expression-preview-container" style="width: 652px; "> \
+                    <div id="expression-preview-tabs-preview"> \
+                      <div class="expression-preview-container"> \
                       </div> \
                     </div> \
                   </div> \
@@ -2052,7 +1926,7 @@ my.ColumnTransform = Backbone.View.extend({
         </table> \
       </div> \
     </div> \
-    <div class="dialog-footer"> \
+    <div class="modal-footer"> \
       <button class="okButton btn primary">&nbsp;&nbsp;Update All&nbsp;&nbsp;</button> \
       <button class="cancelButton btn danger">Cancel</button> \
     </div> \
@@ -2085,11 +1959,11 @@ my.ColumnTransform = Backbone.View.extend({
     var funcText = this.el.find('.expression-preview-code').val();
     var editFunc = costco.evalFunction(funcText);
     if (editFunc.errorMessage) {
-      my.notify("Error with function! " + editFunc.errorMessage);
+      this.trigger('recline:flash', {message: "Error with function! " + editFunc.errorMessage});
       return;
     }
-    util.hide('dialog');
-    my.notify("Updating all visible docs. This could take a while...", {persist: true, loader: true});
+    this.el.modal('hide');
+    this.trigger('recline:flash', {message: "Updating all visible docs. This could take a while...", persist: true, loader: true});
       var docs = self.model.currentDocuments.map(function(doc) {
        return doc.toJSON();
       });
@@ -2099,7 +1973,7 @@ my.ColumnTransform = Backbone.View.extend({
     function onCompletedUpdate() {
       totalToUpdate += -1;
       if (totalToUpdate === 0) {
-        my.notify(toUpdate.length + " documents updated successfully");
+        self.trigger('recline:flash', {message: toUpdate.length + " documents updated successfully"});
         alert('WARNING: We have only updated the docs in this view. (Updating of all docs not yet implemented!)');
         self.remove();
       }
@@ -2110,7 +1984,37 @@ my.ColumnTransform = Backbone.View.extend({
       realDoc.set(editedDoc);
       realDoc.save().then(onCompletedUpdate).fail(onCompletedUpdate);
     });
+    this.el.remove();
   },
+
+  editPreviewTemplate: ' \
+    <div class="expression-preview-table-wrapper"> \
+      <table class="table table-condensed"> \
+      <thead> \
+      <tr> \
+        <th class="expression-preview-heading"> \
+          before \
+        </th> \
+        <th class="expression-preview-heading"> \
+          after \
+        </th> \
+      </tr> \
+      </thead> \
+      <tbody> \
+      {{#rows}} \
+      <tr> \
+        <td class="expression-preview-value"> \
+          {{before}} \
+        </td> \
+        <td class="expression-preview-value"> \
+          {{after}} \
+        </td> \
+      </tr> \
+      {{/rows}} \
+      </tbody> \
+      </table> \
+    </div> \
+  ',
 
   onEditorKeydown: function(e) {
     var self = this;
@@ -2124,7 +2028,9 @@ my.ColumnTransform = Backbone.View.extend({
           return doc.toJSON();
         });
         var previewData = costco.previewTransform(docs, editFunc, self.state.currentColumn);
-        util.render('editPreview', 'expression-preview-container', {rows: previewData});
+        var $el = self.el.find('.expression-preview-container');
+        var templated = $.mustache(self.editPreviewTemplate, {rows: previewData.slice(0,4)});
+        $el.html(templated);
       } else {
         errors.text(editFunc.errorMessage);
       }
@@ -2303,12 +2209,6 @@ my.DataExplorer = Backbone.View.extend({
       <div class="clearfix"></div> \
     </div> \
     <div class="data-view-container"></div> \
-    <div class="dialog-overlay" style="display: none; z-index: 101; ">&nbsp;</div> \
-    <div class="dialog ui-draggable" style="display: none; z-index: 102; top: 101px; "> \
-      <div class="dialog-frame" style="width: 700px; visibility: visible; "> \
-        <div class="dialog-content dialog-border"></div> \
-      </div> \
-    </div> \
   </div> \
   ',
   events: {
@@ -2350,6 +2250,7 @@ my.DataExplorer = Backbone.View.extend({
     // these must be called after pageViews are created
     this.render();
     this._bindStateChanges();
+    this._bindFlashNotifications();
     // now do updates based on state (need to come after render)
     if (this.state.get('readOnly')) {
       this.setReadOnly();
@@ -2360,24 +2261,16 @@ my.DataExplorer = Backbone.View.extend({
       this.updateNav(this.pageViews[0].id);
     }
 
-    this.router = new Backbone.Router();
-    this.setupRouting();
-
     this.model.bind('query:start', function() {
-        my.notify('Loading data', {loader: true});
+        self.notify({message: 'Loading data', loader: true});
       });
     this.model.bind('query:done', function() {
-        my.clearNotifications();
+        self.clearNotifications();
         self.el.find('.doc-count').text(self.model.docCount || 'Unknown');
-        my.notify('Data loaded', {category: 'success'});
-        // update navigation
-        var qs = my.parseHashQueryString();
-        qs.reclineQuery = JSON.stringify(self.model.queryState.toJSON());
-        var out = my.getNewHashForQueryString(qs);
-        // self.router.navigate(out);
+        self.notify({message: 'Data loaded', category: 'success'});
       });
     this.model.bind('query:fail', function(error) {
-        my.clearNotifications();
+        self.clearNotifications();
         var msg = '';
         if (typeof(error) == 'string') {
           msg = error;
@@ -2391,7 +2284,7 @@ my.DataExplorer = Backbone.View.extend({
         } else {
           msg = 'There was an error querying the backend';
         }
-        my.notify(msg, {category: 'error', persist: true});
+        self.notify({message: msg, category: 'error', persist: true});
       });
 
     // retrieve basic data like fields etc
@@ -2401,7 +2294,7 @@ my.DataExplorer = Backbone.View.extend({
         self.model.query(self.state.get('query'));
       })
       .fail(function(error) {
-        my.notify(error.message, {category: 'error', persist: true});
+        self.notify({message: error.message, category: 'error', persist: true});
       });
   },
 
@@ -2432,21 +2325,6 @@ my.DataExplorer = Backbone.View.extend({
     });
     this.$facetViewer = facetViewer.el;
     this.el.find('.header').append(facetViewer.el);
-  },
-
-  setupRouting: function() {
-    var self = this;
-    // Default route
-//    this.router.route(/^(\?.*)?$/, this.pageViews[0].id, function(queryString) {
-//      self.updateNav(self.pageViews[0].id, queryString);
-//    });
-//    $.each(this.pageViews, function(idx, view) {
-//      self.router.route(/^([^?]+)(\?.*)?/, 'view', function(viewId, queryString) {
-//        self.updateNav(viewId, queryString);
-//      });
-//    });
-    this.router.route(/.*/, 'view', function() {
-    });
   },
 
   updateNav: function(pageName) {
@@ -2492,7 +2370,7 @@ my.DataExplorer = Backbone.View.extend({
   _setupState: function(initialState) {
     var self = this;
     // get data from the query string / hash url plus some defaults
-    var qs = my.parseHashQueryString();
+    var qs = recline.Util.parseHashQueryString();
     var query = qs.reclineQuery;
     query = query ? JSON.parse(query) : self.model.queryState.toJSON();
     // backwards compatability (now named view-graph but was named graph)
@@ -2532,6 +2410,57 @@ my.DataExplorer = Backbone.View.extend({
         });
       }
     });
+  },
+
+  _bindFlashNotifications: function() {
+    var self = this;
+    _.each(this.pageViews, function(pageView) {
+      pageView.view.bind('recline:flash', function(flash) {
+        self.notify(flash); 
+      });
+    });
+  },
+
+  // ### notify
+  //
+  // Create a notification (a div.alert in div.alert-messsages) using provided
+  // flash object. Flash attributes (all are optional):
+  //
+  // * message: message to show.
+  // * category: warning (default), success, error
+  // * persist: if true alert is persistent, o/w hidden after 3s (default = false)
+  // * loader: if true show loading spinner
+  notify: function(flash) {
+    var tmplData = _.extend({
+      message: '',
+      category: 'warning'
+      },
+      flash
+    );
+    var _template = ' \
+      <div class="alert alert-{{category}} fade in" data-alert="alert"><a class="close" data-dismiss="alert" href="#">×</a> \
+        {{message}} \
+          {{#loader}} \
+          <span class="notification-loader">&nbsp;</span> \
+          {{/loader}} \
+      </div>';
+    var _templated = $.mustache(_template, tmplData); 
+    _templated = $(_templated).appendTo($('.recline-data-explorer .alert-messages'));
+    if (!flash.persist) {
+      setTimeout(function() {
+        $(_templated).fadeOut(1000, function() {
+          $(this).remove();
+        });
+      }, 1000);
+    }
+  },
+
+  // ### clearNotifications
+  //
+  // Clear all existing notifications
+  clearNotifications: function() {
+    var $notifications = $('.recline-data-explorer .alert-messages .alert');
+    $notifications.remove();
   }
 });
 
@@ -2772,118 +2701,6 @@ my.FacetViewer = Backbone.View.extend({
   }
 });
 
-/* ========================================================== */
-// ## Miscellaneous Utilities
-
-var urlPathRegex = /^([^?]+)(\?.*)?/;
-
-// Parse the Hash section of a URL into path and query string
-my.parseHashUrl = function(hashUrl) {
-  var parsed = urlPathRegex.exec(hashUrl);
-  if (parsed === null) {
-    return {};
-  } else {
-    return {
-      path: parsed[1],
-      query: parsed[2] || ''
-    };
-  }
-};
-
-// Parse a URL query string (?xyz=abc...) into a dictionary.
-my.parseQueryString = function(q) {
-  if (!q) {
-    return {};
-  }
-  var urlParams = {},
-    e, d = function (s) {
-      return unescape(s.replace(/\+/g, " "));
-    },
-    r = /([^&=]+)=?([^&]*)/g;
-
-  if (q && q.length && q[0] === '?') {
-    q = q.slice(1);
-  }
-  while (e = r.exec(q)) {
-    // TODO: have values be array as query string allow repetition of keys
-    urlParams[d(e[1])] = d(e[2]);
-  }
-  return urlParams;
-};
-
-// Parse the query string out of the URL hash
-my.parseHashQueryString = function() {
-  q = my.parseHashUrl(window.location.hash).query;
-  return my.parseQueryString(q);
-};
-
-// Compse a Query String
-my.composeQueryString = function(queryParams) {
-  var queryString = '?';
-  var items = [];
-  $.each(queryParams, function(key, value) {
-    if (typeof(value) === 'object') {
-      value = JSON.stringify(value);
-    }
-    items.push(key + '=' + value);
-  });
-  queryString += items.join('&');
-  return queryString;
-};
-
-my.getNewHashForQueryString = function(queryParams) {
-  var queryPart = my.composeQueryString(queryParams);
-  if (window.location.hash) {
-    // slice(1) to remove # at start
-    return window.location.hash.split('?')[0].slice(1) + queryPart;
-  } else {
-    return queryPart;
-  }
-};
-
-my.setHashQueryString = function(queryParams) {
-  window.location.hash = my.getNewHashForQueryString(queryParams);
-};
-
-// ## notify
-//
-// Create a notification (a div.alert in div.alert-messsages) using provide messages and options. Options are:
-//
-// * category: warning (default), success, error
-// * persist: if true alert is persistent, o/w hidden after 3s (default = false)
-// * loader: if true show loading spinner
-my.notify = function(message, options) {
-  if (!options) options = {};
-  var tmplData = _.extend({
-    msg: message,
-    category: 'warning'
-    },
-    options);
-  var _template = ' \
-    <div class="alert alert-{{category}} fade in" data-alert="alert"><a class="close" data-dismiss="alert" href="#">×</a> \
-      {{msg}} \
-        {{#loader}} \
-        <span class="notification-loader">&nbsp;</span> \
-        {{/loader}} \
-    </div>';
-  var _templated = $.mustache(_template, tmplData); 
-  _templated = $(_templated).appendTo($('.recline-data-explorer .alert-messages'));
-  if (!options.persist) {
-    setTimeout(function() {
-      $(_templated).fadeOut(1000, function() {
-        $(this).remove();
-      });
-    }, 1000);
-  }
-};
-
-// ## clearNotifications
-//
-// Clear all existing notifications
-my.clearNotifications = function() {
-  var $notifications = $('.recline-data-explorer .alert-messages .alert');
-  $notifications.remove();
-};
 
 })(jQuery, recline.View);
 
@@ -3671,6 +3488,7 @@ this.recline.Backend = this.recline.Backend || {};
     backend.addDataset(datasetInfo);
     var dataset = new recline.Model.Dataset({id: metadata.id}, backend);
     dataset.fetch();
+    dataset.query();
     return dataset;
   };
 
