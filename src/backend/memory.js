@@ -37,6 +37,7 @@ this.recline.Backend = this.recline.Backend || {};
     backend.addDataset(datasetInfo);
     var dataset = new recline.Model.Dataset({id: metadata.id}, backend);
     dataset.fetch();
+    dataset.query();
     return dataset;
   };
 
