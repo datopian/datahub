@@ -25,6 +25,60 @@ Designed for standalone use or as a library to integrate into your own app.
 Running the tests by opening `test/index.html` in your browser.
 
 
+## Changelog
+
+### v0.5 - Master
+
+In progress.
+
+### v0.4 - April 26th 2012
+
+[23 closed issues](https://github.com/okfn/recline/issues?milestone=2&page=1&state=closed) including:
+
+* Map view using Leaflet - #69, #64, #89, #97
+* Term filter support - #66
+* Faceting support- #62
+* Tidy up CSS and JS - #81 and #78
+* Manage and serialize view and dataset state (plus support for embed and permalinks) - #88, #67
+* Graph view improvements e.g. handle date types correctly - #75
+* Write support for ES backend - #61
+* Remove JQuery-UI dependency in favour of bootstrap modal - #46
+* Improved CSV import support - #92
+
+### v0.3 - March 31st 2012
+
+[16 closed issues](https://github.com/okfn/recline/issues?milestone=1&state=closed) including:
+
+* ElasticSearch (and hence DataHub/CKAN) backend - #54
+* Loading of local CSV files - #36
+* Fully worked out Data Query support - #34, #49, #53, #57
+* New Field model object for richer field information - #25
+* Upgrade to Bootstrap v2.0 - #55
+* Recline Data Explorer app improvements e.g. #39 (import menu)
+* Graph improvements - #58 (more graph types, graph interaction)
+
+### v0.2 - Feb 24th 2012
+
+[17 closed issues](https://github.com/okfn/recline/issues?milestone=3&state=closed) including:
+
+* Major refactor of backend and model relationship - #35 and #43
+* Support Google Docs Spreadsheets as a Backend - #15
+* Support for online CSV and Excel files via DataProxy backend - #31
+* Data Explorer is customizable re loaded views - #42
+* Start of documentation - #33
+* Views in separate files - #41
+* Better error reporting from backends on JSONP errors - #30
+* Sorting and show/hide of columns in data grid - #23, #29
+* Support for pagination - #27
+* Split backends into separate files to make them easier to maintain and reuse separately #50
+
+### v0.1 - Jan 28th 2012
+
+* Core models and structure including Dataset and Document
+* Memory and webstore backends
+* Grid, Graph and Data Explorer views
+* Bootstrap-based theme - #22
+
 ## Copyright and License
 
 Copyright 2011 Max Ogden and Rufus Pollock.
