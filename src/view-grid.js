@@ -193,7 +193,7 @@ my.Grid = Backbone.View.extend({
         });
       newView.render();
     });
-    this.el.toggleClass('no-hidden', (self.state.get('hiddenFields').length === 0));
+    this.el.find('.recline-grid').toggleClass('no-hidden', (self.state.get('hiddenFields').length === 0));
     return this;
   }
 });

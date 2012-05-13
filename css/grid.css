@@ -7,11 +7,6 @@
   line-height: auto;
 }
 
-.recline-grid-container {
-  overflow: auto;
-  height: 550px;
-}
-
 .recline-grid {
   border: 1px solid #ccc;
   width: 100%;
@@ -232,8 +227,8 @@ td.expression-preview-value {
   * Read-only mode
   *********************************************************/
 
-.recline-read-only .no-hidden .recline-grid tr td:first-child,
-.recline-read-only .no-hidden .recline-grid tr th:first-child
+.recline-read-only .recline-grid.no-hidden tr td:first-child,
+.recline-read-only .recline-grid.no-hidden tr th:first-child
 {
   display: none;
 }
