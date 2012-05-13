@@ -246,3 +246,24 @@ section.grey:after {
 .footer a.btn {
 	color:#333333;
 }
+
+.library .row .well {
+  height: 60px;
+}
+
+/** Code / Pre **/
+
+.container pre {
+  padding: 10px 15px;
+  border: 1px solid #ccc;
+  background: white;
+  color: #444;
+
+  box-shadow: 0 0 15px #ddd;
+  -moz-box-shadow: 0 0 15px #ddd;
+  -webkit-box-shadow: 0 0 15px #ddd;
+  -webkit-border-radius: 0;
+  -moz-border-radius: 0;
+  border-radius: 0;
+}
+
