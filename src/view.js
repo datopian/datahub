@@ -2,10 +2,11 @@
 
 // # Recline Views
 //
-// Recline Views are Backbone Views and in keeping with normal Backbone views
-// are Widgets / Components displaying something in the DOM. Like all Backbone
-// views they have a pointer to a model or a collection and is bound to an
-// element.
+// Recline Views are instances of Backbone Views and they act as 'WUI' (web
+// user interface) component displaying some model object in the DOM. Like all
+// Backbone views they have a pointer to a model (or a collection) and have an
+// associated DOM-style element (usually this element will be bound into the
+// page at some point).
 //
 // Views provided by core Recline are crudely divided into two types:
 //

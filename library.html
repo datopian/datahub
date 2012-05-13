@@ -3,76 +3,66 @@ layout: default
 title: Library - Home
 ---
 
-<div class="container">
+<div class="container library">
 
   <div class="page-header">
     <h1>
-      The Data Library
+      Recline Library and Data Components
     </h1>
   </div>
-    <div class="row">
-      <div class="span12">    
-        <h2 id="docs-using">Examples</h2>
-        
-        <p><strong>Note:</strong> A quick read through of the Concepts section will
-        likely be useful in understanding the details of the examples.</p>
-        
-        <p><strong>Note</strong>: for all the following examples you should have
-        included relevant Recline dependencies.</p>
-        
-        <h4>Simple in-memory dataset.</h4>
-        <pre>
-        // Some data you have
-        // Your data must be in the form of list of documents / rows
-        // Each document/row is an Object with keys and values
-        var data = [
-            {id: 0, x: 1, y: 2, z: 3, country: 'UK', label: 'first'}
-            , {id: 1, x: 2, y: 4, z: 6, country: 'UK', label: 'second'}
-            , {id: 2, x: 3, y: 6, z: 9, country: 'US', label: 'third'}
-          ];
-        
-        // Create a Dataset object from local in-memory data
-        // Dataset object is a Backbone model - more info on attributes in model docs below
-        var dataset = recline.Backend.createDataset(data);
-        
-        // Now create the main explorer view (it will create other views as needed)
-        // DataExplorer is a Backbone View
-        var explorer = recline.View.DataExplorer({
-          model: dataset,
-          // you can specify any element to bind to in the dom
-          el: $('.data-explorer-here')
-        });
-        // Start Backbone routing (if you want routing support)
-        Backbone.history.start();
-        </pre>
-        
-        <h4>Creating a Dataset Explicitly with a Backend</h4>
-        <pre>
-        // Connect to ElasticSearch index/type as our data source
-        // There are many other backends you can use (and you can write your own)
-        var backend = new recline.Backend.ElasticSearch();
-        
-        // Dataset is a Backbone model so the first hash become model attributes
-        var dataset = recline.Model.Dataset({
-            id: 'my-id',
-            // url for source of this dataset - will be used by backend
-            url: 'http://localhost:9200/my-index/my-type',
-            // any other metadata e.g.
-            title: 'My Dataset Title'
-          },
-          backend
-        );
-        </pre>
-      </div>
+
+  <p>Building on <a href="http://backbonejs.com/">Backbone</a>, Recline
+  supplies components and structure to data-heavy applications by providing a
+  set of models (Dataset, Document/Row, Field) and views (Grid, Map, Graph
+  etc).</p>
+
+  <h2 id="examples">Examples</h2>
+  <div class="alert alert-success"><strong>Note:</strong> A quick read through of the <a href="#concepts">Concepts section</a> will
+  likely be useful in understanding the details of the examples.</div>
+
+  <div class="row">
+    <div class="span3 well">
+      <h4><a href="example-quickstart.html">Recline Quickstart Guide</a></h4>
     </div>
+    <div class="span4 well">
+      <h4>Loading from difference sources: Google Docs, Local CSV, DataHub</h4>
+    </div>
+    <div class="span3 well">
+      <h4>Twitter Example</h4>
+    </div>
+  </div>
+  <div class="row">
+    <div class="span3 well">
+      <h4>Customing Display and Import using Fields</h4>
+    </div>
+    <div class="span4 well">
+      <h4>Listening to events</h4>
+    </div>
+    <div class="span3 well">
+      <h4>Setting and Getting State</h4>
+    </div>
+  </div>
+
+  <h3>Extending Recline</h3>
+  <div class="row">
+    <div class="span3 well">
+      <h4>Create a new View</h4>
+    </div>
+    <div class="span3 well">
+      <h4>Create a new Backend</h4>
+    </div>
+    <div class="span3 well">
+      <h4>Create a Custom Document Object</h4>
+    </div>
+  </div>
+
     <div class="row">
       <div class="span12">
-        <h2 id="docs-concepts">Concepts and Structure</h2>
+        <h2 id="concepts">Concepts and Structure</h2>
       </div>
     </div>
     <div class="row">
       <div class="span6">
-        
         <p>Recline has a simple structure layered on top of the basic Model/View
         distinction inherent in Backbone.</p>
         
