@@ -222,12 +222,11 @@ my.DataExplorer = Backbone.View.extend({
     }
 
     this.model.bind('query:start', function() {
-        self.notify({message: 'Loading data', loader: true});
+        self.notify({loader: true, persist: true});
       });
     this.model.bind('query:done', function() {
         self.clearNotifications();
         self.el.find('.doc-count').text(self.model.docCount || 'Unknown');
-        self.notify({message: 'Data loaded', category: 'success'});
       });
     this.model.bind('query:fail', function(error) {
         self.clearNotifications();
@@ -392,19 +391,25 @@ my.DataExplorer = Backbone.View.extend({
   // * loader: if true show loading spinner
   notify: function(flash) {
     var tmplData = _.extend({
-      message: '',
-      category: 'warning'
+      message: 'Loading',
+      category: 'warning',
+      loader: false
       },
       flash
     );
-    var _template = ' \
-      <div class="alert alert-{{category}} fade in" data-alert="alert"><a class="close" data-dismiss="alert" href="#">×</a> \
-        {{message}} \
-          {{#loader}} \
+    if (tmplData.loader) {
+      var _template = ' \
+        <div class="alert alert-info alert-loader"> \
+          {{message}} \
           <span class="notification-loader">&nbsp;</span> \
-          {{/loader}} \
-      </div>';
-    var _templated = $.mustache(_template, tmplData); 
+        </div>';
+    } else {
+      var _template = ' \
+        <div class="alert alert-{{category}} fade in" data-alert="alert"><a class="close" data-dismiss="alert" href="#">×</a> \
+          {{message}} \
+        </div>';
+    }
+    var _templated = $($.mustache(_template, tmplData));
     _templated = $(_templated).appendTo($('.recline-data-explorer .alert-messages'));
     if (!flash.persist) {
       setTimeout(function() {
@@ -420,7 +425,9 @@ my.DataExplorer = Backbone.View.extend({
   // Clear all existing notifications
   clearNotifications: function() {
     var $notifications = $('.recline-data-explorer .alert-messages .alert');
-    $notifications.remove();
+    $notifications.fadeOut(1500, function() {
+      $(this).remove();
+    });
   }
 });
 
