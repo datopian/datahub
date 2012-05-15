@@ -41,7 +41,7 @@ a.dotted:hover {
 	text-decoration:none;
 }
 
-.btn-info {
+.btn-explorer {
   background: #545454; /* Old browsers */
 	background: -moz-linear-gradient(top, #545454 0%, #454545 100%); /* FF3.6+ */
 	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#545454), color-stop(100%,#454545)); /* Chrome,Safari4+ */
@@ -60,17 +60,17 @@ a.dotted:hover {
 	color:#FFF;
 	text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25);
 }
-.btn-info:hover,
-.btn-info:active,
-.btn-info.active,
-.btn-info.disabled,
-.btn-info[disabled] {
+.btn-explorer:hover,
+.btn-explorer:active,
+.btn-explorer.active,
+.btn-explorer.disabled,
+.btn-explorer[disabled] {
   background-color: #454545;
 	background-image:none;
 	color:#FFF;
 }
-.btn-info:active,
-.btn-info.active {
+.btn-explorer:active,
+.btn-explorer.active {
 	background-color: #454545 \9;
 	background-image:none;
 	color:#FFF;
@@ -84,7 +84,7 @@ a.dotted:hover {
 	margin-right:10px;
 }
 
-.btn-primary {
+.btn-library {
   background: #c7231d; /* Old browsers */
 	background: -moz-linear-gradient(top, #c7231d 0%, #bc130e 100%); /* FF3.6+ */
 	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#c7231d), color-stop(100%,#bc130e)); /* Chrome,Safari4+ */
@@ -97,16 +97,16 @@ a.dotted:hover {
   border-color: rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.25);
   filter: progid:dximagetransform.microsoft.gradient(enabled=false);
 }
-.btn-primary:hover,
-.btn-primary:active,
-.btn-primary.active,
-.btn-primary.disabled,
-.btn-primary[disabled] {
+.btn-library:hover,
+.btn-library:active,
+.btn-library.active,
+.btn-library.disabled,
+.btn-library[disabled] {
   background-color: #bc130e;
 	background-image:none;
 }
-.btn-primary:active,
-.btn-primary.active {
+.btn-library:active,
+.btn-library.active {
   background-color: #bc130e \9;
 }
 

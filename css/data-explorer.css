@@ -1,3 +1,8 @@
+.recline-data-explorer .data-view-container {
+  display: block;
+  clear: both;
+}
+
 .recline-data-explorer .header .navigation,
 .recline-data-explorer .header .navigation li,
 .recline-data-explorer .header .pagination,
@@ -24,6 +29,10 @@
   margin-left: 20px;
   display: inline;
 }
+
+/**********************************************************
+  * Query Editor
+  *********************************************************/
 
 .header .recline-query-editor {
   float: right;
@@ -64,10 +73,9 @@
   vertical-align: top;
 }
 
-.recline-data-explorer .data-view-container {
-  display: block;
-  clear: both;
-}
+/**********************************************************
+  * Query Editor
+  *********************************************************/
 
 .recline-filter-editor .filter-term .input-append a {
   margin-left: -5px;
@@ -86,5 +94,22 @@
   margin-left: 5px;
   background: url(images/small-spinner.gif) no-repeat;
   display: inline-block;
+}
+
+.recline-data-explorer .alert-loader {
+  position: absolute;
+  width: 200px;
+  left: 50%;
+  margin-left: -100px;
+  z-index: 10000;
+  padding: 40px 0px 40px 0px;
+  margin-top: -10px;
+  text-align: center;
+  font-size: 16px;
+  font-weight: bold;
+  -webkit-border-radius: 0px;
+  -moz-border-radius: 0px;
+  border-radius: 0px;
+  border-top: none;
 }
 
