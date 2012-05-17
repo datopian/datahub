@@ -51,7 +51,7 @@ my.SlickGrid = Backbone.View.extend({
 
     var options = {
       enableCellNavigation: true,
-      enableColumnReorder: false,
+      enableColumnReorder: true,
       explicitInitialization: true
 
       // , forceFitColumns: true
