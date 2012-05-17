@@ -71,10 +71,11 @@ Note that behind the scenes Recline will create a Memory backend for this datase
 Let's create a data grid view to display the dataset we have just created, binding the view to the `<div id="mygrid"></div>` we created earlier:
 
 {% highlight javascript %}
+var $el = $('#mygrid');
 var grid = new recline.View.Grid({
-  model: dataset,
-  el: $('#mygrid')
+  model: dataset
 });
+$el.append(grid.el);
 grid.render();
 {% endhighlight %}
 
@@ -92,4 +93,84 @@ var grid = new recline.View.Grid({
 $el.append(grid.el);
 grid.render();
 </script>
+
+### Creating a Graph
+
+Let's create a graph view to display a line graph for this dataset.
+
+First, create a new div for the graph:
+
+{% highlight html %}
+<div id="mygraph"></div>
+{% endhighlight %}
+
+Now let's create the graph, we will use the same dataset we had earlier:
+
+{% highlight javascript %}
+var $el = $('#mygraph');
+var graph = new recline.View.Graph({
+  model: dataset
+});
+$el.append(grid.el);
+graph.render();
+{% endhighlight %}
+
+And ... we have a graph view -- with instructions on how to use the controls to
+create a graph -- but no graph. Go ahead and play around with the controls to
+create a graph of your choosing:
+
+<div id="mygraph" style="margin-bottom: 30px;">&nbsp;</div>
+
+<script type="text/javascript">
+var $el = $('#mygraph');
+var graph = new recline.View.Graph({
+  model: dataset
+});
+$el.append(graph.el);
+graph.render();
+</script>
+
+But I wanted to create a graph not a graph editor. Can we do that? Yes you can!
+All you need to do is set the 'state' of the graph view:
+
+{% highlight javascript %}
+var $el = $('#mygraph');
+var graph = new recline.View.Graph({
+  model: dataset,
+  state: {
+    group: "date",
+    series: ["x", "z"]
+  }
+});
+$el.append(grid.el);
+graph.render();
+graph.redraw();
+{% endhighlight %}
+
+We would get this rendered graph:
+
+<div id="mygraph2" style="margin-bottom: 30px;">&nbsp;</div>
+
+<script type="text/javascript">
+var $el = $('#mygraph2');
+var graph = new recline.View.Graph({
+  model: dataset,
+  state: {
+    graphType: "lines-and-points",
+    group: "x",
+    series: ["y", "z"]
+  }
+});
+$el.append(graph.el);
+graph.render();
+graph.redraw();
+</script>
+
+<div class="alert alert-info">
+<strong>State</strong>: The concept of a state is a common feature of Recline views being an object
+which stores information about the state and configuration of a given view. You
+can read more about it in the general <a href="../docs/view.html">Views
+documentation</a> as well as the documentation of individual views such as the
+<a href="../docs/view-graph.html">Graph View</a>.
+</div>
 
