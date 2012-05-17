@@ -167,7 +167,7 @@ my.Grid = Backbone.View.extend({
           <th class="last-header" style="width: {{lastHeaderWidth}}px; padding: 0; margin: 0;"></th> \
         </tr> \
       </thead> \
-      <tbody class="scrollContent"></tbody> \
+      <tbody class="scroll-content"></tbody> \
     </table> \
     </div> \
   ',
@@ -215,6 +215,11 @@ my.Grid = Backbone.View.extend({
         });
       newView.render();
     });
+    // hide extra header col if no scrollbar to avoid unsightly overhang
+    var $tbody = this.el.find('tbody')[0];
+    if ($tbody.scrollHeight <= $tbody.offsetHeight) {
+      this.el.find('th.last-header').hide();
+    }
     this.el.find('.recline-grid').toggleClass('no-hidden', (self.state.get('hiddenFields').length === 0));
     return this;
   },

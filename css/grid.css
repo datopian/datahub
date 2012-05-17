@@ -94,7 +94,7 @@ html>body thead.fixed-header tr {
 /* set TBODY element to have block level attributes. All other non-IE browsers            */
 /* this enables overflow to work on TBODY element. All other non-IE, non-Mozilla browsers */
 /* induced side effect is that child TDs no longer accept width: auto                     */
-tbody.scrollContent {
+tbody.scroll-content {
   display: block;
   max-height: 500px;
   overflow: auto;
