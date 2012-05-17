@@ -28,12 +28,16 @@ my.SlickGrid = Backbone.View.extend({
     this.state = new recline.Model.ObjectState(state);
 
     this.bind('view:show',function(){
-      // If the div was hidden, SlickGrid will calculate wrongly some
+      // If the div is hidden, SlickGrid will calculate wrongly some
       // sizes so we must render it explicitly when the view is visible
       if (!self.rendered){
         self.grid.init();
         self.rendered = true;
       }
+      self.visible = true;
+    });
+    this.bind('view:hide',function(){
+      self.visible = false;
     });
 
   },
@@ -79,15 +83,22 @@ my.SlickGrid = Backbone.View.extend({
                 a[field] < b[field] ? -1 :
                 0
             ;
-
             return args.sortAsc ? result : -result;
-
         });
 
         self.grid.setData(data);
         self.grid.updateRowCount();
         self.grid.render();
     });
+
+    if (self.visible){
+      self.grid.init();
+      self.rendered = true;
+    } else {
+      // Defer rendering until the view is visible
+      self.rendered = false;
+    }
+
     return this;
  }
 });
