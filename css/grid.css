@@ -2,20 +2,22 @@
   * (Data) Grid
   *********************************************************/
 
+table.recline-grid {
+  table-layout: fixed;
+  width: 100%;
+}
+
 .recline-grid .btn-group .dropdown-toggle {
   padding: 1px 3px;
   line-height: auto;
-}
-
-.recline-grid {
-  border: 1px solid #ccc;
-  width: 100%;
 }
 
 .recline-grid td, .recline-grid th {
   border-left: 1px solid #ccc;
   padding: 3px 4px;
   text-align: left;
+  word-wrap: break-word;
+  white-space: normal;
 }
 
 .recline-grid td {
@@ -24,6 +26,14 @@
 
 .recline-grid tr td:first-child, .recline-grid tr th:first-child {
   width: 20px;
+}
+
+.recline-grid tbody tr:last-child {
+  border-bottom: 1px solid #ccc;
+}
+
+.recline-grid tbody td:last-child {
+  border-right: 1px solid #ccc;
 }
 
 /* direct borrowing from twitter buttons */
@@ -53,6 +63,42 @@
   transition: 0.1s linear all;
 }
 
+/**********************************************************
+  * Fixed Header - http://www.imaputz.com/cssStuff/bigFourVersion.html
+  *********************************************************/
+
+div.table-container {
+  overflow: auto;
+}
+
+/* Reset overflow value to hidden for all non-IE browsers. */
+html>body div.table-container {
+  overflow: hidden;
+}
+
+/* set table header to a fixed position. WinIE 6.x only                                       */
+/* In WinIE 6.x, any element with a position property set to relative and is a child of       */
+/* an element that has an overflow property set, the relative value translates into fixed.    */
+/* Ex: parent element DIV with a class of table-container has an overflow property set to auto */
+thead.fixed-header tr {
+  position: relative
+}
+
+/* set THEAD element to have block level attributes. All other non-IE browsers            */
+/* this enables overflow to work on TBODY element. All other non-IE, non-Mozilla browsers */
+html>body thead.fixed-header tr {
+  display: block
+}
+
+/* define the table content to be scrollable                                              */
+/* set TBODY element to have block level attributes. All other non-IE browsers            */
+/* this enables overflow to work on TBODY element. All other non-IE, non-Mozilla browsers */
+/* induced side effect is that child TDs no longer accept width: auto                     */
+tbody.scrollContent {
+  display: block;
+  max-height: 500px;
+  overflow: auto;
+}
 
 /**********************************************************
   * Data Table Menus
