@@ -62,13 +62,32 @@ my.SlickGrid = Backbone.View.extend({
       columns.push({id:field['id'],
                     name:field['label'],
                     field:field['id'],
+                    sortable: true,
                     minWidth: 80});
     });
 
     var data = this.model.currentDocuments.toJSON();
 
     this.grid = new Slick.Grid(this.el, data, columns, options);
+    this.grid.onSort.subscribe(function(e, args){
 
+        var field = args.sortCol.field;
+
+        data.sort(function(a, b){
+            var result =
+                a[field] > b[field] ? 1 :
+                a[field] < b[field] ? -1 :
+                0
+            ;
+
+            return args.sortAsc ? result : -result;
+
+        });
+
+        self.grid.setData(data);
+        self.grid.updateRowCount();
+        self.grid.render();
+    });
     return this;
  }
 });
