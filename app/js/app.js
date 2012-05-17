@@ -21,7 +21,7 @@ var ExplorerApp = Backbone.View.extend({
     this.router.route(/explorer/, 'explorer', this.viewExplorer);
     Backbone.history.start();
 
-    var state = recline.Util.parseQueryString(window.location.search);
+    var state = recline.Util.parseQueryString(decodeURIComponent(window.location.search));
     if (state) {
       _.each(state, function(value, key) {
         try {

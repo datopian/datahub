@@ -56,7 +56,7 @@ my.composeQueryString = function(queryParams) {
     if (typeof(value) === 'object') {
       value = JSON.stringify(value);
     }
-    items.push(key + '=' + value);
+    items.push(key + '=' + encodeURIComponent(value));
   });
   queryString += items.join('&');
   return queryString;
