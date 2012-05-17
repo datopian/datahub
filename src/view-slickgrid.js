@@ -1,0 +1,76 @@
+/*jshint multistr:true */
+
+this.recline = this.recline || {};
+this.recline.View = this.recline.View || {};
+
+(function($, my) {
+// ## SlickGrid Dataset View
+//
+// Provides a tabular view on a Dataset, based on SlickGrid.
+//
+// https://github.com/mleibman/SlickGrid
+//
+// Initialize it with a `recline.Model.Dataset`.
+my.SlickGrid = Backbone.View.extend({
+  tagName:  "div",
+  className: "recline-slickgrid-container",
+
+  initialize: function(modelEtc) {
+    var self = this;
+    this.el = $(this.el);
+    _.bindAll(this, 'render');
+    this.model.currentDocuments.bind('add', this.render);
+    this.model.currentDocuments.bind('reset', this.render);
+    this.model.currentDocuments.bind('remove', this.render);
+
+    var state = _.extend({ }, modelEtc.state
+    );
+    this.state = new recline.Model.ObjectState(state);
+
+    this.bind('view:show',function(){
+      // If the div was hidden, SlickGrid will calculate wrongly some
+      // sizes so we must render it explicitly when the view is visible
+      if (!self.rendered){
+        self.grid.init();
+        self.rendered = true;
+      }
+    });
+
+  },
+
+  events: {
+  },
+
+  // #### Templating
+  template: ' \
+  ',
+
+  render: function() {
+    var self = this;
+    this.el = $(this.el);
+
+    var options = {
+      enableCellNavigation: true,
+      enableColumnReorder: false,
+      explicitInitialization: true
+
+      // , forceFitColumns: true
+    };
+
+    var columns = [];
+    _.each(this.model.fields.toJSON(),function(field){
+      columns.push({id:field['id'],
+                    name:field['label'],
+                    field:field['id'],
+                    minWidth: 80});
+    });
+
+    var data = this.model.currentDocuments.toJSON();
+
+    this.grid = new Slick.Grid(this.el, data, columns, options);
+
+    return this;
+ }
+});
+
+})(jQuery, recline.View);
