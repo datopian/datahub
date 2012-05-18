@@ -23,6 +23,7 @@ my.SlickGrid = Backbone.View.extend({
     this.model.currentDocuments.bind('reset', this.render);
     this.model.currentDocuments.bind('remove', this.render);
 
+    //TODO
     var state = _.extend({ }, modelEtc.state
     );
     this.state = new recline.Model.ObjectState(state);
@@ -45,10 +46,6 @@ my.SlickGrid = Backbone.View.extend({
   events: {
   },
 
-  // #### Templating
-  template: ' \
-  ',
-
   render: function() {
     var self = this;
     this.el = $(this.el);
@@ -56,9 +53,8 @@ my.SlickGrid = Backbone.View.extend({
     var options = {
       enableCellNavigation: true,
       enableColumnReorder: true,
-      explicitInitialization: true
-
-      // , forceFitColumns: true
+      explicitInitialization: true,
+      syncColumnCellResize: true,
     };
 
     var columns = [];
@@ -91,6 +87,8 @@ my.SlickGrid = Backbone.View.extend({
         self.grid.render();
     });
 
+    var columnpicker = new Slick.Controls.ColumnPicker(columns, this.grid, options);
+
     if (self.visible){
       self.grid.init();
       self.rendered = true;
@@ -104,3 +102,106 @@ my.SlickGrid = Backbone.View.extend({
 });
 
 })(jQuery, recline.View);
+
+/*
+* Context menu for the column picker, adapted from
+* http://mleibman.github.com/SlickGrid/examples/example-grouping
+*
+*/
+(function ($) {
+  function SlickColumnPicker(columns, grid, options) {
+    var $menu;
+    var columnCheckboxes;
+
+    var defaults = {
+      fadeSpeed:250
+    };
+
+    function init() {
+      grid.onHeaderContextMenu.subscribe(handleHeaderContextMenu);
+      options = $.extend({}, defaults, options);
+
+      $menu = $('<ul class="dropdown-menu slick-contextmenu" style="display:none;position:absolute;z-index:20;" />').appendTo(document.body);
+
+      $menu.bind('mouseleave', function (e) {
+        $(this).fadeOut(options.fadeSpeed)
+      });
+      $menu.bind('click', updateColumn);
+
+    }
+
+    function handleHeaderContextMenu(e, args) {
+      e.preventDefault();
+      $menu.empty();
+      columnCheckboxes = [];
+
+      var $li, $input;
+      for (var i = 0; i < columns.length; i++) {
+        $li = $('<li />').appendTo($menu);
+        $input = $('<input type="checkbox" />').data('column-id', columns[i].id).attr('id','slick-column-vis-'+columns[i].id);
+        columnCheckboxes.push($input);
+
+        if (grid.getColumnIndex(columns[i].id) != null) {
+          $input.attr('checked', 'checked');
+        }
+        $input.appendTo($li);
+        $('<label />')
+            .text(columns[i].name)
+            .attr('for','slick-column-vis-'+columns[i].id)
+            .appendTo($li);
+      }
+      $('<li/>').addClass('divider').appendTo($menu);
+      $li = $('<li />').appendTo($menu);
+      $input = $('<input type="checkbox" />').data('option', 'autoresize').attr('id','slick-option-autoresize');
+      $input.appendTo($li);
+      $('<label />')
+          .text('Force fit columns')
+          .attr('for','slick-option-autoresize')
+          .appendTo($li);
+      if (grid.getOptions().forceFitColumns) {
+        $input.attr('checked', 'checked');
+      }
+
+      $menu.css('top', e.pageY - 10)
+          .css('left', e.pageX - 10)
+          .fadeIn(options.fadeSpeed);
+    }
+
+    function updateColumn(e) {
+      if ($(e.target).data('option') == 'autoresize') {
+        if (e.target.checked) {
+          grid.setOptions({forceFitColumns:true});
+          grid.autosizeColumns();
+        } else {
+          grid.setOptions({forceFitColumns:false});
+        }
+        return;
+      }
+
+      if (($(e.target).is('li') && !$(e.target).hasClass('divider')) ||
+            $(e.target).is('input')) {
+        if ($(e.target).is('li')){
+            var checkbox = $(e.target).find('input').first();
+            checkbox.attr('checked',!checkbox.is(':checked'));
+        }
+        var visibleColumns = [];
+        $.each(columnCheckboxes, function (i, e) {
+          if ($(this).is(':checked')) {
+            visibleColumns.push(columns[i]);
+          }
+        });
+
+        if (!visibleColumns.length) {
+          $(e.target).attr('checked', 'checked');
+          return;
+        }
+
+        grid.setColumns(visibleColumns);
+      }
+    }
+    init();
+  }
+
+  // Slick.Controls.ColumnPicker
+  $.extend(true, window, { Slick:{ Controls:{ ColumnPicker:SlickColumnPicker }}});
+})(jQuery);

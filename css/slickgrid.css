@@ -118,3 +118,44 @@ classes should alter those!
   border-color: red;
 }
 
+.slick-contextmenu {
+  border-radius: 5px
+}
+
+.slick-contextmenu li {
+  clear: both;
+  height: 24px;
+  cursor: pointer;
+}
+
+.slick-contextmenu .divider {
+  cursor: default;
+}
+
+.slick-contextmenu > li:hover {
+  background-color: #0088cc;
+}
+
+.slick-contextmenu .divider:hover {
+  background-color: #E5E5E5;
+}
+
+.slick-contextmenu li:hover > label {
+  color: white;
+}
+
+.slick-contextmenu input {
+  float: left;
+  margin-left: 15px;
+  margin-top: 5px;
+}
+
+.slick-contextmenu label {
+  float: left;
+  margin-right: 15px;
+  margin-left: 5px;
+  margin-top: 3px;
+  color: #555;
+  cursor: pointer;
+}
+
