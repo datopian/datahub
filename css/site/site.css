@@ -267,3 +267,7 @@ section.grey:after {
   border-radius: 0;
 }
 
+.doc-ex-rendered {
+  margin-bottom: 20px;
+}
+
