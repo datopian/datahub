@@ -76,6 +76,10 @@ html>body div.table-container {
   overflow: hidden;
 }
 
+thead.fixed-header tr {
+  overflow-x: hidden;
+}
+
 /* set table header to a fixed position. WinIE 6.x only                                       */
 /* In WinIE 6.x, any element with a position property set to relative and is a child of       */
 /* an element that has an overflow property set, the relative value translates into fixed.    */
