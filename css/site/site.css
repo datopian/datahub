@@ -137,7 +137,7 @@ a.dotted:hover {
 	font-size:18px;
 	font-weight:400;
 	letter-spacing:-1px;
-	line-height:40px;
+  line-height: 32px;
 }
 
 .navbar .nav > li > a {
