@@ -1,10 +1,19 @@
 {
   "name"          : "recline",
-  "description"   : "Data explorer library and app in pure Javascript",
-  "url"           : "http://okfnlabs.org/recline",
+  "description"   : "Data explorer and data library in pure Javascript.",
+  "version"       : "0.5.0",
+  "homepage"      : "http://reclinejs.com/",
   "keywords"      : ["data", "explorer", "grid", "table", "library", "app"],
-  "author"        : "Rufus Pollock <rufus.pollock@okfn.org> and Max Ogden <max@maxogden.com>",
-  "contributors"  : [],
+  "contributors"  : [
+    {
+      "name": "Rufus Pollock",
+      "email": "rufus.pollock@okfn.org"
+    },
+    {
+      "name": "Max Ogden",
+      "email": "max@maxogden.com"
+    }
+  ],
   "dependencies"  : {
     "jquery"      : ">=1.6",
     "underscore"  : ">=1.0",
@@ -13,5 +22,11 @@
   },
   "lib"           : "src",
   "main"          : "recline.js",
-  "version"       : "0.4a"
+  "repositories": [
+     {
+          "type": "git", 
+          "url": "http://github.com/okfn/recline.git",
+          "path": "src"
+     }
+  ]
 }

@@ -49,7 +49,7 @@ test('Lat/Lon geom fields', function () {
   });
   $('.fixtures').append(view.el);
 
-  //Fire query, otherwise the map won't be initialized
+  // Not really needed but fire query to test that resetting works!
   dataset.query();
 
   // Check that all markers were created
