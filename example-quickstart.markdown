@@ -7,10 +7,10 @@ recline-deps: true
 <div class="page-header">
   <h1>
     Recline Quickstart Guide
+    <br />
+    <small>This step-by-step guide will quickly get you started with Recline basics, including creating a dataset from local data and setting up a grid, graph and map to display it.</small>
   </h1>
 </div>
-
-This step-by-step guide will quickly get you started with Recline basics, including creating a dataset from local data and setting up a data grid to display this data.
 
 ### Preparing your page
 
@@ -25,12 +25,12 @@ Before writing any code with Recline, you need to do the following preparation s
 <link rel="stylesheet" href="css/grid.css" />{% endhighlight %}
 
 3. Include the relevant Javascript files somewhere on the page (preferably before body close tag):
-    {% highlight html %}
-<!-- 3rd party dependencies -->
+    {% highlight html %}<!-- 3rd party dependencies -->
 <script type="text/javascript" src="vendor/jquery/1.7.1/jquery.js"></script>
 <script type="text/javascript" src="vendor/underscore/1.1.6/underscore.js"></script>
 <script type="text/javascript" src="vendor/backbone/0.5.1/backbone.js"></script>
 <script type="text/javascript" src="vendor/jquery.mustache.js"></script>
+<script type="text/javascript" src="vendor/bootstrap/2.0.2/bootstrap.js"></script>
 <!-- note that we could include individual components rather than whole of recline e.g.
 <script type="text/javascript" src="src/model.js"></script>
 <script type="text/javascript" src="src/backend/base.js"></script>
@@ -98,7 +98,18 @@ grid.render();
 
 Let's create a graph view to display a line graph for this dataset.
 
-First, create a new div for the graph:
+First, add the additional dependencies for this view. These are the Flot
+library and the Recline Graph view:
+
+{% highlight html %}
+<link rel="stylesheet" href="css/graph.css">
+
+<!-- javascript -->
+<script type="text/javascript" src="vendor/jquery.flot/0.7/jquery.flot.js"></script>
+<script type="text/javascript" src="src/view-graph.js"></script>
+{% endhighlight %}
+
+Next, create a new div for the graph:
 
 {% highlight html %}
 <div id="mygraph"></div>
@@ -130,8 +141,9 @@ $el.append(graph.el);
 graph.render();
 </script>
 
-But I wanted to create a graph not a graph editor. Can we do that? Yes you can!
-All you need to do is set the 'state' of the graph view:
+But suppose you wanted to create a graph not a graph editor. This is
+straightforward to do -- all we need to do is set the 'state' of the graph
+view:
 
 {% highlight javascript %}
 var $el = $('#mygraph');
@@ -142,8 +154,7 @@ var graph = new recline.View.Graph({
     series: ["x", "z"]
   }
 });
-$el.append(grid.el);
-graph.render();
+$el.append(graph.el);
 graph.redraw();
 {% endhighlight %}
 
@@ -162,7 +173,6 @@ var graph = new recline.View.Graph({
   }
 });
 $el.append(graph.el);
-graph.render();
 graph.redraw();
 </script>
 
@@ -173,4 +183,52 @@ can read more about it in the general <a href="../docs/view.html">Views
 documentation</a> as well as the documentation of individual views such as the
 <a href="../docs/view-graph.html">Graph View</a>.
 </div>
+
+### Creating a Map
+
+Now, let's create a map of this dataset using the lon/lat information which is
+present on these data points.
+
+First, add the additional dependencies for the map view. These are the Leaflet
+library and the Recline Map view:
+
+{% highlight html %}
+<!-- css -->
+<link rel="stylesheet" href="vendor/leaflet/0.3.1/leaflet.css">
+<!--[if lte IE 8]>
+<link rel="stylesheet" href="vendor/leaflet/0.3.1/leaflet.ie.css" />
+<![endif]-->
+<link rel="stylesheet" href="css/map.css">
+
+<!-- javascript -->
+<script type="text/javascript" src="vendor/leaflet/0.3.1/leaflet.js"></script>
+<script type="text/javascript" src="src/view-map.js"></script>
+{% endhighlight %}
+
+Now, create a new div for the map:
+
+{% highlight html %}
+<div id="mymap"></div>
+{% endhighlight %}
+
+Now let's create the map, we will use the existing dataset object created
+previously:
+
+{% highlight javascript %}
+var $el = $('#mymap');
+var map = new recline.View.Map({
+  model: dataset
+});
+$el.append(map.el);
+{% endhighlight %}
+
+<div id="mymap">&nbsp;</div>
+
+<script type="text/javascript">
+var $el = $('#mymap');
+var map = new recline.View.Map({
+  model: dataset
+});
+$el.append(map.el);
+</script>
 
