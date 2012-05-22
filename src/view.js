@@ -205,6 +205,13 @@ my.DataExplorer = Backbone.View.extend({
           model: this.model,
           state: this.state.get('view-map')
         }),
+      }, {
+        id: 'timeline',
+        label: 'Timeline',
+        view: new my.Timeline({
+          model: this.model,
+          state: this.state.get('view-timeline')
+        }),
       }];
     }
     // these must be called after pageViews are created
