@@ -176,7 +176,6 @@ my.Map = Backbone.View.extend({
         $('#editor-field-type-latlon').attr('checked','checked').change();
       }
     }
-    this.redraw();
     return this;
   },
 
