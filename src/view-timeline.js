@@ -12,16 +12,37 @@ my.Timeline = Backbone.View.extend({
     <div id="vmm-timeline-id"></div> \
   ',
 
-  initialize: function() {
+  // These are the default (case-insensitive) names of field that are used if found.
+  // If not found, the user will need to define these fields on initialization
+  startFieldNames: ['date','startdate', 'start', 'start-date'],
+  endFieldNames: ['end','endDate'],
+  elementId: '#vmm-timeline-id',
+
+  initialize: function(options) {
     var self = this;
     this.el = $(this.el);
-    this.render();
+    this.timeline = new VMM.Timeline();
+    this._timelineIsInitialized = false;
     this.bind('view:show', function() {
-      // set width explicitly o/w timeline goes wider that screen for some reason
-      self.el.find('#vmm-timeline-id').width(self.el.parent().width());
-      // only call initTimeline once in DOM as Timeline uses $ internally to look up element
-      self.initTimeline();
+      if (self._timelineIsInitialized === false) {
+        self._initTimeline();
+      }
     });
+    this.model.fields.bind('change', function() {
+      self._setupTemporalField();
+    });
+    this.model.currentDocuments.bind('all', function() {
+      self.reloadData();
+    });
+    var stateData = _.extend({
+        startField: null,
+        endField: null
+      },
+      options.state
+    );
+    this.state = new recline.Model.ObjectState(stateData);
+    this._setupTemporalField();
+    this.render();
   },
 
   render: function() {
@@ -30,15 +51,21 @@ my.Timeline = Backbone.View.extend({
     this.el.html(htmls);
   },
 
-  initTimeline: function() {
-    var config = {
-      width:  "300px",
-      height: "50%"
-    };
+  _initTimeline: function() {
+    // set width explicitly o/w timeline goes wider that screen for some reason
+    this.el.find(this.elementId).width(this.el.parent().width());
+    // only call _initTimeline once view in DOM as Timeline uses $ internally to look up element
+    var config = {};
     var data = this._timelineJSON();
-    var elementId = '#vmm-timeline-id';
-    this.timeline = new VMM.Timeline();
-    this.timeline.init(data, elementId, config);
+    this.timeline.init(data, this.elementId, config);
+    this._timelineIsInitialized = true
+  },
+
+  reloadData: function() {
+    if (this._timelineIsInitialized) {
+      var data = this._timelineJSON();
+      this.timeline.reload(data);
+    }
   },
 
   _timelineJSON: function() {
@@ -46,14 +73,15 @@ my.Timeline = Backbone.View.extend({
     var out = {
       'timeline': {
         'type': 'default',
-        'headline': ' ',
+        'headline': '',
         'date': [
         ]
       }
     };
     this.model.currentDocuments.each(function(doc) {
       var tlEntry = {
-        "startDate": doc.get('date'),
+        "startDate": doc.get(self.state.get('startField')),
+        "endDate": doc.get(self.state.get('endField')) || null,
         "headline": String(doc.get(self.model.fields.models[0].id)),
         "text": ''
       };
@@ -62,6 +90,24 @@ my.Timeline = Backbone.View.extend({
       }
     });
     return out;
+  },
+
+  _setupTemporalField: function() {
+    this.state.set({
+      startField: this._checkField(this.startFieldNames),
+      endField: this._checkField(this.endFieldNames)
+    });
+  },
+
+  _checkField: function(possibleFieldNames) {
+    var modelFieldNames = this.model.fields.pluck('id');
+    for (var i = 0; i < possibleFieldNames.length; i++){
+      for (var j = 0; j < modelFieldNames.length; j++){
+        if (modelFieldNames[j].toLowerCase() == possibleFieldNames[i].toLowerCase())
+          return modelFieldNames[j];
+      }
+    }
+    return null;
   }
 });
 
