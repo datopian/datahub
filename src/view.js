@@ -71,6 +71,21 @@
 // State is available not only for individual views (as described above) but
 // for the dataset (e.g. the current query). For an example of pulling together
 // state from across multiple components see `recline.View.DataExplorer`.
+//
+// ### Flash Messages / Notifications
+//
+// To send 'flash messages' or notifications the convention is that views
+// should fire an event named `recline:flash` with a payload that is a
+// flash object with the following attributes (all optional):
+//
+// * message: message to show.
+// * category: warning (default), success, error
+// * persist: if true alert is persistent, o/w hidden after 3s (default=false)
+// * loader: if true show a loading message
+//
+// Objects or views wishing to bind to flash messages may then subscribe to
+// these events and take some action such as displaying them to the user. For
+// an example of such behaviour see the DataExplorer view.
 // 
 // ### Writing your own Views
 //
