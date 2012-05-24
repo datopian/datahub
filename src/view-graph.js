@@ -27,13 +27,6 @@ my.Graph = Backbone.View.extend({
 
   template: ' \
   <div class="editor"> \
-    <div class="editor-info editor-hide-info"> \
-      <h3 class="action-toggle-help">Help &raquo;</h3> \
-      <p>To create a chart select a column (group) to use as the x-axis \
-         then another column (Series A) to plot against it.</p> \
-      <p>You can add add \
-         additional series by clicking the "Add series" button</p> \
-    </div> \
     <form class="form-stacked"> \
       <div class="clearfix"> \
         <label>Graph Type</label> \
@@ -93,8 +86,7 @@ my.Graph = Backbone.View.extend({
   events: {
     'change form select': 'onEditorSubmit',
     'click .editor-add': '_onAddSeries',
-    'click .action-remove-series': 'removeSeries',
-    'click .action-toggle-help': 'toggleHelp'
+    'click .action-remove-series': 'removeSeries'
   },
 
   initialize: function(options) {
@@ -401,11 +393,7 @@ my.Graph = Backbone.View.extend({
     var $el = $(e.target);
     $el.parent().parent().remove();
     this.onEditorSubmit();
-  },
-
-  toggleHelp: function() {
-    this.el.find('.editor-info').toggleClass('editor-hide-info');
-  },
+  }
 });
 
 })(jQuery, recline.View);
