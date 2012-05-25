@@ -23,8 +23,10 @@ my.SlickGrid = Backbone.View.extend({
     this.model.currentDocuments.bind('reset', this.render);
     this.model.currentDocuments.bind('remove', this.render);
 
-    //TODO
-    var state = _.extend({ }, modelEtc.state
+    var state = _.extend({
+        hiddenColumns: [],
+        columnsOrder: []
+      }, modelEtc.state
     );
     this.state = new recline.Model.ObjectState(state);
 
@@ -57,6 +59,7 @@ my.SlickGrid = Backbone.View.extend({
       syncColumnCellResize: true,
     };
 
+    // We need all columns, even the hidden ones, to show on the column picker
     var columns = [];
     _.each(this.model.fields.toJSON(),function(field){
       columns.push({id:field['id'],
@@ -66,28 +69,60 @@ my.SlickGrid = Backbone.View.extend({
                     minWidth: 80});
     });
 
-    var data = this.model.currentDocuments.toJSON();
-
-    this.grid = new Slick.Grid(this.el, data, columns, options);
-    this.grid.onSort.subscribe(function(e, args){
-
-        var field = args.sortCol.field;
-
-        data.sort(function(a, b){
-            var result =
-                a[field] > b[field] ? 1 :
-                a[field] < b[field] ? -1 :
-                0
-            ;
-            return args.sortAsc ? result : -result;
-        });
-
-        self.grid.setData(data);
-        self.grid.updateRowCount();
-        self.grid.render();
+    // Restrict the visible columns
+    var visibleColumns = columns.filter(function(column) {
+      return _.indexOf(self.state.get('hiddenColumns'), column.id) == -1;
     });
 
-    var columnpicker = new Slick.Controls.ColumnPicker(columns, this.grid, options);
+    // Order them if there is ordering info on the state
+    if (this.state.get('columnsOrder')){
+      visibleColumns = visibleColumns.sort(function(a,b){
+        return _.indexOf(self.state.get('columnsOrder'),a.id) > _.indexOf(self.state.get('columnsOrder'),b.id);
+      });
+      columns = columns.sort(function(a,b){
+        return _.indexOf(self.state.get('columnsOrder'),a.id) > _.indexOf(self.state.get('columnsOrder'),b.id);
+      });
+    }
+
+    // Move hidden columns to the end, so they appear at the bottom of the
+    // column picker
+    var tempHiddenColumns = [];
+    for (var i = columns.length -1; i >= 0; i--){
+      if (_.indexOf(_.pluck(visibleColumns,'id'),columns[i].id) == -1){
+        tempHiddenColumns.push(columns.splice(i,1)[0]);
+      }
+    }
+    columns = columns.concat(tempHiddenColumns);
+
+
+    var data = this.model.currentDocuments.toJSON();
+
+    this.grid = new Slick.Grid(this.el, data, visibleColumns, options);
+    this.grid.onSort.subscribe(function(e, args){
+
+      var field = args.sortCol.field;
+
+      data.sort(function(a, b){
+          var result =
+              a[field] > b[field] ? 1 :
+              a[field] < b[field] ? -1 :
+              0
+          ;
+          return args.sortAsc ? result : -result;
+      });
+
+      self.grid.setData(data);
+      self.grid.updateRowCount();
+      self.grid.render();
+    });
+
+    this.grid.onColumnsReordered.subscribe(function(e, args){
+      self.state.set({columnsOrder: _.pluck(self.grid.getColumns(),'id')});
+    });
+
+
+    var columnpicker = new Slick.Controls.ColumnPicker(columns, this.grid,
+                                                       _.extend(options,{state:this.state}));
 
     if (self.visible){
       self.grid.init();
@@ -185,11 +220,15 @@ my.SlickGrid = Backbone.View.extend({
             checkbox.attr('checked',!checkbox.is(':checked'));
         }
         var visibleColumns = [];
+        var hiddenColumnsIds = [];
         $.each(columnCheckboxes, function (i, e) {
           if ($(this).is(':checked')) {
             visibleColumns.push(columns[i]);
+          } else {
+            hiddenColumnsIds.push(columns[i].id);
           }
         });
+
 
         if (!visibleColumns.length) {
           $(e.target).attr('checked', 'checked');
@@ -197,6 +236,7 @@ my.SlickGrid = Backbone.View.extend({
         }
 
         grid.setColumns(visibleColumns);
+        options.state.set({hiddenColumns:hiddenColumnsIds});
       }
     }
     init();
