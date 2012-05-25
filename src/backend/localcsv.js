@@ -33,7 +33,7 @@ this.recline.Backend = this.recline.Backend || {};
       });
       return _doc;
     });
-    var dataset = recline.Backend.createDataset(data, fields);
+    var dataset = recline.Backend.Memory.createDataset(data, fields);
     return dataset;
   };
 

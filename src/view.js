@@ -362,7 +362,7 @@ my.DataExplorer = Backbone.View.extend({
     var stateData = _.extend({
         query: query,
         'view-graph': graphState,
-        backend: this.model.backend.__type__,
+        backend: this.model.backendType,
         dataset: this.model.toJSON(),
         currentView: null,
         readOnly: false

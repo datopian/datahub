@@ -19,7 +19,7 @@ var Fixture = {
       {id: 4, date: '2011-05-04', x: 5, y: 10, z: 15, country: 'UK', label: 'fifth', lat:51.58, lon:0},
       {id: 5, date: '2011-06-02', x: 6, y: 12, z: 18, country: 'DE', label: 'sixth', lat:51.04, lon:7.9}
     ];
-    var dataset = recline.Backend.createDataset(documents, fields);
+    var dataset = recline.Backend.Memory.createDataset(documents, fields);
     return dataset;
   }
 };

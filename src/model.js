@@ -44,6 +44,8 @@ my.Dataset = Backbone.Model.extend({
   initialize: function(model, backend) {
     _.bindAll(this, 'query');
     this.backend = backend;
+    this.backendType = 'memory';
+    this.backendURL = null;
     if (typeof(backend) === 'string') {
       this.backend = this._backendFromString(backend);
     }
@@ -162,7 +164,7 @@ my.Dataset.restore = function(state) {
     state.dataset = {url: state.url};
   }
   if (state.backend === 'memory') {
-    dataset = recline.Backend.createDataset(
+    dataset = recline.Backend.Memory.createDataset(
       [{stub: 'this is a stub dataset because we do not restore memory datasets'}],
       [],
       state.dataset // metadata
