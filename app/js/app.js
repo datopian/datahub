@@ -80,13 +80,6 @@ var ExplorerApp = Backbone.View.extend({
        {
          id: 'grid',
          label: 'Grid', 
-         view: new recline.View.Grid({
-           model: dataset
-         })
-       },
-       {
-         id: 'slickgrid',
-         label: 'SlickGrid', 
          view: new recline.View.SlickGrid({
            model: dataset
          })
@@ -101,7 +94,7 @@ var ExplorerApp = Backbone.View.extend({
        },
        {
          id: 'map',
-         label: 'Map', 
+         label: 'Map',
          view: new recline.View.Map({
            model: dataset
          })
