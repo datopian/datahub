@@ -37,6 +37,9 @@ my.SlickGrid = Backbone.View.extend({
       // If the div is hidden, SlickGrid will calculate wrongly some
       // sizes so we must render it explicitly when the view is visible
       if (!self.rendered){
+        if (!self.grid){
+          self.render();
+        }
         self.grid.init();
         self.rendered = true;
       }
