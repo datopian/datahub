@@ -25,7 +25,8 @@ my.SlickGrid = Backbone.View.extend({
 
     var state = _.extend({
         hiddenColumns: [],
-        columnsOrder: []
+        columnsOrder: [],
+        columnsSort: {}
       }, modelEtc.state
     );
     this.state = new recline.Model.ObjectState(state);
@@ -98,9 +99,9 @@ my.SlickGrid = Backbone.View.extend({
     var data = this.model.currentDocuments.toJSON();
 
     this.grid = new Slick.Grid(this.el, data, visibleColumns, options);
-    this.grid.onSort.subscribe(function(e, args){
 
-      var field = args.sortCol.field;
+    // Column sorting
+    var gridSorter = function(field, ascending, grid, data){
 
       data.sort(function(a, b){
           var result =
@@ -108,12 +109,27 @@ my.SlickGrid = Backbone.View.extend({
               a[field] < b[field] ? -1 :
               0
           ;
-          return args.sortAsc ? result : -result;
+          return ascending ? result : -result;
       });
 
-      self.grid.setData(data);
-      self.grid.updateRowCount();
-      self.grid.render();
+      grid.setData(data);
+      grid.updateRowCount();
+      grid.render();
+    }
+
+    var sortInfo = this.state.get('columnsSort');
+    if (sortInfo){
+      var sortAsc = !(sortInfo['direction'] == 'desc');
+      gridSorter(sortInfo.column, sortAsc, self.grid, data);
+      this.grid.setSortColumn(sortInfo.column, sortAsc);
+    }
+
+    this.grid.onSort.subscribe(function(e, args){
+      gridSorter(args.sortCol.field,args.sortAsc,self.grid,data);
+      self.state.set({columnsSort:{
+                      column:args.sortCol,
+                      direction: (args.sortAsc) ? 'asc':'desc'
+                   }});
     });
 
     this.grid.onColumnsReordered.subscribe(function(e, args){
