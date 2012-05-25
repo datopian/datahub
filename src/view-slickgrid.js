@@ -26,7 +26,9 @@ my.SlickGrid = Backbone.View.extend({
     var state = _.extend({
         hiddenColumns: [],
         columnsOrder: [],
-        columnsSort: {}
+        columnsSort: {},
+        columnsWidth: [],
+        fitColumns: false
       }, modelEtc.state
     );
     this.state = new recline.Model.ObjectState(state);
@@ -58,16 +60,24 @@ my.SlickGrid = Backbone.View.extend({
       enableColumnReorder: true,
       explicitInitialization: true,
       syncColumnCellResize: true,
+      forceFitColumns: this.state.get('fitColumns')
     };
 
     // We need all columns, even the hidden ones, to show on the column picker
     var columns = [];
     _.each(this.model.fields.toJSON(),function(field){
-      columns.push({id:field['id'],
+      var column = {id:field['id'],
                     name:field['label'],
                     field:field['id'],
                     sortable: true,
-                    minWidth: 80});
+                    minWidth: 80};
+
+      var widthInfo = _.find(self.state.get('columnsWidth'),function(c){return c.column == field.id});
+      if (widthInfo){
+        column['width'] = widthInfo.width;
+      }
+
+      columns.push(column);
     });
 
     // Restrict the visible columns
@@ -136,6 +146,17 @@ my.SlickGrid = Backbone.View.extend({
       self.state.set({columnsOrder: _.pluck(self.grid.getColumns(),'id')});
     });
 
+    this.grid.onColumnsResized.subscribe(function(e, args){
+        var columns = args.grid.getColumns();
+        var defaultColumnWidth = args.grid.getOptions().defaultColumnWidth;
+        var columnsWidth = [];
+        _.each(columns,function(column){
+          if (column.width != defaultColumnWidth){
+            columnsWidth.push({column:column.id,width:column.width});
+          }
+        });
+        self.state.set({columnsWidth:columnsWidth});
+    });
 
     var columnpicker = new Slick.Controls.ColumnPicker(columns, this.grid,
                                                        _.extend(options,{state:this.state}));
@@ -202,7 +223,7 @@ my.SlickGrid = Backbone.View.extend({
             .appendTo($li);
       }
       $('<li/>').addClass('divider').appendTo($menu);
-      $li = $('<li />').appendTo($menu);
+      $li = $('<li />').data('option', 'autoresize').appendTo($menu);
       $input = $('<input type="checkbox" />').data('option', 'autoresize').attr('id','slick-option-autoresize');
       $input.appendTo($li);
       $('<label />')
@@ -220,12 +241,22 @@ my.SlickGrid = Backbone.View.extend({
 
     function updateColumn(e) {
       if ($(e.target).data('option') == 'autoresize') {
-        if (e.target.checked) {
+        var checked;
+        if ($(e.target).is('li')){
+            var checkbox = $(e.target).find('input').first();
+            checked = !checkbox.is(':checked');
+            checkbox.attr('checked',checked);
+        } else {
+          checked = e.target.checked;
+        }
+
+        if (checked) {
           grid.setOptions({forceFitColumns:true});
           grid.autosizeColumns();
         } else {
           grid.setOptions({forceFitColumns:false});
         }
+        options.state.set({fitColumns:checked});
         return;
       }
 
