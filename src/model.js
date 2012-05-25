@@ -493,10 +493,12 @@ my.ObjectState = Backbone.Model.extend({
 });
 
 
-// ## Backend registry
+// ## Backbone.sync
 //
-// Backends will register themselves by id into this registry
-my.backends = {};
+// Override Backbone.sync to hand off to sync function in relevant backend
+Backbone.sync = function(method, model, options) {
+  return model.backend.sync(method, model, options);
+};
 
 }(jQuery, this.recline.Model));
 
