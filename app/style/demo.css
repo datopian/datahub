@@ -2,10 +2,6 @@ body {
   padding-top: 60px;
 }
 
-.navbar .brand {
-  line-height: 32px;
-}
-
 /* we do not have a LH sidebar */
 .container-fluid > .content {
   margin-left: 0;
@@ -16,6 +12,10 @@ body {
 }
 
 .recline-slickgrid-container {
+  height: 550px;
+}
+
+.recline-timeline .vmm-timeline {
   height: 550px;
 }
 

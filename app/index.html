@@ -16,6 +16,7 @@
   <link rel="stylesheet" href="../vendor/leaflet/0.3.1/leaflet.ie.css" />
   <![endif]-->
   <link rel="stylesheet" href="../vendor/slickgrid/2.0.1/slick.grid.css">
+  <link rel="stylesheet" href="../vendor/timeline/20120520/css/timeline.css">
 
   <!-- Recline CSS components -->
   <link rel="stylesheet" href="../css/data-explorer.css">
@@ -39,10 +40,10 @@
   <script type="text/javascript" src="../vendor/jquery.mustache.js"></script>
   <script type="text/javascript" src="../vendor/bootstrap/2.0.2/bootstrap.js"></script>
   <script type="text/javascript" src="../vendor/leaflet/0.3.1/leaflet.js"></script>
-  
   <script type="text/javascript" src="../vendor/slickgrid/2.0.1/jquery-ui-1.8.16.custom.min.js"></script>
   <script type="text/javascript" src="../vendor/slickgrid/2.0.1/jquery.event.drag-2.0.min.js"></script>
   <script type="text/javascript" src="../vendor/slickgrid/2.0.1/slick.grid.min.js"></script>
+  <script type="text/javascript" src="../vendor/timeline/20120520/js/timeline.js"></script>
 
   <!-- recline library -->
   <!-- in normal use would just the single recline.js library file. However, for testing it
@@ -62,6 +63,7 @@
   <script type="text/javascript" src="../src/view-graph.js"></script>
   <script type="text/javascript" src="../src/view-map.js"></script>
   <script type="text/javascript" src="../src/view-transform-dialog.js"></script>
+  <script type="text/javascript" src="../src/view-timeline.js"></script>
 
   <!-- non-library javascript specific to this demo -->
   <script type="text/javascript" src="js/app.js"></script>
@@ -104,35 +106,36 @@
         <div class="hero-unit">
           <h1>Welcome to the Recline Data Explorer</h1>
           <p>Recline allows you to explore and work with data in your browser and then share with others</p>
-          In basic operation it's much like a spreadsheet - though it's
-            feature set is a little different. In particular, the Data
-            Explorer provides:
-            <ul>
-              <li>Data grid / spreadsheet</li>
-              <li>Data editing including programmatic data transformation in javascript</li>
-              <li>Visualizations includes graphs and maps</li>
-              <li>Import and export from a variety of sources including online sources such as online Excel and CSV files, Google docs and
-              the <a href="http://datahub.io/">DataHub</a> and offline sources like CSV files on your local machine.</li>
-              <li>Use online or offline - because the app is built in pure javascript and html you can use it anywhere there's a modern web browser. Using offline is as easy and downloading this web page to your local machine.</li>
-            </ul>
-            <div class="row">
-              <div class="span4">
-                <h3>View the demo</h3>
-                <p>Take a look at a local demo dataset.</p>
-                <p><a class="btn btn-primary" href="?url=demo">View the demo dataset &raquo;</a></p>
-              </div>
-              <div class="span4">
-                <h3>Read the tutorial</h3>
-                <p>Take a look at the tutorial for using the data explorer:</p>
-                <a class="btn btn-primary" href="#tutorial">Read the tutorial &raquo;</a>
-              </div>
-              <div class="span4">
-                <h3>Import some data</h3>
-                <p>Starting working with some data straight away. You can import some data <strong>using the menu at the top right</strong> of this page.</p>
-              </div>
+        </div>
+        <div class="row-fluid">
+          <div class="span4">
+            <div class="well">
+              <h3>View the demo</h3>
+              <p>Try out the demo using a local example dataset.</p>
+              <p><a class="btn btn-primary" href="?url=demo#explorer">View the demo dataset &raquo;</a></p>
+            </div>
+          </div>
+          <div class="span4">
+            <div class="well">
+              <h3>Features</h3>
+              <ul>
+                <li>Data grid</li>
+                <li>Data editing including programmatic data transformation in javascript</li>
+                <li>Visualizations includes graphs and maps</li>
+                <li>Import and export from a variety of sources including online sources such as online Excel and CSV files, Google docs and
+                the <a href="http://datahub.io/">DataHub</a> and offline sources like CSV files on your local machine.</li>
+                <li>Use online or offline - because the app is built in pure javascript and html you can use it anywhere there's a modern web browser. Using offline is as easy and downloading this web page to your local machine.</li>
+              </ul>
+            </div>
+          </div>
+          <div class="span4">
+            <div class="well">
+              <h3>Get started</h3>
+              <p>Get started straight away for example by importing some data from an external source <strong>using the menu at the top right</strong> of this page.</p>
             </div>
           </div>
         </div>
+      </div>
       </div>
 
       <div class="page-explorer backbone-page">

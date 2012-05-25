@@ -43,6 +43,7 @@ test('Field: default renderers', function () {
     x: 12.3,
     myobject: {a: 1, b: 2},
     link: 'http://abc.com/',
+    link2: 'Some text then https://abc.com/',
     markdown: '### ABC'
   });
   var field = new recline.Model.Field({id: 'myobject', type: 'object'});
@@ -55,9 +56,14 @@ test('Field: default renderers', function () {
   var exp = '12.3%';
   equal(out, exp);
 
-  var field = new recline.Model.Field({id: 'link', type: 'string', format: 'link'});
+  var field = new recline.Model.Field({id: 'link'});
   var out = doc.getFieldValue(field);
   var exp = '<a href="http://abc.com/">http://abc.com/</a>';
+  equal(out, exp);
+
+  var field = new recline.Model.Field({id: 'link2'});
+  var out = doc.getFieldValue(field);
+  var exp = 'Some text then <a href="https://abc.com/">https://abc.com/</a>';
   equal(out, exp);
 
   var field = new recline.Model.Field({id: 'markdown', type: 'string', format: 'markdown'});

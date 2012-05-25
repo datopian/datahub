@@ -217,7 +217,6 @@ my.DocumentList = Backbone.Collection.extend({
 // * format: (optional) used to indicate how the data should be formatted. For example:
 //   * type=date, format=yyyy-mm-dd
 //   * type=float, format=percentage
-//   * type=string, format=link (render as hyperlink)
 //   * type=string, format=markdown (render as markdown if Showdown available)
 // * is_derived: (default: false) attribute indicating this field has no backend data but is just derived from other fields (see below).
 // 
@@ -236,6 +235,15 @@ my.DocumentList = Backbone.Collection.extend({
 // field. This provides support for a) 'derived/computed' fields: i.e. fields
 // whose data are functions of the data in other fields b) transforming the
 // value of this field prior to rendering.
+//
+// #### Default renderers
+//
+// * string
+//   * no format provided: pass through but convert http:// to hyperlinks 
+//   * format = plain: do no processing on the source text
+//   * format = markdown: process as markdown (if Showdown library available)
+// * float
+//   * format = percentage: format as a percentage
 my.Field = Backbone.Model.extend({
   // ### defaults - define default values
   defaults: {
@@ -278,9 +286,7 @@ my.Field = Backbone.Model.extend({
     },
     'string': function(val, field, doc) {
       var format = field.get('format');
-      if (format === 'link') {
-        return '<a href="VAL">VAL</a>'.replace(/VAL/g, val);
-      } else if (format === 'markdown') {
+      if (format === 'markdown') {
         if (typeof Showdown !== 'undefined') {
           var showdown = new Showdown.converter();
           out = showdown.makeHtml(val);
@@ -288,8 +294,16 @@ my.Field = Backbone.Model.extend({
         } else {
           return val;
         }
+      } else if (format == 'plain') {
+        return val;
+      } else {
+        // as this is the default and default type is string may get things
+        // here that are not actually strings
+        if (val && typeof val === 'string') {
+          val = val.replace(/(https?:\/\/[^ ]+)/g, '<a href="$1">$1</a>');
+        }
+        return val
       }
-      return val;
     }
   }
 });

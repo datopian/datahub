@@ -612,7 +612,7 @@ my.composeQueryString = function(queryParams) {
     if (typeof(value) === 'object') {
       value = JSON.stringify(value);
     }
-    items.push(key + '=' + value);
+    items.push(key + '=' + encodeURIComponent(value));
   });
   queryString += items.join('&');
   return queryString;
@@ -1063,7 +1063,7 @@ my.Grid = Backbone.View.extend({
   initialize: function(modelEtc) {
     var self = this;
     this.el = $(this.el);
-    _.bindAll(this, 'render');
+    _.bindAll(this, 'render', 'onHorizontalScroll');
     this.model.currentDocuments.bind('add', this.render);
     this.model.currentDocuments.bind('reset', this.render);
     this.model.currentDocuments.bind('remove', this.render);
@@ -1079,7 +1079,9 @@ my.Grid = Backbone.View.extend({
     'click .column-header-menu .data-table-menu li a': 'onColumnHeaderClick',
     'click .row-header-menu': 'onRowHeaderClick',
     'click .root-header-menu': 'onRootHeaderClick',
-    'click .data-table-menu li a': 'onMenuClick'
+    'click .data-table-menu li a': 'onMenuClick',
+    // does not work here so done at end of render function
+    // 'scroll .recline-grid tbody': 'onHorizontalScroll'
   },
 
   // ======================================================
@@ -1174,11 +1176,17 @@ my.Grid = Backbone.View.extend({
     this.render();
   },
 
+  onHorizontalScroll: function(e) {
+    var currentScroll = $(e.target).scrollLeft();
+    this.el.find('.recline-grid thead tr').scrollLeft(currentScroll);
+  },
+
   // ======================================================
   // #### Templating
   template: ' \
+    <div class="table-container"> \
     <table class="recline-grid table-striped table-condensed" cellspacing="0"> \
-      <thead> \
+      <thead class="fixed-header"> \
         <tr> \
           {{#notEmpty}} \
             <th class="column-header"> \
@@ -1191,7 +1199,7 @@ my.Grid = Backbone.View.extend({
             </th> \
           {{/notEmpty}} \
           {{#fields}} \
-            <th class="column-header {{#hidden}}hidden{{/hidden}}" data-field="{{id}}"> \
+            <th class="column-header {{#hidden}}hidden{{/hidden}}" data-field="{{id}}" style="width: {{width}}px; max-width: {{width}}px; min-width: {{width}}px;"> \
               <div class="btn-group column-header-menu"> \
                 <a class="btn dropdown-toggle" data-toggle="dropdown"><i class="icon-cog"></i><span class="caret"></span></a> \
                 <ul class="dropdown-menu data-table-menu pull-right"> \
@@ -1210,23 +1218,45 @@ my.Grid = Backbone.View.extend({
               <span class="column-header-name">{{label}}</span> \
             </th> \
           {{/fields}} \
+          <th class="last-header" style="width: {{lastHeaderWidth}}px; max-width: {{lastHeaderWidth}}px; min-width: {{lastHeaderWidth}}px; padding: 0; margin: 0;"></th> \
         </tr> \
       </thead> \
-      <tbody></tbody> \
+      <tbody class="scroll-content"></tbody> \
     </table> \
+    </div> \
   ',
 
   toTemplateJSON: function() {
+    var self = this; 
     var modelData = this.model.toJSON();
     modelData.notEmpty = ( this.fields.length > 0 );
     // TODO: move this sort of thing into a toTemplateJSON method on Dataset?
-    modelData.fields = _.map(this.fields, function(field) { return field.toJSON(); });
+    modelData.fields = _.map(this.fields, function(field) {
+      return field.toJSON();
+    });
+    // last header width = scroll bar - border (2px) */
+    modelData.lastHeaderWidth = this.scrollbarDimensions.width - 2;
     return modelData;
   },
   render: function() {
     var self = this;
     this.fields = this.model.fields.filter(function(field) {
       return _.indexOf(self.state.get('hiddenFields'), field.id) == -1;
+    });
+    this.scrollbarDimensions = this.scrollbarDimensions || this._scrollbarSize(); // skip measurement if already have dimensions
+    var numFields = this.fields.length;
+    // compute field widths (-20 for first menu col + 10px for padding on each col and finally 16px for the scrollbar)
+    var fullWidth = self.el.width() - 20 - 10 * numFields - this.scrollbarDimensions.width;
+    var width = parseInt(Math.max(50, fullWidth / numFields));
+    // if columns extend outside viewport then remainder is 0 
+    var remainder = Math.max(fullWidth - numFields * width,0);
+    _.each(this.fields, function(field, idx) {
+      // add the remainder to the first field width so we make up full col
+      if (idx == 0) {
+        field.set({width: width+remainder});
+      } else {
+        field.set({width: width});
+      }
     });
     var htmls = $.mustache(this.template, this.toTemplateJSON());
     this.el.html(htmls);
@@ -1240,8 +1270,26 @@ my.Grid = Backbone.View.extend({
         });
       newView.render();
     });
+    // hide extra header col if no scrollbar to avoid unsightly overhang
+    var $tbody = this.el.find('tbody')[0];
+    if ($tbody.scrollHeight <= $tbody.offsetHeight) {
+      this.el.find('th.last-header').hide();
+    }
     this.el.find('.recline-grid').toggleClass('no-hidden', (self.state.get('hiddenFields').length === 0));
+    this.el.find('.recline-grid tbody').scroll(this.onHorizontalScroll);
     return this;
+  },
+
+  // ### _scrollbarSize
+  // 
+  // Measure width of a vertical scrollbar and height of a horizontal scrollbar.
+  //
+  // @return: { width: pixelWidth, height: pixelHeight }
+  _scrollbarSize: function() {
+    var $c = $("<div style='position:absolute; top:-10000px; left:-10000px; width:100px; height:100px; overflow:scroll;'></div>").appendTo("body");
+    var dim = { width: $c.width() - $c[0].clientWidth + 1, height: $c.height() - $c[0].clientHeight };
+    $c.remove();
+    return dim;
   }
 });
 
@@ -1278,7 +1326,7 @@ my.GridRow = Backbone.View.extend({
         </div> \
       </td> \
       {{#cells}} \
-      <td data-field="{{field}}"> \
+      <td data-field="{{field}}" style="width: {{width}}px; max-width: {{width}}px; min-width: {{width}}px;"> \
         <div class="data-table-cell-content"> \
           <a href="javascript:{}" class="data-table-cell-edit" title="Edit this cell">&nbsp;</a> \
           <div class="data-table-cell-value">{{{value}}}</div> \
@@ -1298,6 +1346,7 @@ my.GridRow = Backbone.View.extend({
     var cellData = this._fields.map(function(field) {
       return {
         field: field.id,
+        width: field.get('width'),
         value: doc.getFieldValue(field)
       };
     });
@@ -1457,7 +1506,7 @@ my.Map = Backbone.View.extend({
 </div> \
 ',
 
-  // These are the default field names that will be used if found.
+  // These are the default (case-insensitive) names of field that are used if found.
   // If not found, the user will need to define the fields via the editor.
   latitudeFieldNames: ['lat','latitude'],
   longitudeFieldNames: ['lon','longitude'],
@@ -1523,7 +1572,7 @@ my.Map = Backbone.View.extend({
     this.render();
   },
 
-  // Public: Adds the necessary elements to the page.
+  // ### Public: Adds the necessary elements to the page.
   //
   // Also sets up the editor fields and the map if necessary.
   render: function() {
@@ -1545,22 +1594,11 @@ my.Map = Backbone.View.extend({
         $('#editor-field-type-latlon').attr('checked','checked').change();
       }
     }
-
-    this.model.bind('query:done', function() {
-      if (!self.geomReady){
-        self._setupGeometryField();
-      }
-
-      if (!self.mapReady){
-        self._setupMap();
-      }
-      self.redraw();
-    });
-
+    this.redraw();
     return this;
   },
 
-  // Public: Redraws the features on the map according to the action provided
+  // ### Public: Redraws the features on the map according to the action provided
   //
   // Actions can be:
   //
@@ -1568,23 +1606,27 @@ my.Map = Backbone.View.extend({
   // * add: Add one or n features (documents)
   // * remove: Remove one or n features (documents)
   // * refresh: Clear existing features and add all current documents
-  //
-  redraw: function(action,doc){
+  redraw: function(action, doc){
     var self = this;
     action = action || 'refresh';
+    // try to set things up if not already
+    if (!self.geomReady){
+      self._setupGeometryField();
+    }
+    if (!self.mapReady){
+      self._setupMap();
+    }
 
     if (this.geomReady && this.mapReady){
-      if (action == 'reset'){
+      if (action == 'reset' || action == 'refresh'){
         this.features.clearLayers();
+        this._add(this.model.currentDocuments.models);
       } else if (action == 'add' && doc){
         this._add(doc);
       } else if (action == 'remove' && doc){
         this._remove(doc);
-      } else if (action == 'refresh'){
-        this.features.clearLayers();
-        this._add(this.model.currentDocuments.models);
       }
-      if (action != 'reset' && this.autoZoom){
+      if (this.autoZoom){
         if (this.visible){
           this._zoomToFeatures();
         } else {
@@ -1795,7 +1837,7 @@ my.Map = Backbone.View.extend({
   // on [OpenStreetMap](http://openstreetmap.org).
   //
   _setupMap: function(){
-    var self = this;
+
     this.map = new L.Map(this.$map.get(0));
 
     var mapUrl = "http://otile{s}.mqcdn.com/tiles/1.0.0/osm/{z}/{x}/{y}.png";
@@ -1834,14 +1876,6 @@ my.Map = Backbone.View.extend({
     this.map.addLayer(this.features);
 
     this.map.setView(new L.LatLng(0, 0), 2);
-
-    var popup = new L.Popup();
-    this.map.on('click', function(e) {
-      var latlngStr = '(' + e.latlng.lat.toFixed(3) + ', ' + e.latlng.lng.toFixed(3) + ')';
-      popup.setLatLng(e.latlng);
-      popup.setContent("You clicked the map at " + latlngStr);
-      self.map.openPopup(popup);
-    });
 
     this.mapReady = true;
   },
@@ -2043,10 +2077,11 @@ my.ColumnTransform = Backbone.View.extend({
 
 // # Recline Views
 //
-// Recline Views are Backbone Views and in keeping with normal Backbone views
-// are Widgets / Components displaying something in the DOM. Like all Backbone
-// views they have a pointer to a model or a collection and is bound to an
-// element.
+// Recline Views are instances of Backbone Views and they act as 'WUI' (web
+// user interface) component displaying some model object in the DOM. Like all
+// Backbone views they have a pointer to a model (or a collection) and have an
+// associated DOM-style element (usually this element will be bound into the
+// page at some point).
 //
 // Views provided by core Recline are crudely divided into two types:
 //
@@ -2262,12 +2297,11 @@ my.DataExplorer = Backbone.View.extend({
     }
 
     this.model.bind('query:start', function() {
-        self.notify({message: 'Loading data', loader: true});
+        self.notify({loader: true, persist: true});
       });
     this.model.bind('query:done', function() {
         self.clearNotifications();
         self.el.find('.doc-count').text(self.model.docCount || 'Unknown');
-        self.notify({message: 'Data loaded', category: 'success'});
       });
     this.model.bind('query:fail', function(error) {
         self.clearNotifications();
@@ -2432,19 +2466,25 @@ my.DataExplorer = Backbone.View.extend({
   // * loader: if true show loading spinner
   notify: function(flash) {
     var tmplData = _.extend({
-      message: '',
-      category: 'warning'
+      message: 'Loading',
+      category: 'warning',
+      loader: false
       },
       flash
     );
-    var _template = ' \
-      <div class="alert alert-{{category}} fade in" data-alert="alert"><a class="close" data-dismiss="alert" href="#">×</a> \
-        {{message}} \
-          {{#loader}} \
+    if (tmplData.loader) {
+      var _template = ' \
+        <div class="alert alert-info alert-loader"> \
+          {{message}} \
           <span class="notification-loader">&nbsp;</span> \
-          {{/loader}} \
-      </div>';
-    var _templated = $.mustache(_template, tmplData); 
+        </div>';
+    } else {
+      var _template = ' \
+        <div class="alert alert-{{category}} fade in" data-alert="alert"><a class="close" data-dismiss="alert" href="#">×</a> \
+          {{message}} \
+        </div>';
+    }
+    var _templated = $($.mustache(_template, tmplData));
     _templated = $(_templated).appendTo($('.recline-data-explorer .alert-messages'));
     if (!flash.persist) {
       setTimeout(function() {
@@ -2460,7 +2500,9 @@ my.DataExplorer = Backbone.View.extend({
   // Clear all existing notifications
   clearNotifications: function() {
     var $notifications = $('.recline-data-explorer .alert-messages .alert');
-    $notifications.remove();
+    $notifications.fadeOut(1500, function() {
+      $(this).remove();
+    });
   }
 });
 

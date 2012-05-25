@@ -16,7 +16,7 @@ my.Grid = Backbone.View.extend({
   initialize: function(modelEtc) {
     var self = this;
     this.el = $(this.el);
-    _.bindAll(this, 'render');
+    _.bindAll(this, 'render', 'onHorizontalScroll');
     this.model.currentDocuments.bind('add', this.render);
     this.model.currentDocuments.bind('reset', this.render);
     this.model.currentDocuments.bind('remove', this.render);
@@ -32,7 +32,9 @@ my.Grid = Backbone.View.extend({
     'click .column-header-menu .data-table-menu li a': 'onColumnHeaderClick',
     'click .row-header-menu': 'onRowHeaderClick',
     'click .root-header-menu': 'onRootHeaderClick',
-    'click .data-table-menu li a': 'onMenuClick'
+    'click .data-table-menu li a': 'onMenuClick',
+    // does not work here so done at end of render function
+    // 'scroll .recline-grid tbody': 'onHorizontalScroll'
   },
 
   // ======================================================
@@ -127,11 +129,17 @@ my.Grid = Backbone.View.extend({
     this.render();
   },
 
+  onHorizontalScroll: function(e) {
+    var currentScroll = $(e.target).scrollLeft();
+    this.el.find('.recline-grid thead tr').scrollLeft(currentScroll);
+  },
+
   // ======================================================
   // #### Templating
   template: ' \
+    <div class="table-container"> \
     <table class="recline-grid table-striped table-condensed" cellspacing="0"> \
-      <thead> \
+      <thead class="fixed-header"> \
         <tr> \
           {{#notEmpty}} \
             <th class="column-header"> \
@@ -144,7 +152,7 @@ my.Grid = Backbone.View.extend({
             </th> \
           {{/notEmpty}} \
           {{#fields}} \
-            <th class="column-header {{#hidden}}hidden{{/hidden}}" data-field="{{id}}"> \
+            <th class="column-header {{#hidden}}hidden{{/hidden}}" data-field="{{id}}" style="width: {{width}}px; max-width: {{width}}px; min-width: {{width}}px;"> \
               <div class="btn-group column-header-menu"> \
                 <a class="btn dropdown-toggle" data-toggle="dropdown"><i class="icon-cog"></i><span class="caret"></span></a> \
                 <ul class="dropdown-menu data-table-menu pull-right"> \
@@ -163,23 +171,45 @@ my.Grid = Backbone.View.extend({
               <span class="column-header-name">{{label}}</span> \
             </th> \
           {{/fields}} \
+          <th class="last-header" style="width: {{lastHeaderWidth}}px; max-width: {{lastHeaderWidth}}px; min-width: {{lastHeaderWidth}}px; padding: 0; margin: 0;"></th> \
         </tr> \
       </thead> \
-      <tbody></tbody> \
+      <tbody class="scroll-content"></tbody> \
     </table> \
+    </div> \
   ',
 
   toTemplateJSON: function() {
+    var self = this; 
     var modelData = this.model.toJSON();
     modelData.notEmpty = ( this.fields.length > 0 );
     // TODO: move this sort of thing into a toTemplateJSON method on Dataset?
-    modelData.fields = _.map(this.fields, function(field) { return field.toJSON(); });
+    modelData.fields = _.map(this.fields, function(field) {
+      return field.toJSON();
+    });
+    // last header width = scroll bar - border (2px) */
+    modelData.lastHeaderWidth = this.scrollbarDimensions.width - 2;
     return modelData;
   },
   render: function() {
     var self = this;
     this.fields = this.model.fields.filter(function(field) {
       return _.indexOf(self.state.get('hiddenFields'), field.id) == -1;
+    });
+    this.scrollbarDimensions = this.scrollbarDimensions || this._scrollbarSize(); // skip measurement if already have dimensions
+    var numFields = this.fields.length;
+    // compute field widths (-20 for first menu col + 10px for padding on each col and finally 16px for the scrollbar)
+    var fullWidth = self.el.width() - 20 - 10 * numFields - this.scrollbarDimensions.width;
+    var width = parseInt(Math.max(50, fullWidth / numFields));
+    // if columns extend outside viewport then remainder is 0 
+    var remainder = Math.max(fullWidth - numFields * width,0);
+    _.each(this.fields, function(field, idx) {
+      // add the remainder to the first field width so we make up full col
+      if (idx == 0) {
+        field.set({width: width+remainder});
+      } else {
+        field.set({width: width});
+      }
     });
     var htmls = $.mustache(this.template, this.toTemplateJSON());
     this.el.html(htmls);
@@ -193,8 +223,26 @@ my.Grid = Backbone.View.extend({
         });
       newView.render();
     });
+    // hide extra header col if no scrollbar to avoid unsightly overhang
+    var $tbody = this.el.find('tbody')[0];
+    if ($tbody.scrollHeight <= $tbody.offsetHeight) {
+      this.el.find('th.last-header').hide();
+    }
     this.el.find('.recline-grid').toggleClass('no-hidden', (self.state.get('hiddenFields').length === 0));
+    this.el.find('.recline-grid tbody').scroll(this.onHorizontalScroll);
     return this;
+  },
+
+  // ### _scrollbarSize
+  // 
+  // Measure width of a vertical scrollbar and height of a horizontal scrollbar.
+  //
+  // @return: { width: pixelWidth, height: pixelHeight }
+  _scrollbarSize: function() {
+    var $c = $("<div style='position:absolute; top:-10000px; left:-10000px; width:100px; height:100px; overflow:scroll;'></div>").appendTo("body");
+    var dim = { width: $c.width() - $c[0].clientWidth + 1, height: $c.height() - $c[0].clientHeight };
+    $c.remove();
+    return dim;
   }
 });
 
@@ -231,7 +279,7 @@ my.GridRow = Backbone.View.extend({
         </div> \
       </td> \
       {{#cells}} \
-      <td data-field="{{field}}"> \
+      <td data-field="{{field}}" style="width: {{width}}px; max-width: {{width}}px; min-width: {{width}}px;"> \
         <div class="data-table-cell-content"> \
           <a href="javascript:{}" class="data-table-cell-edit" title="Edit this cell">&nbsp;</a> \
           <div class="data-table-cell-value">{{{value}}}</div> \
@@ -251,6 +299,7 @@ my.GridRow = Backbone.View.extend({
     var cellData = this._fields.map(function(field) {
       return {
         field: field.id,
+        width: field.get('width'),
         value: doc.getFieldValue(field)
       };
     });

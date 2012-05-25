@@ -137,7 +137,7 @@ a.dotted:hover {
 	font-size:18px;
 	font-weight:400;
 	letter-spacing:-1px;
-	line-height:40px;
+  line-height: 32px;
 }
 
 .navbar .nav > li > a {
@@ -265,5 +265,9 @@ section.grey:after {
   -webkit-border-radius: 0;
   -moz-border-radius: 0;
   border-radius: 0;
+}
+
+.doc-ex-rendered {
+  margin-bottom: 20px;
 }
 

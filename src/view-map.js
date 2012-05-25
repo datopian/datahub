@@ -88,7 +88,7 @@ my.Map = Backbone.View.extend({
 </div> \
 ',
 
-  // These are the default field names that will be used if found.
+  // These are the default (case-insensitive) names of field that are used if found.
   // If not found, the user will need to define the fields via the editor.
   latitudeFieldNames: ['lat','latitude'],
   longitudeFieldNames: ['lon','longitude'],
@@ -154,7 +154,7 @@ my.Map = Backbone.View.extend({
     this.render();
   },
 
-  // Public: Adds the necessary elements to the page.
+  // ### Public: Adds the necessary elements to the page.
   //
   // Also sets up the editor fields and the map if necessary.
   render: function() {
@@ -176,22 +176,10 @@ my.Map = Backbone.View.extend({
         $('#editor-field-type-latlon').attr('checked','checked').change();
       }
     }
-
-    this.model.bind('query:done', function() {
-      if (!self.geomReady){
-        self._setupGeometryField();
-      }
-
-      if (!self.mapReady){
-        self._setupMap();
-      }
-      self.redraw();
-    });
-
     return this;
   },
 
-  // Public: Redraws the features on the map according to the action provided
+  // ### Public: Redraws the features on the map according to the action provided
   //
   // Actions can be:
   //
@@ -199,23 +187,27 @@ my.Map = Backbone.View.extend({
   // * add: Add one or n features (documents)
   // * remove: Remove one or n features (documents)
   // * refresh: Clear existing features and add all current documents
-  //
-  redraw: function(action,doc){
+  redraw: function(action, doc){
     var self = this;
     action = action || 'refresh';
+    // try to set things up if not already
+    if (!self.geomReady){
+      self._setupGeometryField();
+    }
+    if (!self.mapReady){
+      self._setupMap();
+    }
 
     if (this.geomReady && this.mapReady){
-      if (action == 'reset'){
+      if (action == 'reset' || action == 'refresh'){
         this.features.clearLayers();
+        this._add(this.model.currentDocuments.models);
       } else if (action == 'add' && doc){
         this._add(doc);
       } else if (action == 'remove' && doc){
         this._remove(doc);
-      } else if (action == 'refresh'){
-        this.features.clearLayers();
-        this._add(this.model.currentDocuments.models);
       }
-      if (action != 'reset' && this.autoZoom){
+      if (this.autoZoom){
         if (this.visible){
           this._zoomToFeatures();
         } else {
