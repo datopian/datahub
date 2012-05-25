@@ -1,5 +1,5 @@
 jQuery(function($) {
-  var app = new ExplorerApp({
+  window.ReclineDataExplorer = new ExplorerApp({
     el: $('.recline-app')
   })
 });
@@ -12,7 +12,7 @@ var ExplorerApp = Backbone.View.extend({
 
   initialize: function() {
     this.el = $(this.el);
-    this.explorer = null;
+    this.dataExplorer = null;
     this.explorerDiv = $('.data-explorer-here');
     _.bindAll(this, 'viewExplorer', 'viewHome');
 
