@@ -6,7 +6,7 @@ test("parseCSV", function() {
   '"Xyz ""ABC"" O\'Brien",11:35\n' +
   '"Other, AN",12:35\n';
 
-  var array = recline.Backend.parseCSV(csv);
+  var array = recline.Backend.CSV.parseCSV(csv);
   var exp = [
     ['Jones, Jay', 10],
     ['Xyz "ABC" O\'Brien', '11:35' ],
@@ -17,14 +17,14 @@ test("parseCSV", function() {
   var csv = '"Jones, Jay", 10\n' +
   '"Xyz ""ABC"" O\'Brien", 11:35\n' +
   '"Other, AN", 12:35\n';
-  var array = recline.Backend.parseCSV(csv, {trim : true});
+  var array = recline.Backend.CSV.parseCSV(csv, {trim : true});
   deepEqual(exp, array);
 
   var csv = 'Name, Value\n' +
   '"Jones, Jay", 10\n' +
   '"Xyz ""ABC"" O\'Brien", 11:35\n' +
   '"Other, AN", 12:35\n';
-  var dataset = recline.Backend.csvToDataset(csv);
+  var dataset = recline.Backend.CSV.csvToDataset(csv);
   dataset.query();
   equal(dataset.currentDocuments.length, 3);
 });
@@ -34,7 +34,7 @@ test("parseCSVsemicolon", function() {
   '"Xyz ""ABC"" O\'Brien";11:35\n' +
   '"Other; AN";12:35\n';
 
-  var array = recline.Backend.parseCSV(csv, {separator : ';'});
+  var array = recline.Backend.CSV.parseCSV(csv, {separator : ';'});
   var exp = [
     ['Jones; Jay', 10],
     ['Xyz "ABC" O\'Brien', '11:35' ],
@@ -49,7 +49,7 @@ test("parseCSVdelimiter", function() {
   "'Xyz \"ABC\" O''Brien',11:35\n" +
   "'Other; AN',12:35\n";
 
-  var array = recline.Backend.parseCSV(csv, {delimiter:"'"});
+  var array = recline.Backend.CSV.parseCSV(csv, {delimiter:"'"});
   var exp = [
     ["Jones, Jay", 10],
     ["Xyz \"ABC\" O'Brien", "11:35" ],

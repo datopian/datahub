@@ -1,8 +1,15 @@
 this.recline = this.recline || {};
 this.recline.Backend = this.recline.Backend || {};
+this.recline.Backend.CSV = this.recline.Backend.CSV || {};
 
-(function($, my) {
-  my.loadFromCSVFile = function(file, callback, options) {
+(function(my) {
+  // ## load
+  //
+  // Load data from a CSV file referenced in an HTMl5 file object returning the
+  // dataset in the callback
+  //
+  // @param options as for parseCSV below
+  my.load = function(file, callback, options) {
     var encoding = options.encoding || 'UTF-8';
     
     var metadata = {
@@ -168,4 +175,4 @@ this.recline.Backend = this.recline.Backend || {};
   }
 
 
-}(jQuery, this.recline.Backend));
+}(this.recline.Backend.CSV));
