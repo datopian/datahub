@@ -67,8 +67,10 @@ var dataProxyData = {
 test('DataProxy Backend', function() {
   // needed only if not stubbing
   // stop();
-  var backend = new recline.Backend.DataProxy();
-  ok(backend.readonly, false);
+  var backend = new recline.Backend.DataProxy.Backbone();
+  console.log(backend.readonly);
+  ok(backend.readonly);
+  equal(backend.__type__, 'dataproxy');
 
   var dataset = new recline.Model.Dataset({
       url: 'http://webstore.thedatahub.org/rufuspollock/gold_prices/data.csv'
