@@ -19,6 +19,7 @@ this.recline.Backend.GDocs = this.recline.Backend.GDocs || {};
   // );
   // </pre>
   my.Backbone = function() {
+    var self = this;
     this.__type__ = 'gdocs';
     this.readonly = true;
 
@@ -26,23 +27,31 @@ this.recline.Backend.GDocs = this.recline.Backend.GDocs || {};
       var self = this;
       if (method === "read") { 
         var dfd = $.Deferred(); 
-        loadData(model.get('url')).done(function(result) {
-          model.fields.reset(result.fields);
-          // cache data onto dataset (we have loaded whole gdoc it seems!)
-          model._dataCache = result.data;
-          dfd.resolve(model);
-        });
+        dfd.resolve(model);
         return dfd.promise();
       }
     };
 
     this.query = function(dataset, queryObj) { 
       var dfd = $.Deferred();
-      var fields = _.pluck(dataset.fields.toJSON(), 'id');
+      if (dataset._dataCache) {
+        dfd.resolve(dataset._dataCache);
+      } else {
+        loadData(dataset.get('url')).done(function(result) {
+          dataset.fields.reset(result.fields);
+          // cache data onto dataset (we have loaded whole gdoc it seems!)
+          dataset._dataCache = self._formatResults(dataset, result.data);
+          dfd.resolve(dataset._dataCache);
+        });
+      }
+      return dfd.promise();
+    };
 
+    this._formatResults = function(dataset, data) {
+      var fields = _.pluck(dataset.fields.toJSON(), 'id');
       // zip the fields with the data rows to produce js objs
       // TODO: factor this out as a common method with other backends
-      var objs = _.map(dataset._dataCache, function (d) { 
+      var objs = _.map(data, function (d) { 
         var obj = {};
         _.each(_.zip(fields, d), function (x) {
           obj[x[0]] = x[1];
@@ -55,8 +64,7 @@ this.recline.Backend.GDocs = this.recline.Backend.GDocs || {};
           return { _source: row }
         })
       }
-      dfd.resolve(out);
-      return dfd;
+      return out;
     };
   };
 
@@ -78,7 +86,7 @@ this.recline.Backend.GDocs = this.recline.Backend.GDocs || {};
     $.getJSON(url, function(d) {
       result = my.parseData(d);
       result.fields = _.map(result.fields, function(fieldId) {
-          return {id: fieldId};
+        return {id: fieldId};
       });
       dfd.resolve(result);
     });

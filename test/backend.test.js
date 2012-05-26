@@ -68,7 +68,6 @@ test('DataProxy Backend', function() {
   // needed only if not stubbing
   // stop();
   var backend = new recline.Backend.DataProxy.Backbone();
-  console.log(backend.readonly);
   ok(backend.readonly);
   equal(backend.__type__, 'dataproxy');
 
@@ -288,15 +287,10 @@ test("GDocs Backend", function() {
     }
   });
 
-  dataset.fetch().then(function(dataset) {
+  dataset.query().then(function(docList) {
     deepEqual(['column-2', 'column-1'], _.pluck(dataset.fields.toJSON(), 'id'));
-    //equal(null, dataset.docCount)
-    dataset.query().then(function(docList) {
-      equal(3, docList.length);
-      equal("A", docList.models[0].get('column-1'));
-      // needed only if not stubbing
-      start();
-    });
+    equal(3, docList.length);
+    equal("A", docList.models[0].get('column-1'));
   });
   $.getJSON.restore();
 });
