@@ -44,8 +44,6 @@ my.Dataset = Backbone.Model.extend({
   initialize: function(model, backend) {
     _.bindAll(this, 'query');
     this.backend = backend;
-    this.backendType = 'memory';
-    this.backendURL = null;
     if (typeof(backend) === 'string') {
       this.backend = this._backendFromString(backend);
     }
@@ -135,7 +133,7 @@ my.Dataset = Backbone.Model.extend({
     if (recline && recline.Backend) {
       _.each(_.keys(recline.Backend), function(name) {
         if (name.toLowerCase() === backendString.toLowerCase()) {
-          backend = new recline.Backend[name]();
+          backend = new recline.Backend[name].Backbone();
         }
       });
     }
