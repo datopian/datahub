@@ -10,9 +10,11 @@ this.recline.Backend.ElasticSearch = this.recline.Backend.ElasticSearch || {};
   // on localhost:9200 with index // twitter and type tweet it would be:
   // 
   // <pre>http://localhost:9200/twitter/tweet</pre>
+  //
   // @param {Object} options: set of options such as:
   //
   // * headers - {dict of headers to add to each request}
+  // * dataType: dataType for AJAx requests e.g. set to jsonp to make jsonp requests (default is json requests)
   my.Wrapper = function(endpoint, options) { 
     var self = this;
     this.endpoint = endpoint;
@@ -21,6 +23,11 @@ this.recline.Backend.ElasticSearch = this.recline.Backend.ElasticSearch || {};
       },
       options);
 
+    // ### mapping
+    //
+    // Get ES mapping for this type/table
+    //
+    // @return promise compatible deferred object.
     this.mapping = function() {
       var schemaUrl = self.endpoint + '/_mapping';
       var jqxhr = recline.Backend.makeRequest({
@@ -30,24 +37,26 @@ this.recline.Backend.ElasticSearch = this.recline.Backend.ElasticSearch || {};
       return jqxhr;
     };
 
-    this.get = function(id, error, success) {
+    // ### get
+    //
+    // Get document corresponding to specified id
+    //
+    // @return promise compatible deferred object.
+    this.get = function(id) {
       var base = this.endpoint + '/' + id;
       return recline.Backend.makeRequest({
         url: base,
-        dataType: 'json',
-        error: error,
-        success: success
+        dataType: 'json'
       });
-    }
+    };
 
     // ### upsert
     //
     // create / update a document to ElasticSearch backend
     //
     // @param {Object} doc an object to insert to the index.
-    // @param {string} url (optional) url for ElasticSearch endpoint (if not
-    // defined called this._getESUrl()
-    this.upsert = function(doc, error, success) {
+    // @return deferred supporting promise API
+    this.upsert = function(doc) {
       var data = JSON.stringify(doc);
       url = this.endpoint;
       if (doc.id) {
@@ -57,9 +66,7 @@ this.recline.Backend.ElasticSearch = this.recline.Backend.ElasticSearch || {};
         url: url,
         type: 'POST',
         data: data,
-        dataType: 'json',
-        error: error,
-        success: success
+        dataType: 'json'
       });
     };
 
@@ -68,9 +75,8 @@ this.recline.Backend.ElasticSearch = this.recline.Backend.ElasticSearch || {};
     // Delete a document from the ElasticSearch backend.
     //
     // @param {Object} id id of object to delete
-    // @param {string} url (optional) url for ElasticSearch endpoint (if not
-    // provided called this._getESUrl()
-    this.delete = function(id, error, success) {
+    // @return deferred supporting promise API
+    this.delete = function(id) {
       url = this.endpoint;
       url += '/' + id;
       return recline.Backend.makeRequest({
@@ -113,6 +119,9 @@ this.recline.Backend.ElasticSearch = this.recline.Backend.ElasticSearch || {};
       return out;
     };
 
+    // ### query
+    //
+    // @return deferred supporting promise API
     this.query = function(queryObj) {
       var queryNormalized = this._normalizeQuery(queryObj);
       var data = {source: JSON.stringify(queryNormalized)};
@@ -144,21 +153,14 @@ this.recline.Backend.ElasticSearch = this.recline.Backend.ElasticSearch || {};
     //
     // Backbone sync implementation for this backend.
     //
-    // URL of ElasticSearch endpoint to use must be specified on the
-    // dataset (and on a Document by the document having a dataset
-    // attribute) by the dataset having one of the following data
-    // attributes (see also `_getESUrl` function):
-    //
-    // <pre>
-    // elasticsearch_url
-    // webstore_url
-    // url
-    // </pre>
+    // URL of ElasticSearch endpoint to use must be specified on the dataset
+    // (and on a Document via its dataset attribute) by the dataset having a
+    // url attribute.
     this.sync = function(method, model, options) {
       if (model.__type__ == 'Dataset') {
-        var endpoint = self._getESUrl(model);
+        var endpoint = model.get('url');
       } else {
-        var endpoint = self._getESUrl(model.dataset);
+        var endpoint = model.dataset.get('url');
       }
       var es = new my.Wrapper(endpoint, esOptions);
       if (method === "read") {
@@ -192,24 +194,12 @@ this.recline.Backend.ElasticSearch = this.recline.Backend.ElasticSearch || {};
       }
     };
 
-    // ### _getESUrl
+    // ### query
     //
-    // get url to ElasticSearch endpoint (see above)
-    this._getESUrl = function(dataset) {
-      if (dataset) {
-        var out = dataset.get('elasticsearch_url');
-        if (out) return out;
-        out = dataset.get('webstore_url');
-        if (out) return out;
-        out = dataset.get('url');
-        return out;
-      }
-      return this.get('url');
-    };
-
+    // query the ES backend
     this.query = function(model, queryObj) {
       var dfd = $.Deferred();
-      var url = this._getESUrl(model);
+      var url = model.get('url');
       var es = new my.Wrapper(url, esOptions);
       var jqxhr = es.query(queryObj);
       // TODO: fail case
