@@ -1,15 +1,18 @@
 (function ($) {
-module("Backend ElasticSearch");
+module("Backend ElasticSearch - Wrapper");
 
-test("ElasticSearch queryNormalize", function() { 
-  var backend = new recline.Backend.ElasticSearch();
+test("queryNormalize", function() { 
+  var backend = new recline.Backend.ElasticSearch.Wrapper();
+  var in_ = new recline.Model.Query();
+  var out = backend._normalizeQuery(in_);
+  equal(out.size, 100);
+
   var in_ = new recline.Model.Query();
   in_.set({q: ''});
   var out = backend._normalizeQuery(in_);
   equal(out.q, undefined);
   deepEqual(out.query.match_all, {});
 
-  var backend = new recline.Backend.ElasticSearch();
   var in_ = new recline.Model.Query().toJSON();
   in_.q = '';
   var out = backend._normalizeQuery(in_);
@@ -107,8 +110,99 @@ var sample_data = {
   "took": 2
 };
 
-test("ElasticSearch query", function() { 
-  var backend = new recline.Backend.ElasticSearch();
+test("query", function() { 
+  var backend = new recline.Backend.ElasticSearch.Wrapper('https://localhost:9200/my-es-db/my-es-type');
+
+  var stub = sinon.stub($, 'ajax', function(options) {
+    if (options.url.indexOf('_mapping') != -1) {
+      return {
+        done: function(callback) {
+          callback(mapping_data);
+          return this;
+        },
+        fail: function() {
+          return this;
+        }
+      }
+    } else {
+      return {
+        done: function(callback) {
+          callback(sample_data);
+        },
+        fail: function() {
+        }
+      }
+    }
+  });
+
+  backend.mapping().done(function(data) {
+    var fields = _.keys(data.note.properties);
+    deepEqual(['_created', '_last_modified', 'end', 'owner', 'start', 'title'], fields);
+  });
+
+  backend.query().done(function(queryResult) {
+    equal(3, queryResult.hits.total);
+    equal(3, queryResult.hits.hits.length);
+    equal('Note 1', queryResult.hits.hits[0]._source['title']);
+    start();
+  });
+  $.ajax.restore();
+});
+
+test("write", function() { 
+  var url = 'http://localhost:9200/recline-test/es-write';
+  var backend = new recline.Backend.ElasticSearch.Wrapper(url);
+  stop();
+
+  var id = parseInt(Math.random()*100000000).toString();
+  var doc = {
+    id: id,
+    title: 'my title'
+  };
+  var jqxhr = backend.upsert(doc);
+  jqxhr.done(function(data) {
+    ok(data.ok);
+    equal(data._id, id);
+    equal(data._type, 'es-write');
+    equal(data._version, 1);
+    
+    // update
+    doc.title = 'new title';
+    var jqxhr = backend.upsert(doc);
+    jqxhr.done(function(data) {
+      equal(data._version, 2);
+
+      // delete
+      var jqxhr = backend.delete(doc.id);
+      jqxhr.done(function(data) {
+        ok(data.ok);
+        doc = null;
+
+        // try to get ...
+        var jqxhr = backend.get(id);
+        jqxhr.done(function(data) {
+          // should not be here
+          ok(false, 'Should have got 404');
+        }).error(function(error) {
+          equal(error.status, 404);
+          start();
+        });
+      });
+    });
+  }).fail(function(error) {
+    console.log(error);
+    ok(false, 'Basic request failed - is ElasticSearch running locally on port 9200 (required for this test!)');
+    start();
+  });
+});
+
+
+// ==================================================
+
+module("Backend ElasticSearch - Backbone");
+
+test("query", function() { 
+  var backend = new recline.Backend.ElasticSearch.Backbone();
   var dataset = new recline.Model.Dataset({
       url: 'https://localhost:9200/my-es-db/my-es-type'
     },
@@ -137,7 +231,7 @@ test("ElasticSearch query", function() {
     }
   });
 
-  dataset.fetch().then(function(dataset) {
+  dataset.fetch().done(function(dataset) {
     deepEqual(['_created', '_last_modified', 'end', 'owner', 'start', 'title'], _.pluck(dataset.fields.toJSON(), 'id'));
     dataset.query().then(function(docList) {
       equal(3, dataset.docCount);
@@ -149,8 +243,8 @@ test("ElasticSearch query", function() {
   $.ajax.restore();
 });
 
-test("ElasticSearch write", function() { 
-  var backend = new recline.Backend.ElasticSearch();
+test("write", function() { 
+  var backend = new recline.Backend.ElasticSearch.Backbone();
   var dataset = new recline.Model.Dataset({
       url: 'http://localhost:9200/recline-test/es-write'
     },

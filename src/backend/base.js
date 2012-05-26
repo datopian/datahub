@@ -155,5 +155,31 @@ this.recline.Backend = this.recline.Backend || {};
     }
   });
 
+  // ### makeRequest
+  // 
+  // Just $.ajax but in any headers in the 'headers' attribute of this
+  // Backend instance. Example:
+  //
+  // <pre>
+  // var jqxhr = this._makeRequest({
+  //   url: the-url
+  // });
+  // </pre>
+  my.makeRequest = function(data, headers) {
+    var extras = {};
+    if (headers) {
+      extras = {
+        beforeSend: function(req) {
+          _.each(headers, function(value, key) {
+            req.setRequestHeader(key, value);
+          });
+        }
+      };
+    }
+    var data = _.extend(extras, data);
+    return $.ajax(data);
+  };
+
+
 }(jQuery, this.recline.Backend));
 
