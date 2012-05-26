@@ -31,6 +31,11 @@ Running the tests by opening `test/index.html` in your browser.
 
 In progress.
 
+Possible breaking changes:
+
+* State only stores backend (name) and dataset url (in url field) rather than entire dataset object
+* Backends heavily reorganized
+
 ### v0.4 - April 26th 2012
 
 [23 closed issues](https://github.com/okfn/recline/issues?milestone=2&page=1&state=closed) including:
