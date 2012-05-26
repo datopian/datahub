@@ -109,7 +109,7 @@ test('update and delete', function () {
 
 (function ($) {
 
-module("Backend Memory - BackboneSyncer");
+module("Backend Memory - Backbone");
 
 var memoryData = {
   metadata: {
