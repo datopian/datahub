@@ -273,8 +273,8 @@ var sample_gdocs_spreadsheet_data = {
   "encoding": "UTF-8"
 }
 
-test("GDoc Backend", function() { 
-  var backend = new recline.Backend.GDoc();
+test("GDocs Backend", function() { 
+  var backend = new recline.Backend.GDocs.Backbone();
   var dataset = new recline.Model.Dataset({
       url: 'https://spreadsheets.google.com/feeds/list/0Aon3JiuouxLUdDQwZE1JdV94cUd6NWtuZ0IyWTBjLWc/od6/public/values?alt=json'
     },
@@ -301,13 +301,10 @@ test("GDoc Backend", function() {
   $.getJSON.restore();
 });
 
-test("GDoc Backend.getUrl", function() { 
+test("GDocs Backend.getUrl", function() { 
   var key = 'Abc_dajkdkjdafkj';
-  var dataset = new recline.Model.Dataset({
-    url: 'https://docs.google.com/spreadsheet/ccc?key=' + key + '#gid=0'
-  });
-  var backend = new recline.Backend.GDoc();
-  var out = backend.getUrl(dataset);
+  var url = 'https://docs.google.com/spreadsheet/ccc?key=' + key + '#gid=0'
+  var out = recline.Backend.GDocs.getSpreadsheetAPIUrl(url);
   var exp = 'https://spreadsheets.google.com/feeds/list/' + key + '/1/public/values?alt=json'
   equal(exp, out);
 });
