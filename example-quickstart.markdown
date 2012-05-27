@@ -60,7 +60,7 @@ no reason you cannot have objects as values allowing you to nest data.
 We can now create a recline Dataset object (and memory backend) from this raw data: 
 
 {% highlight javascript %}
-var dataset = recline.Backend.createDataset(data);
+var dataset = recline.Backend.Memory.createDataset(data);
 {% endhighlight %}
 
 Note that behind the scenes Recline will create a Memory backend for this dataset as in Recline every dataset object must have a backend from which it can push and pull data. In the case of in-memory data this is a little artificial since all the data is available locally but this makes more sense for situations where one is connecting to a remote data source (and one which may contain a lot of data).
@@ -85,7 +85,7 @@ And hey presto:
 
 <script type="text/javascript">
 {% include data.js %}
-var dataset = recline.Backend.createDataset(data);
+var dataset = recline.Backend.Memory.createDataset(data);
 var $el = $('#mygrid');
 var grid = new recline.View.Grid({
   model: dataset,
@@ -220,6 +220,7 @@ var map = new recline.View.Map({
   model: dataset
 });
 $el.append(map.el);
+map.redraw();
 {% endhighlight %}
 
 <div id="mymap">&nbsp;</div>
@@ -230,5 +231,6 @@ var map = new recline.View.Map({
   model: dataset
 });
 $el.append(map.el);
+map.redraw();
 </script>
 
