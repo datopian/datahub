@@ -201,7 +201,7 @@ my.Dataset = Backbone.Model.extend({
     if (recline && recline.Backend) {
       _.each(_.keys(recline.Backend), function(name) {
         if (name.toLowerCase() === backendString.toLowerCase()) {
-          backend = new recline.Backend[name]();
+          backend = new recline.Backend[name].Backbone();
         }
       });
     }
@@ -224,20 +224,20 @@ my.Dataset = Backbone.Model.extend({
 //   ...
 // }
 my.Dataset.restore = function(state) {
-  // hack-y - restoring a memory dataset does not mean much ...
   var dataset = null;
-  if (state.url && !state.dataset) {
-    state.dataset = {url: state.url};
-  }
+  // hack-y - restoring a memory dataset does not mean much ...
   if (state.backend === 'memory') {
-    dataset = recline.Backend.createDataset(
+    dataset = recline.Backend.Memory.createDataset(
       [{stub: 'this is a stub dataset because we do not restore memory datasets'}],
       [],
       state.dataset // metadata
     );
   } else {
+    var datasetInfo = {
+      url: state.url
+    };
     dataset = new recline.Model.Dataset(
-      state.dataset,
+      datasetInfo,
       state.backend
     );
   }
@@ -285,7 +285,6 @@ my.DocumentList = Backbone.Collection.extend({
 // * format: (optional) used to indicate how the data should be formatted. For example:
 //   * type=date, format=yyyy-mm-dd
 //   * type=float, format=percentage
-//   * type=string, format=link (render as hyperlink)
 //   * type=string, format=markdown (render as markdown if Showdown available)
 // * is_derived: (default: false) attribute indicating this field has no backend data but is just derived from other fields (see below).
 // 
@@ -304,6 +303,15 @@ my.DocumentList = Backbone.Collection.extend({
 // field. This provides support for a) 'derived/computed' fields: i.e. fields
 // whose data are functions of the data in other fields b) transforming the
 // value of this field prior to rendering.
+//
+// #### Default renderers
+//
+// * string
+//   * no format provided: pass through but convert http:// to hyperlinks 
+//   * format = plain: do no processing on the source text
+//   * format = markdown: process as markdown (if Showdown library available)
+// * float
+//   * format = percentage: format as a percentage
 my.Field = Backbone.Model.extend({
   // ### defaults - define default values
   defaults: {
@@ -346,9 +354,7 @@ my.Field = Backbone.Model.extend({
     },
     'string': function(val, field, doc) {
       var format = field.get('format');
-      if (format === 'link') {
-        return '<a href="VAL">VAL</a>'.replace(/VAL/g, val);
-      } else if (format === 'markdown') {
+      if (format === 'markdown') {
         if (typeof Showdown !== 'undefined') {
           var showdown = new Showdown.converter();
           out = showdown.makeHtml(val);
@@ -356,8 +362,16 @@ my.Field = Backbone.Model.extend({
         } else {
           return val;
         }
+      } else if (format == 'plain') {
+        return val;
+      } else {
+        // as this is the default and default type is string may get things
+        // here that are not actually strings
+        if (val && typeof val === 'string') {
+          val = val.replace(/(https?:\/\/[^ ]+)/g, '<a href="$1">$1</a>');
+        }
+        return val
       }
-      return val;
     }
   }
 });
@@ -547,10 +561,12 @@ my.ObjectState = Backbone.Model.extend({
 });
 
 
-// ## Backend registry
+// ## Backbone.sync
 //
-// Backends will register themselves by id into this registry
-my.backends = {};
+// Override Backbone.sync to hand off to sync function in relevant backend
+Backbone.sync = function(method, model, options) {
+  return model.backend.sync(method, model, options);
+};
 
 }(jQuery, this.recline.Model));
 
@@ -662,13 +678,6 @@ my.Graph = Backbone.View.extend({
 
   template: ' \
   <div class="editor"> \
-    <div class="editor-info editor-hide-info"> \
-      <h3 class="action-toggle-help">Help &raquo;</h3> \
-      <p>To create a chart select a column (group) to use as the x-axis \
-         then another column (Series A) to plot against it.</p> \
-      <p>You can add add \
-         additional series by clicking the "Add series" button</p> \
-    </div> \
     <form class="form-stacked"> \
       <div class="clearfix"> \
         <label>Graph Type</label> \
@@ -728,8 +737,7 @@ my.Graph = Backbone.View.extend({
   events: {
     'change form select': 'onEditorSubmit',
     'click .editor-add': '_onAddSeries',
-    'click .action-remove-series': 'removeSeries',
-    'click .action-toggle-help': 'toggleHelp'
+    'click .action-remove-series': 'removeSeries'
   },
 
   initialize: function(options) {
@@ -763,7 +771,7 @@ my.Graph = Backbone.View.extend({
   render: function() {
     var self = this;
     var tmplData = this.model.toTemplateJSON();
-    var htmls = $.mustache(this.template, tmplData);
+    var htmls = Mustache.render(this.template, tmplData);
     $(this.el).html(htmls);
     this.$graph = this.el.find('.panel.graph');
 
@@ -1018,7 +1026,7 @@ my.Graph = Backbone.View.extend({
       seriesName: String.fromCharCode(idx + 64 + 1),
     }, this.model.toTemplateJSON());
 
-    var htmls = $.mustache(this.templateSeriesEditor, data);
+    var htmls = Mustache.render(this.templateSeriesEditor, data);
     this.el.find('.editor-series-group').append(htmls);
     return this;
   },
@@ -1036,11 +1044,7 @@ my.Graph = Backbone.View.extend({
     var $el = $(e.target);
     $el.parent().parent().remove();
     this.onEditorSubmit();
-  },
-
-  toggleHelp: function() {
-    this.el.find('.editor-info').toggleClass('editor-hide-info');
-  },
+  }
 });
 
 })(jQuery, recline.View);
@@ -1100,7 +1104,7 @@ my.Grid = Backbone.View.extend({
         {{#columns}} \
         <li><a data-action="showColumn" data-column="{{.}}" href="JavaScript:void(0);">Show column: {{.}}</a></li> \
         {{/columns}}';
-    var tmp = $.mustache(tmpl, {'columns': this.state.get('hiddenFields')});
+    var tmp = Mustache.render(tmpl, {'columns': this.state.get('hiddenFields')});
     this.el.find('.root-header-menu .dropdown-menu').html(tmp);
   },
 
@@ -1258,7 +1262,7 @@ my.Grid = Backbone.View.extend({
         field.set({width: width});
       }
     });
-    var htmls = $.mustache(this.template, this.toTemplateJSON());
+    var htmls = Mustache.render(this.template, this.toTemplateJSON());
     this.el.html(htmls);
     this.model.currentDocuments.forEach(function(doc) {
       var tr = $('<tr />');
@@ -1355,7 +1359,7 @@ my.GridRow = Backbone.View.extend({
 
   render: function() {
     this.el.attr('data-id', this.model.id);
-    var html = $.mustache(this.template, this.toTemplateJSON());
+    var html = Mustache.render(this.template, this.toTemplateJSON());
     $(this.el).html(html);
     return this;
   },
@@ -1383,7 +1387,7 @@ my.GridRow = Backbone.View.extend({
     $(e.target).addClass("hidden");
     var cell = $(e.target).siblings('.data-table-cell-value');
     cell.data("previousContents", cell.text());
-    var templated = $.mustache(this.cellEditorTemplate, {value: cell.text()});
+    var templated = Mustache.render(this.cellEditorTemplate, {value: cell.text()});
     cell.html(templated);
   },
 
@@ -1579,7 +1583,7 @@ my.Map = Backbone.View.extend({
 
     var self = this;
 
-    htmls = $.mustache(this.template, this.model.toTemplateJSON());
+    htmls = Mustache.render(this.template, this.model.toTemplateJSON());
 
     $(this.el).html(htmls);
     this.$map = this.el.find('.panel.map');
@@ -1594,7 +1598,6 @@ my.Map = Backbone.View.extend({
         $('#editor-field-type-latlon').attr('checked','checked').change();
       }
     }
-    this.redraw();
     return this;
   },
 
@@ -1764,8 +1767,11 @@ my.Map = Backbone.View.extend({
       if (this.state.get('geomField')){
         var value = doc.get(this.state.get('geomField'));
         if (typeof(value) === 'string'){
-          // We have a GeoJSON string representation
-          return $.parseJSON(value);
+          // We *may* have a GeoJSON string representation
+          try {
+            return $.parseJSON(value);
+          } catch(e) {
+          }
         } else {
           // We assume that the contents of the field are a valid GeoJSON object
           return value;
@@ -1903,6 +1909,417 @@ my.Map = Backbone.View.extend({
 this.recline = this.recline || {};
 this.recline.View = this.recline.View || {};
 
+(function($, my) {
+// ## SlickGrid Dataset View
+//
+// Provides a tabular view on a Dataset, based on SlickGrid.
+//
+// https://github.com/mleibman/SlickGrid
+//
+// Initialize it with a `recline.Model.Dataset`.
+my.SlickGrid = Backbone.View.extend({
+  tagName:  "div",
+  className: "recline-slickgrid",
+
+  initialize: function(modelEtc) {
+    var self = this;
+    this.el = $(this.el);
+    _.bindAll(this, 'render');
+    this.model.currentDocuments.bind('add', this.render);
+    this.model.currentDocuments.bind('reset', this.render);
+    this.model.currentDocuments.bind('remove', this.render);
+
+    var state = _.extend({
+        hiddenColumns: [],
+        columnsOrder: [],
+        columnsSort: {},
+        columnsWidth: [],
+        fitColumns: false
+      }, modelEtc.state
+    );
+    this.state = new recline.Model.ObjectState(state);
+
+    this.bind('view:show',function(){
+      // If the div is hidden, SlickGrid will calculate wrongly some
+      // sizes so we must render it explicitly when the view is visible
+      if (!self.rendered){
+        if (!self.grid){
+          self.render();
+        }
+        self.grid.init();
+        self.rendered = true;
+      }
+      self.visible = true;
+    });
+    this.bind('view:hide',function(){
+      self.visible = false;
+    });
+
+  },
+
+  events: {
+  },
+
+  render: function() {
+    var self = this;
+    this.el = $(this.el);
+
+    var options = {
+      enableCellNavigation: true,
+      enableColumnReorder: true,
+      explicitInitialization: true,
+      syncColumnCellResize: true,
+      forceFitColumns: this.state.get('fitColumns')
+    };
+
+    // We need all columns, even the hidden ones, to show on the column picker
+    var columns = [];
+    _.each(this.model.fields.toJSON(),function(field){
+      var column = {id:field['id'],
+                    name:field['label'],
+                    field:field['id'],
+                    sortable: true,
+                    minWidth: 80};
+
+      var widthInfo = _.find(self.state.get('columnsWidth'),function(c){return c.column == field.id});
+      if (widthInfo){
+        column['width'] = widthInfo.width;
+      }
+
+      columns.push(column);
+    });
+
+    // Restrict the visible columns
+    var visibleColumns = columns.filter(function(column) {
+      return _.indexOf(self.state.get('hiddenColumns'), column.id) == -1;
+    });
+
+    // Order them if there is ordering info on the state
+    if (this.state.get('columnsOrder')){
+      visibleColumns = visibleColumns.sort(function(a,b){
+        return _.indexOf(self.state.get('columnsOrder'),a.id) > _.indexOf(self.state.get('columnsOrder'),b.id);
+      });
+      columns = columns.sort(function(a,b){
+        return _.indexOf(self.state.get('columnsOrder'),a.id) > _.indexOf(self.state.get('columnsOrder'),b.id);
+      });
+    }
+
+    // Move hidden columns to the end, so they appear at the bottom of the
+    // column picker
+    var tempHiddenColumns = [];
+    for (var i = columns.length -1; i >= 0; i--){
+      if (_.indexOf(_.pluck(visibleColumns,'id'),columns[i].id) == -1){
+        tempHiddenColumns.push(columns.splice(i,1)[0]);
+      }
+    }
+    columns = columns.concat(tempHiddenColumns);
+
+
+    var data = this.model.currentDocuments.toJSON();
+
+    this.grid = new Slick.Grid(this.el, data, visibleColumns, options);
+
+    // Column sorting
+    var gridSorter = function(field, ascending, grid, data){
+
+      data.sort(function(a, b){
+          var result =
+              a[field] > b[field] ? 1 :
+              a[field] < b[field] ? -1 :
+              0
+          ;
+          return ascending ? result : -result;
+      });
+
+      grid.setData(data);
+      grid.updateRowCount();
+      grid.render();
+    }
+
+    var sortInfo = this.state.get('columnsSort');
+    if (sortInfo){
+      var sortAsc = !(sortInfo['direction'] == 'desc');
+      gridSorter(sortInfo.column, sortAsc, self.grid, data);
+      this.grid.setSortColumn(sortInfo.column, sortAsc);
+    }
+
+    this.grid.onSort.subscribe(function(e, args){
+      gridSorter(args.sortCol.field,args.sortAsc,self.grid,data);
+      self.state.set({columnsSort:{
+                      column:args.sortCol,
+                      direction: (args.sortAsc) ? 'asc':'desc'
+                   }});
+    });
+
+    this.grid.onColumnsReordered.subscribe(function(e, args){
+      self.state.set({columnsOrder: _.pluck(self.grid.getColumns(),'id')});
+    });
+
+    this.grid.onColumnsResized.subscribe(function(e, args){
+        var columns = args.grid.getColumns();
+        var defaultColumnWidth = args.grid.getOptions().defaultColumnWidth;
+        var columnsWidth = [];
+        _.each(columns,function(column){
+          if (column.width != defaultColumnWidth){
+            columnsWidth.push({column:column.id,width:column.width});
+          }
+        });
+        self.state.set({columnsWidth:columnsWidth});
+    });
+
+    var columnpicker = new Slick.Controls.ColumnPicker(columns, this.grid,
+                                                       _.extend(options,{state:this.state}));
+
+    if (self.visible){
+      self.grid.init();
+      self.rendered = true;
+    } else {
+      // Defer rendering until the view is visible
+      self.rendered = false;
+    }
+
+    return this;
+ }
+});
+
+})(jQuery, recline.View);
+
+/*
+* Context menu for the column picker, adapted from
+* http://mleibman.github.com/SlickGrid/examples/example-grouping
+*
+*/
+(function ($) {
+  function SlickColumnPicker(columns, grid, options) {
+    var $menu;
+    var columnCheckboxes;
+
+    var defaults = {
+      fadeSpeed:250
+    };
+
+    function init() {
+      grid.onHeaderContextMenu.subscribe(handleHeaderContextMenu);
+      options = $.extend({}, defaults, options);
+
+      $menu = $('<ul class="dropdown-menu slick-contextmenu" style="display:none;position:absolute;z-index:20;" />').appendTo(document.body);
+
+      $menu.bind('mouseleave', function (e) {
+        $(this).fadeOut(options.fadeSpeed)
+      });
+      $menu.bind('click', updateColumn);
+
+    }
+
+    function handleHeaderContextMenu(e, args) {
+      e.preventDefault();
+      $menu.empty();
+      columnCheckboxes = [];
+
+      var $li, $input;
+      for (var i = 0; i < columns.length; i++) {
+        $li = $('<li />').appendTo($menu);
+        $input = $('<input type="checkbox" />').data('column-id', columns[i].id).attr('id','slick-column-vis-'+columns[i].id);
+        columnCheckboxes.push($input);
+
+        if (grid.getColumnIndex(columns[i].id) != null) {
+          $input.attr('checked', 'checked');
+        }
+        $input.appendTo($li);
+        $('<label />')
+            .text(columns[i].name)
+            .attr('for','slick-column-vis-'+columns[i].id)
+            .appendTo($li);
+      }
+      $('<li/>').addClass('divider').appendTo($menu);
+      $li = $('<li />').data('option', 'autoresize').appendTo($menu);
+      $input = $('<input type="checkbox" />').data('option', 'autoresize').attr('id','slick-option-autoresize');
+      $input.appendTo($li);
+      $('<label />')
+          .text('Force fit columns')
+          .attr('for','slick-option-autoresize')
+          .appendTo($li);
+      if (grid.getOptions().forceFitColumns) {
+        $input.attr('checked', 'checked');
+      }
+
+      $menu.css('top', e.pageY - 10)
+          .css('left', e.pageX - 10)
+          .fadeIn(options.fadeSpeed);
+    }
+
+    function updateColumn(e) {
+      if ($(e.target).data('option') == 'autoresize') {
+        var checked;
+        if ($(e.target).is('li')){
+            var checkbox = $(e.target).find('input').first();
+            checked = !checkbox.is(':checked');
+            checkbox.attr('checked',checked);
+        } else {
+          checked = e.target.checked;
+        }
+
+        if (checked) {
+          grid.setOptions({forceFitColumns:true});
+          grid.autosizeColumns();
+        } else {
+          grid.setOptions({forceFitColumns:false});
+        }
+        options.state.set({fitColumns:checked});
+        return;
+      }
+
+      if (($(e.target).is('li') && !$(e.target).hasClass('divider')) ||
+            $(e.target).is('input')) {
+        if ($(e.target).is('li')){
+            var checkbox = $(e.target).find('input').first();
+            checkbox.attr('checked',!checkbox.is(':checked'));
+        }
+        var visibleColumns = [];
+        var hiddenColumnsIds = [];
+        $.each(columnCheckboxes, function (i, e) {
+          if ($(this).is(':checked')) {
+            visibleColumns.push(columns[i]);
+          } else {
+            hiddenColumnsIds.push(columns[i].id);
+          }
+        });
+
+
+        if (!visibleColumns.length) {
+          $(e.target).attr('checked', 'checked');
+          return;
+        }
+
+        grid.setColumns(visibleColumns);
+        options.state.set({hiddenColumns:hiddenColumnsIds});
+      }
+    }
+    init();
+  }
+
+  // Slick.Controls.ColumnPicker
+  $.extend(true, window, { Slick:{ Controls:{ ColumnPicker:SlickColumnPicker }}});
+})(jQuery);
+/*jshint multistr:true */
+
+this.recline = this.recline || {};
+this.recline.View = this.recline.View || {};
+
+(function($, my) {
+my.Timeline = Backbone.View.extend({
+  tagName:  'div',
+  className: 'recline-timeline',
+
+  template: ' \
+    <div id="vmm-timeline-id"></div> \
+  ',
+
+  // These are the default (case-insensitive) names of field that are used if found.
+  // If not found, the user will need to define these fields on initialization
+  startFieldNames: ['date','startdate', 'start', 'start-date'],
+  endFieldNames: ['end','endDate'],
+  elementId: '#vmm-timeline-id',
+
+  initialize: function(options) {
+    var self = this;
+    this.el = $(this.el);
+    this.timeline = new VMM.Timeline();
+    this._timelineIsInitialized = false;
+    this.bind('view:show', function() {
+      if (self._timelineIsInitialized === false) {
+        self._initTimeline();
+      }
+    });
+    this.model.fields.bind('change', function() {
+      self._setupTemporalField();
+    });
+    this.model.currentDocuments.bind('all', function() {
+      self.reloadData();
+    });
+    var stateData = _.extend({
+        startField: null,
+        endField: null
+      },
+      options.state
+    );
+    this.state = new recline.Model.ObjectState(stateData);
+    this._setupTemporalField();
+    this.render();
+  },
+
+  render: function() {
+    var tmplData = {};
+    var htmls = Mustache.render(this.template, tmplData);
+    this.el.html(htmls);
+  },
+
+  _initTimeline: function() {
+    // set width explicitly o/w timeline goes wider that screen for some reason
+    this.el.find(this.elementId).width(this.el.parent().width());
+    // only call _initTimeline once view in DOM as Timeline uses $ internally to look up element
+    var config = {};
+    var data = this._timelineJSON();
+    this.timeline.init(data, this.elementId, config);
+    this._timelineIsInitialized = true
+  },
+
+  reloadData: function() {
+    if (this._timelineIsInitialized) {
+      var data = this._timelineJSON();
+      this.timeline.reload(data);
+    }
+  },
+
+  _timelineJSON: function() {
+    var self = this;
+    var out = {
+      'timeline': {
+        'type': 'default',
+        'headline': '',
+        'date': [
+        ]
+      }
+    };
+    this.model.currentDocuments.each(function(doc) {
+      var tlEntry = {
+        "startDate": doc.get(self.state.get('startField')),
+        "endDate": doc.get(self.state.get('endField')) || null,
+        "headline": String(doc.get(self.model.fields.models[0].id)),
+        "text": ''
+      };
+      if (tlEntry.startDate) {
+        out.timeline.date.push(tlEntry);
+      }
+    });
+    return out;
+  },
+
+  _setupTemporalField: function() {
+    this.state.set({
+      startField: this._checkField(this.startFieldNames),
+      endField: this._checkField(this.endFieldNames)
+    });
+  },
+
+  _checkField: function(possibleFieldNames) {
+    var modelFieldNames = this.model.fields.pluck('id');
+    for (var i = 0; i < possibleFieldNames.length; i++){
+      for (var j = 0; j < modelFieldNames.length; j++){
+        if (modelFieldNames[j].toLowerCase() == possibleFieldNames[i].toLowerCase())
+          return modelFieldNames[j];
+      }
+    }
+    return null;
+  }
+});
+
+})(jQuery, recline.View);
+/*jshint multistr:true */
+
+this.recline = this.recline || {};
+this.recline.View = this.recline.View || {};
+
 // Views module following classic module pattern
 (function($, my) {
 
@@ -1976,7 +2393,7 @@ my.ColumnTransform = Backbone.View.extend({
   },
 
   render: function() {
-    var htmls = $.mustache(this.template, 
+    var htmls = Mustache.render(this.template, 
       {name: this.state.currentColumn}
       );
     this.el.html(htmls);
@@ -2063,7 +2480,7 @@ my.ColumnTransform = Backbone.View.extend({
         });
         var previewData = costco.previewTransform(docs, editFunc, self.state.currentColumn);
         var $el = self.el.find('.expression-preview-container');
-        var templated = $.mustache(self.editPreviewTemplate, {rows: previewData.slice(0,4)});
+        var templated = Mustache.render(self.editPreviewTemplate, {rows: previewData.slice(0,4)});
         $el.html(templated);
       } else {
         errors.text(editFunc.errorMessage);
@@ -2146,6 +2563,21 @@ my.ColumnTransform = Backbone.View.extend({
 // State is available not only for individual views (as described above) but
 // for the dataset (e.g. the current query). For an example of pulling together
 // state from across multiple components see `recline.View.DataExplorer`.
+//
+// ### Flash Messages / Notifications
+//
+// To send 'flash messages' or notifications the convention is that views
+// should fire an event named `recline:flash` with a payload that is a
+// flash object with the following attributes (all optional):
+//
+// * message: message to show.
+// * category: warning (default), success, error
+// * persist: if true alert is persistent, o/w hidden after 3s (default=false)
+// * loader: if true show a loading message
+//
+// Objects or views wishing to bind to flash messages may then subscribe to
+// these events and take some action such as displaying them to the user. For
+// an example of such behaviour see the DataExplorer view.
 // 
 // ### Writing your own Views
 //
@@ -2280,6 +2712,13 @@ my.DataExplorer = Backbone.View.extend({
           model: this.model,
           state: this.state.get('view-map')
         }),
+      }, {
+        id: 'timeline',
+        label: 'Timeline',
+        view: new my.Timeline({
+          model: this.model,
+          state: this.state.get('view-timeline')
+        }),
       }];
     }
     // these must be called after pageViews are created
@@ -2339,7 +2778,7 @@ my.DataExplorer = Backbone.View.extend({
   render: function() {
     var tmplData = this.model.toTemplateJSON();
     tmplData.views = this.pageViews;
-    var template = $.mustache(this.template, tmplData);
+    var template = Mustache.render(this.template, tmplData);
     $(this.el).html(template);
     var $dataViewContainer = this.el.find('.data-view-container');
     _.each(this.pageViews, function(view, pageName) {
@@ -2416,7 +2855,7 @@ my.DataExplorer = Backbone.View.extend({
         query: query,
         'view-graph': graphState,
         backend: this.model.backend.__type__,
-        dataset: this.model.toJSON(),
+        url: this.model.get('url'),
         currentView: null,
         readOnly: false
       },
@@ -2484,7 +2923,7 @@ my.DataExplorer = Backbone.View.extend({
           {{message}} \
         </div>';
     }
-    var _templated = $($.mustache(_template, tmplData));
+    var _templated = $(Mustache.render(_template, tmplData));
     _templated = $(_templated).appendTo($('.recline-data-explorer .alert-messages'));
     if (!flash.persist) {
       setTimeout(function() {
@@ -2569,7 +3008,7 @@ my.QueryEditor = Backbone.View.extend({
   render: function() {
     var tmplData = this.model.toJSON();
     tmplData.to = this.model.get('from') + this.model.get('size');
-    var templated = $.mustache(this.template, tmplData);
+    var templated = Mustache.render(this.template, tmplData);
     this.el.html(templated);
   }
 });
@@ -2637,7 +3076,7 @@ my.FilterEditor = Backbone.View.extend({
         value: filter.term[fieldId]
       };
     });
-    var out = $.mustache(this.template, tmplData);
+    var out = Mustache.render(this.template, tmplData);
     this.el.html(out);
     // are there actually any facets to show?
     if (this.model.get('filters').length > 0) {
@@ -2722,7 +3161,7 @@ my.FacetViewer = Backbone.View.extend({
       }
       return facet;
     });
-    var templated = $.mustache(this.template, tmplData);
+    var templated = Mustache.render(this.template, tmplData);
     this.el.html(templated);
     // are there actually any facets to show?
     if (this.model.facets.length > 0) {
@@ -2754,577 +3193,123 @@ my.FacetViewer = Backbone.View.extend({
 this.recline = this.recline || {};
 this.recline.Backend = this.recline.Backend || {};
 
-(function($, my) {
-  // ## Backbone.sync
+// ## recline.Backend.Base
+//
+// Exemplar 'class' for backends showing what a base class would look like.
+this.recline.Backend.Base = function() {
+  // ### __type__
   //
-  // Override Backbone.sync to hand off to sync function in relevant backend
-  Backbone.sync = function(method, model, options) {
-    return model.backend.sync(method, model, options);
-  };
-
-  // ## recline.Backend.Base
+  // 'type' of this backend. This should be either the class path for this
+  // object as a string (e.g. recline.Backend.Memory) or for Backends within
+  // recline.Backend module it may be their class name.
   //
-  // Base class for backends providing a template and convenience functions.
-  // You do not have to inherit from this class but even when not it does
-  // provide guidance on the functions you must implement.
+  // This value is used as an identifier for this backend when initializing
+  // backends (see recline.Model.Dataset.initialize).
+  this.__type__ = 'base';
+
+  // ### readonly
   //
-  // Note also that while this (and other Backends) are implemented as Backbone models this is just a convenience.
-  my.Base = Backbone.Model.extend({
-    // ### __type__
-    //
-    // 'type' of this backend. This should be either the class path for this
-    // object as a string (e.g. recline.Backend.Memory) or for Backends within
-    // recline.Backend module it may be their class name.
-    //
-    // This value is used as an identifier for this backend when initializing
-    // backends (see recline.Model.Dataset.initialize).
-    __type__: 'base',
+  // Class level attribute indicating that this backend is read-only (that
+  // is, cannot be written to).
+  this.readonly = true;
 
-
-    // ### readonly
-    //
-    // Class level attribute indicating that this backend is read-only (that
-    // is, cannot be written to).
-    readonly: true,
-
-    // ### sync
-    //
-    // An implementation of Backbone.sync that will be used to override
-    // Backbone.sync on operations for Datasets and Documents which are using this backend.
-    //
-    // For read-only implementations you will need only to implement read method
-    // for Dataset models (and even this can be a null operation). The read method
-    // should return relevant metadata for the Dataset. We do not require read support
-    // for Documents because they are loaded in bulk by the query method.
-    //
-    // For backends supporting write operations you must implement update and delete support for Document objects.
-    //
-    // All code paths should return an object conforming to the jquery promise API.
-    sync: function(method, model, options) {
-    },
-    
-    // ### query
-    //
-    // Query the backend for documents returning them in bulk. This method will
-    // be used by the Dataset.query method to search the backend for documents,
-    // retrieving the results in bulk.
-    //
-    // @param {recline.model.Dataset} model: Dataset model.
-    //
-    // @param {Object} queryObj: object describing a query (usually produced by
-    // using recline.Model.Query and calling toJSON on it).
-    //
-    // The structure of data in the Query object or
-    // Hash should follow that defined in <a
-    // href="http://github.com/okfn/recline/issues/34">issue 34</a>.
-    // (Of course, if you are writing your own backend, and hence
-    // have control over the interpretation of the query object, you
-    // can use whatever structure you like).
-    //
-    // @returns {Promise} promise API object. The promise resolve method will
-    // be called on query completion with a QueryResult object.
-    // 
-    // A QueryResult has the following structure (modelled closely on
-    // ElasticSearch - see <a
-    // href="https://github.com/okfn/recline/issues/57">this issue for more
-    // details</a>):
-    //
-    // <pre>
-    // {
-    //   total: // (required) total number of results (can be null)
-    //   hits: [ // (required) one entry for each result document
-    //     {
-    //        _score:   // (optional) match score for document
-    //        _type: // (optional) document type
-    //        _source: // (required) document/row object
-    //     } 
-    //   ],
-    //   facets: { // (optional) 
-    //     // facet results (as per <http://www.elasticsearch.org/guide/reference/api/search/facets/>)
-    //   }
-    // }
-    // </pre>
-    query: function(model, queryObj) {
-    },
-
-    // ### _makeRequest
-    // 
-    // Just $.ajax but in any headers in the 'headers' attribute of this
-    // Backend instance. Example:
-    //
-    // <pre>
-    // var jqxhr = this._makeRequest({
-    //   url: the-url
-    // });
-    // </pre>
-    _makeRequest: function(data) {
-      var headers = this.get('headers');
-      var extras = {};
-      if (headers) {
-        extras = {
-          beforeSend: function(req) {
-            _.each(headers, function(value, key) {
-              req.setRequestHeader(key, value);
-            });
-          }
-        };
-      }
-      var data = _.extend(extras, data);
-      return $.ajax(data);
-    },
-
-    // convenience method to convert simple set of documents / rows to a QueryResult
-    _docsToQueryResult: function(rows) {
-      var hits = _.map(rows, function(row) {
-        return { _source: row };
-      });
-      return {
-        total: null,
-        hits: hits
-      };
-    },
-
-    // ## _wrapInTimeout
-    // 
-    // Convenience method providing a crude way to catch backend errors on JSONP calls.
-    // Many of backends use JSONP and so will not get error messages and this is
-    // a crude way to catch those errors.
-    _wrapInTimeout: function(ourFunction) {
-      var dfd = $.Deferred();
-      var timeout = 5000;
-      var timer = setTimeout(function() {
-        dfd.reject({
-          message: 'Request Error: Backend did not respond after ' + (timeout / 1000) + ' seconds'
-        });
-      }, timeout);
-      ourFunction.done(function(arguments) {
-          clearTimeout(timer);
-          dfd.resolve(arguments);
-        })
-        .fail(function(arguments) {
-          clearTimeout(timer);
-          dfd.reject(arguments);
-        })
-        ;
-      return dfd.promise();
-    }
-  });
-
-}(jQuery, this.recline.Backend));
-
-this.recline = this.recline || {};
-this.recline.Backend = this.recline.Backend || {};
-
-(function($, my) {
-  // ## DataProxy Backend
+  // ### sync
+  //
+  // An implementation of Backbone.sync that will be used to override
+  // Backbone.sync on operations for Datasets and Documents which are using this backend.
+  //
+  // For read-only implementations you will need only to implement read method
+  // for Dataset models (and even this can be a null operation). The read method
+  // should return relevant metadata for the Dataset. We do not require read support
+  // for Documents because they are loaded in bulk by the query method.
+  //
+  // For backends supporting write operations you must implement update and delete support for Document objects.
+  //
+  // All code paths should return an object conforming to the jquery promise API.
+  this.sync = function(method, model, options) {
+  },
+  
+  // ### query
+  //
+  // Query the backend for documents returning them in bulk. This method will
+  // be used by the Dataset.query method to search the backend for documents,
+  // retrieving the results in bulk.
+  //
+  // @param {recline.model.Dataset} model: Dataset model.
+  //
+  // @param {Object} queryObj: object describing a query (usually produced by
+  // using recline.Model.Query and calling toJSON on it).
+  //
+  // The structure of data in the Query object or
+  // Hash should follow that defined in <a
+  // href="http://github.com/okfn/recline/issues/34">issue 34</a>.
+  // (Of course, if you are writing your own backend, and hence
+  // have control over the interpretation of the query object, you
+  // can use whatever structure you like).
+  //
+  // @returns {Promise} promise API object. The promise resolve method will
+  // be called on query completion with a QueryResult object.
   // 
-  // For connecting to [DataProxy-s](http://github.com/okfn/dataproxy).
-  //
-  // When initializing the DataProxy backend you can set the following attributes:
-  //
-  // * dataproxy: {url-to-proxy} (optional). Defaults to http://jsonpdataproxy.appspot.com
-  //
-  // Datasets using using this backend should set the following attributes:
-  //
-  // * url: (required) url-of-data-to-proxy
-  // * format: (optional) csv | xls (defaults to csv if not specified)
-  //
-  // Note that this is a **read-only** backend.
-  my.DataProxy = my.Base.extend({
-    __type__: 'dataproxy',
-    readonly: true,
-    defaults: {
-      dataproxy_url: 'http://jsonpdataproxy.appspot.com'
-    },
-    sync: function(method, model, options) {
-      var self = this;
-      if (method === "read") {
-        if (model.__type__ == 'Dataset') {
-          // Do nothing as we will get fields in query step (and no metadata to
-          // retrieve)
-          var dfd = $.Deferred();
-          dfd.resolve(model);
-          return dfd.promise();
-        }
-      } else {
-        alert('This backend only supports read operations');
-      }
-    },
-    query: function(dataset, queryObj) {
-      var self = this;
-      var base = this.get('dataproxy_url');
-      var data = {
-        url: dataset.get('url'),
-        'max-results':  queryObj.size,
-        type: dataset.get('format')
-      };
-      var jqxhr = $.ajax({
-        url: base,
-        data: data,
-        dataType: 'jsonp'
-      });
-      var dfd = $.Deferred();
-      this._wrapInTimeout(jqxhr).done(function(results) {
-        if (results.error) {
-          dfd.reject(results.error);
-        }
-        dataset.fields.reset(_.map(results.fields, function(fieldId) {
-          return {id: fieldId};
-          })
-        );
-        var _out = _.map(results.data, function(doc) {
-          var tmp = {};
-          _.each(results.fields, function(key, idx) {
-            tmp[key] = doc[idx];
-          });
-          return tmp;
-        });
-        dfd.resolve(self._docsToQueryResult(_out));
-      })
-      .fail(function(arguments) {
-        dfd.reject(arguments);
-      });
-      return dfd.promise();
-    }
-  });
-
-}(jQuery, this.recline.Backend));
-this.recline = this.recline || {};
-this.recline.Backend = this.recline.Backend || {};
-
-(function($, my) {
-  // ## ElasticSearch Backend
-  //
-  // Connecting to [ElasticSearch](http://www.elasticsearch.org/).
-  //
-  // Usage:
+  // A QueryResult has the following structure (modelled closely on
+  // ElasticSearch - see <a
+  // href="https://github.com/okfn/recline/issues/57">this issue for more
+  // details</a>):
   //
   // <pre>
-  // var backend = new recline.Backend.ElasticSearch({
-  //   // optional as can also be provided by Dataset/Document
-  //   url: {url to ElasticSearch endpoint i.e. ES 'type/table' url - more info below}
-  //   // optional
-  //   headers: {dict of headers to add to each request}
-  // });
-  //
-  // @param {String} url: url for ElasticSearch type/table, e.g. for ES running
-  // on localhost:9200 with index // twitter and type tweet it would be:
-  // 
-  // <pre>http://localhost:9200/twitter/tweet</pre>
-  //
-  // This url is optional since the ES endpoint url may be specified on the the
-  // dataset (and on a Document by the document having a dataset attribute) by
-  // having one of the following (see also `_getESUrl` function):
-  //
-  // <pre>
-  // elasticsearch_url
-  // webstore_url
-  // url
+  // {
+  //   total: // (required) total number of results (can be null)
+  //   hits: [ // (required) one entry for each result document
+  //     {
+  //        _score:   // (optional) match score for document
+  //        _type: // (optional) document type
+  //        _source: // (required) document/row object
+  //     } 
+  //   ],
+  //   facets: { // (optional) 
+  //     // facet results (as per <http://www.elasticsearch.org/guide/reference/api/search/facets/>)
+  //   }
+  // }
   // </pre>
-  my.ElasticSearch = my.Base.extend({
-    __type__: 'elasticsearch',
-    readonly: false,
-    sync: function(method, model, options) {
-      var self = this;
-      if (method === "read") {
-        if (model.__type__ == 'Dataset') {
-          var schemaUrl = self._getESUrl(model) + '/_mapping';
-          var jqxhr = this._makeRequest({
-            url: schemaUrl,
-            dataType: 'jsonp'
-          });
-          var dfd = $.Deferred();
-          this._wrapInTimeout(jqxhr).done(function(schema) {
-            // only one top level key in ES = the type so we can ignore it
-            var key = _.keys(schema)[0];
-            var fieldData = _.map(schema[key].properties, function(dict, fieldName) {
-              dict.id = fieldName;
-              return dict;
-            });
-            model.fields.reset(fieldData);
-            dfd.resolve(model, jqxhr);
-          })
-          .fail(function(arguments) {
-            dfd.reject(arguments);
-          });
-          return dfd.promise();
-        } else if (model.__type__ == 'Document') {
-          var base = this._getESUrl(model.dataset) + '/' + model.id;
-          return this._makeRequest({
-            url: base,
-            dataType: 'json'
-          });
-        }
-      } else if (method === 'update') {
-        if (model.__type__ == 'Document') {
-          return this.upsert(model.toJSON(), this._getESUrl(model.dataset));
-        }
-      } else if (method === 'delete') {
-        if (model.__type__ == 'Document') {
-          var url = this._getESUrl(model.dataset);
-          return this.delete(model.id, url);
-        }
-      }
-    },
+  this.query = function(model, queryObj) {}
+};
 
-    // ### upsert
-    //
-    // create / update a document to ElasticSearch backend
-    //
-    // @param {Object} doc an object to insert to the index.
-    // @param {string} url (optional) url for ElasticSearch endpoint (if not
-    // defined called this._getESUrl()
-    upsert: function(doc, url) {
-      var data = JSON.stringify(doc);
-      url = url ? url : this._getESUrl();
-      if (doc.id) {
-        url += '/' + doc.id;
-      }
-      return this._makeRequest({
-        url: url,
-        type: 'POST',
-        data: data,
-        dataType: 'json'
-      });
-    },
-
-    // ### delete
-    //
-    // Delete a document from the ElasticSearch backend.
-    //
-    // @param {Object} id id of object to delete
-    // @param {string} url (optional) url for ElasticSearch endpoint (if not
-    // provided called this._getESUrl()
-    delete: function(id, url) {
-      url = url ? url : this._getESUrl();
-      url += '/' + id;
-      return this._makeRequest({
-        url: url,
-        type: 'DELETE',
-        dataType: 'json'
-      });
-    },
-
-    // ### _getESUrl
-    //
-    // get url to ElasticSearch endpoint (see above)
-    _getESUrl: function(dataset) {
-      if (dataset) {
-        var out = dataset.get('elasticsearch_url');
-        if (out) return out;
-        out = dataset.get('webstore_url');
-        if (out) return out;
-        out = dataset.get('url');
-        return out;
-      }
-      return this.get('url');
-    },
-    _normalizeQuery: function(queryObj) {
-      var out = queryObj.toJSON ? queryObj.toJSON() : _.extend({}, queryObj);
-      if (out.q !== undefined && out.q.trim() === '') {
-        delete out.q;
-      }
-      if (!out.q) {
-        out.query = {
-          match_all: {}
-        };
-      } else {
-        out.query = {
-          query_string: {
-            query: out.q
-          }
-        };
-        delete out.q;
-      }
-      // now do filters (note the *plural*)
-      if (out.filters && out.filters.length) {
-        if (!out.filter) {
-          out.filter = {};
-        }
-        if (!out.filter.and) {
-          out.filter.and = [];
-        }
-        out.filter.and = out.filter.and.concat(out.filters);
-      }
-      if (out.filters !== undefined) {
-        delete out.filters;
-      }
-      return out;
-    },
-    query: function(model, queryObj) {
-      var queryNormalized = this._normalizeQuery(queryObj);
-      var data = {source: JSON.stringify(queryNormalized)};
-      var base = this._getESUrl(model);
-      var jqxhr = this._makeRequest({
-        url: base + '/_search',
-        data: data,
-        dataType: 'jsonp'
-      });
-      var dfd = $.Deferred();
-      // TODO: fail case
-      jqxhr.done(function(results) {
-        _.each(results.hits.hits, function(hit) {
-          if (!('id' in hit._source) && hit._id) {
-            hit._source.id = hit._id;
-          }
+// ### makeRequest
+// 
+// Just $.ajax but in any headers in the 'headers' attribute of this
+// Backend instance. Example:
+//
+// <pre>
+// var jqxhr = this._makeRequest({
+//   url: the-url
+// });
+// </pre>
+this.recline.Backend.makeRequest = function(data, headers) {
+  var extras = {};
+  if (headers) {
+    extras = {
+      beforeSend: function(req) {
+        _.each(headers, function(value, key) {
+          req.setRequestHeader(key, value);
         });
-        if (results.facets) {
-          results.hits.facets = results.facets;
-        }
-        dfd.resolve(results.hits);
-      });
-      return dfd.promise();
-    }
-  });
-
-}(jQuery, this.recline.Backend));
+      }
+    };
+  }
+  var data = _.extend(extras, data);
+  return $.ajax(data);
+};
 
 this.recline = this.recline || {};
 this.recline.Backend = this.recline.Backend || {};
+this.recline.Backend.CSV = this.recline.Backend.CSV || {};
 
-(function($, my) {
-  // ## Google spreadsheet backend
-  // 
-  // Connect to Google Docs spreadsheet.
+(function(my) {
+  // ## load
   //
-  // Dataset must have a url attribute pointing to the Gdocs
-  // spreadsheet's JSON feed e.g.
+  // Load data from a CSV file referenced in an HTMl5 file object returning the
+  // dataset in the callback
   //
-  // <pre>
-  // var dataset = new recline.Model.Dataset({
-  //     url: 'https://spreadsheets.google.com/feeds/list/0Aon3JiuouxLUdDQwZE1JdV94cUd6NWtuZ0IyWTBjLWc/od6/public/values?alt=json'
-  //   },
-  //   'gdocs'
-  // );
-  // </pre>
-  my.GDoc = my.Base.extend({
-    __type__: 'gdoc',
-    readonly: true,
-    getUrl: function(dataset) {
-      var url = dataset.get('url');
-      if (url.indexOf('feeds/list') != -1) {
-        return url;
-      } else {
-        // https://docs.google.com/spreadsheet/ccc?key=XXXX#gid=0
-        var regex = /.*spreadsheet\/ccc?.*key=([^#?&+]+).*/;
-        var matches = url.match(regex);
-        if (matches) {
-          var key = matches[1];
-          var worksheet = 1;
-          var out = 'https://spreadsheets.google.com/feeds/list/' + key + '/' + worksheet + '/public/values?alt=json';
-          return out;
-        } else {
-          alert('Failed to extract gdocs key from ' + url);
-        }
-      }
-    },
-    sync: function(method, model, options) {
-      var self = this;
-      if (method === "read") { 
-        var dfd = $.Deferred(); 
-        var dataset = model;
-
-        var url = this.getUrl(model);
-
-        $.getJSON(url, function(d) {
-          result = self.gdocsToJavascript(d);
-          model.fields.reset(_.map(result.field, function(fieldId) {
-              return {id: fieldId};
-            })
-          );
-          // cache data onto dataset (we have loaded whole gdoc it seems!)
-          model._dataCache = result.data;
-          dfd.resolve(model);
-        });
-        return dfd.promise();
-      }
-    },
-
-    query: function(dataset, queryObj) { 
-      var dfd = $.Deferred();
-      var fields = _.pluck(dataset.fields.toJSON(), 'id');
-
-      // zip the fields with the data rows to produce js objs
-      // TODO: factor this out as a common method with other backends
-      var objs = _.map(dataset._dataCache, function (d) { 
-        var obj = {};
-        _.each(_.zip(fields, d), function (x) {
-          obj[x[0]] = x[1];
-        });
-        return obj;
-      });
-      dfd.resolve(this._docsToQueryResult(objs));
-      return dfd;
-    },
-    gdocsToJavascript:  function(gdocsSpreadsheet) {
-      /*
-         :options: (optional) optional argument dictionary:
-         columnsToUse: list of columns to use (specified by field names)
-         colTypes: dictionary (with column names as keys) specifying types (e.g. range, percent for use in conversion).
-         :return: tabular data object (hash with keys: field and data).
-
-         Issues: seems google docs return columns in rows in random order and not even sure whether consistent across rows.
-         */
-      var options = {};
-      if (arguments.length > 1) {
-        options = arguments[1];
-      }
-      var results = {
-        'field': [],
-        'data': []
-      };
-      // default is no special info on type of columns
-      var colTypes = {};
-      if (options.colTypes) {
-        colTypes = options.colTypes;
-      }
-      // either extract column headings from spreadsheet directly, or used supplied ones
-      if (options.columnsToUse) {
-        // columns set to subset supplied
-        results.field = options.columnsToUse;
-      } else {
-        // set columns to use to be all available
-        if (gdocsSpreadsheet.feed.entry.length > 0) {
-          for (var k in gdocsSpreadsheet.feed.entry[0]) {
-            if (k.substr(0, 3) == 'gsx') {
-              var col = k.substr(4);
-              results.field.push(col);
-            }
-          }
-        }
-      }
-
-      // converts non numberical values that should be numerical (22.3%[string] -> 0.223[float])
-      var rep = /^([\d\.\-]+)\%$/;
-      $.each(gdocsSpreadsheet.feed.entry, function (i, entry) {
-        var row = [];
-        for (var k in results.field) {
-          var col = results.field[k];
-          var _keyname = 'gsx$' + col;
-          var value = entry[_keyname]['$t'];
-          // if labelled as % and value contains %, convert
-          if (colTypes[col] == 'percent') {
-            if (rep.test(value)) {
-              var value2 = rep.exec(value);
-              var value3 = parseFloat(value2);
-              value = value3 / 100;
-            }
-          }
-          row.push(value);
-        }
-        results.data.push(row);
-      });
-      return results;
-    }
-  });
-
-}(jQuery, this.recline.Backend));
-
-this.recline = this.recline || {};
-this.recline.Backend = this.recline.Backend || {};
-
-(function($, my) {
-  my.loadFromCSVFile = function(file, callback, options) {
+  // @param options as for parseCSV below
+  my.load = function(file, callback, options) {
     var encoding = options.encoding || 'UTF-8';
     
     var metadata = {
@@ -3355,7 +3340,7 @@ this.recline.Backend = this.recline.Backend || {};
       });
       return _doc;
     });
-    var dataset = recline.Backend.createDataset(data, fields);
+    var dataset = recline.Backend.Memory.createDataset(data, fields);
     return dataset;
   };
 
@@ -3490,9 +3475,512 @@ this.recline.Backend = this.recline.Backend || {};
   }
 
 
-}(jQuery, this.recline.Backend));
+}(this.recline.Backend.CSV));
 this.recline = this.recline || {};
 this.recline.Backend = this.recline.Backend || {};
+this.recline.Backend.DataProxy = this.recline.Backend.DataProxy || {};
+
+(function($, my) {
+  // ## DataProxy Backend
+  // 
+  // For connecting to [DataProxy-s](http://github.com/okfn/dataproxy).
+  //
+  // When initializing the DataProxy backend you can set the following
+  // attributes in the options object:
+  //
+  // * dataproxy: {url-to-proxy} (optional). Defaults to http://jsonpdataproxy.appspot.com
+  //
+  // Datasets using using this backend should set the following attributes:
+  //
+  // * url: (required) url-of-data-to-proxy
+  // * format: (optional) csv | xls (defaults to csv if not specified)
+  //
+  // Note that this is a **read-only** backend.
+  my.Backbone = function(options) {
+    var self = this;
+    this.__type__ = 'dataproxy';
+    this.readonly = true;
+
+    this.dataproxy_url = options && options.dataproxy_url ? options.dataproxy_url : 'http://jsonpdataproxy.appspot.com';
+
+    this.sync = function(method, model, options) {
+      if (method === "read") {
+        if (model.__type__ == 'Dataset') {
+          // Do nothing as we will get fields in query step (and no metadata to
+          // retrieve)
+          var dfd = $.Deferred();
+          dfd.resolve(model);
+          return dfd.promise();
+        }
+      } else {
+        alert('This backend only supports read operations');
+      }
+    };
+
+    this.query = function(dataset, queryObj) {
+      var self = this;
+      var data = {
+        url: dataset.get('url'),
+        'max-results':  queryObj.size,
+        type: dataset.get('format')
+      };
+      var jqxhr = $.ajax({
+        url: this.dataproxy_url,
+        data: data,
+        dataType: 'jsonp'
+      });
+      var dfd = $.Deferred();
+      _wrapInTimeout(jqxhr).done(function(results) {
+        if (results.error) {
+          dfd.reject(results.error);
+        }
+        dataset.fields.reset(_.map(results.fields, function(fieldId) {
+          return {id: fieldId};
+          })
+        );
+        var _out = _.map(results.data, function(doc) {
+          var tmp = {};
+          _.each(results.fields, function(key, idx) {
+            tmp[key] = doc[idx];
+          });
+          return tmp;
+        });
+        dfd.resolve({
+          total: null,
+          hits: _.map(_out, function(row) {
+            return { _source: row };
+          })
+        });
+      })
+      .fail(function(arguments) {
+        dfd.reject(arguments);
+      });
+      return dfd.promise();
+    };
+  };
+
+  // ## _wrapInTimeout
+  // 
+  // Convenience method providing a crude way to catch backend errors on JSONP calls.
+  // Many of backends use JSONP and so will not get error messages and this is
+  // a crude way to catch those errors.
+  var _wrapInTimeout = function(ourFunction) {
+    var dfd = $.Deferred();
+    var timeout = 5000;
+    var timer = setTimeout(function() {
+      dfd.reject({
+        message: 'Request Error: Backend did not respond after ' + (timeout / 1000) + ' seconds'
+      });
+    }, timeout);
+    ourFunction.done(function(arguments) {
+        clearTimeout(timer);
+        dfd.resolve(arguments);
+      })
+      .fail(function(arguments) {
+        clearTimeout(timer);
+        dfd.reject(arguments);
+      })
+      ;
+    return dfd.promise();
+  }
+
+}(jQuery, this.recline.Backend.DataProxy));
+this.recline = this.recline || {};
+this.recline.Backend = this.recline.Backend || {};
+this.recline.Backend.ElasticSearch = this.recline.Backend.ElasticSearch || {};
+
+(function($, my) {
+  // ## ElasticSearch Wrapper
+  //
+  // Connecting to [ElasticSearch](http://www.elasticsearch.org/) endpoints.
+  // @param {String} endpoint: url for ElasticSearch type/table, e.g. for ES running
+  // on localhost:9200 with index // twitter and type tweet it would be:
+  // 
+  // <pre>http://localhost:9200/twitter/tweet</pre>
+  //
+  // @param {Object} options: set of options such as:
+  //
+  // * headers - {dict of headers to add to each request}
+  // * dataType: dataType for AJAx requests e.g. set to jsonp to make jsonp requests (default is json requests)
+  my.Wrapper = function(endpoint, options) { 
+    var self = this;
+    this.endpoint = endpoint;
+    this.options = _.extend({
+        dataType: 'json'
+      },
+      options);
+
+    // ### mapping
+    //
+    // Get ES mapping for this type/table
+    //
+    // @return promise compatible deferred object.
+    this.mapping = function() {
+      var schemaUrl = self.endpoint + '/_mapping';
+      var jqxhr = recline.Backend.makeRequest({
+        url: schemaUrl,
+        dataType: this.options.dataType
+      });
+      return jqxhr;
+    };
+
+    // ### get
+    //
+    // Get document corresponding to specified id
+    //
+    // @return promise compatible deferred object.
+    this.get = function(id) {
+      var base = this.endpoint + '/' + id;
+      return recline.Backend.makeRequest({
+        url: base,
+        dataType: 'json'
+      });
+    };
+
+    // ### upsert
+    //
+    // create / update a document to ElasticSearch backend
+    //
+    // @param {Object} doc an object to insert to the index.
+    // @return deferred supporting promise API
+    this.upsert = function(doc) {
+      var data = JSON.stringify(doc);
+      url = this.endpoint;
+      if (doc.id) {
+        url += '/' + doc.id;
+      }
+      return recline.Backend.makeRequest({
+        url: url,
+        type: 'POST',
+        data: data,
+        dataType: 'json'
+      });
+    };
+
+    // ### delete
+    //
+    // Delete a document from the ElasticSearch backend.
+    //
+    // @param {Object} id id of object to delete
+    // @return deferred supporting promise API
+    this.delete = function(id) {
+      url = this.endpoint;
+      url += '/' + id;
+      return recline.Backend.makeRequest({
+        url: url,
+        type: 'DELETE',
+        dataType: 'json'
+      });
+    };
+
+    this._normalizeQuery = function(queryObj) {
+      var out = queryObj && queryObj.toJSON ? queryObj.toJSON() : _.extend({}, queryObj);
+      if (out.q !== undefined && out.q.trim() === '') {
+        delete out.q;
+      }
+      if (!out.q) {
+        out.query = {
+          match_all: {}
+        };
+      } else {
+        out.query = {
+          query_string: {
+            query: out.q
+          }
+        };
+        delete out.q;
+      }
+      // now do filters (note the *plural*)
+      if (out.filters && out.filters.length) {
+        if (!out.filter) {
+          out.filter = {};
+        }
+        if (!out.filter.and) {
+          out.filter.and = [];
+        }
+        out.filter.and = out.filter.and.concat(out.filters);
+      }
+      if (out.filters !== undefined) {
+        delete out.filters;
+      }
+      return out;
+    };
+
+    // ### query
+    //
+    // @return deferred supporting promise API
+    this.query = function(queryObj) {
+      var queryNormalized = this._normalizeQuery(queryObj);
+      var data = {source: JSON.stringify(queryNormalized)};
+      var url = this.endpoint + '/_search';
+      var jqxhr = recline.Backend.makeRequest({
+        url: url,
+        data: data,
+        dataType: this.options.dataType
+      });
+      return jqxhr;
+    }
+  };
+
+  // ## ElasticSearch Backbone Backend
+  //
+  // Backbone connector for an ES backend.
+  //
+  // Usage:
+  //
+  // var backend = new recline.Backend.ElasticSearch(options);
+  //
+  // `options` are passed through to Wrapper
+  my.Backbone = function(options) {
+    var self = this;
+    var esOptions = options;
+    this.__type__ = 'elasticsearch';
+
+    // ### sync
+    //
+    // Backbone sync implementation for this backend.
+    //
+    // URL of ElasticSearch endpoint to use must be specified on the dataset
+    // (and on a Document via its dataset attribute) by the dataset having a
+    // url attribute.
+    this.sync = function(method, model, options) {
+      if (model.__type__ == 'Dataset') {
+        var endpoint = model.get('url');
+      } else {
+        var endpoint = model.dataset.get('url');
+      }
+      var es = new my.Wrapper(endpoint, esOptions);
+      if (method === "read") {
+        if (model.__type__ == 'Dataset') {
+          var dfd = $.Deferred();
+          es.mapping().done(function(schema) {
+            // only one top level key in ES = the type so we can ignore it
+            var key = _.keys(schema)[0];
+            var fieldData = _.map(schema[key].properties, function(dict, fieldName) {
+              dict.id = fieldName;
+              return dict;
+            });
+            model.fields.reset(fieldData);
+            dfd.resolve(model);
+          })
+          .fail(function(arguments) {
+            dfd.reject(arguments);
+          });
+          return dfd.promise();
+        } else if (model.__type__ == 'Document') {
+          return es.get(model.dataset.id);
+        }
+      } else if (method === 'update') {
+        if (model.__type__ == 'Document') {
+          return es.upsert(model.toJSON());
+        }
+      } else if (method === 'delete') {
+        if (model.__type__ == 'Document') {
+          return es.delete(model.id);
+        }
+      }
+    };
+
+    // ### query
+    //
+    // query the ES backend
+    this.query = function(model, queryObj) {
+      var dfd = $.Deferred();
+      var url = model.get('url');
+      var es = new my.Wrapper(url, esOptions);
+      var jqxhr = es.query(queryObj);
+      // TODO: fail case
+      jqxhr.done(function(results) {
+        _.each(results.hits.hits, function(hit) {
+          if (!('id' in hit._source) && hit._id) {
+            hit._source.id = hit._id;
+          }
+        });
+        if (results.facets) {
+          results.hits.facets = results.facets;
+        }
+        dfd.resolve(results.hits);
+      });
+      return dfd.promise();
+    };
+  };
+
+}(jQuery, this.recline.Backend.ElasticSearch));
+
+this.recline = this.recline || {};
+this.recline.Backend = this.recline.Backend || {};
+this.recline.Backend.GDocs = this.recline.Backend.GDocs || {};
+
+(function($, my) {
+
+  // ## Google spreadsheet backend
+  // 
+  // Connect to Google Docs spreadsheet.
+  //
+  // Dataset must have a url attribute pointing to the Gdocs
+  // spreadsheet's JSON feed e.g.
+  //
+  // <pre>
+  // var dataset = new recline.Model.Dataset({
+  //     url: 'https://spreadsheets.google.com/feeds/list/0Aon3JiuouxLUdDQwZE1JdV94cUd6NWtuZ0IyWTBjLWc/od6/public/values?alt=json'
+  //   },
+  //   'gdocs'
+  // );
+  // </pre>
+  my.Backbone = function() {
+    var self = this;
+    this.__type__ = 'gdocs';
+    this.readonly = true;
+
+    this.sync = function(method, model, options) {
+      var self = this;
+      if (method === "read") { 
+        var dfd = $.Deferred(); 
+        dfd.resolve(model);
+        return dfd.promise();
+      }
+    };
+
+    this.query = function(dataset, queryObj) { 
+      var dfd = $.Deferred();
+      if (dataset._dataCache) {
+        dfd.resolve(dataset._dataCache);
+      } else {
+        loadData(dataset.get('url')).done(function(result) {
+          dataset.fields.reset(result.fields);
+          // cache data onto dataset (we have loaded whole gdoc it seems!)
+          dataset._dataCache = self._formatResults(dataset, result.data);
+          dfd.resolve(dataset._dataCache);
+        });
+      }
+      return dfd.promise();
+    };
+
+    this._formatResults = function(dataset, data) {
+      var fields = _.pluck(dataset.fields.toJSON(), 'id');
+      // zip the fields with the data rows to produce js objs
+      // TODO: factor this out as a common method with other backends
+      var objs = _.map(data, function (d) { 
+        var obj = {};
+        _.each(_.zip(fields, d), function (x) {
+          obj[x[0]] = x[1];
+        });
+        return obj;
+      });
+      var out = {
+        total: objs.length,
+        hits: _.map(objs, function(row) {
+          return { _source: row }
+        })
+      }
+      return out;
+    };
+  };
+
+  // ## loadData
+  //
+  // loadData from a google docs URL
+  //
+  // @return object with two attributes
+  //
+  // * fields: array of objects
+  // * data: array of arrays
+  var loadData = function(url) {
+    var dfd = $.Deferred(); 
+    var url = my.getSpreadsheetAPIUrl(url);
+    var out = {
+      fields: [],
+      data: []
+    }
+    $.getJSON(url, function(d) {
+      result = my.parseData(d);
+      result.fields = _.map(result.fields, function(fieldId) {
+        return {id: fieldId};
+      });
+      dfd.resolve(result);
+    });
+    return dfd.promise();
+  };
+
+  // ## parseData
+  //
+  // Parse data from Google Docs API into a reasonable form
+  //
+  // :options: (optional) optional argument dictionary:
+  // columnsToUse: list of columns to use (specified by field names)
+  // colTypes: dictionary (with column names as keys) specifying types (e.g. range, percent for use in conversion).
+  // :return: tabular data object (hash with keys: field and data).
+  // 
+  // Issues: seems google docs return columns in rows in random order and not even sure whether consistent across rows.
+  my.parseData = function(gdocsSpreadsheet) {
+    var options = {};
+    if (arguments.length > 1) {
+      options = arguments[1];
+    }
+    var results = {
+      'fields': [],
+      'data': []
+    };
+    // default is no special info on type of columns
+    var colTypes = {};
+    if (options.colTypes) {
+      colTypes = options.colTypes;
+    }
+    if (gdocsSpreadsheet.feed.entry.length > 0) {
+      for (var k in gdocsSpreadsheet.feed.entry[0]) {
+        if (k.substr(0, 3) == 'gsx') {
+          var col = k.substr(4);
+          results.fields.push(col);
+        }
+      }
+    }
+
+    // converts non numberical values that should be numerical (22.3%[string] -> 0.223[float])
+    var rep = /^([\d\.\-]+)\%$/;
+    $.each(gdocsSpreadsheet.feed.entry, function (i, entry) {
+      var row = [];
+      for (var k in results.fields) {
+        var col = results.fields[k];
+        var _keyname = 'gsx$' + col;
+        var value = entry[_keyname]['$t'];
+        // if labelled as % and value contains %, convert
+        if (colTypes[col] == 'percent') {
+          if (rep.test(value)) {
+            var value2 = rep.exec(value);
+            var value3 = parseFloat(value2);
+            value = value3 / 100;
+          }
+        }
+        row.push(value);
+      }
+      results.data.push(row);
+    });
+    return results;
+  };
+
+  // Convenience function to get GDocs JSON API Url from standard URL
+  my.getSpreadsheetAPIUrl = function(url) {
+    if (url.indexOf('feeds/list') != -1) {
+      return url;
+    } else {
+      // https://docs.google.com/spreadsheet/ccc?key=XXXX#gid=0
+      var regex = /.*spreadsheet\/ccc?.*key=([^#?&+]+).*/;
+      var matches = url.match(regex);
+      if (matches) {
+        var key = matches[1];
+        var worksheet = 1;
+        var out = 'https://spreadsheets.google.com/feeds/list/' + key + '/' + worksheet + '/public/values?alt=json';
+        return out;
+      } else {
+        alert('Failed to extract gdocs key from ' + url);
+      }
+    }
+  };
+}(jQuery, this.recline.Backend.GDocs));
+
+this.recline = this.recline || {};
+this.recline.Backend = this.recline.Backend || {};
+this.recline.Backend.Memory = this.recline.Backend.Memory || {};
 
 (function($, my) {
   // ## createDataset
@@ -3507,115 +3995,54 @@ this.recline.Backend = this.recline.Backend || {};
   // @param metadata: (optional) dataset metadata - see recline.Model.Dataset.
   // If not defined (or id not provided) id will be autogenerated.
   my.createDataset = function(data, fields, metadata) {
-    if (!metadata) {
-      metadata = {};
-    }
-    if (!metadata.id) {
-      metadata.id = String(Math.floor(Math.random() * 100000000) + 1);
-    }
-    var backend = new recline.Backend.Memory();
-    var datasetInfo = {
-      documents: data,
-      metadata: metadata
-    };
-    if (fields) {
-      datasetInfo.fields = fields;
-    } else {
-      if (data) {
-        datasetInfo.fields = _.map(data[0], function(value, key) {
-          return {id: key};
-        });
-      }
-    }
-    backend.addDataset(datasetInfo);
-    var dataset = new recline.Model.Dataset({id: metadata.id}, backend);
+    var wrapper = new my.DataWrapper(data, fields);
+    var backend = new my.Backbone();
+    var dataset = new recline.Model.Dataset(metadata, backend);
+    dataset._dataCache = wrapper;
     dataset.fetch();
     dataset.query();
     return dataset;
   };
 
-
-  // ## Memory Backend - uses in-memory data
+  // ## Data Wrapper
   //
-  // To use it you should provide in your constructor data:
-  // 
-  //   * metadata (including fields array)
-  //   * documents: list of hashes, each hash being one doc. A doc *must* have an id attribute which is unique.
-  //
-  // Example:
-  // 
-  //  <pre>
-  //  // Backend setup
-  //  var backend = recline.Backend.Memory();
-  //  backend.addDataset({
-  //    metadata: {
-  //      id: 'my-id',
-  //      title: 'My Title'
-  //    },
-  //    fields: [{id: 'x'}, {id: 'y'}, {id: 'z'}],
-  //    documents: [
-  //        {id: 0, x: 1, y: 2, z: 3},
-  //        {id: 1, x: 2, y: 4, z: 6}
-  //      ]
-  //  });
-  //  // later ...
-  //  var dataset = Dataset({id: 'my-id'}, 'memory');
-  //  dataset.fetch();
-  //  etc ...
-  //  </pre>
-  my.Memory = my.Base.extend({
-    __type__: 'memory',
-    readonly: false,
-    initialize: function() {
-      this.datasets = {};
-    },
-    addDataset: function(data) {
-      this.datasets[data.metadata.id] = $.extend(true, {}, data);
-    },
-    sync: function(method, model, options) {
-      var self = this;
-      var dfd = $.Deferred();
-      if (method === "read") {
-        if (model.__type__ == 'Dataset') {
-          var rawDataset = this.datasets[model.id];
-          model.set(rawDataset.metadata);
-          model.fields.reset(rawDataset.fields);
-          model.docCount = rawDataset.documents.length;
-          dfd.resolve(model);
-        }
-        return dfd.promise();
-      } else if (method === 'update') {
-        if (model.__type__ == 'Document') {
-          _.each(self.datasets[model.dataset.id].documents, function(doc, idx) {
-            if(doc.id === model.id) {
-              self.datasets[model.dataset.id].documents[idx] = model.toJSON();
-            }
-          });
-          dfd.resolve(model);
-        }
-        return dfd.promise();
-      } else if (method === 'delete') {
-        if (model.__type__ == 'Document') {
-          var rawDataset = self.datasets[model.dataset.id];
-          var newdocs = _.reject(rawDataset.documents, function(doc) {
-            return (doc.id === model.id);
-          });
-          rawDataset.documents = newdocs;
-          dfd.resolve(model);
-        }
-        return dfd.promise();
-      } else {
-        alert('Not supported: sync on Memory backend with method ' + method + ' and model ' + model);
+  // Turn a simple array of JS objects into a mini data-store with
+  // functionality like querying, faceting, updating (by ID) and deleting (by
+  // ID).
+  my.DataWrapper = function(data, fields) {
+    var self = this;
+    this.data = data;
+    if (fields) {
+      this.fields = fields;
+    } else {
+      if (data) {
+        this.fields = _.map(data[0], function(value, key) {
+          return {id: key};
+        });
       }
-    },
-    query: function(model, queryObj) {
-      var dfd = $.Deferred();
-      var out = {};
-      var numRows = queryObj.size;
-      var start = queryObj.from;
-      var results = this.datasets[model.id].documents;
+    }
+
+    this.update = function(doc) {
+      _.each(self.data, function(internalDoc, idx) {
+        if(doc.id === internalDoc.id) {
+          self.data[idx] = doc;
+        }
+      });
+    };
+
+    this.delete = function(doc) {
+      var newdocs = _.reject(self.data, function(internalDoc) {
+        return (doc.id === internalDoc.id);
+      });
+      this.data = newdocs;
+    };
+
+    this.query = function(queryObj) {
+      var numRows = queryObj.size || this.data.length;
+      var start = queryObj.from || 0;
+      var results = this.data;
       results = this._applyFilters(results, queryObj);
-      results = this._applyFreeTextQuery(model, results, queryObj);
+      results = this._applyFreeTextQuery(results, queryObj);
       // not complete sorting!
       _.each(queryObj.sort, function(sortObj) {
         var fieldName = _.keys(sortObj)[0];
@@ -3624,17 +4051,18 @@ this.recline.Backend = this.recline.Backend || {};
           return (sortObj[fieldName].order == 'asc') ? _out : -1*_out;
         });
       });
-      out.facets = this._computeFacets(results, queryObj);
       var total = results.length;
-      resultsObj = this._docsToQueryResult(results.slice(start, start+numRows));
-      _.extend(out, resultsObj);
-      out.total = total;
-      dfd.resolve(out);
-      return dfd.promise();
-    },
+      var facets = this.computeFacets(results, queryObj);
+      results = results.slice(start, start+numRows);
+      return {
+        total: total,
+        documents: results,
+        facets: facets
+      };
+    };
 
     // in place filtering
-    _applyFilters: function(results, queryObj) {
+    this._applyFilters = function(results, queryObj) {
       _.each(queryObj.filters, function(filter) {
         results = _.filter(results, function(doc) {
           var fieldId = _.keys(filter.term)[0];
@@ -3642,17 +4070,17 @@ this.recline.Backend = this.recline.Backend || {};
         });
       });
       return results;
-    },
+    };
 
     // we OR across fields but AND across terms in query string
-    _applyFreeTextQuery: function(dataset, results, queryObj) {
+    this._applyFreeTextQuery = function(results, queryObj) {
       if (queryObj.q) {
         var terms = queryObj.q.split(' ');
         results = _.filter(results, function(rawdoc) {
           var matches = true;
           _.each(terms, function(term) {
             var foundmatch = false;
-            dataset.fields.each(function(field) {
+            _.each(self.fields, function(field) {
               var value = rawdoc[field.id];
               if (value !== null) { value = value.toString(); }
               // TODO regexes?
@@ -3668,14 +4096,15 @@ this.recline.Backend = this.recline.Backend || {};
         });
       }
       return results;
-    },
+    };
 
-    _computeFacets: function(documents, queryObj) {
+    this.computeFacets = function(documents, queryObj) {
       var facetResults = {};
       if (!queryObj.facets) {
-        return facetsResults;
+        return facetResults;
       }
       _.each(queryObj.facets, function(query, facetId) {
+        // TODO: remove dependency on recline.Model
         facetResults[facetId] = new recline.Model.Facet({id: facetId}).toJSON();
         facetResults[facetId].termsall = {};
       });
@@ -3704,7 +4133,55 @@ this.recline.Backend = this.recline.Backend || {};
         tmp.terms = tmp.terms.slice(0, 10);
       });
       return facetResults;
-    }
-  });
+    };
+  };
+  
 
-}(jQuery, this.recline.Backend));
+  // ## Backbone
+  //
+  // Backbone connector for memory store attached to a Dataset object
+  my.Backbone = function() {
+    this.__type__ = 'memory';
+    this.sync = function(method, model, options) {
+      var self = this;
+      var dfd = $.Deferred();
+      if (method === "read") {
+        if (model.__type__ == 'Dataset') {
+          model.fields.reset(model._dataCache.fields);
+          dfd.resolve(model);
+        }
+        return dfd.promise();
+      } else if (method === 'update') {
+        if (model.__type__ == 'Document') {
+          model.dataset._dataCache.update(model.toJSON());
+          dfd.resolve(model);
+        }
+        return dfd.promise();
+      } else if (method === 'delete') {
+        if (model.__type__ == 'Document') {
+          model.dataset._dataCache.delete(model.toJSON());
+          dfd.resolve(model);
+        }
+        return dfd.promise();
+      } else {
+        alert('Not supported: sync on Memory backend with method ' + method + ' and model ' + model);
+      }
+    };
+
+    this.query = function(model, queryObj) {
+      var dfd = $.Deferred();
+      var results = model._dataCache.query(queryObj);
+      var hits = _.map(results.documents, function(row) {
+        return { _source: row };
+      });
+      var out = {
+        total: results.total,
+        hits: hits,
+        facets: results.facets
+      };
+      dfd.resolve(out);
+      return dfd.promise();
+    };
+  };
+
+}(jQuery, this.recline.Backend.Memory));

@@ -74,6 +74,23 @@ url or elsewhere and reloading of application from a stored state.</p>
 for the dataset (e.g. the current query). For an example of pulling together
 state from across multiple components see <code>recline.View.DataExplorer</code>.</p>
 
+<h3>Flash Messages / Notifications</h3>
+
+<p>To send 'flash messages' or notifications the convention is that views
+should fire an event named <code>recline:flash</code> with a payload that is a
+flash object with the following attributes (all optional):</p>
+
+<ul>
+<li>message: message to show.</li>
+<li>category: warning (default), success, error</li>
+<li>persist: if true alert is persistent, o/w hidden after 3s (default=false)</li>
+<li>loader: if true show a loading message</li>
+</ul>
+
+<p>Objects or views wishing to bind to flash messages may then subscribe to
+these events and take some action such as displaying them to the user. For
+an example of such behaviour see the DataExplorer view.</p>
+
 <h3>Writing your own Views</h3>
 
 <p>See the existing Views.</p>
@@ -200,6 +217,13 @@ initialized the DataExplorer with the relevant views themselves.</p>            
           <span class="nx">model</span><span class="o">:</span> <span class="k">this</span><span class="p">.</span><span class="nx">model</span><span class="p">,</span>
           <span class="nx">state</span><span class="o">:</span> <span class="k">this</span><span class="p">.</span><span class="nx">state</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s1">&#39;view-map&#39;</span><span class="p">)</span>
         <span class="p">}),</span>
+      <span class="p">},</span> <span class="p">{</span>
+        <span class="nx">id</span><span class="o">:</span> <span class="s1">&#39;timeline&#39;</span><span class="p">,</span>
+        <span class="nx">label</span><span class="o">:</span> <span class="s1">&#39;Timeline&#39;</span><span class="p">,</span>
+        <span class="nx">view</span><span class="o">:</span> <span class="k">new</span> <span class="nx">my</span><span class="p">.</span><span class="nx">Timeline</span><span class="p">({</span>
+          <span class="nx">model</span><span class="o">:</span> <span class="k">this</span><span class="p">.</span><span class="nx">model</span><span class="p">,</span>
+          <span class="nx">state</span><span class="o">:</span> <span class="k">this</span><span class="p">.</span><span class="nx">state</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s1">&#39;view-timeline&#39;</span><span class="p">)</span>
+        <span class="p">}),</span>
       <span class="p">}];</span>
     <span class="p">}</span></pre></div>             </td>           </tr>                               <tr id="section-6">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-6">&#182;</a>               </div>               <p>these must be called after pageViews are created</p>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="k">this</span><span class="p">.</span><span class="nx">render</span><span class="p">();</span>
     <span class="k">this</span><span class="p">.</span><span class="nx">_bindStateChanges</span><span class="p">();</span>
@@ -213,12 +237,11 @@ initialized the DataExplorer with the relevant views themselves.</p>            
     <span class="p">}</span>
 
     <span class="k">this</span><span class="p">.</span><span class="nx">model</span><span class="p">.</span><span class="nx">bind</span><span class="p">(</span><span class="s1">&#39;query:start&#39;</span><span class="p">,</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
-        <span class="nx">self</span><span class="p">.</span><span class="nx">notify</span><span class="p">({</span><span class="nx">message</span><span class="o">:</span> <span class="s1">&#39;Loading data&#39;</span><span class="p">,</span> <span class="nx">loader</span><span class="o">:</span> <span class="kc">true</span><span class="p">});</span>
+        <span class="nx">self</span><span class="p">.</span><span class="nx">notify</span><span class="p">({</span><span class="nx">loader</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span> <span class="nx">persist</span><span class="o">:</span> <span class="kc">true</span><span class="p">});</span>
       <span class="p">});</span>
     <span class="k">this</span><span class="p">.</span><span class="nx">model</span><span class="p">.</span><span class="nx">bind</span><span class="p">(</span><span class="s1">&#39;query:done&#39;</span><span class="p">,</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
         <span class="nx">self</span><span class="p">.</span><span class="nx">clearNotifications</span><span class="p">();</span>
         <span class="nx">self</span><span class="p">.</span><span class="nx">el</span><span class="p">.</span><span class="nx">find</span><span class="p">(</span><span class="s1">&#39;.doc-count&#39;</span><span class="p">).</span><span class="nx">text</span><span class="p">(</span><span class="nx">self</span><span class="p">.</span><span class="nx">model</span><span class="p">.</span><span class="nx">docCount</span> <span class="o">||</span> <span class="s1">&#39;Unknown&#39;</span><span class="p">);</span>
-        <span class="nx">self</span><span class="p">.</span><span class="nx">notify</span><span class="p">({</span><span class="nx">message</span><span class="o">:</span> <span class="s1">&#39;Data loaded&#39;</span><span class="p">,</span> <span class="nx">category</span><span class="o">:</span> <span class="s1">&#39;success&#39;</span><span class="p">});</span>
       <span class="p">});</span>
     <span class="k">this</span><span class="p">.</span><span class="nx">model</span><span class="p">.</span><span class="nx">bind</span><span class="p">(</span><span class="s1">&#39;query:fail&#39;</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">error</span><span class="p">)</span> <span class="p">{</span>
         <span class="nx">self</span><span class="p">.</span><span class="nx">clearNotifications</span><span class="p">();</span>
@@ -253,7 +276,7 @@ note this.model and dataset returned are the same</p>             </td>         
   <span class="nx">render</span><span class="o">:</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
     <span class="kd">var</span> <span class="nx">tmplData</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">model</span><span class="p">.</span><span class="nx">toTemplateJSON</span><span class="p">();</span>
     <span class="nx">tmplData</span><span class="p">.</span><span class="nx">views</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">pageViews</span><span class="p">;</span>
-    <span class="kd">var</span> <span class="nx">template</span> <span class="o">=</span> <span class="nx">$</span><span class="p">.</span><span class="nx">mustache</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">template</span><span class="p">,</span> <span class="nx">tmplData</span><span class="p">);</span>
+    <span class="kd">var</span> <span class="nx">template</span> <span class="o">=</span> <span class="nx">Mustache</span><span class="p">.</span><span class="nx">render</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">template</span><span class="p">,</span> <span class="nx">tmplData</span><span class="p">);</span>
     <span class="nx">$</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">el</span><span class="p">).</span><span class="nx">html</span><span class="p">(</span><span class="nx">template</span><span class="p">);</span>
     <span class="kd">var</span> <span class="nx">$dataViewContainer</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">el</span><span class="p">.</span><span class="nx">find</span><span class="p">(</span><span class="s1">&#39;.data-view-container&#39;</span><span class="p">);</span>
     <span class="nx">_</span><span class="p">.</span><span class="nx">each</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">pageViews</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">view</span><span class="p">,</span> <span class="nx">pageName</span><span class="p">)</span> <span class="p">{</span>
@@ -318,7 +341,7 @@ note this.model and dataset returned are the same</p>             </td>         
         <span class="nx">query</span><span class="o">:</span> <span class="nx">query</span><span class="p">,</span>
         <span class="s1">&#39;view-graph&#39;</span><span class="o">:</span> <span class="nx">graphState</span><span class="p">,</span>
         <span class="nx">backend</span><span class="o">:</span> <span class="k">this</span><span class="p">.</span><span class="nx">model</span><span class="p">.</span><span class="nx">backend</span><span class="p">.</span><span class="nx">__type__</span><span class="p">,</span>
-        <span class="nx">dataset</span><span class="o">:</span> <span class="k">this</span><span class="p">.</span><span class="nx">model</span><span class="p">.</span><span class="nx">toJSON</span><span class="p">(),</span>
+        <span class="nx">url</span><span class="o">:</span> <span class="k">this</span><span class="p">.</span><span class="nx">model</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s1">&#39;url&#39;</span><span class="p">),</span>
         <span class="nx">currentView</span><span class="o">:</span> <span class="kc">null</span><span class="p">,</span>
         <span class="nx">readOnly</span><span class="o">:</span> <span class="kc">false</span>
       <span class="p">},</span>
@@ -363,19 +386,25 @@ flash object. Flash attributes (all are optional):</p>
 <li>loader: if true show loading spinner</li>
 </ul>             </td>             <td class="code">               <div class="highlight"><pre>  <span class="nx">notify</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">flash</span><span class="p">)</span> <span class="p">{</span>
     <span class="kd">var</span> <span class="nx">tmplData</span> <span class="o">=</span> <span class="nx">_</span><span class="p">.</span><span class="nx">extend</span><span class="p">({</span>
-      <span class="nx">message</span><span class="o">:</span> <span class="s1">&#39;&#39;</span><span class="p">,</span>
-      <span class="nx">category</span><span class="o">:</span> <span class="s1">&#39;warning&#39;</span>
+      <span class="nx">message</span><span class="o">:</span> <span class="s1">&#39;Loading&#39;</span><span class="p">,</span>
+      <span class="nx">category</span><span class="o">:</span> <span class="s1">&#39;warning&#39;</span><span class="p">,</span>
+      <span class="nx">loader</span><span class="o">:</span> <span class="kc">false</span>
       <span class="p">},</span>
       <span class="nx">flash</span>
     <span class="p">);</span>
-    <span class="kd">var</span> <span class="nx">_template</span> <span class="o">=</span> <span class="s1">&#39; \</span>
-<span class="s1">      &lt;div class=&quot;alert alert-{{category}} fade in&quot; data-alert=&quot;alert&quot;&gt;&lt;a class=&quot;close&quot; data-dismiss=&quot;alert&quot; href=&quot;#&quot;&gt;×&lt;/a&gt; \</span>
-<span class="s1">        {{message}} \</span>
-<span class="s1">          {{#loader}} \</span>
+    <span class="k">if</span> <span class="p">(</span><span class="nx">tmplData</span><span class="p">.</span><span class="nx">loader</span><span class="p">)</span> <span class="p">{</span>
+      <span class="kd">var</span> <span class="nx">_template</span> <span class="o">=</span> <span class="s1">&#39; \</span>
+<span class="s1">        &lt;div class=&quot;alert alert-info alert-loader&quot;&gt; \</span>
+<span class="s1">          {{message}} \</span>
 <span class="s1">          &lt;span class=&quot;notification-loader&quot;&gt;&amp;nbsp;&lt;/span&gt; \</span>
-<span class="s1">          {{/loader}} \</span>
-<span class="s1">      &lt;/div&gt;&#39;</span><span class="p">;</span>
-    <span class="kd">var</span> <span class="nx">_templated</span> <span class="o">=</span> <span class="nx">$</span><span class="p">.</span><span class="nx">mustache</span><span class="p">(</span><span class="nx">_template</span><span class="p">,</span> <span class="nx">tmplData</span><span class="p">);</span> 
+<span class="s1">        &lt;/div&gt;&#39;</span><span class="p">;</span>
+    <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+      <span class="kd">var</span> <span class="nx">_template</span> <span class="o">=</span> <span class="s1">&#39; \</span>
+<span class="s1">        &lt;div class=&quot;alert alert-{{category}} fade in&quot; data-alert=&quot;alert&quot;&gt;&lt;a class=&quot;close&quot; data-dismiss=&quot;alert&quot; href=&quot;#&quot;&gt;×&lt;/a&gt; \</span>
+<span class="s1">          {{message}} \</span>
+<span class="s1">        &lt;/div&gt;&#39;</span><span class="p">;</span>
+    <span class="p">}</span>
+    <span class="kd">var</span> <span class="nx">_templated</span> <span class="o">=</span> <span class="nx">$</span><span class="p">(</span><span class="nx">Mustache</span><span class="p">.</span><span class="nx">render</span><span class="p">(</span><span class="nx">_template</span><span class="p">,</span> <span class="nx">tmplData</span><span class="p">));</span>
     <span class="nx">_templated</span> <span class="o">=</span> <span class="nx">$</span><span class="p">(</span><span class="nx">_templated</span><span class="p">).</span><span class="nx">appendTo</span><span class="p">(</span><span class="nx">$</span><span class="p">(</span><span class="s1">&#39;.recline-data-explorer .alert-messages&#39;</span><span class="p">));</span>
     <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="nx">flash</span><span class="p">.</span><span class="nx">persist</span><span class="p">)</span> <span class="p">{</span>
       <span class="nx">setTimeout</span><span class="p">(</span><span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
@@ -388,7 +417,9 @@ flash object. Flash attributes (all are optional):</p>
 
 <p>Clear all existing notifications</p>             </td>             <td class="code">               <div class="highlight"><pre>  <span class="nx">clearNotifications</span><span class="o">:</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
     <span class="kd">var</span> <span class="nx">$notifications</span> <span class="o">=</span> <span class="nx">$</span><span class="p">(</span><span class="s1">&#39;.recline-data-explorer .alert-messages .alert&#39;</span><span class="p">);</span>
-    <span class="nx">$notifications</span><span class="p">.</span><span class="nx">remove</span><span class="p">();</span>
+    <span class="nx">$notifications</span><span class="p">.</span><span class="nx">fadeOut</span><span class="p">(</span><span class="mi">1500</span><span class="p">,</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+      <span class="nx">$</span><span class="p">(</span><span class="k">this</span><span class="p">).</span><span class="nx">remove</span><span class="p">();</span>
+    <span class="p">});</span>
   <span class="p">}</span>
 <span class="p">});</span></pre></div>             </td>           </tr>                               <tr id="section-18">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-18">&#182;</a>               </div>               <h3>DataExplorer.restore</h3>
 
@@ -452,7 +483,7 @@ flash object. Flash attributes (all are optional):</p>
   <span class="nx">render</span><span class="o">:</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
     <span class="kd">var</span> <span class="nx">tmplData</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">model</span><span class="p">.</span><span class="nx">toJSON</span><span class="p">();</span>
     <span class="nx">tmplData</span><span class="p">.</span><span class="nx">to</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">model</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s1">&#39;from&#39;</span><span class="p">)</span> <span class="o">+</span> <span class="k">this</span><span class="p">.</span><span class="nx">model</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s1">&#39;size&#39;</span><span class="p">);</span>
-    <span class="kd">var</span> <span class="nx">templated</span> <span class="o">=</span> <span class="nx">$</span><span class="p">.</span><span class="nx">mustache</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">template</span><span class="p">,</span> <span class="nx">tmplData</span><span class="p">);</span>
+    <span class="kd">var</span> <span class="nx">templated</span> <span class="o">=</span> <span class="nx">Mustache</span><span class="p">.</span><span class="nx">render</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">template</span><span class="p">,</span> <span class="nx">tmplData</span><span class="p">);</span>
     <span class="k">this</span><span class="p">.</span><span class="nx">el</span><span class="p">.</span><span class="nx">html</span><span class="p">(</span><span class="nx">templated</span><span class="p">);</span>
   <span class="p">}</span>
 <span class="p">});</span>
@@ -518,7 +549,7 @@ flash object. Flash attributes (all are optional):</p>
         <span class="nx">value</span><span class="o">:</span> <span class="nx">filter</span><span class="p">.</span><span class="nx">term</span><span class="p">[</span><span class="nx">fieldId</span><span class="p">]</span>
       <span class="p">};</span>
     <span class="p">});</span>
-    <span class="kd">var</span> <span class="nx">out</span> <span class="o">=</span> <span class="nx">$</span><span class="p">.</span><span class="nx">mustache</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">template</span><span class="p">,</span> <span class="nx">tmplData</span><span class="p">);</span>
+    <span class="kd">var</span> <span class="nx">out</span> <span class="o">=</span> <span class="nx">Mustache</span><span class="p">.</span><span class="nx">render</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">template</span><span class="p">,</span> <span class="nx">tmplData</span><span class="p">);</span>
     <span class="k">this</span><span class="p">.</span><span class="nx">el</span><span class="p">.</span><span class="nx">html</span><span class="p">(</span><span class="nx">out</span><span class="p">);</span></pre></div>             </td>           </tr>                               <tr id="section-20">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-20">&#182;</a>               </div>               <p>are there actually any facets to show?</p>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="k">if</span> <span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">model</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s1">&#39;filters&#39;</span><span class="p">).</span><span class="nx">length</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
       <span class="k">this</span><span class="p">.</span><span class="nx">el</span><span class="p">.</span><span class="nx">show</span><span class="p">();</span>
     <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
@@ -601,7 +632,7 @@ flash object. Flash attributes (all are optional):</p>
       <span class="p">}</span>
       <span class="k">return</span> <span class="nx">facet</span><span class="p">;</span>
     <span class="p">});</span>
-    <span class="kd">var</span> <span class="nx">templated</span> <span class="o">=</span> <span class="nx">$</span><span class="p">.</span><span class="nx">mustache</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">template</span><span class="p">,</span> <span class="nx">tmplData</span><span class="p">);</span>
+    <span class="kd">var</span> <span class="nx">templated</span> <span class="o">=</span> <span class="nx">Mustache</span><span class="p">.</span><span class="nx">render</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">template</span><span class="p">,</span> <span class="nx">tmplData</span><span class="p">);</span>
     <span class="k">this</span><span class="p">.</span><span class="nx">el</span><span class="p">.</span><span class="nx">html</span><span class="p">(</span><span class="nx">templated</span><span class="p">);</span></pre></div>             </td>           </tr>                               <tr id="section-21">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-21">&#182;</a>               </div>               <p>are there actually any facets to show?</p>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="k">if</span> <span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">model</span><span class="p">.</span><span class="nx">facets</span><span class="p">.</span><span class="nx">length</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
       <span class="k">this</span><span class="p">.</span><span class="nx">el</span><span class="p">.</span><span class="nx">show</span><span class="p">();</span>
     <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
