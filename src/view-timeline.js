@@ -47,7 +47,7 @@ my.Timeline = Backbone.View.extend({
 
   render: function() {
     var tmplData = {};
-    var htmls = $.mustache(this.template, tmplData);
+    var htmls = Mustache.render(this.template, tmplData);
     this.el.html(htmls);
   },
 

@@ -161,7 +161,7 @@ my.Map = Backbone.View.extend({
 
     var self = this;
 
-    htmls = $.mustache(this.template, this.model.toTemplateJSON());
+    htmls = Mustache.render(this.template, this.model.toTemplateJSON());
 
     $(this.el).html(htmls);
     this.$map = this.el.find('.panel.map');

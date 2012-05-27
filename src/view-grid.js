@@ -53,7 +53,7 @@ my.Grid = Backbone.View.extend({
         {{#columns}} \
         <li><a data-action="showColumn" data-column="{{.}}" href="JavaScript:void(0);">Show column: {{.}}</a></li> \
         {{/columns}}';
-    var tmp = $.mustache(tmpl, {'columns': this.state.get('hiddenFields')});
+    var tmp = Mustache.render(tmpl, {'columns': this.state.get('hiddenFields')});
     this.el.find('.root-header-menu .dropdown-menu').html(tmp);
   },
 
@@ -211,7 +211,7 @@ my.Grid = Backbone.View.extend({
         field.set({width: width});
       }
     });
-    var htmls = $.mustache(this.template, this.toTemplateJSON());
+    var htmls = Mustache.render(this.template, this.toTemplateJSON());
     this.el.html(htmls);
     this.model.currentDocuments.forEach(function(doc) {
       var tr = $('<tr />');
@@ -308,7 +308,7 @@ my.GridRow = Backbone.View.extend({
 
   render: function() {
     this.el.attr('data-id', this.model.id);
-    var html = $.mustache(this.template, this.toTemplateJSON());
+    var html = Mustache.render(this.template, this.toTemplateJSON());
     $(this.el).html(html);
     return this;
   },
@@ -336,7 +336,7 @@ my.GridRow = Backbone.View.extend({
     $(e.target).addClass("hidden");
     var cell = $(e.target).siblings('.data-table-cell-value');
     cell.data("previousContents", cell.text());
-    var templated = $.mustache(this.cellEditorTemplate, {value: cell.text()});
+    var templated = Mustache.render(this.cellEditorTemplate, {value: cell.text()});
     cell.html(templated);
   },
 

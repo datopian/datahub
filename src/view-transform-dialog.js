@@ -76,7 +76,7 @@ my.ColumnTransform = Backbone.View.extend({
   },
 
   render: function() {
-    var htmls = $.mustache(this.template, 
+    var htmls = Mustache.render(this.template, 
       {name: this.state.currentColumn}
       );
     this.el.html(htmls);
@@ -163,7 +163,7 @@ my.ColumnTransform = Backbone.View.extend({
         });
         var previewData = costco.previewTransform(docs, editFunc, self.state.currentColumn);
         var $el = self.el.find('.expression-preview-container');
-        var templated = $.mustache(self.editPreviewTemplate, {rows: previewData.slice(0,4)});
+        var templated = Mustache.render(self.editPreviewTemplate, {rows: previewData.slice(0,4)});
         $el.html(templated);
       } else {
         errors.text(editFunc.errorMessage);

@@ -102,7 +102,7 @@ var ExplorerApp = Backbone.View.extend({
     function makeEmbedLink(state) {
       var link = self.makePermaLink(state);
       link = link + '&amp;embed=true';
-      var out = $.mustache('<iframe src="{{link}}" width="100%" min-height="500px;"></iframe>', {link: link});
+      var out = Mustache.render('<iframe src="{{link}}" width="100%" min-height="500px;"></iframe>', {link: link});
       return out;
     }
     explorer.state.bind('change', function() {

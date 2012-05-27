@@ -120,7 +120,7 @@ my.Graph = Backbone.View.extend({
   render: function() {
     var self = this;
     var tmplData = this.model.toTemplateJSON();
-    var htmls = $.mustache(this.template, tmplData);
+    var htmls = Mustache.render(this.template, tmplData);
     $(this.el).html(htmls);
     this.$graph = this.el.find('.panel.graph');
 
@@ -375,7 +375,7 @@ my.Graph = Backbone.View.extend({
       seriesName: String.fromCharCode(idx + 64 + 1),
     }, this.model.toTemplateJSON());
 
-    var htmls = $.mustache(this.templateSeriesEditor, data);
+    var htmls = Mustache.render(this.templateSeriesEditor, data);
     this.el.find('.editor-series-group').append(htmls);
     return this;
   },
