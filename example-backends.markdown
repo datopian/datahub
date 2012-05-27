@@ -56,8 +56,8 @@ How do you know the backend identifier for a given Backend? It's just the name o
 * [memory: Memory Backend (local data)](docs/backend/memory.html)
 * [elasticsearch: ElasticSearch Backend](docs/backend/elasticsearch.html)
 * [dataproxy: DataProxy Backend (CSV and XLS on the Web)](docs/backend/dataproxy.html)
-* [gdoc: Google Docs (Spreadsheet) Backend](docs/backend/gdocs.html)
-* [csv: Local CSV file backend](docs/backend/localcsv.html)
+* [gdocs: Google Docs (Spreadsheet) Backend](docs/backend/gdocs.html)
+* [csv: Local CSV file backend](docs/backend/csv.html)
 
 Backend not on this list that you would like to see? It's very easy to write a new backend -- see below for more details.
 

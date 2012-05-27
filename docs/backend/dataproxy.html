@@ -1,11 +1,13 @@
-<!DOCTYPE html>  <html> <head>   <title>dataproxy.js</title>   <meta http-equiv="content-type" content="text/html; charset=UTF-8">   <link rel="stylesheet" media="all" href="docco.css" /> </head> <body>   <div id="container">     <div id="background"></div>            <div id="jump_to">         Jump To &hellip;         <div id="jump_wrapper">           <div id="jump_page">                                           <a class="source" href="base.html">                 base.js               </a>                                           <a class="source" href="dataproxy.html">                 dataproxy.js               </a>                                           <a class="source" href="elasticsearch.html">                 elasticsearch.js               </a>                                           <a class="source" href="gdocs.html">                 gdocs.js               </a>                                           <a class="source" href="localcsv.html">                 localcsv.js               </a>                                           <a class="source" href="memory.html">                 memory.js               </a>                        </div>         </div>       </div>          <table cellpadding="0" cellspacing="0">       <thead>         <tr>           <th class="docs">             <h1>               dataproxy.js             </h1>           </th>           <th class="code">           </th>         </tr>       </thead>       <tbody>                               <tr id="section-1">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-1">&#182;</a>               </div>                            </td>             <td class="code">               <div class="highlight"><pre><span class="k">this</span><span class="p">.</span><span class="nx">recline</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">recline</span> <span class="o">||</span> <span class="p">{};</span>
+<!DOCTYPE html>  <html> <head>   <title>dataproxy.js</title>   <meta http-equiv="content-type" content="text/html; charset=UTF-8">   <link rel="stylesheet" media="all" href="docco.css" /> </head> <body>   <div id="container">     <div id="background"></div>            <div id="jump_to">         Jump To &hellip;         <div id="jump_wrapper">           <div id="jump_page">                                           <a class="source" href="base.html">                 base.js               </a>                                           <a class="source" href="csv.html">                 csv.js               </a>                                           <a class="source" href="dataproxy.html">                 dataproxy.js               </a>                                           <a class="source" href="elasticsearch.html">                 elasticsearch.js               </a>                                           <a class="source" href="gdocs.html">                 gdocs.js               </a>                                           <a class="source" href="memory.html">                 memory.js               </a>                        </div>         </div>       </div>          <table cellpadding="0" cellspacing="0">       <thead>         <tr>           <th class="docs">             <h1>               dataproxy.js             </h1>           </th>           <th class="code">           </th>         </tr>       </thead>       <tbody>                               <tr id="section-1">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-1">&#182;</a>               </div>                            </td>             <td class="code">               <div class="highlight"><pre><span class="k">this</span><span class="p">.</span><span class="nx">recline</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">recline</span> <span class="o">||</span> <span class="p">{};</span>
 <span class="k">this</span><span class="p">.</span><span class="nx">recline</span><span class="p">.</span><span class="nx">Backend</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">recline</span><span class="p">.</span><span class="nx">Backend</span> <span class="o">||</span> <span class="p">{};</span>
+<span class="k">this</span><span class="p">.</span><span class="nx">recline</span><span class="p">.</span><span class="nx">Backend</span><span class="p">.</span><span class="nx">DataProxy</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">recline</span><span class="p">.</span><span class="nx">Backend</span><span class="p">.</span><span class="nx">DataProxy</span> <span class="o">||</span> <span class="p">{};</span>
 
 <span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">$</span><span class="p">,</span> <span class="nx">my</span><span class="p">)</span> <span class="p">{</span></pre></div>             </td>           </tr>                               <tr id="section-2">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-2">&#182;</a>               </div>               <h2>DataProxy Backend</h2>
 
 <p>For connecting to <a href="http://github.com/okfn/dataproxy">DataProxy-s</a>.</p>
 
-<p>When initializing the DataProxy backend you can set the following attributes:</p>
+<p>When initializing the DataProxy backend you can set the following
+attributes in the options object:</p>
 
 <ul>
 <li>dataproxy: {url-to-proxy} (optional). Defaults to http://jsonpdataproxy.appspot.com</li>
@@ -18,14 +20,14 @@
 <li>format: (optional) csv | xls (defaults to csv if not specified)</li>
 </ul>
 
-<p>Note that this is a <strong>read-only</strong> backend.</p>             </td>             <td class="code">               <div class="highlight"><pre>  <span class="nx">my</span><span class="p">.</span><span class="nx">DataProxy</span> <span class="o">=</span> <span class="nx">my</span><span class="p">.</span><span class="nx">Base</span><span class="p">.</span><span class="nx">extend</span><span class="p">({</span>
-    <span class="nx">__type__</span><span class="o">:</span> <span class="s1">&#39;dataproxy&#39;</span><span class="p">,</span>
-    <span class="nx">readonly</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span>
-    <span class="nx">defaults</span><span class="o">:</span> <span class="p">{</span>
-      <span class="nx">dataproxy_url</span><span class="o">:</span> <span class="s1">&#39;http://jsonpdataproxy.appspot.com&#39;</span>
-    <span class="p">},</span>
-    <span class="nx">sync</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">method</span><span class="p">,</span> <span class="nx">model</span><span class="p">,</span> <span class="nx">options</span><span class="p">)</span> <span class="p">{</span>
-      <span class="kd">var</span> <span class="nx">self</span> <span class="o">=</span> <span class="k">this</span><span class="p">;</span>
+<p>Note that this is a <strong>read-only</strong> backend.</p>             </td>             <td class="code">               <div class="highlight"><pre>  <span class="nx">my</span><span class="p">.</span><span class="nx">Backbone</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">options</span><span class="p">)</span> <span class="p">{</span>
+    <span class="kd">var</span> <span class="nx">self</span> <span class="o">=</span> <span class="k">this</span><span class="p">;</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">__type__</span> <span class="o">=</span> <span class="s1">&#39;dataproxy&#39;</span><span class="p">;</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">readonly</span> <span class="o">=</span> <span class="kc">true</span><span class="p">;</span>
+
+    <span class="k">this</span><span class="p">.</span><span class="nx">dataproxy_url</span> <span class="o">=</span> <span class="nx">options</span> <span class="o">&amp;&amp;</span> <span class="nx">options</span><span class="p">.</span><span class="nx">dataproxy_url</span> <span class="o">?</span> <span class="nx">options</span><span class="p">.</span><span class="nx">dataproxy_url</span> <span class="o">:</span> <span class="s1">&#39;http://jsonpdataproxy.appspot.com&#39;</span><span class="p">;</span>
+
+    <span class="k">this</span><span class="p">.</span><span class="nx">sync</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">method</span><span class="p">,</span> <span class="nx">model</span><span class="p">,</span> <span class="nx">options</span><span class="p">)</span> <span class="p">{</span>
       <span class="k">if</span> <span class="p">(</span><span class="nx">method</span> <span class="o">===</span> <span class="s2">&quot;read&quot;</span><span class="p">)</span> <span class="p">{</span>
         <span class="k">if</span> <span class="p">(</span><span class="nx">model</span><span class="p">.</span><span class="nx">__type__</span> <span class="o">==</span> <span class="s1">&#39;Dataset&#39;</span><span class="p">)</span> <span class="p">{</span></pre></div>             </td>           </tr>                               <tr id="section-3">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-3">&#182;</a>               </div>               <p>Do nothing as we will get fields in query step (and no metadata to
 retrieve)</p>             </td>             <td class="code">               <div class="highlight"><pre>          <span class="kd">var</span> <span class="nx">dfd</span> <span class="o">=</span> <span class="nx">$</span><span class="p">.</span><span class="nx">Deferred</span><span class="p">();</span>
@@ -35,22 +37,22 @@ retrieve)</p>             </td>             <td class="code">               <div
       <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
         <span class="nx">alert</span><span class="p">(</span><span class="s1">&#39;This backend only supports read operations&#39;</span><span class="p">);</span>
       <span class="p">}</span>
-    <span class="p">},</span>
-    <span class="nx">query</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">dataset</span><span class="p">,</span> <span class="nx">queryObj</span><span class="p">)</span> <span class="p">{</span>
+    <span class="p">};</span>
+
+    <span class="k">this</span><span class="p">.</span><span class="nx">query</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">dataset</span><span class="p">,</span> <span class="nx">queryObj</span><span class="p">)</span> <span class="p">{</span>
       <span class="kd">var</span> <span class="nx">self</span> <span class="o">=</span> <span class="k">this</span><span class="p">;</span>
-      <span class="kd">var</span> <span class="nx">base</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s1">&#39;dataproxy_url&#39;</span><span class="p">);</span>
       <span class="kd">var</span> <span class="nx">data</span> <span class="o">=</span> <span class="p">{</span>
         <span class="nx">url</span><span class="o">:</span> <span class="nx">dataset</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s1">&#39;url&#39;</span><span class="p">),</span>
         <span class="s1">&#39;max-results&#39;</span><span class="o">:</span>  <span class="nx">queryObj</span><span class="p">.</span><span class="nx">size</span><span class="p">,</span>
         <span class="nx">type</span><span class="o">:</span> <span class="nx">dataset</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s1">&#39;format&#39;</span><span class="p">)</span>
       <span class="p">};</span>
       <span class="kd">var</span> <span class="nx">jqxhr</span> <span class="o">=</span> <span class="nx">$</span><span class="p">.</span><span class="nx">ajax</span><span class="p">({</span>
-        <span class="nx">url</span><span class="o">:</span> <span class="nx">base</span><span class="p">,</span>
+        <span class="nx">url</span><span class="o">:</span> <span class="k">this</span><span class="p">.</span><span class="nx">dataproxy_url</span><span class="p">,</span>
         <span class="nx">data</span><span class="o">:</span> <span class="nx">data</span><span class="p">,</span>
         <span class="nx">dataType</span><span class="o">:</span> <span class="s1">&#39;jsonp&#39;</span>
       <span class="p">});</span>
       <span class="kd">var</span> <span class="nx">dfd</span> <span class="o">=</span> <span class="nx">$</span><span class="p">.</span><span class="nx">Deferred</span><span class="p">();</span>
-      <span class="k">this</span><span class="p">.</span><span class="nx">_wrapInTimeout</span><span class="p">(</span><span class="nx">jqxhr</span><span class="p">).</span><span class="nx">done</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">results</span><span class="p">)</span> <span class="p">{</span>
+      <span class="nx">_wrapInTimeout</span><span class="p">(</span><span class="nx">jqxhr</span><span class="p">).</span><span class="nx">done</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">results</span><span class="p">)</span> <span class="p">{</span>
         <span class="k">if</span> <span class="p">(</span><span class="nx">results</span><span class="p">.</span><span class="nx">error</span><span class="p">)</span> <span class="p">{</span>
           <span class="nx">dfd</span><span class="p">.</span><span class="nx">reject</span><span class="p">(</span><span class="nx">results</span><span class="p">.</span><span class="nx">error</span><span class="p">);</span>
         <span class="p">}</span>
@@ -65,15 +67,42 @@ retrieve)</p>             </td>             <td class="code">               <div
           <span class="p">});</span>
           <span class="k">return</span> <span class="nx">tmp</span><span class="p">;</span>
         <span class="p">});</span>
-        <span class="nx">dfd</span><span class="p">.</span><span class="nx">resolve</span><span class="p">(</span><span class="nx">self</span><span class="p">.</span><span class="nx">_docsToQueryResult</span><span class="p">(</span><span class="nx">_out</span><span class="p">));</span>
+        <span class="nx">dfd</span><span class="p">.</span><span class="nx">resolve</span><span class="p">({</span>
+          <span class="nx">total</span><span class="o">:</span> <span class="kc">null</span><span class="p">,</span>
+          <span class="nx">hits</span><span class="o">:</span> <span class="nx">_</span><span class="p">.</span><span class="nx">map</span><span class="p">(</span><span class="nx">_out</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">row</span><span class="p">)</span> <span class="p">{</span>
+            <span class="k">return</span> <span class="p">{</span> <span class="nx">_source</span><span class="o">:</span> <span class="nx">row</span> <span class="p">};</span>
+          <span class="p">})</span>
+        <span class="p">});</span>
       <span class="p">})</span>
       <span class="p">.</span><span class="nx">fail</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">arguments</span><span class="p">)</span> <span class="p">{</span>
         <span class="nx">dfd</span><span class="p">.</span><span class="nx">reject</span><span class="p">(</span><span class="nx">arguments</span><span class="p">);</span>
       <span class="p">});</span>
       <span class="k">return</span> <span class="nx">dfd</span><span class="p">.</span><span class="nx">promise</span><span class="p">();</span>
-    <span class="p">}</span>
-  <span class="p">});</span>
+    <span class="p">};</span>
+  <span class="p">};</span></pre></div>             </td>           </tr>                               <tr id="section-4">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-4">&#182;</a>               </div>               <h2>_wrapInTimeout</h2>
 
-<span class="p">}(</span><span class="nx">jQuery</span><span class="p">,</span> <span class="k">this</span><span class="p">.</span><span class="nx">recline</span><span class="p">.</span><span class="nx">Backend</span><span class="p">));</span>
+<p>Convenience method providing a crude way to catch backend errors on JSONP calls.
+Many of backends use JSONP and so will not get error messages and this is
+a crude way to catch those errors.</p>             </td>             <td class="code">               <div class="highlight"><pre>  <span class="kd">var</span> <span class="nx">_wrapInTimeout</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">ourFunction</span><span class="p">)</span> <span class="p">{</span>
+    <span class="kd">var</span> <span class="nx">dfd</span> <span class="o">=</span> <span class="nx">$</span><span class="p">.</span><span class="nx">Deferred</span><span class="p">();</span>
+    <span class="kd">var</span> <span class="nx">timeout</span> <span class="o">=</span> <span class="mi">5000</span><span class="p">;</span>
+    <span class="kd">var</span> <span class="nx">timer</span> <span class="o">=</span> <span class="nx">setTimeout</span><span class="p">(</span><span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+      <span class="nx">dfd</span><span class="p">.</span><span class="nx">reject</span><span class="p">({</span>
+        <span class="nx">message</span><span class="o">:</span> <span class="s1">&#39;Request Error: Backend did not respond after &#39;</span> <span class="o">+</span> <span class="p">(</span><span class="nx">timeout</span> <span class="o">/</span> <span class="mi">1000</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39; seconds&#39;</span>
+      <span class="p">});</span>
+    <span class="p">},</span> <span class="nx">timeout</span><span class="p">);</span>
+    <span class="nx">ourFunction</span><span class="p">.</span><span class="nx">done</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">arguments</span><span class="p">)</span> <span class="p">{</span>
+        <span class="nx">clearTimeout</span><span class="p">(</span><span class="nx">timer</span><span class="p">);</span>
+        <span class="nx">dfd</span><span class="p">.</span><span class="nx">resolve</span><span class="p">(</span><span class="nx">arguments</span><span class="p">);</span>
+      <span class="p">})</span>
+      <span class="p">.</span><span class="nx">fail</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">arguments</span><span class="p">)</span> <span class="p">{</span>
+        <span class="nx">clearTimeout</span><span class="p">(</span><span class="nx">timer</span><span class="p">);</span>
+        <span class="nx">dfd</span><span class="p">.</span><span class="nx">reject</span><span class="p">(</span><span class="nx">arguments</span><span class="p">);</span>
+      <span class="p">})</span>
+      <span class="p">;</span>
+    <span class="k">return</span> <span class="nx">dfd</span><span class="p">.</span><span class="nx">promise</span><span class="p">();</span>
+  <span class="p">}</span>
+
+<span class="p">}(</span><span class="nx">jQuery</span><span class="p">,</span> <span class="k">this</span><span class="p">.</span><span class="nx">recline</span><span class="p">.</span><span class="nx">Backend</span><span class="p">.</span><span class="nx">DataProxy</span><span class="p">));</span>
 
 </pre></div>             </td>           </tr>                </tbody>     </table>   </div> </body> </html> 

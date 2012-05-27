@@ -26,13 +26,6 @@ generate the element itself (you can then append view.el to the DOM.</p>        
 
   <span class="nx">template</span><span class="o">:</span> <span class="s1">&#39; \</span>
 <span class="s1">  &lt;div class=&quot;editor&quot;&gt; \</span>
-<span class="s1">    &lt;div class=&quot;editor-info editor-hide-info&quot;&gt; \</span>
-<span class="s1">      &lt;h3 class=&quot;action-toggle-help&quot;&gt;Help &amp;raquo;&lt;/h3&gt; \</span>
-<span class="s1">      &lt;p&gt;To create a chart select a column (group) to use as the x-axis \</span>
-<span class="s1">         then another column (Series A) to plot against it.&lt;/p&gt; \</span>
-<span class="s1">      &lt;p&gt;You can add add \</span>
-<span class="s1">         additional series by clicking the &quot;Add series&quot; button&lt;/p&gt; \</span>
-<span class="s1">    &lt;/div&gt; \</span>
 <span class="s1">    &lt;form class=&quot;form-stacked&quot;&gt; \</span>
 <span class="s1">      &lt;div class=&quot;clearfix&quot;&gt; \</span>
 <span class="s1">        &lt;label&gt;Graph Type&lt;/label&gt; \</span>
@@ -92,8 +85,7 @@ generate the element itself (you can then append view.el to the DOM.</p>        
   <span class="nx">events</span><span class="o">:</span> <span class="p">{</span>
     <span class="s1">&#39;change form select&#39;</span><span class="o">:</span> <span class="s1">&#39;onEditorSubmit&#39;</span><span class="p">,</span>
     <span class="s1">&#39;click .editor-add&#39;</span><span class="o">:</span> <span class="s1">&#39;_onAddSeries&#39;</span><span class="p">,</span>
-    <span class="s1">&#39;click .action-remove-series&#39;</span><span class="o">:</span> <span class="s1">&#39;removeSeries&#39;</span><span class="p">,</span>
-    <span class="s1">&#39;click .action-toggle-help&#39;</span><span class="o">:</span> <span class="s1">&#39;toggleHelp&#39;</span>
+    <span class="s1">&#39;click .action-remove-series&#39;</span><span class="o">:</span> <span class="s1">&#39;removeSeries&#39;</span>
   <span class="p">},</span>
 
   <span class="nx">initialize</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">options</span><span class="p">)</span> <span class="p">{</span>
@@ -123,7 +115,7 @@ generate the element itself (you can then append view.el to the DOM.</p>        
   <span class="nx">render</span><span class="o">:</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
     <span class="kd">var</span> <span class="nx">self</span> <span class="o">=</span> <span class="k">this</span><span class="p">;</span>
     <span class="kd">var</span> <span class="nx">tmplData</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">model</span><span class="p">.</span><span class="nx">toTemplateJSON</span><span class="p">();</span>
-    <span class="kd">var</span> <span class="nx">htmls</span> <span class="o">=</span> <span class="nx">$</span><span class="p">.</span><span class="nx">mustache</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">template</span><span class="p">,</span> <span class="nx">tmplData</span><span class="p">);</span>
+    <span class="kd">var</span> <span class="nx">htmls</span> <span class="o">=</span> <span class="nx">Mustache</span><span class="p">.</span><span class="nx">render</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">template</span><span class="p">,</span> <span class="nx">tmplData</span><span class="p">);</span>
     <span class="nx">$</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">el</span><span class="p">).</span><span class="nx">html</span><span class="p">(</span><span class="nx">htmls</span><span class="p">);</span>
     <span class="k">this</span><span class="p">.</span><span class="nx">$graph</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">el</span><span class="p">.</span><span class="nx">find</span><span class="p">(</span><span class="s1">&#39;.panel.graph&#39;</span><span class="p">);</span></pre></div>             </td>           </tr>                               <tr id="section-5">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-5">&#182;</a>               </div>               <p>set up editor from state</p>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="k">if</span> <span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">state</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s1">&#39;graphType&#39;</span><span class="p">))</span> <span class="p">{</span>
       <span class="k">this</span><span class="p">.</span><span class="nx">_selectOption</span><span class="p">(</span><span class="s1">&#39;.editor-type&#39;</span><span class="p">,</span> <span class="k">this</span><span class="p">.</span><span class="nx">state</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s1">&#39;graphType&#39;</span><span class="p">));</span>
@@ -342,7 +334,7 @@ have no field type info). Thus at present we only do this for bars.</p>         
       <span class="nx">seriesName</span><span class="o">:</span> <span class="nb">String</span><span class="p">.</span><span class="nx">fromCharCode</span><span class="p">(</span><span class="nx">idx</span> <span class="o">+</span> <span class="mi">64</span> <span class="o">+</span> <span class="mi">1</span><span class="p">),</span>
     <span class="p">},</span> <span class="k">this</span><span class="p">.</span><span class="nx">model</span><span class="p">.</span><span class="nx">toTemplateJSON</span><span class="p">());</span>
 
-    <span class="kd">var</span> <span class="nx">htmls</span> <span class="o">=</span> <span class="nx">$</span><span class="p">.</span><span class="nx">mustache</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">templateSeriesEditor</span><span class="p">,</span> <span class="nx">data</span><span class="p">);</span>
+    <span class="kd">var</span> <span class="nx">htmls</span> <span class="o">=</span> <span class="nx">Mustache</span><span class="p">.</span><span class="nx">render</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">templateSeriesEditor</span><span class="p">,</span> <span class="nx">data</span><span class="p">);</span>
     <span class="k">this</span><span class="p">.</span><span class="nx">el</span><span class="p">.</span><span class="nx">find</span><span class="p">(</span><span class="s1">&#39;.editor-series-group&#39;</span><span class="p">).</span><span class="nx">append</span><span class="p">(</span><span class="nx">htmls</span><span class="p">);</span>
     <span class="k">return</span> <span class="k">this</span><span class="p">;</span>
   <span class="p">},</span>
@@ -357,11 +349,7 @@ have no field type info). Thus at present we only do this for bars.</p>         
     <span class="kd">var</span> <span class="nx">$el</span> <span class="o">=</span> <span class="nx">$</span><span class="p">(</span><span class="nx">e</span><span class="p">.</span><span class="nx">target</span><span class="p">);</span>
     <span class="nx">$el</span><span class="p">.</span><span class="nx">parent</span><span class="p">().</span><span class="nx">parent</span><span class="p">().</span><span class="nx">remove</span><span class="p">();</span>
     <span class="k">this</span><span class="p">.</span><span class="nx">onEditorSubmit</span><span class="p">();</span>
-  <span class="p">},</span>
-
-  <span class="nx">toggleHelp</span><span class="o">:</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
-    <span class="k">this</span><span class="p">.</span><span class="nx">el</span><span class="p">.</span><span class="nx">find</span><span class="p">(</span><span class="s1">&#39;.editor-info&#39;</span><span class="p">).</span><span class="nx">toggleClass</span><span class="p">(</span><span class="s1">&#39;editor-hide-info&#39;</span><span class="p">);</span>
-  <span class="p">},</span>
+  <span class="p">}</span>
 <span class="p">});</span>
 
 <span class="p">})(</span><span class="nx">jQuery</span><span class="p">,</span> <span class="nx">recline</span><span class="p">.</span><span class="nx">View</span><span class="p">);</span>

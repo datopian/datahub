@@ -115,7 +115,7 @@ also returned.</p>             </td>             <td class="code">              
     <span class="k">if</span> <span class="p">(</span><span class="nx">recline</span> <span class="o">&amp;&amp;</span> <span class="nx">recline</span><span class="p">.</span><span class="nx">Backend</span><span class="p">)</span> <span class="p">{</span>
       <span class="nx">_</span><span class="p">.</span><span class="nx">each</span><span class="p">(</span><span class="nx">_</span><span class="p">.</span><span class="nx">keys</span><span class="p">(</span><span class="nx">recline</span><span class="p">.</span><span class="nx">Backend</span><span class="p">),</span> <span class="kd">function</span><span class="p">(</span><span class="nx">name</span><span class="p">)</span> <span class="p">{</span>
         <span class="k">if</span> <span class="p">(</span><span class="nx">name</span><span class="p">.</span><span class="nx">toLowerCase</span><span class="p">()</span> <span class="o">===</span> <span class="nx">backendString</span><span class="p">.</span><span class="nx">toLowerCase</span><span class="p">())</span> <span class="p">{</span>
-          <span class="nx">backend</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">recline</span><span class="p">.</span><span class="nx">Backend</span><span class="p">[</span><span class="nx">name</span><span class="p">]();</span>
+          <span class="nx">backend</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">recline</span><span class="p">.</span><span class="nx">Backend</span><span class="p">[</span><span class="nx">name</span><span class="p">].</span><span class="nx">Backbone</span><span class="p">();</span>
         <span class="p">}</span>
       <span class="p">});</span>
     <span class="p">}</span>
@@ -133,19 +133,19 @@ Dataset is an Object like:</p>
   // convenience - if url provided and dataste not this be used as dataset url
   url: {dataset url}
   ...
-}</p>             </td>             <td class="code">               <div class="highlight"><pre><span class="nx">my</span><span class="p">.</span><span class="nx">Dataset</span><span class="p">.</span><span class="nx">restore</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">state</span><span class="p">)</span> <span class="p">{</span></pre></div>             </td>           </tr>                               <tr id="section-9">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-9">&#182;</a>               </div>               <p>hack-y - restoring a memory dataset does not mean much ...</p>             </td>             <td class="code">               <div class="highlight"><pre>  <span class="kd">var</span> <span class="nx">dataset</span> <span class="o">=</span> <span class="kc">null</span><span class="p">;</span>
-  <span class="k">if</span> <span class="p">(</span><span class="nx">state</span><span class="p">.</span><span class="nx">url</span> <span class="o">&amp;&amp;</span> <span class="o">!</span><span class="nx">state</span><span class="p">.</span><span class="nx">dataset</span><span class="p">)</span> <span class="p">{</span>
-    <span class="nx">state</span><span class="p">.</span><span class="nx">dataset</span> <span class="o">=</span> <span class="p">{</span><span class="nx">url</span><span class="o">:</span> <span class="nx">state</span><span class="p">.</span><span class="nx">url</span><span class="p">};</span>
-  <span class="p">}</span>
-  <span class="k">if</span> <span class="p">(</span><span class="nx">state</span><span class="p">.</span><span class="nx">backend</span> <span class="o">===</span> <span class="s1">&#39;memory&#39;</span><span class="p">)</span> <span class="p">{</span>
-    <span class="nx">dataset</span> <span class="o">=</span> <span class="nx">recline</span><span class="p">.</span><span class="nx">Backend</span><span class="p">.</span><span class="nx">createDataset</span><span class="p">(</span>
+}</p>             </td>             <td class="code">               <div class="highlight"><pre><span class="nx">my</span><span class="p">.</span><span class="nx">Dataset</span><span class="p">.</span><span class="nx">restore</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">state</span><span class="p">)</span> <span class="p">{</span>
+  <span class="kd">var</span> <span class="nx">dataset</span> <span class="o">=</span> <span class="kc">null</span><span class="p">;</span></pre></div>             </td>           </tr>                               <tr id="section-9">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-9">&#182;</a>               </div>               <p>hack-y - restoring a memory dataset does not mean much ...</p>             </td>             <td class="code">               <div class="highlight"><pre>  <span class="k">if</span> <span class="p">(</span><span class="nx">state</span><span class="p">.</span><span class="nx">backend</span> <span class="o">===</span> <span class="s1">&#39;memory&#39;</span><span class="p">)</span> <span class="p">{</span>
+    <span class="nx">dataset</span> <span class="o">=</span> <span class="nx">recline</span><span class="p">.</span><span class="nx">Backend</span><span class="p">.</span><span class="nx">Memory</span><span class="p">.</span><span class="nx">createDataset</span><span class="p">(</span>
       <span class="p">[{</span><span class="nx">stub</span><span class="o">:</span> <span class="s1">&#39;this is a stub dataset because we do not restore memory datasets&#39;</span><span class="p">}],</span>
       <span class="p">[],</span>
       <span class="nx">state</span><span class="p">.</span><span class="nx">dataset</span> <span class="c1">// metadata</span>
     <span class="p">);</span>
   <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+    <span class="kd">var</span> <span class="nx">datasetInfo</span> <span class="o">=</span> <span class="p">{</span>
+      <span class="nx">url</span><span class="o">:</span> <span class="nx">state</span><span class="p">.</span><span class="nx">url</span>
+    <span class="p">};</span>
     <span class="nx">dataset</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">recline</span><span class="p">.</span><span class="nx">Model</span><span class="p">.</span><span class="nx">Dataset</span><span class="p">(</span>
-      <span class="nx">state</span><span class="p">.</span><span class="nx">dataset</span><span class="p">,</span>
+      <span class="nx">datasetInfo</span><span class="p">,</span>
       <span class="nx">state</span><span class="p">.</span><span class="nx">backend</span>
     <span class="p">);</span>
   <span class="p">}</span>
@@ -183,7 +183,6 @@ for this document.</p>             </td>             <td class="code">          
 <li>format: (optional) used to indicate how the data should be formatted. For example:
 <ul><li>type=date, format=yyyy-mm-dd</li>
 <li>type=float, format=percentage</li>
-<li>type=string, format=link (render as hyperlink)</li>
 <li>type=string, format=markdown (render as markdown if Showdown available)</li></ul></li>
 <li>is_derived: (default: false) attribute indicating this field has no backend data but is just derived from other fields (see below).</li>
 </ul>
@@ -202,7 +201,18 @@ document, its signature and behaviour is the same as for renderer.  Use of
 this function allows you to define an entirely new value for data in this
 field. This provides support for a) 'derived/computed' fields: i.e. fields
 whose data are functions of the data in other fields b) transforming the
-value of this field prior to rendering.</p>             </td>             <td class="code">               <div class="highlight"><pre><span class="nx">my</span><span class="p">.</span><span class="nx">Field</span> <span class="o">=</span> <span class="nx">Backbone</span><span class="p">.</span><span class="nx">Model</span><span class="p">.</span><span class="nx">extend</span><span class="p">({</span></pre></div>             </td>           </tr>                               <tr id="section-14">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-14">&#182;</a>               </div>               <h3>defaults - define default values</h3>             </td>             <td class="code">               <div class="highlight"><pre>  <span class="nx">defaults</span><span class="o">:</span> <span class="p">{</span>
+value of this field prior to rendering.</p>
+
+<h4>Default renderers</h4>
+
+<ul>
+<li>string
+<ul><li>no format provided: pass through but convert http:// to hyperlinks </li>
+<li>format = plain: do no processing on the source text</li>
+<li>format = markdown: process as markdown (if Showdown library available)</li></ul></li>
+<li>float
+<ul><li>format = percentage: format as a percentage</li></ul></li>
+</ul>             </td>             <td class="code">               <div class="highlight"><pre><span class="nx">my</span><span class="p">.</span><span class="nx">Field</span> <span class="o">=</span> <span class="nx">Backbone</span><span class="p">.</span><span class="nx">Model</span><span class="p">.</span><span class="nx">extend</span><span class="p">({</span></pre></div>             </td>           </tr>                               <tr id="section-14">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-14">&#182;</a>               </div>               <h3>defaults - define default values</h3>             </td>             <td class="code">               <div class="highlight"><pre>  <span class="nx">defaults</span><span class="o">:</span> <span class="p">{</span>
     <span class="nx">label</span><span class="o">:</span> <span class="kc">null</span><span class="p">,</span>
     <span class="nx">type</span><span class="o">:</span> <span class="s1">&#39;string&#39;</span><span class="p">,</span>
     <span class="nx">format</span><span class="o">:</span> <span class="kc">null</span><span class="p">,</span>
@@ -238,9 +248,7 @@ value of this field prior to rendering.</p>             </td>             <td cl
     <span class="p">},</span>
     <span class="s1">&#39;string&#39;</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">val</span><span class="p">,</span> <span class="nx">field</span><span class="p">,</span> <span class="nx">doc</span><span class="p">)</span> <span class="p">{</span>
       <span class="kd">var</span> <span class="nx">format</span> <span class="o">=</span> <span class="nx">field</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s1">&#39;format&#39;</span><span class="p">);</span>
-      <span class="k">if</span> <span class="p">(</span><span class="nx">format</span> <span class="o">===</span> <span class="s1">&#39;link&#39;</span><span class="p">)</span> <span class="p">{</span>
-        <span class="k">return</span> <span class="s1">&#39;&lt;a href=&quot;VAL&quot;&gt;VAL&lt;/a&gt;&#39;</span><span class="p">.</span><span class="nx">replace</span><span class="p">(</span><span class="sr">/VAL/g</span><span class="p">,</span> <span class="nx">val</span><span class="p">);</span>
-      <span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="nx">format</span> <span class="o">===</span> <span class="s1">&#39;markdown&#39;</span><span class="p">)</span> <span class="p">{</span>
+      <span class="k">if</span> <span class="p">(</span><span class="nx">format</span> <span class="o">===</span> <span class="s1">&#39;markdown&#39;</span><span class="p">)</span> <span class="p">{</span>
         <span class="k">if</span> <span class="p">(</span><span class="k">typeof</span> <span class="nx">Showdown</span> <span class="o">!==</span> <span class="s1">&#39;undefined&#39;</span><span class="p">)</span> <span class="p">{</span>
           <span class="kd">var</span> <span class="nx">showdown</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Showdown</span><span class="p">.</span><span class="nx">converter</span><span class="p">();</span>
           <span class="nx">out</span> <span class="o">=</span> <span class="nx">showdown</span><span class="p">.</span><span class="nx">makeHtml</span><span class="p">(</span><span class="nx">val</span><span class="p">);</span>
@@ -248,15 +256,21 @@ value of this field prior to rendering.</p>             </td>             <td cl
         <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
           <span class="k">return</span> <span class="nx">val</span><span class="p">;</span>
         <span class="p">}</span>
+      <span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="nx">format</span> <span class="o">==</span> <span class="s1">&#39;plain&#39;</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">return</span> <span class="nx">val</span><span class="p">;</span>
+      <span class="p">}</span> <span class="k">else</span> <span class="p">{</span></pre></div>             </td>           </tr>                               <tr id="section-17">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-17">&#182;</a>               </div>               <p>as this is the default and default type is string may get things
+here that are not actually strings</p>             </td>             <td class="code">               <div class="highlight"><pre>        <span class="k">if</span> <span class="p">(</span><span class="nx">val</span> <span class="o">&amp;&amp;</span> <span class="k">typeof</span> <span class="nx">val</span> <span class="o">===</span> <span class="s1">&#39;string&#39;</span><span class="p">)</span> <span class="p">{</span>
+          <span class="nx">val</span> <span class="o">=</span> <span class="nx">val</span><span class="p">.</span><span class="nx">replace</span><span class="p">(</span><span class="sr">/(https?:\/\/[^ ]+)/g</span><span class="p">,</span> <span class="s1">&#39;&lt;a href=&quot;$1&quot;&gt;$1&lt;/a&gt;&#39;</span><span class="p">);</span>
+        <span class="p">}</span>
+        <span class="k">return</span> <span class="nx">val</span>
       <span class="p">}</span>
-      <span class="k">return</span> <span class="nx">val</span><span class="p">;</span>
     <span class="p">}</span>
   <span class="p">}</span>
 <span class="p">});</span>
 
 <span class="nx">my</span><span class="p">.</span><span class="nx">FieldList</span> <span class="o">=</span> <span class="nx">Backbone</span><span class="p">.</span><span class="nx">Collection</span><span class="p">.</span><span class="nx">extend</span><span class="p">({</span>
   <span class="nx">model</span><span class="o">:</span> <span class="nx">my</span><span class="p">.</span><span class="nx">Field</span>
-<span class="p">});</span></pre></div>             </td>           </tr>                               <tr id="section-17">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-17">&#182;</a>               </div>               <h2><a id="query">Query</a></h2>
+<span class="p">});</span></pre></div>             </td>           </tr>                               <tr id="section-18">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-18">&#182;</a>               </div>               <h2><a id="query">Query</a></h2>
 
 <p>Query instances encapsulate a query to the backend (see <a
 href="backend/base.html">query method on backend</a>). Useful both
@@ -312,10 +326,10 @@ execution.</p></li>
     <span class="k">return</span> <span class="p">{</span>
       <span class="nx">size</span><span class="o">:</span> <span class="mi">100</span><span class="p">,</span>
       <span class="nx">from</span><span class="o">:</span> <span class="mi">0</span><span class="p">,</span>
-      <span class="nx">facets</span><span class="o">:</span> <span class="p">{},</span></pre></div>             </td>           </tr>                               <tr id="section-18">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-18">&#182;</a>               </div>               <p><a href="http://www.elasticsearch.org/guide/reference/query-dsl/and-filter.html">http://www.elasticsearch.org/guide/reference/query-dsl/and-filter.html</a>
+      <span class="nx">facets</span><span class="o">:</span> <span class="p">{},</span></pre></div>             </td>           </tr>                               <tr id="section-19">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-19">&#182;</a>               </div>               <p><a href="http://www.elasticsearch.org/guide/reference/query-dsl/and-filter.html">http://www.elasticsearch.org/guide/reference/query-dsl/and-filter.html</a>
 , filter: {}</p>             </td>             <td class="code">               <div class="highlight"><pre>      <span class="nx">filters</span><span class="o">:</span> <span class="p">[]</span>
     <span class="p">};</span>
-  <span class="p">},</span></pre></div>             </td>           </tr>                               <tr id="section-19">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-19">&#182;</a>               </div>               <h4>addTermFilter</h4>
+  <span class="p">},</span></pre></div>             </td>           </tr>                               <tr id="section-20">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-20">&#182;</a>               </div>               <h4>addTermFilter</h4>
 
 <p>Set (update or add) a terms filter to filters</p>
 
@@ -324,23 +338,23 @@ execution.</p></li>
     <span class="kd">var</span> <span class="nx">filter</span> <span class="o">=</span> <span class="p">{</span> <span class="nx">term</span><span class="o">:</span> <span class="p">{}</span> <span class="p">};</span>
     <span class="nx">filter</span><span class="p">.</span><span class="nx">term</span><span class="p">[</span><span class="nx">fieldId</span><span class="p">]</span> <span class="o">=</span> <span class="nx">value</span><span class="p">;</span>
     <span class="nx">filters</span><span class="p">.</span><span class="nx">push</span><span class="p">(</span><span class="nx">filter</span><span class="p">);</span>
-    <span class="k">this</span><span class="p">.</span><span class="nx">set</span><span class="p">({</span><span class="nx">filters</span><span class="o">:</span> <span class="nx">filters</span><span class="p">});</span></pre></div>             </td>           </tr>                               <tr id="section-20">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-20">&#182;</a>               </div>               <p>change does not seem to be triggered automatically</p>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="k">if</span> <span class="p">(</span><span class="nx">value</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">set</span><span class="p">({</span><span class="nx">filters</span><span class="o">:</span> <span class="nx">filters</span><span class="p">});</span></pre></div>             </td>           </tr>                               <tr id="section-21">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-21">&#182;</a>               </div>               <p>change does not seem to be triggered automatically</p>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="k">if</span> <span class="p">(</span><span class="nx">value</span><span class="p">)</span> <span class="p">{</span>
       <span class="k">this</span><span class="p">.</span><span class="nx">trigger</span><span class="p">(</span><span class="s1">&#39;change&#39;</span><span class="p">);</span>
-    <span class="p">}</span> <span class="k">else</span> <span class="p">{</span></pre></div>             </td>           </tr>                               <tr id="section-21">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-21">&#182;</a>               </div>               <p>adding a new blank filter and do not want to trigger a new query</p>             </td>             <td class="code">               <div class="highlight"><pre>      <span class="k">this</span><span class="p">.</span><span class="nx">trigger</span><span class="p">(</span><span class="s1">&#39;change:filters:new-blank&#39;</span><span class="p">);</span>
+    <span class="p">}</span> <span class="k">else</span> <span class="p">{</span></pre></div>             </td>           </tr>                               <tr id="section-22">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-22">&#182;</a>               </div>               <p>adding a new blank filter and do not want to trigger a new query</p>             </td>             <td class="code">               <div class="highlight"><pre>      <span class="k">this</span><span class="p">.</span><span class="nx">trigger</span><span class="p">(</span><span class="s1">&#39;change:filters:new-blank&#39;</span><span class="p">);</span>
     <span class="p">}</span>
-  <span class="p">},</span></pre></div>             </td>           </tr>                               <tr id="section-22">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-22">&#182;</a>               </div>               <h3>removeFilter</h3>
+  <span class="p">},</span></pre></div>             </td>           </tr>                               <tr id="section-23">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-23">&#182;</a>               </div>               <h3>removeFilter</h3>
 
 <p>Remove a filter from filters at index filterIndex</p>             </td>             <td class="code">               <div class="highlight"><pre>  <span class="nx">removeFilter</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">filterIndex</span><span class="p">)</span> <span class="p">{</span>
     <span class="kd">var</span> <span class="nx">filters</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s1">&#39;filters&#39;</span><span class="p">);</span>
     <span class="nx">filters</span><span class="p">.</span><span class="nx">splice</span><span class="p">(</span><span class="nx">filterIndex</span><span class="p">,</span> <span class="mi">1</span><span class="p">);</span>
     <span class="k">this</span><span class="p">.</span><span class="nx">set</span><span class="p">({</span><span class="nx">filters</span><span class="o">:</span> <span class="nx">filters</span><span class="p">});</span>
     <span class="k">this</span><span class="p">.</span><span class="nx">trigger</span><span class="p">(</span><span class="s1">&#39;change&#39;</span><span class="p">);</span>
-  <span class="p">},</span></pre></div>             </td>           </tr>                               <tr id="section-23">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-23">&#182;</a>               </div>               <h3>addFacet</h3>
+  <span class="p">},</span></pre></div>             </td>           </tr>                               <tr id="section-24">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-24">&#182;</a>               </div>               <h3>addFacet</h3>
 
 <p>Add a Facet to this query</p>
 
 <p>See <a href="http://www.elasticsearch.org/guide/reference/api/search/facets/">http://www.elasticsearch.org/guide/reference/api/search/facets/</a></p>             </td>             <td class="code">               <div class="highlight"><pre>  <span class="nx">addFacet</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">fieldId</span><span class="p">)</span> <span class="p">{</span>
-    <span class="kd">var</span> <span class="nx">facets</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s1">&#39;facets&#39;</span><span class="p">);</span></pre></div>             </td>           </tr>                               <tr id="section-24">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-24">&#182;</a>               </div>               <p>Assume id and fieldId should be the same (TODO: this need not be true if we want to add two different type of facets on same field)</p>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="k">if</span> <span class="p">(</span><span class="nx">_</span><span class="p">.</span><span class="nx">contains</span><span class="p">(</span><span class="nx">_</span><span class="p">.</span><span class="nx">keys</span><span class="p">(</span><span class="nx">facets</span><span class="p">),</span> <span class="nx">fieldId</span><span class="p">))</span> <span class="p">{</span>
+    <span class="kd">var</span> <span class="nx">facets</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s1">&#39;facets&#39;</span><span class="p">);</span></pre></div>             </td>           </tr>                               <tr id="section-25">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-25">&#182;</a>               </div>               <p>Assume id and fieldId should be the same (TODO: this need not be true if we want to add two different type of facets on same field)</p>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="k">if</span> <span class="p">(</span><span class="nx">_</span><span class="p">.</span><span class="nx">contains</span><span class="p">(</span><span class="nx">_</span><span class="p">.</span><span class="nx">keys</span><span class="p">(</span><span class="nx">facets</span><span class="p">),</span> <span class="nx">fieldId</span><span class="p">))</span> <span class="p">{</span>
       <span class="k">return</span><span class="p">;</span>
     <span class="p">}</span>
     <span class="nx">facets</span><span class="p">[</span><span class="nx">fieldId</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
@@ -360,7 +374,7 @@ execution.</p></li>
     <span class="k">this</span><span class="p">.</span><span class="nx">set</span><span class="p">({</span><span class="nx">facets</span><span class="o">:</span> <span class="nx">facets</span><span class="p">},</span> <span class="p">{</span><span class="nx">silent</span><span class="o">:</span> <span class="kc">true</span><span class="p">});</span>
     <span class="k">this</span><span class="p">.</span><span class="nx">trigger</span><span class="p">(</span><span class="s1">&#39;facet:add&#39;</span><span class="p">,</span> <span class="k">this</span><span class="p">);</span>
   <span class="p">}</span>
-<span class="p">});</span></pre></div>             </td>           </tr>                               <tr id="section-25">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-25">&#182;</a>               </div>               <h2><a id="facet">A Facet (Result)</a></h2>
+<span class="p">});</span></pre></div>             </td>           </tr>                               <tr id="section-26">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-26">&#182;</a>               </div>               <h2><a id="facet">A Facet (Result)</a></h2>
 
 <p>Object to store Facet information, that is summary information (e.g. values
 and counts) about a field obtained by some faceting method on the
@@ -407,14 +421,16 @@ key used to specify this facet in the facet query):</p>
       <span class="nx">terms</span><span class="o">:</span> <span class="p">[]</span>
     <span class="p">};</span>
   <span class="p">}</span>
-<span class="p">});</span></pre></div>             </td>           </tr>                               <tr id="section-26">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-26">&#182;</a>               </div>               <h2>A Collection/List of Facets</h2>             </td>             <td class="code">               <div class="highlight"><pre><span class="nx">my</span><span class="p">.</span><span class="nx">FacetList</span> <span class="o">=</span> <span class="nx">Backbone</span><span class="p">.</span><span class="nx">Collection</span><span class="p">.</span><span class="nx">extend</span><span class="p">({</span>
+<span class="p">});</span></pre></div>             </td>           </tr>                               <tr id="section-27">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-27">&#182;</a>               </div>               <h2>A Collection/List of Facets</h2>             </td>             <td class="code">               <div class="highlight"><pre><span class="nx">my</span><span class="p">.</span><span class="nx">FacetList</span> <span class="o">=</span> <span class="nx">Backbone</span><span class="p">.</span><span class="nx">Collection</span><span class="p">.</span><span class="nx">extend</span><span class="p">({</span>
   <span class="nx">model</span><span class="o">:</span> <span class="nx">my</span><span class="p">.</span><span class="nx">Facet</span>
-<span class="p">});</span></pre></div>             </td>           </tr>                               <tr id="section-27">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-27">&#182;</a>               </div>               <h2>Object State</h2>
+<span class="p">});</span></pre></div>             </td>           </tr>                               <tr id="section-28">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-28">&#182;</a>               </div>               <h2>Object State</h2>
 
 <p>Convenience Backbone model for storing (configuration) state of objects like Views.</p>             </td>             <td class="code">               <div class="highlight"><pre><span class="nx">my</span><span class="p">.</span><span class="nx">ObjectState</span> <span class="o">=</span> <span class="nx">Backbone</span><span class="p">.</span><span class="nx">Model</span><span class="p">.</span><span class="nx">extend</span><span class="p">({</span>
-<span class="p">});</span></pre></div>             </td>           </tr>                               <tr id="section-28">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-28">&#182;</a>               </div>               <h2>Backend registry</h2>
+<span class="p">});</span></pre></div>             </td>           </tr>                               <tr id="section-29">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-29">&#182;</a>               </div>               <h2>Backbone.sync</h2>
 
-<p>Backends will register themselves by id into this registry</p>             </td>             <td class="code">               <div class="highlight"><pre><span class="nx">my</span><span class="p">.</span><span class="nx">backends</span> <span class="o">=</span> <span class="p">{};</span>
+<p>Override Backbone.sync to hand off to sync function in relevant backend</p>             </td>             <td class="code">               <div class="highlight"><pre><span class="nx">Backbone</span><span class="p">.</span><span class="nx">sync</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">method</span><span class="p">,</span> <span class="nx">model</span><span class="p">,</span> <span class="nx">options</span><span class="p">)</span> <span class="p">{</span>
+  <span class="k">return</span> <span class="nx">model</span><span class="p">.</span><span class="nx">backend</span><span class="p">.</span><span class="nx">sync</span><span class="p">(</span><span class="nx">method</span><span class="p">,</span> <span class="nx">model</span><span class="p">,</span> <span class="nx">options</span><span class="p">);</span>
+<span class="p">};</span>
 
 <span class="p">}(</span><span class="nx">jQuery</span><span class="p">,</span> <span class="k">this</span><span class="p">.</span><span class="nx">recline</span><span class="p">.</span><span class="nx">Model</span><span class="p">));</span>
 

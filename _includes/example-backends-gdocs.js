@@ -2,7 +2,8 @@
 var dataset = new recline.Model.Dataset({
     url: 'https://docs.google.com/spreadsheet/ccc?key=0Aon3JiuouxLUdGZPaUZsMjBxeGhfOWRlWm85MmV0UUE#gid=0'
   },
-  backend='gdoc'
+  // backend name or instance
+  'gdocs'
 );
 
 // Optional - display the results in a grid
