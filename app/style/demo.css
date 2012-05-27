@@ -11,6 +11,10 @@ body {
   height: 550px;
 }
 
+.recline-slickgrid-container {
+  height: 550px;
+}
+
 .recline-timeline .vmm-timeline {
   height: 550px;
 }

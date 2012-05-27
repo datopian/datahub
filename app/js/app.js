@@ -76,10 +76,36 @@ var ExplorerApp = Backbone.View.extend({
     this.dataExplorer = null;
     var $el = $('<div />');
     $el.appendTo(this.explorerDiv);
+    var views = [
+       {
+         id: 'grid',
+         label: 'Grid', 
+         view: new recline.View.SlickGrid({
+           model: dataset
+         })
+       },
+
+       {
+         id: 'graph',
+         label: 'Graph',
+         view: new recline.View.Graph({
+           model: dataset
+         })
+       },
+       {
+         id: 'map',
+         label: 'Map',
+         view: new recline.View.Map({
+           model: dataset
+         })
+       },
+    ];
+
     this.dataExplorer = new recline.View.DataExplorer({
       model: dataset,
       el: $el,
-      state: state
+      state: state,
+      views: views
     });
     this._setupPermaLink(this.dataExplorer);
     this._setupEmbed(this.dataExplorer);
