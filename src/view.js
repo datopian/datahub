@@ -71,6 +71,21 @@
 // State is available not only for individual views (as described above) but
 // for the dataset (e.g. the current query). For an example of pulling together
 // state from across multiple components see `recline.View.DataExplorer`.
+//
+// ### Flash Messages / Notifications
+//
+// To send 'flash messages' or notifications the convention is that views
+// should fire an event named `recline:flash` with a payload that is a
+// flash object with the following attributes (all optional):
+//
+// * message: message to show.
+// * category: warning (default), success, error
+// * persist: if true alert is persistent, o/w hidden after 3s (default=false)
+// * loader: if true show a loading message
+//
+// Objects or views wishing to bind to flash messages may then subscribe to
+// these events and take some action such as displaying them to the user. For
+// an example of such behaviour see the DataExplorer view.
 // 
 // ### Writing your own Views
 //
@@ -271,7 +286,7 @@ my.DataExplorer = Backbone.View.extend({
   render: function() {
     var tmplData = this.model.toTemplateJSON();
     tmplData.views = this.pageViews;
-    var template = $.mustache(this.template, tmplData);
+    var template = Mustache.render(this.template, tmplData);
     $(this.el).html(template);
     var $dataViewContainer = this.el.find('.data-view-container');
     _.each(this.pageViews, function(view, pageName) {
@@ -348,7 +363,7 @@ my.DataExplorer = Backbone.View.extend({
         query: query,
         'view-graph': graphState,
         backend: this.model.backend.__type__,
-        dataset: this.model.toJSON(),
+        url: this.model.get('url'),
         currentView: null,
         readOnly: false
       },
@@ -416,7 +431,7 @@ my.DataExplorer = Backbone.View.extend({
           {{message}} \
         </div>';
     }
-    var _templated = $($.mustache(_template, tmplData));
+    var _templated = $(Mustache.render(_template, tmplData));
     _templated = $(_templated).appendTo($('.recline-data-explorer .alert-messages'));
     if (!flash.persist) {
       setTimeout(function() {
@@ -501,7 +516,7 @@ my.QueryEditor = Backbone.View.extend({
   render: function() {
     var tmplData = this.model.toJSON();
     tmplData.to = this.model.get('from') + this.model.get('size');
-    var templated = $.mustache(this.template, tmplData);
+    var templated = Mustache.render(this.template, tmplData);
     this.el.html(templated);
   }
 });
@@ -569,7 +584,7 @@ my.FilterEditor = Backbone.View.extend({
         value: filter.term[fieldId]
       };
     });
-    var out = $.mustache(this.template, tmplData);
+    var out = Mustache.render(this.template, tmplData);
     this.el.html(out);
     // are there actually any facets to show?
     if (this.model.get('filters').length > 0) {
@@ -654,7 +669,7 @@ my.FacetViewer = Backbone.View.extend({
       }
       return facet;
     });
-    var templated = $.mustache(this.template, tmplData);
+    var templated = Mustache.render(this.template, tmplData);
     this.el.html(templated);
     // are there actually any facets to show?
     if (this.model.facets.length > 0) {

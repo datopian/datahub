@@ -161,7 +161,7 @@ my.Map = Backbone.View.extend({
 
     var self = this;
 
-    htmls = $.mustache(this.template, this.model.toTemplateJSON());
+    htmls = Mustache.render(this.template, this.model.toTemplateJSON());
 
     $(this.el).html(htmls);
     this.$map = this.el.find('.panel.map');
@@ -345,8 +345,11 @@ my.Map = Backbone.View.extend({
       if (this.state.get('geomField')){
         var value = doc.get(this.state.get('geomField'));
         if (typeof(value) === 'string'){
-          // We have a GeoJSON string representation
-          return $.parseJSON(value);
+          // We *may* have a GeoJSON string representation
+          try {
+            return $.parseJSON(value);
+          } catch(e) {
+          }
         } else {
           // We assume that the contents of the field are a valid GeoJSON object
           return value;

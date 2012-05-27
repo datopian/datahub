@@ -19,6 +19,8 @@ test('get State', function () {
   var $el = $('<div class="test-view-explorer-getstate" />');
   $('.fixtures .data-explorer-here').append($el);
   var dataset = Fixture.getDataset();
+  var url = 'xyz';
+  dataset.set({url: url});
   var explorer = new recline.View.DataExplorer({
     model: dataset,
     el: $el
@@ -31,7 +33,7 @@ test('get State', function () {
   deepEqual(state.get('view-grid').hiddenFields, []);
   deepEqual(state.get('view-graph').group, null);
   equal(state.get('backend'), 'memory');
-  ok(state.get('dataset').id !== null);
+  ok(state.get('url') === url);
   $el.remove();
 });
 

@@ -133,7 +133,7 @@ my.Dataset = Backbone.Model.extend({
     if (recline && recline.Backend) {
       _.each(_.keys(recline.Backend), function(name) {
         if (name.toLowerCase() === backendString.toLowerCase()) {
-          backend = new recline.Backend[name]();
+          backend = new recline.Backend[name].Backbone();
         }
       });
     }
@@ -156,20 +156,20 @@ my.Dataset = Backbone.Model.extend({
 //   ...
 // }
 my.Dataset.restore = function(state) {
-  // hack-y - restoring a memory dataset does not mean much ...
   var dataset = null;
-  if (state.url && !state.dataset) {
-    state.dataset = {url: state.url};
-  }
+  // hack-y - restoring a memory dataset does not mean much ...
   if (state.backend === 'memory') {
-    dataset = recline.Backend.createDataset(
+    dataset = recline.Backend.Memory.createDataset(
       [{stub: 'this is a stub dataset because we do not restore memory datasets'}],
       [],
       state.dataset // metadata
     );
   } else {
+    var datasetInfo = {
+      url: state.url
+    };
     dataset = new recline.Model.Dataset(
-      state.dataset,
+      datasetInfo,
       state.backend
     );
   }
@@ -493,10 +493,12 @@ my.ObjectState = Backbone.Model.extend({
 });
 
 
-// ## Backend registry
+// ## Backbone.sync
 //
-// Backends will register themselves by id into this registry
-my.backends = {};
+// Override Backbone.sync to hand off to sync function in relevant backend
+Backbone.sync = function(method, model, options) {
+  return model.backend.sync(method, model, options);
+};
 
 }(jQuery, this.recline.Model));
 

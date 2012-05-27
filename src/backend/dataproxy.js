@@ -1,12 +1,14 @@
 this.recline = this.recline || {};
 this.recline.Backend = this.recline.Backend || {};
+this.recline.Backend.DataProxy = this.recline.Backend.DataProxy || {};
 
 (function($, my) {
   // ## DataProxy Backend
   // 
   // For connecting to [DataProxy-s](http://github.com/okfn/dataproxy).
   //
-  // When initializing the DataProxy backend you can set the following attributes:
+  // When initializing the DataProxy backend you can set the following
+  // attributes in the options object:
   //
   // * dataproxy: {url-to-proxy} (optional). Defaults to http://jsonpdataproxy.appspot.com
   //
@@ -16,14 +18,14 @@ this.recline.Backend = this.recline.Backend || {};
   // * format: (optional) csv | xls (defaults to csv if not specified)
   //
   // Note that this is a **read-only** backend.
-  my.DataProxy = my.Base.extend({
-    __type__: 'dataproxy',
-    readonly: true,
-    defaults: {
-      dataproxy_url: 'http://jsonpdataproxy.appspot.com'
-    },
-    sync: function(method, model, options) {
-      var self = this;
+  my.Backbone = function(options) {
+    var self = this;
+    this.__type__ = 'dataproxy';
+    this.readonly = true;
+
+    this.dataproxy_url = options && options.dataproxy_url ? options.dataproxy_url : 'http://jsonpdataproxy.appspot.com';
+
+    this.sync = function(method, model, options) {
       if (method === "read") {
         if (model.__type__ == 'Dataset') {
           // Do nothing as we will get fields in query step (and no metadata to
@@ -35,22 +37,22 @@ this.recline.Backend = this.recline.Backend || {};
       } else {
         alert('This backend only supports read operations');
       }
-    },
-    query: function(dataset, queryObj) {
+    };
+
+    this.query = function(dataset, queryObj) {
       var self = this;
-      var base = this.get('dataproxy_url');
       var data = {
         url: dataset.get('url'),
         'max-results':  queryObj.size,
         type: dataset.get('format')
       };
       var jqxhr = $.ajax({
-        url: base,
+        url: this.dataproxy_url,
         data: data,
         dataType: 'jsonp'
       });
       var dfd = $.Deferred();
-      this._wrapInTimeout(jqxhr).done(function(results) {
+      _wrapInTimeout(jqxhr).done(function(results) {
         if (results.error) {
           dfd.reject(results.error);
         }
@@ -65,13 +67,43 @@ this.recline.Backend = this.recline.Backend || {};
           });
           return tmp;
         });
-        dfd.resolve(self._docsToQueryResult(_out));
+        dfd.resolve({
+          total: null,
+          hits: _.map(_out, function(row) {
+            return { _source: row };
+          })
+        });
       })
       .fail(function(arguments) {
         dfd.reject(arguments);
       });
       return dfd.promise();
-    }
-  });
+    };
+  };
 
-}(jQuery, this.recline.Backend));
+  // ## _wrapInTimeout
+  // 
+  // Convenience method providing a crude way to catch backend errors on JSONP calls.
+  // Many of backends use JSONP and so will not get error messages and this is
+  // a crude way to catch those errors.
+  var _wrapInTimeout = function(ourFunction) {
+    var dfd = $.Deferred();
+    var timeout = 5000;
+    var timer = setTimeout(function() {
+      dfd.reject({
+        message: 'Request Error: Backend did not respond after ' + (timeout / 1000) + ' seconds'
+      });
+    }, timeout);
+    ourFunction.done(function(arguments) {
+        clearTimeout(timer);
+        dfd.resolve(arguments);
+      })
+      .fail(function(arguments) {
+        clearTimeout(timer);
+        dfd.reject(arguments);
+      })
+      ;
+    return dfd.promise();
+  }
+
+}(jQuery, this.recline.Backend.DataProxy));

@@ -16,7 +16,7 @@ var GeoJSONFixture = {
       {id: 1, x: 2, y: 4, z: 6, geom: {type:"Point",coordinates:[13.40,52.35]}},
       {id: 2, x: 3, y: 6, z: 9, geom: {type:"LineString",coordinates:[[100.0, 0.0],[101.0, 1.0]]}}
     ];
-    var dataset = recline.Backend.createDataset(documents, fields);
+    var dataset = recline.Backend.Memory.createDataset(documents, fields);
     return dataset;
   }
 };

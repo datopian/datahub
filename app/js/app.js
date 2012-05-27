@@ -1,5 +1,5 @@
 jQuery(function($) {
-  var app = new ExplorerApp({
+  window.ReclineDataExplorer = new ExplorerApp({
     el: $('.recline-app')
   })
 });
@@ -12,7 +12,7 @@ var ExplorerApp = Backbone.View.extend({
 
   initialize: function() {
     this.el = $(this.el);
-    this.explorer = null;
+    this.dataExplorer = null;
     this.explorerDiv = $('.data-explorer-here');
     _.bindAll(this, 'viewExplorer', 'viewHome');
 
@@ -76,10 +76,36 @@ var ExplorerApp = Backbone.View.extend({
     this.dataExplorer = null;
     var $el = $('<div />');
     $el.appendTo(this.explorerDiv);
+    var views = [
+       {
+         id: 'grid',
+         label: 'Grid', 
+         view: new recline.View.SlickGrid({
+           model: dataset
+         })
+       },
+
+       {
+         id: 'graph',
+         label: 'Graph',
+         view: new recline.View.Graph({
+           model: dataset
+         })
+       },
+       {
+         id: 'map',
+         label: 'Map',
+         view: new recline.View.Map({
+           model: dataset
+         })
+       },
+    ];
+
     this.dataExplorer = new recline.View.DataExplorer({
       model: dataset,
       el: $el,
-      state: state
+      state: state,
+      views: views
     });
     this._setupPermaLink(this.dataExplorer);
     this._setupEmbed(this.dataExplorer);
@@ -102,7 +128,7 @@ var ExplorerApp = Backbone.View.extend({
     function makeEmbedLink(state) {
       var link = self.makePermaLink(state);
       link = link + '&amp;embed=true';
-      var out = $.mustache('<iframe src="{{link}}" width="100%" min-height="500px;"></iframe>', {link: link});
+      var out = Mustache.render('<iframe src="{{link}}" width="100%" min-height="500px;"></iframe>', {link: link});
       return out;
     }
     explorer.state.bind('change', function() {
@@ -154,7 +180,7 @@ var ExplorerApp = Backbone.View.extend({
       delimiter : $form.find('input[name="delimiter"]').val(),
       encoding : $form.find('input[name="encoding"]').val()
     };
-    recline.Backend.loadFromCSVFile(file, function(dataset) {
+    recline.Backend.CSV.load(file, function(dataset) {
         self.createExplorer(dataset)
       },
       options

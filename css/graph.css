@@ -28,25 +28,12 @@
   padding-left: 0px;
 }
 
-.recline-graph .editor-info {
-  padding-left: 4px;
-}
-
-.recline-graph .editor-info {
-	cursor: pointer;
-}
-
 .recline-graph .editor form {
   padding-left: 4px;
 }
 
 .recline-graph .editor select {
 	width: 100%;
-}
-
-.recline-graph .editor-info {
-	border-bottom: 1px solid #ddd;
-	margin-bottom: 10px;
 }
 
 .recline-graph .editor-hide-info p {
