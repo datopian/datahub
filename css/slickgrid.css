@@ -113,47 +113,6 @@ classes should alter those!
   border-color: red;
 }
 
-.recline-slickgrid .slick-contextmenu {
-  border-radius: 5px
-}
-
-.recline-slickgrid .slick-contextmenu li {
-  clear: both;
-  height: 24px;
-  cursor: pointer;
-}
-
-.recline-slickgrid .slick-contextmenu .divider {
-  cursor: default;
-}
-
-.recline-slickgrid .slick-contextmenu > li:hover {
-  background-color: #0088cc;
-}
-
-.recline-slickgrid .slick-contextmenu .divider:hover {
-  background-color: #E5E5E5;
-}
-
-.recline-slickgrid .slick-contextmenu li:hover > label {
-  color: white;
-}
-
-.recline-slickgrid .slick-contextmenu input {
-  float: left;
-  margin-left: 15px;
-  margin-top: 5px;
-}
-
-.recline-slickgrid .slick-contextmenu label {
-  float: left;
-  margin-right: 15px;
-  margin-left: 5px;
-  margin-top: 3px;
-  color: #555;
-  cursor: pointer;
-}
-
 .recline-slickgrid .slick-row .slick-cell:first-child,
 .recline-slickgrid .slick-header {
   border-left: 1px solid #ccc;
@@ -162,5 +121,47 @@ classes should alter those!
 /* add one pixel extra as added one pixel to left border of header */
 .recline-slickgrid .slick-row .slick-cell {
   margin-right: -1px;
+}
+
+/* Slick grid context menu (not part of the recline-slickgrid div) */
+.slick-contextmenu {
+  border-radius: 5px
+}
+
+.slick-contextmenu li {
+  clear: both;
+  height: 24px;
+  cursor: pointer;
+}
+
+.slick-contextmenu .divider {
+  cursor: default;
+}
+
+.slick-contextmenu > li:hover {
+  background-color: #0088cc;
+}
+
+.slick-contextmenu .divider:hover {
+  background-color: #E5E5E5;
+}
+
+.slick-contextmenu li:hover > label {
+  color: white;
+}
+
+.slick-contextmenu input {
+  float: left;
+  margin-left: 15px;
+  margin-top: 5px;
+}
+
+.slick-contextmenu label {
+  float: left;
+  margin-right: 15px;
+  margin-left: 5px;
+  margin-top: 3px;
+  color: #555;
+  cursor: pointer;
 }
 
