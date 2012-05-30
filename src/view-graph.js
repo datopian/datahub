@@ -345,7 +345,7 @@ my.Graph = Backbone.View.extend({
         // time series
         var isDateTime = xfield.get('type') === 'date';
         if (isDateTime) {
-          x = new Date(x);
+          x = moment(x).toDate();
         }
         var yfield = self.model.fields.get(field);
         var y = doc.getFieldValue(yfield);
