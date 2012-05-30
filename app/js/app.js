@@ -99,6 +99,13 @@ var ExplorerApp = Backbone.View.extend({
            model: dataset
          })
        },
+       {
+         id: 'timeline',
+         label: 'Timeline',
+         view: new recline.View.Timeline({
+           model: dataset
+         })
+       }
     ];
 
     this.dataExplorer = new recline.View.DataExplorer({

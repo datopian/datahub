@@ -198,6 +198,16 @@ my.Document = Backbone.Model.extend({
       val = field.renderer(val, field, this);
     }
     return val;
+  },
+
+  summary: function(fields) {
+    var html = '';
+    for (key in this.attributes) {
+      if (key != 'id') {
+        html += '<div><strong>' + key + '</strong>: '+ this.attributes[key] + '</div>';
+      }
+    }
+    return html;
   }
 });
 

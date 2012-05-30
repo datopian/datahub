@@ -28,7 +28,7 @@ my.Timeline = Backbone.View.extend({
         self._initTimeline();
       }
     });
-    this.model.fields.bind('change', function() {
+    this.model.fields.bind('reset', function() {
       self._setupTemporalField();
     });
     this.model.currentDocuments.bind('all', function() {
@@ -79,13 +79,16 @@ my.Timeline = Backbone.View.extend({
       }
     };
     this.model.currentDocuments.each(function(doc) {
-      var tlEntry = {
-        "startDate": doc.get(self.state.get('startField')),
-        "endDate": doc.get(self.state.get('endField')) || null,
-        "headline": String(doc.get(self.model.fields.models[0].id)),
-        "text": ''
-      };
-      if (tlEntry.startDate) {
+      var start = doc.get(self.state.get('startField'));
+      if (start) {
+        var end = moment(doc.get(self.state.get('endField')));
+        end = end ? end.toDate() : null;
+        var tlEntry = {
+          "startDate": moment(start).toDate(),
+          "endDate": end,
+          "headline": String(doc.get('title') || ''),
+          "text": doc.summary()
+        };
         out.timeline.date.push(tlEntry);
       }
     });
