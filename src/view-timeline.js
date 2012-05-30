@@ -86,8 +86,8 @@ my.Timeline = Backbone.View.extend({
         var tlEntry = {
           "startDate": moment(start).toDate(),
           "endDate": end,
-          "headline": String(doc.get(self.model.fields.models[0].id)),
-          "text": ''
+          "headline": String(doc.get('title') || ''),
+          "text": doc.summary()
         };
         out.timeline.date.push(tlEntry);
       }
