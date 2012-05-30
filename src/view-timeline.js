@@ -28,7 +28,7 @@ my.Timeline = Backbone.View.extend({
         self._initTimeline();
       }
     });
-    this.model.fields.bind('change', function() {
+    this.model.fields.bind('reset', function() {
       self._setupTemporalField();
     });
     this.model.currentDocuments.bind('all', function() {
