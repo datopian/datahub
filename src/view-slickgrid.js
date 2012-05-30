@@ -108,8 +108,15 @@ my.SlickGrid = Backbone.View.extend({
     }
     columns = columns.concat(tempHiddenColumns);
 
+    var data = [];
 
-    var data = this.model.currentDocuments.toJSON();
+    this.model.currentDocuments.each(function(doc){
+      var row = {};
+      self.model.fields.each(function(field){
+        row[field.id] = doc.getFieldValue(field);
+      });
+      data.push(row);
+    });
 
     this.grid = new Slick.Grid(this.el, data, visibleColumns, options);
 
