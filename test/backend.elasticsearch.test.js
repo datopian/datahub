@@ -155,11 +155,11 @@ test("write", function() {
   stop();
 
   var id = parseInt(Math.random()*100000000).toString();
-  var doc = {
+  var rec = {
     id: id,
     title: 'my title'
   };
-  var jqxhr = backend.upsert(doc);
+  var jqxhr = backend.upsert(rec);
   jqxhr.done(function(data) {
     ok(data.ok);
     equal(data._id, id);
@@ -167,16 +167,16 @@ test("write", function() {
     equal(data._version, 1);
     
     // update
-    doc.title = 'new title';
-    var jqxhr = backend.upsert(doc);
+    rec.title = 'new title';
+    var jqxhr = backend.upsert(rec);
     jqxhr.done(function(data) {
       equal(data._version, 2);
 
       // delete
-      var jqxhr = backend.delete(doc.id);
+      var jqxhr = backend.delete(rec.id);
       jqxhr.done(function(data) {
         ok(data.ok);
-        doc = null;
+        rec = null;
 
         // try to get ...
         var jqxhr = backend.get(id);
@@ -233,10 +233,10 @@ test("query", function() {
 
   dataset.fetch().done(function(dataset) {
     deepEqual(['_created', '_last_modified', 'end', 'owner', 'start', 'title'], _.pluck(dataset.fields.toJSON(), 'id'));
-    dataset.query().then(function(docList) {
+    dataset.query().then(function(recList) {
       equal(3, dataset.docCount);
-      equal(3, docList.length);
-      equal('Note 1', docList.models[0].get('title'));
+      equal(3, recList.length);
+      equal('Note 1', recList.models[0].get('title'));
       start();
     });
   });
@@ -254,14 +254,14 @@ test("write", function() {
   stop();
 
   var id = parseInt(Math.random()*100000000).toString();
-  var doc = new recline.Model.Document({
+  var rec = new recline.Model.Record({
     id: id,
     title: 'my title'
   });
-  doc.backend = backend;
-  doc.dataset = dataset;
-  dataset.currentDocuments.add(doc);
-  var jqxhr = doc.save();
+  rec.backend = backend;
+  rec.dataset = dataset;
+  dataset.currentRecords.add(rec);
+  var jqxhr = rec.save();
   jqxhr.done(function(data) {
     ok(data.ok);
     equal(data._id, id);
@@ -269,29 +269,29 @@ test("write", function() {
     equal(data._version, 1);
     
     // update
-    doc.set({title: 'new title'});
-    var jqxhr = doc.save();
+    rec.set({title: 'new title'});
+    var jqxhr = rec.save();
     jqxhr.done(function(data) {
       equal(data._version, 2);
 
       // delete
-      var jqxhr = doc.destroy();
+      var jqxhr = rec.destroy();
       jqxhr.done(function(data) {
         ok(data.ok);
-        doc = null;
+        rec = null;
 
         // try to get ...
-        var olddoc = new recline.Model.Document({id: id});
-        equal(olddoc.get('title'), null);
-        olddoc.dataset = dataset;
-        olddoc.backend = backend;
-        var jqxhr = olddoc.fetch();
+        var oldrec = new recline.Model.Record({id: id});
+        equal(oldrec.get('title'), null);
+        oldrec.dataset = dataset;
+        oldrec.backend = backend;
+        var jqxhr = oldrec.fetch();
         jqxhr.done(function(data) {
           // should not be here
           ok(false, 'Should have got 404');
         }).error(function(error) {
           equal(error.status, 404);
-          equal(typeof olddoc.get('title'), 'undefined');
+          equal(typeof oldrec.get('title'), 'undefined');
           start();
         });
       });

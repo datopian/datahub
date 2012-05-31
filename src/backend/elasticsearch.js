@@ -39,7 +39,7 @@ this.recline.Backend.ElasticSearch = this.recline.Backend.ElasticSearch || {};
 
     // ### get
     //
-    // Get document corresponding to specified id
+    // Get record corresponding to specified id
     //
     // @return promise compatible deferred object.
     this.get = function(id) {
@@ -52,7 +52,7 @@ this.recline.Backend.ElasticSearch = this.recline.Backend.ElasticSearch || {};
 
     // ### upsert
     //
-    // create / update a document to ElasticSearch backend
+    // create / update a record to ElasticSearch backend
     //
     // @param {Object} doc an object to insert to the index.
     // @return deferred supporting promise API
@@ -72,7 +72,7 @@ this.recline.Backend.ElasticSearch = this.recline.Backend.ElasticSearch || {};
 
     // ### delete
     //
-    // Delete a document from the ElasticSearch backend.
+    // Delete a record from the ElasticSearch backend.
     //
     // @param {Object} id id of object to delete
     // @return deferred supporting promise API
@@ -154,7 +154,7 @@ this.recline.Backend.ElasticSearch = this.recline.Backend.ElasticSearch || {};
     // Backbone sync implementation for this backend.
     //
     // URL of ElasticSearch endpoint to use must be specified on the dataset
-    // (and on a Document via its dataset attribute) by the dataset having a
+    // (and on a Record via its dataset attribute) by the dataset having a
     // url attribute.
     this.sync = function(method, model, options) {
       if (model.__type__ == 'Dataset') {
@@ -180,15 +180,15 @@ this.recline.Backend.ElasticSearch = this.recline.Backend.ElasticSearch || {};
             dfd.reject(arguments);
           });
           return dfd.promise();
-        } else if (model.__type__ == 'Document') {
+        } else if (model.__type__ == 'Record') {
           return es.get(model.dataset.id);
         }
       } else if (method === 'update') {
-        if (model.__type__ == 'Document') {
+        if (model.__type__ == 'Record') {
           return es.upsert(model.toJSON());
         }
       } else if (method === 'delete') {
-        if (model.__type__ == 'Document') {
+        if (model.__type__ == 'Record') {
           return es.delete(model.id);
         }
       }

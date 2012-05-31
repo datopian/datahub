@@ -17,16 +17,16 @@ test('extract dates and timelineJSON', function () {
         'headline': '',
         'date': [
           {
-            'startDate': '2012-03-20',
+            'startDate': new Date('2012-03-20'),
             'endDate': null,
-            'headline': '2012-03-20',
-            'text': ''
+            'headline': '1',
+            'text': '<div><strong>Date</strong>: 2012-03-20</div><div><strong>title</strong>: 1</div>'
           },
           {
-            'startDate': '2012-03-25',
+            'startDate': new Date('2012-03-25'),
             'endDate': null,
-            'headline': '2012-03-25',
-            'text': ''
+            'headline': '2',
+            'text': '<div><strong>Date</strong>: 2012-03-25</div><div><strong>title</strong>: 2</div>'
           }
         ]
       }

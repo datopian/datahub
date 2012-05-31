@@ -7,7 +7,7 @@ this.recline.View = this.recline.View || {};
 
 // ## Map view for a Dataset using Leaflet mapping library.
 //
-// This view allows to plot gereferenced documents on a map. The location
+// This view allows to plot gereferenced records on a map. The location
 // information can be provided either via a field with
 // [GeoJSON](http://geojson.org) objects or two fields with latitude and
 // longitude coordinates.
@@ -115,14 +115,14 @@ my.Map = Backbone.View.extend({
       self.render()
     });
 
-    // Listen to changes in the documents
-    this.model.currentDocuments.bind('add', function(doc){self.redraw('add',doc)});
-    this.model.currentDocuments.bind('change', function(doc){
+    // Listen to changes in the records
+    this.model.currentRecords.bind('add', function(doc){self.redraw('add',doc)});
+    this.model.currentRecords.bind('change', function(doc){
         self.redraw('remove',doc);
         self.redraw('add',doc);
     });
-    this.model.currentDocuments.bind('remove', function(doc){self.redraw('remove',doc)});
-    this.model.currentDocuments.bind('reset', function(){self.redraw('reset')});
+    this.model.currentRecords.bind('remove', function(doc){self.redraw('remove',doc)});
+    this.model.currentRecords.bind('reset', function(){self.redraw('reset')});
 
     this.bind('view:show',function(){
       // If the div was hidden, Leaflet needs to recalculate some sizes
@@ -184,9 +184,9 @@ my.Map = Backbone.View.extend({
   // Actions can be:
   //
   // * reset: Clear all features
-  // * add: Add one or n features (documents)
-  // * remove: Remove one or n features (documents)
-  // * refresh: Clear existing features and add all current documents
+  // * add: Add one or n features (records)
+  // * remove: Remove one or n features (records)
+  // * refresh: Clear existing features and add all current records
   redraw: function(action, doc){
     var self = this;
     action = action || 'refresh';
@@ -201,7 +201,7 @@ my.Map = Backbone.View.extend({
     if (this.geomReady && this.mapReady){
       if (action == 'reset' || action == 'refresh'){
         this.features.clearLayers();
-        this._add(this.model.currentDocuments.models);
+        this._add(this.model.currentRecords.models);
       } else if (action == 'add' && doc){
         this._add(doc);
       } else if (action == 'remove' && doc){
@@ -266,11 +266,11 @@ my.Map = Backbone.View.extend({
 
   // Private: Add one or n features to the map
   //
-  // For each document passed, a GeoJSON geometry will be extracted and added
+  // For each record passed, a GeoJSON geometry will be extracted and added
   // to the features layer. If an exception is thrown, the process will be
   // stopped and an error notification shown.
   //
-  // Each feature will have a popup associated with all the document fields.
+  // Each feature will have a popup associated with all the record fields.
   //
   _add: function(docs){
     var self = this;
@@ -281,7 +281,7 @@ my.Map = Backbone.View.extend({
     var wrongSoFar = 0;
     _.every(docs,function(doc){
       count += 1;
-      var feature = self._getGeometryFromDocument(doc);
+      var feature = self._getGeometryFromRecord(doc);
       if (typeof feature === 'undefined' || feature === null){
         // Empty field
         return true;
@@ -338,9 +338,9 @@ my.Map = Backbone.View.extend({
 
   },
 
-  // Private: Return a GeoJSON geomtry extracted from the document fields
+  // Private: Return a GeoJSON geomtry extracted from the record fields
   //
-  _getGeometryFromDocument: function(doc){
+  _getGeometryFromRecord: function(doc){
     if (this.geomReady){
       if (this.state.get('geomField')){
         var value = doc.get(this.state.get('geomField'));

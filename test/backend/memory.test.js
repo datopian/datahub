@@ -30,8 +30,8 @@ test('query', function () {
     , from: 2
   };
   var out = data.query(queryObj);
-  deepEqual(out.documents[0], memoryData[2]);
-  equal(out.documents.length, 4);
+  deepEqual(out.records[0], memoryData[2]);
+  equal(out.records.length, 4);
   equal(out.total, 6);
 });
 
@@ -43,18 +43,18 @@ test('query sort', function () {
     ]
   };
   var out = data.query(queryObj);
-  equal(out.documents[0].x, 6);
+  equal(out.records[0].x, 6);
 });
 
 test('query string', function () {
   var data = _wrapData();
   var out = data.query({q: 'UK'});
   equal(out.total, 3);
-  deepEqual(_.pluck(out.documents, 'country'), ['UK', 'UK', 'UK']);
+  deepEqual(_.pluck(out.records, 'country'), ['UK', 'UK', 'UK']);
 
   var out = data.query({q: 'UK 6'})
   equal(out.total, 1);
-  deepEqual(out.documents[0].id, 1);
+  deepEqual(out.records[0].id, 1);
 });
 
 test('filters', function () {
@@ -63,7 +63,7 @@ test('filters', function () {
   query.addTermFilter('country', 'UK');
   var out = data.query(query.toJSON());
   equal(out.total, 3);
-  deepEqual(_.pluck(out.documents, 'country'), ['UK', 'UK', 'UK']);
+  deepEqual(_.pluck(out.records, 'country'), ['UK', 'UK', 'UK']);
 });
 
 test('facet', function () {
@@ -118,7 +118,7 @@ var memoryData = {
     , id: 'test-dataset'
   },
   fields: [{id: 'x'}, {id: 'y'}, {id: 'z'}, {id: 'country'}, {id: 'label'}],
-  documents: [
+  records: [
     {id: 0, x: 1, y: 2, z: 3, country: 'DE', label: 'first'}
     , {id: 1, x: 2, y: 4, z: 6, country: 'UK', label: 'second'}
     , {id: 2, x: 3, y: 6, z: 9, country: 'US', label: 'third'}
@@ -129,16 +129,16 @@ var memoryData = {
 };
 
 function makeBackendDataset() {
-  var dataset = new recline.Backend.Memory.createDataset(memoryData.documents, null, memoryData.metadata);
+  var dataset = new recline.Backend.Memory.createDataset(memoryData.records, null, memoryData.metadata);
   return dataset;
 }
 
 test('createDataset', function () {
-  var dataset = recline.Backend.Memory.createDataset(memoryData.documents);
+  var dataset = recline.Backend.Memory.createDataset(memoryData.records);
   equal(dataset.fields.length, 6);
   deepEqual(['id', 'x', 'y', 'z', 'country', 'label'], dataset.fields.pluck('id'));
   dataset.query();
-  equal(memoryData.documents.length, dataset.currentDocuments.length);
+  equal(memoryData.records.length, dataset.currentRecords.length);
 });
 
 test('basics', function () {
@@ -162,8 +162,8 @@ test('query', function () {
     size: 4
     , from: 2
   };
-  dataset.query(queryObj).then(function(documentList) {
-    deepEqual(data[2], documentList.models[0].toJSON());
+  dataset.query(queryObj).then(function(recordList) {
+    deepEqual(data[2], recordList.models[0].toJSON());
   });
 });
 
@@ -177,7 +177,7 @@ test('query sort', function () {
     ]
   };
   dataset.query(queryObj).then(function() {
-    var doc0 = dataset.currentDocuments.models[0].toJSON();
+    var doc0 = dataset.currentRecords.models[0].toJSON();
     equal(doc0.x, 6);
   });
 });
@@ -186,13 +186,13 @@ test('query string', function () {
   var dataset = makeBackendDataset();
   dataset.fetch();
   dataset.query({q: 'UK'}).then(function() {
-    equal(dataset.currentDocuments.length, 3);
-    deepEqual(dataset.currentDocuments.pluck('country'), ['UK', 'UK', 'UK']);
+    equal(dataset.currentRecords.length, 3);
+    deepEqual(dataset.currentRecords.pluck('country'), ['UK', 'UK', 'UK']);
   });
 
   dataset.query({q: 'UK 6'}).then(function() {
-    equal(dataset.currentDocuments.length, 1);
-    deepEqual(dataset.currentDocuments.models[0].id, 1);
+    equal(dataset.currentRecords.length, 1);
+    deepEqual(dataset.currentRecords.models[0].id, 1);
   });
 });
 
@@ -200,8 +200,8 @@ test('filters', function () {
   var dataset = makeBackendDataset();
   dataset.queryState.addTermFilter('country', 'UK');
   dataset.query().then(function() {
-    equal(dataset.currentDocuments.length, 3);
-    deepEqual(dataset.currentDocuments.pluck('country'), ['UK', 'UK', 'UK']);
+    equal(dataset.currentRecords.length, 3);
+    deepEqual(dataset.currentRecords.pluck('country'), ['UK', 'UK', 'UK']);
   });
 });
 
@@ -247,7 +247,7 @@ test('update and delete', function () {
     // Test Delete
     doc1.destroy().then(function() {
       equal(data.data.length, 5);
-      equal(data.data[0].x, memoryData.documents[1].x);
+      equal(data.data[0].x, memoryData.records[1].x);
     });
   });
 });

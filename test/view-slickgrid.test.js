@@ -16,7 +16,7 @@ test('basic', function () {
   assertPresent('.slick-header-column[title="x"]');
   equal($('.slick-header-column').length,dataset.fields.length);
 
-  equal(dataset.currentDocuments.length,view.grid.getDataLength());
+  equal(dataset.currentRecords.length,view.grid.getDataLength());
 
   view.remove();
 });

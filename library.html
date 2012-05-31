@@ -13,7 +13,7 @@ title: Library - Home
 
   <p>Building on <a href="http://backbonejs.com/">Backbone</a>, Recline
   supplies components and structure to data-heavy applications by providing a
-  set of models (Dataset, Document/Row, Field) and views (Grid, Map, Graph
+  set of models (Dataset, Record/Row, Field) and views (Grid, Map, Graph
   etc).</p>
 
   <h2 id="examples">Examples</h2>
@@ -52,7 +52,7 @@ title: Library - Home
       <h4>Create a new Backend</h4>
     </div>
     <div class="span3 well">
-      <h4>Create a Custom Document Object</h4>
+      <h4>Create a Custom Record Object</h4>
     </div>
   </div>
 
@@ -70,10 +70,10 @@ title: Library - Home
         <p>There are two main model objects:</p>
         <ul>
           <li><a href="docs/model.html#dataset">Dataset</a>: represents the dataset.
-          Holds dataset info and a pointer to list of data items (Documents in our
+          Holds dataset info and a pointer to list of data items (Records in our
           terminology) which it can load from the relevant Backend.</li>
-          <li><a href="docs/model.html#document">Document</a>: an individual data item
-          (e.g. a row from a relational database or a spreadsheet, a document from from
+          <li><a href="docs/model.html#record">Record</a>: an individual data item
+          (e.g. a row from a relational database or a spreadsheet, a record from from
           a document DB like CouchDB or MongoDB).</li>
         </ul>
         
@@ -84,7 +84,7 @@ title: Library - Home
           <li><a href="docs/model.html#query">Query</a>: an object to encapsulate a
           query to the backend (useful both for creating queries and for storing and
           manipulating query state - e.g. from a query editor).</li>
-          <li><a href="docs/model.html#facte">Facet</a>: Object to store Facet
+          <li><a href="docs/model.html#facet">Facet</a>: Object to store Facet
           information, that is summary information (e.g. values and counts) about a
           field obtained by some faceting method on the backend.</li>
         </ul>
@@ -97,13 +97,13 @@ title: Library - Home
 
       <div class="span6">
         <h4>Backends</h4>
-        <p>Backends connect Dataset and Documents to data from a
+        <p>Backends connect Dataset and Records to data from a
         specific 'Backend' data source. They provide methods for loading and saving
-        Datasets and individuals Documents as well as for bulk loading via a query API
+        Datasets and individuals Records as well as for bulk loading via a query API
         and doing bulk transforms on the backend.</p>
         
         <p>A template Base class can be found <a href="docs/backend/base.html">in the
-          Backend base module of the source docs</a>. It documents both the relevant
+          Backend base module of the source docs</a>. It records both the relevant
         methods a Backend must have and (optionally) provides a base 'class' for
         inheritance. You can also find detailed examples of backend implementations in
         the source documentation below.</p>

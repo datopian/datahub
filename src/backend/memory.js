@@ -7,7 +7,7 @@ this.recline.Backend.Memory = this.recline.Backend.Memory || {};
   //
   // Convenience function to create a simple 'in-memory' dataset in one step.
   //
-  // @param data: list of hashes for each document/row in the data ({key:
+  // @param data: list of hashes for each record/row in the data ({key:
   // value, key: value})
   // @param fields: (optional) list of field hashes (each hash defining a hash
   // as per recline.Model.Field). If fields not specified they will be taken
@@ -76,7 +76,7 @@ this.recline.Backend.Memory = this.recline.Backend.Memory || {};
       results = results.slice(start, start+numRows);
       return {
         total: total,
-        documents: results,
+        records: results,
         facets: facets
       };
     };
@@ -118,7 +118,7 @@ this.recline.Backend.Memory = this.recline.Backend.Memory || {};
       return results;
     };
 
-    this.computeFacets = function(documents, queryObj) {
+    this.computeFacets = function(records, queryObj) {
       var facetResults = {};
       if (!queryObj.facets) {
         return facetResults;
@@ -129,7 +129,7 @@ this.recline.Backend.Memory = this.recline.Backend.Memory || {};
         facetResults[facetId].termsall = {};
       });
       // faceting
-      _.each(documents, function(doc) {
+      _.each(records, function(doc) {
         _.each(queryObj.facets, function(query, facetId) {
           var fieldId = query.terms.field;
           var val = doc[fieldId];
@@ -172,13 +172,13 @@ this.recline.Backend.Memory = this.recline.Backend.Memory || {};
         }
         return dfd.promise();
       } else if (method === 'update') {
-        if (model.__type__ == 'Document') {
+        if (model.__type__ == 'Record') {
           model.dataset._dataCache.update(model.toJSON());
           dfd.resolve(model);
         }
         return dfd.promise();
       } else if (method === 'delete') {
-        if (model.__type__ == 'Document') {
+        if (model.__type__ == 'Record') {
           model.dataset._dataCache.delete(model.toJSON());
           dfd.resolve(model);
         }
@@ -191,7 +191,7 @@ this.recline.Backend.Memory = this.recline.Backend.Memory || {};
     this.query = function(model, queryObj) {
       var dfd = $.Deferred();
       var results = model._dataCache.query(queryObj);
-      var hits = _.map(results.documents, function(row) {
+      var hits = _.map(results.records, function(row) {
         return { _source: row };
       });
       var out = {

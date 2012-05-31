@@ -29,14 +29,14 @@ this.recline.Backend.Base = function() {
   // ### sync
   //
   // An implementation of Backbone.sync that will be used to override
-  // Backbone.sync on operations for Datasets and Documents which are using this backend.
+  // Backbone.sync on operations for Datasets and Records which are using this backend.
   //
   // For read-only implementations you will need only to implement read method
   // for Dataset models (and even this can be a null operation). The read method
   // should return relevant metadata for the Dataset. We do not require read support
-  // for Documents because they are loaded in bulk by the query method.
+  // for Records because they are loaded in bulk by the query method.
   //
-  // For backends supporting write operations you must implement update and delete support for Document objects.
+  // For backends supporting write operations you must implement update and delete support for Record objects.
   //
   // All code paths should return an object conforming to the jquery promise API.
   this.sync = function(method, model, options) {
@@ -44,8 +44,8 @@ this.recline.Backend.Base = function() {
   
   // ### query
   //
-  // Query the backend for documents returning them in bulk. This method will
-  // be used by the Dataset.query method to search the backend for documents,
+  // Query the backend for records returning them in bulk. This method will
+  // be used by the Dataset.query method to search the backend for records,
   // retrieving the results in bulk.
   //
   // @param {recline.model.Dataset} model: Dataset model.
@@ -71,11 +71,11 @@ this.recline.Backend.Base = function() {
   // <pre>
   // {
   //   total: // (required) total number of results (can be null)
-  //   hits: [ // (required) one entry for each result document
+  //   hits: [ // (required) one entry for each result record
   //     {
-  //        _score:   // (optional) match score for document
-  //        _type: // (optional) document type
-  //        _source: // (required) document/row object
+  //        _score:   // (optional) match score for record
+  //        _type: // (optional) record type
+  //        _source: // (required) record/row object
   //     } 
   //   ],
   //   facets: { // (optional) 
