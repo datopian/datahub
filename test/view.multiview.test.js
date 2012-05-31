@@ -6,7 +6,7 @@ test('basic explorer functionality', function () {
   var $el = $('<div class="test-view-explorer-basic" />');
   $('.fixtures .data-explorer-here').append($el);
   var dataset = Fixture.getDataset();
-  var explorer = new recline.View.DataExplorer({
+  var explorer = new recline.View.MultiView({
     model: dataset,
     el: $el
   });
@@ -21,7 +21,7 @@ test('get State', function () {
   var dataset = Fixture.getDataset();
   var url = 'xyz';
   dataset.set({url: url});
-  var explorer = new recline.View.DataExplorer({
+  var explorer = new recline.View.MultiView({
     model: dataset,
     el: $el
   });
@@ -41,7 +41,7 @@ test('initialize state', function () {
   var $el = $('<div class="test-view-explorer-init-state" />');
   $('.fixtures .data-explorer-here').append($el);
   var dataset = Fixture.getDataset();
-  var explorer = new recline.View.DataExplorer({
+  var explorer = new recline.View.MultiView({
     model: dataset,
     el: $el,
     state: {
@@ -74,11 +74,11 @@ test('initialize state', function () {
 
 test('restore (from serialized state)', function() {
   var dataset = Fixture.getDataset();
-  var explorer = new recline.View.DataExplorer({
+  var explorer = new recline.View.MultiView({
     model: dataset,
   });
   var state = explorer.state.toJSON();
-  var explorerNew = recline.View.DataExplorer.restore(state);
+  var explorerNew = recline.View.MultiView.restore(state);
   var out = explorerNew.state.toJSON();
   equal(out.backend, state.backend);
 });

@@ -70,7 +70,7 @@
 //
 // State is available not only for individual views (as described above) but
 // for the dataset (e.g. the current query). For an example of pulling together
-// state from across multiple components see `recline.View.DataExplorer`.
+// state from across multiple components see `recline.View.MultiView`.
 //
 // ### Flash Messages / Notifications
 //
@@ -85,7 +85,7 @@
 //
 // Objects or views wishing to bind to flash messages may then subscribe to
 // these events and take some action such as displaying them to the user. For
-// an example of such behaviour see the DataExplorer view.
+// an example of such behaviour see the MultiView view.
 // 
 // ### Writing your own Views
 //
@@ -98,12 +98,12 @@ this.recline = this.recline || {};
 this.recline.View = this.recline.View || {};
 
 (function($, my) {
-// ## DataExplorer
+// ## MultiView
 //
-// The primary view for the entire application. Usage:
+// Manage multiple views together along with query editor etc. Usage:
 // 
 // <pre>
-// var myExplorer = new model.recline.DataExplorer({
+// var myExplorer = new model.recline.MultiView({
 //   model: {{recline.Model.Dataset instance}}
 //   el: {{an existing dom element}}
 //   views: {{dataset views}}
@@ -120,7 +120,7 @@ this.recline.View = this.recline.View || {};
 // Graph).
 //
 // **views**: (optional) the dataset views (Grid, Graph etc) for
-// DataExplorer to show. This is an array of view hashes. If not provided
+// MultiView to show. This is an array of view hashes. If not provided
 // initialize with (recline.View.)Grid, Graph, and Map views (with obvious id
 // and labels!).
 //
@@ -161,8 +161,8 @@ this.recline.View = this.recline.View || {};
 // Note that at present we do *not* serialize information about the actual set
 // of views in use -- e.g. those specified by the views argument -- but instead 
 // expect either that the default views are fine or that the client to have
-// initialized the DataExplorer with the relevant views themselves.
-my.DataExplorer = Backbone.View.extend({
+// initialized the MultiView with the relevant views themselves.
+my.MultiView = Backbone.View.extend({
   template: ' \
   <div class="recline-data-explorer"> \
     <div class="alert-messages"></div> \
@@ -453,12 +453,12 @@ my.DataExplorer = Backbone.View.extend({
   }
 });
 
-// ### DataExplorer.restore
+// ### MultiView.restore
 //
-// Restore a DataExplorer instance from a serialized state including the associated dataset
-my.DataExplorer.restore = function(state) {
+// Restore a MultiView instance from a serialized state including the associated dataset
+my.MultiView.restore = function(state) {
   var dataset = recline.Model.Dataset.restore(state);
-  var explorer = new my.DataExplorer({
+  var explorer = new my.MultiView({
     model: dataset,
     state: state
   });

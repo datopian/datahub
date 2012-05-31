@@ -108,7 +108,7 @@ var ExplorerApp = Backbone.View.extend({
        }
     ];
 
-    this.dataExplorer = new recline.View.DataExplorer({
+    this.dataExplorer = new recline.View.MultiView({
       model: dataset,
       el: $el,
       state: state,
