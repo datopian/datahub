@@ -5,7 +5,7 @@ test('parseHashUrl', function () {
   var out = recline.View.parseHashUrl('graph?x=y');
   equal(out.path, 'graph');
   equal(out.query, '?x=y');
-  var out = recline.Util.parseHashUrl('graph');
+  var out = recline.View.parseHashUrl('graph');
   equal(out.path, 'graph');
   equal(out.query, '');
 });
