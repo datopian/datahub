@@ -199,6 +199,10 @@ my.MultiView = Backbone.View.extend({
     _.each(this.pageViews, function(view, pageName) {
       $dataViewContainer.append(view.view.el);
     });
+    var pager = new recline.View.Pager({
+      model: this.model.queryState
+    });
+    this.el.find('.recline-results-info').after(pager.el);
     var queryEditor = new recline.View.QueryEditor({
       model: this.model.queryState
     });
