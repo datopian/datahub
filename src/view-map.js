@@ -347,13 +347,19 @@ my.Map = Backbone.View.extend({
         if (typeof(value) === 'string'){
           // We *may* have a GeoJSON string representation
           try {
-            return $.parseJSON(value);
+            value = $.parseJSON(value);
           } catch(e) {
           }
-        } else {
-          // We assume that the contents of the field are a valid GeoJSON object
-          return value;
         }
+        if (value && value.lat) {
+          // not yet geojson so convert
+          value = {
+            "type": "Point",
+            "coordinates": [value.lon || value.lng, value.lat]
+          };
+        }
+        // We now assume that contents of the field are a valid GeoJSON object
+        return value;
       } else if (this.state.get('lonField') && this.state.get('latField')){
         // We'll create a GeoJSON like point object from the two lat/lon fields
         var lon = doc.get(this.state.get('lonField'));

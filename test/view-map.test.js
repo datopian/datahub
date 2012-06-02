@@ -90,6 +90,23 @@ test('GeoJSON geom field', function () {
   view.remove();
 });
 
+test('geom field non-GeoJSON', function () {
+  var data = [{
+    location: { lon: 47, lat: 53},
+    title: 'abc'
+  }];
+  var dataset = recline.Backend.Memory.createDataset(data);
+  var view = new recline.View.Map({
+    model: dataset
+  });
+
+  //Fire query, otherwise the map won't be initialized
+  dataset.query();
+
+  // Check that all features were created
+  equal(_getFeaturesCount(view.features), 1);
+});
+
 test('Popup', function () {
   var dataset = GeoJSONFixture.getDataset();
   var view = new recline.View.Map({
