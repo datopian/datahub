@@ -1,6 +1,6 @@
 (function ($) {
 
-module("Backend Memory - DataWrapper");
+module("Backend Memory - Store");
 
 var memoryData = [
   {id: 0, x: 1, y: 2, z: 3, country: 'DE', label: 'first'}
@@ -13,7 +13,7 @@ var memoryData = [
 
 var _wrapData = function() {
   var dataCopy = $.extend(true, [], memoryData);
-  return new recline.Backend.Memory.DataWrapper(dataCopy);
+  return new recline.Backend.Memory.Store(dataCopy);
 }
 
 test('basics', function () {
