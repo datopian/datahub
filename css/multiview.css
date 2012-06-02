@@ -27,7 +27,7 @@
 .header .recline-results-info {
   line-height: 28px;
   margin-left: 20px;
-  display: inline;
+  float: left;
 }
 
 /**********************************************************
@@ -39,34 +39,22 @@
   height: 30px;
 }
 
-.header .recline-query-editor .input-prepend {
+.header .input-prepend {
   margin-bottom: auto;
 }
 
-.recline-query-editor .add-on {
+.header .add-on {
   float: left;
 }
 
 /* needed for Chrome but not FF */
-.header .recline-query-editor .add-on {
+.header .add-on {
   margin-left: -27px;
 }
 
 /* needed for FF but not chrome */
-.header .recline-query-editor .input-prepend {
+.header .input-prepend {
   vertical-align: top;
-}
-
-.header .recline-query-editor .pagination input {
-  width: 30px;
-  height: 18px;
-  padding: 2px 4px;
-  margin-top: -4px;
-}
-
-.header .recline-query-editor .pagination a {
-  line-height: 26px;
-  padding: 0 6px;
 }
 
 .header .recline-query-editor form button {
@@ -74,7 +62,31 @@
 }
 
 /**********************************************************
-  * Query Editor
+  * Pager
+  *********************************************************/
+
+.header .recline-pager {
+  float: left;
+  margin: auto;
+  display: block;
+  margin-left: 20px;
+}
+
+.header .recline-pager .pagination input {
+  width: 30px;
+  height: 18px;
+  padding: 2px 4px;
+  margin: 0;
+  margin-top: -4px;
+}
+
+.header .recline-pager .pagination a {
+  line-height: 26px;
+  padding: 0 6px;
+}
+
+/**********************************************************
+  * Filter Editor
   *********************************************************/
 
 .recline-filter-editor .filter-term .input-append a {

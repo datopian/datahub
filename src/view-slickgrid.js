@@ -19,9 +19,9 @@ my.SlickGrid = Backbone.View.extend({
     var self = this;
     this.el = $(this.el);
     _.bindAll(this, 'render');
-    this.model.currentDocuments.bind('add', this.render);
-    this.model.currentDocuments.bind('reset', this.render);
-    this.model.currentDocuments.bind('remove', this.render);
+    this.model.currentRecords.bind('add', this.render);
+    this.model.currentRecords.bind('reset', this.render);
+    this.model.currentRecords.bind('remove', this.render);
 
     var state = _.extend({
         hiddenColumns: [],
@@ -110,7 +110,7 @@ my.SlickGrid = Backbone.View.extend({
 
     var data = [];
 
-    this.model.currentDocuments.each(function(doc){
+    this.model.currentRecords.each(function(doc){
       var row = {};
       self.model.fields.each(function(field){
         row[field.id] = doc.getFieldValue(field);

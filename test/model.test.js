@@ -39,7 +39,7 @@ test('Field: basics', function () {
 });
 
 test('Field: default renderers', function () {
-  var doc = new recline.Model.Document({
+  var doc = new recline.Model.Record({
     x: 12.3,
     myobject: {a: 1, b: 2},
     link: 'http://abc.com/',
@@ -74,7 +74,7 @@ test('Field: default renderers', function () {
 });
 
 test('Field: custom deriver and renderer', function () {
-  var doc = new recline.Model.Document({x: 123});
+  var doc = new recline.Model.Record({x: 123});
   var cellRenderer = function(value, field) {
     return '<span class="field-' + field.id + '">' + value + '</span>';
   }

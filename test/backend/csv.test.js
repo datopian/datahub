@@ -26,7 +26,7 @@ test("parseCSV", function() {
   '"Other, AN", 12:35\n';
   var dataset = recline.Backend.CSV.csvToDataset(csv);
   dataset.query();
-  equal(dataset.currentDocuments.length, 3);
+  equal(dataset.currentRecords.length, 3);
 });
 
 test("parseCSVsemicolon", function() {

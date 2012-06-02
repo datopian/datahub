@@ -35,6 +35,8 @@ Possible breaking changes:
 
 * State only stores backend (name) and dataset url (in url field) rather than entire dataset object
 * Backends heavily reorganized
+* Rename Document -> Record
+* Rename DataExplorer view to MultiView
 
 ### v0.4 - April 26th 2012
 

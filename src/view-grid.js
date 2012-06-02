@@ -17,9 +17,9 @@ my.Grid = Backbone.View.extend({
     var self = this;
     this.el = $(this.el);
     _.bindAll(this, 'render', 'onHorizontalScroll');
-    this.model.currentDocuments.bind('add', this.render);
-    this.model.currentDocuments.bind('reset', this.render);
-    this.model.currentDocuments.bind('remove', this.render);
+    this.model.currentRecords.bind('add', this.render);
+    this.model.currentRecords.bind('reset', this.render);
+    this.model.currentRecords.bind('remove', this.render);
     this.tempState = {};
     var state = _.extend({
         hiddenFields: []
@@ -77,13 +77,13 @@ my.Grid = Backbone.View.extend({
       showColumn: function() { self.showColumn(e); },
       deleteRow: function() {
         var self = this;
-        var doc = _.find(self.model.currentDocuments.models, function(doc) {
+        var doc = _.find(self.model.currentRecords.models, function(doc) {
           // important this is == as the currentRow will be string (as comes
           // from DOM) while id may be int
           return doc.id == self.tempState.currentRow;
         });
         doc.destroy().then(function() { 
-            self.model.currentDocuments.remove(doc);
+            self.model.currentRecords.remove(doc);
             self.trigger('recline:flash', {message: "Row deleted successfully"});
           }).fail(function(err) {
             self.trigger('recline:flash', {message: "Errorz! " + err});
@@ -213,7 +213,7 @@ my.Grid = Backbone.View.extend({
     });
     var htmls = Mustache.render(this.template, this.toTemplateJSON());
     this.el.html(htmls);
-    this.model.currentDocuments.forEach(function(doc) {
+    this.model.currentRecords.forEach(function(doc) {
       var tr = $('<tr />');
       self.el.find('tbody').append(tr);
       var newView = new my.GridRow({
@@ -246,7 +246,7 @@ my.Grid = Backbone.View.extend({
   }
 });
 
-// ## GridRow View for rendering an individual document.
+// ## GridRow View for rendering an individual record.
 //
 // Since we want this to update in place it is up to creator to provider the element to attach to.
 //
@@ -256,7 +256,7 @@ my.Grid = Backbone.View.extend({
 //
 // <pre>
 // var row = new GridRow({
-//   model: dataset-document,
+//   model: dataset-record,
 //     el: dom-element,
 //     fields: mydatasets.fields // a FieldList object
 //   });

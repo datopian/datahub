@@ -38,7 +38,7 @@ test('state', function () {
 test('new GridRow View', function () {
   var $el = $('<tr />');
   $('.fixtures .test-datatable').append($el);
-  var doc = new recline.Model.Document({
+  var doc = new recline.Model.Record({
     'id': 1,
     'b': '2',
     'a': '1'

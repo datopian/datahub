@@ -31,7 +31,7 @@ my.Timeline = Backbone.View.extend({
     this.model.fields.bind('reset', function() {
       self._setupTemporalField();
     });
-    this.model.currentDocuments.bind('all', function() {
+    this.model.currentRecords.bind('all', function() {
       self.reloadData();
     });
     var stateData = _.extend({
@@ -78,11 +78,11 @@ my.Timeline = Backbone.View.extend({
         ]
       }
     };
-    this.model.currentDocuments.each(function(doc) {
+    this.model.currentRecords.each(function(doc) {
       var start = doc.get(self.state.get('startField'));
       if (start) {
-        var end = moment(doc.get(self.state.get('endField')));
-        end = end ? end.toDate() : null;
+        var end = doc.get(self.state.get('endField'));
+        end = end ? moment(end).toDate() : null;
         var tlEntry = {
           "startDate": moment(start).toDate(),
           "endDate": end,

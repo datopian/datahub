@@ -98,7 +98,7 @@ my.ColumnTransform = Backbone.View.extend({
     }
     this.el.modal('hide');
     this.trigger('recline:flash', {message: "Updating all visible docs. This could take a while...", persist: true, loader: true});
-      var docs = self.model.currentDocuments.map(function(doc) {
+      var docs = self.model.currentRecords.map(function(doc) {
        return doc.toJSON();
       });
     // TODO: notify about failed docs? 
@@ -107,14 +107,14 @@ my.ColumnTransform = Backbone.View.extend({
     function onCompletedUpdate() {
       totalToUpdate += -1;
       if (totalToUpdate === 0) {
-        self.trigger('recline:flash', {message: toUpdate.length + " documents updated successfully"});
+        self.trigger('recline:flash', {message: toUpdate.length + " records updated successfully"});
         alert('WARNING: We have only updated the docs in this view. (Updating of all docs not yet implemented!)');
         self.remove();
       }
     }
     // TODO: Very inefficient as we search through all docs every time!
     _.each(toUpdate, function(editedDoc) {
-      var realDoc = self.model.currentDocuments.get(editedDoc.id);
+      var realDoc = self.model.currentRecords.get(editedDoc.id);
       realDoc.set(editedDoc);
       realDoc.save().then(onCompletedUpdate).fail(onCompletedUpdate);
     });
@@ -158,7 +158,7 @@ my.ColumnTransform = Backbone.View.extend({
       var editFunc = costco.evalFunction(e.target.value);
       if (!editFunc.errorMessage) {
         errors.text('No syntax error.');
-        var docs = self.model.currentDocuments.map(function(doc) {
+        var docs = self.model.currentRecords.map(function(doc) {
           return doc.toJSON();
         });
         var previewData = costco.previewTransform(docs, editFunc, self.state.currentColumn);

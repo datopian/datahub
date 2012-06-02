@@ -21,7 +21,7 @@ var ExplorerApp = Backbone.View.extend({
     this.router.route(/explorer/, 'explorer', this.viewExplorer);
     Backbone.history.start();
 
-    var state = recline.Util.parseQueryString(decodeURIComponent(window.location.search));
+    var state = recline.View.parseQueryString(decodeURIComponent(window.location.search));
     if (state) {
       _.each(state, function(value, key) {
         try {
@@ -108,7 +108,7 @@ var ExplorerApp = Backbone.View.extend({
        }
     ];
 
-    this.dataExplorer = new recline.View.DataExplorer({
+    this.dataExplorer = new recline.View.MultiView({
       model: dataset,
       el: $el,
       state: state,
@@ -145,7 +145,7 @@ var ExplorerApp = Backbone.View.extend({
   },
 
   makePermaLink: function(state) {
-    var qs = recline.Util.composeQueryString(state.toJSON());
+    var qs = recline.View.composeQueryString(state.toJSON());
     return window.location.origin + window.location.pathname + qs;
   },
 

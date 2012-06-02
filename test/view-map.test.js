@@ -11,12 +11,12 @@ var GeoJSONFixture = {
         {id: 'z'},
         {id: 'geom'}
       ];
-    var documents = [
+    var records = [
       {id: 0, x: 1, y: 2, z: 3, geom: '{"type":"Point","coordinates":[13.40,52.35]}'},
       {id: 1, x: 2, y: 4, z: 6, geom: {type:"Point",coordinates:[13.40,52.35]}},
       {id: 2, x: 3, y: 6, z: 9, geom: {type:"LineString",coordinates:[[100.0, 0.0],[101.0, 1.0]]}}
     ];
-    var dataset = recline.Backend.Memory.createDataset(documents, fields);
+    var dataset = recline.Backend.Memory.createDataset(records, fields);
     return dataset;
   }
 };
@@ -55,12 +55,12 @@ test('Lat/Lon geom fields', function () {
   // Check that all markers were created
   equal(_getFeaturesCount(view.features),6);
 
-  // Delete a document
-  view.model.currentDocuments.remove(view.model.currentDocuments.get('1'));
+  // Delete a record
+  view.model.currentRecords.remove(view.model.currentRecords.get('1'));
   equal(_getFeaturesCount(view.features),5);
 
   // Add a new one
-  view.model.currentDocuments.add({id: 7, x: 7, y: 14, z: 21, country: 'KX', label: 'seventh', lat:13.23, lon:23.56}),
+  view.model.currentRecords.add({id: 7, x: 7, y: 14, z: 21, country: 'KX', label: 'seventh', lat:13.23, lon:23.56}),
   equal(_getFeaturesCount(view.features),6);
 
   view.remove();
@@ -79,15 +79,32 @@ test('GeoJSON geom field', function () {
   // Check that all features were created
   equal(_getFeaturesCount(view.features),3);
 
-  // Delete a document
-  view.model.currentDocuments.remove(view.model.currentDocuments.get('2'));
+  // Delete a record
+  view.model.currentRecords.remove(view.model.currentRecords.get('2'));
   equal(_getFeaturesCount(view.features),2);
 
   // Add it back
-  view.model.currentDocuments.add({id: 2, x: 3, y: 6, z: 9, geom: {type:"LineString",coordinates:[[100.0, 0.0],[101.0, 1.0]]}}),
+  view.model.currentRecords.add({id: 2, x: 3, y: 6, z: 9, geom: {type:"LineString",coordinates:[[100.0, 0.0],[101.0, 1.0]]}}),
   equal(_getFeaturesCount(view.features),3);
 
   view.remove();
+});
+
+test('geom field non-GeoJSON', function () {
+  var data = [{
+    location: { lon: 47, lat: 53},
+    title: 'abc'
+  }];
+  var dataset = recline.Backend.Memory.createDataset(data);
+  var view = new recline.View.Map({
+    model: dataset
+  });
+
+  //Fire query, otherwise the map won't be initialized
+  dataset.query();
+
+  // Check that all features were created
+  equal(_getFeaturesCount(view.features), 1);
 });
 
 test('Popup', function () {
