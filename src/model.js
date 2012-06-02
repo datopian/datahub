@@ -190,12 +190,21 @@ my.Record = Backbone.Model.extend({
   // For the provided Field get the corresponding rendered computed data value
   // for this record.
   getFieldValue: function(field) {
+    val = this.getFieldValueUnrendered(field);
+    if (field.renderer) {
+      val = field.renderer(val, field, this.toJSON());
+    }
+    return val;
+  },
+
+  // ### getFieldValueUnrendered
+  //
+  // For the provided Field get the corresponding computed data value
+  // for this record.
+  getFieldValueUnrendered: function(field) {
     var val = this.get(field.id);
     if (field.deriver) {
       val = field.deriver(val, field, this);
-    }
-    if (field.renderer) {
-      val = field.renderer(val, field, this);
     }
     return val;
   },
@@ -233,9 +242,9 @@ my.RecordList = Backbone.Collection.extend({
 // Following additional instance properties:
 // 
 // @property {Function} renderer: a function to render the data for this field.
-// Signature: function(value, field, doc) where value is the value of this
+// Signature: function(value, field, record) where value is the value of this
 // cell, field is corresponding field object and record is the record
-// object. Note that implementing functions can ignore arguments (e.g.
+// object (as simple JS object). Note that implementing functions can ignore arguments (e.g.
 // function(value) would be a valid formatter function).
 // 
 // @property {Function} deriver: a function to derive/compute the value of data

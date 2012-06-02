@@ -68,12 +68,26 @@ my.SlickGrid = Backbone.View.extend({
 
     // We need all columns, even the hidden ones, to show on the column picker
     var columns = [];
+    // custom formatter as default one escapes html
+    // plus this way we distinguish between rendering/formatting and computed value (so e.g. sort still works ...)
+    // row = row index, cell = cell index, value = value, columnDef = column definition, dataContext = full row values
+    var formatter = function(row, cell, value, columnDef, dataContext) {
+      var field = self.model.fields.get(columnDef.id);
+      if (field.renderer) {
+        return field.renderer(value, field, dataContext);
+      } else {
+        return value;
+      }
+    }
     _.each(this.model.fields.toJSON(),function(field){
-      var column = {id:field['id'],
-                    name:field['label'],
-                    field:field['id'],
-                    sortable: true,
-                    minWidth: 80};
+      var column = {
+        id:field['id'],
+        name:field['label'],
+        field:field['id'],
+        sortable: true,
+        minWidth: 80,
+        formatter: formatter
+      };
 
       var widthInfo = _.find(self.state.get('columnsWidth'),function(c){return c.column == field.id});
       if (widthInfo){
@@ -113,7 +127,7 @@ my.SlickGrid = Backbone.View.extend({
     this.model.currentRecords.each(function(doc){
       var row = {};
       self.model.fields.each(function(field){
-        row[field.id] = doc.getFieldValue(field);
+        row[field.id] = doc.getFieldValueUnrendered(field);
       });
       data.push(row);
     });
