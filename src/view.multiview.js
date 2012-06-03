@@ -75,17 +75,21 @@ my.MultiView = Backbone.View.extend({
     <div class="alert-messages"></div> \
     \
     <div class="header"> \
-      <ul class="navigation"> \
+      <div class="navigation"> \
+        <div class="btn-group" data-toggle="buttons-radio"> \
         {{#views}} \
-        <li><a href="#{{id}}" data-view="{{id}}" class="btn">{{label}}</a> \
+        <a href="#{{id}}" data-view="{{id}}" class="btn">{{label}}</a> \
         {{/views}} \
-      </ul> \
+        </div> \
+      </div> \
       <div class="recline-results-info"> \
         Results found <span class="doc-count">{{docCount}}</span> \
       </div> \
       <div class="menu-right"> \
-        <a href="#" class="btn" data-action="filters">Filters</a> \
-        <a href="#" class="btn" data-action="facets">Facets</a> \
+        <div class="btn-group" data-toggle="buttons-checkbox"> \
+          <a href="#" class="btn" data-action="filters">Filters</a> \
+          <a href="#" class="btn" data-action="facets">Facets</a> \
+        </div> \
       </div> \
       <div class="query-editor-here" style="display:inline;"></div> \
       <div class="clearfix"></div> \
@@ -220,11 +224,9 @@ my.MultiView = Backbone.View.extend({
   },
 
   updateNav: function(pageName) {
-    this.el.find('.navigation li').removeClass('active');
-    this.el.find('.navigation li a').removeClass('disabled');
-    var $el = this.el.find('.navigation li a[data-view="' + pageName + '"]');
-    $el.parent().addClass('active');
-    $el.addClass('disabled');
+    this.el.find('.navigation a').removeClass('active');
+    var $el = this.el.find('.navigation a[data-view="' + pageName + '"]');
+    $el.addClass('active');
     // show the specific page
     _.each(this.pageViews, function(view, idx) {
       if (view.id === pageName) {
@@ -241,9 +243,9 @@ my.MultiView = Backbone.View.extend({
     e.preventDefault();
     var action = $(e.target).attr('data-action');
     if (action === 'filters') {
-      this.$filterEditor.show();
+      this.$filterEditor.toggle();
     } else if (action === 'facets') {
-      this.$facetViewer.show();
+      this.$facetViewer.toggle();
     }
   },
 

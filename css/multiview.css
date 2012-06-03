@@ -4,7 +4,6 @@
 }
 
 .recline-data-explorer .header .navigation,
-.recline-data-explorer .header .navigation li,
 .recline-data-explorer .header .pagination,
 .recline-data-explorer .header .pagination form
 {
@@ -13,8 +12,6 @@
 
 .recline-data-explorer .header .navigation {
   float: left;
-  margin-left: 0;
-  padding-left: 0;
 }
 
 .recline-data-explorer .header .menu-right {
