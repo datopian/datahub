@@ -105,9 +105,15 @@
             </ul>
           </li>
           <li>
-          <a href=".js-share-and-embed-dialog" data-toggle="modal">
+            <a href=".js-share-and-embed-dialog" data-toggle="modal">
               Share and Embed
               <i class="icon-share icon-white"></i>
+            </a>
+          </li>
+          <li>
+            <a href=".js-settings" data-toggle="modal">
+              Settings
+              <i class="icon-cog icon-white" style="margin-top: 1px;"></i>
             </a>
           </li>
         </ul>
@@ -227,6 +233,27 @@
       <textarea class="view-link" style="width: 100%; height: 100px;"></textarea>
       <h4>Embed this View</h4>
       <textarea class="view-embed" style="width: 100%; height: 200px;"></textarea>
+    </div>
+  </div>
+
+  <div class="modal fade in js-settings" style="display: none;">
+    <div class="modal-header">
+      <a class="close" data-dismiss="modal">×</a>
+      <h3>Settings</h3>
+    </div>
+    <div class="modal-body">
+      <form class="form-horizontal">
+        <div class="control-group">
+          <label class="control-label">DataHub API Key</label>
+          <div class="controls">
+            <input type="text" name="datahub_api_key" value="" />
+            <p class="help-block"><strong>Getting your API key:</strong> Register/Login to <a href="http://datahub.io/">http://datahub.io/</a> and then visit your user home page (click on the link at the top right). On your home page your API key is located at the top of the page in the section showing your main user details.</p>
+          </div>
+        </div>
+        <div class="form-actions">
+          <button type="submit" class="btn btn-primary">Save &raquo;</button>
+        </div>
+      </form>
     </div>
   </div>
 </div>

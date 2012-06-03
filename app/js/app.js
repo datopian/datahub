@@ -8,7 +8,8 @@ var ExplorerApp = Backbone.View.extend({
   events: {
     'click .nav .js-load-dialog-url': '_onLoadURLDialog',
     'submit form.js-load-url': '_onLoadURL',
-    'submit .js-load-dialog-file form': '_onLoadFile'
+    'submit .js-load-dialog-file form': '_onLoadFile',
+    'submit .js-settings form': '_onSettingsSave'
   },
 
   initialize: function() {
@@ -46,6 +47,7 @@ var ExplorerApp = Backbone.View.extend({
     if (dataset) {
       this.createExplorer(dataset, state);
     }
+    this._initializeSettings();
   },
 
   viewHome: function() {
@@ -212,6 +214,28 @@ var ExplorerApp = Backbone.View.extend({
       },
       options
     );
+  },
+
+  _getSettings: function() {
+    var settings = localStorage.getItem('dataexplorer.settings');
+    settings = JSON.parse(settings) || {};
+    return settings;
+  },
+
+  _initializeSettings: function() {
+    var settings = this._getSettings();
+    $('.modal.js-settings form input[name="datahub_api_key"]').val(settings.datahubApiKey);
+  },
+
+  _onSettingsSave: function(e) {
+    var self = this;
+    e.preventDefault();
+    var $form = $(e.target);
+    $('.modal.js-settings').modal('hide');
+    var datahubKey = $form.find('input[name="datahub_api_key"]').val();
+    var settings = this._getSettings();
+    settings.datahubApiKey = datahubKey;
+    localStorage.setItem('dataexplorer.settings', JSON.stringify(settings));
   }
 });
 
