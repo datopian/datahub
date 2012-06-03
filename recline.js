@@ -80,11 +80,11 @@ this.recline.Model = this.recline.Model || {};
 // fields on this Dataset (this can be set explicitly, or, will be set by
 // Dataset.fetch() or Dataset.query()
 //
-// @property {DocumentList} currentDocuments: a `DocumentList` containing the
-// Documents we have currently loaded for viewing (updated by calling query
+// @property {RecordList} currentRecords: a `RecordList` containing the
+// Records we have currently loaded for viewing (updated by calling query
 // method)
 //
-// @property {number} docCount: total number of documents in this dataset
+// @property {number} docCount: total number of records in this dataset
 //
 // @property {Backend} backend: the Backend (instance) for this Dataset.
 //
@@ -116,7 +116,7 @@ my.Dataset = Backbone.Model.extend({
       this.backend = this._backendFromString(backend);
     }
     this.fields = new my.FieldList();
-    this.currentDocuments = new my.DocumentList();
+    this.currentRecords = new my.RecordList();
     this.facets = new my.FacetList();
     this.docCount = null;
     this.queryState = new my.Query();
@@ -126,12 +126,12 @@ my.Dataset = Backbone.Model.extend({
 
   // ### query
   //
-  // AJAX method with promise API to get documents from the backend.
+  // AJAX method with promise API to get records from the backend.
   //
   // It will query based on current query state (given by this.queryState)
   // updated by queryObj (if provided).
   //
-  // Resulting DocumentList are used to reset this.currentDocuments and are
+  // Resulting RecordList are used to reset this.currentRecords and are
   // also returned.
   query: function(queryObj) {
     var self = this;
@@ -141,12 +141,12 @@ my.Dataset = Backbone.Model.extend({
     this.backend.query(this, actualQuery).done(function(queryResult) {
       self.docCount = queryResult.total;
       var docs = _.map(queryResult.hits, function(hit) {
-        var _doc = new my.Document(hit._source);
+        var _doc = new my.Record(hit._source);
         _doc.backend = self.backend;
         _doc.dataset = self;
         return _doc;
       });
-      self.currentDocuments.reset(docs);
+      self.currentRecords.reset(docs);
       if (queryResult.facets) {
         var facets = _.map(queryResult.facets, function(facetResult, facetId) {
           facetResult.id = facetId;
@@ -155,7 +155,7 @@ my.Dataset = Backbone.Model.extend({
         self.facets.reset(facets);
       }
       self.trigger('query:done');
-      dfd.resolve(self.currentDocuments);
+      dfd.resolve(self.currentRecords);
     })
     .fail(function(arguments) {
       self.trigger('query:fail', arguments);
@@ -244,11 +244,11 @@ my.Dataset.restore = function(state) {
   return dataset;
 };
 
-// ## <a id="document">A Document (aka Row)</a>
+// ## <a id="record">A Record (aka Row)</a>
 // 
 // A single entry or row in the dataset
-my.Document = Backbone.Model.extend({
-  __type__: 'Document',
+my.Record = Backbone.Model.extend({
+  __type__: 'Record',
   initialize: function() {
     _.bindAll(this, 'getFieldValue');
   },
@@ -256,30 +256,49 @@ my.Document = Backbone.Model.extend({
   // ### getFieldValue
   //
   // For the provided Field get the corresponding rendered computed data value
-  // for this document.
+  // for this record.
   getFieldValue: function(field) {
+    val = this.getFieldValueUnrendered(field);
+    if (field.renderer) {
+      val = field.renderer(val, field, this.toJSON());
+    }
+    return val;
+  },
+
+  // ### getFieldValueUnrendered
+  //
+  // For the provided Field get the corresponding computed data value
+  // for this record.
+  getFieldValueUnrendered: function(field) {
     var val = this.get(field.id);
     if (field.deriver) {
       val = field.deriver(val, field, this);
     }
-    if (field.renderer) {
-      val = field.renderer(val, field, this);
-    }
     return val;
+  },
+
+  summary: function(fields) {
+    var html = '';
+    for (key in this.attributes) {
+      if (key != 'id') {
+        html += '<div><strong>' + key + '</strong>: '+ this.attributes[key] + '</div>';
+      }
+    }
+    return html;
   }
 });
 
-// ## A Backbone collection of Documents
-my.DocumentList = Backbone.Collection.extend({
-  __type__: 'DocumentList',
-  model: my.Document
+// ## A Backbone collection of Records
+my.RecordList = Backbone.Collection.extend({
+  __type__: 'RecordList',
+  model: my.Record
 });
 
 // ## <a id="field">A Field (aka Column) on a Dataset</a>
 // 
 // Following (Backbone) attributes as standard:
 //
-// * id: a unique identifer for this field- usually this should match the key in the documents hash
+// * id: a unique identifer for this field- usually this should match the key in the records hash
 // * label: (optional: defaults to id) the visible label used for this field
 // * type: (optional: defaults to string) the type of the data in this field. Should be a string as per type names defined by ElasticSearch - see Types list on <http://www.elasticsearch.org/guide/reference/mapping/>
 // * format: (optional) used to indicate how the data should be formatted. For example:
@@ -291,14 +310,14 @@ my.DocumentList = Backbone.Collection.extend({
 // Following additional instance properties:
 // 
 // @property {Function} renderer: a function to render the data for this field.
-// Signature: function(value, field, doc) where value is the value of this
-// cell, field is corresponding field object and document is the document
-// object. Note that implementing functions can ignore arguments (e.g.
+// Signature: function(value, field, record) where value is the value of this
+// cell, field is corresponding field object and record is the record
+// object (as simple JS object). Note that implementing functions can ignore arguments (e.g.
 // function(value) would be a valid formatter function).
 // 
 // @property {Function} deriver: a function to derive/compute the value of data
 // in this field as a function of this field's value (if any) and the current
-// document, its signature and behaviour is the same as for renderer.  Use of
+// record, its signature and behaviour is the same as for renderer.  Use of
 // this function allows you to define an entirely new value for data in this
 // field. This provides support for a) 'derived/computed' fields: i.e. fields
 // whose data are functions of the data in other fields b) transforming the
@@ -519,7 +538,7 @@ my.Query = Backbone.Model.extend({
 //   "_type" : "terms",
 //   // total number of tokens in the facet
 //   "total": 5,
-//   // @property {number} number of documents which have no value for the field
+//   // @property {number} number of records which have no value for the field
 //   "missing" : 0,
 //   // number of facet values not included in the returned facets
 //   "other": 0,
@@ -569,85 +588,6 @@ Backbone.sync = function(method, model, options) {
 };
 
 }(jQuery, this.recline.Model));
-
-/*jshint multistr:true */
-
-this.recline = this.recline || {};
-this.recline.Util = this.recline.Util || {};
-
-(function(my) {
-// ## Miscellaneous Utilities
-
-var urlPathRegex = /^([^?]+)(\?.*)?/;
-
-// Parse the Hash section of a URL into path and query string
-my.parseHashUrl = function(hashUrl) {
-  var parsed = urlPathRegex.exec(hashUrl);
-  if (parsed === null) {
-    return {};
-  } else {
-    return {
-      path: parsed[1],
-      query: parsed[2] || ''
-    };
-  }
-};
-
-// Parse a URL query string (?xyz=abc...) into a dictionary.
-my.parseQueryString = function(q) {
-  if (!q) {
-    return {};
-  }
-  var urlParams = {},
-    e, d = function (s) {
-      return unescape(s.replace(/\+/g, " "));
-    },
-    r = /([^&=]+)=?([^&]*)/g;
-
-  if (q && q.length && q[0] === '?') {
-    q = q.slice(1);
-  }
-  while (e = r.exec(q)) {
-    // TODO: have values be array as query string allow repetition of keys
-    urlParams[d(e[1])] = d(e[2]);
-  }
-  return urlParams;
-};
-
-// Parse the query string out of the URL hash
-my.parseHashQueryString = function() {
-  q = my.parseHashUrl(window.location.hash).query;
-  return my.parseQueryString(q);
-};
-
-// Compse a Query String
-my.composeQueryString = function(queryParams) {
-  var queryString = '?';
-  var items = [];
-  $.each(queryParams, function(key, value) {
-    if (typeof(value) === 'object') {
-      value = JSON.stringify(value);
-    }
-    items.push(key + '=' + encodeURIComponent(value));
-  });
-  queryString += items.join('&');
-  return queryString;
-};
-
-my.getNewHashForQueryString = function(queryParams) {
-  var queryPart = my.composeQueryString(queryParams);
-  if (window.location.hash) {
-    // slice(1) to remove # at start
-    return window.location.hash.split('?')[0].slice(1) + queryPart;
-  } else {
-    return queryPart;
-  }
-};
-
-my.setHashQueryString = function(queryParams) {
-  window.location.hash = my.getNewHashForQueryString(queryParams);
-};
-})(this.recline.Util);
 
 /*jshint multistr:true */
 
@@ -748,8 +688,8 @@ my.Graph = Backbone.View.extend({
     this.model.bind('change', this.render);
     this.model.fields.bind('reset', this.render);
     this.model.fields.bind('add', this.render);
-    this.model.currentDocuments.bind('add', this.redraw);
-    this.model.currentDocuments.bind('reset', this.redraw);
+    this.model.currentRecords.bind('add', this.redraw);
+    this.model.currentRecords.bind('reset', this.redraw);
     // because we cannot redraw when hidden we may need when becoming visible
     this.bind('view:show', function() {
       if (this.needToRedraw) {
@@ -832,7 +772,7 @@ my.Graph = Backbone.View.extend({
     //   Uncaught Invalid dimensions for plot, width = 0, height = 0
     // * There is no data for the plot -- either same error or may have issues later with errors like 'non-existent node-value' 
     var areWeVisible = !jQuery.expr.filters.hidden(this.el[0]);
-    if ((!areWeVisible || this.model.currentDocuments.length === 0)) {
+    if ((!areWeVisible || this.model.currentRecords.length === 0)) {
       this.needToRedraw = true;
       return;
     }
@@ -860,8 +800,8 @@ my.Graph = Backbone.View.extend({
     // However, that is non-trivial to work out from a dataset (datasets may
     // have no field type info). Thus at present we only do this for bars.
     var tickFormatter = function (val) {
-      if (self.model.currentDocuments.models[val]) {
-        var out = self.model.currentDocuments.models[val].get(self.state.attributes.group);
+      if (self.model.currentRecords.models[val]) {
+        var out = self.model.currentRecords.models[val].get(self.state.attributes.group);
         // if the value was in fact a number we want that not the 
         if (typeof(out) == 'number') {
           return val;
@@ -917,7 +857,7 @@ my.Graph = Backbone.View.extend({
           tickLength: 1,
           tickFormatter: tickFormatter,
           min: -0.5,
-          max: self.model.currentDocuments.length - 0.5
+          max: self.model.currentRecords.length - 0.5
         }
       }
     };
@@ -955,8 +895,8 @@ my.Graph = Backbone.View.extend({
             y = _tmp;
           }
           // convert back from 'index' value on x-axis (e.g. in cases where non-number values)
-          if (self.model.currentDocuments.models[x]) {
-            x = self.model.currentDocuments.models[x].get(self.state.attributes.group);
+          if (self.model.currentRecords.models[x]) {
+            x = self.model.currentRecords.models[x].get(self.state.attributes.group);
           } else {
             x = x.toFixed(2);
           }
@@ -990,13 +930,13 @@ my.Graph = Backbone.View.extend({
     var series = [];
     _.each(this.state.attributes.series, function(field) {
       var points = [];
-      _.each(self.model.currentDocuments.models, function(doc, index) {
+      _.each(self.model.currentRecords.models, function(doc, index) {
         var xfield = self.model.fields.get(self.state.attributes.group);
         var x = doc.getFieldValue(xfield);
         // time series
         var isDateTime = xfield.get('type') === 'date';
         if (isDateTime) {
-          x = new Date(x);
+          x = moment(x).toDate();
         }
         var yfield = self.model.fields.get(field);
         var y = doc.getFieldValue(yfield);
@@ -1068,9 +1008,9 @@ my.Grid = Backbone.View.extend({
     var self = this;
     this.el = $(this.el);
     _.bindAll(this, 'render', 'onHorizontalScroll');
-    this.model.currentDocuments.bind('add', this.render);
-    this.model.currentDocuments.bind('reset', this.render);
-    this.model.currentDocuments.bind('remove', this.render);
+    this.model.currentRecords.bind('add', this.render);
+    this.model.currentRecords.bind('reset', this.render);
+    this.model.currentRecords.bind('remove', this.render);
     this.tempState = {};
     var state = _.extend({
         hiddenFields: []
@@ -1128,13 +1068,13 @@ my.Grid = Backbone.View.extend({
       showColumn: function() { self.showColumn(e); },
       deleteRow: function() {
         var self = this;
-        var doc = _.find(self.model.currentDocuments.models, function(doc) {
+        var doc = _.find(self.model.currentRecords.models, function(doc) {
           // important this is == as the currentRow will be string (as comes
           // from DOM) while id may be int
           return doc.id == self.tempState.currentRow;
         });
         doc.destroy().then(function() { 
-            self.model.currentDocuments.remove(doc);
+            self.model.currentRecords.remove(doc);
             self.trigger('recline:flash', {message: "Row deleted successfully"});
           }).fail(function(err) {
             self.trigger('recline:flash', {message: "Errorz! " + err});
@@ -1264,7 +1204,7 @@ my.Grid = Backbone.View.extend({
     });
     var htmls = Mustache.render(this.template, this.toTemplateJSON());
     this.el.html(htmls);
-    this.model.currentDocuments.forEach(function(doc) {
+    this.model.currentRecords.forEach(function(doc) {
       var tr = $('<tr />');
       self.el.find('tbody').append(tr);
       var newView = new my.GridRow({
@@ -1297,7 +1237,7 @@ my.Grid = Backbone.View.extend({
   }
 });
 
-// ## GridRow View for rendering an individual document.
+// ## GridRow View for rendering an individual record.
 //
 // Since we want this to update in place it is up to creator to provider the element to attach to.
 //
@@ -1307,7 +1247,7 @@ my.Grid = Backbone.View.extend({
 //
 // <pre>
 // var row = new GridRow({
-//   model: dataset-document,
+//   model: dataset-record,
 //     el: dom-element,
 //     fields: mydatasets.fields // a FieldList object
 //   });
@@ -1429,7 +1369,7 @@ this.recline.View = this.recline.View || {};
 
 // ## Map view for a Dataset using Leaflet mapping library.
 //
-// This view allows to plot gereferenced documents on a map. The location
+// This view allows to plot gereferenced records on a map. The location
 // information can be provided either via a field with
 // [GeoJSON](http://geojson.org) objects or two fields with latitude and
 // longitude coordinates.
@@ -1537,14 +1477,14 @@ my.Map = Backbone.View.extend({
       self.render()
     });
 
-    // Listen to changes in the documents
-    this.model.currentDocuments.bind('add', function(doc){self.redraw('add',doc)});
-    this.model.currentDocuments.bind('change', function(doc){
+    // Listen to changes in the records
+    this.model.currentRecords.bind('add', function(doc){self.redraw('add',doc)});
+    this.model.currentRecords.bind('change', function(doc){
         self.redraw('remove',doc);
         self.redraw('add',doc);
     });
-    this.model.currentDocuments.bind('remove', function(doc){self.redraw('remove',doc)});
-    this.model.currentDocuments.bind('reset', function(){self.redraw('reset')});
+    this.model.currentRecords.bind('remove', function(doc){self.redraw('remove',doc)});
+    this.model.currentRecords.bind('reset', function(){self.redraw('reset')});
 
     this.bind('view:show',function(){
       // If the div was hidden, Leaflet needs to recalculate some sizes
@@ -1606,9 +1546,9 @@ my.Map = Backbone.View.extend({
   // Actions can be:
   //
   // * reset: Clear all features
-  // * add: Add one or n features (documents)
-  // * remove: Remove one or n features (documents)
-  // * refresh: Clear existing features and add all current documents
+  // * add: Add one or n features (records)
+  // * remove: Remove one or n features (records)
+  // * refresh: Clear existing features and add all current records
   redraw: function(action, doc){
     var self = this;
     action = action || 'refresh';
@@ -1623,7 +1563,7 @@ my.Map = Backbone.View.extend({
     if (this.geomReady && this.mapReady){
       if (action == 'reset' || action == 'refresh'){
         this.features.clearLayers();
-        this._add(this.model.currentDocuments.models);
+        this._add(this.model.currentRecords.models);
       } else if (action == 'add' && doc){
         this._add(doc);
       } else if (action == 'remove' && doc){
@@ -1688,11 +1628,11 @@ my.Map = Backbone.View.extend({
 
   // Private: Add one or n features to the map
   //
-  // For each document passed, a GeoJSON geometry will be extracted and added
+  // For each record passed, a GeoJSON geometry will be extracted and added
   // to the features layer. If an exception is thrown, the process will be
   // stopped and an error notification shown.
   //
-  // Each feature will have a popup associated with all the document fields.
+  // Each feature will have a popup associated with all the record fields.
   //
   _add: function(docs){
     var self = this;
@@ -1703,7 +1643,7 @@ my.Map = Backbone.View.extend({
     var wrongSoFar = 0;
     _.every(docs,function(doc){
       count += 1;
-      var feature = self._getGeometryFromDocument(doc);
+      var feature = self._getGeometryFromRecord(doc);
       if (typeof feature === 'undefined' || feature === null){
         // Empty field
         return true;
@@ -1760,22 +1700,28 @@ my.Map = Backbone.View.extend({
 
   },
 
-  // Private: Return a GeoJSON geomtry extracted from the document fields
+  // Private: Return a GeoJSON geomtry extracted from the record fields
   //
-  _getGeometryFromDocument: function(doc){
+  _getGeometryFromRecord: function(doc){
     if (this.geomReady){
       if (this.state.get('geomField')){
         var value = doc.get(this.state.get('geomField'));
         if (typeof(value) === 'string'){
           // We *may* have a GeoJSON string representation
           try {
-            return $.parseJSON(value);
+            value = $.parseJSON(value);
           } catch(e) {
           }
-        } else {
-          // We assume that the contents of the field are a valid GeoJSON object
-          return value;
         }
+        if (value && value.lat) {
+          // not yet geojson so convert
+          value = {
+            "type": "Point",
+            "coordinates": [value.lon || value.lng, value.lat]
+          };
+        }
+        // We now assume that contents of the field are a valid GeoJSON object
+        return value;
       } else if (this.state.get('lonField') && this.state.get('latField')){
         // We'll create a GeoJSON like point object from the two lat/lon fields
         var lon = doc.get(this.state.get('lonField'));
@@ -1925,9 +1871,9 @@ my.SlickGrid = Backbone.View.extend({
     var self = this;
     this.el = $(this.el);
     _.bindAll(this, 'render');
-    this.model.currentDocuments.bind('add', this.render);
-    this.model.currentDocuments.bind('reset', this.render);
-    this.model.currentDocuments.bind('remove', this.render);
+    this.model.currentRecords.bind('add', this.render);
+    this.model.currentRecords.bind('reset', this.render);
+    this.model.currentRecords.bind('remove', this.render);
 
     var state = _.extend({
         hiddenColumns: [],
@@ -1974,12 +1920,26 @@ my.SlickGrid = Backbone.View.extend({
 
     // We need all columns, even the hidden ones, to show on the column picker
     var columns = [];
+    // custom formatter as default one escapes html
+    // plus this way we distinguish between rendering/formatting and computed value (so e.g. sort still works ...)
+    // row = row index, cell = cell index, value = value, columnDef = column definition, dataContext = full row values
+    var formatter = function(row, cell, value, columnDef, dataContext) {
+      var field = self.model.fields.get(columnDef.id);
+      if (field.renderer) {
+        return field.renderer(value, field, dataContext);
+      } else {
+        return value;
+      }
+    }
     _.each(this.model.fields.toJSON(),function(field){
-      var column = {id:field['id'],
-                    name:field['label'],
-                    field:field['id'],
-                    sortable: true,
-                    minWidth: 80};
+      var column = {
+        id:field['id'],
+        name:field['label'],
+        field:field['id'],
+        sortable: true,
+        minWidth: 80,
+        formatter: formatter
+      };
 
       var widthInfo = _.find(self.state.get('columnsWidth'),function(c){return c.column == field.id});
       if (widthInfo){
@@ -2014,8 +1974,15 @@ my.SlickGrid = Backbone.View.extend({
     }
     columns = columns.concat(tempHiddenColumns);
 
+    var data = [];
 
-    var data = this.model.currentDocuments.toJSON();
+    this.model.currentRecords.each(function(doc){
+      var row = {};
+      self.model.fields.each(function(field){
+        row[field.id] = doc.getFieldValueUnrendered(field);
+      });
+      data.push(row);
+    });
 
     this.grid = new Slick.Grid(this.el, data, visibleColumns, options);
 
@@ -2231,10 +2198,10 @@ my.Timeline = Backbone.View.extend({
         self._initTimeline();
       }
     });
-    this.model.fields.bind('change', function() {
+    this.model.fields.bind('reset', function() {
       self._setupTemporalField();
     });
-    this.model.currentDocuments.bind('all', function() {
+    this.model.currentRecords.bind('all', function() {
       self.reloadData();
     });
     var stateData = _.extend({
@@ -2281,14 +2248,17 @@ my.Timeline = Backbone.View.extend({
         ]
       }
     };
-    this.model.currentDocuments.each(function(doc) {
-      var tlEntry = {
-        "startDate": doc.get(self.state.get('startField')),
-        "endDate": doc.get(self.state.get('endField')) || null,
-        "headline": String(doc.get(self.model.fields.models[0].id)),
-        "text": ''
-      };
-      if (tlEntry.startDate) {
+    this.model.currentRecords.each(function(doc) {
+      var start = doc.get(self.state.get('startField'));
+      if (start) {
+        var end = doc.get(self.state.get('endField'));
+        end = end ? moment(end).toDate() : null;
+        var tlEntry = {
+          "startDate": moment(start).toDate(),
+          "endDate": end,
+          "headline": String(doc.get('title') || ''),
+          "text": doc.summary()
+        };
         out.timeline.date.push(tlEntry);
       }
     });
@@ -2415,7 +2385,7 @@ my.ColumnTransform = Backbone.View.extend({
     }
     this.el.modal('hide');
     this.trigger('recline:flash', {message: "Updating all visible docs. This could take a while...", persist: true, loader: true});
-      var docs = self.model.currentDocuments.map(function(doc) {
+      var docs = self.model.currentRecords.map(function(doc) {
        return doc.toJSON();
       });
     // TODO: notify about failed docs? 
@@ -2424,14 +2394,14 @@ my.ColumnTransform = Backbone.View.extend({
     function onCompletedUpdate() {
       totalToUpdate += -1;
       if (totalToUpdate === 0) {
-        self.trigger('recline:flash', {message: toUpdate.length + " documents updated successfully"});
+        self.trigger('recline:flash', {message: toUpdate.length + " records updated successfully"});
         alert('WARNING: We have only updated the docs in this view. (Updating of all docs not yet implemented!)');
         self.remove();
       }
     }
     // TODO: Very inefficient as we search through all docs every time!
     _.each(toUpdate, function(editedDoc) {
-      var realDoc = self.model.currentDocuments.get(editedDoc.id);
+      var realDoc = self.model.currentRecords.get(editedDoc.id);
       realDoc.set(editedDoc);
       realDoc.save().then(onCompletedUpdate).fail(onCompletedUpdate);
     });
@@ -2475,7 +2445,7 @@ my.ColumnTransform = Backbone.View.extend({
       var editFunc = costco.evalFunction(e.target.value);
       if (!editFunc.errorMessage) {
         errors.text('No syntax error.');
-        var docs = self.model.currentDocuments.map(function(doc) {
+        var docs = self.model.currentRecords.map(function(doc) {
           return doc.toJSON();
         });
         var previewData = costco.previewTransform(docs, editFunc, self.state.currentColumn);
@@ -2492,110 +2462,17 @@ my.ColumnTransform = Backbone.View.extend({
 })(jQuery, recline.View);
 /*jshint multistr:true */
 
-// # Recline Views
-//
-// Recline Views are instances of Backbone Views and they act as 'WUI' (web
-// user interface) component displaying some model object in the DOM. Like all
-// Backbone views they have a pointer to a model (or a collection) and have an
-// associated DOM-style element (usually this element will be bound into the
-// page at some point).
-//
-// Views provided by core Recline are crudely divided into two types:
-//
-// * Dataset Views: a View intended for displaying a recline.Model.Dataset
-//   in some fashion. Examples are the Grid, Graph and Map views.
-// * Widget Views: a widget used for displaying some specific (and
-//   smaller) aspect of a dataset or the application. Examples are
-//   QueryEditor and FilterEditor which both provide a way for editing (a
-//   part of) a `recline.Model.Query` associated to a Dataset.
-//
-// ## Dataset View
-//
-// These views are just Backbone views with a few additional conventions:
-//
-// 1. The model passed to the View should always be a recline.Model.Dataset instance
-// 2. Views should generate their own root element rather than having it passed
-//    in.
-// 3. Views should apply a css class named 'recline-{view-name-lower-cased} to
-//    the root element (and for all CSS for this view to be qualified using this
-//    CSS class)
-// 4. Read-only mode: CSS for this view should respect/utilize
-//    recline-read-only class to trigger read-only behaviour (this class will
-//    usually be set on some parent element of the view's root element.
-// 5. State: state (configuration) information for the view should be stored on
-//    an attribute named state that is an instance of a Backbone Model (or, more
-//    speficially, be an instance of `recline.Model.ObjectState`). In addition,
-//    a state attribute may be specified in the Hash passed to a View on
-//    iniitialization and this information should be used to set the initial
-//    state of the view.
-//
-//    Example of state would be the set of fields being plotted in a graph
-//    view.
-//
-//    More information about State can be found below.
-//
-// To summarize some of this, the initialize function for a Dataset View should
-// look like:
-//
-// <pre>
-//    initialize: {
-//        model: {a recline.Model.Dataset instance}
-//        // el: {do not specify - instead view should create}
-//        state: {(optional) Object / Hash specifying initial state}
-//        ...
-//    }
-// </pre>
-//
-// Note: Dataset Views in core Recline have a common layout on disk as
-// follows, where ViewName is the named of View class:
-//
-// <pre>
-// src/view-{lower-case-ViewName}.js
-// css/{lower-case-ViewName}.css
-// test/view-{lower-case-ViewName}.js
-// </pre>
-//
-// ### State
-//
-// State information exists in order to support state serialization into the
-// url or elsewhere and reloading of application from a stored state.
-//
-// State is available not only for individual views (as described above) but
-// for the dataset (e.g. the current query). For an example of pulling together
-// state from across multiple components see `recline.View.DataExplorer`.
-//
-// ### Flash Messages / Notifications
-//
-// To send 'flash messages' or notifications the convention is that views
-// should fire an event named `recline:flash` with a payload that is a
-// flash object with the following attributes (all optional):
-//
-// * message: message to show.
-// * category: warning (default), success, error
-// * persist: if true alert is persistent, o/w hidden after 3s (default=false)
-// * loader: if true show a loading message
-//
-// Objects or views wishing to bind to flash messages may then subscribe to
-// these events and take some action such as displaying them to the user. For
-// an example of such behaviour see the DataExplorer view.
-// 
-// ### Writing your own Views
-//
-// See the existing Views.
-//
-// ----
-
 // Standard JS module setup
 this.recline = this.recline || {};
 this.recline.View = this.recline.View || {};
 
 (function($, my) {
-// ## DataExplorer
+// ## MultiView
 //
-// The primary view for the entire application. Usage:
+// Manage multiple views together along with query editor etc. Usage:
 // 
 // <pre>
-// var myExplorer = new model.recline.DataExplorer({
+// var myExplorer = new model.recline.MultiView({
 //   model: {{recline.Model.Dataset instance}}
 //   el: {{an existing dom element}}
 //   views: {{dataset views}}
@@ -2612,7 +2489,7 @@ this.recline.View = this.recline.View || {};
 // Graph).
 //
 // **views**: (optional) the dataset views (Grid, Graph etc) for
-// DataExplorer to show. This is an array of view hashes. If not provided
+// MultiView to show. This is an array of view hashes. If not provided
 // initialize with (recline.View.)Grid, Graph, and Map views (with obvious id
 // and labels!).
 //
@@ -2653,24 +2530,28 @@ this.recline.View = this.recline.View || {};
 // Note that at present we do *not* serialize information about the actual set
 // of views in use -- e.g. those specified by the views argument -- but instead 
 // expect either that the default views are fine or that the client to have
-// initialized the DataExplorer with the relevant views themselves.
-my.DataExplorer = Backbone.View.extend({
+// initialized the MultiView with the relevant views themselves.
+my.MultiView = Backbone.View.extend({
   template: ' \
   <div class="recline-data-explorer"> \
     <div class="alert-messages"></div> \
     \
     <div class="header"> \
-      <ul class="navigation"> \
+      <div class="navigation"> \
+        <div class="btn-group" data-toggle="buttons-radio"> \
         {{#views}} \
-        <li><a href="#{{id}}" data-view="{{id}}" class="btn">{{label}}</a> \
+        <a href="#{{id}}" data-view="{{id}}" class="btn">{{label}}</a> \
         {{/views}} \
-      </ul> \
+        </div> \
+      </div> \
       <div class="recline-results-info"> \
         Results found <span class="doc-count">{{docCount}}</span> \
       </div> \
       <div class="menu-right"> \
-        <a href="#" class="btn" data-action="filters">Filters</a> \
-        <a href="#" class="btn" data-action="facets">Facets</a> \
+        <div class="btn-group" data-toggle="buttons-checkbox"> \
+          <a href="#" class="btn" data-action="filters">Filters</a> \
+          <a href="#" class="btn" data-action="facets">Facets</a> \
+        </div> \
       </div> \
       <div class="query-editor-here" style="display:inline;"></div> \
       <div class="clearfix"></div> \
@@ -2784,16 +2665,20 @@ my.DataExplorer = Backbone.View.extend({
     _.each(this.pageViews, function(view, pageName) {
       $dataViewContainer.append(view.view.el);
     });
-    var queryEditor = new my.QueryEditor({
+    var pager = new recline.View.Pager({
+      model: this.model.queryState
+    });
+    this.el.find('.recline-results-info').after(pager.el);
+    var queryEditor = new recline.View.QueryEditor({
       model: this.model.queryState
     });
     this.el.find('.query-editor-here').append(queryEditor.el);
-    var filterEditor = new my.FilterEditor({
+    var filterEditor = new recline.View.FilterEditor({
       model: this.model.queryState
     });
     this.$filterEditor = filterEditor.el;
     this.el.find('.header').append(filterEditor.el);
-    var facetViewer = new my.FacetViewer({
+    var facetViewer = new recline.View.FacetViewer({
       model: this.model
     });
     this.$facetViewer = facetViewer.el;
@@ -2801,11 +2686,9 @@ my.DataExplorer = Backbone.View.extend({
   },
 
   updateNav: function(pageName) {
-    this.el.find('.navigation li').removeClass('active');
-    this.el.find('.navigation li a').removeClass('disabled');
-    var $el = this.el.find('.navigation li a[data-view="' + pageName + '"]');
-    $el.parent().addClass('active');
-    $el.addClass('disabled');
+    this.el.find('.navigation a').removeClass('active');
+    var $el = this.el.find('.navigation a[data-view="' + pageName + '"]');
+    $el.addClass('active');
     // show the specific page
     _.each(this.pageViews, function(view, idx) {
       if (view.id === pageName) {
@@ -2822,9 +2705,9 @@ my.DataExplorer = Backbone.View.extend({
     e.preventDefault();
     var action = $(e.target).attr('data-action');
     if (action === 'filters') {
-      this.$filterEditor.show();
+      this.$filterEditor.toggle();
     } else if (action === 'facets') {
-      this.$facetViewer.show();
+      this.$facetViewer.toggle();
     }
   },
 
@@ -2843,7 +2726,7 @@ my.DataExplorer = Backbone.View.extend({
   _setupState: function(initialState) {
     var self = this;
     // get data from the query string / hash url plus some defaults
-    var qs = recline.Util.parseHashQueryString();
+    var qs = my.parseHashQueryString();
     var query = qs.reclineQuery;
     query = query ? JSON.parse(query) : self.model.queryState.toJSON();
     // backwards compatability (now named view-graph but was named graph)
@@ -2945,73 +2828,178 @@ my.DataExplorer = Backbone.View.extend({
   }
 });
 
-// ### DataExplorer.restore
+// ### MultiView.restore
 //
-// Restore a DataExplorer instance from a serialized state including the associated dataset
-my.DataExplorer.restore = function(state) {
+// Restore a MultiView instance from a serialized state including the associated dataset
+my.MultiView.restore = function(state) {
   var dataset = recline.Model.Dataset.restore(state);
-  var explorer = new my.DataExplorer({
+  var explorer = new my.MultiView({
     model: dataset,
     state: state
   });
   return explorer;
 }
 
-my.QueryEditor = Backbone.View.extend({
-  className: 'recline-query-editor', 
+
+// ## Miscellaneous Utilities
+var urlPathRegex = /^([^?]+)(\?.*)?/;
+
+// Parse the Hash section of a URL into path and query string
+my.parseHashUrl = function(hashUrl) {
+  var parsed = urlPathRegex.exec(hashUrl);
+  if (parsed === null) {
+    return {};
+  } else {
+    return {
+      path: parsed[1],
+      query: parsed[2] || ''
+    };
+  }
+};
+
+// Parse a URL query string (?xyz=abc...) into a dictionary.
+my.parseQueryString = function(q) {
+  if (!q) {
+    return {};
+  }
+  var urlParams = {},
+    e, d = function (s) {
+      return unescape(s.replace(/\+/g, " "));
+    },
+    r = /([^&=]+)=?([^&]*)/g;
+
+  if (q && q.length && q[0] === '?') {
+    q = q.slice(1);
+  }
+  while (e = r.exec(q)) {
+    // TODO: have values be array as query string allow repetition of keys
+    urlParams[d(e[1])] = d(e[2]);
+  }
+  return urlParams;
+};
+
+// Parse the query string out of the URL hash
+my.parseHashQueryString = function() {
+  q = my.parseHashUrl(window.location.hash).query;
+  return my.parseQueryString(q);
+};
+
+// Compse a Query String
+my.composeQueryString = function(queryParams) {
+  var queryString = '?';
+  var items = [];
+  $.each(queryParams, function(key, value) {
+    if (typeof(value) === 'object') {
+      value = JSON.stringify(value);
+    }
+    items.push(key + '=' + encodeURIComponent(value));
+  });
+  queryString += items.join('&');
+  return queryString;
+};
+
+my.getNewHashForQueryString = function(queryParams) {
+  var queryPart = my.composeQueryString(queryParams);
+  if (window.location.hash) {
+    // slice(1) to remove # at start
+    return window.location.hash.split('?')[0].slice(1) + queryPart;
+  } else {
+    return queryPart;
+  }
+};
+
+my.setHashQueryString = function(queryParams) {
+  window.location.hash = my.getNewHashForQueryString(queryParams);
+};
+
+})(jQuery, recline.View);
+
+/*jshint multistr:true */
+
+this.recline = this.recline || {};
+this.recline.View = this.recline.View || {};
+
+(function($, my) {
+
+my.FacetViewer = Backbone.View.extend({
+  className: 'recline-facet-viewer well', 
   template: ' \
-    <form action="" method="GET" class="form-inline"> \
-      <div class="input-prepend text-query"> \
-        <span class="add-on"><i class="icon-search"></i></span> \
-        <input type="text" name="q" value="{{q}}" class="span2" placeholder="Search data ..." class="search-query" /> \
+    <a class="close js-hide" href="#">&times;</a> \
+    <div class="facets row"> \
+      <div class="span1"> \
+        <h3>Facets</h3> \
       </div> \
-      <div class="pagination"> \
-        <ul> \
-          <li class="prev action-pagination-update"><a href="">&laquo;</a></li> \
-          <li class="active"><a><input name="from" type="text" value="{{from}}" /> &ndash; <input name="to" type="text" value="{{to}}" /> </a></li> \
-          <li class="next action-pagination-update"><a href="">&raquo;</a></li> \
+      {{#facets}} \
+      <div class="facet-summary span2 dropdown" data-facet="{{id}}"> \
+        <a class="btn dropdown-toggle" data-toggle="dropdown" href="#"><i class="icon-chevron-down"></i> {{id}} {{label}}</a> \
+        <ul class="facet-items dropdown-menu"> \
+        {{#terms}} \
+          <li><a class="facet-choice js-facet-filter" data-value="{{term}}">{{term}} ({{count}})</a></li> \
+        {{/terms}} \
+        {{#entries}} \
+          <li><a class="facet-choice js-facet-filter" data-value="{{time}}">{{term}} ({{count}})</a></li> \
+        {{/entries}} \
         </ul> \
       </div> \
-      <button type="submit" class="btn">Go &raquo;</button> \
-    </form> \
+      {{/facets}} \
+    </div> \
   ',
 
   events: {
-    'submit form': 'onFormSubmit',
-    'click .action-pagination-update': 'onPaginationUpdate'
+    'click .js-hide': 'onHide',
+    'click .js-facet-filter': 'onFacetFilter'
   },
-
-  initialize: function() {
+  initialize: function(model) {
     _.bindAll(this, 'render');
     this.el = $(this.el);
-    this.model.bind('change', this.render);
+    this.model.facets.bind('all', this.render);
+    this.model.fields.bind('all', this.render);
     this.render();
   },
-  onFormSubmit: function(e) {
-    e.preventDefault();
-    var query = this.el.find('.text-query input').val();
-    var newFrom = parseInt(this.el.find('input[name="from"]').val());
-    var newSize = parseInt(this.el.find('input[name="to"]').val()) - newFrom;
-    this.model.set({size: newSize, from: newFrom, q: query});
-  },
-  onPaginationUpdate: function(e) {
-    e.preventDefault();
-    var $el = $(e.target);
-    var newFrom = 0;
-    if ($el.parent().hasClass('prev')) {
-      newFrom = this.model.get('from') - Math.max(0, this.model.get('size'));
-    } else {
-      newFrom = this.model.get('from') + this.model.get('size');
-    }
-    this.model.set({from: newFrom});
-  },
   render: function() {
-    var tmplData = this.model.toJSON();
-    tmplData.to = this.model.get('from') + this.model.get('size');
+    var tmplData = {
+      facets: this.model.facets.toJSON(),
+      fields: this.model.fields.toJSON()
+    };
+    tmplData.facets = _.map(tmplData.facets, function(facet) {
+      if (facet._type === 'date_histogram') {
+        facet.entries = _.map(facet.entries, function(entry) {
+          entry.term = new Date(entry.time).toDateString();
+          return entry;
+        });
+      }
+      return facet;
+    });
     var templated = Mustache.render(this.template, tmplData);
     this.el.html(templated);
+    // are there actually any facets to show?
+    if (this.model.facets.length > 0) {
+      this.el.show();
+    } else {
+      this.el.hide();
+    }
+  },
+  onHide: function(e) {
+    e.preventDefault();
+    this.el.hide();
+  },
+  onFacetFilter: function(e) {
+    var $target= $(e.target);
+    var fieldId = $target.closest('.facet-summary').attr('data-facet');
+    var value = $target.attr('data-value');
+    this.model.queryState.addTermFilter(fieldId, value);
   }
 });
+
+
+})(jQuery, recline.View);
+
+/*jshint multistr:true */
+
+this.recline = this.recline || {};
+this.recline.View = this.recline.View || {};
+
+(function($, my) {
 
 my.FilterEditor = Backbone.View.extend({
   className: 'recline-filter-editor well', 
@@ -3112,76 +3100,107 @@ my.FilterEditor = Backbone.View.extend({
   }
 });
 
-my.FacetViewer = Backbone.View.extend({
-  className: 'recline-facet-viewer well', 
+
+})(jQuery, recline.View);
+
+/*jshint multistr:true */
+
+this.recline = this.recline || {};
+this.recline.View = this.recline.View || {};
+
+(function($, my) {
+
+my.Pager = Backbone.View.extend({
+  className: 'recline-pager', 
   template: ' \
-    <a class="close js-hide" href="#">&times;</a> \
-    <div class="facets row"> \
-      <div class="span1"> \
-        <h3>Facets</h3> \
-      </div> \
-      {{#facets}} \
-      <div class="facet-summary span2 dropdown" data-facet="{{id}}"> \
-        <a class="btn dropdown-toggle" data-toggle="dropdown" href="#"><i class="icon-chevron-down"></i> {{id}} {{label}}</a> \
-        <ul class="facet-items dropdown-menu"> \
-        {{#terms}} \
-          <li><a class="facet-choice js-facet-filter" data-value="{{term}}">{{term}} ({{count}})</a></li> \
-        {{/terms}} \
-        {{#entries}} \
-          <li><a class="facet-choice js-facet-filter" data-value="{{time}}">{{term}} ({{count}})</a></li> \
-        {{/entries}} \
-        </ul> \
-      </div> \
-      {{/facets}} \
+    <div class="pagination"> \
+      <ul> \
+        <li class="prev action-pagination-update"><a href="">&laquo;</a></li> \
+        <li class="active"><a><input name="from" type="text" value="{{from}}" /> &ndash; <input name="to" type="text" value="{{to}}" /> </a></li> \
+        <li class="next action-pagination-update"><a href="">&raquo;</a></li> \
+      </ul> \
     </div> \
   ',
 
   events: {
-    'click .js-hide': 'onHide',
-    'click .js-facet-filter': 'onFacetFilter'
+    'click .action-pagination-update': 'onPaginationUpdate',
+    'change input': 'onFormSubmit'
   },
-  initialize: function(model) {
+
+  initialize: function() {
     _.bindAll(this, 'render');
     this.el = $(this.el);
-    this.model.facets.bind('all', this.render);
-    this.model.fields.bind('all', this.render);
+    this.model.bind('change', this.render);
     this.render();
   },
+  onFormSubmit: function(e) {
+    e.preventDefault();
+    var newFrom = parseInt(this.el.find('input[name="from"]').val());
+    var newSize = parseInt(this.el.find('input[name="to"]').val()) - newFrom;
+    this.model.set({size: newSize, from: newFrom});
+  },
+  onPaginationUpdate: function(e) {
+    e.preventDefault();
+    var $el = $(e.target);
+    var newFrom = 0;
+    if ($el.parent().hasClass('prev')) {
+      newFrom = this.model.get('from') - Math.max(0, this.model.get('size'));
+    } else {
+      newFrom = this.model.get('from') + this.model.get('size');
+    }
+    this.model.set({from: newFrom});
+  },
   render: function() {
-    var tmplData = {
-      facets: this.model.facets.toJSON(),
-      fields: this.model.fields.toJSON()
-    };
-    tmplData.facets = _.map(tmplData.facets, function(facet) {
-      if (facet._type === 'date_histogram') {
-        facet.entries = _.map(facet.entries, function(entry) {
-          entry.term = new Date(entry.time).toDateString();
-          return entry;
-        });
-      }
-      return facet;
-    });
+    var tmplData = this.model.toJSON();
+    tmplData.to = this.model.get('from') + this.model.get('size');
     var templated = Mustache.render(this.template, tmplData);
     this.el.html(templated);
-    // are there actually any facets to show?
-    if (this.model.facets.length > 0) {
-      this.el.show();
-    } else {
-      this.el.hide();
-    }
-  },
-  onHide: function(e) {
-    e.preventDefault();
-    this.el.hide();
-  },
-  onFacetFilter: function(e) {
-    var $target= $(e.target);
-    var fieldId = $target.closest('.facet-summary').attr('data-facet');
-    var value = $target.attr('data-value');
-    this.model.queryState.addTermFilter(fieldId, value);
   }
 });
 
+})(jQuery, recline.View);
+
+/*jshint multistr:true */
+
+this.recline = this.recline || {};
+this.recline.View = this.recline.View || {};
+
+(function($, my) {
+
+my.QueryEditor = Backbone.View.extend({
+  className: 'recline-query-editor', 
+  template: ' \
+    <form action="" method="GET" class="form-inline"> \
+      <div class="input-prepend text-query"> \
+        <span class="add-on"><i class="icon-search"></i></span> \
+        <input type="text" name="q" value="{{q}}" class="span2" placeholder="Search data ..." class="search-query" /> \
+      </div> \
+      <button type="submit" class="btn">Go &raquo;</button> \
+    </form> \
+  ',
+
+  events: {
+    'submit form': 'onFormSubmit'
+  },
+
+  initialize: function() {
+    _.bindAll(this, 'render');
+    this.el = $(this.el);
+    this.model.bind('change', this.render);
+    this.render();
+  },
+  onFormSubmit: function(e) {
+    e.preventDefault();
+    var query = this.el.find('.text-query input').val();
+    this.model.set({q: query});
+  },
+  render: function() {
+    var tmplData = this.model.toJSON();
+    tmplData.to = this.model.get('from') + this.model.get('size');
+    var templated = Mustache.render(this.template, tmplData);
+    this.el.html(templated);
+  }
+});
 
 })(jQuery, recline.View);
 
@@ -3216,14 +3235,14 @@ this.recline.Backend.Base = function() {
   // ### sync
   //
   // An implementation of Backbone.sync that will be used to override
-  // Backbone.sync on operations for Datasets and Documents which are using this backend.
+  // Backbone.sync on operations for Datasets and Records which are using this backend.
   //
   // For read-only implementations you will need only to implement read method
   // for Dataset models (and even this can be a null operation). The read method
   // should return relevant metadata for the Dataset. We do not require read support
-  // for Documents because they are loaded in bulk by the query method.
+  // for Records because they are loaded in bulk by the query method.
   //
-  // For backends supporting write operations you must implement update and delete support for Document objects.
+  // For backends supporting write operations you must implement update and delete support for Record objects.
   //
   // All code paths should return an object conforming to the jquery promise API.
   this.sync = function(method, model, options) {
@@ -3231,8 +3250,8 @@ this.recline.Backend.Base = function() {
   
   // ### query
   //
-  // Query the backend for documents returning them in bulk. This method will
-  // be used by the Dataset.query method to search the backend for documents,
+  // Query the backend for records returning them in bulk. This method will
+  // be used by the Dataset.query method to search the backend for records,
   // retrieving the results in bulk.
   //
   // @param {recline.model.Dataset} model: Dataset model.
@@ -3258,11 +3277,11 @@ this.recline.Backend.Base = function() {
   // <pre>
   // {
   //   total: // (required) total number of results (can be null)
-  //   hits: [ // (required) one entry for each result document
+  //   hits: [ // (required) one entry for each result record
   //     {
-  //        _score:   // (optional) match score for document
-  //        _type: // (optional) document type
-  //        _source: // (required) document/row object
+  //        _score:   // (optional) match score for record
+  //        _type: // (optional) record type
+  //        _source: // (required) record/row object
   //     } 
   //   ],
   //   facets: { // (optional) 
@@ -3626,7 +3645,7 @@ this.recline.Backend.ElasticSearch = this.recline.Backend.ElasticSearch || {};
 
     // ### get
     //
-    // Get document corresponding to specified id
+    // Get record corresponding to specified id
     //
     // @return promise compatible deferred object.
     this.get = function(id) {
@@ -3639,7 +3658,7 @@ this.recline.Backend.ElasticSearch = this.recline.Backend.ElasticSearch || {};
 
     // ### upsert
     //
-    // create / update a document to ElasticSearch backend
+    // create / update a record to ElasticSearch backend
     //
     // @param {Object} doc an object to insert to the index.
     // @return deferred supporting promise API
@@ -3659,7 +3678,7 @@ this.recline.Backend.ElasticSearch = this.recline.Backend.ElasticSearch || {};
 
     // ### delete
     //
-    // Delete a document from the ElasticSearch backend.
+    // Delete a record from the ElasticSearch backend.
     //
     // @param {Object} id id of object to delete
     // @return deferred supporting promise API
@@ -3741,7 +3760,7 @@ this.recline.Backend.ElasticSearch = this.recline.Backend.ElasticSearch || {};
     // Backbone sync implementation for this backend.
     //
     // URL of ElasticSearch endpoint to use must be specified on the dataset
-    // (and on a Document via its dataset attribute) by the dataset having a
+    // (and on a Record via its dataset attribute) by the dataset having a
     // url attribute.
     this.sync = function(method, model, options) {
       if (model.__type__ == 'Dataset') {
@@ -3767,15 +3786,15 @@ this.recline.Backend.ElasticSearch = this.recline.Backend.ElasticSearch || {};
             dfd.reject(arguments);
           });
           return dfd.promise();
-        } else if (model.__type__ == 'Document') {
+        } else if (model.__type__ == 'Record') {
           return es.get(model.dataset.id);
         }
       } else if (method === 'update') {
-        if (model.__type__ == 'Document') {
+        if (model.__type__ == 'Record') {
           return es.upsert(model.toJSON());
         }
       } else if (method === 'delete') {
-        if (model.__type__ == 'Document') {
+        if (model.__type__ == 'Record') {
           return es.delete(model.id);
         }
       }
@@ -3987,7 +4006,7 @@ this.recline.Backend.Memory = this.recline.Backend.Memory || {};
   //
   // Convenience function to create a simple 'in-memory' dataset in one step.
   //
-  // @param data: list of hashes for each document/row in the data ({key:
+  // @param data: list of hashes for each record/row in the data ({key:
   // value, key: value})
   // @param fields: (optional) list of field hashes (each hash defining a hash
   // as per recline.Model.Field). If fields not specified they will be taken
@@ -3995,7 +4014,7 @@ this.recline.Backend.Memory = this.recline.Backend.Memory || {};
   // @param metadata: (optional) dataset metadata - see recline.Model.Dataset.
   // If not defined (or id not provided) id will be autogenerated.
   my.createDataset = function(data, fields, metadata) {
-    var wrapper = new my.DataWrapper(data, fields);
+    var wrapper = new my.Store(data, fields);
     var backend = new my.Backbone();
     var dataset = new recline.Model.Dataset(metadata, backend);
     dataset._dataCache = wrapper;
@@ -4009,7 +4028,13 @@ this.recline.Backend.Memory = this.recline.Backend.Memory || {};
   // Turn a simple array of JS objects into a mini data-store with
   // functionality like querying, faceting, updating (by ID) and deleting (by
   // ID).
-  my.DataWrapper = function(data, fields) {
+  //
+  // @param data list of hashes for each record/row in the data ({key:
+  // value, key: value})
+  // @param fields (optional) list of field hashes (each hash defining a field
+  // as per recline.Model.Field). If fields not specified they will be taken
+  // from the data.
+  my.Store = function(data, fields) {
     var self = this;
     this.data = data;
     if (fields) {
@@ -4056,7 +4081,7 @@ this.recline.Backend.Memory = this.recline.Backend.Memory || {};
       results = results.slice(start, start+numRows);
       return {
         total: total,
-        documents: results,
+        records: results,
         facets: facets
       };
     };
@@ -4098,7 +4123,7 @@ this.recline.Backend.Memory = this.recline.Backend.Memory || {};
       return results;
     };
 
-    this.computeFacets = function(documents, queryObj) {
+    this.computeFacets = function(records, queryObj) {
       var facetResults = {};
       if (!queryObj.facets) {
         return facetResults;
@@ -4109,7 +4134,7 @@ this.recline.Backend.Memory = this.recline.Backend.Memory || {};
         facetResults[facetId].termsall = {};
       });
       // faceting
-      _.each(documents, function(doc) {
+      _.each(records, function(doc) {
         _.each(queryObj.facets, function(query, facetId) {
           var fieldId = query.terms.field;
           var val = doc[fieldId];
@@ -4152,13 +4177,13 @@ this.recline.Backend.Memory = this.recline.Backend.Memory || {};
         }
         return dfd.promise();
       } else if (method === 'update') {
-        if (model.__type__ == 'Document') {
+        if (model.__type__ == 'Record') {
           model.dataset._dataCache.update(model.toJSON());
           dfd.resolve(model);
         }
         return dfd.promise();
       } else if (method === 'delete') {
-        if (model.__type__ == 'Document') {
+        if (model.__type__ == 'Record') {
           model.dataset._dataCache.delete(model.toJSON());
           dfd.resolve(model);
         }
@@ -4171,7 +4196,7 @@ this.recline.Backend.Memory = this.recline.Backend.Memory || {};
     this.query = function(model, queryObj) {
       var dfd = $.Deferred();
       var results = model._dataCache.query(queryObj);
-      var hits = _.map(results.documents, function(row) {
+      var hits = _.map(results.records, function(row) {
         return { _source: row };
       });
       var out = {
