@@ -64,12 +64,12 @@ my.Fields = Backbone.View.extend({
     _.bindAll(this, 'render');
 
     this.model.fields.bind('all', function() {
+      self.model.fields.each(function(field) {
+        field.facets.bind('all', self.render);
+      });
       // fields can get reset or changed in which case we need to recalculate
       self.model.getFieldsSummary();
       self.render();
-    });
-    this.model.fields.each(function(field) {
-      field.facets.bind('all', self.render);
     });
     this.render();
   },
