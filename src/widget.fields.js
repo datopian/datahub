@@ -22,24 +22,33 @@ this.recline.View = this.recline.View || {};
 (function($, my) {
 
 my.Fields = Backbone.View.extend({
-  className: 'recline-fields-view well', 
+  className: 'recline-fields-view', 
   template: ' \
-    <div class="accordion fields-list"> \
+    <div class="accordion fields-list well"> \
     {{#fields}} \
-      <div class="accordion-group"> \
+      <div class="accordion-group field"> \
         <div class="accordion-heading"> \
-          <h3> \
-            {{label}} ({{id}}) \
+          <h4> \
+            {{label}} \
             <small> \
               <i class="icon-file" title="Field type"></i> {{type}} \
-              <a class="accordion-toggle" data-toggle="collapse" href="#collapse{{id}}"> More information &raquo; \
+              <a class="accordion-toggle" data-toggle="collapse" href="#collapse{{id}}"> &raquo; \
               </a> \
             </small> \
-          </h3> \
+          </h4> \
         </div> \
         <div id="collapse{{id}}" class="accordion-body collapse in"> \
           <div class="accordion-inner"> \
-            <i class="icon-file"></i> {{type}} \
+            {{#facets}} \
+            <div class="facet-summary" data-facet="{{id}}"> \
+              <ul class="facet-items"> \
+              {{#terms}} \
+                <li class="facet-item"><span class="term">{{term}}</span> <span class="count">[{{count}}]</span></li> \
+              {{/terms}} \
+              </ul> \
+            </div> \
+            {{/facets}} \
+            <div class="clear"></div> \
           </div> \
         </div> \
       </div> \
@@ -50,19 +59,33 @@ my.Fields = Backbone.View.extend({
   events: {
   },
   initialize: function(model) {
-    _.bindAll(this, 'render');
+    var self = this;
     this.el = $(this.el);
-    this.model.fields.bind('all', this.render);
+    _.bindAll(this, 'render');
+
+    this.model.fields.bind('all', function() {
+      // fields can get reset or changed in which case we need to recalculate
+      self.model.getFieldsSummary();
+      self.render();
+    });
+    this.model.fields.each(function(field) {
+      field.facets.bind('all', self.render);
+    });
     this.render();
   },
   render: function() {
+    var self = this;
     var tmplData = {
-      fields: this.model.fields.toJSON()
+      fields: []
     };
+    this.model.fields.each(function(field) {
+      var out = field.toJSON();
+      out.facets = field.facets.toJSON();
+      tmplData.fields.push(out);
+    });
     var templated = Mustache.render(this.template, tmplData);
     this.el.html(templated);
-    // this.el.hide();
-    this.el.find('.collapse').collapse()
+    this.el.find('.collapse').collapse();
   }
 });
 

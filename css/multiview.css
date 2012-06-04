@@ -98,13 +98,37 @@
   * Fields Widget
   *********************************************************/
 
+.recline-fields-view {
+  width: 200px;
+}
+
+.recline-fields-view .fields-list {
+  padding: 0;
+}
+
 .recline-fields-view .fields-list .accordion-heading a,
-.recline-fields-view .fields-list .accordion-heading h3 {
+.recline-fields-view .fields-list .accordion-heading h4 {
   display: inline;
 }
 
-.recline-fields-view .fields-list .accordion-heading h3 {
+.recline-fields-view .fields-list .accordion-heading h4 {
   margin-left: 10px;
+}
+
+.recline-fields-view .clear {
+  clear: both;
+}
+
+.recline-fields-view .facet-items {
+  list-style-type: none;
+  margin-left: 0;
+}
+
+.recline-fields-view .facet-item .term {
+  font-weight: bold;
+}
+
+.recline-fields-view .facet-item .count {
 }
 
 /**********************************************************

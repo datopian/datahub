@@ -111,6 +111,31 @@ my.Dataset = Backbone.Model.extend({
     return data;
   },
 
+  // Get a summary for each field in the form of a `Facet`.
+  // 
+  // @return null as this is async function. Provides deferred/promise interface.
+  getFieldsSummary: function() {
+    var self = this;
+    var query = new my.Query();
+    query.set({size: 0});
+    this.fields.each(function(field) {
+      query.addFacet(field.id);
+    });
+    var dfd = $.Deferred();
+    this.backend.query(this, query.toJSON()).done(function(queryResult) {
+      if (queryResult.facets) {
+        _.each(queryResult.facets, function(facetResult, facetId) {
+          facetResult.id = facetId;
+          var facet = new my.Facet(facetResult);
+          // TODO: probably want replace rather than reset (i.e. just replace the facet with this id)
+          self.fields.get(facetId).facets.reset(facet);
+        });
+      }
+      dfd.resolve(queryResult);
+    });
+    return dfd.promise();
+  },
+
   // ### _backendFromString(backendString)
   //
   // See backend argument to initialize for details
@@ -291,6 +316,7 @@ my.Field = Backbone.Model.extend({
     if (!this.renderer) {
       this.renderer = this.defaultRenderers[this.get('type')];
     }
+    this.facets = new my.FacetList();
   },
   defaultRenderers: {
     object: function(val, field, doc) {

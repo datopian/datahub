@@ -242,7 +242,6 @@ var ExplorerApp = Backbone.View.extend({
 // provide a demonstration in memory dataset
 function localDataset() {
   var dataset = Fixture.getDataset();
-  dataset.queryState.addFacet('country');
   return dataset;
 }
 
