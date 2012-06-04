@@ -88,12 +88,13 @@ my.MultiView = Backbone.View.extend({
       <div class="menu-right"> \
         <div class="btn-group" data-toggle="buttons-checkbox"> \
           <a href="#" class="btn" data-action="filters">Filters</a> \
-          <a href="#" class="btn" data-action="fields">Fields</a> \
+          <a href="#" class="btn active" data-action="fields">Fields</a> \
         </div> \
       </div> \
       <div class="query-editor-here" style="display:inline;"></div> \
       <div class="clearfix"></div> \
     </div> \
+    <div class="data-view-sidebar"></div> \
     <div class="data-view-container"></div> \
   </div> \
   ',
@@ -220,7 +221,7 @@ my.MultiView = Backbone.View.extend({
       model: this.model
     });
     this.$fieldsView = fieldsView.el;
-    this.el.find('.header').append(fieldsView.el);
+    this.el.find('.data-view-sidebar').append(fieldsView.el);
   },
 
   updateNav: function(pageName) {

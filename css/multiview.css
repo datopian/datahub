@@ -1,6 +1,9 @@
 .recline-data-explorer .data-view-container {
   display: block;
-  clear: both;
+}
+
+.recline-data-explorer .data-view-sidebar {
+  float: right;
 }
 
 .recline-data-explorer .header .navigation,

@@ -85,7 +85,7 @@ my.Fields = Backbone.View.extend({
     });
     var templated = Mustache.render(this.template, tmplData);
     this.el.html(templated);
-    this.el.find('.collapse').collapse();
+    this.el.find('.collapse').collapse('hide');
   }
 });
 
