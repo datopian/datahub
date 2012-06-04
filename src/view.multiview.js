@@ -88,7 +88,7 @@ my.MultiView = Backbone.View.extend({
       <div class="menu-right"> \
         <div class="btn-group" data-toggle="buttons-checkbox"> \
           <a href="#" class="btn" data-action="filters">Filters</a> \
-          <a href="#" class="btn" data-action="facets">Facets</a> \
+          <a href="#" class="btn" data-action="fields">Fields</a> \
         </div> \
       </div> \
       <div class="query-editor-here" style="display:inline;"></div> \
@@ -216,11 +216,11 @@ my.MultiView = Backbone.View.extend({
     });
     this.$filterEditor = filterEditor.el;
     this.el.find('.header').append(filterEditor.el);
-    var facetViewer = new recline.View.FacetViewer({
+    var fieldsView = new recline.View.Fields({
       model: this.model
     });
-    this.$facetViewer = facetViewer.el;
-    this.el.find('.header').append(facetViewer.el);
+    this.$fieldsView = fieldsView.el;
+    this.el.find('.header').append(fieldsView.el);
   },
 
   updateNav: function(pageName) {
@@ -244,8 +244,8 @@ my.MultiView = Backbone.View.extend({
     var action = $(e.target).attr('data-action');
     if (action === 'filters') {
       this.$filterEditor.toggle();
-    } else if (action === 'facets') {
-      this.$facetViewer.toggle();
+    } else if (action === 'fields') {
+      this.$fieldsView.toggle();
     }
   },
 

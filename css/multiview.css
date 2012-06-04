@@ -95,6 +95,19 @@
 }
 
 /**********************************************************
+  * Fields Widget
+  *********************************************************/
+
+.recline-fields-view .fields-list .accordion-heading a,
+.recline-fields-view .fields-list .accordion-heading h3 {
+  display: inline;
+}
+
+.recline-fields-view .fields-list .accordion-heading h3 {
+  margin-left: 10px;
+}
+
+/**********************************************************
   * Notifications
   *********************************************************/
 
