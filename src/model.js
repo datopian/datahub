@@ -111,6 +111,31 @@ my.Dataset = Backbone.Model.extend({
     return data;
   },
 
+  // Get a summary for each field in the form of a `Facet`.
+  // 
+  // @return null as this is async function. Provides deferred/promise interface.
+  getFieldsSummary: function() {
+    var self = this;
+    var query = new my.Query();
+    query.set({size: 0});
+    this.fields.each(function(field) {
+      query.addFacet(field.id);
+    });
+    var dfd = $.Deferred();
+    this.backend.query(this, query.toJSON()).done(function(queryResult) {
+      if (queryResult.facets) {
+        _.each(queryResult.facets, function(facetResult, facetId) {
+          facetResult.id = facetId;
+          var facet = new my.Facet(facetResult);
+          // TODO: probably want replace rather than reset (i.e. just replace the facet with this id)
+          self.fields.get(facetId).facets.reset(facet);
+        });
+      }
+      dfd.resolve(queryResult);
+    });
+    return dfd.promise();
+  },
+
   // ### _backendFromString(backendString)
   //
   // See backend argument to initialize for details
@@ -190,12 +215,21 @@ my.Record = Backbone.Model.extend({
   // For the provided Field get the corresponding rendered computed data value
   // for this record.
   getFieldValue: function(field) {
+    val = this.getFieldValueUnrendered(field);
+    if (field.renderer) {
+      val = field.renderer(val, field, this.toJSON());
+    }
+    return val;
+  },
+
+  // ### getFieldValueUnrendered
+  //
+  // For the provided Field get the corresponding computed data value
+  // for this record.
+  getFieldValueUnrendered: function(field) {
     var val = this.get(field.id);
     if (field.deriver) {
       val = field.deriver(val, field, this);
-    }
-    if (field.renderer) {
-      val = field.renderer(val, field, this);
     }
     return val;
   },
@@ -233,9 +267,9 @@ my.RecordList = Backbone.Collection.extend({
 // Following additional instance properties:
 // 
 // @property {Function} renderer: a function to render the data for this field.
-// Signature: function(value, field, doc) where value is the value of this
+// Signature: function(value, field, record) where value is the value of this
 // cell, field is corresponding field object and record is the record
-// object. Note that implementing functions can ignore arguments (e.g.
+// object (as simple JS object). Note that implementing functions can ignore arguments (e.g.
 // function(value) would be a valid formatter function).
 // 
 // @property {Function} deriver: a function to derive/compute the value of data
@@ -282,6 +316,7 @@ my.Field = Backbone.Model.extend({
     if (!this.renderer) {
       this.renderer = this.defaultRenderers[this.get('type')];
     }
+    this.facets = new my.FacetList();
   },
   defaultRenderers: {
     object: function(val, field, doc) {

@@ -125,6 +125,21 @@ test('Dataset _prepareQuery', function () {
   deepEqual(out, exp);
 });
 
+test('Dataset getFieldsSummary', function () {
+  var dataset = Fixture.getDataset();
+  dataset.getFieldsSummary().done(function() {
+    var countryField = dataset.fields.get('country');
+    var facet = countryField.facets.models[0];
+    equal(facet.get('terms').length, 3);
+    var exp = [
+      { count: 3, term: 'UK' },
+      { count: 2, term: 'DE' },
+      { count: 1, term: 'US' }
+    ];
+    deepEqual(facet.get('terms'), exp);
+  });
+});
+
 // =================================
 // Query
 

@@ -65,14 +65,13 @@ test('renderers', function () {
   var dataset = Fixture.getDataset();
 
   dataset.fields.get('country').renderer = function(val, field, doc){
-    return 'Country: ' + val;
+    return '<a href="abc">Country: ' + val + '</a>';
   };
 
   var deriver = function(val, field, doc){
     return doc.get('x') * 10;
   }
   dataset.fields.add(new recline.Model.Field({id:'computed'},{deriver:deriver}));
-
 
   var view = new recline.View.SlickGrid({
     model: dataset
@@ -84,6 +83,7 @@ test('renderers', function () {
   view.grid.init();
 
   equal($(view.grid.getCellNode(0,view.grid.getColumnIndex('country'))).text(),'Country: DE');
+  equal($(view.grid.getCellNode(0,view.grid.getColumnIndex('country'))).html(),'<a href="abc">Country: DE</a>');
   equal($(view.grid.getCellNode(0,view.grid.getColumnIndex('computed'))).text(),'10');
   view.remove();
 });

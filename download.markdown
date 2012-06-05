@@ -31,10 +31,14 @@ Recline has dependencies on some third-party libraries, notably JQuery and Backb
 
 Optional dependencies:
 
-* JQuery Mustache (required for all views)
+* [Mustache.js](https://github.com/janl/mustache.js/) &gt;= 0.5.0-dev (required for all views)
 * [JQuery Flot](http://code.google.com/p/flot/) >= 0.7 (required for for graph view)
 * [Leaflet](http://leaflet.cloudmade.com/) >= 0.3.1 (required for map view
+* [Verite Timeline](https://github.com/VeriteCo/Timeline/) as of 2012-05-02
 * [Bootstrap](http://twitter.github.com/bootstrap/) &gt;= v2.0 (default option for CSS and UI JS but you can use your own)
+
+If you grab the full zipball for Recline this will include all of the relevant
+dependencies in the vendor directory.
 
 ### Example
 

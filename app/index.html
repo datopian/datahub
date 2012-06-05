@@ -67,7 +67,7 @@
   <script type="text/javascript" src="../src/widget.pager.js"></script>
   <script type="text/javascript" src="../src/widget.queryeditor.js"></script>
   <script type="text/javascript" src="../src/widget.filtereditor.js"></script>
-  <script type="text/javascript" src="../src/widget.facetviewer.js"></script>
+  <script type="text/javascript" src="../src/widget.fields.js"></script>
   <script type="text/javascript" src="../src/view.multiview.js"></script>
 
   <!-- non-library javascript specific to this demo -->
@@ -84,20 +84,36 @@
         <ul class="nav pull-right">
           <li class="dropdown">
             <a data-toggle="dropdown" class="dropdown-toggle">
-              Import <b class="caret"></b></a>
-            <ul class="dropdown-menu js-import">
+              Load Data <b class="caret"></b></a>
+            <ul class="dropdown-menu js-load">
               <li>
-                <a data-toggle="modal" href=".js-import-dialog-url">Import from URL</a>
+                <a href="#" class="js-load-dialog-url" data-type="datahub" data-help="The link to the Dataset Data Resource on the DataHub to load from - note that the resource must have its Data API enabled">Load from the DataHub</a>
               </li>
               <li>
-                <a data-toggle="modal" href=".js-import-dialog-file">Import from File</a>
+                <a href="#" class="js-load-dialog-url" data-type="csv" data-help="Provide the link to the CSV file online">Load from CSV online</a>
+              </li>
+              <li>
+                <a href="#" class="js-load-dialog-url" data-type="excel" data-help="Provide the link to the Excel file online">Load from Excel online</a>
+              </li>
+              <li>
+                <a href="#" class="js-load-dialog-url" data-type="elasticsearch" data-help="Provide the link to the ElasticSearch endpoint (either an index or a type/table">Load from ElasticSearch</a>
+              </li>
+              <li class="divider"></li>
+              <li>
+                <a data-toggle="modal" href=".js-load-dialog-file">Load from CSV on disk</a>
               </li>
             </ul>
           </li>
           <li>
-          <a href=".js-share-and-embed-dialog" data-toggle="modal">
+            <a href=".js-share-and-embed-dialog" data-toggle="modal">
               Share and Embed
               <i class="icon-share icon-white"></i>
+            </a>
+          </li>
+          <li>
+            <a href=".js-settings" data-toggle="modal">
+              Settings
+              <i class="icon-cog icon-white" style="margin-top: 1px;"></i>
             </a>
           </li>
         </ul>
@@ -127,7 +143,7 @@
                 <li>Data grid</li>
                 <li>Data editing including programmatic data transformation in javascript</li>
                 <li>Visualizations includes graphs and maps</li>
-                <li>Import and export from a variety of sources including online sources such as online Excel and CSV files, Google docs and
+                <li>Load and export from a variety of sources including online sources such as online Excel and CSV files, Google docs and
                 the <a href="http://datahub.io/">DataHub</a> and offline sources like CSV files on your local machine.</li>
                 <li>Use online or offline - because the app is built in pure javascript and html you can use it anywhere there's a modern web browser. Using offline is as easy and downloading this web page to your local machine.</li>
               </ul>
@@ -149,41 +165,29 @@
     </div>
 
   <!-- modals for menus -->
-  <div class="modal fade in js-import-dialog-url" style="display: none;">
+  <div class="modal fade in js-load-dialog-url" style="display: none;">
     <div class="modal-header">
       <a class="close" data-dismiss="modal">×</a>
-      <h3>Import from URL</h3>
+      <h3>Load from URL</h3>
     </div>
     <div class="modal-body">
-      <form class="js-import-url form-horizontal">
+      <form class="js-load-url">
         <div class="control-group">
-          <label class="control-label">URL</label>
           <div class="controls">
-            <input type="text" name="source" class="input-xlarge" />
+            <input type="text" name="source" class="span5" placeholder="URL to data source" />
+            <p class="help-block"></p>
+            <input name="backend_type" style="display: none;" />
           </div>
         </div>
-        <div class="control-group">
-          <label class="control-label">Type of data</label>
-          <div class="controls">
-            <select name="backend_type">
-              <option value="csv">CSV</option>
-              <option vlaue="excel">Excel</option>
-              <option value="gdocs">Google Spreadsheet</option>
-              <option value="elasticsearch">ElasticSearch</option>
-            </select>
-          </div>
-        </div>
-        <div class="form-actions">
-          <button type="submit" class="btn btn-primary">Import &raquo;</button>
-        </div>
+        <button type="submit" class="btn btn-primary">Load &raquo;</button>
       </form>
     </div>
   </div>
 
-  <div class="modal fade in js-import-dialog-file" style="display: none;">
+  <div class="modal fade in js-load-dialog-file" style="display: none;">
     <div class="modal-header">
       <a class="close" data-dismiss="modal">×</a>
-      <h3>Import from File</h3>
+      <h3>Load from File</h3>
     </div>
     <div class="modal-body">
       <form class="form-horizontal">
@@ -213,7 +217,7 @@
           </div>
         </div>
         <div class="form-actions">
-          <button type="submit" class="btn btn-primary">Import &raquo;</button>
+          <button type="submit" class="btn btn-primary">Load &raquo;</button>
         </div>
       </form>
     </div>
@@ -229,6 +233,27 @@
       <textarea class="view-link" style="width: 100%; height: 100px;"></textarea>
       <h4>Embed this View</h4>
       <textarea class="view-embed" style="width: 100%; height: 200px;"></textarea>
+    </div>
+  </div>
+
+  <div class="modal fade in js-settings" style="display: none;">
+    <div class="modal-header">
+      <a class="close" data-dismiss="modal">×</a>
+      <h3>Settings</h3>
+    </div>
+    <div class="modal-body">
+      <form class="form-horizontal">
+        <div class="control-group">
+          <label class="control-label">DataHub API Key</label>
+          <div class="controls">
+            <input type="text" name="datahub_api_key" value="" />
+            <p class="help-block"><strong>Getting your API key:</strong> Register/Login to <a href="http://datahub.io/">http://datahub.io/</a> and then visit your user home page (click on the link at the top right). On your home page your API key is located at the top of the page in the section showing your main user details.</p>
+          </div>
+        </div>
+        <div class="form-actions">
+          <button type="submit" class="btn btn-primary">Save &raquo;</button>
+        </div>
+      </form>
     </div>
   </div>
 </div>

@@ -92,6 +92,14 @@ my.Timeline = Backbone.View.extend({
         out.timeline.date.push(tlEntry);
       }
     });
+    // if no entries create a placeholder entry to prevent Timeline crashing with error
+    if (out.timeline.date.length === 0) {
+      var tlEntry = {
+        "startDate": '2000,1,1',
+        "headline": 'No data to show!'
+      };
+      out.timeline.date.push(tlEntry);
+    }
     return out;
   },
 
