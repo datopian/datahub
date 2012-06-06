@@ -8,7 +8,6 @@ this.recline.View = this.recline.View || {};
 my.FilterEditor = Backbone.View.extend({
   className: 'recline-filter-editor well', 
   template: ' \
-    <a class="close js-hide" href="#">&times;</a> \
     <div class="row filters"> \
       <div class="span1"> \
         <h3>Filters</h3> \
@@ -38,7 +37,6 @@ my.FilterEditor = Backbone.View.extend({
     </div> \
   ',
   events: {
-    'click .js-hide': 'onHide',
     'click .js-remove-filter': 'onRemoveFilter',
     'submit form': 'onTermFiltersUpdate'
   },
@@ -76,10 +74,6 @@ my.FilterEditor = Backbone.View.extend({
     } else {
       this.el.hide();
     }
-  },
-  onHide: function(e) {
-    e.preventDefault();
-    this.el.hide();
   },
   onRemoveFilter: function(e) {
     e.preventDefault();
