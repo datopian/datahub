@@ -61,7 +61,7 @@ my.Map = Backbone.View.extend({
       // to display properly
       if (self.map){
         self.map.invalidateSize();
-        if (self._zoomPending && self.autoZoom) {
+        if (self._zoomPending && self.state.get('autoZoom')) {
           self._zoomToFeatures();
           self._zoomPending = false;
         }
