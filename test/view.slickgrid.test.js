@@ -27,7 +27,7 @@ test('state', function () {
   var view = new recline.View.SlickGrid({
     model: dataset,
     state: {
-      hiddenColumns:['x','lat','label'],
+      hiddenColumns:['x','lat','title'],
       columnsOrder:['lon','id','z','date', 'y', 'country'],
       columnsSort:{column:'country',direction:'desc'},
       columnsWidth:[

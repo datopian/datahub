@@ -7,7 +7,7 @@ var Fixture = {
       {id: 'y'},
       {id: 'z'},
       {id: 'country'},
-      {id: 'label'},
+      {id: 'title'},
       {id: 'lat'},
       {id: 'lon'}
     ];
