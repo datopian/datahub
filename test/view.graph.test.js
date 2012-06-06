@@ -8,7 +8,7 @@ test('basics', function () {
   $('.fixtures').append(view.el);
   equal(view.state.get('graphType'), 'lines-and-points');
   // view will auto render ...
-  assertPresent('.editor', view.el);
+  assertPresent('.editor', view.elSidebar);
   view.remove();
 });
 
@@ -27,9 +27,9 @@ test('initialize', function () {
   deepEqual(view.state.get('series'), ['y', 'z']);
 
   // check we have updated editor with state info
-  equal(view.el.find('.editor-type select').val(), 'lines');
-  equal(view.el.find('.editor-group select').val(), 'x');
-  var out = _.map(view.el.find('.editor-series select'), function($el) {
+  equal(view.elSidebar.find('.editor-type select').val(), 'lines');
+  equal(view.elSidebar.find('.editor-group select').val(), 'x');
+  var out = _.map(view.elSidebar.find('.editor-series select'), function($el) {
     return $($el).val();
   });
   deepEqual(out, ['y', 'z']);
@@ -51,3 +51,20 @@ test('dates in graph view', function () {
 
   view.remove();
 });
+
+test('GraphControls basics', function () {
+  var dataset = Fixture.getDataset();
+  var view = new recline.View.GraphControls({
+    model: dataset,
+    state: {
+      graphType: 'bars',
+      series: [] 
+    }
+  });
+  $('.fixtures').append(view.el);
+  equal(view.state.get('graphType'), 'bars');
+  // view will auto render ...
+  assertPresent('.editor', view.el);
+  view.remove();
+});
+

@@ -200,28 +200,46 @@ my.MultiView = Backbone.View.extend({
     tmplData.views = this.pageViews;
     var template = Mustache.render(this.template, tmplData);
     $(this.el).html(template);
+
+    // now create and append other views
     var $dataViewContainer = this.el.find('.data-view-container');
+    var $dataSidebar = this.el.find('.data-view-sidebar');
+
+    // the main views
     _.each(this.pageViews, function(view, pageName) {
       $dataViewContainer.append(view.view.el);
+      if (view.view.elSidebar) {
+        $dataSidebar.append(view.view.elSidebar);
+      }
     });
+
     var pager = new recline.View.Pager({
       model: this.model.queryState
     });
     this.el.find('.recline-results-info').after(pager.el);
+
     var queryEditor = new recline.View.QueryEditor({
       model: this.model.queryState
     });
     this.el.find('.query-editor-here').append(queryEditor.el);
+
     var filterEditor = new recline.View.FilterEditor({
-      model: this.model.queryState
+      model: this.model
     });
     this.$filterEditor = filterEditor.el;
-    this.el.find('.header').append(filterEditor.el);
+    $dataSidebar.append(filterEditor.el);
+    // are there actually any filters to show?
+    if (this.model.get('filters') && this.model.get('filters').length > 0) {
+      this.$filterEditor.show();
+    } else {
+      this.$filterEditor.hide();
+    }
+
     var fieldsView = new recline.View.Fields({
       model: this.model
     });
     this.$fieldsView = fieldsView.el;
-    this.el.find('.data-view-sidebar').append(fieldsView.el);
+    $dataSidebar.append(fieldsView.el);
   },
 
   updateNav: function(pageName) {
@@ -232,9 +250,15 @@ my.MultiView = Backbone.View.extend({
     _.each(this.pageViews, function(view, idx) {
       if (view.id === pageName) {
         view.view.el.show();
+        if (view.view.elSidebar) {
+          view.view.elSidebar.show();
+        }
         view.view.trigger('view:show');
       } else {
         view.view.el.hide();
+        if (view.view.elSidebar) {
+          view.view.elSidebar.hide();
+        }
         view.view.trigger('view:hide');
       }
     });

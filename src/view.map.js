@@ -24,82 +24,18 @@ this.recline.View = this.recline.View || {};
 //   }
 // </pre>
 my.Map = Backbone.View.extend({
-
   tagName:  'div',
   className: 'recline-map',
 
   template: ' \
-  <div class="editor"> \
-    <form class="form-stacked"> \
-      <div class="clearfix"> \
-        <div class="editor-field-type"> \
-            <label class="radio"> \
-              <input type="radio" id="editor-field-type-latlon" name="editor-field-type" value="latlon" checked="checked"/> \
-              Latitude / Longitude fields</label> \
-            <label class="radio"> \
-              <input type="radio" id="editor-field-type-geom" name="editor-field-type" value="geom" /> \
-              GeoJSON field</label> \
-        </div> \
-        <div class="editor-field-type-latlon"> \
-          <label>Latitude field</label> \
-          <div class="input editor-lat-field"> \
-            <select> \
-            <option value=""></option> \
-            {{#fields}} \
-            <option value="{{id}}">{{label}}</option> \
-            {{/fields}} \
-            </select> \
-          </div> \
-          <label>Longitude field</label> \
-          <div class="input editor-lon-field"> \
-            <select> \
-            <option value=""></option> \
-            {{#fields}} \
-            <option value="{{id}}">{{label}}</option> \
-            {{/fields}} \
-            </select> \
-          </div> \
-        </div> \
-        <div class="editor-field-type-geom" style="display:none"> \
-          <label>Geometry field (GeoJSON)</label> \
-          <div class="input editor-geom-field"> \
-            <select> \
-            <option value=""></option> \
-            {{#fields}} \
-            <option value="{{id}}">{{label}}</option> \
-            {{/fields}} \
-            </select> \
-          </div> \
-        </div> \
-      </div> \
-      <div class="editor-buttons"> \
-        <button class="btn editor-update-map">Update</button> \
-      </div> \
-      <div class="editor-options" > \
-        <label class="checkbox"> \
-          <input type="checkbox" id="editor-auto-zoom" checked="checked" /> \
-          Auto zoom to features</label> \
-      </div> \
-      <input type="hidden" class="editor-id" value="map-1" /> \
-      </div> \
-    </form> \
-  </div> \
-<div class="panel map"> \
-</div> \
+    <div class="panel map"></div> \
 ',
 
   // These are the default (case-insensitive) names of field that are used if found.
   // If not found, the user will need to define the fields via the editor.
   latitudeFieldNames: ['lat','latitude'],
   longitudeFieldNames: ['lon','longitude'],
-  geometryFieldNames: ['geom','the_geom','geometry','spatial','location'],
-
-  // Define here events for UI elements
-  events: {
-    'click .editor-update-map': 'onEditorSubmit',
-    'change .editor-field-type': 'onFieldTypeChange',
-    'change #editor-auto-zoom': 'onAutoZoomChange'
-  },
+  geometryFieldNames: ['geojson', 'geom','the_geom','geometry','spatial','location'],
 
   initialize: function(options) {
     var self = this;
@@ -107,10 +43,6 @@ my.Map = Backbone.View.extend({
 
     // Listen to changes in the fields
     this.model.fields.bind('change', function() {
-      self._setupGeometryField();
-    });
-    this.model.fields.bind('add', this.render);
-    this.model.fields.bind('reset', function(){
       self._setupGeometryField()
       self.render()
     });
@@ -129,7 +61,7 @@ my.Map = Backbone.View.extend({
       // to display properly
       if (self.map){
         self.map.invalidateSize();
-        if (self._zoomPending && self.autoZoom) {
+        if (self._zoomPending && self.state.get('autoZoom')) {
           self._zoomToFeatures();
           self._zoomPending = false;
         }
@@ -143,39 +75,36 @@ my.Map = Backbone.View.extend({
     var stateData = _.extend({
         geomField: null,
         lonField: null,
-        latField: null
+        latField: null,
+        autoZoom: true
       },
       options.state
     );
     this.state = new recline.Model.ObjectState(stateData);
+    this.menu = new my.MapMenu({
+      model: this.model,
+      state: this.state.toJSON()
+    });
+    this.menu.state.bind('change', function() {
+      self.state.set(self.menu.state.toJSON());
+      self.redraw();
+    });
+    this.elSidebar = this.menu.el;
 
-    this.autoZoom = true;
     this.mapReady = false;
     this.render();
+    this.redraw();
   },
 
   // ### Public: Adds the necessary elements to the page.
   //
   // Also sets up the editor fields and the map if necessary.
   render: function() {
-
     var self = this;
 
     htmls = Mustache.render(this.template, this.model.toTemplateJSON());
-
     $(this.el).html(htmls);
     this.$map = this.el.find('.panel.map');
-
-    if (this.geomReady && this.model.fields.length){
-      if (this.state.get('geomField')){
-        this._selectOption('editor-geom-field',this.state.get('geomField'));
-        $('#editor-field-type-geom').attr('checked','checked').change();
-      } else{
-        this._selectOption('editor-lon-field',this.state.get('lonField'));
-        this._selectOption('editor-lat-field',this.state.get('latField'));
-        $('#editor-field-type-latlon').attr('checked','checked').change();
-      }
-    }
     return this;
   },
 
@@ -191,14 +120,14 @@ my.Map = Backbone.View.extend({
     var self = this;
     action = action || 'refresh';
     // try to set things up if not already
-    if (!self.geomReady){
+    if (!self._geomReady()){
       self._setupGeometryField();
     }
     if (!self.mapReady){
       self._setupMap();
     }
 
-    if (this.geomReady && this.mapReady){
+    if (this._geomReady() && this.mapReady){
       if (action == 'reset' || action == 'refresh'){
         this.features.clearLayers();
         this._add(this.model.currentRecords.models);
@@ -207,7 +136,7 @@ my.Map = Backbone.View.extend({
       } else if (action == 'remove' && doc){
         this._remove(doc);
       }
-      if (this.autoZoom){
+      if (this.state.get('autoZoom')){
         if (this.visible){
           this._zoomToFeatures();
         } else {
@@ -217,51 +146,8 @@ my.Map = Backbone.View.extend({
     }
   },
 
-  //
-  // UI Event handlers
-  //
-
-  // Public: Update map with user options
-  //
-  // Right now the only configurable option is what field(s) contains the
-  // location information.
-  //
-  onEditorSubmit: function(e){
-    e.preventDefault();
-    if ($('#editor-field-type-geom').attr('checked')){
-      this.state.set({
-        geomField: $('.editor-geom-field > select > option:selected').val(),
-        lonField: null,
-        latField: null
-      });
-    } else {
-      this.state.set({
-        geomField: null,
-        lonField: $('.editor-lon-field > select > option:selected').val(),
-        latField: $('.editor-lat-field > select > option:selected').val()
-      });
-    }
-    this.geomReady = (this.state.get('geomField') || (this.state.get('latField') && this.state.get('lonField')));
-    this.redraw();
-
-    return false;
-  },
-
-  // Public: Shows the relevant select lists depending on the location field
-  // type selected.
-  //
-  onFieldTypeChange: function(e){
-    if (e.target.value == 'geom'){
-        $('.editor-field-type-geom').show();
-        $('.editor-field-type-latlon').hide();
-    } else {
-        $('.editor-field-type-geom').hide();
-        $('.editor-field-type-latlon').show();
-    }
-  },
-
-  onAutoZoomChange: function(e){
-    this.autoZoom = !this.autoZoom;
+  _geomReady: function() {
+    return Boolean(this.state.get('geomField') || (this.state.get('latField') && this.state.get('lonField')));
   },
 
   // Private: Add one or n features to the map
@@ -341,7 +227,7 @@ my.Map = Backbone.View.extend({
   // Private: Return a GeoJSON geomtry extracted from the record fields
   //
   _getGeometryFromRecord: function(doc){
-    if (this.geomReady){
+    if (this._geomReady()){
       if (this.state.get('geomField')){
         var value = doc.get(this.state.get('geomField'));
         if (typeof(value) === 'string'){
@@ -380,16 +266,14 @@ my.Map = Backbone.View.extend({
   //
   // If not found, the user can define them via the UI form.
   _setupGeometryField: function(){
-    var geomField, latField, lonField;
-    this.geomReady = (this.state.get('geomField') || (this.state.get('latField') && this.state.get('lonField')));
     // should not overwrite if we have already set this (e.g. explicitly via state)
-    if (!this.geomReady) {
+    if (!this._geomReady()) {
       this.state.set({
         geomField: this._checkField(this.geometryFieldNames),
         latField: this._checkField(this.latitudeFieldNames),
         lonField: this._checkField(this.longitudeFieldNames)
       });
-      this.geomReady = (this.state.get('geomField') || (this.state.get('latField') && this.state.get('lonField')));
+      this.menu.state.set(this.state.toJSON());
     }
   },
 
@@ -427,7 +311,6 @@ my.Map = Backbone.View.extend({
   // on [OpenStreetMap](http://openstreetmap.org).
   //
   _setupMap: function(){
-
     this.map = new L.Map(this.$map.get(0));
 
     var mapUrl = "http://otile{s}.mqcdn.com/tiles/1.0.0/osm/{z}/{x}/{y}.png";
@@ -483,8 +366,166 @@ my.Map = Backbone.View.extend({
       });
     }
   }
+});
 
- });
+my.MapMenu = Backbone.View.extend({
+  className: 'editor',
+
+  template: ' \
+    <form class="form-stacked"> \
+      <div class="clearfix"> \
+        <div class="editor-field-type"> \
+            <label class="radio"> \
+              <input type="radio" id="editor-field-type-latlon" name="editor-field-type" value="latlon" checked="checked"/> \
+              Latitude / Longitude fields</label> \
+            <label class="radio"> \
+              <input type="radio" id="editor-field-type-geom" name="editor-field-type" value="geom" /> \
+              GeoJSON field</label> \
+        </div> \
+        <div class="editor-field-type-latlon"> \
+          <label>Latitude field</label> \
+          <div class="input editor-lat-field"> \
+            <select> \
+            <option value=""></option> \
+            {{#fields}} \
+            <option value="{{id}}">{{label}}</option> \
+            {{/fields}} \
+            </select> \
+          </div> \
+          <label>Longitude field</label> \
+          <div class="input editor-lon-field"> \
+            <select> \
+            <option value=""></option> \
+            {{#fields}} \
+            <option value="{{id}}">{{label}}</option> \
+            {{/fields}} \
+            </select> \
+          </div> \
+        </div> \
+        <div class="editor-field-type-geom" style="display:none"> \
+          <label>Geometry field (GeoJSON)</label> \
+          <div class="input editor-geom-field"> \
+            <select> \
+            <option value=""></option> \
+            {{#fields}} \
+            <option value="{{id}}">{{label}}</option> \
+            {{/fields}} \
+            </select> \
+          </div> \
+        </div> \
+      </div> \
+      <div class="editor-buttons"> \
+        <button class="btn editor-update-map">Update</button> \
+      </div> \
+      <div class="editor-options" > \
+        <label class="checkbox"> \
+          <input type="checkbox" id="editor-auto-zoom" checked="checked" /> \
+          Auto zoom to features</label> \
+      </div> \
+      <input type="hidden" class="editor-id" value="map-1" /> \
+      </div> \
+    </form> \
+',
+
+  // Define here events for UI elements
+  events: {
+    'click .editor-update-map': 'onEditorSubmit',
+    'change .editor-field-type': 'onFieldTypeChange',
+    'change #editor-auto-zoom': 'onAutoZoomChange'
+  },
+
+  initialize: function(options) {
+    var self = this;
+    this.el = $(this.el);
+    _.bindAll(this, 'render');
+    this.model.fields.bind('change', this.render);
+    this.state = new recline.Model.ObjectState(options.state);
+    this.state.bind('change', this.render);
+    this.render();
+  },
+
+  // ### Public: Adds the necessary elements to the page.
+  //
+  // Also sets up the editor fields and the map if necessary.
+  render: function() {
+    var self = this;
+    htmls = Mustache.render(this.template, this.model.toTemplateJSON());
+    $(this.el).html(htmls);
+
+    if (this._geomReady() && this.model.fields.length){
+      if (this.state.get('geomField')){
+        this._selectOption('editor-geom-field',this.state.get('geomField'));
+        $('#editor-field-type-geom').attr('checked','checked').change();
+      } else{
+        this._selectOption('editor-lon-field',this.state.get('lonField'));
+        this._selectOption('editor-lat-field',this.state.get('latField'));
+        $('#editor-field-type-latlon').attr('checked','checked').change();
+      }
+    }
+    return this;
+  },
+
+  _geomReady: function() {
+    return Boolean(this.state.get('geomField') || (this.state.get('latField') && this.state.get('lonField')));
+  },
+
+  // ## UI Event handlers
+  //
+
+  // Public: Update map with user options
+  //
+  // Right now the only configurable option is what field(s) contains the
+  // location information.
+  //
+  onEditorSubmit: function(e){
+    e.preventDefault();
+    if (this.el.find('#editor-field-type-geom').attr('checked')){
+      this.state.set({
+        geomField: this.el.find('.editor-geom-field > select > option:selected').val(),
+        lonField: null,
+        latField: null
+      });
+    } else {
+      this.state.set({
+        geomField: null,
+        lonField: this.el.find('.editor-lon-field > select > option:selected').val(),
+        latField: this.el.find('.editor-lat-field > select > option:selected').val()
+      });
+    }
+    return false;
+  },
+
+  // Public: Shows the relevant select lists depending on the location field
+  // type selected.
+  //
+  onFieldTypeChange: function(e){
+    if (e.target.value == 'geom'){
+        this.el.find('.editor-field-type-geom').show();
+        this.el.find('.editor-field-type-latlon').hide();
+    } else {
+        this.el.find('.editor-field-type-geom').hide();
+        this.el.find('.editor-field-type-latlon').show();
+    }
+  },
+
+  onAutoZoomChange: function(e){
+    this.state.set({autoZoom: !this.state.get('autoZoom')});
+  },
+
+  // Private: Helper function to select an option from a select list
+  //
+  _selectOption: function(id,value){
+    var options = this.el.find('.' + id + ' > select > option');
+    if (options){
+      options.each(function(opt){
+        if (this.value == value) {
+          $(this).attr('selected','selected');
+          return false;
+        }
+      });
+    }
+  }
+});
 
 })(jQuery, recline.View);
 

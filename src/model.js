@@ -425,7 +425,7 @@ my.Query = Backbone.Model.extend({
   addTermFilter: function(fieldId, value) {
     var filters = this.get('filters');
     var filter = { term: {} };
-    filter.term[fieldId] = value;
+    filter.term[fieldId] = value || '';
     filters.push(filter);
     this.set({filters: filters});
     // change does not seem to be triggered automatically

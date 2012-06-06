@@ -1,10 +1,12 @@
 .recline-data-explorer .data-view-container {
   display: block;
+  margin-right: 225px;
 }
 
 .recline-data-explorer .data-view-sidebar {
   float: right;
   margin-left: 8px;
+  width: 220px;
 }
 
 .recline-data-explorer .header .navigation {
@@ -94,21 +96,24 @@
   * Filter Editor
   *********************************************************/
 
-.recline-filter-editor .filter-term .input-append a {
-  margin-left: -5px;
+.recline-filter-editor {
+  padding: 8px;
 }
 
-.recline-facet-viewer .facet-summary label {
-  display: inline;
+.recline-filter-editor .filter-term a {
+  font-size: 18px;
 }
+
+.recline-filter-editor input,
+.recline-filter-editor select
+{
+  width: 175px;
+}
+
 
 /**********************************************************
   * Fields Widget
   *********************************************************/
-
-.recline-fields-view {
-  width: 200px;
-}
 
 .recline-fields-view .fields-list {
   padding: 0;

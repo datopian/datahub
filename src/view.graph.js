@@ -21,44 +21,10 @@ this.recline.View = this.recline.View || {};
 // NB: should *not* provide an el argument to the view but must let the view
 // generate the element itself (you can then append view.el to the DOM.
 my.Graph = Backbone.View.extend({
-
   tagName:  "div",
   className: "recline-graph",
 
   template: ' \
-  <div class="editor"> \
-    <form class="form-stacked"> \
-      <div class="clearfix"> \
-        <label>Graph Type</label> \
-        <div class="input editor-type"> \
-          <select> \
-          <option value="lines-and-points">Lines and Points</option> \
-          <option value="lines">Lines</option> \
-          <option value="points">Points</option> \
-          <option value="bars">Bars</option> \
-          </select> \
-        </div> \
-        <label>Group Column (x-axis)</label> \
-        <div class="input editor-group"> \
-          <select> \
-          <option value="">Please choose ...</option> \
-          {{#fields}} \
-          <option value="{{id}}">{{label}}</option> \
-          {{/fields}} \
-          </select> \
-        </div> \
-        <div class="editor-series-group"> \
-        </div> \
-      </div> \
-      <div class="editor-buttons"> \
-        <button class="btn editor-add">Add Series</button> \
-      </div> \
-      <div class="editor-buttons editor-submit" comment="hidden temporarily" style="display: none;"> \
-        <button class="editor-save">Save</button> \
-        <input type="hidden" class="editor-id" value="chart-1" /> \
-      </div> \
-    </form> \
-  </div> \
   <div class="panel graph"> \
     <div class="js-temp-notice alert alert-block"> \
       <h3 class="alert-heading">Hey there!</h3> \
@@ -68,26 +34,6 @@ my.Graph = Backbone.View.extend({
   </div> \
 </div> \
 ',
-  templateSeriesEditor: ' \
-    <div class="editor-series js-series-{{seriesIndex}}"> \
-      <label>Series <span>{{seriesName}} (y-axis)</span> \
-        [<a href="#remove" class="action-remove-series">Remove</a>] \
-      </label> \
-      <div class="input"> \
-        <select> \
-        {{#fields}} \
-        <option value="{{id}}">{{label}}</option> \
-        {{/fields}} \
-        </select> \
-      </div> \
-    </div> \
-  ',
-
-  events: {
-    'change form select': 'onEditorSubmit',
-    'click .editor-add': '_onAddSeries',
-    'click .action-remove-series': 'removeSeries'
-  },
 
   initialize: function(options) {
     var self = this;
@@ -114,6 +60,15 @@ my.Graph = Backbone.View.extend({
       options.state
     );
     this.state = new recline.Model.ObjectState(stateData);
+    this.editor = new my.GraphControls({
+      model: this.model,
+      state: this.state.toJSON()
+    });
+    this.editor.state.bind('change', function() {
+      self.state.set(self.editor.state.toJSON());
+      self.redraw();
+    });
+    this.elSidebar = this.editor.el;
     this.render();
   },
 
@@ -123,54 +78,7 @@ my.Graph = Backbone.View.extend({
     var htmls = Mustache.render(this.template, tmplData);
     $(this.el).html(htmls);
     this.$graph = this.el.find('.panel.graph');
-
-    // set up editor from state
-    if (this.state.get('graphType')) {
-      this._selectOption('.editor-type', this.state.get('graphType'));
-    }
-    if (this.state.get('group')) {
-      this._selectOption('.editor-group', this.state.get('group'));
-    }
-    // ensure at least one series box shows up
-    var tmpSeries = [""];
-    if (this.state.get('series').length > 0) {
-      tmpSeries = this.state.get('series');
-    }
-    _.each(tmpSeries, function(series, idx) {
-      self.addSeries(idx);
-      self._selectOption('.editor-series.js-series-' + idx, series);
-    });
     return this;
-  },
-
-  // Private: Helper function to select an option from a select list
-  //
-  _selectOption: function(id,value){
-    var options = this.el.find(id + ' select > option');
-    if (options) {
-      options.each(function(opt){
-        if (this.value == value) {
-          $(this).attr('selected','selected');
-          return false;
-        }
-      });
-    }
-  },
-
-  onEditorSubmit: function(e) {
-    var select = this.el.find('.editor-group select');
-    var $editor = this;
-    var $series  = this.el.find('.editor-series select');
-    var series = $series.map(function () {
-      return $(this).val();
-    });
-    var updatedState = {
-      series: $.makeArray(series),
-      group: this.el.find('.editor-group select').val(),
-      graphType: this.el.find('.editor-type select').val()
-    };
-    this.state.set(updatedState);
-    this.redraw();
   },
 
   redraw: function() {
@@ -187,6 +95,8 @@ my.Graph = Backbone.View.extend({
     }
     // check we have something to plot
     if (this.state.get('group') && this.state.get('series')) {
+      // faff around with width because flot draws axes *outside* of the element width which means graph can get push down as it hits element next to it
+      this.$graph.width(this.el.width() - 20);
       var series = this.createSeries();
       var options = this.getGraphOptions(this.state.attributes.graphType);
       this.plot = $.plot(this.$graph, series, options);
@@ -362,6 +272,128 @@ my.Graph = Backbone.View.extend({
       series.push({data: points, label: field});
     });
     return series;
+  }
+});
+
+my.GraphControls = Backbone.View.extend({
+  className: "editor",
+  template: ' \
+  <div class="editor"> \
+    <form class="form-stacked"> \
+      <div class="clearfix"> \
+        <label>Graph Type</label> \
+        <div class="input editor-type"> \
+          <select> \
+          <option value="lines-and-points">Lines and Points</option> \
+          <option value="lines">Lines</option> \
+          <option value="points">Points</option> \
+          <option value="bars">Bars</option> \
+          </select> \
+        </div> \
+        <label>Group Column (x-axis)</label> \
+        <div class="input editor-group"> \
+          <select> \
+          <option value="">Please choose ...</option> \
+          {{#fields}} \
+          <option value="{{id}}">{{label}}</option> \
+          {{/fields}} \
+          </select> \
+        </div> \
+        <div class="editor-series-group"> \
+        </div> \
+      </div> \
+      <div class="editor-buttons"> \
+        <button class="btn editor-add">Add Series</button> \
+      </div> \
+      <div class="editor-buttons editor-submit" comment="hidden temporarily" style="display: none;"> \
+        <button class="editor-save">Save</button> \
+        <input type="hidden" class="editor-id" value="chart-1" /> \
+      </div> \
+    </form> \
+  </div> \
+',
+  templateSeriesEditor: ' \
+    <div class="editor-series js-series-{{seriesIndex}}"> \
+      <label>Series <span>{{seriesName}} (y-axis)</span> \
+        [<a href="#remove" class="action-remove-series">Remove</a>] \
+      </label> \
+      <div class="input"> \
+        <select> \
+        {{#fields}} \
+        <option value="{{id}}">{{label}}</option> \
+        {{/fields}} \
+        </select> \
+      </div> \
+    </div> \
+  ',
+  events: {
+    'change form select': 'onEditorSubmit',
+    'click .editor-add': '_onAddSeries',
+    'click .action-remove-series': 'removeSeries'
+  },
+
+  initialize: function(options) {
+    var self = this;
+    this.el = $(this.el);
+    _.bindAll(this, 'render');
+    this.model.fields.bind('reset', this.render);
+    this.model.fields.bind('add', this.render);
+    this.state = new recline.Model.ObjectState(options.state);
+    this.render();
+  },
+
+  render: function() {
+    var self = this;
+    var tmplData = this.model.toTemplateJSON();
+    var htmls = Mustache.render(this.template, tmplData);
+    this.el.html(htmls);
+
+    // set up editor from state
+    if (this.state.get('graphType')) {
+      this._selectOption('.editor-type', this.state.get('graphType'));
+    }
+    if (this.state.get('group')) {
+      this._selectOption('.editor-group', this.state.get('group'));
+    }
+    // ensure at least one series box shows up
+    var tmpSeries = [""];
+    if (this.state.get('series').length > 0) {
+      tmpSeries = this.state.get('series');
+    }
+    _.each(tmpSeries, function(series, idx) {
+      self.addSeries(idx);
+      self._selectOption('.editor-series.js-series-' + idx, series);
+    });
+    return this;
+  },
+
+  // Private: Helper function to select an option from a select list
+  //
+  _selectOption: function(id,value){
+    var options = this.el.find(id + ' select > option');
+    if (options) {
+      options.each(function(opt){
+        if (this.value == value) {
+          $(this).attr('selected','selected');
+          return false;
+        }
+      });
+    }
+  },
+
+  onEditorSubmit: function(e) {
+    var select = this.el.find('.editor-group select');
+    var $editor = this;
+    var $series  = this.el.find('.editor-series select');
+    var series = $series.map(function () {
+      return $(this).val();
+    });
+    var updatedState = {
+      series: $.makeArray(series),
+      group: this.el.find('.editor-group select').val(),
+      graphType: this.el.find('.editor-type select').val()
+    };
+    this.state.set(updatedState);
   },
 
   // Public: Adds a new empty series select box to the editor.
