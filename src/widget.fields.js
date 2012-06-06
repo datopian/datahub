@@ -63,8 +63,12 @@ my.Fields = Backbone.View.extend({
     this.el = $(this.el);
     _.bindAll(this, 'render');
 
-    this.model.fields.bind('all', function() {
+    // TODO: this is quite restrictive in terms of when it is re-run
+    // e.g. a change in type will not trigger a re-run atm.
+    // being more liberal (e.g. binding to all) can lead to being called a lot (e.g. for change:width)
+    this.model.fields.bind('reset', function(action) {
       self.model.fields.each(function(field) {
+        field.facets.unbind('all', self.render);
         field.facets.bind('all', self.render);
       });
       // fields can get reset or changed in which case we need to recalculate
