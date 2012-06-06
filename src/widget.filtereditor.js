@@ -51,8 +51,8 @@ my.FilterEditor = Backbone.View.extend({
   initialize: function() {
     this.el = $(this.el);
     _.bindAll(this, 'render');
-    this.model.bind('change', this.render);
-    this.model.bind('change:filters:new-blank', this.render);
+    this.model.queryState.bind('change', this.render);
+    this.model.queryState.bind('change:filters:new-blank', this.render);
     this.render();
   },
   render: function() {
@@ -100,12 +100,12 @@ my.FilterEditor = Backbone.View.extend({
     e.preventDefault();
     var $target = $(e.target);
     var filterId = $target.closest('.filter').attr('data-filter-id');
-    this.model.removeFilter(filterId);
+    this.model.queryState.removeFilter(filterId);
   },
   onTermFiltersUpdate: function(e) {
    var self = this;
     e.preventDefault();
-    var filters = self.model.get('filters');
+    var filters = self.model.queryState.get('filters');
     var $form = $(e.target);
     _.each($form.find('input'), function(input) {
       var $input = $(input);
@@ -114,8 +114,8 @@ my.FilterEditor = Backbone.View.extend({
       var fieldId = $input.attr('data-filter-field');
       filters[filterIndex].term[fieldId] = value;
     });
-    self.model.set({filters: filters});
-    self.model.trigger('change');
+    self.model.queryState.set({filters: filters});
+    self.model.queryState.trigger('change');
   }
 });
 
