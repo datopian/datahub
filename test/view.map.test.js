@@ -31,7 +31,7 @@ test('basics', function () {
   //Fire query, otherwise the map won't be initialized
   dataset.query();
 
-  assertPresent('.editor',view.el);
+  assertPresent('.editor-field-type', view.elSidebar);
 
   // Check that the Leaflet map was set up
   assertPresent('.leaflet-container',view.el);
@@ -40,6 +40,21 @@ test('basics', function () {
   ok(view.features instanceof L.GeoJSON);
 
   view.remove();
+});
+
+test('_setupGeometryField', function () {
+  var dataset = Fixture.getDataset();
+  var view = new recline.View.Map({
+    model: dataset
+  });
+  var exp = {
+    geomField: null,
+    lonField: 'lon',
+    latField: 'lat',
+    autoZoom: true
+  };
+  deepEqual(view.state.toJSON(), exp);
+  deepEqual(view.menu.state.toJSON(), exp);
 });
 
 test('Lat/Lon geom fields', function () {
@@ -136,6 +151,15 @@ test('Popup', function () {
   });
 
   view.remove();
+});
+
+test('MapMenu', function () {
+  var dataset = Fixture.getDataset();
+  var controls = new recline.View.MapMenu({
+    model: dataset,
+    state: {}
+  });
+  assertPresent('.editor-field-type', controls.el);
 });
 
 var _getFeaturesCount = function(features){
