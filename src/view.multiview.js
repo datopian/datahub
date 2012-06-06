@@ -224,10 +224,16 @@ my.MultiView = Backbone.View.extend({
     this.el.find('.query-editor-here').append(queryEditor.el);
 
     var filterEditor = new recline.View.FilterEditor({
-      model: this.model.queryState
+      model: this.model
     });
     this.$filterEditor = filterEditor.el;
-    this.el.find('.header').append(filterEditor.el);
+    $dataSidebar.append(filterEditor.el);
+    // are there actually any filters to show?
+    if (this.model.get('filters') && this.model.get('filters').length > 0) {
+      this.$filterEditor.show();
+    } else {
+      this.$filterEditor.hide();
+    }
 
     var fieldsView = new recline.View.Fields({
       model: this.model

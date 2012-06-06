@@ -8,37 +8,45 @@ this.recline.View = this.recline.View || {};
 my.FilterEditor = Backbone.View.extend({
   className: 'recline-filter-editor well', 
   template: ' \
-    <div class="row filters"> \
-      <div class="span1"> \
-        <h3>Filters</h3> \
-      </div> \
-      <div class="span11"> \
-        <form class="form-horizontal"> \
-          <div class="row"> \
-            <div class="span6"> \
-              {{#termFilters}} \
-              <div class="control-group filter-term filter" data-filter-id={{id}}> \
-                <label class="control-label" for="">{{label}}</label> \
-                <div class="controls"> \
-                  <div class="input-append"> \
-                    <input type="text" value="{{value}}" name="{{fieldId}}" class="span4" data-filter-field="{{fieldId}}" data-filter-id="{{id}}" data-filter-type="term" /> \
-                    <a class="btn js-remove-filter"><i class="icon-remove"></i></a> \
-                  </div> \
-                </div> \
-              </div> \
-              {{/termFilters}} \
-            </div> \
-          <div class="span4"> \
-            <p>To add a filter use the column menu in the grid view.</p> \
-            <button type="submit" class="btn">Update</button> \
+    <div class="filters"> \
+      <h3>Filters</h3> \
+      <a href="#" class="js-add-filter">Add filter</a> \
+      <form class="form-stacked js-add" style="display: none;"> \
+        <fieldset> \
+          <label>Filter type</label> \
+          <select class="filterType"> \
+            <option value="term">Term (text) filter</option> \
+          </select> \
+          <label>Field</label> \
+          <select class="fields"> \
+            {{#fields}} \
+            <option value="{{id}}">{{label}}</option> \
+            {{/fields}} \
+          </select> \
+          <button type="submit" class="btn">Add</button> \
+        </fieldset> \
+      </form> \
+      <form class="form-stacked js-edit"> \
+        {{#termFilters}} \
+        <div class="control-group filter-term filter" data-filter-id={{id}}> \
+          <label class="control-label" for="">{{label}}</label> \
+          <div class="controls"> \
+              <input type="text" value="{{value}}" name="{{fieldId}}" data-filter-field="{{fieldId}}" data-filter-id="{{id}}" data-filter-type="term" /> \
+              <a class="js-remove-filter" href="#">&times;</a> \
           </div> \
-        </form> \
-      </div> \
+        </div> \
+        {{/termFilters}} \
+        {{#termFilters.length}} \
+        <button type="submit" class="btn">Update</button> \
+        {{/termFilters.length}} \
+      </form> \
     </div> \
   ',
   events: {
     'click .js-remove-filter': 'onRemoveFilter',
-    'submit form': 'onTermFiltersUpdate'
+    'click .js-add-filter': 'onAddFilterShow',
+    'submit form.js-edit': 'onTermFiltersUpdate',
+    'submit form.js-add': 'onAddFilter'
   },
   initialize: function() {
     this.el = $(this.el);
@@ -48,7 +56,7 @@ my.FilterEditor = Backbone.View.extend({
     this.render();
   },
   render: function() {
-    var tmplData = $.extend(true, {}, this.model.toJSON());
+    var tmplData = $.extend(true, {}, this.model.queryState.toJSON());
     // we will use idx in list as there id ...
     tmplData.filters = _.map(tmplData.filters, function(filter, idx) {
       filter.id = idx;
@@ -66,14 +74,27 @@ my.FilterEditor = Backbone.View.extend({
         value: filter.term[fieldId]
       };
     });
+    tmplData.fields = this.model.fields.toJSON();
     var out = Mustache.render(this.template, tmplData);
     this.el.html(out);
-    // are there actually any facets to show?
-    if (this.model.get('filters').length > 0) {
-      this.el.show();
-    } else {
-      this.el.hide();
+  },
+  onAddFilterShow: function(e) {
+    e.preventDefault();
+    var $target = $(e.target);
+    $target.hide();
+    this.el.find('form.js-add').show();
+  },
+  onAddFilter: function(e) {
+    e.preventDefault();
+    var $target = $(e.target);
+    $target.hide();
+    var filterType = $target.find('select.filterType').val();
+    var field = $target.find('select.fields').val();
+    if (filterType === 'term') {
+      this.model.queryState.addTermFilter(field);
     }
+    // trigger render explicitly as queryState change will not be triggered (as blank value for filter)
+    this.render();
   },
   onRemoveFilter: function(e) {
     e.preventDefault();

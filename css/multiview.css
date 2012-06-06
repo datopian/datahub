@@ -96,13 +96,20 @@
   * Filter Editor
   *********************************************************/
 
-.recline-filter-editor .filter-term .input-append a {
-  margin-left: -5px;
+.recline-filter-editor {
+  padding: 8px;
 }
 
-.recline-facet-viewer .facet-summary label {
-  display: inline;
+.recline-filter-editor .filter-term a {
+  font-size: 18px;
 }
+
+.recline-filter-editor input,
+.recline-filter-editor select
+{
+  width: 175px;
+}
+
 
 /**********************************************************
   * Fields Widget
