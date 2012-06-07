@@ -119,13 +119,23 @@
   padding: 0;
 }
 
+.recline-fields-view .fields-list .accordion-heading,
+.recline-fields-view .fields-list h3
+{
+  margin: 3px 0 3px 5px;
+}
+
 .recline-fields-view .fields-list .accordion-heading a,
 .recline-fields-view .fields-list .accordion-heading h4 {
   display: inline;
 }
 
+.recline-fields-view .fields-list .accordion-heading a {
+  padding: 0;
+}
+
 .recline-fields-view .fields-list .accordion-heading h4 {
-  margin-left: 10px;
+  word-wrap: break-word
 }
 
 .recline-fields-view .clear {

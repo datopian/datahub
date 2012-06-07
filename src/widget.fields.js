@@ -25,15 +25,16 @@ my.Fields = Backbone.View.extend({
   className: 'recline-fields-view', 
   template: ' \
     <div class="accordion fields-list well"> \
+    <h3>Fields <a href="#" class="js-show-hide">+</a></h3> \
     {{#fields}} \
       <div class="accordion-group field"> \
         <div class="accordion-heading"> \
+          <i class="icon-file"></i> \
           <h4> \
             {{label}} \
             <small> \
-              <i class="icon-file" title="Field type"></i> {{type}} \
-              <a class="accordion-toggle" data-toggle="collapse" href="#collapse{{id}}"> &raquo; \
-              </a> \
+              {{type}} \
+              <a class="accordion-toggle" data-toggle="collapse" href="#collapse{{id}}"> &raquo; </a> \
             </small> \
           </h4> \
         </div> \
@@ -57,6 +58,7 @@ my.Fields = Backbone.View.extend({
   ',
 
   events: {
+    'click .js-show-hide': 'onShowHide'
   },
   initialize: function(model) {
     var self = this;
@@ -90,6 +92,22 @@ my.Fields = Backbone.View.extend({
     var templated = Mustache.render(this.template, tmplData);
     this.el.html(templated);
     this.el.find('.collapse').collapse('hide');
+  },
+  onShowHide: function(e) {
+    e.preventDefault();
+    var $target  = $(e.target);
+    // weird collapse class seems to have been removed (can watch this happen
+    // if you watch dom) but could not work why. Absence of collapse then meant
+    // we could not toggle.
+    // This seems to fix the problem.
+    this.el.find('.accordion-body').addClass('collapse');;
+    if ($target.text() === '+') {
+      this.el.find('.collapse').collapse('show');
+      $target.text('-');
+    } else {
+      this.el.find('.collapse').collapse('hide');
+      $target.text('+');
+    }
   }
 });
 
