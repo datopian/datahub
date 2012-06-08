@@ -21,7 +21,7 @@
     "jquery.mustache" : ""
   },
   "lib"           : "src",
-  "main"          : "recline.js",
+  "main"          : "dist/recline.js",
   "repositories": [
      {
           "type": "git", 

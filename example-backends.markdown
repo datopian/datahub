@@ -76,7 +76,7 @@ This is as per the [quickstart](example-quickstart.html) but the set of files is
 <script type="text/javascript" src="src/backend/gdocs.js"></script>
 
 <!-- Or you can just include all of recline. -->
-<script type="text/javascript" src="recline.js"></script>
+<script type="text/javascript" src="dist/recline.js"></script>
 {% endhighlight %}
 
 

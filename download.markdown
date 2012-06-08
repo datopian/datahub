@@ -17,7 +17,7 @@ unit tests, files for debugging and a build system. The production files
 
 Just want the all-in-one file containing all of Recline library in a single file? Here it is:
 
-<p><a href="recline.js" class="btn">recline.js all-in-one (master)</a></p>
+<p><a href="dist/recline.js" class="btn">recline.js all-in-one (master)</a></p>
 
 [View Changelog](https://github.com/okfn/recline#changelog)
 

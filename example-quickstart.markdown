@@ -37,7 +37,7 @@ Before writing any code with Recline, you need to do the following preparation s
 <script type="text/javascript" src="src/backend/memory.js"></script>
 <script type="text/javascript" src="src/view-grid.js"></script>
 -->
-<script type="text/javascript" src="recline.js"></script>{% endhighlight %}
+<script type="text/javascript" src="dist/recline.js"></script>{% endhighlight %}
 
 4. Create a div to hold the Recline view(s):
     {% highlight html %}

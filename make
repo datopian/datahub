@@ -5,7 +5,8 @@ import os
 
 def cat():
     print("** Combining js files")
-    cmd = 'cat src/*.js src/backend/*.js > recline.js'
+    cmd = 'cat src/*.js src/backend/*.js > dist/recline.js'
+    cmd = 'cat css/*.css > dist/recline.css'
     os.system(cmd)
 
 def docs():
