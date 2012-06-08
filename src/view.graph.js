@@ -260,7 +260,10 @@ my.Graph = Backbone.View.extend({
         var yfield = self.model.fields.get(field);
         var y = doc.getFieldValue(yfield);
         if (typeof x === 'string') {
-          x = index;
+          x = parseFloat(x);
+          if (isNaN(x)) {
+            x = index;
+          }
         }
         // horizontal bar chart
         if (self.state.attributes.graphType == 'bars') {
