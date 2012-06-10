@@ -79,12 +79,11 @@ my.Timeline = Backbone.View.extend({
       }
     };
     this.model.currentRecords.each(function(doc) {
-      var start = doc.get(self.state.get('startField'));
+      var start = self._parseDate(doc.get(self.state.get('startField')));
+      var end = self._parseDate(doc.get(self.state.get('endField')));
       if (start) {
-        var end = doc.get(self.state.get('endField'));
-        end = end ? moment(end).toDate() : null;
         var tlEntry = {
-          "startDate": moment(start).toDate(),
+          "startDate": start,
           "endDate": end,
           "headline": String(doc.get('title') || ''),
           "text": doc.summary()
@@ -101,6 +100,23 @@ my.Timeline = Backbone.View.extend({
       out.timeline.date.push(tlEntry);
     }
     return out;
+  },
+
+  _parseDate: function(date) {
+    var out = date.trim();
+    out = out.replace(/(\d)th/g, '$1');
+    out = out.replace(/(\d)st/g, '$1');
+    out = out.trim() ? moment(out) : null;
+    if (out.toDate() == 'Invalid Date') {
+      return null;
+    } else {
+      // fix for moment weirdness around date parsing and time zones
+      // moment('1914-08-01').toDate() => 1914-08-01 00:00 +01:00
+      // which in iso format (with 0 time offset) is 31 July 1914 23:00
+      // meanwhile native new Date('1914-08-01') => 1914-08-01 01:00 +01:00
+      out = out.subtract('minutes', out.zone());
+      return out.toDate();
+    }
   },
 
   _setupTemporalField: function() {
