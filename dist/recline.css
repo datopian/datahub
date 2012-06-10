@@ -1,0 +1,693 @@
+.recline-graph .graph {
+  height: 500px;
+}
+
+.recline-graph .legend table {
+  width: auto;
+  margin-bottom: 0;
+}
+
+.recline-graph .legend td {
+  padding: 5px;
+  line-height: 13px;
+}
+
+.recline-graph .graph .alert {
+  width: 450px;
+  margin: auto;
+}
+
+/**********************************************************
+  * (Data) Grid
+  *********************************************************/
+
+table.recline-grid {
+  table-layout: fixed;
+  width: 100%;
+}
+
+.recline-grid .btn-group .dropdown-toggle {
+  padding: 1px 3px;
+  line-height: auto;
+}
+
+.recline-grid td, .recline-grid th {
+  border-left: 1px solid #ccc;
+  padding: 3px 4px;
+  text-align: left;
+  word-wrap: break-word;
+  white-space: normal;
+}
+
+.recline-grid td {
+  vertical-align: top;
+}
+
+.recline-grid tr td:first-child, .recline-grid tr th:first-child {
+  width: 20px;
+}
+
+.recline-grid tbody tr:last-child {
+  border-bottom: 1px solid #ccc;
+}
+
+.recline-grid tbody td:last-child {
+  border-right: 1px solid #ccc;
+}
+
+/* direct borrowing from twitter buttons */
+.recline-grid th,
+.transform-column-view .expression-preview-table-wrapper th
+{
+  background-color: #e6e6e6;
+  background-repeat: no-repeat;
+  background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#ffffff), color-stop(25%, #ffffff), to(#e6e6e6));
+  background-image: -webkit-linear-gradient(#ffffff, #ffffff 25%, #e6e6e6);
+  background-image: -moz-linear-gradient(top, #ffffff, #ffffff 25%, #e6e6e6);
+  background-image: -ms-linear-gradient(#ffffff, #ffffff 25%, #e6e6e6);
+  background-image: -o-linear-gradient(#ffffff, #ffffff 25%, #e6e6e6);
+  background-image: linear-gradient(#ffffff, #ffffff 25%, #e6e6e6);
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ffffff', endColorstr='#e6e6e6', GradientType=0);
+  text-shadow: 0 1px 1px rgba(255, 255, 255, 0.75);
+  color: #333;
+  border: 1px solid #ccc;
+  border-bottom-color: #bbb;
+  -webkit-box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.2), 0 1px 2px rgba(0, 0, 0, 0.05);
+  -moz-box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.2), 0 1px 2px rgba(0, 0, 0, 0.05);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.2), 0 1px 2px rgba(0, 0, 0, 0.05);
+  -webkit-transition: 0.1s linear all;
+  -moz-transition: 0.1s linear all;
+  -ms-transition: 0.1s linear all;
+  -o-transition: 0.1s linear all;
+  transition: 0.1s linear all;
+}
+
+/**********************************************************
+  * Fixed Header - http://www.imaputz.com/cssStuff/bigFourVersion.html
+  *********************************************************/
+
+div.table-container {
+  overflow: auto;
+}
+
+/* Reset overflow value to hidden for all non-IE browsers. */
+html>body div.table-container {
+  overflow: hidden;
+}
+
+thead.fixed-header tr {
+  overflow-x: hidden;
+}
+
+/* set table header to a fixed position. WinIE 6.x only                                       */
+/* In WinIE 6.x, any element with a position property set to relative and is a child of       */
+/* an element that has an overflow property set, the relative value translates into fixed.    */
+/* Ex: parent element DIV with a class of table-container has an overflow property set to auto */
+thead.fixed-header tr {
+  position: relative
+}
+
+/* set THEAD element to have block level attributes. All other non-IE browsers            */
+/* this enables overflow to work on TBODY element. All other non-IE, non-Mozilla browsers */
+html>body thead.fixed-header tr {
+  display: block
+}
+
+/* define the table content to be scrollable                                              */
+/* set TBODY element to have block level attributes. All other non-IE browsers            */
+/* this enables overflow to work on TBODY element. All other non-IE, non-Mozilla browsers */
+/* induced side effect is that child TDs no longer accept width: auto                     */
+tbody.scroll-content {
+  display: block;
+  max-height: 500px;
+  overflow: auto;
+}
+
+/**********************************************************
+  * Data Table Menus
+  *********************************************************/
+
+.column-header-menu, a.root-header-menu {
+  float: right;
+}
+
+div.data-table-cell-content {
+  line-height: 1.2;
+  color: #222;
+  position: relative;
+}
+
+div.data-table-cell-content-numeric {
+  text-align: right;
+}
+
+a.data-table-cell-edit {
+  position: absolute;
+  top: 0;
+  right: 0;
+  display: block;
+  width: 25px;
+  height: 16px;
+  text-decoration: none;
+  background-image: url(images/edit-map.png);
+  background-repeat: no-repeat;
+  visibility: hidden;
+}
+
+a.data-table-cell-edit:hover {
+  background-position: -25px 0px;
+}
+
+.recline-grid td:hover .data-table-cell-edit {
+  visibility: visible;
+}
+
+div.data-table-cell-content-numeric > a.data-table-cell-edit {
+  left: 0px;
+  right: auto;
+}
+
+.data-table-value-nonstring {
+  color: #282;
+}
+
+.data-table-error {
+  color: red;
+}
+
+.data-table-cell-editor-editor {
+  overflow: hidden;
+  display: block;
+  width: 98%;
+  height: 3em;
+  font-family: monospace;
+  margin: 3px 0;
+}
+
+.data-table-cell-copypaste-editor {
+  overflow: hidden;
+  display: block;
+  width: 98%;
+  height: 10em;
+  font-family: monospace;
+  margin: 3px 0;
+}
+
+.data-table-cell-editor-action {
+  float: left;
+  vertical-align: bottom;
+  text-align: center;
+}
+
+.data-table-cell-editor-key {
+  font-size: 0.8em;
+  color: #999;
+}
+
+
+/**********************************************************
+  * Transform Dialog
+  *********************************************************/
+
+textarea.expression-preview-code {
+  font-family: monospace;
+  height: 5em;
+  vertical-align: top;
+}
+
+.expression-preview-parsing-status {
+  color: #999;
+}
+
+.expression-preview-parsing-status.error {
+  color: red;
+}
+
+#expression-preview-tabs-preview,
+#expression-preview-tabs-help,
+#expression-preview-tabs-history,
+#expression-preview-tabs-starred {
+  padding: 5px;
+  overflow: hidden;
+}
+
+#expression-preview-tabs-preview > div,
+#expression-preview-tabs-help > div,
+#expression-preview-tabs-history > div,
+#expression-preview-tabs-starred {
+  height: 200px;
+  overflow: auto;
+}
+
+#expression-preview-tabs-preview td, #expression-preview-tabs-preview th,
+#expression-preview-tabs-help td, #expression-preview-tabs-help th,
+#expression-preview-tabs-history td, #expression-preview-tabs-history th,
+#expression-preview-tabs-starred td, #expression-preview-tabs-starred th {
+  padding: 5px;
+}
+
+.expression-preview-table-wrapper {
+  padding: 7px;
+}
+
+.expression-preview-container td {
+  padding: 2px 5px;
+  border-top: 1px solid #ccc;
+}
+
+td.expression-preview-heading {
+  border-top: none;
+  background: #ddd;
+  font-weight: bold;
+}
+
+td.expression-preview-value {
+  max-width: 250px !important;
+  overflow-x: hidden;
+}
+
+.expression-preview-special-value {
+  color: #aaa;
+}
+
+.expression-preview-help-container h3 {
+  margin-top: 15px;
+  margin-bottom: 7px;
+  border-bottom: 1px solid #999;
+}
+
+.expression-preview-doc-item-title {
+  font-weight: bold;
+  text-align: right;
+}
+
+.expression-preview-doc-item-params {
+}
+
+.expression-preview-doc-item-returns {
+}
+
+.expression-preview-doc-item-desc {
+  color: #666;
+}
+
+
+/**********************************************************
+  * Read-only mode
+  *********************************************************/
+
+.recline-read-only .recline-grid.no-hidden tr td:first-child,
+.recline-read-only .recline-grid.no-hidden tr th:first-child
+{
+  display: none;
+}
+
+.recline-read-only .recline-grid .write-op,
+.recline-read-only .recline-grid a.data-table-cell-edit
+{
+  display: none;
+}
+
+.recline-read-only a.row-header-menu {
+  display: none;
+}
+
+.recline-map .map {
+  height: 500px;
+}
+
+/**********************************************************
+  * Editor
+  *********************************************************/
+
+.recline-map .editor {
+  float: right;
+  width: 200px;
+  padding-left: 0px;
+  margin-left: 10px;
+}
+
+.recline-map .editor form {
+  padding-left: 4px;
+}
+
+.recline-map .editor select {
+  width: 100%;
+}
+
+.recline-map .editor .editor-options {
+  margin-top: 10px;
+  border-top: 1px solid gray;
+  padding: 5px 0;
+}
+.recline-data-explorer .data-view-container {
+  display: block;
+  margin-right: 225px;
+}
+
+.recline-data-explorer .data-view-sidebar {
+  float: right;
+  margin-left: 8px;
+  width: 220px;
+}
+
+.recline-data-explorer .header .navigation {
+  margin-bottom: 8px;
+}
+
+.recline-data-explorer .header .navigation,
+.recline-data-explorer .header .pagination,
+.recline-data-explorer .header .pagination form
+{
+  display: inline;
+}
+
+.recline-data-explorer .header .navigation {
+  float: left;
+}
+
+.recline-data-explorer .header .menu-right {
+  float: right;
+  margin-left: 5px;
+  padding-left: 5px;
+  border-left: solid 2px #ddd;
+}
+
+.header .recline-results-info {
+  line-height: 28px;
+  margin-left: 20px;
+  float: left;
+}
+
+/**********************************************************
+  * Query Editor
+  *********************************************************/
+
+.header .recline-query-editor {
+  float: right;
+  height: 30px;
+}
+
+.header .input-prepend {
+  margin-bottom: auto;
+}
+
+.header .add-on {
+  float: left;
+}
+
+/* needed for Chrome but not FF */
+.header .add-on {
+  margin-left: -27px;
+}
+
+/* needed for FF but not chrome */
+.header .input-prepend {
+  vertical-align: top;
+}
+
+.header .recline-query-editor form button {
+  vertical-align: top;
+}
+
+/**********************************************************
+  * Pager
+  *********************************************************/
+
+.header .recline-pager {
+  float: left;
+  margin: auto;
+  display: block;
+  margin-left: 20px;
+}
+
+.header .recline-pager .pagination input {
+  width: 30px;
+  height: 18px;
+  padding: 2px 4px;
+  margin: 0;
+  margin-top: -4px;
+}
+
+.header .recline-pager .pagination a {
+  line-height: 26px;
+  padding: 0 6px;
+}
+
+/**********************************************************
+  * Filter Editor
+  *********************************************************/
+
+.recline-filter-editor {
+  padding: 8px;
+}
+
+.recline-filter-editor .filter-term a {
+  font-size: 18px;
+}
+
+.recline-filter-editor input,
+.recline-filter-editor select
+{
+  width: 175px;
+}
+
+
+/**********************************************************
+  * Fields Widget
+  *********************************************************/
+
+.recline-fields-view .fields-list {
+  padding: 0;
+}
+
+.recline-fields-view .fields-list .accordion-heading,
+.recline-fields-view .fields-list h3
+{
+  margin: 3px 0 3px 5px;
+}
+
+.recline-fields-view .fields-list .accordion-heading a,
+.recline-fields-view .fields-list .accordion-heading h4 {
+  display: inline;
+}
+
+.recline-fields-view .fields-list .accordion-heading a {
+  padding: 0;
+}
+
+.recline-fields-view .fields-list .accordion-heading h4 {
+  word-wrap: break-word
+}
+
+.recline-fields-view .clear {
+  clear: both;
+}
+
+.recline-fields-view .facet-items {
+  list-style-type: none;
+  margin-left: 0;
+}
+
+.recline-fields-view .facet-item .term {
+  font-weight: bold;
+}
+
+.recline-fields-view .facet-item .count {
+}
+
+/**********************************************************
+  * Notifications
+  *********************************************************/
+
+.recline-data-explorer .notification-loader {
+  width: 18px;
+  margin-left: 5px;
+  background: url(images/small-spinner.gif) no-repeat;
+  display: inline-block;
+}
+
+.recline-data-explorer .alert-loader {
+  position: absolute;
+  width: 200px;
+  left: 50%;
+  margin-left: -100px;
+  z-index: 10000;
+  padding: 40px 0px 40px 0px;
+  margin-top: -10px;
+  text-align: center;
+  font-size: 16px;
+  font-weight: bold;
+  -webkit-border-radius: 0px;
+  -moz-border-radius: 0px;
+  border-radius: 0px;
+  border-top: none;
+}
+
+/*
+IMPORTANT:
+In order to preserve the uniform grid appearance, all cell styles need to have padding, margin and border sizes.
+No built-in (selected, editable, highlight, flashing, invalid, loading, :focus) or user-specified CSS
+classes should alter those!
+*/
+
+.recline-slickgrid .slick-header-columns .slick-header-column {
+  background-color: #e6e6e6;
+  background-repeat: no-repeat;
+  background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#ffffff), color-stop(25%, #ffffff), to(#e6e6e6));
+  background-image: -webkit-linear-gradient(#ffffff, #ffffff 25%, #e6e6e6);
+  background-image: -moz-linear-gradient(top, #ffffff, #ffffff 25%, #e6e6e6);
+  background-image: -ms-linear-gradient(#ffffff, #ffffff 25%, #e6e6e6);
+  background-image: -o-linear-gradient(#ffffff, #ffffff 25%, #e6e6e6);
+  background-image: linear-gradient(#ffffff, #ffffff 25%, #e6e6e6);
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ffffff', endColorstr='#e6e6e6', GradientType=0);
+  text-shadow: 0 1px 1px rgba(255, 255, 255, 0.75);
+  color: #333;
+  font-weight: bold;
+  border-right: 1px solid #ccc;
+  border-top: 1px solid #ccc;
+  border-bottom: 1px solid #bbb;
+  -webkit-box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.2), 0 1px 2px rgba(0, 0, 0, 0.05);
+  -moz-box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.2), 0 1px 2px rgba(0, 0, 0, 0.05);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.2), 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+.recline-slickgrid .slick-header-column:hover, .slick-header-column-active {
+}
+
+.recline-slickgrid .slick-headerrow {
+  background: #fafafa;
+}
+
+.recline-slickgrid .slick-headerrow-column {
+  background: #fafafa;
+  border-bottom: 0;
+  height: 100%;
+}
+
+.recline-slickgrid .slick-row.ui-state-active {
+  background: #F5F7D7;
+}
+
+.recline-slickgrid .slick-row {
+  position: absolute;
+  background: white;
+  border: 0px;
+  line-height: 20px;
+}
+
+.recline-slickgrid .slick-row.selected {
+  z-index: 10;
+  background: #DFE8F6;
+}
+
+.recline-slickgrid .slick-cell {
+  padding-left: 4px;
+  padding-right: 4px;
+}
+
+.recline-slickgrid .slick-group {
+  border-bottom: 2px solid silver;
+}
+
+.recline-slickgrid .slick-group-toggle {
+  width: 9px;
+  height: 9px;
+  margin-right: 5px;
+}
+
+.recline-slickgrid .slick-group-toggle.expanded {
+  background: url(../images/collapse.gif) no-repeat center center;
+}
+
+.recline-slickgrid .slick-group-toggle.collapsed {
+  background: url(../images/expand.gif) no-repeat center center;
+}
+
+.recline-slickgrid .slick-group-totals {
+  color: gray;
+  background: white;
+}
+
+.recline-slickgrid .slick-cell.selected {
+  background-color: beige;
+}
+
+.recline-slickgrid .slick-cell.active {
+  border-color: gray;
+  border-style: solid;
+}
+
+.recline-slickgrid .slick-sortable-placeholder {
+  background: silver !important;
+}
+
+.recline-slickgrid .slick-row[row$="1"], .slick-row[row$="3"], .slick-row[row$="5"], .slick-row[row$="7"], .slick-row[row$="9"] {
+  background: #fafafa;
+}
+
+.recline-slickgrid .slick-row.ui-state-active {
+  background: #F5F7D7;
+}
+
+.recline-slickgrid .slick-row.loading {
+  opacity: 0.5;
+  filter: alpha(opacity = 50);
+}
+
+.recline-slickgrid .slick-cell.invalid {
+  border-color: red;
+}
+
+.recline-slickgrid .slick-row .slick-cell:first-child,
+.recline-slickgrid .slick-header {
+  border-left: 1px solid #ccc;
+}
+
+/* add one pixel extra as added one pixel to left border of header */
+.recline-slickgrid .slick-row .slick-cell {
+  margin-right: -1px;
+}
+
+/* Slick grid context menu (not part of the recline-slickgrid div) */
+.slick-contextmenu {
+  border-radius: 5px
+}
+
+.slick-contextmenu li {
+  clear: both;
+  height: 24px;
+  cursor: pointer;
+}
+
+.slick-contextmenu .divider {
+  cursor: default;
+}
+
+.slick-contextmenu > li:hover {
+  background-color: #0088cc;
+}
+
+.slick-contextmenu .divider:hover {
+  background-color: #E5E5E5;
+}
+
+.slick-contextmenu li:hover > label {
+  color: white;
+}
+
+.slick-contextmenu input {
+  float: left;
+  margin-left: 15px;
+  margin-top: 5px;
+}
+
+.slick-contextmenu label {
+  float: left;
+  margin-right: 15px;
+  margin-left: 5px;
+  margin-top: 3px;
+  color: #555;
+  cursor: pointer;
+}
+

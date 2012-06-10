@@ -179,6 +179,31 @@ my.Dataset = Backbone.Model.extend({
     return data;
   },
 
+  // Get a summary for each field in the form of a `Facet`.
+  // 
+  // @return null as this is async function. Provides deferred/promise interface.
+  getFieldsSummary: function() {
+    var self = this;
+    var query = new my.Query();
+    query.set({size: 0});
+    this.fields.each(function(field) {
+      query.addFacet(field.id);
+    });
+    var dfd = $.Deferred();
+    this.backend.query(this, query.toJSON()).done(function(queryResult) {
+      if (queryResult.facets) {
+        _.each(queryResult.facets, function(facetResult, facetId) {
+          facetResult.id = facetId;
+          var facet = new my.Facet(facetResult);
+          // TODO: probably want replace rather than reset (i.e. just replace the facet with this id)
+          self.fields.get(facetId).facets.reset(facet);
+        });
+      }
+      dfd.resolve(queryResult);
+    });
+    return dfd.promise();
+  },
+
   // ### _backendFromString(backendString)
   //
   // See backend argument to initialize for details
@@ -359,6 +384,7 @@ my.Field = Backbone.Model.extend({
     if (!this.renderer) {
       this.renderer = this.defaultRenderers[this.get('type')];
     }
+    this.facets = new my.FacetList();
   },
   defaultRenderers: {
     object: function(val, field, doc) {
@@ -467,7 +493,7 @@ my.Query = Backbone.Model.extend({
   addTermFilter: function(fieldId, value) {
     var filters = this.get('filters');
     var filter = { term: {} };
-    filter.term[fieldId] = value;
+    filter.term[fieldId] = value || '';
     filters.push(filter);
     this.set({filters: filters});
     // change does not seem to be triggered automatically
@@ -612,44 +638,10 @@ this.recline.View = this.recline.View || {};
 // NB: should *not* provide an el argument to the view but must let the view
 // generate the element itself (you can then append view.el to the DOM.
 my.Graph = Backbone.View.extend({
-
   tagName:  "div",
   className: "recline-graph",
 
   template: ' \
-  <div class="editor"> \
-    <form class="form-stacked"> \
-      <div class="clearfix"> \
-        <label>Graph Type</label> \
-        <div class="input editor-type"> \
-          <select> \
-          <option value="lines-and-points">Lines and Points</option> \
-          <option value="lines">Lines</option> \
-          <option value="points">Points</option> \
-          <option value="bars">Bars</option> \
-          </select> \
-        </div> \
-        <label>Group Column (x-axis)</label> \
-        <div class="input editor-group"> \
-          <select> \
-          <option value="">Please choose ...</option> \
-          {{#fields}} \
-          <option value="{{id}}">{{label}}</option> \
-          {{/fields}} \
-          </select> \
-        </div> \
-        <div class="editor-series-group"> \
-        </div> \
-      </div> \
-      <div class="editor-buttons"> \
-        <button class="btn editor-add">Add Series</button> \
-      </div> \
-      <div class="editor-buttons editor-submit" comment="hidden temporarily" style="display: none;"> \
-        <button class="editor-save">Save</button> \
-        <input type="hidden" class="editor-id" value="chart-1" /> \
-      </div> \
-    </form> \
-  </div> \
   <div class="panel graph"> \
     <div class="js-temp-notice alert alert-block"> \
       <h3 class="alert-heading">Hey there!</h3> \
@@ -659,26 +651,6 @@ my.Graph = Backbone.View.extend({
   </div> \
 </div> \
 ',
-  templateSeriesEditor: ' \
-    <div class="editor-series js-series-{{seriesIndex}}"> \
-      <label>Series <span>{{seriesName}} (y-axis)</span> \
-        [<a href="#remove" class="action-remove-series">Remove</a>] \
-      </label> \
-      <div class="input"> \
-        <select> \
-        {{#fields}} \
-        <option value="{{id}}">{{label}}</option> \
-        {{/fields}} \
-        </select> \
-      </div> \
-    </div> \
-  ',
-
-  events: {
-    'change form select': 'onEditorSubmit',
-    'click .editor-add': '_onAddSeries',
-    'click .action-remove-series': 'removeSeries'
-  },
 
   initialize: function(options) {
     var self = this;
@@ -705,6 +677,15 @@ my.Graph = Backbone.View.extend({
       options.state
     );
     this.state = new recline.Model.ObjectState(stateData);
+    this.editor = new my.GraphControls({
+      model: this.model,
+      state: this.state.toJSON()
+    });
+    this.editor.state.bind('change', function() {
+      self.state.set(self.editor.state.toJSON());
+      self.redraw();
+    });
+    this.elSidebar = this.editor.el;
     this.render();
   },
 
@@ -714,54 +695,7 @@ my.Graph = Backbone.View.extend({
     var htmls = Mustache.render(this.template, tmplData);
     $(this.el).html(htmls);
     this.$graph = this.el.find('.panel.graph');
-
-    // set up editor from state
-    if (this.state.get('graphType')) {
-      this._selectOption('.editor-type', this.state.get('graphType'));
-    }
-    if (this.state.get('group')) {
-      this._selectOption('.editor-group', this.state.get('group'));
-    }
-    // ensure at least one series box shows up
-    var tmpSeries = [""];
-    if (this.state.get('series').length > 0) {
-      tmpSeries = this.state.get('series');
-    }
-    _.each(tmpSeries, function(series, idx) {
-      self.addSeries(idx);
-      self._selectOption('.editor-series.js-series-' + idx, series);
-    });
     return this;
-  },
-
-  // Private: Helper function to select an option from a select list
-  //
-  _selectOption: function(id,value){
-    var options = this.el.find(id + ' select > option');
-    if (options) {
-      options.each(function(opt){
-        if (this.value == value) {
-          $(this).attr('selected','selected');
-          return false;
-        }
-      });
-    }
-  },
-
-  onEditorSubmit: function(e) {
-    var select = this.el.find('.editor-group select');
-    var $editor = this;
-    var $series  = this.el.find('.editor-series select');
-    var series = $series.map(function () {
-      return $(this).val();
-    });
-    var updatedState = {
-      series: $.makeArray(series),
-      group: this.el.find('.editor-group select').val(),
-      graphType: this.el.find('.editor-type select').val()
-    };
-    this.state.set(updatedState);
-    this.redraw();
   },
 
   redraw: function() {
@@ -778,6 +712,8 @@ my.Graph = Backbone.View.extend({
     }
     // check we have something to plot
     if (this.state.get('group') && this.state.get('series')) {
+      // faff around with width because flot draws axes *outside* of the element width which means graph can get push down as it hits element next to it
+      this.$graph.width(this.el.width() - 20);
       var series = this.createSeries();
       var options = this.getGraphOptions(this.state.attributes.graphType);
       this.plot = $.plot(this.$graph, series, options);
@@ -941,7 +877,10 @@ my.Graph = Backbone.View.extend({
         var yfield = self.model.fields.get(field);
         var y = doc.getFieldValue(yfield);
         if (typeof x === 'string') {
-          x = index;
+          x = parseFloat(x);
+          if (isNaN(x)) {
+            x = index;
+          }
         }
         // horizontal bar chart
         if (self.state.attributes.graphType == 'bars') {
@@ -953,6 +892,128 @@ my.Graph = Backbone.View.extend({
       series.push({data: points, label: field});
     });
     return series;
+  }
+});
+
+my.GraphControls = Backbone.View.extend({
+  className: "editor",
+  template: ' \
+  <div class="editor"> \
+    <form class="form-stacked"> \
+      <div class="clearfix"> \
+        <label>Graph Type</label> \
+        <div class="input editor-type"> \
+          <select> \
+          <option value="lines-and-points">Lines and Points</option> \
+          <option value="lines">Lines</option> \
+          <option value="points">Points</option> \
+          <option value="bars">Bars</option> \
+          </select> \
+        </div> \
+        <label>Group Column (x-axis)</label> \
+        <div class="input editor-group"> \
+          <select> \
+          <option value="">Please choose ...</option> \
+          {{#fields}} \
+          <option value="{{id}}">{{label}}</option> \
+          {{/fields}} \
+          </select> \
+        </div> \
+        <div class="editor-series-group"> \
+        </div> \
+      </div> \
+      <div class="editor-buttons"> \
+        <button class="btn editor-add">Add Series</button> \
+      </div> \
+      <div class="editor-buttons editor-submit" comment="hidden temporarily" style="display: none;"> \
+        <button class="editor-save">Save</button> \
+        <input type="hidden" class="editor-id" value="chart-1" /> \
+      </div> \
+    </form> \
+  </div> \
+',
+  templateSeriesEditor: ' \
+    <div class="editor-series js-series-{{seriesIndex}}"> \
+      <label>Series <span>{{seriesName}} (y-axis)</span> \
+        [<a href="#remove" class="action-remove-series">Remove</a>] \
+      </label> \
+      <div class="input"> \
+        <select> \
+        {{#fields}} \
+        <option value="{{id}}">{{label}}</option> \
+        {{/fields}} \
+        </select> \
+      </div> \
+    </div> \
+  ',
+  events: {
+    'change form select': 'onEditorSubmit',
+    'click .editor-add': '_onAddSeries',
+    'click .action-remove-series': 'removeSeries'
+  },
+
+  initialize: function(options) {
+    var self = this;
+    this.el = $(this.el);
+    _.bindAll(this, 'render');
+    this.model.fields.bind('reset', this.render);
+    this.model.fields.bind('add', this.render);
+    this.state = new recline.Model.ObjectState(options.state);
+    this.render();
+  },
+
+  render: function() {
+    var self = this;
+    var tmplData = this.model.toTemplateJSON();
+    var htmls = Mustache.render(this.template, tmplData);
+    this.el.html(htmls);
+
+    // set up editor from state
+    if (this.state.get('graphType')) {
+      this._selectOption('.editor-type', this.state.get('graphType'));
+    }
+    if (this.state.get('group')) {
+      this._selectOption('.editor-group', this.state.get('group'));
+    }
+    // ensure at least one series box shows up
+    var tmpSeries = [""];
+    if (this.state.get('series').length > 0) {
+      tmpSeries = this.state.get('series');
+    }
+    _.each(tmpSeries, function(series, idx) {
+      self.addSeries(idx);
+      self._selectOption('.editor-series.js-series-' + idx, series);
+    });
+    return this;
+  },
+
+  // Private: Helper function to select an option from a select list
+  //
+  _selectOption: function(id,value){
+    var options = this.el.find(id + ' select > option');
+    if (options) {
+      options.each(function(opt){
+        if (this.value == value) {
+          $(this).attr('selected','selected');
+          return false;
+        }
+      });
+    }
+  },
+
+  onEditorSubmit: function(e) {
+    var select = this.el.find('.editor-group select');
+    var $editor = this;
+    var $series  = this.el.find('.editor-series select');
+    var series = $series.map(function () {
+      return $(this).val();
+    });
+    var updatedState = {
+      series: $.makeArray(series),
+      group: this.el.find('.editor-group select').val(),
+      graphType: this.el.find('.editor-type select').val()
+    };
+    this.state.set(updatedState);
   },
 
   // Public: Adds a new empty series select box to the editor.
@@ -1386,82 +1447,18 @@ this.recline.View = this.recline.View || {};
 //   }
 // </pre>
 my.Map = Backbone.View.extend({
-
   tagName:  'div',
   className: 'recline-map',
 
   template: ' \
-  <div class="editor"> \
-    <form class="form-stacked"> \
-      <div class="clearfix"> \
-        <div class="editor-field-type"> \
-            <label class="radio"> \
-              <input type="radio" id="editor-field-type-latlon" name="editor-field-type" value="latlon" checked="checked"/> \
-              Latitude / Longitude fields</label> \
-            <label class="radio"> \
-              <input type="radio" id="editor-field-type-geom" name="editor-field-type" value="geom" /> \
-              GeoJSON field</label> \
-        </div> \
-        <div class="editor-field-type-latlon"> \
-          <label>Latitude field</label> \
-          <div class="input editor-lat-field"> \
-            <select> \
-            <option value=""></option> \
-            {{#fields}} \
-            <option value="{{id}}">{{label}}</option> \
-            {{/fields}} \
-            </select> \
-          </div> \
-          <label>Longitude field</label> \
-          <div class="input editor-lon-field"> \
-            <select> \
-            <option value=""></option> \
-            {{#fields}} \
-            <option value="{{id}}">{{label}}</option> \
-            {{/fields}} \
-            </select> \
-          </div> \
-        </div> \
-        <div class="editor-field-type-geom" style="display:none"> \
-          <label>Geometry field (GeoJSON)</label> \
-          <div class="input editor-geom-field"> \
-            <select> \
-            <option value=""></option> \
-            {{#fields}} \
-            <option value="{{id}}">{{label}}</option> \
-            {{/fields}} \
-            </select> \
-          </div> \
-        </div> \
-      </div> \
-      <div class="editor-buttons"> \
-        <button class="btn editor-update-map">Update</button> \
-      </div> \
-      <div class="editor-options" > \
-        <label class="checkbox"> \
-          <input type="checkbox" id="editor-auto-zoom" checked="checked" /> \
-          Auto zoom to features</label> \
-      </div> \
-      <input type="hidden" class="editor-id" value="map-1" /> \
-      </div> \
-    </form> \
-  </div> \
-<div class="panel map"> \
-</div> \
+    <div class="panel map"></div> \
 ',
 
   // These are the default (case-insensitive) names of field that are used if found.
   // If not found, the user will need to define the fields via the editor.
   latitudeFieldNames: ['lat','latitude'],
   longitudeFieldNames: ['lon','longitude'],
-  geometryFieldNames: ['geom','the_geom','geometry','spatial','location'],
-
-  // Define here events for UI elements
-  events: {
-    'click .editor-update-map': 'onEditorSubmit',
-    'change .editor-field-type': 'onFieldTypeChange',
-    'change #editor-auto-zoom': 'onAutoZoomChange'
-  },
+  geometryFieldNames: ['geojson', 'geom','the_geom','geometry','spatial','location'],
 
   initialize: function(options) {
     var self = this;
@@ -1469,10 +1466,6 @@ my.Map = Backbone.View.extend({
 
     // Listen to changes in the fields
     this.model.fields.bind('change', function() {
-      self._setupGeometryField();
-    });
-    this.model.fields.bind('add', this.render);
-    this.model.fields.bind('reset', function(){
       self._setupGeometryField()
       self.render()
     });
@@ -1491,7 +1484,7 @@ my.Map = Backbone.View.extend({
       // to display properly
       if (self.map){
         self.map.invalidateSize();
-        if (self._zoomPending && self.autoZoom) {
+        if (self._zoomPending && self.state.get('autoZoom')) {
           self._zoomToFeatures();
           self._zoomPending = false;
         }
@@ -1505,39 +1498,36 @@ my.Map = Backbone.View.extend({
     var stateData = _.extend({
         geomField: null,
         lonField: null,
-        latField: null
+        latField: null,
+        autoZoom: true
       },
       options.state
     );
     this.state = new recline.Model.ObjectState(stateData);
+    this.menu = new my.MapMenu({
+      model: this.model,
+      state: this.state.toJSON()
+    });
+    this.menu.state.bind('change', function() {
+      self.state.set(self.menu.state.toJSON());
+      self.redraw();
+    });
+    this.elSidebar = this.menu.el;
 
-    this.autoZoom = true;
     this.mapReady = false;
     this.render();
+    this.redraw();
   },
 
   // ### Public: Adds the necessary elements to the page.
   //
   // Also sets up the editor fields and the map if necessary.
   render: function() {
-
     var self = this;
 
     htmls = Mustache.render(this.template, this.model.toTemplateJSON());
-
     $(this.el).html(htmls);
     this.$map = this.el.find('.panel.map');
-
-    if (this.geomReady && this.model.fields.length){
-      if (this.state.get('geomField')){
-        this._selectOption('editor-geom-field',this.state.get('geomField'));
-        $('#editor-field-type-geom').attr('checked','checked').change();
-      } else{
-        this._selectOption('editor-lon-field',this.state.get('lonField'));
-        this._selectOption('editor-lat-field',this.state.get('latField'));
-        $('#editor-field-type-latlon').attr('checked','checked').change();
-      }
-    }
     return this;
   },
 
@@ -1553,14 +1543,14 @@ my.Map = Backbone.View.extend({
     var self = this;
     action = action || 'refresh';
     // try to set things up if not already
-    if (!self.geomReady){
+    if (!self._geomReady()){
       self._setupGeometryField();
     }
     if (!self.mapReady){
       self._setupMap();
     }
 
-    if (this.geomReady && this.mapReady){
+    if (this._geomReady() && this.mapReady){
       if (action == 'reset' || action == 'refresh'){
         this.features.clearLayers();
         this._add(this.model.currentRecords.models);
@@ -1569,7 +1559,7 @@ my.Map = Backbone.View.extend({
       } else if (action == 'remove' && doc){
         this._remove(doc);
       }
-      if (this.autoZoom){
+      if (this.state.get('autoZoom')){
         if (this.visible){
           this._zoomToFeatures();
         } else {
@@ -1579,51 +1569,8 @@ my.Map = Backbone.View.extend({
     }
   },
 
-  //
-  // UI Event handlers
-  //
-
-  // Public: Update map with user options
-  //
-  // Right now the only configurable option is what field(s) contains the
-  // location information.
-  //
-  onEditorSubmit: function(e){
-    e.preventDefault();
-    if ($('#editor-field-type-geom').attr('checked')){
-      this.state.set({
-        geomField: $('.editor-geom-field > select > option:selected').val(),
-        lonField: null,
-        latField: null
-      });
-    } else {
-      this.state.set({
-        geomField: null,
-        lonField: $('.editor-lon-field > select > option:selected').val(),
-        latField: $('.editor-lat-field > select > option:selected').val()
-      });
-    }
-    this.geomReady = (this.state.get('geomField') || (this.state.get('latField') && this.state.get('lonField')));
-    this.redraw();
-
-    return false;
-  },
-
-  // Public: Shows the relevant select lists depending on the location field
-  // type selected.
-  //
-  onFieldTypeChange: function(e){
-    if (e.target.value == 'geom'){
-        $('.editor-field-type-geom').show();
-        $('.editor-field-type-latlon').hide();
-    } else {
-        $('.editor-field-type-geom').hide();
-        $('.editor-field-type-latlon').show();
-    }
-  },
-
-  onAutoZoomChange: function(e){
-    this.autoZoom = !this.autoZoom;
+  _geomReady: function() {
+    return Boolean(this.state.get('geomField') || (this.state.get('latField') && this.state.get('lonField')));
   },
 
   // Private: Add one or n features to the map
@@ -1703,7 +1650,7 @@ my.Map = Backbone.View.extend({
   // Private: Return a GeoJSON geomtry extracted from the record fields
   //
   _getGeometryFromRecord: function(doc){
-    if (this.geomReady){
+    if (this._geomReady()){
       if (this.state.get('geomField')){
         var value = doc.get(this.state.get('geomField'));
         if (typeof(value) === 'string'){
@@ -1742,16 +1689,14 @@ my.Map = Backbone.View.extend({
   //
   // If not found, the user can define them via the UI form.
   _setupGeometryField: function(){
-    var geomField, latField, lonField;
-    this.geomReady = (this.state.get('geomField') || (this.state.get('latField') && this.state.get('lonField')));
     // should not overwrite if we have already set this (e.g. explicitly via state)
-    if (!this.geomReady) {
+    if (!this._geomReady()) {
       this.state.set({
         geomField: this._checkField(this.geometryFieldNames),
         latField: this._checkField(this.latitudeFieldNames),
         lonField: this._checkField(this.longitudeFieldNames)
       });
-      this.geomReady = (this.state.get('geomField') || (this.state.get('latField') && this.state.get('lonField')));
+      this.menu.state.set(this.state.toJSON());
     }
   },
 
@@ -1789,7 +1734,6 @@ my.Map = Backbone.View.extend({
   // on [OpenStreetMap](http://openstreetmap.org).
   //
   _setupMap: function(){
-
     this.map = new L.Map(this.$map.get(0));
 
     var mapUrl = "http://otile{s}.mqcdn.com/tiles/1.0.0/osm/{z}/{x}/{y}.png";
@@ -1845,8 +1789,645 @@ my.Map = Backbone.View.extend({
       });
     }
   }
+});
 
- });
+my.MapMenu = Backbone.View.extend({
+  className: 'editor',
+
+  template: ' \
+    <form class="form-stacked"> \
+      <div class="clearfix"> \
+        <div class="editor-field-type"> \
+            <label class="radio"> \
+              <input type="radio" id="editor-field-type-latlon" name="editor-field-type" value="latlon" checked="checked"/> \
+              Latitude / Longitude fields</label> \
+            <label class="radio"> \
+              <input type="radio" id="editor-field-type-geom" name="editor-field-type" value="geom" /> \
+              GeoJSON field</label> \
+        </div> \
+        <div class="editor-field-type-latlon"> \
+          <label>Latitude field</label> \
+          <div class="input editor-lat-field"> \
+            <select> \
+            <option value=""></option> \
+            {{#fields}} \
+            <option value="{{id}}">{{label}}</option> \
+            {{/fields}} \
+            </select> \
+          </div> \
+          <label>Longitude field</label> \
+          <div class="input editor-lon-field"> \
+            <select> \
+            <option value=""></option> \
+            {{#fields}} \
+            <option value="{{id}}">{{label}}</option> \
+            {{/fields}} \
+            </select> \
+          </div> \
+        </div> \
+        <div class="editor-field-type-geom" style="display:none"> \
+          <label>Geometry field (GeoJSON)</label> \
+          <div class="input editor-geom-field"> \
+            <select> \
+            <option value=""></option> \
+            {{#fields}} \
+            <option value="{{id}}">{{label}}</option> \
+            {{/fields}} \
+            </select> \
+          </div> \
+        </div> \
+      </div> \
+      <div class="editor-buttons"> \
+        <button class="btn editor-update-map">Update</button> \
+      </div> \
+      <div class="editor-options" > \
+        <label class="checkbox"> \
+          <input type="checkbox" id="editor-auto-zoom" checked="checked" /> \
+          Auto zoom to features</label> \
+      </div> \
+      <input type="hidden" class="editor-id" value="map-1" /> \
+      </div> \
+    </form> \
+',
+
+  // Define here events for UI elements
+  events: {
+    'click .editor-update-map': 'onEditorSubmit',
+    'change .editor-field-type': 'onFieldTypeChange',
+    'change #editor-auto-zoom': 'onAutoZoomChange'
+  },
+
+  initialize: function(options) {
+    var self = this;
+    this.el = $(this.el);
+    _.bindAll(this, 'render');
+    this.model.fields.bind('change', this.render);
+    this.state = new recline.Model.ObjectState(options.state);
+    this.state.bind('change', this.render);
+    this.render();
+  },
+
+  // ### Public: Adds the necessary elements to the page.
+  //
+  // Also sets up the editor fields and the map if necessary.
+  render: function() {
+    var self = this;
+    htmls = Mustache.render(this.template, this.model.toTemplateJSON());
+    $(this.el).html(htmls);
+
+    if (this._geomReady() && this.model.fields.length){
+      if (this.state.get('geomField')){
+        this._selectOption('editor-geom-field',this.state.get('geomField'));
+        $('#editor-field-type-geom').attr('checked','checked').change();
+      } else{
+        this._selectOption('editor-lon-field',this.state.get('lonField'));
+        this._selectOption('editor-lat-field',this.state.get('latField'));
+        $('#editor-field-type-latlon').attr('checked','checked').change();
+      }
+    }
+    return this;
+  },
+
+  _geomReady: function() {
+    return Boolean(this.state.get('geomField') || (this.state.get('latField') && this.state.get('lonField')));
+  },
+
+  // ## UI Event handlers
+  //
+
+  // Public: Update map with user options
+  //
+  // Right now the only configurable option is what field(s) contains the
+  // location information.
+  //
+  onEditorSubmit: function(e){
+    e.preventDefault();
+    if (this.el.find('#editor-field-type-geom').attr('checked')){
+      this.state.set({
+        geomField: this.el.find('.editor-geom-field > select > option:selected').val(),
+        lonField: null,
+        latField: null
+      });
+    } else {
+      this.state.set({
+        geomField: null,
+        lonField: this.el.find('.editor-lon-field > select > option:selected').val(),
+        latField: this.el.find('.editor-lat-field > select > option:selected').val()
+      });
+    }
+    return false;
+  },
+
+  // Public: Shows the relevant select lists depending on the location field
+  // type selected.
+  //
+  onFieldTypeChange: function(e){
+    if (e.target.value == 'geom'){
+        this.el.find('.editor-field-type-geom').show();
+        this.el.find('.editor-field-type-latlon').hide();
+    } else {
+        this.el.find('.editor-field-type-geom').hide();
+        this.el.find('.editor-field-type-latlon').show();
+    }
+  },
+
+  onAutoZoomChange: function(e){
+    this.state.set({autoZoom: !this.state.get('autoZoom')});
+  },
+
+  // Private: Helper function to select an option from a select list
+  //
+  _selectOption: function(id,value){
+    var options = this.el.find('.' + id + ' > select > option');
+    if (options){
+      options.each(function(opt){
+        if (this.value == value) {
+          $(this).attr('selected','selected');
+          return false;
+        }
+      });
+    }
+  }
+});
+
+})(jQuery, recline.View);
+
+/*jshint multistr:true */
+
+// Standard JS module setup
+this.recline = this.recline || {};
+this.recline.View = this.recline.View || {};
+
+(function($, my) {
+// ## MultiView
+//
+// Manage multiple views together along with query editor etc. Usage:
+// 
+// <pre>
+// var myExplorer = new model.recline.MultiView({
+//   model: {{recline.Model.Dataset instance}}
+//   el: {{an existing dom element}}
+//   views: {{dataset views}}
+//   state: {{state configuration -- see below}}
+// });
+// </pre> 
+//
+// ### Parameters
+// 
+// **model**: (required) recline.model.Dataset instance.
+//
+// **el**: (required) DOM element to bind to. NB: the element already
+// being in the DOM is important for rendering of some subviews (e.g.
+// Graph).
+//
+// **views**: (optional) the dataset views (Grid, Graph etc) for
+// MultiView to show. This is an array of view hashes. If not provided
+// initialize with (recline.View.)Grid, Graph, and Map views (with obvious id
+// and labels!).
+//
+// <pre>
+// var views = [
+//   {
+//     id: 'grid', // used for routing
+//     label: 'Grid', // used for view switcher
+//     view: new recline.View.Grid({
+//       model: dataset
+//     })
+//   },
+//   {
+//     id: 'graph',
+//     label: 'Graph',
+//     view: new recline.View.Graph({
+//       model: dataset
+//     })
+//   }
+// ];
+// </pre>
+//
+// **state**: standard state config for this view. This state is slightly
+//  special as it includes config of many of the subviews.
+//
+// <pre>
+// state = {
+//     query: {dataset query state - see dataset.queryState object}
+//     view-{id1}: {view-state for this view}
+//     view-{id2}: {view-state for }
+//     ...
+//     // Explorer
+//     currentView: id of current view (defaults to first view if not specified)
+//     readOnly: (default: false) run in read-only mode
+// }
+// </pre>
+//
+// Note that at present we do *not* serialize information about the actual set
+// of views in use -- e.g. those specified by the views argument -- but instead 
+// expect either that the default views are fine or that the client to have
+// initialized the MultiView with the relevant views themselves.
+my.MultiView = Backbone.View.extend({
+  template: ' \
+  <div class="recline-data-explorer"> \
+    <div class="alert-messages"></div> \
+    \
+    <div class="header"> \
+      <div class="navigation"> \
+        <div class="btn-group" data-toggle="buttons-radio"> \
+        {{#views}} \
+        <a href="#{{id}}" data-view="{{id}}" class="btn">{{label}}</a> \
+        {{/views}} \
+        </div> \
+      </div> \
+      <div class="recline-results-info"> \
+        Results found <span class="doc-count">{{docCount}}</span> \
+      </div> \
+      <div class="menu-right"> \
+        <div class="btn-group" data-toggle="buttons-checkbox"> \
+          <a href="#" class="btn" data-action="filters">Filters</a> \
+          <a href="#" class="btn active" data-action="fields">Fields</a> \
+        </div> \
+      </div> \
+      <div class="query-editor-here" style="display:inline;"></div> \
+      <div class="clearfix"></div> \
+    </div> \
+    <div class="data-view-sidebar"></div> \
+    <div class="data-view-container"></div> \
+  </div> \
+  ',
+  events: {
+    'click .menu-right a': '_onMenuClick',
+    'click .navigation a': '_onSwitchView'
+  },
+
+  initialize: function(options) {
+    var self = this;
+    this.el = $(this.el);
+    this._setupState(options.state);
+    // Hash of 'page' views (i.e. those for whole page) keyed by page name
+    if (options.views) {
+      this.pageViews = options.views;
+    } else {
+      this.pageViews = [{
+        id: 'grid',
+        label: 'Grid',
+        view: new my.Grid({
+          model: this.model,
+          state: this.state.get('view-grid')
+        }),
+      }, {
+        id: 'graph',
+        label: 'Graph',
+        view: new my.Graph({
+          model: this.model,
+          state: this.state.get('view-graph')
+        }),
+      }, {
+        id: 'map',
+        label: 'Map',
+        view: new my.Map({
+          model: this.model,
+          state: this.state.get('view-map')
+        }),
+      }, {
+        id: 'timeline',
+        label: 'Timeline',
+        view: new my.Timeline({
+          model: this.model,
+          state: this.state.get('view-timeline')
+        }),
+      }];
+    }
+    // these must be called after pageViews are created
+    this.render();
+    this._bindStateChanges();
+    this._bindFlashNotifications();
+    // now do updates based on state (need to come after render)
+    if (this.state.get('readOnly')) {
+      this.setReadOnly();
+    }
+    if (this.state.get('currentView')) {
+      this.updateNav(this.state.get('currentView'));
+    } else {
+      this.updateNav(this.pageViews[0].id);
+    }
+
+    this.model.bind('query:start', function() {
+        self.notify({loader: true, persist: true});
+      });
+    this.model.bind('query:done', function() {
+        self.clearNotifications();
+        self.el.find('.doc-count').text(self.model.docCount || 'Unknown');
+      });
+    this.model.bind('query:fail', function(error) {
+        self.clearNotifications();
+        var msg = '';
+        if (typeof(error) == 'string') {
+          msg = error;
+        } else if (typeof(error) == 'object') {
+          if (error.title) {
+            msg = error.title + ': ';
+          }
+          if (error.message) {
+            msg += error.message;
+          }
+        } else {
+          msg = 'There was an error querying the backend';
+        }
+        self.notify({message: msg, category: 'error', persist: true});
+      });
+
+    // retrieve basic data like fields etc
+    // note this.model and dataset returned are the same
+    this.model.fetch()
+      .done(function(dataset) {
+        self.model.query(self.state.get('query'));
+      })
+      .fail(function(error) {
+        self.notify({message: error.message, category: 'error', persist: true});
+      });
+  },
+
+  setReadOnly: function() {
+    this.el.addClass('recline-read-only');
+  },
+
+  render: function() {
+    var tmplData = this.model.toTemplateJSON();
+    tmplData.views = this.pageViews;
+    var template = Mustache.render(this.template, tmplData);
+    $(this.el).html(template);
+
+    // now create and append other views
+    var $dataViewContainer = this.el.find('.data-view-container');
+    var $dataSidebar = this.el.find('.data-view-sidebar');
+
+    // the main views
+    _.each(this.pageViews, function(view, pageName) {
+      $dataViewContainer.append(view.view.el);
+      if (view.view.elSidebar) {
+        $dataSidebar.append(view.view.elSidebar);
+      }
+    });
+
+    var pager = new recline.View.Pager({
+      model: this.model.queryState
+    });
+    this.el.find('.recline-results-info').after(pager.el);
+
+    var queryEditor = new recline.View.QueryEditor({
+      model: this.model.queryState
+    });
+    this.el.find('.query-editor-here').append(queryEditor.el);
+
+    var filterEditor = new recline.View.FilterEditor({
+      model: this.model
+    });
+    this.$filterEditor = filterEditor.el;
+    $dataSidebar.append(filterEditor.el);
+    // are there actually any filters to show?
+    if (this.model.get('filters') && this.model.get('filters').length > 0) {
+      this.$filterEditor.show();
+    } else {
+      this.$filterEditor.hide();
+    }
+
+    var fieldsView = new recline.View.Fields({
+      model: this.model
+    });
+    this.$fieldsView = fieldsView.el;
+    $dataSidebar.append(fieldsView.el);
+  },
+
+  updateNav: function(pageName) {
+    this.el.find('.navigation a').removeClass('active');
+    var $el = this.el.find('.navigation a[data-view="' + pageName + '"]');
+    $el.addClass('active');
+    // show the specific page
+    _.each(this.pageViews, function(view, idx) {
+      if (view.id === pageName) {
+        view.view.el.show();
+        if (view.view.elSidebar) {
+          view.view.elSidebar.show();
+        }
+        view.view.trigger('view:show');
+      } else {
+        view.view.el.hide();
+        if (view.view.elSidebar) {
+          view.view.elSidebar.hide();
+        }
+        view.view.trigger('view:hide');
+      }
+    });
+  },
+
+  _onMenuClick: function(e) {
+    e.preventDefault();
+    var action = $(e.target).attr('data-action');
+    if (action === 'filters') {
+      this.$filterEditor.toggle();
+    } else if (action === 'fields') {
+      this.$fieldsView.toggle();
+    }
+  },
+
+  _onSwitchView: function(e) {
+    e.preventDefault();
+    var viewName = $(e.target).attr('data-view');
+    this.updateNav(viewName);
+    this.state.set({currentView: viewName});
+  },
+
+  // create a state object for this view and do the job of
+  // 
+  // a) initializing it from both data passed in and other sources (e.g. hash url)
+  //
+  // b) ensure the state object is updated in responese to changes in subviews, query etc.
+  _setupState: function(initialState) {
+    var self = this;
+    // get data from the query string / hash url plus some defaults
+    var qs = my.parseHashQueryString();
+    var query = qs.reclineQuery;
+    query = query ? JSON.parse(query) : self.model.queryState.toJSON();
+    // backwards compatability (now named view-graph but was named graph)
+    var graphState = qs['view-graph'] || qs.graph;
+    graphState = graphState ? JSON.parse(graphState) : {};
+
+    // now get default data + hash url plus initial state and initial our state object with it
+    var stateData = _.extend({
+        query: query,
+        'view-graph': graphState,
+        backend: this.model.backend.__type__,
+        url: this.model.get('url'),
+        currentView: null,
+        readOnly: false
+      },
+      initialState);
+    this.state = new recline.Model.ObjectState(stateData);
+  },
+
+  _bindStateChanges: function() {
+    var self = this;
+    // finally ensure we update our state object when state of sub-object changes so that state is always up to date
+    this.model.queryState.bind('change', function() {
+      self.state.set({query: self.model.queryState.toJSON()});
+    });
+    _.each(this.pageViews, function(pageView) {
+      if (pageView.view.state && pageView.view.state.bind) {
+        var update = {};
+        update['view-' + pageView.id] = pageView.view.state.toJSON();
+        self.state.set(update);
+        pageView.view.state.bind('change', function() {
+          var update = {};
+          update['view-' + pageView.id] = pageView.view.state.toJSON();
+          // had problems where change not being triggered for e.g. grid view so let's do it explicitly
+          self.state.set(update, {silent: true});
+          self.state.trigger('change');
+        });
+      }
+    });
+  },
+
+  _bindFlashNotifications: function() {
+    var self = this;
+    _.each(this.pageViews, function(pageView) {
+      pageView.view.bind('recline:flash', function(flash) {
+        self.notify(flash); 
+      });
+    });
+  },
+
+  // ### notify
+  //
+  // Create a notification (a div.alert in div.alert-messsages) using provided
+  // flash object. Flash attributes (all are optional):
+  //
+  // * message: message to show.
+  // * category: warning (default), success, error
+  // * persist: if true alert is persistent, o/w hidden after 3s (default = false)
+  // * loader: if true show loading spinner
+  notify: function(flash) {
+    var tmplData = _.extend({
+      message: 'Loading',
+      category: 'warning',
+      loader: false
+      },
+      flash
+    );
+    if (tmplData.loader) {
+      var _template = ' \
+        <div class="alert alert-info alert-loader"> \
+          {{message}} \
+          <span class="notification-loader">&nbsp;</span> \
+        </div>';
+    } else {
+      var _template = ' \
+        <div class="alert alert-{{category}} fade in" data-alert="alert"><a class="close" data-dismiss="alert" href="#">×</a> \
+          {{message}} \
+        </div>';
+    }
+    var _templated = $(Mustache.render(_template, tmplData));
+    _templated = $(_templated).appendTo($('.recline-data-explorer .alert-messages'));
+    if (!flash.persist) {
+      setTimeout(function() {
+        $(_templated).fadeOut(1000, function() {
+          $(this).remove();
+        });
+      }, 1000);
+    }
+  },
+
+  // ### clearNotifications
+  //
+  // Clear all existing notifications
+  clearNotifications: function() {
+    var $notifications = $('.recline-data-explorer .alert-messages .alert');
+    $notifications.fadeOut(1500, function() {
+      $(this).remove();
+    });
+  }
+});
+
+// ### MultiView.restore
+//
+// Restore a MultiView instance from a serialized state including the associated dataset
+my.MultiView.restore = function(state) {
+  var dataset = recline.Model.Dataset.restore(state);
+  var explorer = new my.MultiView({
+    model: dataset,
+    state: state
+  });
+  return explorer;
+}
+
+
+// ## Miscellaneous Utilities
+var urlPathRegex = /^([^?]+)(\?.*)?/;
+
+// Parse the Hash section of a URL into path and query string
+my.parseHashUrl = function(hashUrl) {
+  var parsed = urlPathRegex.exec(hashUrl);
+  if (parsed === null) {
+    return {};
+  } else {
+    return {
+      path: parsed[1],
+      query: parsed[2] || ''
+    };
+  }
+};
+
+// Parse a URL query string (?xyz=abc...) into a dictionary.
+my.parseQueryString = function(q) {
+  if (!q) {
+    return {};
+  }
+  var urlParams = {},
+    e, d = function (s) {
+      return unescape(s.replace(/\+/g, " "));
+    },
+    r = /([^&=]+)=?([^&]*)/g;
+
+  if (q && q.length && q[0] === '?') {
+    q = q.slice(1);
+  }
+  while (e = r.exec(q)) {
+    // TODO: have values be array as query string allow repetition of keys
+    urlParams[d(e[1])] = d(e[2]);
+  }
+  return urlParams;
+};
+
+// Parse the query string out of the URL hash
+my.parseHashQueryString = function() {
+  q = my.parseHashUrl(window.location.hash).query;
+  return my.parseQueryString(q);
+};
+
+// Compse a Query String
+my.composeQueryString = function(queryParams) {
+  var queryString = '?';
+  var items = [];
+  $.each(queryParams, function(key, value) {
+    if (typeof(value) === 'object') {
+      value = JSON.stringify(value);
+    }
+    items.push(key + '=' + encodeURIComponent(value));
+  });
+  queryString += items.join('&');
+  return queryString;
+};
+
+my.getNewHashForQueryString = function(queryParams) {
+  var queryPart = my.composeQueryString(queryParams);
+  if (window.location.hash) {
+    // slice(1) to remove # at start
+    return window.location.hash.split('?')[0].slice(1) + queryPart;
+  } else {
+    return queryPart;
+  }
+};
+
+my.setHashQueryString = function(queryParams) {
+  window.location.hash = my.getNewHashForQueryString(queryParams);
+};
 
 })(jQuery, recline.View);
 
@@ -2262,6 +2843,14 @@ my.Timeline = Backbone.View.extend({
         out.timeline.date.push(tlEntry);
       }
     });
+    // if no entries create a placeholder entry to prevent Timeline crashing with error
+    if (out.timeline.date.length === 0) {
+      var tlEntry = {
+        "startDate": '2000,1,1',
+        "headline": 'No data to show!'
+      };
+      out.timeline.date.push(tlEntry);
+    }
     return out;
   },
 
@@ -2462,460 +3051,6 @@ my.ColumnTransform = Backbone.View.extend({
 })(jQuery, recline.View);
 /*jshint multistr:true */
 
-// Standard JS module setup
-this.recline = this.recline || {};
-this.recline.View = this.recline.View || {};
-
-(function($, my) {
-// ## MultiView
-//
-// Manage multiple views together along with query editor etc. Usage:
-// 
-// <pre>
-// var myExplorer = new model.recline.MultiView({
-//   model: {{recline.Model.Dataset instance}}
-//   el: {{an existing dom element}}
-//   views: {{dataset views}}
-//   state: {{state configuration -- see below}}
-// });
-// </pre> 
-//
-// ### Parameters
-// 
-// **model**: (required) recline.model.Dataset instance.
-//
-// **el**: (required) DOM element to bind to. NB: the element already
-// being in the DOM is important for rendering of some subviews (e.g.
-// Graph).
-//
-// **views**: (optional) the dataset views (Grid, Graph etc) for
-// MultiView to show. This is an array of view hashes. If not provided
-// initialize with (recline.View.)Grid, Graph, and Map views (with obvious id
-// and labels!).
-//
-// <pre>
-// var views = [
-//   {
-//     id: 'grid', // used for routing
-//     label: 'Grid', // used for view switcher
-//     view: new recline.View.Grid({
-//       model: dataset
-//     })
-//   },
-//   {
-//     id: 'graph',
-//     label: 'Graph',
-//     view: new recline.View.Graph({
-//       model: dataset
-//     })
-//   }
-// ];
-// </pre>
-//
-// **state**: standard state config for this view. This state is slightly
-//  special as it includes config of many of the subviews.
-//
-// <pre>
-// state = {
-//     query: {dataset query state - see dataset.queryState object}
-//     view-{id1}: {view-state for this view}
-//     view-{id2}: {view-state for }
-//     ...
-//     // Explorer
-//     currentView: id of current view (defaults to first view if not specified)
-//     readOnly: (default: false) run in read-only mode
-// }
-// </pre>
-//
-// Note that at present we do *not* serialize information about the actual set
-// of views in use -- e.g. those specified by the views argument -- but instead 
-// expect either that the default views are fine or that the client to have
-// initialized the MultiView with the relevant views themselves.
-my.MultiView = Backbone.View.extend({
-  template: ' \
-  <div class="recline-data-explorer"> \
-    <div class="alert-messages"></div> \
-    \
-    <div class="header"> \
-      <div class="navigation"> \
-        <div class="btn-group" data-toggle="buttons-radio"> \
-        {{#views}} \
-        <a href="#{{id}}" data-view="{{id}}" class="btn">{{label}}</a> \
-        {{/views}} \
-        </div> \
-      </div> \
-      <div class="recline-results-info"> \
-        Results found <span class="doc-count">{{docCount}}</span> \
-      </div> \
-      <div class="menu-right"> \
-        <div class="btn-group" data-toggle="buttons-checkbox"> \
-          <a href="#" class="btn" data-action="filters">Filters</a> \
-          <a href="#" class="btn" data-action="facets">Facets</a> \
-        </div> \
-      </div> \
-      <div class="query-editor-here" style="display:inline;"></div> \
-      <div class="clearfix"></div> \
-    </div> \
-    <div class="data-view-container"></div> \
-  </div> \
-  ',
-  events: {
-    'click .menu-right a': '_onMenuClick',
-    'click .navigation a': '_onSwitchView'
-  },
-
-  initialize: function(options) {
-    var self = this;
-    this.el = $(this.el);
-    this._setupState(options.state);
-    // Hash of 'page' views (i.e. those for whole page) keyed by page name
-    if (options.views) {
-      this.pageViews = options.views;
-    } else {
-      this.pageViews = [{
-        id: 'grid',
-        label: 'Grid',
-        view: new my.Grid({
-          model: this.model,
-          state: this.state.get('view-grid')
-        }),
-      }, {
-        id: 'graph',
-        label: 'Graph',
-        view: new my.Graph({
-          model: this.model,
-          state: this.state.get('view-graph')
-        }),
-      }, {
-        id: 'map',
-        label: 'Map',
-        view: new my.Map({
-          model: this.model,
-          state: this.state.get('view-map')
-        }),
-      }, {
-        id: 'timeline',
-        label: 'Timeline',
-        view: new my.Timeline({
-          model: this.model,
-          state: this.state.get('view-timeline')
-        }),
-      }];
-    }
-    // these must be called after pageViews are created
-    this.render();
-    this._bindStateChanges();
-    this._bindFlashNotifications();
-    // now do updates based on state (need to come after render)
-    if (this.state.get('readOnly')) {
-      this.setReadOnly();
-    }
-    if (this.state.get('currentView')) {
-      this.updateNav(this.state.get('currentView'));
-    } else {
-      this.updateNav(this.pageViews[0].id);
-    }
-
-    this.model.bind('query:start', function() {
-        self.notify({loader: true, persist: true});
-      });
-    this.model.bind('query:done', function() {
-        self.clearNotifications();
-        self.el.find('.doc-count').text(self.model.docCount || 'Unknown');
-      });
-    this.model.bind('query:fail', function(error) {
-        self.clearNotifications();
-        var msg = '';
-        if (typeof(error) == 'string') {
-          msg = error;
-        } else if (typeof(error) == 'object') {
-          if (error.title) {
-            msg = error.title + ': ';
-          }
-          if (error.message) {
-            msg += error.message;
-          }
-        } else {
-          msg = 'There was an error querying the backend';
-        }
-        self.notify({message: msg, category: 'error', persist: true});
-      });
-
-    // retrieve basic data like fields etc
-    // note this.model and dataset returned are the same
-    this.model.fetch()
-      .done(function(dataset) {
-        self.model.query(self.state.get('query'));
-      })
-      .fail(function(error) {
-        self.notify({message: error.message, category: 'error', persist: true});
-      });
-  },
-
-  setReadOnly: function() {
-    this.el.addClass('recline-read-only');
-  },
-
-  render: function() {
-    var tmplData = this.model.toTemplateJSON();
-    tmplData.views = this.pageViews;
-    var template = Mustache.render(this.template, tmplData);
-    $(this.el).html(template);
-    var $dataViewContainer = this.el.find('.data-view-container');
-    _.each(this.pageViews, function(view, pageName) {
-      $dataViewContainer.append(view.view.el);
-    });
-    var pager = new recline.View.Pager({
-      model: this.model.queryState
-    });
-    this.el.find('.recline-results-info').after(pager.el);
-    var queryEditor = new recline.View.QueryEditor({
-      model: this.model.queryState
-    });
-    this.el.find('.query-editor-here').append(queryEditor.el);
-    var filterEditor = new recline.View.FilterEditor({
-      model: this.model.queryState
-    });
-    this.$filterEditor = filterEditor.el;
-    this.el.find('.header').append(filterEditor.el);
-    var facetViewer = new recline.View.FacetViewer({
-      model: this.model
-    });
-    this.$facetViewer = facetViewer.el;
-    this.el.find('.header').append(facetViewer.el);
-  },
-
-  updateNav: function(pageName) {
-    this.el.find('.navigation a').removeClass('active');
-    var $el = this.el.find('.navigation a[data-view="' + pageName + '"]');
-    $el.addClass('active');
-    // show the specific page
-    _.each(this.pageViews, function(view, idx) {
-      if (view.id === pageName) {
-        view.view.el.show();
-        view.view.trigger('view:show');
-      } else {
-        view.view.el.hide();
-        view.view.trigger('view:hide');
-      }
-    });
-  },
-
-  _onMenuClick: function(e) {
-    e.preventDefault();
-    var action = $(e.target).attr('data-action');
-    if (action === 'filters') {
-      this.$filterEditor.toggle();
-    } else if (action === 'facets') {
-      this.$facetViewer.toggle();
-    }
-  },
-
-  _onSwitchView: function(e) {
-    e.preventDefault();
-    var viewName = $(e.target).attr('data-view');
-    this.updateNav(viewName);
-    this.state.set({currentView: viewName});
-  },
-
-  // create a state object for this view and do the job of
-  // 
-  // a) initializing it from both data passed in and other sources (e.g. hash url)
-  //
-  // b) ensure the state object is updated in responese to changes in subviews, query etc.
-  _setupState: function(initialState) {
-    var self = this;
-    // get data from the query string / hash url plus some defaults
-    var qs = my.parseHashQueryString();
-    var query = qs.reclineQuery;
-    query = query ? JSON.parse(query) : self.model.queryState.toJSON();
-    // backwards compatability (now named view-graph but was named graph)
-    var graphState = qs['view-graph'] || qs.graph;
-    graphState = graphState ? JSON.parse(graphState) : {};
-
-    // now get default data + hash url plus initial state and initial our state object with it
-    var stateData = _.extend({
-        query: query,
-        'view-graph': graphState,
-        backend: this.model.backend.__type__,
-        url: this.model.get('url'),
-        currentView: null,
-        readOnly: false
-      },
-      initialState);
-    this.state = new recline.Model.ObjectState(stateData);
-  },
-
-  _bindStateChanges: function() {
-    var self = this;
-    // finally ensure we update our state object when state of sub-object changes so that state is always up to date
-    this.model.queryState.bind('change', function() {
-      self.state.set({query: self.model.queryState.toJSON()});
-    });
-    _.each(this.pageViews, function(pageView) {
-      if (pageView.view.state && pageView.view.state.bind) {
-        var update = {};
-        update['view-' + pageView.id] = pageView.view.state.toJSON();
-        self.state.set(update);
-        pageView.view.state.bind('change', function() {
-          var update = {};
-          update['view-' + pageView.id] = pageView.view.state.toJSON();
-          // had problems where change not being triggered for e.g. grid view so let's do it explicitly
-          self.state.set(update, {silent: true});
-          self.state.trigger('change');
-        });
-      }
-    });
-  },
-
-  _bindFlashNotifications: function() {
-    var self = this;
-    _.each(this.pageViews, function(pageView) {
-      pageView.view.bind('recline:flash', function(flash) {
-        self.notify(flash); 
-      });
-    });
-  },
-
-  // ### notify
-  //
-  // Create a notification (a div.alert in div.alert-messsages) using provided
-  // flash object. Flash attributes (all are optional):
-  //
-  // * message: message to show.
-  // * category: warning (default), success, error
-  // * persist: if true alert is persistent, o/w hidden after 3s (default = false)
-  // * loader: if true show loading spinner
-  notify: function(flash) {
-    var tmplData = _.extend({
-      message: 'Loading',
-      category: 'warning',
-      loader: false
-      },
-      flash
-    );
-    if (tmplData.loader) {
-      var _template = ' \
-        <div class="alert alert-info alert-loader"> \
-          {{message}} \
-          <span class="notification-loader">&nbsp;</span> \
-        </div>';
-    } else {
-      var _template = ' \
-        <div class="alert alert-{{category}} fade in" data-alert="alert"><a class="close" data-dismiss="alert" href="#">×</a> \
-          {{message}} \
-        </div>';
-    }
-    var _templated = $(Mustache.render(_template, tmplData));
-    _templated = $(_templated).appendTo($('.recline-data-explorer .alert-messages'));
-    if (!flash.persist) {
-      setTimeout(function() {
-        $(_templated).fadeOut(1000, function() {
-          $(this).remove();
-        });
-      }, 1000);
-    }
-  },
-
-  // ### clearNotifications
-  //
-  // Clear all existing notifications
-  clearNotifications: function() {
-    var $notifications = $('.recline-data-explorer .alert-messages .alert');
-    $notifications.fadeOut(1500, function() {
-      $(this).remove();
-    });
-  }
-});
-
-// ### MultiView.restore
-//
-// Restore a MultiView instance from a serialized state including the associated dataset
-my.MultiView.restore = function(state) {
-  var dataset = recline.Model.Dataset.restore(state);
-  var explorer = new my.MultiView({
-    model: dataset,
-    state: state
-  });
-  return explorer;
-}
-
-
-// ## Miscellaneous Utilities
-var urlPathRegex = /^([^?]+)(\?.*)?/;
-
-// Parse the Hash section of a URL into path and query string
-my.parseHashUrl = function(hashUrl) {
-  var parsed = urlPathRegex.exec(hashUrl);
-  if (parsed === null) {
-    return {};
-  } else {
-    return {
-      path: parsed[1],
-      query: parsed[2] || ''
-    };
-  }
-};
-
-// Parse a URL query string (?xyz=abc...) into a dictionary.
-my.parseQueryString = function(q) {
-  if (!q) {
-    return {};
-  }
-  var urlParams = {},
-    e, d = function (s) {
-      return unescape(s.replace(/\+/g, " "));
-    },
-    r = /([^&=]+)=?([^&]*)/g;
-
-  if (q && q.length && q[0] === '?') {
-    q = q.slice(1);
-  }
-  while (e = r.exec(q)) {
-    // TODO: have values be array as query string allow repetition of keys
-    urlParams[d(e[1])] = d(e[2]);
-  }
-  return urlParams;
-};
-
-// Parse the query string out of the URL hash
-my.parseHashQueryString = function() {
-  q = my.parseHashUrl(window.location.hash).query;
-  return my.parseQueryString(q);
-};
-
-// Compse a Query String
-my.composeQueryString = function(queryParams) {
-  var queryString = '?';
-  var items = [];
-  $.each(queryParams, function(key, value) {
-    if (typeof(value) === 'object') {
-      value = JSON.stringify(value);
-    }
-    items.push(key + '=' + encodeURIComponent(value));
-  });
-  queryString += items.join('&');
-  return queryString;
-};
-
-my.getNewHashForQueryString = function(queryParams) {
-  var queryPart = my.composeQueryString(queryParams);
-  if (window.location.hash) {
-    // slice(1) to remove # at start
-    return window.location.hash.split('?')[0].slice(1) + queryPart;
-  } else {
-    return queryPart;
-  }
-};
-
-my.setHashQueryString = function(queryParams) {
-  window.location.hash = my.getNewHashForQueryString(queryParams);
-};
-
-})(jQuery, recline.View);
-
-/*jshint multistr:true */
-
 this.recline = this.recline || {};
 this.recline.View = this.recline.View || {};
 
@@ -2996,6 +3131,121 @@ my.FacetViewer = Backbone.View.extend({
 
 /*jshint multistr:true */
 
+// Field Info
+//
+// For each field
+//
+// Id / Label / type / format
+
+// Editor -- to change type (and possibly format)
+// Editor for show/hide ...
+
+// Summaries of fields
+//
+// Top values / number empty
+// If number: max, min average ...
+
+// Box to boot transform editor ...
+
+this.recline = this.recline || {};
+this.recline.View = this.recline.View || {};
+
+(function($, my) {
+
+my.Fields = Backbone.View.extend({
+  className: 'recline-fields-view', 
+  template: ' \
+    <div class="accordion fields-list well"> \
+    <h3>Fields <a href="#" class="js-show-hide">+</a></h3> \
+    {{#fields}} \
+      <div class="accordion-group field"> \
+        <div class="accordion-heading"> \
+          <i class="icon-file"></i> \
+          <h4> \
+            {{label}} \
+            <small> \
+              {{type}} \
+              <a class="accordion-toggle" data-toggle="collapse" href="#collapse{{id}}"> &raquo; </a> \
+            </small> \
+          </h4> \
+        </div> \
+        <div id="collapse{{id}}" class="accordion-body collapse in"> \
+          <div class="accordion-inner"> \
+            {{#facets}} \
+            <div class="facet-summary" data-facet="{{id}}"> \
+              <ul class="facet-items"> \
+              {{#terms}} \
+                <li class="facet-item"><span class="term">{{term}}</span> <span class="count">[{{count}}]</span></li> \
+              {{/terms}} \
+              </ul> \
+            </div> \
+            {{/facets}} \
+            <div class="clear"></div> \
+          </div> \
+        </div> \
+      </div> \
+    {{/fields}} \
+    </div> \
+  ',
+
+  events: {
+    'click .js-show-hide': 'onShowHide'
+  },
+  initialize: function(model) {
+    var self = this;
+    this.el = $(this.el);
+    _.bindAll(this, 'render');
+
+    // TODO: this is quite restrictive in terms of when it is re-run
+    // e.g. a change in type will not trigger a re-run atm.
+    // being more liberal (e.g. binding to all) can lead to being called a lot (e.g. for change:width)
+    this.model.fields.bind('reset', function(action) {
+      self.model.fields.each(function(field) {
+        field.facets.unbind('all', self.render);
+        field.facets.bind('all', self.render);
+      });
+      // fields can get reset or changed in which case we need to recalculate
+      self.model.getFieldsSummary();
+      self.render();
+    });
+    this.render();
+  },
+  render: function() {
+    var self = this;
+    var tmplData = {
+      fields: []
+    };
+    this.model.fields.each(function(field) {
+      var out = field.toJSON();
+      out.facets = field.facets.toJSON();
+      tmplData.fields.push(out);
+    });
+    var templated = Mustache.render(this.template, tmplData);
+    this.el.html(templated);
+    this.el.find('.collapse').collapse('hide');
+  },
+  onShowHide: function(e) {
+    e.preventDefault();
+    var $target  = $(e.target);
+    // weird collapse class seems to have been removed (can watch this happen
+    // if you watch dom) but could not work why. Absence of collapse then meant
+    // we could not toggle.
+    // This seems to fix the problem.
+    this.el.find('.accordion-body').addClass('collapse');;
+    if ($target.text() === '+') {
+      this.el.find('.collapse').collapse('show');
+      $target.text('-');
+    } else {
+      this.el.find('.collapse').collapse('hide');
+      $target.text('+');
+    }
+  }
+});
+
+})(jQuery, recline.View);
+
+/*jshint multistr:true */
+
 this.recline = this.recline || {};
 this.recline.View = this.recline.View || {};
 
@@ -3004,49 +3254,55 @@ this.recline.View = this.recline.View || {};
 my.FilterEditor = Backbone.View.extend({
   className: 'recline-filter-editor well', 
   template: ' \
-    <a class="close js-hide" href="#">&times;</a> \
-    <div class="row filters"> \
-      <div class="span1"> \
-        <h3>Filters</h3> \
-      </div> \
-      <div class="span11"> \
-        <form class="form-horizontal"> \
-          <div class="row"> \
-            <div class="span6"> \
-              {{#termFilters}} \
-              <div class="control-group filter-term filter" data-filter-id={{id}}> \
-                <label class="control-label" for="">{{label}}</label> \
-                <div class="controls"> \
-                  <div class="input-append"> \
-                    <input type="text" value="{{value}}" name="{{fieldId}}" class="span4" data-filter-field="{{fieldId}}" data-filter-id="{{id}}" data-filter-type="term" /> \
-                    <a class="btn js-remove-filter"><i class="icon-remove"></i></a> \
-                  </div> \
-                </div> \
-              </div> \
-              {{/termFilters}} \
-            </div> \
-          <div class="span4"> \
-            <p>To add a filter use the column menu in the grid view.</p> \
-            <button type="submit" class="btn">Update</button> \
+    <div class="filters"> \
+      <h3>Filters</h3> \
+      <a href="#" class="js-add-filter">Add filter</a> \
+      <form class="form-stacked js-add" style="display: none;"> \
+        <fieldset> \
+          <label>Filter type</label> \
+          <select class="filterType"> \
+            <option value="term">Term (text) filter</option> \
+          </select> \
+          <label>Field</label> \
+          <select class="fields"> \
+            {{#fields}} \
+            <option value="{{id}}">{{label}}</option> \
+            {{/fields}} \
+          </select> \
+          <button type="submit" class="btn">Add</button> \
+        </fieldset> \
+      </form> \
+      <form class="form-stacked js-edit"> \
+        {{#termFilters}} \
+        <div class="control-group filter-term filter" data-filter-id={{id}}> \
+          <label class="control-label" for="">{{label}}</label> \
+          <div class="controls"> \
+              <input type="text" value="{{value}}" name="{{fieldId}}" data-filter-field="{{fieldId}}" data-filter-id="{{id}}" data-filter-type="term" /> \
+              <a class="js-remove-filter" href="#">&times;</a> \
           </div> \
-        </form> \
-      </div> \
+        </div> \
+        {{/termFilters}} \
+        {{#termFilters.length}} \
+        <button type="submit" class="btn">Update</button> \
+        {{/termFilters.length}} \
+      </form> \
     </div> \
   ',
   events: {
-    'click .js-hide': 'onHide',
     'click .js-remove-filter': 'onRemoveFilter',
-    'submit form': 'onTermFiltersUpdate'
+    'click .js-add-filter': 'onAddFilterShow',
+    'submit form.js-edit': 'onTermFiltersUpdate',
+    'submit form.js-add': 'onAddFilter'
   },
   initialize: function() {
     this.el = $(this.el);
     _.bindAll(this, 'render');
-    this.model.bind('change', this.render);
-    this.model.bind('change:filters:new-blank', this.render);
+    this.model.queryState.bind('change', this.render);
+    this.model.queryState.bind('change:filters:new-blank', this.render);
     this.render();
   },
   render: function() {
-    var tmplData = $.extend(true, {}, this.model.toJSON());
+    var tmplData = $.extend(true, {}, this.model.queryState.toJSON());
     // we will use idx in list as there id ...
     tmplData.filters = _.map(tmplData.filters, function(filter, idx) {
       filter.id = idx;
@@ -3064,29 +3320,38 @@ my.FilterEditor = Backbone.View.extend({
         value: filter.term[fieldId]
       };
     });
+    tmplData.fields = this.model.fields.toJSON();
     var out = Mustache.render(this.template, tmplData);
     this.el.html(out);
-    // are there actually any facets to show?
-    if (this.model.get('filters').length > 0) {
-      this.el.show();
-    } else {
-      this.el.hide();
-    }
   },
-  onHide: function(e) {
+  onAddFilterShow: function(e) {
     e.preventDefault();
-    this.el.hide();
+    var $target = $(e.target);
+    $target.hide();
+    this.el.find('form.js-add').show();
+  },
+  onAddFilter: function(e) {
+    e.preventDefault();
+    var $target = $(e.target);
+    $target.hide();
+    var filterType = $target.find('select.filterType').val();
+    var field = $target.find('select.fields').val();
+    if (filterType === 'term') {
+      this.model.queryState.addTermFilter(field);
+    }
+    // trigger render explicitly as queryState change will not be triggered (as blank value for filter)
+    this.render();
   },
   onRemoveFilter: function(e) {
     e.preventDefault();
     var $target = $(e.target);
     var filterId = $target.closest('.filter').attr('data-filter-id');
-    this.model.removeFilter(filterId);
+    this.model.queryState.removeFilter(filterId);
   },
   onTermFiltersUpdate: function(e) {
    var self = this;
     e.preventDefault();
-    var filters = self.model.get('filters');
+    var filters = self.model.queryState.get('filters');
     var $form = $(e.target);
     _.each($form.find('input'), function(input) {
       var $input = $(input);
@@ -3095,8 +3360,8 @@ my.FilterEditor = Backbone.View.extend({
       var fieldId = $input.attr('data-filter-field');
       filters[filterIndex].term[fieldId] = value;
     });
-    self.model.set({filters: filters});
-    self.model.trigger('change');
+    self.model.queryState.set({filters: filters});
+    self.model.queryState.trigger('change');
   }
 });
 
@@ -3553,6 +3818,19 @@ this.recline.Backend.DataProxy = this.recline.Backend.DataProxy || {};
         if (results.error) {
           dfd.reject(results.error);
         }
+
+        // Rename duplicate fieldIds as each field name needs to be
+        // unique.
+        var seen = {};
+        _.map(results.fields, function(fieldId, index) {
+          if (fieldId in seen) {
+            seen[fieldId] += 1;
+            results.fields[index] = fieldId + "("+seen[fieldId]+")";
+          } else {
+            seen[fieldId] = 1;
+          }
+        });
+
         dataset.fields.reset(_.map(results.fields, function(fieldId) {
           return {id: fieldId};
           })
@@ -4109,7 +4387,7 @@ this.recline.Backend.Memory = this.recline.Backend.Memory || {};
               var value = rawdoc[field.id];
               if (value !== null) { value = value.toString(); }
               // TODO regexes?
-              foundmatch = foundmatch || (value === term);
+              foundmatch = foundmatch || (value.toLowerCase() === term.toLowerCase());
               // TODO: early out (once we are true should break to spare unnecessary testing)
               // if (foundmatch) return true;
             });
