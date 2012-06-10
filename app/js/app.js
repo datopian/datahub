@@ -192,7 +192,6 @@ var ExplorerApp = Backbone.View.extend({
       }
       type = 'elasticsearch';
     }
-    console.log(datasetInfo.url);
     var dataset = new recline.Model.Dataset(datasetInfo, type);
     this.createExplorer(dataset);
   },
