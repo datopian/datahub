@@ -4,12 +4,17 @@ this.recline = this.recline || {};
 this.recline.View = this.recline.View || {};
 
 (function($, my) {
+
+// ## Timeline
+//
+// Timeline view using http://timeline.verite.co/
 my.Timeline = Backbone.View.extend({
   tagName:  'div',
-  className: 'recline-timeline',
 
   template: ' \
-    <div id="vmm-timeline-id"></div> \
+    <div class="recline-timeline"> \
+      <div id="vmm-timeline-id"></div> \
+    </div> \
   ',
 
   // These are the default (case-insensitive) names of field that are used if found.
@@ -24,6 +29,7 @@ my.Timeline = Backbone.View.extend({
     this.timeline = new VMM.Timeline();
     this._timelineIsInitialized = false;
     this.bind('view:show', function() {
+      // only call _initTimeline once view in DOM as Timeline uses $ internally to look up element
       if (self._timelineIsInitialized === false) {
         self._initTimeline();
       }
@@ -43,6 +49,11 @@ my.Timeline = Backbone.View.extend({
     this.state = new recline.Model.ObjectState(stateData);
     this._setupTemporalField();
     this.render();
+    // can only call _initTimeline once view in DOM as Timeline uses $
+    // internally to look up element
+    if ($(this.elementId).length > 0) {
+      this._initTimeline();
+    }
   },
 
   render: function() {
@@ -52,9 +63,9 @@ my.Timeline = Backbone.View.extend({
   },
 
   _initTimeline: function() {
+    var $timeline = this.el.find(this.elementId);
     // set width explicitly o/w timeline goes wider that screen for some reason
-    this.el.find(this.elementId).width(this.el.parent().width());
-    // only call _initTimeline once view in DOM as Timeline uses $ internally to look up element
+    $timeline.width(this.el.parent().width());
     var config = {};
     var data = this._timelineJSON();
     this.timeline.init(data, this.elementId, config);
