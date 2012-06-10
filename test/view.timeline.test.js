@@ -48,3 +48,23 @@ test('render etc', function () {
   view.remove();
 });
 
+test('_parseDate', function () {
+  var dataset = Fixture.getDataset();
+  var view = new recline.View.Timeline({
+    model: dataset
+  });
+  var testData = [
+    [ '1st August 1914', '1914-08-01T00:00:00.000Z' ],
+    [ '1 August 1914', '1914-08-01T00:00:00.000Z' ],
+    [ 'August 1st 1914', '1914-08-01T00:00:00.000Z' ],
+    [ '1914-08-01', '1914-08-01T00:00:00.000Z' ],
+    [ '1914-08-01T08:00', '1914-08-01T08:00:00.000Z' ],
+    [ 'afdaf afdaf', null ]
+  ];
+  _.each(testData, function(item) {
+    var out = view._parseDate(item[0]);
+    if (out) out = out.toISOString();
+    equal(out, item[1]);
+  });
+});
+
