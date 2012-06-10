@@ -59,7 +59,8 @@ test('_parseDate', function () {
     [ 'August 1st 1914', '1914-08-01T00:00:00.000Z' ],
     [ '1914-08-01', '1914-08-01T00:00:00.000Z' ],
     [ '1914-08-01T08:00', '1914-08-01T08:00:00.000Z' ],
-    [ 'afdaf afdaf', null ]
+    [ 'afdaf afdaf', null ],
+    [ null, null ]
   ];
   _.each(testData, function(item) {
     var out = view._parseDate(item[0]);

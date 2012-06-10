@@ -103,6 +103,9 @@ my.Timeline = Backbone.View.extend({
   },
 
   _parseDate: function(date) {
+    if (!date) {
+      return null;
+    }
     var out = date.trim();
     out = out.replace(/(\d)th/g, '$1');
     out = out.replace(/(\d)st/g, '$1');
