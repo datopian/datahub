@@ -2816,7 +2816,10 @@ my.Timeline = Backbone.View.extend({
   _initTimeline: function() {
     var $timeline = this.el.find(this.elementId);
     // set width explicitly o/w timeline goes wider that screen for some reason
-    $timeline.width(this.el.parent().width());
+    var width = Math.max(this.el.width(), this.el.find('.recline-timeline').width());
+    if (width) {
+      $timeline.width(width);
+    }
     var config = {};
     var data = this._timelineJSON();
     this.timeline.init(data, this.elementId, config);
