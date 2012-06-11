@@ -4,6 +4,8 @@ this.recline = this.recline || {};
 this.recline.View = this.recline.View || {};
 
 (function($, my) {
+// turn off unnecessary logging from VMM Timeline
+VMM.debug = false;
 
 // ## Timeline
 //
@@ -82,6 +84,30 @@ my.Timeline = Backbone.View.extend({
     }
   },
 
+  // Convert record to JSON for timeline
+  //
+  // Designed to be overridden in client apps
+  convertRecord: function(record, fields) {
+    return this._convertRecord(record, fields);
+  },
+
+  // Internal method to generate a Timeline formatted entry
+  _convertRecord: function(record, fields) {
+    var start = this._parseDate(record.get(this.state.get('startField')));
+    var end = this._parseDate(record.get(this.state.get('endField')));
+    if (start) {
+      var tlEntry = {
+        "startDate": start,
+        "endDate": end,
+        "headline": String(record.get('title') || ''),
+        "text": record.get('description') || record.summary()
+      };
+      return tlEntry;
+    } else {
+      return null;
+    }
+  },
+
   _timelineJSON: function() {
     var self = this;
     var out = {
@@ -92,17 +118,10 @@ my.Timeline = Backbone.View.extend({
         ]
       }
     };
-    this.model.currentRecords.each(function(doc) {
-      var start = self._parseDate(doc.get(self.state.get('startField')));
-      var end = self._parseDate(doc.get(self.state.get('endField')));
-      if (start) {
-        var tlEntry = {
-          "startDate": start,
-          "endDate": end,
-          "headline": String(doc.get('title') || ''),
-          "text": doc.summary()
-        };
-        out.timeline.date.push(tlEntry);
+    this.model.currentRecords.each(function(record) {
+      var newEntry = self.convertRecord(record, self.fields);
+      if (newEntry) {
+        out.timeline.date.push(newEntry); 
       }
     });
     // if no entries create a placeholder entry to prevent Timeline crashing with error
