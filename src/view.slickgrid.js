@@ -135,35 +135,23 @@ my.SlickGrid = Backbone.View.extend({
     this.grid = new Slick.Grid(this.el, data, visibleColumns, options);
 
     // Column sorting
-    var gridSorter = function(field, ascending, grid, data){
-
-      data.sort(function(a, b){
-          var result =
-              a[field] > b[field] ? 1 :
-              a[field] < b[field] ? -1 :
-              0
-          ;
-          return ascending ? result : -result;
-      });
-
-      grid.setData(data);
-      grid.updateRowCount();
-      grid.render();
-    }
-
     var sortInfo = this.state.get('columnsSort');
-    if (sortInfo){
-      var sortAsc = !(sortInfo['direction'] == 'desc');
-      gridSorter(sortInfo.column, sortAsc, self.grid, data);
+    if (sortInfo.column){
+      var sortAsc = !(sortInfo.order == 'desc');
       this.grid.setSortColumn(sortInfo.column, sortAsc);
     }
 
     this.grid.onSort.subscribe(function(e, args){
-      gridSorter(args.sortCol.field,args.sortAsc,self.grid,data);
+      var order = (args.sortAsc) ? 'asc':'desc';
       self.state.set({columnsSort:{
-                      column:args.sortCol,
-                      direction: (args.sortAsc) ? 'asc':'desc'
+                      column:args.sortCol.field,
+                      order: order
                    }});
+
+      var sort = [{}];
+      sort[0][args.sortCol.field] = {order: order};
+      self.model.query({sort: sort});
+
     });
 
     this.grid.onColumnsReordered.subscribe(function(e, args){
