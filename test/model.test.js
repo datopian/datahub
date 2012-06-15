@@ -151,6 +151,33 @@ test('Query', function () {
 
 test('Query.addFilter', function () {
   var query = new recline.Model.Query();
+  query.addFilter('term', 'xyz');
+  var exp = {
+    term: {
+      xyz: '',
+      _field: 'xyz',
+      _type: 'term'
+    }
+  };
+  deepEqual(exp, query.get('filters')[0]);
+
+  query.addFilter('geo_distance', 'xyz');
+  var exp = {
+    geo_distance: {
+      distance: '10km',
+      xyz: {
+        lon: 0,
+        lat: 0
+      },
+      _field: 'xyz',
+      _type: 'geo_distance'
+    }
+  };
+  deepEqual(exp, query.get('filters')[1]);
+});
+
+test('Query.addTermFilter', function () {
+  var query = new recline.Model.Query();
   query.addTermFilter('xyz', 'this-value');
   deepEqual({term: {xyz: 'this-value'}}, query.get('filters')[0]);
 });

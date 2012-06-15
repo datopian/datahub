@@ -90,10 +90,13 @@ this.recline.Backend.Memory = this.recline.Backend.Memory || {};
     // in place filtering
     this._applyFilters = function(results, queryObj) {
       _.each(queryObj.filters, function(filter) {
-        results = _.filter(results, function(doc) {
-          var fieldId = _.keys(filter.term)[0];
-          return (doc[fieldId] == filter.term[fieldId]);
-        });
+        // if a term filter ...
+        if (filter.term) {
+          results = _.filter(results, function(doc) {
+            var fieldId = _.keys(filter.term)[0];
+            return (doc[fieldId] == filter.term[fieldId]);
+          });
+        }
       });
       return results;
     };

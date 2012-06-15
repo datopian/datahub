@@ -393,7 +393,7 @@ my.FieldList = Backbone.Collection.extend({
 //   may just pass this straight through e.g. for an SQL backend this could be
 //   the full SQL query
 //
-//  * filters: dict of ElasticSearch filters. These will be and-ed together for
+//  * filters: array of ElasticSearch filters. These will be and-ed together for
 //  execution.
 // 
 // **Examples**
@@ -417,6 +417,37 @@ my.Query = Backbone.Model.extend({
       filters: []
     };
   },
+  _filterTemplates: {
+    term: {
+      '{{fieldId}}': ''
+    },
+    geo_distance: {
+      distance: '10km',
+      '{{fieldId}}': {
+        lon: 0,
+        lat: 0
+      }
+    }
+  },
+  // ### addFilter
+  //
+  // Add a new filter (appended to the list of filters) with default
+  // value. To set value for the filter use updateFilter.
+  //
+  // @param type type of this filter e.g. term, geo_distance etc
+  // @param fieldId the field to add this filter on
+  addFilter: function(type, fieldId) {
+    var tmpl = JSON.stringify(this._filterTemplates[type]);
+    var filters = this.get('filters');
+    var filter = {};
+    filter[type] = JSON.parse(Mustache.render(tmpl, {type: type, fieldId: fieldId}));
+    filter[type]._type = type;
+    filter[type]._field = fieldId;
+    filters.push(filter);
+    this.trigger('change:filters:new-blank');
+  },
+  updateFilter: function(index, value) {
+  },
   // #### addTermFilter
   // 
   // Set (update or add) a terms filter to filters
@@ -435,6 +466,22 @@ my.Query = Backbone.Model.extend({
       // adding a new blank filter and do not want to trigger a new query
       this.trigger('change:filters:new-blank');
     }
+  },
+  addGeoDistanceFilter: function(field) {
+    var filters = this.get('filters');
+    var filter = { 
+      geo_distance: {
+        distance: '10km',
+      }
+    };
+    filter.geo_distance[field] = {
+      'lon': 0,
+      'lat': 0
+    };
+    filters.push(filter);
+    this.set({filters: filters});
+    // adding a new blank filter and do not want to trigger a new query
+    this.trigger('change:filters:new-blank');
   },
   // ### removeFilter
   //

@@ -39,3 +39,28 @@ test('basics', function () {
   view.remove();
 });
 
+test('geo_distance', function () {
+  var dataset = Fixture.getDataset();
+  var view = new recline.View.FilterEditor({
+    model: dataset
+  });
+  $('.fixtures').append(view.el);
+
+  var $addForm = view.el.find('form.js-add');
+  // submit the form
+  $addForm.find('select.filterType').val('geo_distance');
+  $addForm.find('select.fields').val('lon');
+  $addForm.submit();
+
+  // now check we have new filter
+  $editForm = view.el.find('form.js-edit');
+  equal($editForm.find('.filter-geo_distance').length, 1)
+  deepEqual(_.keys(dataset.queryState.attributes.filters[0].geo_distance), ['distance', 'lon', '_type', '_field']);
+
+  // now set filter value and apply
+  $editForm.find('input[name="lat"]').val(10);
+  $editForm.submit();
+  equal(dataset.queryState.attributes.filters[0].geo_distance.lon.lat, 10);
+
+  view.remove();
+});
