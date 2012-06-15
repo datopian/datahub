@@ -213,6 +213,12 @@ this.recline.Backend.ElasticSearch = this.recline.Backend.ElasticSearch || {};
           results.hits.facets = results.facets;
         }
         dfd.resolve(results.hits);
+      }).fail(function(errorObj) {
+        var out = {
+          title: 'Failed: ' + errorObj.status + ' code',
+          message: errorObj.responseText
+        };
+        dfd.reject(out);
       });
       return dfd.promise();
     };

@@ -128,6 +128,7 @@ test("query", function() {
       return {
         done: function(callback) {
           callback(sample_data);
+          return this;
         },
         fail: function() {
         }
@@ -224,10 +225,11 @@ test("query", function() {
       return {
         done: function(callback) {
           callback(sample_data);
+          return this;
         },
         fail: function() {
         }
-      }
+      };
     }
   });
 
