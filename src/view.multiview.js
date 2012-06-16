@@ -87,7 +87,7 @@ my.MultiView = Backbone.View.extend({
       </div> \
       <div class="menu-right"> \
         <div class="btn-group" data-toggle="buttons-checkbox"> \
-          <a href="#" class="btn" data-action="filters">Filters</a> \
+          <a href="#" class="btn active" data-action="filters">Filters</a> \
           <a href="#" class="btn active" data-action="fields">Fields</a> \
         </div> \
       </div> \
@@ -228,12 +228,6 @@ my.MultiView = Backbone.View.extend({
     });
     this.$filterEditor = filterEditor.el;
     $dataSidebar.append(filterEditor.el);
-    // are there actually any filters to show?
-    if (this.model.get('filters') && this.model.get('filters').length > 0) {
-      this.$filterEditor.show();
-    } else {
-      this.$filterEditor.hide();
-    }
 
     var fieldsView = new recline.View.Fields({
       model: this.model
