@@ -5,7 +5,9 @@ this.recline.View = this.recline.View || {};
 
 (function($, my) {
 // turn off unnecessary logging from VMM Timeline
-VMM.debug = false;
+if (typeof VMM !== 'undefined') {
+  VMM.debug = false;
+}
 
 // ## Timeline
 //
