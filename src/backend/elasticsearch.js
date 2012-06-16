@@ -124,6 +124,7 @@ this.recline.Backend.ElasticSearch = this.recline.Backend.ElasticSearch || {};
       } else if (filter.type === 'geo_distance') {
         out.geo_distance[filter.field] = filter.point;
         out.geo_distance.distance = filter.distance;
+        out.geo_distance.unit = filter.unit;
       }
       return out;
     },
