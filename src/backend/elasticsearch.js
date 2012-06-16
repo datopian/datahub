@@ -121,9 +121,9 @@ this.recline.Backend.ElasticSearch = this.recline.Backend.ElasticSearch || {};
       out[filter.type] = {}
       if (filter.type === 'term') {
         out.term[filter.field] = filter.term;
-      } else if (filter.type === 'geo_point') {
-        out.geo_point[filter.field] = filter.point;
-        out.geo_point[filter.distance] = filter.distance;
+      } else if (filter.type === 'geo_distance') {
+        out.geo_distance[filter.field] = filter.point;
+        out.geo_distance.distance = filter.distance;
       }
       return out;
     },

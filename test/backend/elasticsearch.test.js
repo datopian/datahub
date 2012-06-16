@@ -49,6 +49,31 @@ test("queryNormalize", function() {
     }
   };
   deepEqual(out, exp);
+
+  var in_ = new recline.Model.Query();
+  in_.addFilter({
+    type: 'geo_distance',
+    field: 'xyz'
+  });
+  var out = backend._normalizeQuery(in_);
+  var exp = {
+    constant_score: {
+      query: {
+        match_all: {}
+      },
+      filter: {
+        and: [
+          {
+            geo_distance: {
+              distance: '10km',
+              'xyz': { lon: 0, lat: 0 }
+            }
+          }
+        ]
+      }
+    }
+  };
+  deepEqual(out, exp);
 });
 
 var mapping_data = {
