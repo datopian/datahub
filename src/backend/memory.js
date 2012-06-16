@@ -74,8 +74,11 @@ this.recline.Backend.Memory = this.recline.Backend.Memory || {};
         var fieldName = _.keys(sortObj)[0];
         results = _.sortBy(results, function(doc) {
           var _out = doc[fieldName];
-          return (sortObj[fieldName].order == 'asc') ? _out : -1*_out;
+          return _out;
         });
+        if (sortObj[fieldName].order == 'desc') {
+          results.reverse();
+        }
       });
       var total = results.length;
       var facets = this.computeFacets(results, queryObj);

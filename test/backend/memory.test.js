@@ -44,6 +44,22 @@ test('query sort', function () {
   };
   var out = data.query(queryObj);
   equal(out.records[0].x, 6);
+
+  var queryObj = {
+    sort: [
+      {'country': {order: 'desc'}}
+    ]
+  };
+  var out = data.query(queryObj);
+  equal(out.records[0].country, 'US');
+
+  var queryObj = {
+    sort: [
+      {'country': {order: 'asc'}}
+    ]
+  };
+  var out = data.query(queryObj);
+  equal(out.records[0].country, 'DE');
 });
 
 test('query string', function () {
