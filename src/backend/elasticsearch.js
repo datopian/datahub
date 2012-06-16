@@ -120,7 +120,7 @@ this.recline.Backend.ElasticSearch = this.recline.Backend.ElasticSearch || {};
       var out = {};
       out[filter.type] = {}
       if (filter.type === 'term') {
-        out.term[filter.field] = filter.term;
+        out.term[filter.field] = filter.term.toLowerCase();
       } else if (filter.type === 'geo_distance') {
         out.geo_distance[filter.field] = filter.point;
         out.geo_distance.distance = filter.distance;
