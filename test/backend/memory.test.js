@@ -60,7 +60,7 @@ test('query string', function () {
 test('filters', function () {
   var data = _wrapData();
   var query = new recline.Model.Query();
-  query.addTermFilter('country', 'UK');
+  query.addFilter({type: 'term', field: 'country', term: 'UK'});
   var out = data.query(query.toJSON());
   equal(out.total, 3);
   deepEqual(_.pluck(out.records, 'country'), ['UK', 'UK', 'UK']);
@@ -198,7 +198,7 @@ test('query string', function () {
 
 test('filters', function () {
   var dataset = makeBackendDataset();
-  dataset.queryState.addTermFilter('country', 'UK');
+  dataset.queryState.addFilter({type: 'term', field: 'country', term: 'UK'});
   dataset.query().then(function() {
     equal(dataset.currentRecords.length, 3);
     deepEqual(dataset.currentRecords.pluck('country'), ['UK', 'UK', 'UK']);

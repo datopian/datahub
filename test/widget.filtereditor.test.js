@@ -21,12 +21,12 @@ test('basics', function () {
   ok(!$addForm.is(":visible"));
   $editForm = view.el.find('form.js-edit');
   equal($editForm.find('.filter-term').length, 1)
-  equal(_.keys(dataset.queryState.attributes.filters[0].term)[0], 'country');
+  equal(dataset.queryState.attributes.filters[0].field, 'country');
 
   // now set filter value and apply
   $editForm.find('input').val('UK');
   $editForm.submit();
-  equal(dataset.queryState.attributes.filters[0].term.country, 'UK');
+  equal(dataset.queryState.attributes.filters[0].term, 'UK');
   equal(dataset.currentRecords.length, 3);
 
   // now remove filter
@@ -55,12 +55,13 @@ test('geo_distance', function () {
   // now check we have new filter
   $editForm = view.el.find('form.js-edit');
   equal($editForm.find('.filter-geo_distance').length, 1)
-  deepEqual(_.keys(dataset.queryState.attributes.filters[0].geo_distance), ['distance', 'lon', '_type', '_field']);
+  deepEqual(_.keys(dataset.queryState.attributes.filters[0]), ['distance',
+    'point', 'type', 'field']);
 
   // now set filter value and apply
   $editForm.find('input[name="lat"]').val(10);
   $editForm.submit();
-  equal(dataset.queryState.attributes.filters[0].geo_distance.lon.lat, 10);
+  equal(dataset.queryState.attributes.filters[0].point.lat, 10);
 
   view.remove();
 });

@@ -39,22 +39,22 @@ my.FilterEditor = Backbone.View.extend({
   ',
   filterTemplates: {
     term: ' \
-      <div class="control-group filter-{{_type}} filter"> \
-        <label class="control-label" for="">{{_field}}</label> \
+      <div class="control-group filter-{{type}} filter"> \
+        <label class="control-label" for="">{{field}}</label> \
         <div class="controls"> \
-            <input type="text" value="{{_value}}" name="term" data-filter-field="{{_field}}" data-filter-id="{{id}}" data-filter-type="{{_type}}" /> \
+            <input type="text" value="{{term}}" name="term" data-filter-field="{{field}}" data-filter-id="{{id}}" data-filter-type="{{type}}" /> \
             <a class="js-remove-filter" href="#">&times;</a> \
         </div> \
       </div> \
     ',
     geo_distance: ' \
-      <div class="control-group filter-{{_type}} filter"> \
-        <label class="control-label" for="">{{_field}}</label> \
+      <div class="control-group filter-{{type}} filter"> \
+        <label class="control-label" for="">{{field}}</label> \
         <a class="js-remove-filter" href="#">&times;</a> \
         <div class="controls"> \
-            <input type="text" value="{{_value.lon}}" name="lon" data-filter-field="{{_field}}" data-filter-id="{{id}}" data-filter-type="{{_type}}" /> \
-            <input type="text" value="{{_value.lat}}" name="lat" data-filter-field="{{_field}}" data-filter-id="{{id}}" data-filter-type="{{_type}}" /> \
-            <input type="text" value="{{distance}}" name="distance" data-filter-field="{{_field}}" data-filter-id="{{id}}" data-filter-type="{{_type}}" /> \
+            <input type="text" value="{{point.lon}}" name="lon" data-filter-field="{{field}}" data-filter-id="{{id}}" data-filter-type="{{type}}" /> \
+            <input type="text" value="{{point.lat}}" name="lat" data-filter-field="{{field}}" data-filter-id="{{id}}" data-filter-type="{{type}}" /> \
+            <input type="text" value="{{distance}}" name="distance" data-filter-field="{{field}}" data-filter-id="{{id}}" data-filter-type="{{type}}" /> \
         </div> \
       </div> \
     '
@@ -83,12 +83,7 @@ my.FilterEditor = Backbone.View.extend({
     });
     tmplData.fields = this.model.fields.toJSON();
     tmplData.filterRender = function() {
-      var filterType = _.keys(this)[0];
-      var _data = this[filterType];
-      _data.id = this.id;
-      _data._type = filterType;
-      _data._value = _data[_data._field];
-      return Mustache.render(self.filterTemplates[filterType], _data);
+      return Mustache.render(self.filterTemplates[this.type], this);
     };
     var out = Mustache.render(this.template, tmplData);
     this.el.html(out);
@@ -105,7 +100,7 @@ my.FilterEditor = Backbone.View.extend({
     $target.hide();
     var filterType = $target.find('select.filterType').val();
     var field = $target.find('select.fields').val();
-    this.model.queryState.addFilter(filterType, field);
+    this.model.queryState.addFilter({type: filterType, field: field});
     // trigger render explicitly as queryState change will not be triggered (as blank value for filter)
     this.render();
   },
@@ -128,12 +123,12 @@ my.FilterEditor = Backbone.View.extend({
       var name = $input.attr('name');
       var value = $input.val();
       if (filterType === 'term') {
-        filters[filterIndex].term[fieldId] = value;
+        filters[filterIndex].term = value;
       } else if (filterType === 'geo_distance') {
         if (name === 'distance') {
-          filters[filterIndex].geo_distance.distance = parseInt(value);
+          filters[filterIndex].distance = parseInt(value);
         } else {
-          filters[filterIndex].geo_distance[fieldId][name] = parseFloat(value);
+          filters[filterIndex].point[name] = parseFloat(value);
         }
       }
     });

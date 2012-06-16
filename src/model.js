@@ -411,39 +411,39 @@ my.Query = Backbone.Model.extend({
     return {
       size: 100,
       from: 0,
+      q: '',
       facets: {},
-      // <http://www.elasticsearch.org/guide/reference/query-dsl/and-filter.html>
-      // , filter: {}
       filters: []
     };
   },
   _filterTemplates: {
     term: {
-      '{{fieldId}}': ''
+      type: 'term',
+      field: '',
+      term: ''
     },
     geo_distance: {
       distance: '10km',
-      '{{fieldId}}': {
+      point: {
         lon: 0,
         lat: 0
       }
     }
-  },
+  },  
   // ### addFilter
   //
-  // Add a new filter (appended to the list of filters) with default
-  // value. To set value for the filter use updateFilter.
+  // Add a new filter (appended to the list of filters)
   //
-  // @param type type of this filter e.g. term, geo_distance etc
-  // @param fieldId the field to add this filter on
-  addFilter: function(type, fieldId) {
-    var tmpl = JSON.stringify(this._filterTemplates[type]);
+  // @param filter an object specifying the filter - see _filterTemplates for examples. If only type is provided will generate a filter by cloning _filterTemplates
+  addFilter: function(filter) {
+    // crude deep copy
+    var ourfilter = JSON.parse(JSON.stringify(filter));
+    // not full specified so use template and over-write
+    if (_.keys(filter).length <= 2) {
+      ourfilter = _.extend(this._filterTemplates[filter.type], ourfilter);
+    }
     var filters = this.get('filters');
-    var filter = {};
-    filter[type] = JSON.parse(Mustache.render(tmpl, {type: type, fieldId: fieldId}));
-    filter[type]._type = type;
-    filter[type]._field = fieldId;
-    filters.push(filter);
+    filters.push(ourfilter);
     this.trigger('change:filters:new-blank');
   },
   updateFilter: function(index, value) {

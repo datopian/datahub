@@ -151,27 +151,23 @@ test('Query', function () {
 
 test('Query.addFilter', function () {
   var query = new recline.Model.Query();
-  query.addFilter('term', 'xyz');
+  query.addFilter({type: 'term', field: 'xyz'});
   var exp = {
-    term: {
-      xyz: '',
-      _field: 'xyz',
-      _type: 'term'
-    }
+    field: 'xyz',
+    type: 'term',
+    term: ''
   };
-  deepEqual(exp, query.get('filters')[0]);
+  deepEqual(query.get('filters')[0], exp);
 
-  query.addFilter('geo_distance', 'xyz');
+  query.addFilter({type: 'geo_distance', field: 'xyz'});
   var exp = {
-    geo_distance: {
-      distance: '10km',
-      xyz: {
-        lon: 0,
-        lat: 0
-      },
-      _field: 'xyz',
-      _type: 'geo_distance'
-    }
+    distance: '10km',
+    point: {
+      lon: 0,
+      lat: 0
+    },
+    field: 'xyz',
+    type: 'geo_distance'
   };
   deepEqual(exp, query.get('filters')[1]);
 });

@@ -87,44 +87,57 @@ this.recline.Backend.ElasticSearch = this.recline.Backend.ElasticSearch || {};
     };
 
     this._normalizeQuery = function(queryObj) {
-      var out = queryObj && queryObj.toJSON ? queryObj.toJSON() : _.extend({}, queryObj);
-      if (out.q !== undefined && out.q.trim() === '') {
-        delete out.q;
-      }
-      if (!out.q) {
-        out.query = {
+      var self = this;
+      var queryInfo = (queryObj && queryObj.toJSON) ? queryObj.toJSON() : _.extend({}, queryObj);
+      var out = {
+        constant_score: {
+          query: {}
+        }
+      };
+      if (!queryInfo.q) {
+        out.constant_score.query = {
           match_all: {}
         };
       } else {
-        out.query = {
+        out.constant_score.query = {
           query_string: {
-            query: out.q
+            query: queryInfo.q
           }
         };
-        delete out.q;
       }
-      // now do filters (note the *plural*)
-      if (out.filters && out.filters.length) {
-        if (!out.filter) {
-          out.filter = {};
-        }
-        if (!out.filter.and) {
-          out.filter.and = [];
-        }
-        out.filter.and = out.filter.and.concat(out.filters);
-      }
-      if (out.filters !== undefined) {
-        delete out.filters;
+      if (queryInfo.filters && queryInfo.filters.length) {
+        out.constant_score.filter = {
+          and: []
+        };
+        _.each(queryInfo.filters, function(filter) {
+          out.constant_score.filter.and.push(self._convertFilter(filter));
+        });
       }
       return out;
-    };
+    },
+
+    this._convertFilter = function(filter) {
+      var out = {};
+      out[filter.type] = {}
+      if (filter.type === 'term') {
+        out.term[filter.field] = filter.term;
+      } else if (filter.type === 'geo_point') {
+        out.geo_point[filter.field] = filter.point;
+        out.geo_point[filter.distance] = filter.distance;
+      }
+      return out;
+    },
 
     // ### query
     //
     // @return deferred supporting promise API
     this.query = function(queryObj) {
+      var esQuery = (queryObj && queryObj.toJSON) ? queryObj.toJSON() : _.extend({}, queryObj);
       var queryNormalized = this._normalizeQuery(queryObj);
-      var data = {source: JSON.stringify(queryNormalized)};
+      delete esQuery.q;
+      delete esQuery.filters;
+      esQuery.query = queryNormalized;
+      var data = {source: JSON.stringify(esQuery)};
       var url = this.endpoint + '/_search';
       var jqxhr = recline.Backend.makeRequest({
         url: url,

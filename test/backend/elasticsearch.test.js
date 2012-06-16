@@ -3,32 +3,52 @@ module("Backend ElasticSearch - Wrapper");
 
 test("queryNormalize", function() { 
   var backend = new recline.Backend.ElasticSearch.Wrapper();
+
   var in_ = new recline.Model.Query();
   var out = backend._normalizeQuery(in_);
-  equal(out.size, 100);
+  var exp = {
+    constant_score: {
+      query: {
+        match_all: {}
+      }
+    }
+  };
+  deepEqual(out, exp);
 
   var in_ = new recline.Model.Query();
   in_.set({q: ''});
   var out = backend._normalizeQuery(in_);
-  equal(out.q, undefined);
-  deepEqual(out.query.match_all, {});
-
-  var in_ = new recline.Model.Query().toJSON();
-  in_.q = '';
-  var out = backend._normalizeQuery(in_);
-  equal(out.q, undefined);
-  deepEqual(out.query.match_all, {});
-
-  var in_ = new recline.Model.Query().toJSON();
-  in_.q = 'abc';
-  var out = backend._normalizeQuery(in_);
-  equal(out.query.query_string.query, 'abc');
+  deepEqual(out, exp);
 
   var in_ = new recline.Model.Query();
-  in_.addTermFilter('xyz', 'XXX');
-  in_ = in_.toJSON();
+  in_.attributes.q = 'abc';
   var out = backend._normalizeQuery(in_);
-  deepEqual(out.filter.and[0], {term: { xyz: 'XXX'}});
+  equal(out.constant_score.query.query_string.query, 'abc');
+
+  var in_ = new recline.Model.Query();
+  in_.addFilter({
+    type: 'term',
+    field: 'xyz',
+    term: 'XXX'
+  });
+  var out = backend._normalizeQuery(in_);
+  var exp = {
+    constant_score: {
+      query: {
+        match_all: {}
+      },
+      filter: {
+        and: [
+          {
+            term: {
+              xyz: 'XXX'
+            }
+          }
+        ]
+      }
+    }
+  };
+  deepEqual(out, exp);
 });
 
 var mapping_data = {
