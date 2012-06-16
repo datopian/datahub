@@ -461,7 +461,7 @@ my.FieldList = Backbone.Collection.extend({
 //   may just pass this straight through e.g. for an SQL backend this could be
 //   the full SQL query
 //
-//  * filters: dict of ElasticSearch filters. These will be and-ed together for
+//  * filters: array of ElasticSearch filters. These will be and-ed together for
 //  execution.
 // 
 // **Examples**
@@ -479,11 +479,43 @@ my.Query = Backbone.Model.extend({
     return {
       size: 100,
       from: 0,
+      q: '',
       facets: {},
-      // <http://www.elasticsearch.org/guide/reference/query-dsl/and-filter.html>
-      // , filter: {}
       filters: []
     };
+  },
+  _filterTemplates: {
+    term: {
+      type: 'term',
+      field: '',
+      term: ''
+    },
+    geo_distance: {
+      distance: 10,
+      distance_unit: 'km',
+      point: {
+        lon: 0,
+        lat: 0
+      }
+    }
+  },  
+  // ### addFilter
+  //
+  // Add a new filter (appended to the list of filters)
+  //
+  // @param filter an object specifying the filter - see _filterTemplates for examples. If only type is provided will generate a filter by cloning _filterTemplates
+  addFilter: function(filter) {
+    // crude deep copy
+    var ourfilter = JSON.parse(JSON.stringify(filter));
+    // not full specified so use template and over-write
+    if (_.keys(filter).length <= 2) {
+      ourfilter = _.extend(this._filterTemplates[filter.type], ourfilter);
+    }
+    var filters = this.get('filters');
+    filters.push(ourfilter);
+    this.trigger('change:filters:new-blank');
+  },
+  updateFilter: function(index, value) {
   },
   // #### addTermFilter
   // 
@@ -503,6 +535,22 @@ my.Query = Backbone.Model.extend({
       // adding a new blank filter and do not want to trigger a new query
       this.trigger('change:filters:new-blank');
     }
+  },
+  addGeoDistanceFilter: function(field) {
+    var filters = this.get('filters');
+    var filter = { 
+      geo_distance: {
+        distance: '10km',
+      }
+    };
+    filter.geo_distance[field] = {
+      'lon': 0,
+      'lat': 0
+    };
+    filters.push(filter);
+    this.set({filters: filters});
+    // adding a new blank filter and do not want to trigger a new query
+    this.trigger('change:filters:new-blank');
   },
   // ### removeFilter
   //
@@ -1650,38 +1698,55 @@ my.Map = Backbone.View.extend({
   // Private: Return a GeoJSON geomtry extracted from the record fields
   //
   _getGeometryFromRecord: function(doc){
-    if (this._geomReady()){
-      if (this.state.get('geomField')){
-        var value = doc.get(this.state.get('geomField'));
-        if (typeof(value) === 'string'){
-          // We *may* have a GeoJSON string representation
-          try {
-            value = $.parseJSON(value);
-          } catch(e) {
-          }
-        }
-        if (value && value.lat) {
-          // not yet geojson so convert
-          value = {
-            "type": "Point",
-            "coordinates": [value.lon || value.lng, value.lat]
-          };
-        }
-        // We now assume that contents of the field are a valid GeoJSON object
-        return value;
-      } else if (this.state.get('lonField') && this.state.get('latField')){
-        // We'll create a GeoJSON like point object from the two lat/lon fields
-        var lon = doc.get(this.state.get('lonField'));
-        var lat = doc.get(this.state.get('latField'));
-        if (!isNaN(parseFloat(lon)) && !isNaN(parseFloat(lat))) {
-          return {
-            type: 'Point',
-            coordinates: [lon,lat]
-          };
-        }
+    if (this.state.get('geomField')){
+      var value = doc.get(this.state.get('geomField'));
+      if (typeof(value) === 'string'){
+        // We *may* have a GeoJSON string representation
+        try {
+          value = $.parseJSON(value);
+        } catch(e) {}
       }
-      return null;
+
+      if (typeof(value) === 'string') {
+        value = value.replace('(', '').replace(')', '');
+        var parts = value.split(',');
+        var lat = parseFloat(parts[0]);
+        var lon = parseFloat(parts[1]);
+        if (!isNaN(lon) && !isNaN(parseFloat(lat))) {
+          return {
+            "type": "Point",
+            "coordinates": [lon, lat]
+          };
+        } else {
+          return null;
+        }
+      } else if (value && value.slice) {
+        // [ lon, lat ]
+        return {
+          "type": "Point",
+          "coordinates": [value[0], value[1]]
+        };
+      } else if (value && value.lat) {
+        // of form { lat: ..., lon: ...}
+        return {
+          "type": "Point",
+          "coordinates": [value.lon || value.lng, value.lat]
+        };
+      }
+      // We o/w assume that contents of the field are a valid GeoJSON object
+      return value;
+    } else if (this.state.get('lonField') && this.state.get('latField')){
+      // We'll create a GeoJSON like point object from the two lat/lon fields
+      var lon = doc.get(this.state.get('lonField'));
+      var lat = doc.get(this.state.get('latField'));
+      if (!isNaN(parseFloat(lon)) && !isNaN(parseFloat(lat))) {
+        return {
+          type: 'Point',
+          coordinates: [lon,lat]
+        };
+      }
     }
+    return null;
   },
 
   // Private: Check if there is a field with GeoJSON geometries or alternatively,
@@ -2568,35 +2633,18 @@ my.SlickGrid = Backbone.View.extend({
     this.grid = new Slick.Grid(this.el, data, visibleColumns, options);
 
     // Column sorting
-    var gridSorter = function(field, ascending, grid, data){
-
-      data.sort(function(a, b){
-          var result =
-              a[field] > b[field] ? 1 :
-              a[field] < b[field] ? -1 :
-              0
-          ;
-          return ascending ? result : -result;
-      });
-
-      grid.setData(data);
-      grid.updateRowCount();
-      grid.render();
-    }
-
-    var sortInfo = this.state.get('columnsSort');
+    var sortInfo = this.model.queryState.get('sort');
     if (sortInfo){
-      var sortAsc = !(sortInfo['direction'] == 'desc');
-      gridSorter(sortInfo.column, sortAsc, self.grid, data);
-      this.grid.setSortColumn(sortInfo.column, sortAsc);
+      var column = _.keys(sortInfo[0])[0];
+      var sortAsc = !(sortInfo[0][column].order == 'desc');
+      this.grid.setSortColumn(column, sortAsc);
     }
 
     this.grid.onSort.subscribe(function(e, args){
-      gridSorter(args.sortCol.field,args.sortAsc,self.grid,data);
-      self.state.set({columnsSort:{
-                      column:args.sortCol,
-                      direction: (args.sortAsc) ? 'asc':'desc'
-                   }});
+      var order = (args.sortAsc) ? 'asc':'desc';
+      var sort = [{}];
+      sort[0][args.sortCol.field] = {order: order};
+      self.model.query({sort: sort});
     });
 
     this.grid.onColumnsReordered.subscribe(function(e, args){
@@ -2756,7 +2804,9 @@ this.recline.View = this.recline.View || {};
 
 (function($, my) {
 // turn off unnecessary logging from VMM Timeline
-VMM.debug = false;
+if (typeof VMM !== 'undefined') {
+  VMM.debug = false;
+}
 
 // ## Timeline
 //
@@ -3313,7 +3363,8 @@ my.FilterEditor = Backbone.View.extend({
         <fieldset> \
           <label>Filter type</label> \
           <select class="filterType"> \
-            <option value="term">Term (text) filter</option> \
+            <option value="term">Term (text)</option> \
+            <option value="geo_distance">Geo distance</option> \
           </select> \
           <label>Field</label> \
           <select class="fields"> \
@@ -3325,21 +3376,44 @@ my.FilterEditor = Backbone.View.extend({
         </fieldset> \
       </form> \
       <form class="form-stacked js-edit"> \
-        {{#termFilters}} \
-        <div class="control-group filter-term filter" data-filter-id={{id}}> \
-          <label class="control-label" for="">{{label}}</label> \
-          <div class="controls"> \
-              <input type="text" value="{{value}}" name="{{fieldId}}" data-filter-field="{{fieldId}}" data-filter-id="{{id}}" data-filter-type="term" /> \
-              <a class="js-remove-filter" href="#">&times;</a> \
-          </div> \
-        </div> \
-        {{/termFilters}} \
-        {{#termFilters.length}} \
+        {{#filters}} \
+          {{{filterRender}}} \
+        {{/filters}} \
+        {{#filters.length}} \
         <button type="submit" class="btn">Update</button> \
-        {{/termFilters.length}} \
+        {{/filters.length}} \
       </form> \
     </div> \
   ',
+  filterTemplates: {
+    term: ' \
+      <div class="filter-{{type}} filter"> \
+        <fieldset> \
+          <legend> \
+            {{field}} <small>{{type}}</small> \
+            <a class="js-remove-filter" href="#" title="Remove this filter">&times;</a> \
+          </legend> \
+          <input type="text" value="{{term}}" name="term" data-filter-field="{{field}}" data-filter-id="{{id}}" data-filter-type="{{type}}" /> \
+        </fieldset> \
+      </div> \
+    ',
+    geo_distance: ' \
+      <div class="filter-{{type}} filter"> \
+        <fieldset> \
+          <legend> \
+            {{field}} <small>{{type}}</small> \
+            <a class="js-remove-filter" href="#" title="Remove this filter">&times;</a> \
+          </legend> \
+          <label class="control-label" for="">Longitude</label> \
+          <input type="text" value="{{point.lon}}" name="lon" data-filter-field="{{field}}" data-filter-id="{{id}}" data-filter-type="{{type}}" /> \
+          <label class="control-label" for="">Latitude</label> \
+          <input type="text" value="{{point.lat}}" name="lat" data-filter-field="{{field}}" data-filter-id="{{id}}" data-filter-type="{{type}}" /> \
+          <label class="control-label" for="">Distance (km)</label> \
+          <input type="text" value="{{distance}}" name="distance" data-filter-field="{{field}}" data-filter-id="{{id}}" data-filter-type="{{type}}" /> \
+        </fieldset> \
+      </div> \
+    '
+  },
   events: {
     'click .js-remove-filter': 'onRemoveFilter',
     'click .js-add-filter': 'onAddFilterShow',
@@ -3349,30 +3423,23 @@ my.FilterEditor = Backbone.View.extend({
   initialize: function() {
     this.el = $(this.el);
     _.bindAll(this, 'render');
+    this.model.fields.bind('all', this.render);
     this.model.queryState.bind('change', this.render);
     this.model.queryState.bind('change:filters:new-blank', this.render);
     this.render();
   },
   render: function() {
+    var self = this;
     var tmplData = $.extend(true, {}, this.model.queryState.toJSON());
     // we will use idx in list as there id ...
     tmplData.filters = _.map(tmplData.filters, function(filter, idx) {
       filter.id = idx;
       return filter;
     });
-    tmplData.termFilters = _.filter(tmplData.filters, function(filter) {
-      return filter.term !== undefined;
-    });
-    tmplData.termFilters = _.map(tmplData.termFilters, function(filter) {
-      var fieldId = _.keys(filter.term)[0];
-      return {
-        id: filter.id,
-        fieldId: fieldId,
-        label: fieldId,
-        value: filter.term[fieldId]
-      };
-    });
     tmplData.fields = this.model.fields.toJSON();
+    tmplData.filterRender = function() {
+      return Mustache.render(self.filterTemplates[this.type], this);
+    };
     var out = Mustache.render(this.template, tmplData);
     this.el.html(out);
   },
@@ -3388,9 +3455,7 @@ my.FilterEditor = Backbone.View.extend({
     $target.hide();
     var filterType = $target.find('select.filterType').val();
     var field = $target.find('select.fields').val();
-    if (filterType === 'term') {
-      this.model.queryState.addTermFilter(field);
-    }
+    this.model.queryState.addFilter({type: filterType, field: field});
     // trigger render explicitly as queryState change will not be triggered (as blank value for filter)
     this.render();
   },
@@ -3407,10 +3472,20 @@ my.FilterEditor = Backbone.View.extend({
     var $form = $(e.target);
     _.each($form.find('input'), function(input) {
       var $input = $(input);
-      var filterIndex = parseInt($input.attr('data-filter-id'));
-      var value = $input.val();
+      var filterType = $input.attr('data-filter-type');
       var fieldId = $input.attr('data-filter-field');
-      filters[filterIndex].term[fieldId] = value;
+      var filterIndex = parseInt($input.attr('data-filter-id'));
+      var name = $input.attr('name');
+      var value = $input.val();
+      if (filterType === 'term') {
+        filters[filterIndex].term = value;
+      } else if (filterType === 'geo_distance') {
+        if (name === 'distance') {
+          filters[filterIndex].distance = parseFloat(value);
+        } else {
+          filters[filterIndex].point[name] = parseFloat(value);
+        }
+      }
     });
     self.model.queryState.set({filters: filters});
     self.model.queryState.trigger('change');
@@ -4023,44 +4098,57 @@ this.recline.Backend.ElasticSearch = this.recline.Backend.ElasticSearch || {};
     };
 
     this._normalizeQuery = function(queryObj) {
-      var out = queryObj && queryObj.toJSON ? queryObj.toJSON() : _.extend({}, queryObj);
-      if (out.q !== undefined && out.q.trim() === '') {
-        delete out.q;
-      }
-      if (!out.q) {
-        out.query = {
+      var self = this;
+      var queryInfo = (queryObj && queryObj.toJSON) ? queryObj.toJSON() : _.extend({}, queryObj);
+      var out = {
+        constant_score: {
+          query: {}
+        }
+      };
+      if (!queryInfo.q) {
+        out.constant_score.query = {
           match_all: {}
         };
       } else {
-        out.query = {
+        out.constant_score.query = {
           query_string: {
-            query: out.q
+            query: queryInfo.q
           }
         };
-        delete out.q;
       }
-      // now do filters (note the *plural*)
-      if (out.filters && out.filters.length) {
-        if (!out.filter) {
-          out.filter = {};
-        }
-        if (!out.filter.and) {
-          out.filter.and = [];
-        }
-        out.filter.and = out.filter.and.concat(out.filters);
-      }
-      if (out.filters !== undefined) {
-        delete out.filters;
+      if (queryInfo.filters && queryInfo.filters.length) {
+        out.constant_score.filter = {
+          and: []
+        };
+        _.each(queryInfo.filters, function(filter) {
+          out.constant_score.filter.and.push(self._convertFilter(filter));
+        });
       }
       return out;
-    };
+    },
+
+    this._convertFilter = function(filter) {
+      var out = {};
+      out[filter.type] = {}
+      if (filter.type === 'term') {
+        out.term[filter.field] = filter.term.toLowerCase();
+      } else if (filter.type === 'geo_distance') {
+        out.geo_distance[filter.field] = filter.point;
+        out.geo_distance.distance = filter.distance;
+      }
+      return out;
+    },
 
     // ### query
     //
     // @return deferred supporting promise API
     this.query = function(queryObj) {
+      var esQuery = (queryObj && queryObj.toJSON) ? queryObj.toJSON() : _.extend({}, queryObj);
       var queryNormalized = this._normalizeQuery(queryObj);
-      var data = {source: JSON.stringify(queryNormalized)};
+      delete esQuery.q;
+      delete esQuery.filters;
+      esQuery.query = queryNormalized;
+      var data = {source: JSON.stringify(esQuery)};
       var url = this.endpoint + '/_search';
       var jqxhr = recline.Backend.makeRequest({
         url: url,
@@ -4149,6 +4237,12 @@ this.recline.Backend.ElasticSearch = this.recline.Backend.ElasticSearch || {};
           results.hits.facets = results.facets;
         }
         dfd.resolve(results.hits);
+      }).fail(function(errorObj) {
+        var out = {
+          title: 'Failed: ' + errorObj.status + ' code',
+          message: errorObj.responseText
+        };
+        dfd.reject(out);
       });
       return dfd.promise();
     };
@@ -4403,8 +4497,11 @@ this.recline.Backend.Memory = this.recline.Backend.Memory || {};
         var fieldName = _.keys(sortObj)[0];
         results = _.sortBy(results, function(doc) {
           var _out = doc[fieldName];
-          return (sortObj[fieldName].order == 'asc') ? _out : -1*_out;
+          return _out;
         });
+        if (sortObj[fieldName].order == 'desc') {
+          results.reverse();
+        }
       });
       var total = results.length;
       var facets = this.computeFacets(results, queryObj);
@@ -4419,10 +4516,12 @@ this.recline.Backend.Memory = this.recline.Backend.Memory || {};
     // in place filtering
     this._applyFilters = function(results, queryObj) {
       _.each(queryObj.filters, function(filter) {
-        results = _.filter(results, function(doc) {
-          var fieldId = _.keys(filter.term)[0];
-          return (doc[fieldId] == filter.term[fieldId]);
-        });
+        // if a term filter ...
+        if (filter.type === 'term') {
+          results = _.filter(results, function(doc) {
+            return (doc[filter.field] == filter.term);
+          });
+        }
       });
       return results;
     };
