@@ -448,7 +448,7 @@ my.MapMenu = Backbone.View.extend({
   events: {
     'click .editor-update-map': 'onEditorSubmit',
     'change .editor-field-type': 'onFieldTypeChange',
-    'change #editor-auto-zoom': 'onAutoZoomChange'
+    'click #editor-auto-zoom': 'onAutoZoomChange'
   },
 
   initialize: function(options) {
@@ -472,12 +472,18 @@ my.MapMenu = Backbone.View.extend({
     if (this._geomReady() && this.model.fields.length){
       if (this.state.get('geomField')){
         this._selectOption('editor-geom-field',this.state.get('geomField'));
-        $('#editor-field-type-geom').attr('checked','checked').change();
+        this.el.find('#editor-field-type-geom').attr('checked','checked').change();
       } else{
         this._selectOption('editor-lon-field',this.state.get('lonField'));
         this._selectOption('editor-lat-field',this.state.get('latField'));
-        $('#editor-field-type-latlon').attr('checked','checked').change();
+        this.el.find('#editor-field-type-latlon').attr('checked','checked').change();
       }
+    }
+    if (this.state.get('autoZoom')) {
+      this.el.find('#editor-auto-zoom').attr('checked', 'checked');
+    }
+    else {
+      this.el.find('#editor-auto-zoom').removeAttr('checked');
     }
     return this;
   },
