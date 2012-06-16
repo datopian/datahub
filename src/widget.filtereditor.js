@@ -39,23 +39,30 @@ my.FilterEditor = Backbone.View.extend({
   ',
   filterTemplates: {
     term: ' \
-      <div class="control-group filter-{{type}} filter"> \
-        <label class="control-label" for="">{{field}}</label> \
-        <div class="controls"> \
-            <input type="text" value="{{term}}" name="term" data-filter-field="{{field}}" data-filter-id="{{id}}" data-filter-type="{{type}}" /> \
-            <a class="js-remove-filter" href="#">&times;</a> \
-        </div> \
+      <div class="filter-{{type}} filter"> \
+        <fieldset> \
+          <legend> \
+            {{field}} <small>{{type}}</small> \
+            <a class="js-remove-filter" href="#" title="Remove this filter">&times;</a> \
+          </legend> \
+          <input type="text" value="{{term}}" name="term" data-filter-field="{{field}}" data-filter-id="{{id}}" data-filter-type="{{type}}" /> \
+        </fieldset> \
       </div> \
     ',
     geo_distance: ' \
-      <div class="control-group filter-{{type}} filter"> \
-        <label class="control-label" for="">{{field}}</label> \
-        <a class="js-remove-filter" href="#">&times;</a> \
-        <div class="controls"> \
-            <input type="text" value="{{point.lon}}" name="lon" data-filter-field="{{field}}" data-filter-id="{{id}}" data-filter-type="{{type}}" /> \
-            <input type="text" value="{{point.lat}}" name="lat" data-filter-field="{{field}}" data-filter-id="{{id}}" data-filter-type="{{type}}" /> \
-            <input type="text" value="{{distance}}" name="distance" data-filter-field="{{field}}" data-filter-id="{{id}}" data-filter-type="{{type}}" /> \
-        </div> \
+      <div class="filter-{{type}} filter"> \
+        <fieldset> \
+          <legend> \
+            {{field}} <small>{{type}}</small> \
+            <a class="js-remove-filter" href="#" title="Remove this filter">&times;</a> \
+          </legend> \
+          <label class="control-label" for="">Longitude</label> \
+          <input type="text" value="{{point.lon}}" name="lon" data-filter-field="{{field}}" data-filter-id="{{id}}" data-filter-type="{{type}}" /> \
+          <label class="control-label" for="">Latitude</label> \
+          <input type="text" value="{{point.lat}}" name="lat" data-filter-field="{{field}}" data-filter-id="{{id}}" data-filter-type="{{type}}" /> \
+          <label class="control-label" for="">Distance (km)</label> \
+          <input type="text" value="{{distance}}" name="distance" data-filter-field="{{field}}" data-filter-id="{{id}}" data-filter-type="{{type}}" /> \
+        </fieldset> \
       </div> \
     '
   },
@@ -126,7 +133,7 @@ my.FilterEditor = Backbone.View.extend({
         filters[filterIndex].term = value;
       } else if (filterType === 'geo_distance') {
         if (name === 'distance') {
-          filters[filterIndex].distance = parseInt(value);
+          filters[filterIndex].distance = parseFloat(value);
         } else {
           filters[filterIndex].point[name] = parseFloat(value);
         }
