@@ -38,6 +38,7 @@ test('initialize', function () {
 });
 
 test('dates in graph view', function () {
+  expect(0);
   var dataset = Fixture.getDataset();
   var view = new recline.View.Graph({
     model: dataset,

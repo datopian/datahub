@@ -393,7 +393,7 @@ my.FieldList = Backbone.Collection.extend({
 //   may just pass this straight through e.g. for an SQL backend this could be
 //   the full SQL query
 //
-//  * filters: dict of ElasticSearch filters. These will be and-ed together for
+//  * filters: array of ElasticSearch filters. These will be and-ed together for
 //  execution.
 // 
 // **Examples**
@@ -411,11 +411,43 @@ my.Query = Backbone.Model.extend({
     return {
       size: 100,
       from: 0,
+      q: '',
       facets: {},
-      // <http://www.elasticsearch.org/guide/reference/query-dsl/and-filter.html>
-      // , filter: {}
       filters: []
     };
+  },
+  _filterTemplates: {
+    term: {
+      type: 'term',
+      field: '',
+      term: ''
+    },
+    geo_distance: {
+      distance: 10,
+      distance_unit: 'km',
+      point: {
+        lon: 0,
+        lat: 0
+      }
+    }
+  },  
+  // ### addFilter
+  //
+  // Add a new filter (appended to the list of filters)
+  //
+  // @param filter an object specifying the filter - see _filterTemplates for examples. If only type is provided will generate a filter by cloning _filterTemplates
+  addFilter: function(filter) {
+    // crude deep copy
+    var ourfilter = JSON.parse(JSON.stringify(filter));
+    // not full specified so use template and over-write
+    if (_.keys(filter).length <= 2) {
+      ourfilter = _.extend(this._filterTemplates[filter.type], ourfilter);
+    }
+    var filters = this.get('filters');
+    filters.push(ourfilter);
+    this.trigger('change:filters:new-blank');
+  },
+  updateFilter: function(index, value) {
   },
   // #### addTermFilter
   // 
@@ -435,6 +467,22 @@ my.Query = Backbone.Model.extend({
       // adding a new blank filter and do not want to trigger a new query
       this.trigger('change:filters:new-blank');
     }
+  },
+  addGeoDistanceFilter: function(field) {
+    var filters = this.get('filters');
+    var filter = { 
+      geo_distance: {
+        distance: '10km',
+      }
+    };
+    filter.geo_distance[field] = {
+      'lon': 0,
+      'lat': 0
+    };
+    filters.push(filter);
+    this.set({filters: filters});
+    // adding a new blank filter and do not want to trigger a new query
+    this.trigger('change:filters:new-blank');
   },
   // ### removeFilter
   //

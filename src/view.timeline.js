@@ -4,12 +4,19 @@ this.recline = this.recline || {};
 this.recline.View = this.recline.View || {};
 
 (function($, my) {
+// turn off unnecessary logging from VMM Timeline
+VMM.debug = false;
+
+// ## Timeline
+//
+// Timeline view using http://timeline.verite.co/
 my.Timeline = Backbone.View.extend({
   tagName:  'div',
-  className: 'recline-timeline',
 
   template: ' \
-    <div id="vmm-timeline-id"></div> \
+    <div class="recline-timeline"> \
+      <div id="vmm-timeline-id"></div> \
+    </div> \
   ',
 
   // These are the default (case-insensitive) names of field that are used if found.
@@ -24,6 +31,7 @@ my.Timeline = Backbone.View.extend({
     this.timeline = new VMM.Timeline();
     this._timelineIsInitialized = false;
     this.bind('view:show', function() {
+      // only call _initTimeline once view in DOM as Timeline uses $ internally to look up element
       if (self._timelineIsInitialized === false) {
         self._initTimeline();
       }
@@ -43,6 +51,11 @@ my.Timeline = Backbone.View.extend({
     this.state = new recline.Model.ObjectState(stateData);
     this._setupTemporalField();
     this.render();
+    // can only call _initTimeline once view in DOM as Timeline uses $
+    // internally to look up element
+    if ($(this.elementId).length > 0) {
+      this._initTimeline();
+    }
   },
 
   render: function() {
@@ -52,9 +65,12 @@ my.Timeline = Backbone.View.extend({
   },
 
   _initTimeline: function() {
+    var $timeline = this.el.find(this.elementId);
     // set width explicitly o/w timeline goes wider that screen for some reason
-    this.el.find(this.elementId).width(this.el.parent().width());
-    // only call _initTimeline once view in DOM as Timeline uses $ internally to look up element
+    var width = Math.max(this.el.width(), this.el.find('.recline-timeline').width());
+    if (width) {
+      $timeline.width(width);
+    }
     var config = {};
     var data = this._timelineJSON();
     this.timeline.init(data, this.elementId, config);
@@ -68,6 +84,30 @@ my.Timeline = Backbone.View.extend({
     }
   },
 
+  // Convert record to JSON for timeline
+  //
+  // Designed to be overridden in client apps
+  convertRecord: function(record, fields) {
+    return this._convertRecord(record, fields);
+  },
+
+  // Internal method to generate a Timeline formatted entry
+  _convertRecord: function(record, fields) {
+    var start = this._parseDate(record.get(this.state.get('startField')));
+    var end = this._parseDate(record.get(this.state.get('endField')));
+    if (start) {
+      var tlEntry = {
+        "startDate": start,
+        "endDate": end,
+        "headline": String(record.get('title') || ''),
+        "text": record.get('description') || record.summary()
+      };
+      return tlEntry;
+    } else {
+      return null;
+    }
+  },
+
   _timelineJSON: function() {
     var self = this;
     var out = {
@@ -78,17 +118,10 @@ my.Timeline = Backbone.View.extend({
         ]
       }
     };
-    this.model.currentRecords.each(function(doc) {
-      var start = self._parseDate(doc.get(self.state.get('startField')));
-      var end = self._parseDate(doc.get(self.state.get('endField')));
-      if (start) {
-        var tlEntry = {
-          "startDate": start,
-          "endDate": end,
-          "headline": String(doc.get('title') || ''),
-          "text": doc.summary()
-        };
-        out.timeline.date.push(tlEntry);
+    this.model.currentRecords.each(function(record) {
+      var newEntry = self.convertRecord(record, self.fields);
+      if (newEntry) {
+        out.timeline.date.push(newEntry); 
       }
     });
     // if no entries create a placeholder entry to prevent Timeline crashing with error
@@ -103,6 +136,9 @@ my.Timeline = Backbone.View.extend({
   },
 
   _parseDate: function(date) {
+    if (!date) {
+      return null;
+    }
     var out = date.trim();
     out = out.replace(/(\d)th/g, '$1');
     out = out.replace(/(\d)st/g, '$1');

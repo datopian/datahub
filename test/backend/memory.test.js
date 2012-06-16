@@ -44,6 +44,22 @@ test('query sort', function () {
   };
   var out = data.query(queryObj);
   equal(out.records[0].x, 6);
+
+  var queryObj = {
+    sort: [
+      {'country': {order: 'desc'}}
+    ]
+  };
+  var out = data.query(queryObj);
+  equal(out.records[0].country, 'US');
+
+  var queryObj = {
+    sort: [
+      {'country': {order: 'asc'}}
+    ]
+  };
+  var out = data.query(queryObj);
+  equal(out.records[0].country, 'DE');
 });
 
 test('query string', function () {
@@ -60,7 +76,7 @@ test('query string', function () {
 test('filters', function () {
   var data = _wrapData();
   var query = new recline.Model.Query();
-  query.addTermFilter('country', 'UK');
+  query.addFilter({type: 'term', field: 'country', term: 'UK'});
   var out = data.query(query.toJSON());
   equal(out.total, 3);
   deepEqual(_.pluck(out.records, 'country'), ['UK', 'UK', 'UK']);
@@ -198,7 +214,7 @@ test('query string', function () {
 
 test('filters', function () {
   var dataset = makeBackendDataset();
-  dataset.queryState.addTermFilter('country', 'UK');
+  dataset.queryState.addFilter({type: 'term', field: 'country', term: 'UK'});
   dataset.query().then(function() {
     equal(dataset.currentRecords.length, 3);
     deepEqual(dataset.currentRecords.pluck('country'), ['UK', 'UK', 'UK']);

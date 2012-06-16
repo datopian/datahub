@@ -74,8 +74,11 @@ this.recline.Backend.Memory = this.recline.Backend.Memory || {};
         var fieldName = _.keys(sortObj)[0];
         results = _.sortBy(results, function(doc) {
           var _out = doc[fieldName];
-          return (sortObj[fieldName].order == 'asc') ? _out : -1*_out;
+          return _out;
         });
+        if (sortObj[fieldName].order == 'desc') {
+          results.reverse();
+        }
       });
       var total = results.length;
       var facets = this.computeFacets(results, queryObj);
@@ -90,10 +93,12 @@ this.recline.Backend.Memory = this.recline.Backend.Memory || {};
     // in place filtering
     this._applyFilters = function(results, queryObj) {
       _.each(queryObj.filters, function(filter) {
-        results = _.filter(results, function(doc) {
-          var fieldId = _.keys(filter.term)[0];
-          return (doc[fieldId] == filter.term[fieldId]);
-        });
+        // if a term filter ...
+        if (filter.type === 'term') {
+          results = _.filter(results, function(doc) {
+            return (doc[filter.field] == filter.term);
+          });
+        }
       });
       return results;
     };

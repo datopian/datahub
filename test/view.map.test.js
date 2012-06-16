@@ -105,21 +105,25 @@ test('GeoJSON geom field', function () {
   view.remove();
 });
 
-test('geom field non-GeoJSON', function () {
-  var data = [{
-    location: { lon: 47, lat: 53},
-    title: 'abc'
-  }];
-  var dataset = recline.Backend.Memory.createDataset(data);
+test('_getGeometryFromRecord non-GeoJSON', function () {
+  var test = [
+    [{ lon: 47, lat: 53}, [47,53]],
+    ["53.3,47.32", [47.32, 53.3]],
+    ["53.3, 47.32", [47.32, 53.3]],
+    ["(53.3,47.32)", [47.32, 53.3]],
+    [[53.3,47.32], [53.3, 47.32]]
+  ];
   var view = new recline.View.Map({
-    model: dataset
+    model: recline.Backend.Memory.createDataset([{a: 1}]),
+    state: {
+      geomField: 'location'
+    }
   });
-
-  //Fire query, otherwise the map won't be initialized
-  dataset.query();
-
-  // Check that all features were created
-  equal(_getFeaturesCount(view.features), 1);
+  _.each(test, function(item) {
+    var record = new recline.Model.Record({location: item[0]});
+    var out = view._getGeometryFromRecord(record);
+    deepEqual(out.coordinates, item[1]);
+  });
 });
 
 test('Popup', function () {

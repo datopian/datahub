@@ -29,7 +29,6 @@ test('state', function () {
     state: {
       hiddenColumns:['x','lat','title'],
       columnsOrder:['lon','id','z','date', 'y', 'country'],
-      columnsSort:{column:'country',direction:'desc'},
       columnsWidth:[
         {column:'id',width: 250}
       ]
@@ -51,9 +50,6 @@ test('state', function () {
 
   // Column order
   deepEqual(_.pluck(headers,'title'),view.state.get('columnsOrder'));
-
-  // Column sorting
-  equal($(view.grid.getCellNode(0,view.grid.getColumnIndex('country'))).text(),'US');
 
   // Column width
   equal($('.slick-header-column[title="id"]').width(),250);
