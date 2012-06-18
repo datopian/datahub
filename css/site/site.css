@@ -131,6 +131,12 @@ a.dotted:hover {
    Layout
 --------------------------------------------------- */
 
+.navbar .logo-icon img {
+  margin-top: 6px;
+  margin-right: 8px;
+  height: 34px;
+}
+
 .navbar .brand {
 	font-family:'Open Sans', Helvetica, Arial, sans-serif;
 	font-style:italic;
@@ -142,6 +148,10 @@ a.dotted:hover {
 
 .navbar .nav > li > a {
   padding: 15px 10px;
+}
+
+.navbar .divider-vertical {
+  height: 50px;
 }
 
 .navbar-inner {
