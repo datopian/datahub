@@ -41,7 +41,7 @@ test("queryNormalize", function() {
         and: [
           {
             term: {
-              xyz: 'XXX'
+              xyz: 'xxx'
             }
           }
         ]
@@ -65,7 +65,8 @@ test("queryNormalize", function() {
         and: [
           {
             geo_distance: {
-              distance: '10km',
+              distance: 10,
+              unit: 'km',
               'xyz': { lon: 0, lat: 0 }
             }
           }

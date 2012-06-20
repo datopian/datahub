@@ -4,10 +4,9 @@ title: Library - Home
 ---
 
 <div class="container library">
-
   <div class="page-header">
     <h1>
-      Recline Library and Data Components
+      Documentation
     </h1>
   </div>
 
@@ -16,146 +15,121 @@ title: Library - Home
   set of models (Dataset, Record/Row, Field) and views (Grid, Map, Graph
   etc).</p>
 
-  <h2 id="examples">Examples</h2>
+
+<h2 id="concepts">Concepts and Structure</h2>
+
+<h1><small>The Recline Library consists of 3 parts: Models, Backends and Views</small></h1>
+
+<div class="row">
+  <div class="span4">
+    <div class="well">
+      <h3>Models</h3>
+      <p>Models help you structure your work with data by providing some standard objects such as Dataset and Record &ndash; a Dataset being a collection of Records. <a href="docs/model.html">More &raquo;</a></p>
+    </div>
+  </div>
+  <div class="span4">
+    <div class="well">
+      <h3>Backends</h3>
+      <p>Backends connect your Models to data sources (and stores) &ndash; for example Google Docs spreadsheets, local CSV files, the DataHub, ElasticSearch etc. <a href="example-backends.html">More &raquo;</a></p>
+    </div>
+  </div>
+  <div class="span4">
+    <div class="well">
+      <h3>Views</h3>
+      <p>Views are user interface components for displaying, editing or interacting with the data. For example, maps, graphs, data grids or a query editor. <a href="library-view.html">More &raquo;</a></p>
+    </div>
+  </div>
+</div>
+
+<div id="tutorials" class="tutorials">
+  <h2>Tutorials</h2>
   <div class="alert alert-success"><strong>Note:</strong> A quick read through of the <a href="#concepts">Concepts section</a> will
-  likely be useful in understanding the details of the examples.</div>
+  likely be useful in understanding the details of these tutorials.</div>
 
   <div class="row">
-    <div class="span3 well">
-      <h4><a href="example-quickstart.html">Recline Quickstart Guide</a></h4>
+    <div class="span4">
+      <div class="well">
+        <h4><a href="example-quickstart.html">Recline Quickstart Guide</a></h4>
+      </div>
     </div>
-    <div class="span4 well">
-      <h4><a href="example-backends.html">Loading from difference sources: Google Docs, Local CSV, DataHub</a></h4>
+    <div class="span4">
+      <div class="well">
+        <h4><a href="example-backends.html">Loading from difference sources: Google Docs, Local CSV, DataHub</a></h4>
+      </div>
     </div>
-    <div class="span3 well">
-      <h4>Twitter Example</h4>
+    <div class="span4">
+      <div class="well">
+        <h4>Twitter Example</h4>
+      </div>
     </div>
   </div>
   <div class="row">
-    <div class="span3 well">
-      <h4>Customing Display and Import using Fields</h4>
+    <div class="span4">
+      <div class="well">
+        <h4>Customing Display and Import using Fields</h4>
+      </div>
     </div>
-    <div class="span4 well">
-      <h4>Listening to events</h4>
+    <div class="span4">
+      <div class="well">
+        <h4>Listening to events</h4>
+      </div>
     </div>
-    <div class="span3 well">
-      <h4>Setting and Getting State</h4>
+    <div class="span4">
+      <div class="well">
+        <h4>Setting and Getting State</h4>
+      </div>
     </div>
   </div>
 
   <h3>Extending Recline</h3>
   <div class="row">
-    <div class="span3 well">
-      <h4>Create a new View</h4>
-    </div>
-    <div class="span3 well">
-      <h4>Create a new Backend</h4>
-    </div>
-    <div class="span3 well">
-      <h4>Create a Custom Record Object</h4>
-    </div>
-  </div>
-
-    <div class="row">
-      <div class="span12">
-        <h2 id="concepts">Concepts and Structure</h2>
+    <div class="span4">
+      <div class="well">
+        <h4>Create a new View</h4>
       </div>
     </div>
-    <div class="row">
-      <div class="span6">
-        <p>Recline has a simple structure layered on top of the basic Model/View
-        distinction inherent in Backbone.</p>
-        
-        <h4>Models</h4>
-        <p>There are two main model objects:</p>
-        <ul>
-          <li><a href="docs/model.html#dataset">Dataset</a>: represents the dataset.
-          Holds dataset info and a pointer to list of data items (Records in our
-          terminology) which it can load from the relevant Backend.</li>
-          <li><a href="docs/model.html#record">Record</a>: an individual data item
-          (e.g. a row from a relational database or a spreadsheet, a record from from
-          a document DB like CouchDB or MongoDB).</li>
-        </ul>
-        
-        <p>Additional, related models:</p>
-        <ul>
-          <li><a href="docs/model.html#field">Field</a>: a field/column on a
-          dataset.</li>
-          <li><a href="docs/model.html#query">Query</a>: an object to encapsulate a
-          query to the backend (useful both for creating queries and for storing and
-          manipulating query state - e.g. from a query editor).</li>
-          <li><a href="docs/model.html#facet">Facet</a>: Object to store Facet
-          information, that is summary information (e.g. values and counts) about a
-          field obtained by some faceting method on the backend.</li>
-        </ul>
-        
-        <p>More detail of how these work can be found in the <a
-          href="docs/model.html">Model source docs</a>.</p>
-        
-        
-      </div>
-
-      <div class="span6">
-        <h4>Backends</h4>
-        <p>Backends connect Dataset and Records to data from a
-        specific 'Backend' data source. They provide methods for loading and saving
-        Datasets and individuals Records as well as for bulk loading via a query API
-        and doing bulk transforms on the backend.</p>
-        
-        <p>A template Base class can be found <a href="docs/backend/base.html">in the
-          Backend base module of the source docs</a>. It records both the relevant
-        methods a Backend must have and (optionally) provides a base 'class' for
-        inheritance. You can also find detailed examples of backend implementations in
-        the source documentation below.</p>
-        
-        <h4>Views</h4>
-        <p>Complementing the model are various Views (you can
-        also easily write your own). Each view holds a pointer to a Dataset:</p>
-        <ul>
-          <li>MultiView: the parent view which manages the overall app and sets up
-          sub views.</li>
-          <li>Grid: the data grid view.</li>
-          <li>Graph: a simple graphing view using <a
-            href="http://code.google.com/p/flot/">Flot</a>.</li>
-          <li>Map: a map view using <a href="http://leaflet.cloudmade.com/">Leaflet</a>.</li>
-        </ul>
-        
-        <p>There are additional views which do not display a whole dataset but which
-        are useful:</p>
-        <ul>
-          <li>QueryEditor: a query editor view</li>
-          <li>FacetViewer: display facets</li>
-        </ul>
+    <div class="span4">
+      <div class="well">
+        <h4>Create a new Backend</h4>
       </div>
     </div>
-    <div class="row">
-      <div class="span12">
-        <h2 id="docs-source">Source Docs (via Docco)</h2>
-      </div>
-    </div>
-    <div class="row">
-      <div class="span6">
-        <h4>Models and Views (Widgets)</h4>
-        <ul>
-          <li><a href="docs/model.html">Models</a></li>
-          <li><a href="docs/view.multiview.html">MultiView View (plus common view code)</a></li>
-          <li><a href="docs/view-grid.html">(Data) Grid View</a></li>
-          <li><a href="docs/view-graph.html">Graph View (based on Flot)</a></li>
-          <li><a href="docs/view-map.html">Map View (based on Leaflet)</a></li>
-        </ul>
-      </div>
-      <div class="span6">
-        <h4>Backends</h4>
-        <ul>
-          <li><a href="docs/backend/base.html">Base module providing convenience functions</a></li>
-          <li><a href="docs/backend/memory.html">memory: Memory Backend (local data)</a></li>
-          <li><a href="docs/backend/elasticsearch.html">elasticsearch: ElasticSearch Backend</a></li>
-          <li><a href="docs/backend/dataproxy.html">dataproxy: DataProxy Backend (CSV and XLS on the Web)</a></li>
-          <li><a href="docs/backend/gdocs.html">gdocs: Google Docs (Spreadsheet) Backend</a></li>
-          <li><a href="docs/backend/csv.html">csv: Local CSV file backend</a></li>
-        </ul>
+    <div class="span4">
+      <div class="well">
+        <h4>Create a Custom Record Object</h4>
       </div>
     </div>
   </div>
+</div>
+
+<h2 id="docs-source">Source Docs (via Docco)</h2>
+<div class="row">
+  <div class="span4">
+    <h4>Models</h4>
+    <ul>
+      <li><a href="docs/model.html">Models</a></li>
+    </ul>
+  </div>
+  <div class="span4">
+    <h4>Backends</h4>
+    <ul>
+      <li><a href="docs/backend/base.html">Base module providing convenience functions</a></li>
+      <li><a href="docs/backend/memory.html">memory: Memory Backend (local data)</a></li>
+      <li><a href="docs/backend/elasticsearch.html">elasticsearch: ElasticSearch Backend</a></li>
+      <li><a href="docs/backend/dataproxy.html">dataproxy: DataProxy Backend (CSV and XLS on the Web)</a></li>
+      <li><a href="docs/backend/gdocs.html">gdocs: Google Docs (Spreadsheet) Backend</a></li>
+      <li><a href="docs/backend/csv.html">csv: Local CSV file backend</a></li>
+    </ul>
+  </div>
+  <div class="span4">
+    <h4>Dataset Views and Widgets</h4>
+    <ul>
+      <li><a href="docs/view.multiview.html">MultiView View (plus common view code)</a></li>
+      <li><a href="docs/view-grid.html">(Data) Grid View</a></li>
+      <li><a href="docs/view-graph.html">Graph View (based on Flot)</a></li>
+      <li><a href="docs/view-map.html">Map View (based on Leaflet)</a></li>
+    </ul>
+  </div>
+</div>
+
 </div> <!-- / container -->
 

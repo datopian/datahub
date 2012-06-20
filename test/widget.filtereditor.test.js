@@ -56,7 +56,7 @@ test('geo_distance', function () {
   $editForm = view.el.find('form.js-edit');
   equal($editForm.find('.filter-geo_distance').length, 1)
   deepEqual(_.keys(dataset.queryState.attributes.filters[0]), ['distance',
-    'point', 'type', 'field']);
+    'unit', 'point', 'type', 'field']);
 
   // now set filter value and apply
   $editForm.find('input[name="lat"]').val(10);

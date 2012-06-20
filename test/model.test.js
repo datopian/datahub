@@ -161,7 +161,8 @@ test('Query.addFilter', function () {
 
   query.addFilter({type: 'geo_distance', field: 'xyz'});
   var exp = {
-    distance: '10km',
+    distance: 10,
+    unit: 'km',
     point: {
       lon: 0,
       lat: 0
