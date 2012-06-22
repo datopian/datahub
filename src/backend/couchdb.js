@@ -14,9 +14,9 @@ this.recline.Backend.CouchDB = this.recline.Backend.CouchDB || {};
   // TODO Add user/password arguments for couchdb authentication support.
   my.CouchDBWrapper = function(db_url, view_url, options) { 
     var self = this;
-    this.endpoint = db_url;
-    this.view_url = (view_url) ? view_url : db_url+'/'+'_all_docs';
-    this.options = _.extend({
+    self.endpoint = db_url;
+    self.view_url = (view_url) ? view_url : db_url+'/'+'_all_docs';
+    self.options = _.extend({
         dataType: 'json'
       },
       options);
@@ -45,9 +45,9 @@ this.recline.Backend.CouchDB = this.recline.Backend.CouchDB || {};
     // @return promise compatible deferred object.
     this.mapping = function() {
       var schemaUrl = self.view_url + '?limit=1&include_docs=true';
-      var jqxhr = this._makeRequest({
+      var jqxhr = self._makeRequest({
         url: schemaUrl,
-        dataType: this.options.dataType
+        dataType: self.options.dataType
       });
       return jqxhr;
     };
@@ -58,8 +58,8 @@ this.recline.Backend.CouchDB = this.recline.Backend.CouchDB || {};
     //
     // @return promise compatible deferred object.
     this.get = function(_id) {
-      var base = this.endpoint + '/' + _id;
-      return this._makeRequest({
+      var base = self.endpoint + '/' + _id;
+      return self._makeRequest({
         url: base,
         dataType: 'json'
       });
@@ -73,13 +73,13 @@ this.recline.Backend.CouchDB = this.recline.Backend.CouchDB || {};
     // @return deferred supporting promise API
     this.upsert = function(doc) {
       var data = JSON.stringify(doc);
-      url = this.endpoint;
+      url = self.endpoint;
       if (doc._id) {
         url += '/' + doc._id;
       }
       // use a PUT, not a POST to update the document:
       // http://wiki.apache.org/couchdb/HTTP_Document_API#POST
-      return this._makeRequest({
+      return self._makeRequest({
         url: url,
         type: 'PUT',
         data: data,
@@ -95,9 +95,9 @@ this.recline.Backend.CouchDB = this.recline.Backend.CouchDB || {};
     // @param {Object} id id of object to delete
     // @return deferred supporting promise API
     this.delete = function(_id) {
-      url = this.endpoint;
+      url = self.endpoint;
       url += '/' + _id;
-      return this._makeRequest({
+      return self._makeRequest({
         url: url,
         type: 'DELETE',
         dataType: 'json'
@@ -131,14 +131,14 @@ this.recline.Backend.CouchDB = this.recline.Backend.CouchDB || {};
     // @param {Object} additional couchdb view query options.
     // @return deferred supporting promise API
     this.query = function(query_object, query_options) {
-      var norm_q = this._normalizeQuery(query_object);
-      var url = this.view_url;
+      var norm_q = self._normalizeQuery(query_object);
+      var url = self.view_url;
       var q = _.extend(query_options, norm_q);
 
-      var jqxhr = this._makeRequest({
+      var jqxhr = self._makeRequest({
         url: url,
         data: JSON.stringify(q),
-        dataType: this.options.dataType,
+        dataType: self.options.dataType,
       });
       return jqxhr;
     }
