@@ -4,28 +4,7 @@ this.recline.Model = this.recline.Model || {};
 
 (function($, my) {
 
-// ## <a id="dataset">A Dataset model</a>
-//
-// A model has the following (non-Backbone) attributes:
-//
-// @property {FieldList} fields: (aka columns) is a `FieldList` listing all the
-// fields on this Dataset (this can be set explicitly, or, will be set by
-// Dataset.fetch() or Dataset.query()
-//
-// @property {RecordList} currentRecords: a `RecordList` containing the
-// Records we have currently loaded for viewing (updated by calling query
-// method)
-//
-// @property {number} docCount: total number of records in this dataset
-//
-// @property {Backend} backend: the Backend (instance) for this Dataset.
-//
-// @property {Query} queryState: `Query` object which stores current
-// queryState. queryState may be edited by other components (e.g. a query
-// editor view) changes will trigger a Dataset query.
-//
-// @property {FacetList} facets: FacetList object containing all current
-// Facets.
+// ## <a id="dataset">Dataset</a>
 my.Dataset = Backbone.Model.extend({
   __type__: 'Dataset',
 
@@ -324,42 +303,6 @@ my.RecordList = Backbone.Collection.extend({
 });
 
 // ## <a id="field">A Field (aka Column) on a Dataset</a>
-// 
-// Following (Backbone) attributes as standard:
-//
-// * id: a unique identifer for this field- usually this should match the key in the records hash
-// * label: (optional: defaults to id) the visible label used for this field
-// * type: (optional: defaults to string) the type of the data in this field. Should be a string as per type names defined by ElasticSearch - see Types list on <http://www.elasticsearch.org/guide/reference/mapping/>
-// * format: (optional) used to indicate how the data should be formatted. For example:
-//   * type=date, format=yyyy-mm-dd
-//   * type=float, format=percentage
-//   * type=string, format=markdown (render as markdown if Showdown available)
-// * is_derived: (default: false) attribute indicating this field has no backend data but is just derived from other fields (see below).
-// 
-// Following additional instance properties:
-// 
-// @property {Function} renderer: a function to render the data for this field.
-// Signature: function(value, field, record) where value is the value of this
-// cell, field is corresponding field object and record is the record
-// object (as simple JS object). Note that implementing functions can ignore arguments (e.g.
-// function(value) would be a valid formatter function).
-// 
-// @property {Function} deriver: a function to derive/compute the value of data
-// in this field as a function of this field's value (if any) and the current
-// record, its signature and behaviour is the same as for renderer.  Use of
-// this function allows you to define an entirely new value for data in this
-// field. This provides support for a) 'derived/computed' fields: i.e. fields
-// whose data are functions of the data in other fields b) transforming the
-// value of this field prior to rendering.
-//
-// #### Default renderers
-//
-// * string
-//   * no format provided: pass through but convert http:// to hyperlinks 
-//   * format = plain: do no processing on the source text
-//   * format = markdown: process as markdown (if Showdown library available)
-// * float
-//   * format = percentage: format as a percentage
 my.Field = Backbone.Model.extend({
   // ### defaults - define default values
   defaults: {
@@ -430,54 +373,6 @@ my.FieldList = Backbone.Collection.extend({
 });
 
 // ## <a id="query">Query</a>
-//
-// Query instances encapsulate a query to the backend (see <a
-// href="backend/base.html">query method on backend</a>). Useful both
-// for creating queries and for storing and manipulating query state -
-// e.g. from a query editor).
-//
-// **Query Structure and format**
-//
-// Query structure should follow that of [ElasticSearch query
-// language](http://www.elasticsearch.org/guide/reference/api/search/).
-//
-// **NB: It is up to specific backends how to implement and support this query
-// structure. Different backends might choose to implement things differently
-// or not support certain features. Please check your backend for details.**
-//
-// Query object has the following key attributes:
-// 
-//  * size (=limit): number of results to return
-//  * from (=offset): offset into result set - http://www.elasticsearch.org/guide/reference/api/search/from-size.html
-//  * sort: sort order - <http://www.elasticsearch.org/guide/reference/api/search/sort.html>
-//  * query: Query in ES Query DSL <http://www.elasticsearch.org/guide/reference/api/search/query.html>
-//  * filter: See filters and <a href="http://www.elasticsearch.org/guide/reference/query-dsl/filtered-query.html">Filtered Query</a>
-//  * fields: set of fields to return - http://www.elasticsearch.org/guide/reference/api/search/fields.html
-//  * facets: specification of facets - see http://www.elasticsearch.org/guide/reference/api/search/facets/
-// 
-// Additions:
-// 
-//  * q: either straight text or a hash will map directly onto a [query_string
-//  query](http://www.elasticsearch.org/guide/reference/query-dsl/query-string-query.html)
-//  in backend
-//
-//   * Of course this can be re-interpreted by different backends. E.g. some
-//   may just pass this straight through e.g. for an SQL backend this could be
-//   the full SQL query
-//
-//  * filters: array of ElasticSearch filters. These will be and-ed together for
-//  execution.
-// 
-// **Examples**
-// 
-// <pre>
-// {
-//    q: 'quick brown fox',
-//    filters: [
-//      { term: { 'owner': 'jones' } }
-//    ]
-// }
-// </pre>
 my.Query = Backbone.Model.extend({
   defaults: function() {
     return {
@@ -597,43 +492,6 @@ my.Query = Backbone.Model.extend({
 
 
 // ## <a id="facet">A Facet (Result)</a>
-//
-// Object to store Facet information, that is summary information (e.g. values
-// and counts) about a field obtained by some faceting method on the
-// backend.
-//
-// Structure of a facet follows that of Facet results in ElasticSearch, see:
-// <http://www.elasticsearch.org/guide/reference/api/search/facets/>
-//
-// Specifically the object structure of a facet looks like (there is one
-// addition compared to ElasticSearch: the "id" field which corresponds to the
-// key used to specify this facet in the facet query):
-//
-// <pre>
-// {
-//   "id": "id-of-facet",
-//   // type of this facet (terms, range, histogram etc)
-//   "_type" : "terms",
-//   // total number of tokens in the facet
-//   "total": 5,
-//   // @property {number} number of records which have no value for the field
-//   "missing" : 0,
-//   // number of facet values not included in the returned facets
-//   "other": 0,
-//   // term object ({term: , count: ...})
-//   "terms" : [ {
-//       "term" : "foo",
-//       "count" : 2
-//     }, {
-//       "term" : "bar",
-//       "count" : 2
-//     }, {
-//       "term" : "baz",
-//       "count" : 1
-//     }
-//   ]
-// }
-// </pre>
 my.Facet = Backbone.Model.extend({
   defaults: function() {
     return {
