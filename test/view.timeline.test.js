@@ -1,10 +1,12 @@
 module("View - Timeline");
 
 test('extract dates and timelineJSON', function () {
-  var dataset = recline.Backend.Memory.createDataset([
-    {'Date': '2012-03-20', 'title': '1'},
-    {'Date': '2012-03-25', 'title': '2'},
-  ]);
+  var dataset = new recline.Model.Dataset({
+    records: [
+      {'Date': '2012-03-20', 'title': '1'},
+      {'Date': '2012-03-25', 'title': '2'}
+    ]
+  });
   var view = new recline.View.Timeline({
     model: dataset
   });

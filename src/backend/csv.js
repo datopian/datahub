@@ -40,7 +40,10 @@ this.recline.Backend.CSV = this.recline.Backend.CSV || {};
       });
       return _doc;
     });
-    var dataset = recline.Backend.Memory.createDataset(data, fields);
+    var dataset = new recline.Model.Dataset({
+      records: data,
+      fields: fields
+    });
     return dataset;
   };
 

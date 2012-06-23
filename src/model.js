@@ -245,20 +245,18 @@ my.Dataset.restore = function(state) {
   var dataset = null;
   // hack-y - restoring a memory dataset does not mean much ...
   if (state.backend === 'memory') {
-    dataset = recline.Backend.Memory.createDataset(
-      [{stub: 'this is a stub dataset because we do not restore memory datasets'}],
-      [],
-      state.dataset // metadata
-    );
+    var datasetInfo = {
+      records: [{stub: 'this is a stub dataset because we do not restore memory datasets'}]
+    };
   } else {
     var datasetInfo = {
       url: state.url
     };
-    dataset = new recline.Model.Dataset(
-      datasetInfo,
-      state.backend
-    );
   }
+  dataset = new recline.Model.Dataset(
+    datasetInfo,
+    state.backend
+  );
   return dataset;
 };
 
