@@ -125,7 +125,7 @@ test('update and delete', function () {
 
 (function ($) {
 
-module("Backend Memory - Backbone");
+module("Backend Memory - Model Integration");
 
 var memoryData = {
   metadata: {
@@ -145,17 +145,23 @@ var memoryData = {
 };
 
 function makeBackendDataset() {
-  var dataset = new recline.Backend.Memory.createDataset(memoryData.records, null, memoryData.metadata);
+  var dataset = new recline.Model.Dataset({
+    id: 'test-dataset',
+    title: 'My Test Dataset',
+    name: '1-my-test-dataset',
+    fields: [{id: 'x'}, {id: 'y'}, {id: 'z'}, {id: 'country'}, {id: 'label'}],
+    records: [
+      {id: 0, x: 1, y: 2, z: 3, country: 'DE', label: 'first'}
+      , {id: 1, x: 2, y: 4, z: 6, country: 'UK', label: 'second'}
+      , {id: 2, x: 3, y: 6, z: 9, country: 'US', label: 'third'}
+      , {id: 3, x: 4, y: 8, z: 12, country: 'UK', label: 'fourth'}
+      , {id: 4, x: 5, y: 10, z: 15, country: 'UK', label: 'fifth'}
+      , {id: 5, x: 6, y: 12, z: 18, country: 'DE', label: 'sixth'}
+    ]
+  });
+  dataset.fetch();
   return dataset;
 }
-
-test('createDataset', function () {
-  var dataset = recline.Backend.Memory.createDataset(memoryData.records);
-  equal(dataset.fields.length, 6);
-  deepEqual(['id', 'x', 'y', 'z', 'country', 'label'], dataset.fields.pluck('id'));
-  dataset.query();
-  equal(memoryData.records.length, dataset.currentRecords.length);
-});
 
 test('basics', function () {
   var dataset = makeBackendDataset();
@@ -256,12 +262,13 @@ test('update and delete', function () {
     // Test UPDATE
     var newVal = 10;
     doc1.set({x: newVal});
-    doc1.save().then(function() {
-      equal(data.data[0].x, newVal);
-    })
+    doc1.save();
+    equal(dataset._changes.updates[0].x, newVal);
 
-    // Test Delete
-    doc1.destroy().then(function() {
+    doc1.destroy();
+    deepEqual(dataset._changes.deletes[0], doc1.toJSON());
+
+    dataset.save().then(function() {
       equal(data.data.length, 5);
       equal(data.data[0].x, memoryData.records[1].x);
     });

@@ -44,16 +44,38 @@ my.Dataset = Backbone.Model.extend({
   initialize: function(model, backend) {
     _.bindAll(this, 'query');
     this.backend = backend;
+    if (typeof backend === 'undefined') {
+      // guess backend ...
+      if (this.get('records')) {
+        this.backend = recline.Backend.Memory;
+      }
+    }
     if (typeof(backend) === 'string') {
       this.backend = this._backendFromString(backend);
     }
     this.fields = new my.FieldList();
     this.currentRecords = new my.RecordList();
+    this._changes = {
+      deletes: [],
+      updates: [],
+      creates: []
+    };
     this.facets = new my.FacetList();
     this.docCount = null;
     this.queryState = new my.Query();
     this.queryState.bind('change', this.query);
     this.queryState.bind('facet:add', this.query);
+  },
+
+  // ### fetch
+  //
+  // Retrieve dataset and (some) records from the backend.
+  fetch: function() {
+    return this.backend.fetch(this);
+  },
+
+  save: function() {
+    return this.backend.save(this, this._changes);
   },
 
   // ### query
@@ -76,6 +98,12 @@ my.Dataset = Backbone.Model.extend({
         var _doc = new my.Record(hit._source);
         _doc.backend = self.backend;
         _doc.dataset = self;
+        _doc.bind('change', function(doc) {
+          self._changes.updates.push(doc.toJSON());
+        });
+        _doc.bind('destroy', function(doc) {
+          self._changes.deletes.push(doc.toJSON());
+        });
         return _doc;
       });
       self.currentRecords.reset(docs);
@@ -95,6 +123,7 @@ my.Dataset = Backbone.Model.extend({
     });
     return dfd.promise();
   },
+
 
   _prepareQuery: function(newQueryObj) {
     if (newQueryObj) {
@@ -242,7 +271,15 @@ my.Record = Backbone.Model.extend({
       }
     }
     return html;
-  }
+  },
+
+  // Override Backbone save, fetch and destroy so they do nothing
+  // Instead, Dataset object that created this Record should take care of
+  // handling these changes (discovery will occur via event notifications)
+  // WARNING: these will not persist *unless* you call save on Dataset
+  fetch: function() {},
+  save: function() {},
+  destroy: function() { this.trigger('destroy', this); }
 });
 
 // ## A Backbone collection of Records
