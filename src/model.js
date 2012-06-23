@@ -79,7 +79,7 @@ my.Dataset = Backbone.Model.extend({
     var dfd = $.Deferred();
     // TODO: fail case;
     if (this.backend !== recline.Backend.Memory) {
-      this.backend.fetch(this).then(handleResults)
+      this.backend.fetch(this.toJSON()).then(handleResults)
     } else {
       // special case where we have been given data directly
       handleResults({

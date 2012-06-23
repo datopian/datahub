@@ -12,6 +12,12 @@ this.recline.Backend.GDocs = this.recline.Backend.GDocs || {};
   // Dataset must have a url attribute pointing to the Gdocs or its JSON feed e.g.
   // <pre>
   // var dataset = new recline.Model.Dataset({
+  //     url: 'https://docs.google.com/spreadsheet/ccc?key=0Aon3JiuouxLUdGlQVDJnbjZRSU1tUUJWOUZXRG53VkE#gid=0'
+  //   },
+  //   'gdocs'
+  // );
+  //
+  // var dataset = new recline.Model.Dataset({
   //     url: 'https://spreadsheets.google.com/feeds/list/0Aon3JiuouxLUdDQwZE1JdV94cUd6NWtuZ0IyWTBjLWc/od6/public/values?alt=json'
   //   },
   //   'gdocs'
@@ -22,10 +28,9 @@ this.recline.Backend.GDocs = this.recline.Backend.GDocs || {};
   //
   // * fields: array of Field objects
   // * records: array of objects for each row
-  //  
   my.fetch = function(dataset) {
     var dfd = $.Deferred(); 
-    var url = my.getSpreadsheetAPIUrl(dataset.get('url'));
+    var url = my.getSpreadsheetAPIUrl(dataset.url);
     $.getJSON(url, function(d) {
       result = my.parseData(d);
       var fields = _.map(result.fields, function(fieldId) {

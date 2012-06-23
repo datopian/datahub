@@ -12,9 +12,9 @@ this.recline.Backend.DataProxy = this.recline.Backend.DataProxy || {};
   // Load data from a URL via the [DataProxy](http://github.com/okfn/dataproxy).
   my.fetch = function(dataset) {
     var data = {
-      url: dataset.get('url'),
-      'max-results':  dataset.get('size') || dataset.get('rows') || 1000,
-      type: dataset.get('format') || ''
+      url: dataset.url,
+      'max-results':  dataset.size || dataset.rows || 1000,
+      type: dataset.format || ''
     };
     var jqxhr = $.ajax({
       url: my.dataproxy_url,

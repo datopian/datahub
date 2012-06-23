@@ -3,11 +3,14 @@ this.recline.Backend = this.recline.Backend || {};
 this.recline.Backend.ElasticSearch = this.recline.Backend.ElasticSearch || {};
 
 (function($, my) {
+  my.fetch = function(dataset) {
+  };
+
   // ## ElasticSearch Wrapper
   //
   // Connecting to [ElasticSearch](http://www.elasticsearch.org/) endpoints.
   // @param {String} endpoint: url for ElasticSearch type/table, e.g. for ES running
-  // on localhost:9200 with index // twitter and type tweet it would be:
+  // on http://localhost:9200 with index twitter and type tweet it would be:
   // 
   // <pre>http://localhost:9200/twitter/tweet</pre>
   //
