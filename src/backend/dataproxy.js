@@ -50,30 +50,15 @@ this.recline.Backend.DataProxy = this.recline.Backend.DataProxy || {};
         });
         return tmp;
       });
-      var store = new recline.Backend.Memory.Store(records, fields);
-      dataset._dataCache = store;
-      dataset.fields.reset(fields);
-      dataset.query();
-      dfd.resolve(dataset);
+      dfd.resolve({
+        records: records,
+        fields: fields,
+        useMemoryStore: true
+      });
     })
     .fail(function(arguments) {
       dfd.reject(arguments);
     });
-    return dfd.promise();
-  };
-
-  my.query = function(dataset, queryObj) {
-    var dfd = $.Deferred();
-    var results = dataset._dataCache.query(queryObj);
-    var hits = _.map(results.records, function(row) {
-      return { _source: row };
-    });
-    var out = {
-      total: results.total,
-      hits: hits,
-      facets: results.facets
-    };
-    dfd.resolve(out);
     return dfd.promise();
   };
 

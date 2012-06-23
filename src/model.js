@@ -65,17 +65,49 @@ my.Dataset = Backbone.Model.extend({
     this.queryState = new my.Query();
     this.queryState.bind('change', this.query);
     this.queryState.bind('facet:add', this.query);
+    this._store = this.backend;
+    if (this.backend == recline.Backend.Memory) {
+      this.fetch();
+    }
   },
 
   // ### fetch
   //
   // Retrieve dataset and (some) records from the backend.
   fetch: function() {
-    return this.backend.fetch(this);
+    var self = this;
+    var dfd = $.Deferred();
+    // TODO: fail case;
+    if (this.backend !== recline.Backend.Memory) {
+      this.backend.fetch(this).then(handleResults)
+    } else {
+      // special case where we have been given data directly
+      handleResults({
+        records: this.get('records'),
+        fields: this.get('fields'),
+        useMemoryStore: true
+      });
+    }
+
+    function handleResults(results) {
+      self.set(results.metadata);
+      if (results.useMemoryStore) {
+        self._store = new recline.Backend.Memory.Store(results.records, results.fields);
+        self.query();
+        // store will have extracted fields if not provided
+        self.fields.reset(self._store.fields);
+      } else {
+        self.fields.reset(results.fields);
+      }
+      // TODO: parsing the processing of fields
+      dfd.resolve(this);
+    }
+    return dfd.promise();
   },
 
   save: function() {
-    return this.backend.save(this, this._changes);
+    var self = this;
+    return this._store.save(this._changes, this);
   },
 
   // ### query
@@ -89,48 +121,48 @@ my.Dataset = Backbone.Model.extend({
   // also returned.
   query: function(queryObj) {
     var self = this;
-    this.trigger('query:start');
-    var actualQuery = self._prepareQuery(queryObj);
     var dfd = $.Deferred();
-    this.backend.query(this, actualQuery).done(function(queryResult) {
-      self.docCount = queryResult.total;
-      var docs = _.map(queryResult.hits, function(hit) {
-        var _doc = new my.Record(hit._source);
-        _doc.backend = self.backend;
-        _doc.dataset = self;
-        _doc.bind('change', function(doc) {
-          self._changes.updates.push(doc.toJSON());
-        });
-        _doc.bind('destroy', function(doc) {
-          self._changes.deletes.push(doc.toJSON());
-        });
-        return _doc;
+    this.trigger('query:start');
+
+    if (queryObj) {
+      this.queryState.set(queryObj);
+    }
+    var actualQuery = this.queryState.toJSON();
+
+    this._store.query(actualQuery, this)
+      .done(function(queryResult) {
+        self._handleQueryResult(queryResult);
+        self.trigger('query:done');
+        dfd.resolve(self.currentRecords);
+      })
+      .fail(function(arguments) {
+        self.trigger('query:fail', arguments);
+        dfd.reject(arguments);
       });
-      self.currentRecords.reset(docs);
-      if (queryResult.facets) {
-        var facets = _.map(queryResult.facets, function(facetResult, facetId) {
-          facetResult.id = facetId;
-          return new my.Facet(facetResult);
-        });
-        self.facets.reset(facets);
-      }
-      self.trigger('query:done');
-      dfd.resolve(self.currentRecords);
-    })
-    .fail(function(arguments) {
-      self.trigger('query:fail', arguments);
-      dfd.reject(arguments);
-    });
     return dfd.promise();
   },
 
-
-  _prepareQuery: function(newQueryObj) {
-    if (newQueryObj) {
-      this.queryState.set(newQueryObj);
+  _handleQueryResult: function(queryResult) {
+    var self = this;
+    self.docCount = queryResult.total;
+    var docs = _.map(queryResult.hits, function(hit) {
+      var _doc = new my.Record(hit);
+      _doc.bind('change', function(doc) {
+        self._changes.updates.push(doc.toJSON());
+      });
+      _doc.bind('destroy', function(doc) {
+        self._changes.deletes.push(doc.toJSON());
+      });
+      return _doc;
+    });
+    self.currentRecords.reset(docs);
+    if (queryResult.facets) {
+      var facets = _.map(queryResult.facets, function(facetResult, facetId) {
+        facetResult.id = facetId;
+        return new my.Facet(facetResult);
+      });
+      self.facets.reset(facets);
     }
-    var out = this.queryState.toJSON();
-    return out;
   },
 
   toTemplateJSON: function() {
@@ -151,7 +183,7 @@ my.Dataset = Backbone.Model.extend({
       query.addFacet(field.id);
     });
     var dfd = $.Deferred();
-    this.backend.query(this, query.toJSON()).done(function(queryResult) {
+    this._store.query(query.toJSON(), this).done(function(queryResult) {
       if (queryResult.facets) {
         _.each(queryResult.facets, function(facetResult, facetId) {
           facetResult.id = facetId;

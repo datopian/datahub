@@ -29,10 +29,11 @@ test('query', function () {
     size: 4
     , from: 2
   };
-  var out = data.query(queryObj);
-  deepEqual(out.records[0], memoryData[2]);
-  equal(out.records.length, 4);
-  equal(out.total, 6);
+  data.query(queryObj).then(function(out) {
+    deepEqual(out.hits[0], memoryData[2]);
+    equal(out.hits.length, 4);
+    equal(out.total, 6);
+  });
 });
 
 test('query sort', function () {
@@ -42,44 +43,50 @@ test('query sort', function () {
       {'y': {order: 'desc'}}
     ]
   };
-  var out = data.query(queryObj);
-  equal(out.records[0].x, 6);
+  data.query(queryObj).then(function(out) {
+    equal(out.hits[0].x, 6);
+  });
 
   var queryObj = {
     sort: [
       {'country': {order: 'desc'}}
     ]
   };
-  var out = data.query(queryObj);
-  equal(out.records[0].country, 'US');
+  data.query(queryObj).then(function(out) {
+    equal(out.hits[0].country, 'US');
+  });
 
   var queryObj = {
     sort: [
       {'country': {order: 'asc'}}
     ]
   };
-  var out = data.query(queryObj);
-  equal(out.records[0].country, 'DE');
+  data.query(queryObj).then(function(out) {
+    equal(out.hits[0].country, 'DE');
+  });
 });
 
 test('query string', function () {
   var data = _wrapData();
-  var out = data.query({q: 'UK'});
-  equal(out.total, 3);
-  deepEqual(_.pluck(out.records, 'country'), ['UK', 'UK', 'UK']);
+  data.query({q: 'UK'}).then(function(out) {
+    equal(out.total, 3);
+    deepEqual(_.pluck(out.hits, 'country'), ['UK', 'UK', 'UK']);
+  });
 
-  var out = data.query({q: 'UK 6'})
-  equal(out.total, 1);
-  deepEqual(out.records[0].id, 1);
+  data.query({q: 'UK 6'}).then(function(out) {
+    equal(out.total, 1);
+    deepEqual(out.hits[0].id, 1);
+  });
 });
 
 test('filters', function () {
   var data = _wrapData();
   var query = new recline.Model.Query();
   query.addFilter({type: 'term', field: 'country', term: 'UK'});
-  var out = data.query(query.toJSON());
-  equal(out.total, 3);
-  deepEqual(_.pluck(out.records, 'country'), ['UK', 'UK', 'UK']);
+  data.query(query.toJSON()).then(function(out) {
+    equal(out.total, 3);
+    deepEqual(_.pluck(out.hits, 'country'), ['UK', 'UK', 'UK']);
+  });
 });
 
 test('facet', function () {
@@ -167,7 +174,7 @@ test('basics', function () {
   var dataset = makeBackendDataset();
   expect(3);
   // convenience for tests - get the data that should get changed
-  var data = dataset._dataCache;
+  var data = dataset._store;
   dataset.fetch().then(function(datasetAgain) {
     equal(dataset.get('name'), memoryData.metadata.name);
     deepEqual(_.pluck(dataset.fields.toJSON(), 'id'), _.pluck(data.fields, 'id'));
@@ -178,21 +185,21 @@ test('basics', function () {
 test('query', function () {
   var dataset = makeBackendDataset();
   // convenience for tests - get the data that should get changed
-  var data = dataset._dataCache.data;
+  var data = dataset._store.data;
   var dataset = makeBackendDataset();
   var queryObj = {
     size: 4
     , from: 2
   };
   dataset.query(queryObj).then(function(recordList) {
-    deepEqual(data[2], recordList.models[0].toJSON());
+    deepEqual(recordList.models[0].toJSON(), data[2]);
   });
 });
 
 test('query sort', function () {
   var dataset = makeBackendDataset();
   // convenience for tests - get the data that should get changed
-  var data = dataset._dataCache.data;
+  var data = dataset._store.data;
   var queryObj = {
     sort: [
       {'y': {order: 'desc'}}
@@ -253,7 +260,7 @@ test('facet', function () {
 test('update and delete', function () {
   var dataset = makeBackendDataset();
   // convenience for tests - get the data that should get changed
-  var data = dataset._dataCache;
+  var data = dataset._store;
   dataset.query().then(function(docList) {
     equal(docList.length, Math.min(100, data.data.length));
     var doc1 = docList.models[0];

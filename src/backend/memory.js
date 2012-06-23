@@ -20,47 +20,7 @@ this.recline.Backend.Memory = this.recline.Backend.Memory || {};
     var dataset = new recline.Model.Dataset(
       _.extend({}, metadata, {records: data, fields: fields})
     );
-    dataset.fetch();
     return dataset;
-  };
-
-  my.fetch = function(dataset) {
-    var dfd = $.Deferred();
-    var store = new my.Store(dataset.get('records'), dataset.get('fields'));
-    dataset._dataCache = store;
-    dataset.fields.reset(store.fields);
-    dataset.query();
-    dfd.resolve(dataset);
-    return dfd.promise();
-  };
-
-  my.save = function(dataset, changes) {
-    var dfd = $.Deferred();
-    // TODO
-    // _.each(changes.creates) { ... }
-    _.each(changes.updates, function(record) {
-      dataset._dataCache.update(record);
-    });
-    _.each(changes.deletes, function(record) {
-      dataset._dataCache.delete(record);
-    });
-    dfd.resolve(dataset);
-    return dfd.promise();
-  },
-
-  my.query = function(dataset, queryObj) {
-    var dfd = $.Deferred();
-    var results = dataset._dataCache.query(queryObj);
-    var hits = _.map(results.records, function(row) {
-      return { _source: row };
-    });
-    var out = {
-      total: results.total,
-      hits: hits,
-      facets: results.facets
-    };
-    dfd.resolve(out);
-    return dfd.promise();
   };
 
   // ## Data Wrapper
@@ -102,7 +62,22 @@ this.recline.Backend.Memory = this.recline.Backend.Memory || {};
       this.data = newdocs;
     };
 
+    this.save = function(changes, dataset) {
+      var self = this;
+      var dfd = $.Deferred();
+      // TODO _.each(changes.creates) { ... }
+      _.each(changes.updates, function(record) {
+        self.update(record);
+      });
+      _.each(changes.deletes, function(record) {
+        self.delete(record);
+      });
+      dfd.resolve(this);
+      return dfd.promise();
+    },
+
     this.query = function(queryObj) {
+      var dfd = $.Deferred();
       var numRows = queryObj.size || this.data.length;
       var start = queryObj.from || 0;
       var results = this.data;
@@ -119,14 +94,14 @@ this.recline.Backend.Memory = this.recline.Backend.Memory || {};
           results.reverse();
         }
       });
-      var total = results.length;
       var facets = this.computeFacets(results, queryObj);
-      results = results.slice(start, start+numRows);
-      return {
-        total: total,
-        records: results,
+      var out = {
+        total: results.length,
+        hits: results.slice(start, start+numRows),
         facets: facets
       };
+      dfd.resolve(out);
+      return dfd.promise();
     };
 
     // in place filtering

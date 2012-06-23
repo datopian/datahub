@@ -168,11 +168,10 @@ var sample_gdocs_spreadsheet_data = {
 }
 
 test("GDocs Backend", function() { 
-  var backend = new recline.Backend.GDocs.Backbone();
   var dataset = new recline.Model.Dataset({
       url: 'https://spreadsheets.google.com/feeds/list/0Aon3JiuouxLUdDQwZE1JdV94cUd6NWtuZ0IyWTBjLWc/od6/public/values?alt=json'
     },
-    backend
+    'gdocs'
   );
 
   var stub = sinon.stub($, 'getJSON', function(options, cb) {
@@ -182,7 +181,8 @@ test("GDocs Backend", function() {
     }
   });
 
-  dataset.query().then(function(docList) {
+  dataset.fetch().then(function() {
+    var docList = dataset.currentRecords;
     deepEqual(['column-2', 'column-1'], _.pluck(dataset.fields.toJSON(), 'id'));
     equal(3, docList.length);
     equal("A", docList.models[0].get('column-1'));
