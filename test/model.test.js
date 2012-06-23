@@ -116,15 +116,6 @@ test('Dataset', function () {
   equal(out.fields.length, 2);
 });
 
-test('Dataset _prepareQuery', function () {
-  var meta = {id: 'test', title: 'xyz'};
-  var dataset = new recline.Model.Dataset(meta);
-
-  var out = dataset._prepareQuery();
-  var exp = new recline.Model.Query().toJSON();
-  deepEqual(out, exp);
-});
-
 test('Dataset getFieldsSummary', function () {
   var dataset = Fixture.getDataset();
   dataset.getFieldsSummary().done(function() {

@@ -16,7 +16,10 @@ var GeoJSONFixture = {
       {id: 1, x: 2, y: 4, z: 6, geom: {type:"Point",coordinates:[13.40,52.35]}},
       {id: 2, x: 3, y: 6, z: 9, geom: {type:"LineString",coordinates:[[100.0, 0.0],[101.0, 1.0]]}}
     ];
-    var dataset = recline.Backend.Memory.createDataset(records, fields);
+    var dataset = new recline.Model.Dataset({
+      records: records,
+      fields: fields
+    });
     return dataset;
   }
 };
@@ -114,7 +117,9 @@ test('_getGeometryFromRecord non-GeoJSON', function () {
     [[53.3,47.32], [53.3, 47.32]]
   ];
   var view = new recline.View.Map({
-    model: recline.Backend.Memory.createDataset([{a: 1}]),
+    model: new recline.Model.Dataset({
+      records: [{a: 1}]
+    }),
     state: {
       geomField: 'location'
     }

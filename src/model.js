@@ -4,28 +4,7 @@ this.recline.Model = this.recline.Model || {};
 
 (function($, my) {
 
-// ## <a id="dataset">A Dataset model</a>
-//
-// A model has the following (non-Backbone) attributes:
-//
-// @property {FieldList} fields: (aka columns) is a `FieldList` listing all the
-// fields on this Dataset (this can be set explicitly, or, will be set by
-// Dataset.fetch() or Dataset.query()
-//
-// @property {RecordList} currentRecords: a `RecordList` containing the
-// Records we have currently loaded for viewing (updated by calling query
-// method)
-//
-// @property {number} docCount: total number of records in this dataset
-//
-// @property {Backend} backend: the Backend (instance) for this Dataset.
-//
-// @property {Query} queryState: `Query` object which stores current
-// queryState. queryState may be edited by other components (e.g. a query
-// editor view) changes will trigger a Dataset query.
-//
-// @property {FacetList} facets: FacetList object containing all current
-// Facets.
+// ## <a id="dataset">Dataset</a>
 my.Dataset = Backbone.Model.extend({
   __type__: 'Dataset',
 
@@ -44,16 +23,75 @@ my.Dataset = Backbone.Model.extend({
   initialize: function(model, backend) {
     _.bindAll(this, 'query');
     this.backend = backend;
+    if (typeof backend === 'undefined') {
+      // guess backend ...
+      if (this.get('records')) {
+        this.backend = recline.Backend.Memory;
+      }
+    }
     if (typeof(backend) === 'string') {
       this.backend = this._backendFromString(backend);
     }
     this.fields = new my.FieldList();
     this.currentRecords = new my.RecordList();
+    this._changes = {
+      deletes: [],
+      updates: [],
+      creates: []
+    };
     this.facets = new my.FacetList();
     this.docCount = null;
     this.queryState = new my.Query();
     this.queryState.bind('change', this.query);
     this.queryState.bind('facet:add', this.query);
+    this._store = this.backend;
+    if (this.backend == recline.Backend.Memory) {
+      this.fetch();
+    }
+  },
+
+  // ### fetch
+  //
+  // Retrieve dataset and (some) records from the backend.
+  fetch: function() {
+    var self = this;
+    var dfd = $.Deferred();
+    // TODO: fail case;
+    if (this.backend !== recline.Backend.Memory) {
+      this.backend.fetch(this.toJSON())
+        .done(handleResults)
+        .fail(function(arguments) {
+          dfd.reject(arguments);
+        });
+    } else {
+      // special case where we have been given data directly
+      handleResults({
+        records: this.get('records'),
+        fields: this.get('fields'),
+        useMemoryStore: true
+      });
+    }
+
+    function handleResults(results) {
+      self.set(results.metadata);
+      if (results.useMemoryStore) {
+        self._store = new recline.Backend.Memory.Store(results.records, results.fields);
+        self.query();
+        // store will have extracted fields if not provided
+        self.fields.reset(self._store.fields);
+      } else {
+        self.fields.reset(results.fields);
+      }
+      // TODO: parsing the processing of fields
+      dfd.resolve(self);
+    }
+    return dfd.promise();
+  },
+
+  save: function() {
+    var self = this;
+    // TODO: need to reset the changes ...
+    return this._store.save(this._changes, this.toJSON());
   },
 
   // ### query
@@ -67,41 +105,48 @@ my.Dataset = Backbone.Model.extend({
   // also returned.
   query: function(queryObj) {
     var self = this;
-    this.trigger('query:start');
-    var actualQuery = self._prepareQuery(queryObj);
     var dfd = $.Deferred();
-    this.backend.query(this, actualQuery).done(function(queryResult) {
-      self.docCount = queryResult.total;
-      var docs = _.map(queryResult.hits, function(hit) {
-        var _doc = new my.Record(hit._source);
-        _doc.backend = self.backend;
-        _doc.dataset = self;
-        return _doc;
+    this.trigger('query:start');
+
+    if (queryObj) {
+      this.queryState.set(queryObj);
+    }
+    var actualQuery = this.queryState.toJSON();
+
+    this._store.query(actualQuery, this)
+      .done(function(queryResult) {
+        self._handleQueryResult(queryResult);
+        self.trigger('query:done');
+        dfd.resolve(self.currentRecords);
+      })
+      .fail(function(arguments) {
+        self.trigger('query:fail', arguments);
+        dfd.reject(arguments);
       });
-      self.currentRecords.reset(docs);
-      if (queryResult.facets) {
-        var facets = _.map(queryResult.facets, function(facetResult, facetId) {
-          facetResult.id = facetId;
-          return new my.Facet(facetResult);
-        });
-        self.facets.reset(facets);
-      }
-      self.trigger('query:done');
-      dfd.resolve(self.currentRecords);
-    })
-    .fail(function(arguments) {
-      self.trigger('query:fail', arguments);
-      dfd.reject(arguments);
-    });
     return dfd.promise();
   },
 
-  _prepareQuery: function(newQueryObj) {
-    if (newQueryObj) {
-      this.queryState.set(newQueryObj);
+  _handleQueryResult: function(queryResult) {
+    var self = this;
+    self.docCount = queryResult.total;
+    var docs = _.map(queryResult.hits, function(hit) {
+      var _doc = new my.Record(hit);
+      _doc.bind('change', function(doc) {
+        self._changes.updates.push(doc.toJSON());
+      });
+      _doc.bind('destroy', function(doc) {
+        self._changes.deletes.push(doc.toJSON());
+      });
+      return _doc;
+    });
+    self.currentRecords.reset(docs);
+    if (queryResult.facets) {
+      var facets = _.map(queryResult.facets, function(facetResult, facetId) {
+        facetResult.id = facetId;
+        return new my.Facet(facetResult);
+      });
+      self.facets.reset(facets);
     }
-    var out = this.queryState.toJSON();
-    return out;
   },
 
   toTemplateJSON: function() {
@@ -122,7 +167,7 @@ my.Dataset = Backbone.Model.extend({
       query.addFacet(field.id);
     });
     var dfd = $.Deferred();
-    this.backend.query(this, query.toJSON()).done(function(queryResult) {
+    this._store.query(query.toJSON(), this).done(function(queryResult) {
       if (queryResult.facets) {
         _.each(queryResult.facets, function(facetResult, facetId) {
           facetResult.id = facetId;
@@ -150,7 +195,7 @@ my.Dataset = Backbone.Model.extend({
       current = current[parts[ii]];
     }
     if (current) {
-      return new current();
+      return current;
     }
 
     // alternatively we just had a simple string
@@ -158,7 +203,7 @@ my.Dataset = Backbone.Model.extend({
     if (recline && recline.Backend) {
       _.each(_.keys(recline.Backend), function(name) {
         if (name.toLowerCase() === backendString.toLowerCase()) {
-          backend = new recline.Backend[name].Backbone();
+          backend = recline.Backend[name];
         }
       });
     }
@@ -184,20 +229,18 @@ my.Dataset.restore = function(state) {
   var dataset = null;
   // hack-y - restoring a memory dataset does not mean much ...
   if (state.backend === 'memory') {
-    dataset = recline.Backend.Memory.createDataset(
-      [{stub: 'this is a stub dataset because we do not restore memory datasets'}],
-      [],
-      state.dataset // metadata
-    );
+    var datasetInfo = {
+      records: [{stub: 'this is a stub dataset because we do not restore memory datasets'}]
+    };
   } else {
     var datasetInfo = {
       url: state.url
     };
-    dataset = new recline.Model.Dataset(
-      datasetInfo,
-      state.backend
-    );
   }
+  dataset = new recline.Model.Dataset(
+    datasetInfo,
+    state.backend
+  );
   return dataset;
 };
 
@@ -242,7 +285,15 @@ my.Record = Backbone.Model.extend({
       }
     }
     return html;
-  }
+  },
+
+  // Override Backbone save, fetch and destroy so they do nothing
+  // Instead, Dataset object that created this Record should take care of
+  // handling these changes (discovery will occur via event notifications)
+  // WARNING: these will not persist *unless* you call save on Dataset
+  fetch: function() {},
+  save: function() {},
+  destroy: function() { this.trigger('destroy', this); }
 });
 
 // ## A Backbone collection of Records
@@ -252,42 +303,6 @@ my.RecordList = Backbone.Collection.extend({
 });
 
 // ## <a id="field">A Field (aka Column) on a Dataset</a>
-// 
-// Following (Backbone) attributes as standard:
-//
-// * id: a unique identifer for this field- usually this should match the key in the records hash
-// * label: (optional: defaults to id) the visible label used for this field
-// * type: (optional: defaults to string) the type of the data in this field. Should be a string as per type names defined by ElasticSearch - see Types list on <http://www.elasticsearch.org/guide/reference/mapping/>
-// * format: (optional) used to indicate how the data should be formatted. For example:
-//   * type=date, format=yyyy-mm-dd
-//   * type=float, format=percentage
-//   * type=string, format=markdown (render as markdown if Showdown available)
-// * is_derived: (default: false) attribute indicating this field has no backend data but is just derived from other fields (see below).
-// 
-// Following additional instance properties:
-// 
-// @property {Function} renderer: a function to render the data for this field.
-// Signature: function(value, field, record) where value is the value of this
-// cell, field is corresponding field object and record is the record
-// object (as simple JS object). Note that implementing functions can ignore arguments (e.g.
-// function(value) would be a valid formatter function).
-// 
-// @property {Function} deriver: a function to derive/compute the value of data
-// in this field as a function of this field's value (if any) and the current
-// record, its signature and behaviour is the same as for renderer.  Use of
-// this function allows you to define an entirely new value for data in this
-// field. This provides support for a) 'derived/computed' fields: i.e. fields
-// whose data are functions of the data in other fields b) transforming the
-// value of this field prior to rendering.
-//
-// #### Default renderers
-//
-// * string
-//   * no format provided: pass through but convert http:// to hyperlinks 
-//   * format = plain: do no processing on the source text
-//   * format = markdown: process as markdown (if Showdown library available)
-// * float
-//   * format = percentage: format as a percentage
 my.Field = Backbone.Model.extend({
   // ### defaults - define default values
   defaults: {
@@ -358,54 +373,6 @@ my.FieldList = Backbone.Collection.extend({
 });
 
 // ## <a id="query">Query</a>
-//
-// Query instances encapsulate a query to the backend (see <a
-// href="backend/base.html">query method on backend</a>). Useful both
-// for creating queries and for storing and manipulating query state -
-// e.g. from a query editor).
-//
-// **Query Structure and format**
-//
-// Query structure should follow that of [ElasticSearch query
-// language](http://www.elasticsearch.org/guide/reference/api/search/).
-//
-// **NB: It is up to specific backends how to implement and support this query
-// structure. Different backends might choose to implement things differently
-// or not support certain features. Please check your backend for details.**
-//
-// Query object has the following key attributes:
-// 
-//  * size (=limit): number of results to return
-//  * from (=offset): offset into result set - http://www.elasticsearch.org/guide/reference/api/search/from-size.html
-//  * sort: sort order - <http://www.elasticsearch.org/guide/reference/api/search/sort.html>
-//  * query: Query in ES Query DSL <http://www.elasticsearch.org/guide/reference/api/search/query.html>
-//  * filter: See filters and <a href="http://www.elasticsearch.org/guide/reference/query-dsl/filtered-query.html">Filtered Query</a>
-//  * fields: set of fields to return - http://www.elasticsearch.org/guide/reference/api/search/fields.html
-//  * facets: specification of facets - see http://www.elasticsearch.org/guide/reference/api/search/facets/
-// 
-// Additions:
-// 
-//  * q: either straight text or a hash will map directly onto a [query_string
-//  query](http://www.elasticsearch.org/guide/reference/query-dsl/query-string-query.html)
-//  in backend
-//
-//   * Of course this can be re-interpreted by different backends. E.g. some
-//   may just pass this straight through e.g. for an SQL backend this could be
-//   the full SQL query
-//
-//  * filters: array of ElasticSearch filters. These will be and-ed together for
-//  execution.
-// 
-// **Examples**
-// 
-// <pre>
-// {
-//    q: 'quick brown fox',
-//    filters: [
-//      { term: { 'owner': 'jones' } }
-//    ]
-// }
-// </pre>
 my.Query = Backbone.Model.extend({
   defaults: function() {
     return {
@@ -525,43 +492,6 @@ my.Query = Backbone.Model.extend({
 
 
 // ## <a id="facet">A Facet (Result)</a>
-//
-// Object to store Facet information, that is summary information (e.g. values
-// and counts) about a field obtained by some faceting method on the
-// backend.
-//
-// Structure of a facet follows that of Facet results in ElasticSearch, see:
-// <http://www.elasticsearch.org/guide/reference/api/search/facets/>
-//
-// Specifically the object structure of a facet looks like (there is one
-// addition compared to ElasticSearch: the "id" field which corresponds to the
-// key used to specify this facet in the facet query):
-//
-// <pre>
-// {
-//   "id": "id-of-facet",
-//   // type of this facet (terms, range, histogram etc)
-//   "_type" : "terms",
-//   // total number of tokens in the facet
-//   "total": 5,
-//   // @property {number} number of records which have no value for the field
-//   "missing" : 0,
-//   // number of facet values not included in the returned facets
-//   "other": 0,
-//   // term object ({term: , count: ...})
-//   "terms" : [ {
-//       "term" : "foo",
-//       "count" : 2
-//     }, {
-//       "term" : "bar",
-//       "count" : 2
-//     }, {
-//       "term" : "baz",
-//       "count" : 1
-//     }
-//   ]
-// }
-// </pre>
 my.Facet = Backbone.Model.extend({
   defaults: function() {
     return {

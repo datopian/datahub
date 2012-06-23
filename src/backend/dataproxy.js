@@ -3,95 +3,63 @@ this.recline.Backend = this.recline.Backend || {};
 this.recline.Backend.DataProxy = this.recline.Backend.DataProxy || {};
 
 (function($, my) {
-  // ## DataProxy Backend
-  // 
-  // For connecting to [DataProxy-s](http://github.com/okfn/dataproxy).
-  //
-  // When initializing the DataProxy backend you can set the following
-  // attributes in the options object:
-  //
-  // * dataproxy: {url-to-proxy} (optional). Defaults to http://jsonpdataproxy.appspot.com
-  //
-  // Datasets using using this backend should set the following attributes:
-  //
-  // * url: (required) url-of-data-to-proxy
-  // * format: (optional) csv | xls (defaults to csv if not specified)
-  //
-  // Note that this is a **read-only** backend.
-  my.Backbone = function(options) {
-    var self = this;
-    this.__type__ = 'dataproxy';
-    this.readonly = true;
+  my.__type__ = 'dataproxy';
+  // URL for the dataproxy
+  my.dataproxy_url = 'http://jsonpdataproxy.appspot.com';
 
-    this.dataproxy_url = options && options.dataproxy_url ? options.dataproxy_url : 'http://jsonpdataproxy.appspot.com';
-
-    this.sync = function(method, model, options) {
-      if (method === "read") {
-        if (model.__type__ == 'Dataset') {
-          // Do nothing as we will get fields in query step (and no metadata to
-          // retrieve)
-          var dfd = $.Deferred();
-          dfd.resolve(model);
-          return dfd.promise();
-        }
-      } else {
-        alert('This backend only supports read operations');
+  // ## load
+  //
+  // Load data from a URL via the [DataProxy](http://github.com/okfn/dataproxy).
+  my.fetch = function(dataset) {
+    var data = {
+      url: dataset.url,
+      'max-results':  dataset.size || dataset.rows || 1000,
+      type: dataset.format || ''
+    };
+    var jqxhr = $.ajax({
+      url: my.dataproxy_url,
+      data: data,
+      dataType: 'jsonp'
+    });
+    var dfd = $.Deferred();
+    _wrapInTimeout(jqxhr).done(function(results) {
+      if (results.error) {
+        dfd.reject(results.error);
       }
-    };
 
-    this.query = function(dataset, queryObj) {
-      var self = this;
-      var data = {
-        url: dataset.get('url'),
-        'max-results':  queryObj.size,
-        type: dataset.get('format')
-      };
-      var jqxhr = $.ajax({
-        url: this.dataproxy_url,
-        data: data,
-        dataType: 'jsonp'
-      });
-      var dfd = $.Deferred();
-      _wrapInTimeout(jqxhr).done(function(results) {
-        if (results.error) {
-          dfd.reject(results.error);
+      // Rename duplicate fieldIds as each field name needs to be
+      // unique.
+      var seen = {};
+      var fields = _.map(results.fields, function(field, index) {
+        var fieldId = field;
+        while (fieldId in seen) {
+          seen[field] += 1;
+          fieldId = field + seen[field];
         }
-
-        // Rename duplicate fieldIds as each field name needs to be
-        // unique.
-        var seen = {};
-        _.map(results.fields, function(fieldId, index) {
-          if (fieldId in seen) {
-            seen[fieldId] += 1;
-            results.fields[index] = fieldId + "("+seen[fieldId]+")";
-          } else {
-            seen[fieldId] = 1;
-          }
-        });
-
-        dataset.fields.reset(_.map(results.fields, function(fieldId) {
-          return {id: fieldId};
-          })
-        );
-        var _out = _.map(results.data, function(doc) {
-          var tmp = {};
-          _.each(results.fields, function(key, idx) {
-            tmp[key] = doc[idx];
-          });
-          return tmp;
-        });
-        dfd.resolve({
-          total: null,
-          hits: _.map(_out, function(row) {
-            return { _source: row };
-          })
-        });
-      })
-      .fail(function(arguments) {
-        dfd.reject(arguments);
+        if (!(field in seen)) {
+          seen[field] = 0;
+        }
+        return { id: fieldId, label: field }
       });
-      return dfd.promise();
-    };
+
+      // data is provided as arrays so need to zip together with fields
+      var records = _.map(results.data, function(doc) {
+        var tmp = {};
+        _.each(results.fields, function(key, idx) {
+          tmp[key] = doc[idx];
+        });
+        return tmp;
+      });
+      dfd.resolve({
+        records: records,
+        fields: fields,
+        useMemoryStore: true
+      });
+    })
+    .fail(function(arguments) {
+      dfd.reject(arguments);
+    });
+    return dfd.promise();
   };
 
   // ## _wrapInTimeout

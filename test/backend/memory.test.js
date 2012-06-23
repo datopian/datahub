@@ -29,10 +29,11 @@ test('query', function () {
     size: 4
     , from: 2
   };
-  var out = data.query(queryObj);
-  deepEqual(out.records[0], memoryData[2]);
-  equal(out.records.length, 4);
-  equal(out.total, 6);
+  data.query(queryObj).then(function(out) {
+    deepEqual(out.hits[0], memoryData[2]);
+    equal(out.hits.length, 4);
+    equal(out.total, 6);
+  });
 });
 
 test('query sort', function () {
@@ -42,44 +43,50 @@ test('query sort', function () {
       {'y': {order: 'desc'}}
     ]
   };
-  var out = data.query(queryObj);
-  equal(out.records[0].x, 6);
+  data.query(queryObj).then(function(out) {
+    equal(out.hits[0].x, 6);
+  });
 
   var queryObj = {
     sort: [
       {'country': {order: 'desc'}}
     ]
   };
-  var out = data.query(queryObj);
-  equal(out.records[0].country, 'US');
+  data.query(queryObj).then(function(out) {
+    equal(out.hits[0].country, 'US');
+  });
 
   var queryObj = {
     sort: [
       {'country': {order: 'asc'}}
     ]
   };
-  var out = data.query(queryObj);
-  equal(out.records[0].country, 'DE');
+  data.query(queryObj).then(function(out) {
+    equal(out.hits[0].country, 'DE');
+  });
 });
 
 test('query string', function () {
   var data = _wrapData();
-  var out = data.query({q: 'UK'});
-  equal(out.total, 3);
-  deepEqual(_.pluck(out.records, 'country'), ['UK', 'UK', 'UK']);
+  data.query({q: 'UK'}).then(function(out) {
+    equal(out.total, 3);
+    deepEqual(_.pluck(out.hits, 'country'), ['UK', 'UK', 'UK']);
+  });
 
-  var out = data.query({q: 'UK 6'})
-  equal(out.total, 1);
-  deepEqual(out.records[0].id, 1);
+  data.query({q: 'UK 6'}).then(function(out) {
+    equal(out.total, 1);
+    deepEqual(out.hits[0].id, 1);
+  });
 });
 
 test('filters', function () {
   var data = _wrapData();
   var query = new recline.Model.Query();
   query.addFilter({type: 'term', field: 'country', term: 'UK'});
-  var out = data.query(query.toJSON());
-  equal(out.total, 3);
-  deepEqual(_.pluck(out.records, 'country'), ['UK', 'UK', 'UK']);
+  data.query(query.toJSON()).then(function(out) {
+    equal(out.total, 3);
+    deepEqual(_.pluck(out.hits, 'country'), ['UK', 'UK', 'UK']);
+  });
 });
 
 test('facet', function () {
@@ -125,7 +132,7 @@ test('update and delete', function () {
 
 (function ($) {
 
-module("Backend Memory - Backbone");
+module("Backend Memory - Model Integration");
 
 var memoryData = {
   metadata: {
@@ -145,23 +152,29 @@ var memoryData = {
 };
 
 function makeBackendDataset() {
-  var dataset = new recline.Backend.Memory.createDataset(memoryData.records, null, memoryData.metadata);
+  var dataset = new recline.Model.Dataset({
+    id: 'test-dataset',
+    title: 'My Test Dataset',
+    name: '1-my-test-dataset',
+    fields: [{id: 'x'}, {id: 'y'}, {id: 'z'}, {id: 'country'}, {id: 'label'}],
+    records: [
+      {id: 0, x: 1, y: 2, z: 3, country: 'DE', label: 'first'}
+      , {id: 1, x: 2, y: 4, z: 6, country: 'UK', label: 'second'}
+      , {id: 2, x: 3, y: 6, z: 9, country: 'US', label: 'third'}
+      , {id: 3, x: 4, y: 8, z: 12, country: 'UK', label: 'fourth'}
+      , {id: 4, x: 5, y: 10, z: 15, country: 'UK', label: 'fifth'}
+      , {id: 5, x: 6, y: 12, z: 18, country: 'DE', label: 'sixth'}
+    ]
+  });
+  dataset.fetch();
   return dataset;
 }
-
-test('createDataset', function () {
-  var dataset = recline.Backend.Memory.createDataset(memoryData.records);
-  equal(dataset.fields.length, 6);
-  deepEqual(['id', 'x', 'y', 'z', 'country', 'label'], dataset.fields.pluck('id'));
-  dataset.query();
-  equal(memoryData.records.length, dataset.currentRecords.length);
-});
 
 test('basics', function () {
   var dataset = makeBackendDataset();
   expect(3);
   // convenience for tests - get the data that should get changed
-  var data = dataset._dataCache;
+  var data = dataset._store;
   dataset.fetch().then(function(datasetAgain) {
     equal(dataset.get('name'), memoryData.metadata.name);
     deepEqual(_.pluck(dataset.fields.toJSON(), 'id'), _.pluck(data.fields, 'id'));
@@ -172,21 +185,21 @@ test('basics', function () {
 test('query', function () {
   var dataset = makeBackendDataset();
   // convenience for tests - get the data that should get changed
-  var data = dataset._dataCache.data;
+  var data = dataset._store.data;
   var dataset = makeBackendDataset();
   var queryObj = {
     size: 4
     , from: 2
   };
   dataset.query(queryObj).then(function(recordList) {
-    deepEqual(data[2], recordList.models[0].toJSON());
+    deepEqual(recordList.models[0].toJSON(), data[2]);
   });
 });
 
 test('query sort', function () {
   var dataset = makeBackendDataset();
   // convenience for tests - get the data that should get changed
-  var data = dataset._dataCache.data;
+  var data = dataset._store.data;
   var queryObj = {
     sort: [
       {'y': {order: 'desc'}}
@@ -247,7 +260,7 @@ test('facet', function () {
 test('update and delete', function () {
   var dataset = makeBackendDataset();
   // convenience for tests - get the data that should get changed
-  var data = dataset._dataCache;
+  var data = dataset._store;
   dataset.query().then(function(docList) {
     equal(docList.length, Math.min(100, data.data.length));
     var doc1 = docList.models[0];
@@ -256,12 +269,13 @@ test('update and delete', function () {
     // Test UPDATE
     var newVal = 10;
     doc1.set({x: newVal});
-    doc1.save().then(function() {
-      equal(data.data[0].x, newVal);
-    })
+    doc1.save();
+    equal(dataset._changes.updates[0].x, newVal);
 
-    // Test Delete
-    doc1.destroy().then(function() {
+    doc1.destroy();
+    deepEqual(dataset._changes.deletes[0], doc1.toJSON());
+
+    dataset.save().then(function() {
       equal(data.data.length, 5);
       equal(data.data[0].x, memoryData.records[1].x);
     });
