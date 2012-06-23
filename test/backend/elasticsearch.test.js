@@ -246,14 +246,13 @@ test("write", function() {
 
 // ==================================================
 
-module("Backend ElasticSearch - Backbone");
+module("Backend ElasticSearch - Recline");
 
 test("query", function() { 
-  var backend = new recline.Backend.ElasticSearch.Backbone();
   var dataset = new recline.Model.Dataset({
       url: 'https://localhost:9200/my-es-db/my-es-type'
     },
-    backend
+    'elasticsearch'
   );
 
   var stub = sinon.stub($, 'ajax', function(options) {
@@ -292,11 +291,10 @@ test("query", function() {
 });
 
 test("write", function() { 
-  var backend = new recline.Backend.ElasticSearch.Backbone();
   var dataset = new recline.Model.Dataset({
       url: 'http://localhost:9200/recline-test/es-write'
     },
-    backend
+    'elasticsearch'
   );
 
   stop();
@@ -306,10 +304,10 @@ test("write", function() {
     id: id,
     title: 'my title'
   });
-  rec.backend = backend;
-  rec.dataset = dataset;
   dataset.currentRecords.add(rec);
-  var jqxhr = rec.save();
+  // have to do this explicitly as we not really supporting adding new items atm
+  dataset._changes.creates.push(rec.toJSON());
+  var jqxhr = dataset.save();
   jqxhr.done(function(data) {
     ok(data.ok);
     equal(data._id, id);
@@ -318,28 +316,29 @@ test("write", function() {
     
     // update
     rec.set({title: 'new title'});
-    var jqxhr = rec.save();
+    // again set up by hand ...
+    dataset._changes.creates = [];
+    dataset._changes.updates.push(rec.toJSON());
+    var jqxhr = dataset.save();
     jqxhr.done(function(data) {
       equal(data._version, 2);
 
       // delete
-      var jqxhr = rec.destroy();
+      dataset._changes.updates = 0;
+      dataset._changes.deletes.push(rec.toJSON());
+      var jqxhr = dataset.save();
       jqxhr.done(function(data) {
         ok(data.ok);
         rec = null;
 
         // try to get ...
-        var oldrec = new recline.Model.Record({id: id});
-        equal(oldrec.get('title'), null);
-        oldrec.dataset = dataset;
-        oldrec.backend = backend;
-        var jqxhr = oldrec.fetch();
+        var es = new recline.Backend.ElasticSearch.Wrapper(dataset.get('url'));
+        var jqxhr = es.get(id);
         jqxhr.done(function(data) {
           // should not be here
           ok(false, 'Should have got 404');
         }).error(function(error) {
           equal(error.status, 404);
-          equal(typeof oldrec.get('title'), 'undefined');
           start();
         });
       });

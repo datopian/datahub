@@ -79,7 +79,11 @@ my.Dataset = Backbone.Model.extend({
     var dfd = $.Deferred();
     // TODO: fail case;
     if (this.backend !== recline.Backend.Memory) {
-      this.backend.fetch(this.toJSON()).then(handleResults)
+      this.backend.fetch(this.toJSON())
+        .done(handleResults)
+        .fail(function(arguments) {
+          dfd.reject(arguments);
+        });
     } else {
       // special case where we have been given data directly
       handleResults({
@@ -100,14 +104,15 @@ my.Dataset = Backbone.Model.extend({
         self.fields.reset(results.fields);
       }
       // TODO: parsing the processing of fields
-      dfd.resolve(this);
+      dfd.resolve(self);
     }
     return dfd.promise();
   },
 
   save: function() {
     var self = this;
-    return this._store.save(this._changes, this);
+    // TODO: need to reset the changes ...
+    return this._store.save(this._changes, this.toJSON());
   },
 
   // ### query

@@ -3,12 +3,12 @@ this.recline.Backend = this.recline.Backend || {};
 this.recline.Backend.ElasticSearch = this.recline.Backend.ElasticSearch || {};
 
 (function($, my) {
-  my.fetch = function(dataset) {
-  };
+  my.__type__ = 'elasticsearch';
 
   // ## ElasticSearch Wrapper
   //
-  // Connecting to [ElasticSearch](http://www.elasticsearch.org/) endpoints.
+  // A simple JS wrapper around an [ElasticSearch](http://www.elasticsearch.org/) endpoints.
+  //
   // @param {String} endpoint: url for ElasticSearch type/table, e.g. for ES running
   // on http://localhost:9200 with index twitter and type tweet it would be:
   // 
@@ -33,7 +33,7 @@ this.recline.Backend.ElasticSearch = this.recline.Backend.ElasticSearch || {};
     // @return promise compatible deferred object.
     this.mapping = function() {
       var schemaUrl = self.endpoint + '/_mapping';
-      var jqxhr = recline.Backend.makeRequest({
+      var jqxhr = makeRequest({
         url: schemaUrl,
         dataType: this.options.dataType
       });
@@ -47,7 +47,7 @@ this.recline.Backend.ElasticSearch = this.recline.Backend.ElasticSearch || {};
     // @return promise compatible deferred object.
     this.get = function(id) {
       var base = this.endpoint + '/' + id;
-      return recline.Backend.makeRequest({
+      return makeRequest({
         url: base,
         dataType: 'json'
       });
@@ -65,7 +65,7 @@ this.recline.Backend.ElasticSearch = this.recline.Backend.ElasticSearch || {};
       if (doc.id) {
         url += '/' + doc.id;
       }
-      return recline.Backend.makeRequest({
+      return makeRequest({
         url: url,
         type: 'POST',
         data: data,
@@ -82,7 +82,7 @@ this.recline.Backend.ElasticSearch = this.recline.Backend.ElasticSearch || {};
     this.delete = function(id) {
       url = this.endpoint;
       url += '/' + id;
-      return recline.Backend.makeRequest({
+      return makeRequest({
         url: url,
         type: 'DELETE',
         dataType: 'json'
@@ -143,7 +143,7 @@ this.recline.Backend.ElasticSearch = this.recline.Backend.ElasticSearch || {};
       esQuery.query = queryNormalized;
       var data = {source: JSON.stringify(esQuery)};
       var url = this.endpoint + '/_search';
-      var jqxhr = recline.Backend.makeRequest({
+      var jqxhr = makeRequest({
         url: url,
         data: data,
         dataType: this.options.dataType
@@ -152,94 +152,110 @@ this.recline.Backend.ElasticSearch = this.recline.Backend.ElasticSearch || {};
     }
   };
 
-  // ## ElasticSearch Backbone Backend
-  //
-  // Backbone connector for an ES backend.
-  //
-  // Usage:
-  //
-  // var backend = new recline.Backend.ElasticSearch(options);
-  //
-  // `options` are passed through to Wrapper
-  my.Backbone = function(options) {
-    var self = this;
-    var esOptions = options;
-    this.__type__ = 'elasticsearch';
 
-    // ### sync
-    //
-    // Backbone sync implementation for this backend.
-    //
-    // URL of ElasticSearch endpoint to use must be specified on the dataset
-    // (and on a Record via its dataset attribute) by the dataset having a
-    // url attribute.
-    this.sync = function(method, model, options) {
-      if (model.__type__ == 'Dataset') {
-        var endpoint = model.get('url');
-      } else {
-        var endpoint = model.dataset.get('url');
-      }
-      var es = new my.Wrapper(endpoint, esOptions);
-      if (method === "read") {
-        if (model.__type__ == 'Dataset') {
-          var dfd = $.Deferred();
-          es.mapping().done(function(schema) {
-            // only one top level key in ES = the type so we can ignore it
-            var key = _.keys(schema)[0];
-            var fieldData = _.map(schema[key].properties, function(dict, fieldName) {
-              dict.id = fieldName;
-              return dict;
-            });
-            model.fields.reset(fieldData);
-            dfd.resolve(model);
-          })
-          .fail(function(arguments) {
-            dfd.reject(arguments);
-          });
-          return dfd.promise();
-        } else if (model.__type__ == 'Record') {
-          return es.get(model.dataset.id);
-        }
-      } else if (method === 'update') {
-        if (model.__type__ == 'Record') {
-          return es.upsert(model.toJSON());
-        }
-      } else if (method === 'delete') {
-        if (model.__type__ == 'Record') {
-          return es.delete(model.id);
-        }
-      }
-    };
+  // ## Recline Connectors 
+  //
+  // Requires URL of ElasticSearch endpoint to be specified on the dataset
+  // via the url attribute.
 
-    // ### query
-    //
-    // query the ES backend
-    this.query = function(model, queryObj) {
-      var dfd = $.Deferred();
-      var url = model.get('url');
-      var es = new my.Wrapper(url, esOptions);
-      var jqxhr = es.query(queryObj);
-      // TODO: fail case
-      jqxhr.done(function(results) {
-        _.each(results.hits.hits, function(hit) {
-          if (!('id' in hit._source) && hit._id) {
-            hit._source.id = hit._id;
-          }
-        });
-        if (results.facets) {
-          results.hits.facets = results.facets;
-        }
-        dfd.resolve(results.hits);
-      }).fail(function(errorObj) {
-        var out = {
-          title: 'Failed: ' + errorObj.status + ' code',
-          message: errorObj.responseText
-        };
-        dfd.reject(out);
+  // ES options which are passed through to `options` on Wrapper (see Wrapper for details)
+  my.esOptions = {};
+
+  // ### fetch
+  my.fetch = function(dataset) {
+    var es = new my.Wrapper(dataset.url, my.esOptions);
+    var dfd = $.Deferred();
+    es.mapping().done(function(schema) {
+      // only one top level key in ES = the type so we can ignore it
+      var key = _.keys(schema)[0];
+      var fieldData = _.map(schema[key].properties, function(dict, fieldName) {
+        dict.id = fieldName;
+        return dict;
       });
-      return dfd.promise();
-    };
+      dfd.resolve({
+        fields: fieldData
+      });
+    })
+    .fail(function(arguments) {
+      dfd.reject(arguments);
+    });
+    return dfd.promise();
   };
+
+  // ### save
+  my.save = function(changes, dataset) {
+    var es = new my.Wrapper(dataset.url, my.esOptions);
+    if (changes.creates.length + changes.updates.length + changes.deletes.length > 1) {
+      var dfd = $.Deferred();
+      msg = 'Saving more than one item at a time not yet supported';
+      alert(msg);
+      dfd.reject(msg);
+      return dfd.promise();
+    }
+    if (changes.creates.length > 0) {
+      return es.upsert(changes.creates[0]);
+    }
+    else if (changes.updates.length >0) {
+      return es.upsert(changes.updates[0]);
+    } else if (changes.deletes.length > 0) {
+      return es.delete(changes.deletes[0].id);
+    }
+  };
+
+  // ### query
+  my.query = function(queryObj, dataset) {
+    var dfd = $.Deferred();
+    var es = new my.Wrapper(dataset.url, my.esOptions);
+    var jqxhr = es.query(queryObj);
+    jqxhr.done(function(results) {
+      var out = {
+        total: results.hits.total,
+      };
+      out.hits = _.map(results.hits.hits, function(hit) {
+        if (!('id' in hit._source) && hit._id) {
+          hit._source.id = hit._id;
+        }
+        return hit._source;
+      });
+      if (results.facets) {
+        out.facets = results.facets;
+      }
+      dfd.resolve(out);
+    }).fail(function(errorObj) {
+      var out = {
+        title: 'Failed: ' + errorObj.status + ' code',
+        message: errorObj.responseText
+      };
+      dfd.reject(out);
+    });
+    return dfd.promise();
+  };
+
+
+// ### makeRequest
+// 
+// Just $.ajax but in any headers in the 'headers' attribute of this
+// Backend instance. Example:
+//
+// <pre>
+// var jqxhr = this._makeRequest({
+//   url: the-url
+// });
+// </pre>
+var makeRequest = function(data, headers) {
+  var extras = {};
+  if (headers) {
+    extras = {
+      beforeSend: function(req) {
+        _.each(headers, function(value, key) {
+          req.setRequestHeader(key, value);
+        });
+      }
+    };
+  }
+  var data = _.extend(extras, data);
+  return $.ajax(data);
+};
 
 }(jQuery, this.recline.Backend.ElasticSearch));
 

@@ -54,7 +54,7 @@ this.recline.Backend.Memory = this.recline.Backend.Memory || {};
       _.each(changes.deletes, function(record) {
         self.delete(record);
       });
-      dfd.resolve(this);
+      dfd.resolve();
       return dfd.promise();
     },
 
