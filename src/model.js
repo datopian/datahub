@@ -179,7 +179,7 @@ my.Dataset = Backbone.Model.extend({
       current = current[parts[ii]];
     }
     if (current) {
-      return new current();
+      return current;
     }
 
     // alternatively we just had a simple string
@@ -187,7 +187,7 @@ my.Dataset = Backbone.Model.extend({
     if (recline && recline.Backend) {
       _.each(_.keys(recline.Backend), function(name) {
         if (name.toLowerCase() === backendString.toLowerCase()) {
-          backend = new recline.Backend[name].Backbone();
+          backend = recline.Backend[name];
         }
       });
     }

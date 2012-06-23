@@ -67,14 +67,13 @@ var dataProxyData = {
 test('DataProxy Backend', function() {
   // needed only if not stubbing
   // stop();
-  var backend = new recline.Backend.DataProxy.Backbone();
-  ok(backend.readonly);
+  var backend = recline.Backend.DataProxy;
   equal(backend.__type__, 'dataproxy');
 
   var dataset = new recline.Model.Dataset({
       url: 'http://webstore.thedatahub.org/rufuspollock/gold_prices/data.csv'
     },
-    backend
+    'dataproxy'
   );
 
   var stub = sinon.stub($, 'ajax', function(options) {
@@ -92,15 +91,18 @@ test('DataProxy Backend', function() {
     }
   });
 
-  dataset.fetch().done(function(dataset) {
-    dataset.query().done(function(docList) {
-      deepEqual(['__id__', 'date', 'price'], _.pluck(dataset.fields.toJSON(), 'id'));
-      equal(null, dataset.docCount)
-      equal(10, docList.length)
-      equal("1950-01", docList.models[0].get('date'));
-      // needed only if not stubbing
-      start();
-    });
+  expect(6);
+  dataset.fetch().then(function() {
+    deepEqual(['__id__', 'date', 'price'], _.pluck(dataset.fields.toJSON(), 'id'));
+    equal(10, dataset.docCount)
+    equal(dataset.currentRecords.models[0].get('date'), "1950-01");
+    // needed only if not stubbing
+    // start();
+  });
+
+  dataset.query({q: '1950-01'}).then(function() {
+    equal(dataset.docCount, 1);
+    equal(dataset.currentRecords.models[0].get('price'), '34.73');
   });
   $.ajax.restore();
 });
