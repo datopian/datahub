@@ -24,7 +24,6 @@ my.Dataset = Backbone.Model.extend({
     _.bindAll(this, 'query');
     this.backend = backend;
     if (typeof backend === 'undefined') {
-      // guess backend ...
       if (this.get('records')) {
         this.backend = recline.Backend.Memory;
       }
@@ -56,7 +55,7 @@ my.Dataset = Backbone.Model.extend({
   fetch: function() {
     var self = this;
     var dfd = $.Deferred();
-    // TODO: fail case;
+
     if (this.backend !== recline.Backend.Memory) {
       this.backend.fetch(this.toJSON())
         .done(handleResults)
@@ -73,19 +72,79 @@ my.Dataset = Backbone.Model.extend({
     }
 
     function handleResults(results) {
-      self.set(results.metadata);
+      var out = self._normalizeRecordsAndFields(results.records, results.fields);
       if (results.useMemoryStore) {
-        self._store = new recline.Backend.Memory.Store(results.records, results.fields);
-        self.query();
-        // store will have extracted fields if not provided
-        self.fields.reset(self._store.fields);
-      } else {
-        self.fields.reset(results.fields);
+        self._store = new recline.Backend.Memory.Store(out.records, out.fields);
       }
-      // TODO: parsing the processing of fields
+
+      self.set(results.metadata);
+      self.fields.reset(out.fields);
+      self.query();
       dfd.resolve(self);
     }
+
     return dfd.promise();
+  },
+
+  // ### _normalizeRecordsAndFields
+  // 
+  // Get a proper set of fields and records from incoming set of fields and records either of which may be null or arrays or objects
+  //
+  // e.g. fields = ['a', 'b', 'c'] and records = [ [1,2,3] ] =>
+  // fields = [ {id: a}, {id: b}, {id: c}], records = [ {a: 1}, {b: 2}, {c: 3}]
+  _normalizeRecordsAndFields: function(records, fields) {
+    // if no fields get them from records
+    if (!fields && records && records.length > 0) {
+      // records is array then fields is first row of records ...
+      if (records[0] instanceof Array) {
+        fields = records[0];
+        records = records.slice(1);
+      } else {
+        fields = _.map(_.keys(records[0]), function(key) {
+          return {id: key};
+        });
+      }
+    } 
+
+    // fields is an array of strings (i.e. list of field headings/ids)
+    if (fields && fields.length > 0 && typeof fields[0] === 'string') {
+      // Rename duplicate fieldIds as each field name needs to be
+      // unique.
+      var seen = {};
+      fields = _.map(fields, function(field, index) {
+        // cannot use trim as not supported by IE7
+        var fieldId = field.replace(/^\s+|\s+$/g, '');
+        if (fieldId === '') {
+          fieldId = '_noname_';
+          field = fieldId;
+        }
+        while (fieldId in seen) {
+          seen[field] += 1;
+          fieldId = field + seen[field];
+        }
+        if (!(field in seen)) {
+          seen[field] = 0;
+        }
+        // TODO: decide whether to keep original name as label ...
+        // return { id: fieldId, label: field || fieldId }
+        return { id: fieldId };
+      });
+    }
+    // records is provided as arrays so need to zip together with fields
+    // NB: this requires you to have fields to match arrays
+    if (records && records.length > 0 && records[0] instanceof Array) {
+      records = _.map(records, function(doc) {
+        var tmp = {};
+        _.each(fields, function(field, idx) {
+          tmp[field.id] = doc[idx];
+        });
+        return tmp;
+      });
+    }
+    return {
+      fields: fields,
+      records: records
+    };
   },
 
   save: function() {

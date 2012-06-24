@@ -108,6 +108,8 @@ test('Field: custom deriver and renderer', function () {
 // =================================
 // Dataset
 
+module("Model Dataset");
+
 test('Dataset', function () {
   var meta = {id: 'test', title: 'xyz'};
   var dataset = new recline.Model.Dataset(meta);
@@ -128,6 +130,114 @@ test('Dataset getFieldsSummary', function () {
       { count: 1, term: 'US' }
     ];
     deepEqual(facet.get('terms'), exp);
+  });
+});
+
+test('_normalizeRecordsAndFields', function () {
+  var data = [
+    // fields but no records
+    {
+      in_: {
+        fields: [ '', 'abc', 'abc', 'xyz', '' ],
+        records: null
+      },
+      exp: {
+        fields: [
+          {id: '_noname_'},
+          {id: 'abc'},
+          {id: 'abc1'},
+          {id: 'xyz'},
+          {id: '_noname_1'}
+        ],
+        records: null
+      },
+    },
+    // records array but no fields
+    {
+      in_: {
+        fields: undefined,
+        records: [
+          ['col1', 'col2'],
+          [1,2],
+          [3,4]
+        ]
+      },
+      exp: {
+        fields: [
+          {id: 'col1'},
+          {id: 'col2'}
+        ],
+        records: [
+          {col1: 1, col2: 2},
+          {col1: 3, col2: 4}
+        ]
+      }
+    },
+    // records objects but no fields
+    {
+      in_: {
+        fields: undefined,
+        records: [
+          {col1: 1, col2: 2},
+          {col1: 3, col2: 4}
+        ]
+      },
+      exp: {
+        fields: [
+          {id: 'col1'},
+          {id: 'col2'}
+        ],
+        records: [
+          {col1: 1, col2: 2},
+          {col1: 3, col2: 4}
+        ]
+      }
+    },
+    // fields and records array
+    {
+      in_: {
+        fields: [{id: 'col1'}, {id: 'col2'}],
+        records: [
+          [1,2],
+          [3,4]
+        ]
+      },
+      exp: {
+        fields: [
+          {id: 'col1'},
+          {id: 'col2'}
+        ],
+        records: [
+          {col1: 1, col2: 2},
+          {col1: 3, col2: 4}
+        ]
+      }
+    },
+    // everything already correct
+    {
+      in_: {
+        fields: [{id: 'col1'}, {id: 'col2'}],
+        records: [
+          {col1: 1, col2: 2},
+          {col1: 3, col2: 4},
+        ]
+      },
+      exp: {
+        fields: [
+          {id: 'col1'},
+          {id: 'col2'}
+        ],
+        records: [
+          {col1: 1, col2: 2},
+          {col1: 3, col2: 4}
+        ]
+      }
+    }
+  ];
+  var dataset = new recline.Model.Dataset();
+  _.each(data, function(item) {
+    out = dataset._normalizeRecordsAndFields(item.in_.records, item.in_.fields);
+    deepEqual(out, item.exp);
   });
 });
 

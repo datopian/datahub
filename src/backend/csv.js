@@ -3,6 +3,17 @@ this.recline.Backend = this.recline.Backend || {};
 this.recline.Backend.CSV = this.recline.Backend.CSV || {};
 
 (function(my) {
+  my.fetch = function(dataset) {
+    // 3 options
+    //
+    // 1. CSV local fileobject -> HTML5 file object + CSV reader
+    // 2. online CSV file that is ajax-able -> ajax + csv parser
+    // 3. remote file (CSV or XLS) or XLS -> dataproxy
+    //
+    // All options generates similar data and give a memory store outcome
+
+  };
+
   // ## load
   //
   // Load data from a CSV file referenced in an HTMl5 file object returning the
