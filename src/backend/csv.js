@@ -30,7 +30,7 @@ this.recline.Backend.CSV = this.recline.Backend.CSV || {};
       reader.onerror = function (e) {
         alert('Failed to load file. Code: ' + e.target.error.code);
       };
-      reader.readAsText(file, encoding);
+      reader.readAsText(dataset.file, encoding);
     } else if (dataset.data) {
       var rows = my.parseCSV(dataset.data, dataset);
       dfd.resolve({
