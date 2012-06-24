@@ -202,17 +202,17 @@ var ExplorerApp = Backbone.View.extend({
     var $form = $(e.target);
     $('.modal.js-load-dialog-file').modal('hide');
     var $file = $form.find('input[type="file"]')[0];
-    var file = $file.files[0];
-    var options = {
-      separator : $form.find('input[name="separator"]').val(),
-      delimiter : $form.find('input[name="delimiter"]').val(),
-      encoding : $form.find('input[name="encoding"]').val()
-    };
-    recline.Backend.CSV.load(file, function(dataset) {
-        self.createExplorer(dataset)
+    var dataset = new recline.Model.Dataset({
+        file: $file.files[0],
+        separator : $form.find('input[name="separator"]').val(),
+        delimiter : $form.find('input[name="delimiter"]').val(),
+        encoding : $form.find('input[name="encoding"]').val()
       },
-      options
+      'csv'
     );
+    dataset.fetch().done(function() {
+      self.createExplorer(dataset)
+    });
   },
 
   _getSettings: function() {

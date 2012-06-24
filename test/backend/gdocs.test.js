@@ -1,110 +1,5 @@
 (function ($) {
-module("Backend");
-
-var dataProxyData = {
-  "data": [
-    [
-    "1", 
-  "1950-01", 
-  "34.73"
-    ], 
-  [
-    "2", 
-  "1950-02", 
-  "34.73"
-    ], 
-  [
-    "3", 
-  "1950-03", 
-  "34.73"
-    ], 
-  [
-    "4", 
-  "1950-04", 
-  "34.73"
-    ], 
-  [
-    "5", 
-  "1950-05", 
-  "34.73"
-    ], 
-  [
-    "6", 
-  "1950-06", 
-  "34.73"
-    ], 
-  [
-    "7", 
-  "1950-07", 
-  "34.73"
-    ], 
-  [
-    "8", 
-  "1950-08", 
-  "34.73"
-    ], 
-  [
-    "9", 
-  "1950-09", 
-  "34.73"
-    ], 
-  [
-    "10", 
-  "1950-10", 
-  "34.73"
-    ]
-    ], 
-  "fields": [
-    "__id__", 
-  "date", 
-  "price"
-    ], 
-  "length": null, 
-  "max_results": 10, 
-  "url": "http://webstore.thedatahub.org/rufuspollock/gold_prices/data.csv"
-};
-
-test('DataProxy Backend', function() {
-  // needed only if not stubbing
-  // stop();
-  var backend = new recline.Backend.DataProxy.Backbone();
-  ok(backend.readonly);
-  equal(backend.__type__, 'dataproxy');
-
-  var dataset = new recline.Model.Dataset({
-      url: 'http://webstore.thedatahub.org/rufuspollock/gold_prices/data.csv'
-    },
-    backend
-  );
-
-  var stub = sinon.stub($, 'ajax', function(options) {
-    var partialUrl = 'jsonpdataproxy.appspot.com';
-    if (options.url.indexOf(partialUrl) != -1) {
-      return {
-        done: function(callback) {
-          callback(dataProxyData);
-          return this;
-        }, 
-        fail: function() {
-          return this;
-        }
-      }
-    }
-  });
-
-  dataset.fetch().done(function(dataset) {
-    dataset.query().done(function(docList) {
-      deepEqual(['__id__', 'date', 'price'], _.pluck(dataset.fields.toJSON(), 'id'));
-      equal(null, dataset.docCount)
-      equal(10, docList.length)
-      equal("1950-01", docList.models[0].get('date'));
-      // needed only if not stubbing
-      start();
-    });
-  });
-  $.ajax.restore();
-});
-
+module("Backend GDocs");
 
 var sample_gdocs_spreadsheet_data = {
   "feed": {
@@ -155,13 +50,13 @@ var sample_gdocs_spreadsheet_data = {
     ], 
       "xmlns$openSearch": "http://a9.com/-/spec/opensearchrss/1.0/", 
       "entry": [
-      {
-        "category": [
         {
-          "term": "http://schemas.google.com/spreadsheets/2006#list", 
-          "scheme": "http://schemas.google.com/spreadsheets/2006"
-        }
-        ], 
+          "category": [
+            {
+              "term": "http://schemas.google.com/spreadsheets/2006#list", 
+              "scheme": "http://schemas.google.com/spreadsheets/2006"
+            }
+          ], 
           "updated": {
             "$t": "2010-07-12T18:32:16.200Z"
           }, 
@@ -273,11 +168,10 @@ var sample_gdocs_spreadsheet_data = {
 }
 
 test("GDocs Backend", function() { 
-  var backend = new recline.Backend.GDocs.Backbone();
   var dataset = new recline.Model.Dataset({
       url: 'https://spreadsheets.google.com/feeds/list/0Aon3JiuouxLUdDQwZE1JdV94cUd6NWtuZ0IyWTBjLWc/od6/public/values?alt=json'
     },
-    backend
+    'gdocs'
   );
 
   var stub = sinon.stub($, 'getJSON', function(options, cb) {
@@ -287,7 +181,8 @@ test("GDocs Backend", function() {
     }
   });
 
-  dataset.query().then(function(docList) {
+  dataset.fetch().then(function() {
+    var docList = dataset.currentRecords;
     deepEqual(['column-2', 'column-1'], _.pluck(dataset.fields.toJSON(), 'id'));
     equal(3, docList.length);
     equal("A", docList.models[0].get('column-1'));
@@ -304,3 +199,4 @@ test("GDocs Backend.getUrl", function() {
 });
 
 })(this.jQuery);
+
