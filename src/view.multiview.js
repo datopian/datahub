@@ -182,10 +182,9 @@ my.MultiView = Backbone.View.extend({
 
     // retrieve basic data like fields etc
     // note this.model and dataset returned are the same
+    // TODO: set query state ...?
+    this.model.queryState.set(self.state.get('query'), {silent: true});
     this.model.fetch()
-      .done(function(dataset) {
-        self.model.query(self.state.get('query'));
-      })
       .fail(function(error) {
         self.notify({message: error.message, category: 'error', persist: true});
       });
