@@ -1,6 +1,7 @@
 ---
 layout: container
 title: Library - Views
+root: ../
 ---
 
 <div class="page-header">
