@@ -3,59 +3,50 @@ this.recline.Backend = this.recline.Backend || {};
 this.recline.Backend.CSV = this.recline.Backend.CSV || {};
 
 (function(my) {
+  // ## fetch
+  //
+  // 3 options
+  //
+  // 1. CSV local fileobject -> HTML5 file object + CSV parser
+  // 2. Already have CSV string (in data) attribute -> CSV parser
+  // 2. online CSV file that is ajax-able -> ajax + csv parser
+  //
+  // All options generates similar data and give a memory store outcome
   my.fetch = function(dataset) {
-    // 3 options
-    //
-    // 1. CSV local fileobject -> HTML5 file object + CSV reader
-    // 2. online CSV file that is ajax-able -> ajax + csv parser
-    // 3. remote file (CSV or XLS) or XLS -> dataproxy
-    //
-    // All options generates similar data and give a memory store outcome
-
-  };
-
-  // ## load
-  //
-  // Load data from a CSV file referenced in an HTMl5 file object returning the
-  // dataset in the callback
-  //
-  // @param options as for parseCSV below
-  my.load = function(file, callback, options) {
-    var encoding = options.encoding || 'UTF-8';
-    
-    var metadata = {
-      id: file.name,
-      file: file
-    };
-    var reader = new FileReader();
-    // TODO
-    reader.onload = function(e) {
-      var dataset = my.csvToDataset(e.target.result, options);
-      callback(dataset);
-    };
-    reader.onerror = function (e) {
-      alert('Failed to load file. Code: ' + e.target.error.code);
-    };
-    reader.readAsText(file, encoding);
-  };
-
-  my.csvToDataset = function(csvString, options) {
-    var out = my.parseCSV(csvString, options);
-    fields = _.map(out[0], function(cell) {
-      return { id: cell, label: cell };
-    });
-    var data = _.map(out.slice(1), function(row) {
-      var _doc = {};
-      _.each(out[0], function(fieldId, idx) {
-        _doc[fieldId] = row[idx];
+    var dfd = $.Deferred();
+    if (dataset.file) {
+      var reader = new FileReader();
+      var encoding = dataset.encoding || 'UTF-8';
+      reader.onload = function(e) {
+        var rows = my.parseCSV(e.target.result, dataset);
+        dfd.resolve({
+          records: rows,
+          metadata: {
+            filename: dataset.file.name
+          },
+          useMemoryStore: true
+        });
+      };
+      reader.onerror = function (e) {
+        alert('Failed to load file. Code: ' + e.target.error.code);
+      };
+      reader.readAsText(file, encoding);
+    } else if (dataset.data) {
+      var rows = my.parseCSV(dataset.data, dataset);
+      dfd.resolve({
+        records: rows,
+        useMemoryStore: true
       });
-      return _doc;
-    });
-    var dataset = new recline.Model.Dataset({
-      records: data,
-      fields: fields
-    });
-    return dataset;
+    } else if (dataset.url) {
+      $.get(dataset.url).done(function(data) {
+        var rows = my.parseCSV(dataset.data, dataset);
+        dfd.resolve({
+          records: rows,
+          useMemoryStore: true
+        });
+      });
+    }
+    return dfd.promise();
   };
 
   // Converts a Comma Separated Values string into an array of arrays.
@@ -71,16 +62,15 @@ this.recline.Backend.CSV = this.recline.Backend.CSV || {};
   // 	@param {Boolean} [trim=false] If set to True leading and trailing whitespace is stripped off of each non-quoted field as it is imported
   //	@param {String} [separator=','] Separator for CSV file
   // Heavily based on uselesscode's JS CSV parser (MIT Licensed):
-  // thttp://www.uselesscode.org/javascript/csv/
+  // http://www.uselesscode.org/javascript/csv/
   my.parseCSV= function(s, options) {
     // Get rid of any trailing \n
     s = chomp(s);
 
     var options = options || {};
-    var trm = options.trim;
+    var trm = (options.trim === false) ? false : true;
     var separator = options.separator || ',';
     var delimiter = options.delimiter || '"';
-
 
     var cur = '', // The character we are currently processing.
       inQuote = false,

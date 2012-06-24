@@ -24,9 +24,15 @@ test("parseCSV", function() {
   '"Jones, Jay", 10\n' +
   '"Xyz ""ABC"" O\'Brien", 11:35\n' +
   '"Other, AN", 12:35\n';
-  var dataset = recline.Backend.CSV.csvToDataset(csv);
-  dataset.query();
+  var dataset = new recline.Model.Dataset({
+      data: csv
+    },
+    'csv'
+  );
+  dataset.fetch();
   equal(dataset.currentRecords.length, 3);
+  var row = dataset.currentRecords.models[0].toJSON();
+  deepEqual(row, {Name: 'Jones, Jay', Value: 10});
 });
 
 test("parseCSVsemicolon", function() {
