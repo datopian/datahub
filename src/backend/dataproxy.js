@@ -10,6 +10,8 @@ this.recline.Backend.DataProxy = this.recline.Backend.DataProxy || {};
   // ## load
   //
   // Load data from a URL via the [DataProxy](http://github.com/okfn/dataproxy).
+  //
+  // Returns array of field names and array of arrays for records
   my.fetch = function(dataset) {
     var data = {
       url: dataset.url,
@@ -27,32 +29,9 @@ this.recline.Backend.DataProxy = this.recline.Backend.DataProxy || {};
         dfd.reject(results.error);
       }
 
-      // Rename duplicate fieldIds as each field name needs to be
-      // unique.
-      var seen = {};
-      var fields = _.map(results.fields, function(field, index) {
-        var fieldId = field;
-        while (fieldId in seen) {
-          seen[field] += 1;
-          fieldId = field + seen[field];
-        }
-        if (!(field in seen)) {
-          seen[field] = 0;
-        }
-        return { id: fieldId, label: field }
-      });
-
-      // data is provided as arrays so need to zip together with fields
-      var records = _.map(results.data, function(doc) {
-        var tmp = {};
-        _.each(results.fields, function(key, idx) {
-          tmp[key] = doc[idx];
-        });
-        return tmp;
-      });
       dfd.resolve({
-        records: records,
-        fields: fields,
+        records: results.data,
+        fields: results.fields,
         useMemoryStore: true
       });
     })

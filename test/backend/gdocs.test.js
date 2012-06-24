@@ -50,13 +50,13 @@ var sample_gdocs_spreadsheet_data = {
     ], 
       "xmlns$openSearch": "http://a9.com/-/spec/opensearchrss/1.0/", 
       "entry": [
-      {
-        "category": [
         {
-          "term": "http://schemas.google.com/spreadsheets/2006#list", 
-          "scheme": "http://schemas.google.com/spreadsheets/2006"
-        }
-        ], 
+          "category": [
+            {
+              "term": "http://schemas.google.com/spreadsheets/2006#list", 
+              "scheme": "http://schemas.google.com/spreadsheets/2006"
+            }
+          ], 
           "updated": {
             "$t": "2010-07-12T18:32:16.200Z"
           }, 
