@@ -79,8 +79,13 @@ my.Dataset = Backbone.Model.extend({
 
       self.set(results.metadata);
       self.fields.reset(out.fields);
-      self.query();
-      dfd.resolve(self);
+      self.query()
+        .done(function() {
+          dfd.resolve(self);
+        })
+        .fail(function(arguments) {
+          dfd.reject(arguments);
+        });
     }
 
     return dfd.promise();
@@ -172,7 +177,7 @@ my.Dataset = Backbone.Model.extend({
     }
     var actualQuery = this.queryState.toJSON();
 
-    this._store.query(actualQuery, this)
+    this._store.query(actualQuery, this.toJSON())
       .done(function(queryResult) {
         self._handleQueryResult(queryResult);
         self.trigger('query:done');
@@ -226,7 +231,7 @@ my.Dataset = Backbone.Model.extend({
       query.addFacet(field.id);
     });
     var dfd = $.Deferred();
-    this._store.query(query.toJSON(), this).done(function(queryResult) {
+    this._store.query(query.toJSON(), this.toJSON()).done(function(queryResult) {
       if (queryResult.facets) {
         _.each(queryResult.facets, function(facetResult, facetId) {
           facetResult.id = facetId;
