@@ -480,41 +480,6 @@ my.Query = Backbone.Model.extend({
   },
   updateFilter: function(index, value) {
   },
-  // #### addTermFilter
-  // 
-  // Set (update or add) a terms filter to filters
-  //
-  // See <http://www.elasticsearch.org/guide/reference/query-dsl/terms-filter.html>
-  addTermFilter: function(fieldId, value) {
-    var filters = this.get('filters');
-    var filter = { term: {} };
-    filter.term[fieldId] = value || '';
-    filters.push(filter);
-    this.set({filters: filters});
-    // change does not seem to be triggered automatically
-    if (value) {
-      this.trigger('change');
-    } else {
-      // adding a new blank filter and do not want to trigger a new query
-      this.trigger('change:filters:new-blank');
-    }
-  },
-  addGeoDistanceFilter: function(field) {
-    var filters = this.get('filters');
-    var filter = { 
-      geo_distance: {
-        distance: '10km',
-      }
-    };
-    filter.geo_distance[field] = {
-      'lon': 0,
-      'lat': 0
-    };
-    filters.push(filter);
-    this.set({filters: filters});
-    // adding a new blank filter and do not want to trigger a new query
-    this.trigger('change:filters:new-blank');
-  },
   // ### removeFilter
   //
   // Remove a filter from filters at index filterIndex

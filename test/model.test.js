@@ -274,10 +274,4 @@ test('Query.addFilter', function () {
   deepEqual(exp, query.get('filters')[1]);
 });
 
-test('Query.addTermFilter', function () {
-  var query = new recline.Model.Query();
-  query.addTermFilter('xyz', 'this-value');
-  deepEqual({term: {xyz: 'this-value'}}, query.get('filters')[0]);
-});
-
 })(this.jQuery);
