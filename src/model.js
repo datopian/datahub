@@ -9,27 +9,15 @@ my.Dataset = Backbone.Model.extend({
   __type__: 'Dataset',
 
   // ### initialize
-  // 
-  // Sets up instance properties (see above)
-  //
-  // @param {Object} model: standard set of model attributes passed to Backbone models
-  //
-  // @param {Object or String} backend: Backend instance (see
-  // `recline.Backend.Base`) or a string specifying that instance. The
-  // string specifying may be a full class path e.g.
-  // 'recline.Backend.ElasticSearch' or a simple name e.g.
-  // 'elasticsearch' or 'ElasticSearch' (in this case must be a Backend in
-  // recline.Backend module)
-  initialize: function(model, backend) {
+  initialize: function() {
     _.bindAll(this, 'query');
-    this.backend = backend;
-    if (typeof backend === 'undefined') {
+    this.backend = null;
+    if (this.get('backend')) {
+      this.backend = this._backendFromString(this.get('backend'));
+    } else { // try to guess backend ...
       if (this.get('records')) {
         this.backend = recline.Backend.Memory;
       }
-    }
-    if (typeof(backend) === 'string') {
-      this.backend = this._backendFromString(backend);
     }
     this.fields = new my.FieldList();
     this.currentRecords = new my.RecordList();
@@ -43,6 +31,9 @@ my.Dataset = Backbone.Model.extend({
     this.queryState = new my.Query();
     this.queryState.bind('change', this.query);
     this.queryState.bind('facet:add', this.query);
+    // store is what we query and save against
+    // store will either be the backend or be a memory store if Backend fetch
+    // tells us to use memory store
     this._store = this.backend;
     if (this.backend == recline.Backend.Memory) {
       this.fetch();
@@ -298,13 +289,11 @@ my.Dataset.restore = function(state) {
     };
   } else {
     var datasetInfo = {
-      url: state.url
+      url: state.url,
+      backend: state.backend
     };
   }
-  dataset = new recline.Model.Dataset(
-    datasetInfo,
-    state.backend
-  );
+  dataset = new recline.Model.Dataset(datasetInfo);
   return dataset;
 };
 

@@ -250,10 +250,9 @@ module("Backend ElasticSearch - Recline");
 
 test("query", function() { 
   var dataset = new recline.Model.Dataset({
-      url: 'https://localhost:9200/my-es-db/my-es-type'
-    },
-    'elasticsearch'
-  );
+    url: 'https://localhost:9200/my-es-db/my-es-type',
+    backend: 'elasticsearch'
+  });
 
   var stub = sinon.stub($, 'ajax', function(options) {
     if (options.url.indexOf('_mapping') != -1) {
@@ -292,10 +291,9 @@ test("query", function() {
 
 test("write", function() { 
   var dataset = new recline.Model.Dataset({
-      url: 'http://localhost:9200/recline-test/es-write'
-    },
-    'elasticsearch'
-  );
+    url: 'http://localhost:9200/recline-test/es-write',
+    backend: 'elasticsearch'
+  });
 
   stop();
 

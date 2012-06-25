@@ -192,7 +192,8 @@ var ExplorerApp = Backbone.View.extend({
       }
       type = 'elasticsearch';
     }
-    var dataset = new recline.Model.Dataset(datasetInfo, type);
+    datasetInfo.backend = type;
+    var dataset = new recline.Model.Dataset(datasetInfo);
     this.createExplorer(dataset);
   },
 
@@ -203,13 +204,12 @@ var ExplorerApp = Backbone.View.extend({
     $('.modal.js-load-dialog-file').modal('hide');
     var $file = $form.find('input[type="file"]')[0];
     var dataset = new recline.Model.Dataset({
-        file: $file.files[0],
-        separator : $form.find('input[name="separator"]').val(),
-        delimiter : $form.find('input[name="delimiter"]').val(),
-        encoding : $form.find('input[name="encoding"]').val()
-      },
-      'csv'
-    );
+      file: $file.files[0],
+      separator : $form.find('input[name="separator"]').val(),
+      delimiter : $form.find('input[name="delimiter"]').val(),
+      encoding : $form.find('input[name="encoding"]').val(),
+      backend: 'csv'
+    });
     dataset.fetch().done(function() {
       self.createExplorer(dataset)
     });
