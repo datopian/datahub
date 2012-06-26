@@ -5,7 +5,7 @@ import os
 
 def cat():
     print("** Combining js files")
-    cmd = 'cat src/*.js src/backend/*.js > dist/recline.js'
+    cmd = 'cat src/*.js > dist/recline.js'
     os.system(cmd)
     print("** Combining css files")
     cmd = 'cat css/*.css > dist/recline.css'
@@ -16,14 +16,11 @@ def docs():
     print("** Building docs")
 
     docco_executable = os.environ.get('DOCCO_EXECUTABLE','docco')
-    cmd = '%s src/*.js' % (docco_executable)
-    os.system(cmd)
     if os.path.exists('/tmp/recline-docs'):
       shutil.rmtree('/tmp/recline-docs')
     os.makedirs('/tmp/recline-docs')
-    os.system('mkdir -p docs/backend')
-    files = '%s/src/backend/*.js' % os.getcwd()
-    dest = '%s/docs/backend' % os.getcwd()
+    files = '%s/src/*.js' % os.getcwd()
+    dest = '%s/docs/source' % os.getcwd()
     os.system('cd /tmp/recline-docs && %s %s && mv docs/* %s' % (docco_executable,files, dest))
     print("** Docs built ok")
 
