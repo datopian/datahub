@@ -5,7 +5,7 @@ import os
 
 def cat():
     print("** Combining js files")
-    cmd = 'cat src/*.js > dist/recline.js'
+    cmd = 'ls src/*.js | grep -v couchdb | xargs cat  > dist/recline.js'
     os.system(cmd)
     print("** Combining css files")
     cmd = 'cat css/*.css > dist/recline.css'
