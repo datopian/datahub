@@ -163,6 +163,11 @@ this.recline.Backend.CouchDB = this.recline.Backend.CouchDB || {};
   // backend.fetch(dataset.toJSON());
   // backend.query(query, dataset.toJSON()).done(function () { ... });
   //
+  // Alternatively:
+  // var dataset = new recline.Model.Dataset({ ... }, 'couchdb');
+  // dataset.fetch();
+  // var results = dataset.query(query_obj);
+  // 
   // Additionally, the Dataset instance may define three methods:
   //    function record_update (record, document) { ... }
   //    function record_delete (record, document) { ... }
@@ -244,7 +249,7 @@ my.save = function (changes, dataset) {
     var succ_cb = function (msg) {results.done.push({'op': 'create', 'record': new_doc, 'reason': ''}); }
     var fail_cb = function (msg) {results.fail.push({'op': 'create', 'record': new_doc, 'reason': msg}); }
 
-    my._create_document(new_doc, dataset).then([decr_cb, succ_cb, resolve_cb], [decr_cb, fail_cb, resolve_cb]);
+    _createDocument(new_doc, dataset).then([decr_cb, succ_cb, resolve_cb], [decr_cb, fail_cb, resolve_cb]);
   }
 
   for (var i in changes.updates) {
@@ -252,7 +257,7 @@ my.save = function (changes, dataset) {
     var succ_cb = function (msg) {results.done.push({'op': 'update', 'record': new_doc, 'reason': ''}); }
     var fail_cb = function (msg) {results.fail.push({'op': 'update', 'record': new_doc, 'reason': msg}); }
 
-    my._update_document(new_doc, dataset).then([decr_cb, succ_cb, resolve_cb], [decr_cb, fail_cb, resolve_cb]);
+    _updateDocument(new_doc, dataset).then([decr_cb, succ_cb, resolve_cb], [decr_cb, fail_cb, resolve_cb]);
   }
 
   for (var i in changes.deletes) {
@@ -260,7 +265,7 @@ my.save = function (changes, dataset) {
     var succ_cb = function (msg) {results.done.push({'op': 'delete', 'record': old_doc, 'reason': ''}); }
     var fail_cb = function (msg) {results.fail.push({'op': 'delete', 'record': old_doc, 'reason': msg}); }
 
-    my._delete_document(new_doc, dataset).then([decr_cb, succ_cb, resolve_cb], [decr_cb, fail_cb, resolve_cb]);
+    _deleteDocument(new_doc, dataset).then([decr_cb, succ_cb, resolve_cb], [decr_cb, fail_cb, resolve_cb]);
   }
 
   return dfd.promise();
@@ -306,8 +311,8 @@ my.query = function(queryObj, dataset) {
     // the following block is borrowed verbatim from recline.backend.Memory
     // search (with filtering, faceting, and sorting) should be factored
     // out into a separate library.
-    query_result.hits = self._applyFilters(query_result.hits, queryObj);
-    query_result.hits = self._applyFreeTextQuery(query_result.hits, queryObj);
+    query_result.hits = _applyFilters(query_result.hits, queryObj);
+    query_result.hits = _applyFreeTextQuery(query_result.hits, queryObj);
     // not complete sorting!
     _.each(queryObj.sort, function(sortObj) {
       var fieldName = _.keys(sortObj)[0];
@@ -317,7 +322,7 @@ my.query = function(queryObj, dataset) {
       });
     });
     query_result.total  = query_result.hits.length;
-    query_result.facets = self.computeFacets(query_result.hits, queryObj);
+    query_result.facets = _computeFacets(query_result.hits, queryObj);
     query_result.hits = query_result.hits.slice(cdb_q.skip, cdb_q.skip + cdb_q.limit+1);
     dfd.resolve(query_result);
 
@@ -327,7 +332,7 @@ my.query = function(queryObj, dataset) {
 };
 
 // in place filtering
-my._applyFilters = function(results, queryObj) {
+_applyFilters = function(results, queryObj) {
   _.each(queryObj.filters, function(filter) {
     results = _.filter(results, function(doc) {
       var fieldId = _.keys(filter.term)[0];
@@ -338,15 +343,14 @@ my._applyFilters = function(results, queryObj) {
 };
 
 // we OR across fields but AND across terms in query string
-my._applyFreeTextQuery = function(results, queryObj) {
+_applyFreeTextQuery = function(results, queryObj) {
   if (queryObj.q) {
     var terms = queryObj.q.split(' ');
     results = _.filter(results, function(rawdoc) {
       var matches = true;
       _.each(terms, function(term) {
-        var foundmatch = false;
-        //_.each(self.fields, function(field) {
-          _.each(_.keys(rawdoc), function(field) {
+        var foundmatch = false;      
+        _.each(_.keys(rawdoc), function(field) {
           var value = rawdoc[field];
           if (value !== null) { value = value.toString(); }
           // TODO regexes?
@@ -364,7 +368,7 @@ my._applyFreeTextQuery = function(results, queryObj) {
   return results;
 };
 
-my.computeFacets = function(records, queryObj) {
+_computeFacets = function(records, queryObj) {
   var facetResults = {};
   if (!queryObj.facets) {
     return facetResults;
@@ -401,7 +405,7 @@ my.computeFacets = function(records, queryObj) {
   return facetResults;
 };
      
-my._create_document  = function (new_doc, dataset) {
+_createDocument  = function (new_doc, dataset) {
   var dfd      = $.Deferred();
   var db_url   = dataset.db_url;
   var view_url = dataset.view_url;
@@ -431,7 +435,7 @@ my._create_document  = function (new_doc, dataset) {
   return dfd.promise();
 };
 
-my._update_document = function (new_doc, dataset) {
+_updateDocument = function (new_doc, dataset) {
   var dfd      = $.Deferred();
   var db_url   = dataset.db_url;
   var view_url = dataset.view_url;
@@ -461,7 +465,7 @@ my._update_document = function (new_doc, dataset) {
   return dfd.promise();
 };
 
-my._delete_document = function (del_doc, dataset) {
+_deleteDocument = function (del_doc, dataset) {
   var dfd      = $.Deferred();
   var db_url   = dataset.db_url;
   var view_url = dataset.view_url;
