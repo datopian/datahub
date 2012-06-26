@@ -20,7 +20,7 @@ def docs():
       shutil.rmtree('/tmp/recline-docs')
     os.makedirs('/tmp/recline-docs')
     files = '%s/src/*.js' % os.getcwd()
-    dest = '%s/docs/source' % os.getcwd()
+    dest = '%s/docs/src' % os.getcwd()
     os.system('cd /tmp/recline-docs && %s %s && mv docs/* %s' % (docco_executable,files, dest))
     print("** Docs built ok")
 
