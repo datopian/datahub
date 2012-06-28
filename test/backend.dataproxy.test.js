@@ -71,9 +71,9 @@ test('DataProxy Backend', function() {
   equal(backend.__type__, 'dataproxy');
 
   var dataset = new recline.Model.Dataset({
-      url: 'http://webstore.thedatahub.org/rufuspollock/gold_prices/data.csv'
-    },
-    'dataproxy'
+      url: 'http://webstore.thedatahub.org/rufuspollock/gold_prices/data.csv',
+      backend: 'dataproxy'
+    }
   );
 
   var stub = sinon.stub($, 'ajax', function(options) {

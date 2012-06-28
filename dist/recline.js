@@ -1,3 +1,803 @@
+this.recline = this.recline || {};
+this.recline.Backend = this.recline.Backend || {};
+this.recline.Backend.CSV = this.recline.Backend.CSV || {};
+
+(function(my) {
+  // ## fetch
+  //
+  // 3 options
+  //
+  // 1. CSV local fileobject -> HTML5 file object + CSV parser
+  // 2. Already have CSV string (in data) attribute -> CSV parser
+  // 2. online CSV file that is ajax-able -> ajax + csv parser
+  //
+  // All options generates similar data and give a memory store outcome
+  my.fetch = function(dataset) {
+    var dfd = $.Deferred();
+    if (dataset.file) {
+      var reader = new FileReader();
+      var encoding = dataset.encoding || 'UTF-8';
+      reader.onload = function(e) {
+        var rows = my.parseCSV(e.target.result, dataset);
+        dfd.resolve({
+          records: rows,
+          metadata: {
+            filename: dataset.file.name
+          },
+          useMemoryStore: true
+        });
+      };
+      reader.onerror = function (e) {
+        alert('Failed to load file. Code: ' + e.target.error.code);
+      };
+      reader.readAsText(dataset.file, encoding);
+    } else if (dataset.data) {
+      var rows = my.parseCSV(dataset.data, dataset);
+      dfd.resolve({
+        records: rows,
+        useMemoryStore: true
+      });
+    } else if (dataset.url) {
+      $.get(dataset.url).done(function(data) {
+        var rows = my.parseCSV(dataset.data, dataset);
+        dfd.resolve({
+          records: rows,
+          useMemoryStore: true
+        });
+      });
+    }
+    return dfd.promise();
+  };
+
+  // Converts a Comma Separated Values string into an array of arrays.
+  // Each line in the CSV becomes an array.
+  //
+  // Empty fields are converted to nulls and non-quoted numbers are converted to integers or floats.
+  //
+  // @return The CSV parsed as an array
+  // @type Array
+  // 
+  // @param {String} s The string to convert
+  // @param {Object} options Options for loading CSV including
+  // 	@param {Boolean} [trim=false] If set to True leading and trailing whitespace is stripped off of each non-quoted field as it is imported
+  //	@param {String} [separator=','] Separator for CSV file
+  // Heavily based on uselesscode's JS CSV parser (MIT Licensed):
+  // http://www.uselesscode.org/javascript/csv/
+  my.parseCSV= function(s, options) {
+    // Get rid of any trailing \n
+    s = chomp(s);
+
+    var options = options || {};
+    var trm = (options.trim === false) ? false : true;
+    var separator = options.separator || ',';
+    var delimiter = options.delimiter || '"';
+
+    var cur = '', // The character we are currently processing.
+      inQuote = false,
+      fieldQuoted = false,
+      field = '', // Buffer for building up the current field
+      row = [],
+      out = [],
+      i,
+      processField;
+
+    processField = function (field) {
+      if (fieldQuoted !== true) {
+        // If field is empty set to null
+        if (field === '') {
+          field = null;
+        // If the field was not quoted and we are trimming fields, trim it
+        } else if (trm === true) {
+          field = trim(field);
+        }
+
+        // Convert unquoted numbers to their appropriate types
+        if (rxIsInt.test(field)) {
+          field = parseInt(field, 10);
+        } else if (rxIsFloat.test(field)) {
+          field = parseFloat(field, 10);
+        }
+      }
+      return field;
+    };
+
+    for (i = 0; i < s.length; i += 1) {
+      cur = s.charAt(i);
+
+      // If we are at a EOF or EOR
+      if (inQuote === false && (cur === separator || cur === "\n")) {
+	field = processField(field);
+        // Add the current field to the current row
+        row.push(field);
+        // If this is EOR append row to output and flush row
+        if (cur === "\n") {
+          out.push(row);
+          row = [];
+        }
+        // Flush the field buffer
+        field = '';
+        fieldQuoted = false;
+      } else {
+        // If it's not a delimiter, add it to the field buffer
+        if (cur !== delimiter) {
+          field += cur;
+        } else {
+          if (!inQuote) {
+            // We are not in a quote, start a quote
+            inQuote = true;
+            fieldQuoted = true;
+          } else {
+            // Next char is delimiter, this is an escaped delimiter
+            if (s.charAt(i + 1) === delimiter) {
+              field += delimiter;
+              // Skip the next char
+              i += 1;
+            } else {
+              // It's not escaping, so end quote
+              inQuote = false;
+            }
+          }
+        }
+      }
+    }
+
+    // Add the last field
+    field = processField(field);
+    row.push(field);
+    out.push(row);
+
+    return out;
+  };
+
+  var rxIsInt = /^\d+$/,
+    rxIsFloat = /^\d*\.\d+$|^\d+\.\d*$/,
+    // If a string has leading or trailing space,
+    // contains a comma double quote or a newline
+    // it needs to be quoted in CSV output
+    rxNeedsQuoting = /^\s|\s$|,|"|\n/,
+    trim = (function () {
+      // Fx 3.1 has a native trim function, it's about 10x faster, use it if it exists
+      if (String.prototype.trim) {
+        return function (s) {
+          return s.trim();
+        };
+      } else {
+        return function (s) {
+          return s.replace(/^\s*/, '').replace(/\s*$/, '');
+        };
+      }
+    }());
+
+  function chomp(s) {
+    if (s.charAt(s.length - 1) !== "\n") {
+      // Does not end with \n, just return string
+      return s;
+    } else {
+      // Remove the \n
+      return s.substring(0, s.length - 1);
+    }
+  }
+
+
+}(this.recline.Backend.CSV));
+this.recline = this.recline || {};
+this.recline.Backend = this.recline.Backend || {};
+this.recline.Backend.DataProxy = this.recline.Backend.DataProxy || {};
+
+(function($, my) {
+  my.__type__ = 'dataproxy';
+  // URL for the dataproxy
+  my.dataproxy_url = 'http://jsonpdataproxy.appspot.com';
+
+  // ## load
+  //
+  // Load data from a URL via the [DataProxy](http://github.com/okfn/dataproxy).
+  //
+  // Returns array of field names and array of arrays for records
+  my.fetch = function(dataset) {
+    var data = {
+      url: dataset.url,
+      'max-results':  dataset.size || dataset.rows || 1000,
+      type: dataset.format || ''
+    };
+    var jqxhr = $.ajax({
+      url: my.dataproxy_url,
+      data: data,
+      dataType: 'jsonp'
+    });
+    var dfd = $.Deferred();
+    _wrapInTimeout(jqxhr).done(function(results) {
+      if (results.error) {
+        dfd.reject(results.error);
+      }
+
+      dfd.resolve({
+        records: results.data,
+        fields: results.fields,
+        useMemoryStore: true
+      });
+    })
+    .fail(function(arguments) {
+      dfd.reject(arguments);
+    });
+    return dfd.promise();
+  };
+
+  // ## _wrapInTimeout
+  // 
+  // Convenience method providing a crude way to catch backend errors on JSONP calls.
+  // Many of backends use JSONP and so will not get error messages and this is
+  // a crude way to catch those errors.
+  var _wrapInTimeout = function(ourFunction) {
+    var dfd = $.Deferred();
+    var timeout = 5000;
+    var timer = setTimeout(function() {
+      dfd.reject({
+        message: 'Request Error: Backend did not respond after ' + (timeout / 1000) + ' seconds'
+      });
+    }, timeout);
+    ourFunction.done(function(arguments) {
+        clearTimeout(timer);
+        dfd.resolve(arguments);
+      })
+      .fail(function(arguments) {
+        clearTimeout(timer);
+        dfd.reject(arguments);
+      })
+      ;
+    return dfd.promise();
+  }
+
+}(jQuery, this.recline.Backend.DataProxy));
+this.recline = this.recline || {};
+this.recline.Backend = this.recline.Backend || {};
+this.recline.Backend.ElasticSearch = this.recline.Backend.ElasticSearch || {};
+
+(function($, my) {
+  my.__type__ = 'elasticsearch';
+
+  // ## ElasticSearch Wrapper
+  //
+  // A simple JS wrapper around an [ElasticSearch](http://www.elasticsearch.org/) endpoints.
+  //
+  // @param {String} endpoint: url for ElasticSearch type/table, e.g. for ES running
+  // on http://localhost:9200 with index twitter and type tweet it would be:
+  // 
+  // <pre>http://localhost:9200/twitter/tweet</pre>
+  //
+  // @param {Object} options: set of options such as:
+  //
+  // * headers - {dict of headers to add to each request}
+  // * dataType: dataType for AJAx requests e.g. set to jsonp to make jsonp requests (default is json requests)
+  my.Wrapper = function(endpoint, options) { 
+    var self = this;
+    this.endpoint = endpoint;
+    this.options = _.extend({
+        dataType: 'json'
+      },
+      options);
+
+    // ### mapping
+    //
+    // Get ES mapping for this type/table
+    //
+    // @return promise compatible deferred object.
+    this.mapping = function() {
+      var schemaUrl = self.endpoint + '/_mapping';
+      var jqxhr = makeRequest({
+        url: schemaUrl,
+        dataType: this.options.dataType
+      });
+      return jqxhr;
+    };
+
+    // ### get
+    //
+    // Get record corresponding to specified id
+    //
+    // @return promise compatible deferred object.
+    this.get = function(id) {
+      var base = this.endpoint + '/' + id;
+      return makeRequest({
+        url: base,
+        dataType: 'json'
+      });
+    };
+
+    // ### upsert
+    //
+    // create / update a record to ElasticSearch backend
+    //
+    // @param {Object} doc an object to insert to the index.
+    // @return deferred supporting promise API
+    this.upsert = function(doc) {
+      var data = JSON.stringify(doc);
+      url = this.endpoint;
+      if (doc.id) {
+        url += '/' + doc.id;
+      }
+      return makeRequest({
+        url: url,
+        type: 'POST',
+        data: data,
+        dataType: 'json'
+      });
+    };
+
+    // ### delete
+    //
+    // Delete a record from the ElasticSearch backend.
+    //
+    // @param {Object} id id of object to delete
+    // @return deferred supporting promise API
+    this.delete = function(id) {
+      url = this.endpoint;
+      url += '/' + id;
+      return makeRequest({
+        url: url,
+        type: 'DELETE',
+        dataType: 'json'
+      });
+    };
+
+    this._normalizeQuery = function(queryObj) {
+      var self = this;
+      var queryInfo = (queryObj && queryObj.toJSON) ? queryObj.toJSON() : _.extend({}, queryObj);
+      var out = {
+        constant_score: {
+          query: {}
+        }
+      };
+      if (!queryInfo.q) {
+        out.constant_score.query = {
+          match_all: {}
+        };
+      } else {
+        out.constant_score.query = {
+          query_string: {
+            query: queryInfo.q
+          }
+        };
+      }
+      if (queryInfo.filters && queryInfo.filters.length) {
+        out.constant_score.filter = {
+          and: []
+        };
+        _.each(queryInfo.filters, function(filter) {
+          out.constant_score.filter.and.push(self._convertFilter(filter));
+        });
+      }
+      return out;
+    },
+
+    this._convertFilter = function(filter) {
+      var out = {};
+      out[filter.type] = {}
+      if (filter.type === 'term') {
+        out.term[filter.field] = filter.term.toLowerCase();
+      } else if (filter.type === 'geo_distance') {
+        out.geo_distance[filter.field] = filter.point;
+        out.geo_distance.distance = filter.distance;
+        out.geo_distance.unit = filter.unit;
+      }
+      return out;
+    },
+
+    // ### query
+    //
+    // @return deferred supporting promise API
+    this.query = function(queryObj) {
+      var esQuery = (queryObj && queryObj.toJSON) ? queryObj.toJSON() : _.extend({}, queryObj);
+      var queryNormalized = this._normalizeQuery(queryObj);
+      delete esQuery.q;
+      delete esQuery.filters;
+      esQuery.query = queryNormalized;
+      var data = {source: JSON.stringify(esQuery)};
+      var url = this.endpoint + '/_search';
+      var jqxhr = makeRequest({
+        url: url,
+        data: data,
+        dataType: this.options.dataType
+      });
+      return jqxhr;
+    }
+  };
+
+
+  // ## Recline Connectors 
+  //
+  // Requires URL of ElasticSearch endpoint to be specified on the dataset
+  // via the url attribute.
+
+  // ES options which are passed through to `options` on Wrapper (see Wrapper for details)
+  my.esOptions = {};
+
+  // ### fetch
+  my.fetch = function(dataset) {
+    var es = new my.Wrapper(dataset.url, my.esOptions);
+    var dfd = $.Deferred();
+    es.mapping().done(function(schema) {
+      // only one top level key in ES = the type so we can ignore it
+      var key = _.keys(schema)[0];
+      var fieldData = _.map(schema[key].properties, function(dict, fieldName) {
+        dict.id = fieldName;
+        return dict;
+      });
+      dfd.resolve({
+        fields: fieldData
+      });
+    })
+    .fail(function(arguments) {
+      dfd.reject(arguments);
+    });
+    return dfd.promise();
+  };
+
+  // ### save
+  my.save = function(changes, dataset) {
+    var es = new my.Wrapper(dataset.url, my.esOptions);
+    if (changes.creates.length + changes.updates.length + changes.deletes.length > 1) {
+      var dfd = $.Deferred();
+      msg = 'Saving more than one item at a time not yet supported';
+      alert(msg);
+      dfd.reject(msg);
+      return dfd.promise();
+    }
+    if (changes.creates.length > 0) {
+      return es.upsert(changes.creates[0]);
+    }
+    else if (changes.updates.length >0) {
+      return es.upsert(changes.updates[0]);
+    } else if (changes.deletes.length > 0) {
+      return es.delete(changes.deletes[0].id);
+    }
+  };
+
+  // ### query
+  my.query = function(queryObj, dataset) {
+    var dfd = $.Deferred();
+    var es = new my.Wrapper(dataset.url, my.esOptions);
+    var jqxhr = es.query(queryObj);
+    jqxhr.done(function(results) {
+      var out = {
+        total: results.hits.total,
+      };
+      out.hits = _.map(results.hits.hits, function(hit) {
+        if (!('id' in hit._source) && hit._id) {
+          hit._source.id = hit._id;
+        }
+        return hit._source;
+      });
+      if (results.facets) {
+        out.facets = results.facets;
+      }
+      dfd.resolve(out);
+    }).fail(function(errorObj) {
+      var out = {
+        title: 'Failed: ' + errorObj.status + ' code',
+        message: errorObj.responseText
+      };
+      dfd.reject(out);
+    });
+    return dfd.promise();
+  };
+
+
+// ### makeRequest
+// 
+// Just $.ajax but in any headers in the 'headers' attribute of this
+// Backend instance. Example:
+//
+// <pre>
+// var jqxhr = this._makeRequest({
+//   url: the-url
+// });
+// </pre>
+var makeRequest = function(data, headers) {
+  var extras = {};
+  if (headers) {
+    extras = {
+      beforeSend: function(req) {
+        _.each(headers, function(value, key) {
+          req.setRequestHeader(key, value);
+        });
+      }
+    };
+  }
+  var data = _.extend(extras, data);
+  return $.ajax(data);
+};
+
+}(jQuery, this.recline.Backend.ElasticSearch));
+
+this.recline = this.recline || {};
+this.recline.Backend = this.recline.Backend || {};
+this.recline.Backend.GDocs = this.recline.Backend.GDocs || {};
+
+(function($, my) {
+  my.__type__ = 'gdocs';
+
+  // ## Google spreadsheet backend
+  // 
+  // Fetch data from a Google Docs spreadsheet.
+  //
+  // Dataset must have a url attribute pointing to the Gdocs or its JSON feed e.g.
+  // <pre>
+  // var dataset = new recline.Model.Dataset({
+  //     url: 'https://docs.google.com/spreadsheet/ccc?key=0Aon3JiuouxLUdGlQVDJnbjZRSU1tUUJWOUZXRG53VkE#gid=0'
+  //   },
+  //   'gdocs'
+  // );
+  //
+  // var dataset = new recline.Model.Dataset({
+  //     url: 'https://spreadsheets.google.com/feeds/list/0Aon3JiuouxLUdDQwZE1JdV94cUd6NWtuZ0IyWTBjLWc/od6/public/values?alt=json'
+  //   },
+  //   'gdocs'
+  // );
+  // </pre>
+  //
+  // @return object with two attributes
+  //
+  // * fields: array of Field objects
+  // * records: array of objects for each row
+  my.fetch = function(dataset) {
+    var dfd = $.Deferred(); 
+    var url = my.getSpreadsheetAPIUrl(dataset.url);
+    $.getJSON(url, function(d) {
+      result = my.parseData(d);
+      var fields = _.map(result.fields, function(fieldId) {
+        return {id: fieldId};
+      });
+      dfd.resolve({
+        records: result.records,
+        fields: fields,
+        useMemoryStore: true
+      });
+    });
+    return dfd.promise();
+  };
+
+  // ## parseData
+  //
+  // Parse data from Google Docs API into a reasonable form
+  //
+  // :options: (optional) optional argument dictionary:
+  // columnsToUse: list of columns to use (specified by field names)
+  // colTypes: dictionary (with column names as keys) specifying types (e.g. range, percent for use in conversion).
+  // :return: tabular data object (hash with keys: field and data).
+  // 
+  // Issues: seems google docs return columns in rows in random order and not even sure whether consistent across rows.
+  my.parseData = function(gdocsSpreadsheet) {
+    var options = {};
+    if (arguments.length > 1) {
+      options = arguments[1];
+    }
+    var results = {
+      fields: [],
+      records: []
+    };
+    // default is no special info on type of columns
+    var colTypes = {};
+    if (options.colTypes) {
+      colTypes = options.colTypes;
+    }
+    if (gdocsSpreadsheet.feed.entry.length > 0) {
+      for (var k in gdocsSpreadsheet.feed.entry[0]) {
+        if (k.substr(0, 3) == 'gsx') {
+          var col = k.substr(4);
+          results.fields.push(col);
+        }
+      }
+    }
+
+    // converts non numberical values that should be numerical (22.3%[string] -> 0.223[float])
+    var rep = /^([\d\.\-]+)\%$/;
+    results.records = _.map(gdocsSpreadsheet.feed.entry, function(entry) {
+      var row = {};
+      _.each(results.fields, function(col) {
+        var _keyname = 'gsx$' + col;
+        var value = entry[_keyname]['$t'];
+        // if labelled as % and value contains %, convert
+        if (colTypes[col] == 'percent') {
+          if (rep.test(value)) {
+            var value2 = rep.exec(value);
+            var value3 = parseFloat(value2);
+            value = value3 / 100;
+          }
+        }
+        row[col] = value;
+      });
+      return row;
+    });
+    return results;
+  };
+
+  // Convenience function to get GDocs JSON API Url from standard URL
+  my.getSpreadsheetAPIUrl = function(url) {
+    if (url.indexOf('feeds/list') != -1) {
+      return url;
+    } else {
+      // https://docs.google.com/spreadsheet/ccc?key=XXXX#gid=0
+      var regex = /.*spreadsheet\/ccc?.*key=([^#?&+]+).*/;
+      var matches = url.match(regex);
+      if (matches) {
+        var key = matches[1];
+        var worksheet = 1;
+        var out = 'https://spreadsheets.google.com/feeds/list/' + key + '/' + worksheet + '/public/values?alt=json';
+        return out;
+      } else {
+        alert('Failed to extract gdocs key from ' + url);
+      }
+    }
+  };
+}(jQuery, this.recline.Backend.GDocs));
+
+this.recline = this.recline || {};
+this.recline.Backend = this.recline.Backend || {};
+this.recline.Backend.Memory = this.recline.Backend.Memory || {};
+
+(function($, my) {
+  my.__type__ = 'memory';
+
+  // ## Data Wrapper
+  //
+  // Turn a simple array of JS objects into a mini data-store with
+  // functionality like querying, faceting, updating (by ID) and deleting (by
+  // ID).
+  //
+  // @param data list of hashes for each record/row in the data ({key:
+  // value, key: value})
+  // @param fields (optional) list of field hashes (each hash defining a field
+  // as per recline.Model.Field). If fields not specified they will be taken
+  // from the data.
+  my.Store = function(data, fields) {
+    var self = this;
+    this.data = data;
+    if (fields) {
+      this.fields = fields;
+    } else {
+      if (data) {
+        this.fields = _.map(data[0], function(value, key) {
+          return {id: key};
+        });
+      }
+    }
+
+    this.update = function(doc) {
+      _.each(self.data, function(internalDoc, idx) {
+        if(doc.id === internalDoc.id) {
+          self.data[idx] = doc;
+        }
+      });
+    };
+
+    this.delete = function(doc) {
+      var newdocs = _.reject(self.data, function(internalDoc) {
+        return (doc.id === internalDoc.id);
+      });
+      this.data = newdocs;
+    };
+
+    this.save = function(changes, dataset) {
+      var self = this;
+      var dfd = $.Deferred();
+      // TODO _.each(changes.creates) { ... }
+      _.each(changes.updates, function(record) {
+        self.update(record);
+      });
+      _.each(changes.deletes, function(record) {
+        self.delete(record);
+      });
+      dfd.resolve();
+      return dfd.promise();
+    },
+
+    this.query = function(queryObj) {
+      var dfd = $.Deferred();
+      var numRows = queryObj.size || this.data.length;
+      var start = queryObj.from || 0;
+      var results = this.data;
+      results = this._applyFilters(results, queryObj);
+      results = this._applyFreeTextQuery(results, queryObj);
+      // not complete sorting!
+      _.each(queryObj.sort, function(sortObj) {
+        var fieldName = _.keys(sortObj)[0];
+        results = _.sortBy(results, function(doc) {
+          var _out = doc[fieldName];
+          return _out;
+        });
+        if (sortObj[fieldName].order == 'desc') {
+          results.reverse();
+        }
+      });
+      var facets = this.computeFacets(results, queryObj);
+      var out = {
+        total: results.length,
+        hits: results.slice(start, start+numRows),
+        facets: facets
+      };
+      dfd.resolve(out);
+      return dfd.promise();
+    };
+
+    // in place filtering
+    this._applyFilters = function(results, queryObj) {
+      _.each(queryObj.filters, function(filter) {
+        // if a term filter ...
+        if (filter.type === 'term') {
+          results = _.filter(results, function(doc) {
+            return (doc[filter.field] == filter.term);
+          });
+        }
+      });
+      return results;
+    };
+
+    // we OR across fields but AND across terms in query string
+    this._applyFreeTextQuery = function(results, queryObj) {
+      if (queryObj.q) {
+        var terms = queryObj.q.split(' ');
+        results = _.filter(results, function(rawdoc) {
+          var matches = true;
+          _.each(terms, function(term) {
+            var foundmatch = false;
+            _.each(self.fields, function(field) {
+              var value = rawdoc[field.id];
+              if (value !== null) { value = value.toString(); }
+              // TODO regexes?
+              foundmatch = foundmatch || (value.toLowerCase() === term.toLowerCase());
+              // TODO: early out (once we are true should break to spare unnecessary testing)
+              // if (foundmatch) return true;
+            });
+            matches = matches && foundmatch;
+            // TODO: early out (once false should break to spare unnecessary testing)
+            // if (!matches) return false;
+          });
+          return matches;
+        });
+      }
+      return results;
+    };
+
+    this.computeFacets = function(records, queryObj) {
+      var facetResults = {};
+      if (!queryObj.facets) {
+        return facetResults;
+      }
+      _.each(queryObj.facets, function(query, facetId) {
+        // TODO: remove dependency on recline.Model
+        facetResults[facetId] = new recline.Model.Facet({id: facetId}).toJSON();
+        facetResults[facetId].termsall = {};
+      });
+      // faceting
+      _.each(records, function(doc) {
+        _.each(queryObj.facets, function(query, facetId) {
+          var fieldId = query.terms.field;
+          var val = doc[fieldId];
+          var tmp = facetResults[facetId];
+          if (val) {
+            tmp.termsall[val] = tmp.termsall[val] ? tmp.termsall[val] + 1 : 1;
+          } else {
+            tmp.missing = tmp.missing + 1;
+          }
+        });
+      });
+      _.each(queryObj.facets, function(query, facetId) {
+        var tmp = facetResults[facetId];
+        var terms = _.map(tmp.termsall, function(count, term) {
+          return { term: term, count: count };
+        });
+        tmp.terms = _.sortBy(terms, function(item) {
+          // want descending order
+          return -item.count;
+        });
+        tmp.terms = tmp.terms.slice(0, 10);
+      });
+      return facetResults;
+    };
+  };
+
+}(jQuery, this.recline.Backend.Memory));
 // adapted from https://github.com/harthur/costco. heather rules
 
 var costco = function() {
@@ -72,56 +872,149 @@ this.recline.Model = this.recline.Model || {};
 
 (function($, my) {
 
-// ## <a id="dataset">A Dataset model</a>
-//
-// A model has the following (non-Backbone) attributes:
-//
-// @property {FieldList} fields: (aka columns) is a `FieldList` listing all the
-// fields on this Dataset (this can be set explicitly, or, will be set by
-// Dataset.fetch() or Dataset.query()
-//
-// @property {RecordList} currentRecords: a `RecordList` containing the
-// Records we have currently loaded for viewing (updated by calling query
-// method)
-//
-// @property {number} docCount: total number of records in this dataset
-//
-// @property {Backend} backend: the Backend (instance) for this Dataset.
-//
-// @property {Query} queryState: `Query` object which stores current
-// queryState. queryState may be edited by other components (e.g. a query
-// editor view) changes will trigger a Dataset query.
-//
-// @property {FacetList} facets: FacetList object containing all current
-// Facets.
+// ## <a id="dataset">Dataset</a>
 my.Dataset = Backbone.Model.extend({
   __type__: 'Dataset',
 
   // ### initialize
-  // 
-  // Sets up instance properties (see above)
-  //
-  // @param {Object} model: standard set of model attributes passed to Backbone models
-  //
-  // @param {Object or String} backend: Backend instance (see
-  // `recline.Backend.Base`) or a string specifying that instance. The
-  // string specifying may be a full class path e.g.
-  // 'recline.Backend.ElasticSearch' or a simple name e.g.
-  // 'elasticsearch' or 'ElasticSearch' (in this case must be a Backend in
-  // recline.Backend module)
-  initialize: function(model, backend) {
+  initialize: function() {
     _.bindAll(this, 'query');
-    this.backend = backend;
-    if (typeof(backend) === 'string') {
-      this.backend = this._backendFromString(backend);
+    this.backend = null;
+    if (this.get('backend')) {
+      this.backend = this._backendFromString(this.get('backend'));
+    } else { // try to guess backend ...
+      if (this.get('records')) {
+        this.backend = recline.Backend.Memory;
+      }
     }
     this.fields = new my.FieldList();
     this.currentRecords = new my.RecordList();
+    this._changes = {
+      deletes: [],
+      updates: [],
+      creates: []
+    };
     this.facets = new my.FacetList();
     this.docCount = null;
     this.queryState = new my.Query();
     this.queryState.bind('change', this.query);
     this.queryState.bind('facet:add', this.query);
+    // store is what we query and save against
+    // store will either be the backend or be a memory store if Backend fetch
+    // tells us to use memory store
+    this._store = this.backend;
+    if (this.backend == recline.Backend.Memory) {
+      this.fetch();
+    }
+  },
+
+  // ### fetch
+  //
+  // Retrieve dataset and (some) records from the backend.
+  fetch: function() {
+    var self = this;
+    var dfd = $.Deferred();
+
+    if (this.backend !== recline.Backend.Memory) {
+      this.backend.fetch(this.toJSON())
+        .done(handleResults)
+        .fail(function(arguments) {
+          dfd.reject(arguments);
+        });
+    } else {
+      // special case where we have been given data directly
+      handleResults({
+        records: this.get('records'),
+        fields: this.get('fields'),
+        useMemoryStore: true
+      });
+    }
+
+    function handleResults(results) {
+      var out = self._normalizeRecordsAndFields(results.records, results.fields);
+      if (results.useMemoryStore) {
+        self._store = new recline.Backend.Memory.Store(out.records, out.fields);
+      }
+
+      self.set(results.metadata);
+      self.fields.reset(out.fields);
+      self.query()
+        .done(function() {
+          dfd.resolve(self);
+        })
+        .fail(function(arguments) {
+          dfd.reject(arguments);
+        });
+    }
+
+    return dfd.promise();
+  },
+
+  // ### _normalizeRecordsAndFields
+  // 
+  // Get a proper set of fields and records from incoming set of fields and records either of which may be null or arrays or objects
+  //
+  // e.g. fields = ['a', 'b', 'c'] and records = [ [1,2,3] ] =>
+  // fields = [ {id: a}, {id: b}, {id: c}], records = [ {a: 1}, {b: 2}, {c: 3}]
+  _normalizeRecordsAndFields: function(records, fields) {
+    // if no fields get them from records
+    if (!fields && records && records.length > 0) {
+      // records is array then fields is first row of records ...
+      if (records[0] instanceof Array) {
+        fields = records[0];
+        records = records.slice(1);
+      } else {
+        fields = _.map(_.keys(records[0]), function(key) {
+          return {id: key};
+        });
+      }
+    } 
+
+    // fields is an array of strings (i.e. list of field headings/ids)
+    if (fields && fields.length > 0 && typeof fields[0] === 'string') {
+      // Rename duplicate fieldIds as each field name needs to be
+      // unique.
+      var seen = {};
+      fields = _.map(fields, function(field, index) {
+        // cannot use trim as not supported by IE7
+        var fieldId = field.replace(/^\s+|\s+$/g, '');
+        if (fieldId === '') {
+          fieldId = '_noname_';
+          field = fieldId;
+        }
+        while (fieldId in seen) {
+          seen[field] += 1;
+          fieldId = field + seen[field];
+        }
+        if (!(field in seen)) {
+          seen[field] = 0;
+        }
+        // TODO: decide whether to keep original name as label ...
+        // return { id: fieldId, label: field || fieldId }
+        return { id: fieldId };
+      });
+    }
+    // records is provided as arrays so need to zip together with fields
+    // NB: this requires you to have fields to match arrays
+    if (records && records.length > 0 && records[0] instanceof Array) {
+      records = _.map(records, function(doc) {
+        var tmp = {};
+        _.each(fields, function(field, idx) {
+          tmp[field.id] = doc[idx];
+        });
+        return tmp;
+      });
+    }
+    return {
+      fields: fields,
+      records: records
+    };
+  },
+
+  save: function() {
+    var self = this;
+    // TODO: need to reset the changes ...
+    return this._store.save(this._changes, this.toJSON());
   },
 
   // ### query
@@ -135,41 +1028,48 @@ my.Dataset = Backbone.Model.extend({
   // also returned.
   query: function(queryObj) {
     var self = this;
-    this.trigger('query:start');
-    var actualQuery = self._prepareQuery(queryObj);
     var dfd = $.Deferred();
-    this.backend.query(this, actualQuery).done(function(queryResult) {
-      self.docCount = queryResult.total;
-      var docs = _.map(queryResult.hits, function(hit) {
-        var _doc = new my.Record(hit._source);
-        _doc.backend = self.backend;
-        _doc.dataset = self;
-        return _doc;
+    this.trigger('query:start');
+
+    if (queryObj) {
+      this.queryState.set(queryObj);
+    }
+    var actualQuery = this.queryState.toJSON();
+
+    this._store.query(actualQuery, this.toJSON())
+      .done(function(queryResult) {
+        self._handleQueryResult(queryResult);
+        self.trigger('query:done');
+        dfd.resolve(self.currentRecords);
+      })
+      .fail(function(arguments) {
+        self.trigger('query:fail', arguments);
+        dfd.reject(arguments);
       });
-      self.currentRecords.reset(docs);
-      if (queryResult.facets) {
-        var facets = _.map(queryResult.facets, function(facetResult, facetId) {
-          facetResult.id = facetId;
-          return new my.Facet(facetResult);
-        });
-        self.facets.reset(facets);
-      }
-      self.trigger('query:done');
-      dfd.resolve(self.currentRecords);
-    })
-    .fail(function(arguments) {
-      self.trigger('query:fail', arguments);
-      dfd.reject(arguments);
-    });
     return dfd.promise();
   },
 
-  _prepareQuery: function(newQueryObj) {
-    if (newQueryObj) {
-      this.queryState.set(newQueryObj);
+  _handleQueryResult: function(queryResult) {
+    var self = this;
+    self.docCount = queryResult.total;
+    var docs = _.map(queryResult.hits, function(hit) {
+      var _doc = new my.Record(hit);
+      _doc.bind('change', function(doc) {
+        self._changes.updates.push(doc.toJSON());
+      });
+      _doc.bind('destroy', function(doc) {
+        self._changes.deletes.push(doc.toJSON());
+      });
+      return _doc;
+    });
+    self.currentRecords.reset(docs);
+    if (queryResult.facets) {
+      var facets = _.map(queryResult.facets, function(facetResult, facetId) {
+        facetResult.id = facetId;
+        return new my.Facet(facetResult);
+      });
+      self.facets.reset(facets);
     }
-    var out = this.queryState.toJSON();
-    return out;
   },
 
   toTemplateJSON: function() {
@@ -190,7 +1090,7 @@ my.Dataset = Backbone.Model.extend({
       query.addFacet(field.id);
     });
     var dfd = $.Deferred();
-    this.backend.query(this, query.toJSON()).done(function(queryResult) {
+    this._store.query(query.toJSON(), this.toJSON()).done(function(queryResult) {
       if (queryResult.facets) {
         _.each(queryResult.facets, function(facetResult, facetId) {
           facetResult.id = facetId;
@@ -218,7 +1118,7 @@ my.Dataset = Backbone.Model.extend({
       current = current[parts[ii]];
     }
     if (current) {
-      return new current();
+      return current;
     }
 
     // alternatively we just had a simple string
@@ -226,7 +1126,7 @@ my.Dataset = Backbone.Model.extend({
     if (recline && recline.Backend) {
       _.each(_.keys(recline.Backend), function(name) {
         if (name.toLowerCase() === backendString.toLowerCase()) {
-          backend = new recline.Backend[name].Backbone();
+          backend = recline.Backend[name];
         }
       });
     }
@@ -252,20 +1152,16 @@ my.Dataset.restore = function(state) {
   var dataset = null;
   // hack-y - restoring a memory dataset does not mean much ...
   if (state.backend === 'memory') {
-    dataset = recline.Backend.Memory.createDataset(
-      [{stub: 'this is a stub dataset because we do not restore memory datasets'}],
-      [],
-      state.dataset // metadata
-    );
+    var datasetInfo = {
+      records: [{stub: 'this is a stub dataset because we do not restore memory datasets'}]
+    };
   } else {
     var datasetInfo = {
-      url: state.url
+      url: state.url,
+      backend: state.backend
     };
-    dataset = new recline.Model.Dataset(
-      datasetInfo,
-      state.backend
-    );
   }
+  dataset = new recline.Model.Dataset(datasetInfo);
   return dataset;
 };
 
@@ -310,7 +1206,15 @@ my.Record = Backbone.Model.extend({
       }
     }
     return html;
-  }
+  },
+
+  // Override Backbone save, fetch and destroy so they do nothing
+  // Instead, Dataset object that created this Record should take care of
+  // handling these changes (discovery will occur via event notifications)
+  // WARNING: these will not persist *unless* you call save on Dataset
+  fetch: function() {},
+  save: function() {},
+  destroy: function() { this.trigger('destroy', this); }
 });
 
 // ## A Backbone collection of Records
@@ -320,42 +1224,6 @@ my.RecordList = Backbone.Collection.extend({
 });
 
 // ## <a id="field">A Field (aka Column) on a Dataset</a>
-// 
-// Following (Backbone) attributes as standard:
-//
-// * id: a unique identifer for this field- usually this should match the key in the records hash
-// * label: (optional: defaults to id) the visible label used for this field
-// * type: (optional: defaults to string) the type of the data in this field. Should be a string as per type names defined by ElasticSearch - see Types list on <http://www.elasticsearch.org/guide/reference/mapping/>
-// * format: (optional) used to indicate how the data should be formatted. For example:
-//   * type=date, format=yyyy-mm-dd
-//   * type=float, format=percentage
-//   * type=string, format=markdown (render as markdown if Showdown available)
-// * is_derived: (default: false) attribute indicating this field has no backend data but is just derived from other fields (see below).
-// 
-// Following additional instance properties:
-// 
-// @property {Function} renderer: a function to render the data for this field.
-// Signature: function(value, field, record) where value is the value of this
-// cell, field is corresponding field object and record is the record
-// object (as simple JS object). Note that implementing functions can ignore arguments (e.g.
-// function(value) would be a valid formatter function).
-// 
-// @property {Function} deriver: a function to derive/compute the value of data
-// in this field as a function of this field's value (if any) and the current
-// record, its signature and behaviour is the same as for renderer.  Use of
-// this function allows you to define an entirely new value for data in this
-// field. This provides support for a) 'derived/computed' fields: i.e. fields
-// whose data are functions of the data in other fields b) transforming the
-// value of this field prior to rendering.
-//
-// #### Default renderers
-//
-// * string
-//   * no format provided: pass through but convert http:// to hyperlinks 
-//   * format = plain: do no processing on the source text
-//   * format = markdown: process as markdown (if Showdown library available)
-// * float
-//   * format = percentage: format as a percentage
 my.Field = Backbone.Model.extend({
   // ### defaults - define default values
   defaults: {
@@ -426,54 +1294,6 @@ my.FieldList = Backbone.Collection.extend({
 });
 
 // ## <a id="query">Query</a>
-//
-// Query instances encapsulate a query to the backend (see <a
-// href="backend/base.html">query method on backend</a>). Useful both
-// for creating queries and for storing and manipulating query state -
-// e.g. from a query editor).
-//
-// **Query Structure and format**
-//
-// Query structure should follow that of [ElasticSearch query
-// language](http://www.elasticsearch.org/guide/reference/api/search/).
-//
-// **NB: It is up to specific backends how to implement and support this query
-// structure. Different backends might choose to implement things differently
-// or not support certain features. Please check your backend for details.**
-//
-// Query object has the following key attributes:
-// 
-//  * size (=limit): number of results to return
-//  * from (=offset): offset into result set - http://www.elasticsearch.org/guide/reference/api/search/from-size.html
-//  * sort: sort order - <http://www.elasticsearch.org/guide/reference/api/search/sort.html>
-//  * query: Query in ES Query DSL <http://www.elasticsearch.org/guide/reference/api/search/query.html>
-//  * filter: See filters and <a href="http://www.elasticsearch.org/guide/reference/query-dsl/filtered-query.html">Filtered Query</a>
-//  * fields: set of fields to return - http://www.elasticsearch.org/guide/reference/api/search/fields.html
-//  * facets: specification of facets - see http://www.elasticsearch.org/guide/reference/api/search/facets/
-// 
-// Additions:
-// 
-//  * q: either straight text or a hash will map directly onto a [query_string
-//  query](http://www.elasticsearch.org/guide/reference/query-dsl/query-string-query.html)
-//  in backend
-//
-//   * Of course this can be re-interpreted by different backends. E.g. some
-//   may just pass this straight through e.g. for an SQL backend this could be
-//   the full SQL query
-//
-//  * filters: array of ElasticSearch filters. These will be and-ed together for
-//  execution.
-// 
-// **Examples**
-// 
-// <pre>
-// {
-//    q: 'quick brown fox',
-//    filters: [
-//      { term: { 'owner': 'jones' } }
-//    ]
-// }
-// </pre>
 my.Query = Backbone.Model.extend({
   defaults: function() {
     return {
@@ -492,7 +1312,7 @@ my.Query = Backbone.Model.extend({
     },
     geo_distance: {
       distance: 10,
-      distance_unit: 'km',
+      unit: 'km',
       point: {
         lon: 0,
         lat: 0
@@ -516,41 +1336,6 @@ my.Query = Backbone.Model.extend({
     this.trigger('change:filters:new-blank');
   },
   updateFilter: function(index, value) {
-  },
-  // #### addTermFilter
-  // 
-  // Set (update or add) a terms filter to filters
-  //
-  // See <http://www.elasticsearch.org/guide/reference/query-dsl/terms-filter.html>
-  addTermFilter: function(fieldId, value) {
-    var filters = this.get('filters');
-    var filter = { term: {} };
-    filter.term[fieldId] = value || '';
-    filters.push(filter);
-    this.set({filters: filters});
-    // change does not seem to be triggered automatically
-    if (value) {
-      this.trigger('change');
-    } else {
-      // adding a new blank filter and do not want to trigger a new query
-      this.trigger('change:filters:new-blank');
-    }
-  },
-  addGeoDistanceFilter: function(field) {
-    var filters = this.get('filters');
-    var filter = { 
-      geo_distance: {
-        distance: '10km',
-      }
-    };
-    filter.geo_distance[field] = {
-      'lon': 0,
-      'lat': 0
-    };
-    filters.push(filter);
-    this.set({filters: filters});
-    // adding a new blank filter and do not want to trigger a new query
-    this.trigger('change:filters:new-blank');
   },
   // ### removeFilter
   //
@@ -593,43 +1378,6 @@ my.Query = Backbone.Model.extend({
 
 
 // ## <a id="facet">A Facet (Result)</a>
-//
-// Object to store Facet information, that is summary information (e.g. values
-// and counts) about a field obtained by some faceting method on the
-// backend.
-//
-// Structure of a facet follows that of Facet results in ElasticSearch, see:
-// <http://www.elasticsearch.org/guide/reference/api/search/facets/>
-//
-// Specifically the object structure of a facet looks like (there is one
-// addition compared to ElasticSearch: the "id" field which corresponds to the
-// key used to specify this facet in the facet query):
-//
-// <pre>
-// {
-//   "id": "id-of-facet",
-//   // type of this facet (terms, range, histogram etc)
-//   "_type" : "terms",
-//   // total number of tokens in the facet
-//   "total": 5,
-//   // @property {number} number of records which have no value for the field
-//   "missing" : 0,
-//   // number of facet values not included in the returned facets
-//   "other": 0,
-//   // term object ({term: , count: ...})
-//   "terms" : [ {
-//       "term" : "foo",
-//       "count" : 2
-//     }, {
-//       "term" : "bar",
-//       "count" : 2
-//     }, {
-//       "term" : "baz",
-//       "count" : 1
-//     }
-//   ]
-// }
-// </pre>
 my.Facet = Backbone.Model.extend({
   defaults: function() {
     return {
@@ -1919,7 +2667,7 @@ my.MapMenu = Backbone.View.extend({
   events: {
     'click .editor-update-map': 'onEditorSubmit',
     'change .editor-field-type': 'onFieldTypeChange',
-    'change #editor-auto-zoom': 'onAutoZoomChange'
+    'click #editor-auto-zoom': 'onAutoZoomChange'
   },
 
   initialize: function(options) {
@@ -1943,12 +2691,18 @@ my.MapMenu = Backbone.View.extend({
     if (this._geomReady() && this.model.fields.length){
       if (this.state.get('geomField')){
         this._selectOption('editor-geom-field',this.state.get('geomField'));
-        $('#editor-field-type-geom').attr('checked','checked').change();
+        this.el.find('#editor-field-type-geom').attr('checked','checked').change();
       } else{
         this._selectOption('editor-lon-field',this.state.get('lonField'));
         this._selectOption('editor-lat-field',this.state.get('latField'));
-        $('#editor-field-type-latlon').attr('checked','checked').change();
+        this.el.find('#editor-field-type-latlon').attr('checked','checked').change();
       }
+    }
+    if (this.state.get('autoZoom')) {
+      this.el.find('#editor-auto-zoom').attr('checked', 'checked');
+    }
+    else {
+      this.el.find('#editor-auto-zoom').removeAttr('checked');
     }
     return this;
   },
@@ -2106,7 +2860,7 @@ my.MultiView = Backbone.View.extend({
       </div> \
       <div class="menu-right"> \
         <div class="btn-group" data-toggle="buttons-checkbox"> \
-          <a href="#" class="btn" data-action="filters">Filters</a> \
+          <a href="#" class="btn active" data-action="filters">Filters</a> \
           <a href="#" class="btn active" data-action="fields">Fields</a> \
         </div> \
       </div> \
@@ -2201,10 +2955,9 @@ my.MultiView = Backbone.View.extend({
 
     // retrieve basic data like fields etc
     // note this.model and dataset returned are the same
+    // TODO: set query state ...?
+    this.model.queryState.set(self.state.get('query'), {silent: true});
     this.model.fetch()
-      .done(function(dataset) {
-        self.model.query(self.state.get('query'));
-      })
       .fail(function(error) {
         self.notify({message: error.message, category: 'error', persist: true});
       });
@@ -2247,12 +3000,6 @@ my.MultiView = Backbone.View.extend({
     });
     this.$filterEditor = filterEditor.el;
     $dataSidebar.append(filterEditor.el);
-    // are there actually any filters to show?
-    if (this.model.get('filters') && this.model.get('filters').length > 0) {
-      this.$filterEditor.show();
-    } else {
-      this.$filterEditor.hide();
-    }
 
     var fieldsView = new recline.View.Fields({
       model: this.model
@@ -3596,1046 +4343,3 @@ my.QueryEditor = Backbone.View.extend({
 
 })(jQuery, recline.View);
 
-// # Recline Backends
-//
-// Backends are connectors to backend data sources and stores
-//
-// This is just the base module containing a template Base class and convenience methods.
-this.recline = this.recline || {};
-this.recline.Backend = this.recline.Backend || {};
-
-// ## recline.Backend.Base
-//
-// Exemplar 'class' for backends showing what a base class would look like.
-this.recline.Backend.Base = function() {
-  // ### __type__
-  //
-  // 'type' of this backend. This should be either the class path for this
-  // object as a string (e.g. recline.Backend.Memory) or for Backends within
-  // recline.Backend module it may be their class name.
-  //
-  // This value is used as an identifier for this backend when initializing
-  // backends (see recline.Model.Dataset.initialize).
-  this.__type__ = 'base';
-
-  // ### readonly
-  //
-  // Class level attribute indicating that this backend is read-only (that
-  // is, cannot be written to).
-  this.readonly = true;
-
-  // ### sync
-  //
-  // An implementation of Backbone.sync that will be used to override
-  // Backbone.sync on operations for Datasets and Records which are using this backend.
-  //
-  // For read-only implementations you will need only to implement read method
-  // for Dataset models (and even this can be a null operation). The read method
-  // should return relevant metadata for the Dataset. We do not require read support
-  // for Records because they are loaded in bulk by the query method.
-  //
-  // For backends supporting write operations you must implement update and delete support for Record objects.
-  //
-  // All code paths should return an object conforming to the jquery promise API.
-  this.sync = function(method, model, options) {
-  },
-  
-  // ### query
-  //
-  // Query the backend for records returning them in bulk. This method will
-  // be used by the Dataset.query method to search the backend for records,
-  // retrieving the results in bulk.
-  //
-  // @param {recline.model.Dataset} model: Dataset model.
-  //
-  // @param {Object} queryObj: object describing a query (usually produced by
-  // using recline.Model.Query and calling toJSON on it).
-  //
-  // The structure of data in the Query object or
-  // Hash should follow that defined in <a
-  // href="http://github.com/okfn/recline/issues/34">issue 34</a>.
-  // (Of course, if you are writing your own backend, and hence
-  // have control over the interpretation of the query object, you
-  // can use whatever structure you like).
-  //
-  // @returns {Promise} promise API object. The promise resolve method will
-  // be called on query completion with a QueryResult object.
-  // 
-  // A QueryResult has the following structure (modelled closely on
-  // ElasticSearch - see <a
-  // href="https://github.com/okfn/recline/issues/57">this issue for more
-  // details</a>):
-  //
-  // <pre>
-  // {
-  //   total: // (required) total number of results (can be null)
-  //   hits: [ // (required) one entry for each result record
-  //     {
-  //        _score:   // (optional) match score for record
-  //        _type: // (optional) record type
-  //        _source: // (required) record/row object
-  //     } 
-  //   ],
-  //   facets: { // (optional) 
-  //     // facet results (as per <http://www.elasticsearch.org/guide/reference/api/search/facets/>)
-  //   }
-  // }
-  // </pre>
-  this.query = function(model, queryObj) {}
-};
-
-// ### makeRequest
-// 
-// Just $.ajax but in any headers in the 'headers' attribute of this
-// Backend instance. Example:
-//
-// <pre>
-// var jqxhr = this._makeRequest({
-//   url: the-url
-// });
-// </pre>
-this.recline.Backend.makeRequest = function(data, headers) {
-  var extras = {};
-  if (headers) {
-    extras = {
-      beforeSend: function(req) {
-        _.each(headers, function(value, key) {
-          req.setRequestHeader(key, value);
-        });
-      }
-    };
-  }
-  var data = _.extend(extras, data);
-  return $.ajax(data);
-};
-
-this.recline = this.recline || {};
-this.recline.Backend = this.recline.Backend || {};
-this.recline.Backend.CSV = this.recline.Backend.CSV || {};
-
-(function(my) {
-  // ## load
-  //
-  // Load data from a CSV file referenced in an HTMl5 file object returning the
-  // dataset in the callback
-  //
-  // @param options as for parseCSV below
-  my.load = function(file, callback, options) {
-    var encoding = options.encoding || 'UTF-8';
-    
-    var metadata = {
-      id: file.name,
-      file: file
-    };
-    var reader = new FileReader();
-    // TODO
-    reader.onload = function(e) {
-      var dataset = my.csvToDataset(e.target.result, options);
-      callback(dataset);
-    };
-    reader.onerror = function (e) {
-      alert('Failed to load file. Code: ' + e.target.error.code);
-    };
-    reader.readAsText(file, encoding);
-  };
-
-  my.csvToDataset = function(csvString, options) {
-    var out = my.parseCSV(csvString, options);
-    fields = _.map(out[0], function(cell) {
-      return { id: cell, label: cell };
-    });
-    var data = _.map(out.slice(1), function(row) {
-      var _doc = {};
-      _.each(out[0], function(fieldId, idx) {
-        _doc[fieldId] = row[idx];
-      });
-      return _doc;
-    });
-    var dataset = recline.Backend.Memory.createDataset(data, fields);
-    return dataset;
-  };
-
-  // Converts a Comma Separated Values string into an array of arrays.
-  // Each line in the CSV becomes an array.
-  //
-  // Empty fields are converted to nulls and non-quoted numbers are converted to integers or floats.
-  //
-  // @return The CSV parsed as an array
-  // @type Array
-  // 
-  // @param {String} s The string to convert
-  // @param {Object} options Options for loading CSV including
-  // 	@param {Boolean} [trim=false] If set to True leading and trailing whitespace is stripped off of each non-quoted field as it is imported
-  //	@param {String} [separator=','] Separator for CSV file
-  // Heavily based on uselesscode's JS CSV parser (MIT Licensed):
-  // thttp://www.uselesscode.org/javascript/csv/
-  my.parseCSV= function(s, options) {
-    // Get rid of any trailing \n
-    s = chomp(s);
-
-    var options = options || {};
-    var trm = options.trim;
-    var separator = options.separator || ',';
-    var delimiter = options.delimiter || '"';
-
-
-    var cur = '', // The character we are currently processing.
-      inQuote = false,
-      fieldQuoted = false,
-      field = '', // Buffer for building up the current field
-      row = [],
-      out = [],
-      i,
-      processField;
-
-    processField = function (field) {
-      if (fieldQuoted !== true) {
-        // If field is empty set to null
-        if (field === '') {
-          field = null;
-        // If the field was not quoted and we are trimming fields, trim it
-        } else if (trm === true) {
-          field = trim(field);
-        }
-
-        // Convert unquoted numbers to their appropriate types
-        if (rxIsInt.test(field)) {
-          field = parseInt(field, 10);
-        } else if (rxIsFloat.test(field)) {
-          field = parseFloat(field, 10);
-        }
-      }
-      return field;
-    };
-
-    for (i = 0; i < s.length; i += 1) {
-      cur = s.charAt(i);
-
-      // If we are at a EOF or EOR
-      if (inQuote === false && (cur === separator || cur === "\n")) {
-	field = processField(field);
-        // Add the current field to the current row
-        row.push(field);
-        // If this is EOR append row to output and flush row
-        if (cur === "\n") {
-          out.push(row);
-          row = [];
-        }
-        // Flush the field buffer
-        field = '';
-        fieldQuoted = false;
-      } else {
-        // If it's not a delimiter, add it to the field buffer
-        if (cur !== delimiter) {
-          field += cur;
-        } else {
-          if (!inQuote) {
-            // We are not in a quote, start a quote
-            inQuote = true;
-            fieldQuoted = true;
-          } else {
-            // Next char is delimiter, this is an escaped delimiter
-            if (s.charAt(i + 1) === delimiter) {
-              field += delimiter;
-              // Skip the next char
-              i += 1;
-            } else {
-              // It's not escaping, so end quote
-              inQuote = false;
-            }
-          }
-        }
-      }
-    }
-
-    // Add the last field
-    field = processField(field);
-    row.push(field);
-    out.push(row);
-
-    return out;
-  };
-
-  var rxIsInt = /^\d+$/,
-    rxIsFloat = /^\d*\.\d+$|^\d+\.\d*$/,
-    // If a string has leading or trailing space,
-    // contains a comma double quote or a newline
-    // it needs to be quoted in CSV output
-    rxNeedsQuoting = /^\s|\s$|,|"|\n/,
-    trim = (function () {
-      // Fx 3.1 has a native trim function, it's about 10x faster, use it if it exists
-      if (String.prototype.trim) {
-        return function (s) {
-          return s.trim();
-        };
-      } else {
-        return function (s) {
-          return s.replace(/^\s*/, '').replace(/\s*$/, '');
-        };
-      }
-    }());
-
-  function chomp(s) {
-    if (s.charAt(s.length - 1) !== "\n") {
-      // Does not end with \n, just return string
-      return s;
-    } else {
-      // Remove the \n
-      return s.substring(0, s.length - 1);
-    }
-  }
-
-
-}(this.recline.Backend.CSV));
-this.recline = this.recline || {};
-this.recline.Backend = this.recline.Backend || {};
-this.recline.Backend.DataProxy = this.recline.Backend.DataProxy || {};
-
-(function($, my) {
-  // ## DataProxy Backend
-  // 
-  // For connecting to [DataProxy-s](http://github.com/okfn/dataproxy).
-  //
-  // When initializing the DataProxy backend you can set the following
-  // attributes in the options object:
-  //
-  // * dataproxy: {url-to-proxy} (optional). Defaults to http://jsonpdataproxy.appspot.com
-  //
-  // Datasets using using this backend should set the following attributes:
-  //
-  // * url: (required) url-of-data-to-proxy
-  // * format: (optional) csv | xls (defaults to csv if not specified)
-  //
-  // Note that this is a **read-only** backend.
-  my.Backbone = function(options) {
-    var self = this;
-    this.__type__ = 'dataproxy';
-    this.readonly = true;
-
-    this.dataproxy_url = options && options.dataproxy_url ? options.dataproxy_url : 'http://jsonpdataproxy.appspot.com';
-
-    this.sync = function(method, model, options) {
-      if (method === "read") {
-        if (model.__type__ == 'Dataset') {
-          // Do nothing as we will get fields in query step (and no metadata to
-          // retrieve)
-          var dfd = $.Deferred();
-          dfd.resolve(model);
-          return dfd.promise();
-        }
-      } else {
-        alert('This backend only supports read operations');
-      }
-    };
-
-    this.query = function(dataset, queryObj) {
-      var self = this;
-      var data = {
-        url: dataset.get('url'),
-        'max-results':  queryObj.size,
-        type: dataset.get('format')
-      };
-      var jqxhr = $.ajax({
-        url: this.dataproxy_url,
-        data: data,
-        dataType: 'jsonp'
-      });
-      var dfd = $.Deferred();
-      _wrapInTimeout(jqxhr).done(function(results) {
-        if (results.error) {
-          dfd.reject(results.error);
-        }
-
-        // Rename duplicate fieldIds as each field name needs to be
-        // unique.
-        var seen = {};
-        _.map(results.fields, function(fieldId, index) {
-          if (fieldId in seen) {
-            seen[fieldId] += 1;
-            results.fields[index] = fieldId + "("+seen[fieldId]+")";
-          } else {
-            seen[fieldId] = 1;
-          }
-        });
-
-        dataset.fields.reset(_.map(results.fields, function(fieldId) {
-          return {id: fieldId};
-          })
-        );
-        var _out = _.map(results.data, function(doc) {
-          var tmp = {};
-          _.each(results.fields, function(key, idx) {
-            tmp[key] = doc[idx];
-          });
-          return tmp;
-        });
-        dfd.resolve({
-          total: null,
-          hits: _.map(_out, function(row) {
-            return { _source: row };
-          })
-        });
-      })
-      .fail(function(arguments) {
-        dfd.reject(arguments);
-      });
-      return dfd.promise();
-    };
-  };
-
-  // ## _wrapInTimeout
-  // 
-  // Convenience method providing a crude way to catch backend errors on JSONP calls.
-  // Many of backends use JSONP and so will not get error messages and this is
-  // a crude way to catch those errors.
-  var _wrapInTimeout = function(ourFunction) {
-    var dfd = $.Deferred();
-    var timeout = 5000;
-    var timer = setTimeout(function() {
-      dfd.reject({
-        message: 'Request Error: Backend did not respond after ' + (timeout / 1000) + ' seconds'
-      });
-    }, timeout);
-    ourFunction.done(function(arguments) {
-        clearTimeout(timer);
-        dfd.resolve(arguments);
-      })
-      .fail(function(arguments) {
-        clearTimeout(timer);
-        dfd.reject(arguments);
-      })
-      ;
-    return dfd.promise();
-  }
-
-}(jQuery, this.recline.Backend.DataProxy));
-this.recline = this.recline || {};
-this.recline.Backend = this.recline.Backend || {};
-this.recline.Backend.ElasticSearch = this.recline.Backend.ElasticSearch || {};
-
-(function($, my) {
-  // ## ElasticSearch Wrapper
-  //
-  // Connecting to [ElasticSearch](http://www.elasticsearch.org/) endpoints.
-  // @param {String} endpoint: url for ElasticSearch type/table, e.g. for ES running
-  // on localhost:9200 with index // twitter and type tweet it would be:
-  // 
-  // <pre>http://localhost:9200/twitter/tweet</pre>
-  //
-  // @param {Object} options: set of options such as:
-  //
-  // * headers - {dict of headers to add to each request}
-  // * dataType: dataType for AJAx requests e.g. set to jsonp to make jsonp requests (default is json requests)
-  my.Wrapper = function(endpoint, options) { 
-    var self = this;
-    this.endpoint = endpoint;
-    this.options = _.extend({
-        dataType: 'json'
-      },
-      options);
-
-    // ### mapping
-    //
-    // Get ES mapping for this type/table
-    //
-    // @return promise compatible deferred object.
-    this.mapping = function() {
-      var schemaUrl = self.endpoint + '/_mapping';
-      var jqxhr = recline.Backend.makeRequest({
-        url: schemaUrl,
-        dataType: this.options.dataType
-      });
-      return jqxhr;
-    };
-
-    // ### get
-    //
-    // Get record corresponding to specified id
-    //
-    // @return promise compatible deferred object.
-    this.get = function(id) {
-      var base = this.endpoint + '/' + id;
-      return recline.Backend.makeRequest({
-        url: base,
-        dataType: 'json'
-      });
-    };
-
-    // ### upsert
-    //
-    // create / update a record to ElasticSearch backend
-    //
-    // @param {Object} doc an object to insert to the index.
-    // @return deferred supporting promise API
-    this.upsert = function(doc) {
-      var data = JSON.stringify(doc);
-      url = this.endpoint;
-      if (doc.id) {
-        url += '/' + doc.id;
-      }
-      return recline.Backend.makeRequest({
-        url: url,
-        type: 'POST',
-        data: data,
-        dataType: 'json'
-      });
-    };
-
-    // ### delete
-    //
-    // Delete a record from the ElasticSearch backend.
-    //
-    // @param {Object} id id of object to delete
-    // @return deferred supporting promise API
-    this.delete = function(id) {
-      url = this.endpoint;
-      url += '/' + id;
-      return recline.Backend.makeRequest({
-        url: url,
-        type: 'DELETE',
-        dataType: 'json'
-      });
-    };
-
-    this._normalizeQuery = function(queryObj) {
-      var self = this;
-      var queryInfo = (queryObj && queryObj.toJSON) ? queryObj.toJSON() : _.extend({}, queryObj);
-      var out = {
-        constant_score: {
-          query: {}
-        }
-      };
-      if (!queryInfo.q) {
-        out.constant_score.query = {
-          match_all: {}
-        };
-      } else {
-        out.constant_score.query = {
-          query_string: {
-            query: queryInfo.q
-          }
-        };
-      }
-      if (queryInfo.filters && queryInfo.filters.length) {
-        out.constant_score.filter = {
-          and: []
-        };
-        _.each(queryInfo.filters, function(filter) {
-          out.constant_score.filter.and.push(self._convertFilter(filter));
-        });
-      }
-      return out;
-    },
-
-    this._convertFilter = function(filter) {
-      var out = {};
-      out[filter.type] = {}
-      if (filter.type === 'term') {
-        out.term[filter.field] = filter.term.toLowerCase();
-      } else if (filter.type === 'geo_distance') {
-        out.geo_distance[filter.field] = filter.point;
-        out.geo_distance.distance = filter.distance;
-      }
-      return out;
-    },
-
-    // ### query
-    //
-    // @return deferred supporting promise API
-    this.query = function(queryObj) {
-      var esQuery = (queryObj && queryObj.toJSON) ? queryObj.toJSON() : _.extend({}, queryObj);
-      var queryNormalized = this._normalizeQuery(queryObj);
-      delete esQuery.q;
-      delete esQuery.filters;
-      esQuery.query = queryNormalized;
-      var data = {source: JSON.stringify(esQuery)};
-      var url = this.endpoint + '/_search';
-      var jqxhr = recline.Backend.makeRequest({
-        url: url,
-        data: data,
-        dataType: this.options.dataType
-      });
-      return jqxhr;
-    }
-  };
-
-  // ## ElasticSearch Backbone Backend
-  //
-  // Backbone connector for an ES backend.
-  //
-  // Usage:
-  //
-  // var backend = new recline.Backend.ElasticSearch(options);
-  //
-  // `options` are passed through to Wrapper
-  my.Backbone = function(options) {
-    var self = this;
-    var esOptions = options;
-    this.__type__ = 'elasticsearch';
-
-    // ### sync
-    //
-    // Backbone sync implementation for this backend.
-    //
-    // URL of ElasticSearch endpoint to use must be specified on the dataset
-    // (and on a Record via its dataset attribute) by the dataset having a
-    // url attribute.
-    this.sync = function(method, model, options) {
-      if (model.__type__ == 'Dataset') {
-        var endpoint = model.get('url');
-      } else {
-        var endpoint = model.dataset.get('url');
-      }
-      var es = new my.Wrapper(endpoint, esOptions);
-      if (method === "read") {
-        if (model.__type__ == 'Dataset') {
-          var dfd = $.Deferred();
-          es.mapping().done(function(schema) {
-            // only one top level key in ES = the type so we can ignore it
-            var key = _.keys(schema)[0];
-            var fieldData = _.map(schema[key].properties, function(dict, fieldName) {
-              dict.id = fieldName;
-              return dict;
-            });
-            model.fields.reset(fieldData);
-            dfd.resolve(model);
-          })
-          .fail(function(arguments) {
-            dfd.reject(arguments);
-          });
-          return dfd.promise();
-        } else if (model.__type__ == 'Record') {
-          return es.get(model.dataset.id);
-        }
-      } else if (method === 'update') {
-        if (model.__type__ == 'Record') {
-          return es.upsert(model.toJSON());
-        }
-      } else if (method === 'delete') {
-        if (model.__type__ == 'Record') {
-          return es.delete(model.id);
-        }
-      }
-    };
-
-    // ### query
-    //
-    // query the ES backend
-    this.query = function(model, queryObj) {
-      var dfd = $.Deferred();
-      var url = model.get('url');
-      var es = new my.Wrapper(url, esOptions);
-      var jqxhr = es.query(queryObj);
-      // TODO: fail case
-      jqxhr.done(function(results) {
-        _.each(results.hits.hits, function(hit) {
-          if (!('id' in hit._source) && hit._id) {
-            hit._source.id = hit._id;
-          }
-        });
-        if (results.facets) {
-          results.hits.facets = results.facets;
-        }
-        dfd.resolve(results.hits);
-      }).fail(function(errorObj) {
-        var out = {
-          title: 'Failed: ' + errorObj.status + ' code',
-          message: errorObj.responseText
-        };
-        dfd.reject(out);
-      });
-      return dfd.promise();
-    };
-  };
-
-}(jQuery, this.recline.Backend.ElasticSearch));
-
-this.recline = this.recline || {};
-this.recline.Backend = this.recline.Backend || {};
-this.recline.Backend.GDocs = this.recline.Backend.GDocs || {};
-
-(function($, my) {
-
-  // ## Google spreadsheet backend
-  // 
-  // Connect to Google Docs spreadsheet.
-  //
-  // Dataset must have a url attribute pointing to the Gdocs
-  // spreadsheet's JSON feed e.g.
-  //
-  // <pre>
-  // var dataset = new recline.Model.Dataset({
-  //     url: 'https://spreadsheets.google.com/feeds/list/0Aon3JiuouxLUdDQwZE1JdV94cUd6NWtuZ0IyWTBjLWc/od6/public/values?alt=json'
-  //   },
-  //   'gdocs'
-  // );
-  // </pre>
-  my.Backbone = function() {
-    var self = this;
-    this.__type__ = 'gdocs';
-    this.readonly = true;
-
-    this.sync = function(method, model, options) {
-      var self = this;
-      if (method === "read") { 
-        var dfd = $.Deferred(); 
-        dfd.resolve(model);
-        return dfd.promise();
-      }
-    };
-
-    this.query = function(dataset, queryObj) { 
-      var dfd = $.Deferred();
-      if (dataset._dataCache) {
-        dfd.resolve(dataset._dataCache);
-      } else {
-        loadData(dataset.get('url')).done(function(result) {
-          dataset.fields.reset(result.fields);
-          // cache data onto dataset (we have loaded whole gdoc it seems!)
-          dataset._dataCache = self._formatResults(dataset, result.data);
-          dfd.resolve(dataset._dataCache);
-        });
-      }
-      return dfd.promise();
-    };
-
-    this._formatResults = function(dataset, data) {
-      var fields = _.pluck(dataset.fields.toJSON(), 'id');
-      // zip the fields with the data rows to produce js objs
-      // TODO: factor this out as a common method with other backends
-      var objs = _.map(data, function (d) { 
-        var obj = {};
-        _.each(_.zip(fields, d), function (x) {
-          obj[x[0]] = x[1];
-        });
-        return obj;
-      });
-      var out = {
-        total: objs.length,
-        hits: _.map(objs, function(row) {
-          return { _source: row }
-        })
-      }
-      return out;
-    };
-  };
-
-  // ## loadData
-  //
-  // loadData from a google docs URL
-  //
-  // @return object with two attributes
-  //
-  // * fields: array of objects
-  // * data: array of arrays
-  var loadData = function(url) {
-    var dfd = $.Deferred(); 
-    var url = my.getSpreadsheetAPIUrl(url);
-    var out = {
-      fields: [],
-      data: []
-    }
-    $.getJSON(url, function(d) {
-      result = my.parseData(d);
-      result.fields = _.map(result.fields, function(fieldId) {
-        return {id: fieldId};
-      });
-      dfd.resolve(result);
-    });
-    return dfd.promise();
-  };
-
-  // ## parseData
-  //
-  // Parse data from Google Docs API into a reasonable form
-  //
-  // :options: (optional) optional argument dictionary:
-  // columnsToUse: list of columns to use (specified by field names)
-  // colTypes: dictionary (with column names as keys) specifying types (e.g. range, percent for use in conversion).
-  // :return: tabular data object (hash with keys: field and data).
-  // 
-  // Issues: seems google docs return columns in rows in random order and not even sure whether consistent across rows.
-  my.parseData = function(gdocsSpreadsheet) {
-    var options = {};
-    if (arguments.length > 1) {
-      options = arguments[1];
-    }
-    var results = {
-      'fields': [],
-      'data': []
-    };
-    // default is no special info on type of columns
-    var colTypes = {};
-    if (options.colTypes) {
-      colTypes = options.colTypes;
-    }
-    if (gdocsSpreadsheet.feed.entry.length > 0) {
-      for (var k in gdocsSpreadsheet.feed.entry[0]) {
-        if (k.substr(0, 3) == 'gsx') {
-          var col = k.substr(4);
-          results.fields.push(col);
-        }
-      }
-    }
-
-    // converts non numberical values that should be numerical (22.3%[string] -> 0.223[float])
-    var rep = /^([\d\.\-]+)\%$/;
-    $.each(gdocsSpreadsheet.feed.entry, function (i, entry) {
-      var row = [];
-      for (var k in results.fields) {
-        var col = results.fields[k];
-        var _keyname = 'gsx$' + col;
-        var value = entry[_keyname]['$t'];
-        // if labelled as % and value contains %, convert
-        if (colTypes[col] == 'percent') {
-          if (rep.test(value)) {
-            var value2 = rep.exec(value);
-            var value3 = parseFloat(value2);
-            value = value3 / 100;
-          }
-        }
-        row.push(value);
-      }
-      results.data.push(row);
-    });
-    return results;
-  };
-
-  // Convenience function to get GDocs JSON API Url from standard URL
-  my.getSpreadsheetAPIUrl = function(url) {
-    if (url.indexOf('feeds/list') != -1) {
-      return url;
-    } else {
-      // https://docs.google.com/spreadsheet/ccc?key=XXXX#gid=0
-      var regex = /.*spreadsheet\/ccc?.*key=([^#?&+]+).*/;
-      var matches = url.match(regex);
-      if (matches) {
-        var key = matches[1];
-        var worksheet = 1;
-        var out = 'https://spreadsheets.google.com/feeds/list/' + key + '/' + worksheet + '/public/values?alt=json';
-        return out;
-      } else {
-        alert('Failed to extract gdocs key from ' + url);
-      }
-    }
-  };
-}(jQuery, this.recline.Backend.GDocs));
-
-this.recline = this.recline || {};
-this.recline.Backend = this.recline.Backend || {};
-this.recline.Backend.Memory = this.recline.Backend.Memory || {};
-
-(function($, my) {
-  // ## createDataset
-  //
-  // Convenience function to create a simple 'in-memory' dataset in one step.
-  //
-  // @param data: list of hashes for each record/row in the data ({key:
-  // value, key: value})
-  // @param fields: (optional) list of field hashes (each hash defining a hash
-  // as per recline.Model.Field). If fields not specified they will be taken
-  // from the data.
-  // @param metadata: (optional) dataset metadata - see recline.Model.Dataset.
-  // If not defined (or id not provided) id will be autogenerated.
-  my.createDataset = function(data, fields, metadata) {
-    var wrapper = new my.Store(data, fields);
-    var backend = new my.Backbone();
-    var dataset = new recline.Model.Dataset(metadata, backend);
-    dataset._dataCache = wrapper;
-    dataset.fetch();
-    dataset.query();
-    return dataset;
-  };
-
-  // ## Data Wrapper
-  //
-  // Turn a simple array of JS objects into a mini data-store with
-  // functionality like querying, faceting, updating (by ID) and deleting (by
-  // ID).
-  //
-  // @param data list of hashes for each record/row in the data ({key:
-  // value, key: value})
-  // @param fields (optional) list of field hashes (each hash defining a field
-  // as per recline.Model.Field). If fields not specified they will be taken
-  // from the data.
-  my.Store = function(data, fields) {
-    var self = this;
-    this.data = data;
-    if (fields) {
-      this.fields = fields;
-    } else {
-      if (data) {
-        this.fields = _.map(data[0], function(value, key) {
-          return {id: key};
-        });
-      }
-    }
-
-    this.update = function(doc) {
-      _.each(self.data, function(internalDoc, idx) {
-        if(doc.id === internalDoc.id) {
-          self.data[idx] = doc;
-        }
-      });
-    };
-
-    this.delete = function(doc) {
-      var newdocs = _.reject(self.data, function(internalDoc) {
-        return (doc.id === internalDoc.id);
-      });
-      this.data = newdocs;
-    };
-
-    this.query = function(queryObj) {
-      var numRows = queryObj.size || this.data.length;
-      var start = queryObj.from || 0;
-      var results = this.data;
-      results = this._applyFilters(results, queryObj);
-      results = this._applyFreeTextQuery(results, queryObj);
-      // not complete sorting!
-      _.each(queryObj.sort, function(sortObj) {
-        var fieldName = _.keys(sortObj)[0];
-        results = _.sortBy(results, function(doc) {
-          var _out = doc[fieldName];
-          return _out;
-        });
-        if (sortObj[fieldName].order == 'desc') {
-          results.reverse();
-        }
-      });
-      var total = results.length;
-      var facets = this.computeFacets(results, queryObj);
-      results = results.slice(start, start+numRows);
-      return {
-        total: total,
-        records: results,
-        facets: facets
-      };
-    };
-
-    // in place filtering
-    this._applyFilters = function(results, queryObj) {
-      _.each(queryObj.filters, function(filter) {
-        // if a term filter ...
-        if (filter.type === 'term') {
-          results = _.filter(results, function(doc) {
-            return (doc[filter.field] == filter.term);
-          });
-        }
-      });
-      return results;
-    };
-
-    // we OR across fields but AND across terms in query string
-    this._applyFreeTextQuery = function(results, queryObj) {
-      if (queryObj.q) {
-        var terms = queryObj.q.split(' ');
-        results = _.filter(results, function(rawdoc) {
-          var matches = true;
-          _.each(terms, function(term) {
-            var foundmatch = false;
-            _.each(self.fields, function(field) {
-              var value = rawdoc[field.id];
-              if (value !== null) { value = value.toString(); }
-              // TODO regexes?
-              foundmatch = foundmatch || (value.toLowerCase() === term.toLowerCase());
-              // TODO: early out (once we are true should break to spare unnecessary testing)
-              // if (foundmatch) return true;
-            });
-            matches = matches && foundmatch;
-            // TODO: early out (once false should break to spare unnecessary testing)
-            // if (!matches) return false;
-          });
-          return matches;
-        });
-      }
-      return results;
-    };
-
-    this.computeFacets = function(records, queryObj) {
-      var facetResults = {};
-      if (!queryObj.facets) {
-        return facetResults;
-      }
-      _.each(queryObj.facets, function(query, facetId) {
-        // TODO: remove dependency on recline.Model
-        facetResults[facetId] = new recline.Model.Facet({id: facetId}).toJSON();
-        facetResults[facetId].termsall = {};
-      });
-      // faceting
-      _.each(records, function(doc) {
-        _.each(queryObj.facets, function(query, facetId) {
-          var fieldId = query.terms.field;
-          var val = doc[fieldId];
-          var tmp = facetResults[facetId];
-          if (val) {
-            tmp.termsall[val] = tmp.termsall[val] ? tmp.termsall[val] + 1 : 1;
-          } else {
-            tmp.missing = tmp.missing + 1;
-          }
-        });
-      });
-      _.each(queryObj.facets, function(query, facetId) {
-        var tmp = facetResults[facetId];
-        var terms = _.map(tmp.termsall, function(count, term) {
-          return { term: term, count: count };
-        });
-        tmp.terms = _.sortBy(terms, function(item) {
-          // want descending order
-          return -item.count;
-        });
-        tmp.terms = tmp.terms.slice(0, 10);
-      });
-      return facetResults;
-    };
-  };
-  
-
-  // ## Backbone
-  //
-  // Backbone connector for memory store attached to a Dataset object
-  my.Backbone = function() {
-    this.__type__ = 'memory';
-    this.sync = function(method, model, options) {
-      var self = this;
-      var dfd = $.Deferred();
-      if (method === "read") {
-        if (model.__type__ == 'Dataset') {
-          model.fields.reset(model._dataCache.fields);
-          dfd.resolve(model);
-        }
-        return dfd.promise();
-      } else if (method === 'update') {
-        if (model.__type__ == 'Record') {
-          model.dataset._dataCache.update(model.toJSON());
-          dfd.resolve(model);
-        }
-        return dfd.promise();
-      } else if (method === 'delete') {
-        if (model.__type__ == 'Record') {
-          model.dataset._dataCache.delete(model.toJSON());
-          dfd.resolve(model);
-        }
-        return dfd.promise();
-      } else {
-        alert('Not supported: sync on Memory backend with method ' + method + ' and model ' + model);
-      }
-    };
-
-    this.query = function(model, queryObj) {
-      var dfd = $.Deferred();
-      var results = model._dataCache.query(queryObj);
-      var hits = _.map(results.records, function(row) {
-        return { _source: row };
-      });
-      var out = {
-        total: results.total,
-        hits: hits,
-        facets: results.facets
-      };
-      dfd.resolve(out);
-      return dfd.promise();
-    };
-  };
-
-}(jQuery, this.recline.Backend.Memory));

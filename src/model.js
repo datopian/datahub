@@ -9,27 +9,15 @@ my.Dataset = Backbone.Model.extend({
   __type__: 'Dataset',
 
   // ### initialize
-  // 
-  // Sets up instance properties (see above)
-  //
-  // @param {Object} model: standard set of model attributes passed to Backbone models
-  //
-  // @param {Object or String} backend: Backend instance (see
-  // `recline.Backend.Base`) or a string specifying that instance. The
-  // string specifying may be a full class path e.g.
-  // 'recline.Backend.ElasticSearch' or a simple name e.g.
-  // 'elasticsearch' or 'ElasticSearch' (in this case must be a Backend in
-  // recline.Backend module)
-  initialize: function(model, backend) {
+  initialize: function() {
     _.bindAll(this, 'query');
-    this.backend = backend;
-    if (typeof backend === 'undefined') {
+    this.backend = null;
+    if (this.get('backend')) {
+      this.backend = this._backendFromString(this.get('backend'));
+    } else { // try to guess backend ...
       if (this.get('records')) {
         this.backend = recline.Backend.Memory;
       }
-    }
-    if (typeof(backend) === 'string') {
-      this.backend = this._backendFromString(backend);
     }
     this.fields = new my.FieldList();
     this.currentRecords = new my.RecordList();
@@ -43,6 +31,9 @@ my.Dataset = Backbone.Model.extend({
     this.queryState = new my.Query();
     this.queryState.bind('change', this.query);
     this.queryState.bind('facet:add', this.query);
+    // store is what we query and save against
+    // store will either be the backend or be a memory store if Backend fetch
+    // tells us to use memory store
     this._store = this.backend;
     if (this.backend == recline.Backend.Memory) {
       this.fetch();
@@ -156,6 +147,20 @@ my.Dataset = Backbone.Model.extend({
     var self = this;
     // TODO: need to reset the changes ...
     return this._store.save(this._changes, this.toJSON());
+  },
+
+  transform: function(editFunc) {
+    var self = this;
+    if (!this._store.transform) {
+      alert('Transform is not supported with this backend: ' + this.get('backend'));
+      return;
+    }
+    this.trigger('recline:flash', {message: "Updating all visible docs. This could take a while...", persist: true, loader: true});
+    this._store.transform(editFunc).done(function() {
+      // reload data as records have changed
+      self.query();
+      self.trigger('recline:flash', {message: "Records updated successfully"});
+    });
   },
 
   // ### query
@@ -298,13 +303,11 @@ my.Dataset.restore = function(state) {
     };
   } else {
     var datasetInfo = {
-      url: state.url
+      url: state.url,
+      backend: state.backend
     };
   }
-  dataset = new recline.Model.Dataset(
-    datasetInfo,
-    state.backend
-  );
+  dataset = new recline.Model.Dataset(datasetInfo);
   return dataset;
 };
 
@@ -479,41 +482,6 @@ my.Query = Backbone.Model.extend({
     this.trigger('change:filters:new-blank');
   },
   updateFilter: function(index, value) {
-  },
-  // #### addTermFilter
-  // 
-  // Set (update or add) a terms filter to filters
-  //
-  // See <http://www.elasticsearch.org/guide/reference/query-dsl/terms-filter.html>
-  addTermFilter: function(fieldId, value) {
-    var filters = this.get('filters');
-    var filter = { term: {} };
-    filter.term[fieldId] = value || '';
-    filters.push(filter);
-    this.set({filters: filters});
-    // change does not seem to be triggered automatically
-    if (value) {
-      this.trigger('change');
-    } else {
-      // adding a new blank filter and do not want to trigger a new query
-      this.trigger('change:filters:new-blank');
-    }
-  },
-  addGeoDistanceFilter: function(field) {
-    var filters = this.get('filters');
-    var filter = { 
-      geo_distance: {
-        distance: '10km',
-      }
-    };
-    filter.geo_distance[field] = {
-      'lon': 0,
-      'lat': 0
-    };
-    filters.push(filter);
-    this.set({filters: filters});
-    // adding a new blank filter and do not want to trigger a new query
-    this.trigger('change:filters:new-blank');
   },
   // ### removeFilter
   //

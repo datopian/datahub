@@ -25,10 +25,9 @@ test("parseCSV", function() {
   '"Xyz ""ABC"" O\'Brien", 11:35\n' +
   '"Other, AN", 12:35\n';
   var dataset = new recline.Model.Dataset({
-      data: csv
-    },
-    'csv'
-  );
+    data: csv,
+    backend: 'csv'
+  });
   dataset.fetch();
   equal(dataset.currentRecords.length, 3);
   var row = dataset.currentRecords.models[0].toJSON();

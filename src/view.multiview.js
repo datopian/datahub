@@ -83,7 +83,7 @@ my.MultiView = Backbone.View.extend({
         </div> \
       </div> \
       <div class="recline-results-info"> \
-        Results found <span class="doc-count">{{docCount}}</span> \
+        <span class="doc-count">{{docCount}}</span> records\
       </div> \
       <div class="menu-right"> \
         <div class="btn-group" data-toggle="buttons-checkbox"> \
@@ -114,7 +114,7 @@ my.MultiView = Backbone.View.extend({
       this.pageViews = [{
         id: 'grid',
         label: 'Grid',
-        view: new my.Grid({
+        view: new my.SlickGrid({
           model: this.model,
           state: this.state.get('view-grid')
         }),
@@ -139,6 +139,12 @@ my.MultiView = Backbone.View.extend({
           model: this.model,
           state: this.state.get('view-timeline')
         }),
+      }, {
+        id: 'transform',
+        label: 'Transform',
+        view: new my.Transform({
+          model: this.model
+        })
       }];
     }
     // these must be called after pageViews are created
@@ -264,6 +270,8 @@ my.MultiView = Backbone.View.extend({
       this.$filterEditor.toggle();
     } else if (action === 'fields') {
       this.$fieldsView.toggle();
+    } else if (action === 'transform') {
+      this.transformView.el.toggle();
     }
   },
 

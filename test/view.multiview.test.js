@@ -30,7 +30,6 @@ test('get State', function () {
   equal(state.get('readOnly'), false);
   equal(state.get('currentView'), null);
   equal(state.get('query').size, 100);
-  deepEqual(state.get('view-grid').hiddenFields, []);
   deepEqual(state.get('view-graph').group, null);
   equal(state.get('backend'), 'memory');
   ok(state.get('url') === url);
