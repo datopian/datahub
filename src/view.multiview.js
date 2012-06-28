@@ -114,7 +114,7 @@ my.MultiView = Backbone.View.extend({
       this.pageViews = [{
         id: 'grid',
         label: 'Grid',
-        view: new my.Grid({
+        view: new my.SlickGrid({
           model: this.model,
           state: this.state.get('view-grid')
         }),
