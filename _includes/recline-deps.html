@@ -5,7 +5,12 @@
   <link rel="stylesheet" href="{{page.root}}vendor/slickgrid/2.0.1/slick.grid.css">
 
   <!-- Recline CSS components -->
-  <link rel="stylesheet" href="{{page.root}}dist/recline.css">
+  <link rel="stylesheet" href="{{page.root}}css/grid.css">
+  <link rel="stylesheet" href="{{page.root}}css/slickgrid.css">
+  <link rel="stylesheet" href="{{page.root}}css/graph.css">
+  <link rel="stylesheet" href="{{page.root}}css/transform.css">
+  <link rel="stylesheet" href="{{page.root}}css/map.css">
+  <link rel="stylesheet" href="{{page.root}}css/multiview.css">
   <!-- /Recline CSS components -->
 
   <!-- 3rd party JS libraries -->
@@ -22,5 +27,27 @@
   <script type="text/javascript" src="{{page.root}}vendor/moment/1.6.2/moment.js"></script>
   <script type="text/javascript" src="{{page.root}}vendor/timeline/20120520/js/timeline.js"></script>
 
+  <!--
   <script type="text/javascript" src="{{page.root}}dist/recline.js"></script>
+  -->
+  <script type="text/javascript" src="{{page.root}}src/model.js"></script>
+  <script type="text/javascript" src="{{page.root}}src/backend.memory.js"></script>
+  <script type="text/javascript" src="{{page.root}}src/backend.dataproxy.js"></script>
+  <script type="text/javascript" src="{{page.root}}src/backend.gdocs.js"></script>
+  <script type="text/javascript" src="{{page.root}}src/backend.elasticsearch.js"></script>
+  <script type="text/javascript" src="{{page.root}}src/backend.csv.js"></script>
+
+  <!-- views and view tests -->
+  <script type="text/javascript" src="{{page.root}}src/view.grid.js"></script>
+  <script type="text/javascript" src="{{page.root}}src/view.slickgrid.js"></script>
+  <script type="text/javascript" src="{{page.root}}src/view.transform.js"></script>
+  <script type="text/javascript" src="{{page.root}}src/costco.js"></script>
+  <script type="text/javascript" src="{{page.root}}src/view.graph.js"></script>
+  <script type="text/javascript" src="{{page.root}}src/view.map.js"></script>
+  <script type="text/javascript" src="{{page.root}}src/view.timeline.js"></script>
+  <script type="text/javascript" src="{{page.root}}src/widget.pager.js"></script>
+  <script type="text/javascript" src="{{page.root}}src/widget.queryeditor.js"></script>
+  <script type="text/javascript" src="{{page.root}}src/widget.filtereditor.js"></script>
+  <script type="text/javascript" src="{{page.root}}src/widget.fields.js"></script>
+  <script type="text/javascript" src="{{page.root}}src/view.multiview.js"></script>
 

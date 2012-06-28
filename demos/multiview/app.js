@@ -36,43 +36,11 @@ var createExplorer = function(dataset, state) {
   window.dataExplorer = null;
   var $el = $('<div />');
   $el.appendTo(window.explorerDiv);
-  var views = [
-     {
-       id: 'grid',
-       label: 'Grid', 
-       view: new recline.View.SlickGrid({
-         model: dataset
-       })
-     },
-
-     {
-       id: 'graph',
-       label: 'Graph',
-       view: new recline.View.Graph({
-         model: dataset
-       })
-     },
-     {
-       id: 'map',
-       label: 'Map',
-       view: new recline.View.Map({
-         model: dataset
-       })
-     },
-     {
-       id: 'timeline',
-       label: 'Timeline',
-       view: new recline.View.Timeline({
-         model: dataset
-       })
-     }
-  ];
 
   window.dataExplorer = new recline.View.MultiView({
     model: dataset,
     el: $el,
-    state: state,
-    views: views
+    state: state
   });
 }
 

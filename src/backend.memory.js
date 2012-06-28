@@ -161,6 +161,15 @@ this.recline.Backend.Memory = this.recline.Backend.Memory || {};
       });
       return facetResults;
     };
+
+    this.transform = function(editFunc) {
+      var toUpdate = costco.mapDocs(this.data, editFunc);
+      // TODO: very inefficient -- could probably just walk the documents and updates in tandem and update
+      _.each(toUpdate.updates, function(record, idx) {
+        self.update(record);
+      });
+      return this.save(toUpdate);
+    };
   };
 
 }(jQuery, this.recline.Backend.Memory));

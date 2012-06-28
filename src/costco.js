@@ -20,9 +20,9 @@ var costco = function() {
         ;
       if (!after) after = {};
       if (currentColumn) {
-        preview.push({before: JSON.stringify(before[currentColumn]), after: JSON.stringify(after[currentColumn])});      
+        preview.push({before: before[currentColumn], after: after[currentColumn]});      
       } else {
-        preview.push({before: JSON.stringify(before), after: JSON.stringify(after)});      
+        preview.push({before: before, after: after});      
       }
     }
     return preview;
@@ -53,9 +53,9 @@ var costco = function() {
     });
     
     return {
-      edited: edited, 
+      updates: edited, 
       docs: updatedDocs, 
-      deleted: deleted, 
+      deletes: deleted, 
       failed: failed
     };
   }
