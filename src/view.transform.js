@@ -44,7 +44,11 @@ my.Transform = Backbone.View.extend({
     // Put in the basic (identity) transform script
     // TODO: put this into the template?
     var editor = this.el.find('.expression-preview-code');
-    var col = this.model.fields.models[0].id;
+    if (this.model.fields.length > 0) {
+      var col = this.model.fields.models[0].id;
+    } else {
+      var col = 'unknown';
+    }
     editor.val("function(doc) {\n  doc['"+ col +"'] = doc['"+ col +"'];\n  return doc;\n}");
     editor.focus().get(0).setSelectionRange(18, 18);
     editor.keydown();
@@ -62,32 +66,28 @@ my.Transform = Backbone.View.extend({
   },
 
   editPreviewTemplate: ' \
-      <table class="table table-condensed table-bordered"> \
+      <table class="table table-condensed table-bordered before-after"> \
       <thead> \
       <tr> \
-        <th></th> \
-        {{#fields}} \
-          <th>{{id}}</th> \
-        {{/fields}} \
+        <th>Field</th> \
+        <th>Before</th> \
+        <th>After</th> \
       </tr> \
       </thead> \
       <tbody> \
+      {{#row}} \
       <tr> \
-        <th>Before</th> \
-        {{#row.before}} \
-        <td class="expression-preview-value"> \
-            {{.}} \
+        <td> \
+          {{field}} \
         </td> \
-        {{/row.before}} \
-      </tr> \
-      <tr> \
-        <th>After</th> \
-        {{#row.after}} \
-        <td class="expression-preview-value"> \
-            {{.}} \
+        <td class="before {{#different}}different{{/different}}"> \
+          {{before}} \
         </td> \
-        {{/row.after}} \
+        <td class="after {{#different}}different{{/different}}"> \
+          {{after}} \
+        </td> \
       </tr> \
+      {{/row}} \
       </tbody> \
       </table> \
   ',
@@ -107,19 +107,18 @@ my.Transform = Backbone.View.extend({
         var $el = self.el.find('.expression-preview-container');
         var fields = self.model.fields.toJSON();
         var rows = _.map(previewData.slice(0,4), function(row) {
-          return {
-            before: _.map(fields, function(field) {
-              return row.before[field.id];
-            }),
-            after: _.map(fields, function(field) {
-              return row.after[field.id];
-            })
-          };
+          return _.map(fields, function(field) {
+            return {
+              field: field.id,
+              before: row.before[field.id],
+              after: row.after[field.id],
+              different: !_.isEqual(row.before[field.id], row.after[field.id])
+            }
+          });
         });
         $el.html('');
         _.each(rows, function(row) {
           var templated = Mustache.render(self.editPreviewTemplate, {
-            fields: fields,
             row: row
           });
           $el.append(templated);

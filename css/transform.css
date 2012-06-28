@@ -29,3 +29,11 @@
   color: red;
 }
 
+.recline-transform .before-after .after {
+  font-style: italic;
+}
+
+.recline-transform .before-after .after.different {
+  font-weight: bold;
+}
+
