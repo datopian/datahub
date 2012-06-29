@@ -30,20 +30,18 @@ source. They provide methods for loading and saving Datasets and individuals
 Documents as well as for bulk loading via a query API and doing bulk transforms
 on the backend.
 
-You can instantiate a backend directly e.g.
+You can use a backend directly e.g.
 
 {% highlight javascript %}
-var backend = recline.Backend.ElasticSearch();
+var backend = recline.Backend.ElasticSearch.fetch({url: ...});
 {% endhighlight %}
 
 But more usually the backend will be created or loaded for you by Recline and all you need is provide the identifier for that Backend e.g.
 
 {% highlight javascript %}
 var dataset = recline.Model.Dataset({
-    ...
-  },
-  'backend-identifier'
-);
+  backend: 'backend-identifier'
+});
 {% endhighlight %}
 
 <div class="alert alert-info">
@@ -53,7 +51,6 @@ How do you know the backend identifier for a given Backend? It's just the name o
 
 ### Included Backends
 
-* [memory: Memory Backend (local data)](docs/backend/memory.html)
 * [elasticsearch: ElasticSearch Backend](docs/backend/elasticsearch.html)
 * [dataproxy: DataProxy Backend (CSV and XLS on the Web)](docs/backend/dataproxy.html)
 * [gdocs: Google Docs (Spreadsheet) Backend](docs/backend/gdocs.html)
@@ -71,8 +68,6 @@ This is as per the [quickstart](example-quickstart.html) but the set of files is
 <script type="text/javascript" src="vendor/underscore/1.1.6/underscore.js"></script>
 <script type="text/javascript" src="vendor/backbone/0.5.1/backbone.js"></script>
 <!-- include the backend code you need e.g. here for gdocs -->
-<script type="text/javascript" src="src/backend/base.js"></script>
-<script type="text/javascript" src="src/backend/memory.js"></script>
 <script type="text/javascript" src="src/backend/gdocs.js"></script>
 
 <!-- Or you can just include all of recline. -->
@@ -110,5 +105,5 @@ a bespoke chooser and a Kartograph (svg-only) map.
 ## Writing your own backend
 
 Writing your own backend is easy to do. Details of the required API are in the
-[Backend documentation](docs/backend/base.html).
+[Backend documentation](docs/backends.html).
 
