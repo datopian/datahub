@@ -6,6 +6,9 @@ this.recline.Backend.DataProxy = this.recline.Backend.DataProxy || {};
   my.__type__ = 'dataproxy';
   // URL for the dataproxy
   my.dataproxy_url = 'http://jsonpdataproxy.appspot.com';
+  // Timeout for dataproxy (after this time if no response we error)
+  // Needed because use JSONP so do not receive e.g. 500 errors 
+  my.timeout = 5000;
 
   // ## load
   //
@@ -48,12 +51,11 @@ this.recline.Backend.DataProxy = this.recline.Backend.DataProxy || {};
   // a crude way to catch those errors.
   var _wrapInTimeout = function(ourFunction) {
     var dfd = $.Deferred();
-    var timeout = 5000;
     var timer = setTimeout(function() {
       dfd.reject({
-        message: 'Request Error: Backend did not respond after ' + (timeout / 1000) + ' seconds'
+        message: 'Request Error: Backend did not respond after ' + (my.timeout / 1000) + ' seconds'
       });
-    }, timeout);
+    }, my.timeout);
     ourFunction.done(function(arguments) {
         clearTimeout(timer);
         dfd.resolve(arguments);
