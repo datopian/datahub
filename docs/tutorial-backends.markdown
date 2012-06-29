@@ -2,6 +2,7 @@
 layout: container
 title: Library - Example - Loading data from different sources using Backends
 recline-deps: true
+root: ../
 ---
 
 <div class="page-header">

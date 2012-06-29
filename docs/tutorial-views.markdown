@@ -2,13 +2,14 @@
 layout: container
 title: Library - Example - Quickstart
 recline-deps: true
+root: ../
 ---
 
 <div class="page-header">
   <h1>
-    Recline Quickstart Guide
+    Views Tutorial
     <br />
-    <small>This step-by-step guide will quickly get you started with Recline basics, including creating a dataset from local data and setting up a grid, graph and map to display it.</small>
+    <small>This step-by-step tutorial will quickly get you started with Recline basics, including creating a dataset from local data and setting up a grid, graph and map to display it.</small>
   </h1>
 </div>
 
