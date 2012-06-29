@@ -404,6 +404,9 @@ my.Field = Backbone.Model.extend({
     object: function(val, field, doc) {
       return JSON.stringify(val);
     },
+    geo_point: function(val, field, doc) {
+      return JSON.stringify(val);
+    },
     'float': function(val, field, doc) {
       var format = field.get('format'); 
       if (format === 'percentage') {
