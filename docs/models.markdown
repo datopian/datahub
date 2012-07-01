@@ -21,7 +21,7 @@ holding summary information about a Field (or multiple Fields).
 All the models are Backbone models, that is they extend Backbone.Model. Note,
 however that they do not 'sync' (load/save) like normal Backbone models.
 
-## Dataset
+<h2 id="dataset">Dataset</h2>
 
 A Dataset is *the* central object in Recline. Standard usage is:
 
@@ -158,7 +158,6 @@ be used to derive/compute the value of data in this field as a function of this
 field's value (if any) and the current record. It's signature and behaviour is
 the same as for renderer.
  
-
 
 <h2 id="query">Query</h2>
 

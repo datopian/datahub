@@ -280,7 +280,7 @@ test("query", function() {
   dataset.fetch().done(function(dataset) {
     deepEqual(['_created', '_last_modified', 'end', 'owner', 'start', 'title'], _.pluck(dataset.fields.toJSON(), 'id'));
     dataset.query().then(function(recList) {
-      equal(3, dataset.docCount);
+      equal(3, dataset.recordCount);
       equal(3, recList.length);
       equal('Note 1', recList.models[0].get('title'));
       start();

@@ -11,6 +11,8 @@ this.recline.View = this.recline.View || {};
 // https://github.com/mleibman/SlickGrid
 //
 // Initialize it with a `recline.Model.Dataset`.
+//
+// NB: you need an explicit height on the element for slickgrid to work
 my.SlickGrid = Backbone.View.extend({
   tagName:  "div",
   className: "recline-slickgrid",
@@ -18,6 +20,7 @@ my.SlickGrid = Backbone.View.extend({
   initialize: function(modelEtc) {
     var self = this;
     this.el = $(this.el);
+    this.el.addClass('recline-slickgrid');
     _.bindAll(this, 'render');
     this.model.currentRecords.bind('add', this.render);
     this.model.currentRecords.bind('reset', this.render);
@@ -56,7 +59,6 @@ my.SlickGrid = Backbone.View.extend({
 
   render: function() {
     var self = this;
-    this.el = $(this.el);
 
     var options = {
       enableCellNavigation: true,

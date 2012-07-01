@@ -27,7 +27,7 @@ my.Dataset = Backbone.Model.extend({
       creates: []
     };
     this.facets = new my.FacetList();
-    this.docCount = null;
+    this.recordCount = null;
     this.queryState = new my.Query();
     this.queryState.bind('change', this.query);
     this.queryState.bind('facet:add', this.query);
@@ -178,7 +178,7 @@ my.Dataset = Backbone.Model.extend({
     this.trigger('query:start');
 
     if (queryObj) {
-      this.queryState.set(queryObj);
+      this.queryState.set(queryObj, {silent: true});
     }
     var actualQuery = this.queryState.toJSON();
 
@@ -197,7 +197,7 @@ my.Dataset = Backbone.Model.extend({
 
   _handleQueryResult: function(queryResult) {
     var self = this;
-    self.docCount = queryResult.total;
+    self.recordCount = queryResult.total;
     var docs = _.map(queryResult.hits, function(hit) {
       var _doc = new my.Record(hit);
       _doc.bind('change', function(doc) {
@@ -220,11 +220,13 @@ my.Dataset = Backbone.Model.extend({
 
   toTemplateJSON: function() {
     var data = this.toJSON();
-    data.docCount = this.docCount;
+    data.recordCount = this.recordCount;
     data.fields = this.fields.toJSON();
     return data;
   },
 
+  // ### getFieldsSummary
+  //
   // Get a summary for each field in the form of a `Facet`.
   // 
   // @return null as this is async function. Provides deferred/promise interface.
@@ -248,6 +250,19 @@ my.Dataset = Backbone.Model.extend({
       dfd.resolve(queryResult);
     });
     return dfd.promise();
+  },
+
+  // ### recordSummary
+  //
+  // Get a simple html summary of a Dataset record in form of key/value list
+  recordSummary: function(record) {
+    var html = '';
+    this.fields.each(function(field) { 
+      if (field.id != 'id') {
+        html += '<div><strong span="key">' + field.get('label') + '</strong>: ' + record.getFieldValue(field) + '</div>';
+      }
+    });
+    return html;
   },
 
   // ### _backendFromString(backendString)
@@ -344,16 +359,6 @@ my.Record = Backbone.Model.extend({
     return val;
   },
 
-  summary: function(fields) {
-    var html = '';
-    for (key in this.attributes) {
-      if (key != 'id') {
-        html += '<div><strong>' + key + '</strong>: '+ this.attributes[key] + '</div>';
-      }
-    }
-    return html;
-  },
-
   // Override Backbone save, fetch and destroy so they do nothing
   // Instead, Dataset object that created this Record should take care of
   // handling these changes (discovery will occur via event notifications)
@@ -402,6 +407,9 @@ my.Field = Backbone.Model.extend({
   },
   defaultRenderers: {
     object: function(val, field, doc) {
+      return JSON.stringify(val);
+    },
+    geo_point: function(val, field, doc) {
       return JSON.stringify(val);
     },
     'float': function(val, field, doc) {

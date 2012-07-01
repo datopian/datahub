@@ -94,14 +94,14 @@ test('DataProxy Backend', function() {
   expect(6);
   dataset.fetch().then(function() {
     deepEqual(['__id__', 'date', 'price'], _.pluck(dataset.fields.toJSON(), 'id'));
-    equal(10, dataset.docCount)
+    equal(10, dataset.recordCount)
     equal(dataset.currentRecords.models[0].get('date'), "1950-01");
     // needed only if not stubbing
     // start();
   });
 
   dataset.query({q: '1950-01'}).then(function() {
-    equal(dataset.docCount, 1);
+    equal(dataset.recordCount, 1);
     equal(dataset.currentRecords.models[0].get('price'), '34.73');
   });
   $.ajax.restore();

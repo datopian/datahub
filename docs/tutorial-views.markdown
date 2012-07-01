@@ -2,13 +2,14 @@
 layout: container
 title: Library - Example - Quickstart
 recline-deps: true
+root: ../
 ---
 
 <div class="page-header">
   <h1>
-    Recline Quickstart Guide
+    Views Tutorial
     <br />
-    <small>This step-by-step guide will quickly get you started with Recline basics, including creating a dataset from local data and setting up a grid, graph and map to display it.</small>
+    <small>This step-by-step tutorial will quickly get you started with Recline basics, including creating a dataset from local data and setting up a grid, graph and map to display it.</small>
   </h1>
 </div>
 
@@ -16,7 +17,7 @@ recline-deps: true
 
 Before writing any code with Recline, you need to do the following preparation steps on your page:
 
-1. [Download ReclineJS](download.html) and relevant dependencies.
+1. [Download ReclineJS]({{page.root}}download.html) and relevant dependencies.
 2. Include the relevant CSS in the head section of your document:
     {% highlight html %}
 <!-- you do not have to use bootstrap but we use it by default -->
@@ -33,15 +34,10 @@ Before writing any code with Recline, you need to do the following preparation s
 <script type="text/javascript" src="vendor/bootstrap/2.0.2/bootstrap.js"></script>
 <!-- note that we could include individual components rather than whole of recline e.g.
 <script type="text/javascript" src="src/model.js"></script>
-<script type="text/javascript" src="src/backend/base.js"></script>
 <script type="text/javascript" src="src/backend/memory.js"></script>
 <script type="text/javascript" src="src/view-grid.js"></script>
 -->
 <script type="text/javascript" src="dist/recline.js"></script>{% endhighlight %}
-
-4. Create a div to hold the Recline view(s):
-    {% highlight html %}
-    <div id="mygrid"></div>{% endhighlight %}
 
 You're now ready to start working with Recline.
 
@@ -60,37 +56,62 @@ no reason you cannot have objects as values allowing you to nest data.
 We can now create a recline Dataset object (and memory backend) from this raw data: 
 
 {% highlight javascript %}
-var dataset = recline.Backend.Memory.createDataset(data);
+var dataset = new recline.Model.Dataset({
+  records: data
+});
 {% endhighlight %}
-
-Note that behind the scenes Recline will create a Memory backend for this dataset as in Recline every dataset object must have a backend from which it can push and pull data. In the case of in-memory data this is a little artificial since all the data is available locally but this makes more sense for situations where one is connecting to a remote data source (and one which may contain a lot of data).
 
 
 ### Setting up the Grid
 
-Let's create a data grid view to display the dataset we have just created, binding the view to the `<div id="mygrid"></div>` we created earlier:
+
+Let's create a data grid view to display the dataset we have just created.  We're going to use the SlickGrid-based grid so we need the following:
+
+{% highlight html %}
+<link rel="stylesheet" href="css/slickgrid.css">
+
+<!-- vendor -->
+<script type="text/javascript" src="{{page.root}}vendor/slickgrid/2.0.1/jquery-ui-1.8.16.custom.min.js"></script>
+<script type="text/javascript" src="{{page.root}}vendor/slickgrid/2.0.1/jquery.event.drag-2.0.min.js"></script>
+<script type="text/javascript" src="{{page.root}}vendor/slickgrid/2.0.1/slick.grid.min.js"></script>
+
+<!-- Recline -->
+<script type="text/javascript" src="src/view.slickgrid.js"></script>
+{% endhighlight %}
+
+Now, let's create an HTML element to for the Grid:
+
+{% highlight html %}
+<div id="mygrid" style="height: 400px"></div>
+{% endhighlight %}
+
+Now let's set up the Grid:
 
 {% highlight javascript %}
 var $el = $('#mygrid');
-var grid = new recline.View.Grid({
-  model: dataset
+var grid = new recline.View.SlickGrid({
+  model: dataset,
+  el: $el
 });
-$el.append(grid.el);
+grid.visible = true;
 grid.render();
 {% endhighlight %}
 
 And hey presto:
 
-<div id="mygrid" class="recline-read-only" style="margin-bottom: 30px; margin-top: -20px;">&nbsp;</div>
+<div id="mygrid" class="recline-read-only" style="margin-bottom: 30px; height: 200px;">&nbsp;</div>
 
 <script type="text/javascript">
 {% include data.js %}
-var dataset = recline.Backend.Memory.createDataset(data);
-var $el = $('#mygrid');
-var grid = new recline.View.Grid({
-  model: dataset,
+var dataset = new recline.Model.Dataset({
+  records: data
 });
-$el.append(grid.el);
+var $el = $('#mygrid');
+var grid = new recline.View.SlickGrid({
+  model: dataset,
+  el: $el
+});
+grid.visible = true;
 grid.render();
 </script>
 
@@ -106,7 +127,7 @@ library and the Recline Graph view:
 
 <!-- javascript -->
 <script type="text/javascript" src="vendor/jquery.flot/0.7/jquery.flot.js"></script>
-<script type="text/javascript" src="src/view-graph.js"></script>
+<script type="text/javascript" src="src/view.graph.js"></script>
 {% endhighlight %}
 
 Next, create a new div for the graph:
@@ -115,35 +136,15 @@ Next, create a new div for the graph:
 <div id="mygraph"></div>
 {% endhighlight %}
 
-Now let's create the graph, we will use the same dataset we had earlier:
+Now let's create the graph, we will use the same dataset we had earlier, and we will need to set the view 'state' in order to configure the graph with the column to use for the x-axis ("group") and the columns to use for the series to show ("series").
 
-{% highlight javascript %}
-var $el = $('#mygraph');
-var graph = new recline.View.Graph({
-  model: dataset
-});
-$el.append(grid.el);
-graph.render();
-{% endhighlight %}
-
-And ... we have a graph view -- with instructions on how to use the controls to
-create a graph -- but no graph. Go ahead and play around with the controls to
-create a graph of your choosing:
-
-<div id="mygraph" style="margin-bottom: 30px;">&nbsp;</div>
-
-<script type="text/javascript">
-var $el = $('#mygraph');
-var graph = new recline.View.Graph({
-  model: dataset
-});
-$el.append(graph.el);
-graph.render();
-</script>
-
-But suppose you wanted to create a graph not a graph editor. This is
-straightforward to do -- all we need to do is set the 'state' of the graph
-view:
+<div class="alert alert-info">
+<strong>State</strong>: The concept of a state is a common feature of Recline views being an object
+which stores information about the state and configuration of a given view. You
+can read more about it in the general <a href="../docs/views.html">Views
+documentation</a> as well as the documentation of individual views such as the
+<a href="../docs/src/view.graph.html">Graph View</a>.
+</div>
 
 {% highlight javascript %}
 var $el = $('#mygraph');
@@ -158,12 +159,12 @@ $el.append(graph.el);
 graph.redraw();
 {% endhighlight %}
 
-We would get this rendered graph:
+The result is the following graph:
 
-<div id="mygraph2" style="margin-bottom: 30px;">&nbsp;</div>
+<div id="mygraph" style="margin-bottom: 30px;">&nbsp;</div>
 
 <script type="text/javascript">
-var $el = $('#mygraph2');
+var $el = $('#mygraph');
 var graph = new recline.View.Graph({
   model: dataset,
   state: {
@@ -175,14 +176,6 @@ var graph = new recline.View.Graph({
 $el.append(graph.el);
 graph.redraw();
 </script>
-
-<div class="alert alert-info">
-<strong>State</strong>: The concept of a state is a common feature of Recline views being an object
-which stores information about the state and configuration of a given view. You
-can read more about it in the general <a href="../docs/view.html">Views
-documentation</a> as well as the documentation of individual views such as the
-<a href="../docs/view-graph.html">Graph View</a>.
-</div>
 
 ### Creating a Map
 

@@ -11,10 +11,18 @@ root: ../
   </h1>
 </div>
 
+Backends connect Dataset and Documents to data from a specific 'Backend' data
+source. They provide methods for loading and saving Datasets and individuals
+Documents as well as for bulk loading via a query API and doing bulk transforms
+on the backend.
+
 Backends come in 2 flavours:
 
 1. Loader backends - only implement fetch method. The data is then cached in a Memory.Store on the Dataset and interacted with there. This is best for sources which just allow you to load data or where you want to load the data once and work with it locally.
 2. Store backends - these support fetch, query and, if write-enabled, save. These are suitable where the backend contains a lot of data (infeasible to load locally - for examples a million rows) or where the backend has capabilities you want to take advantage of.
+
+
+# Backend API
 
 Backend modules must implement the following API:
 

@@ -44,11 +44,17 @@ test('Field: default renderers', function () {
     myobject: {a: 1, b: 2},
     link: 'http://abc.com/',
     link2: 'Some text then https://abc.com/',
-    markdown: '### ABC'
+    markdown: '### ABC',
+    geopoint: [18.7, -122]
   });
   var field = new recline.Model.Field({id: 'myobject', type: 'object'});
   var out = doc.getFieldValue(field);
   var exp = '{"a":1,"b":2}';
+  equal(out, exp);
+
+  var field = new recline.Model.Field({id: 'geopoint', type: 'geo_point'});
+  var out = doc.getFieldValue(field);
+  var exp = '[18.7,-122]';
   equal(out, exp);
 
   var field = new recline.Model.Field({id: 'x', type: 'float', format: 'percentage'});

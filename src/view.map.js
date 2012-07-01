@@ -35,7 +35,7 @@ my.Map = Backbone.View.extend({
   // If not found, the user will need to define the fields via the editor.
   latitudeFieldNames: ['lat','latitude'],
   longitudeFieldNames: ['lon','longitude'],
-  geometryFieldNames: ['geojson', 'geom','the_geom','geometry','spatial','location'],
+  geometryFieldNames: ['geojson', 'geom','the_geom','geometry','spatial','location', 'geo', 'lonlat'],
 
   initialize: function(options) {
     var self = this;
