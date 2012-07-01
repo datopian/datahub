@@ -83,7 +83,7 @@ my.MultiView = Backbone.View.extend({
         </div> \
       </div> \
       <div class="recline-results-info"> \
-        <span class="doc-count">{{docCount}}</span> records\
+        <span class="doc-count">{{recordCount}}</span> records\
       </div> \
       <div class="menu-right"> \
         <div class="btn-group" data-toggle="buttons-checkbox"> \
@@ -166,7 +166,7 @@ my.MultiView = Backbone.View.extend({
       });
     this.model.bind('query:done', function() {
         self.clearNotifications();
-        self.el.find('.doc-count').text(self.model.docCount || 'Unknown');
+        self.el.find('.doc-count').text(self.model.recordCount || 'Unknown');
       });
     this.model.bind('query:fail', function(error) {
         self.clearNotifications();

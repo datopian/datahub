@@ -27,7 +27,7 @@ my.Dataset = Backbone.Model.extend({
       creates: []
     };
     this.facets = new my.FacetList();
-    this.docCount = null;
+    this.recordCount = null;
     this.queryState = new my.Query();
     this.queryState.bind('change', this.query);
     this.queryState.bind('facet:add', this.query);
@@ -197,7 +197,7 @@ my.Dataset = Backbone.Model.extend({
 
   _handleQueryResult: function(queryResult) {
     var self = this;
-    self.docCount = queryResult.total;
+    self.recordCount = queryResult.total;
     var docs = _.map(queryResult.hits, function(hit) {
       var _doc = new my.Record(hit);
       _doc.bind('change', function(doc) {
@@ -220,7 +220,7 @@ my.Dataset = Backbone.Model.extend({
 
   toTemplateJSON: function() {
     var data = this.toJSON();
-    data.docCount = this.docCount;
+    data.recordCount = this.recordCount;
     data.fields = this.fields.toJSON();
     return data;
   },

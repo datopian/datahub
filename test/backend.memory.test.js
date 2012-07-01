@@ -178,7 +178,7 @@ test('basics', function () {
   dataset.fetch().then(function(datasetAgain) {
     equal(dataset.get('name'), memoryData.metadata.name);
     deepEqual(_.pluck(dataset.fields.toJSON(), 'id'), _.pluck(data.fields, 'id'));
-    equal(dataset.docCount, 6);
+    equal(dataset.recordCount, 6);
   });
 });
 
