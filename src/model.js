@@ -178,7 +178,7 @@ my.Dataset = Backbone.Model.extend({
     this.trigger('query:start');
 
     if (queryObj) {
-      this.queryState.set(queryObj);
+      this.queryState.set(queryObj, {silent: true});
     }
     var actualQuery = this.queryState.toJSON();
 
