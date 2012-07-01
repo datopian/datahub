@@ -17,7 +17,7 @@ root: ../
 
 Before writing any code with Recline, you need to do the following preparation steps on your page:
 
-1. [Download ReclineJS](download.html) and relevant dependencies.
+1. [Download ReclineJS]({{page.root}}download.html) and relevant dependencies.
 2. Include the relevant CSS in the head section of your document:
     {% highlight html %}
 <!-- you do not have to use bootstrap but we use it by default -->
@@ -34,7 +34,6 @@ Before writing any code with Recline, you need to do the following preparation s
 <script type="text/javascript" src="vendor/bootstrap/2.0.2/bootstrap.js"></script>
 <!-- note that we could include individual components rather than whole of recline e.g.
 <script type="text/javascript" src="src/model.js"></script>
-<script type="text/javascript" src="src/backend/base.js"></script>
 <script type="text/javascript" src="src/backend/memory.js"></script>
 <script type="text/javascript" src="src/view-grid.js"></script>
 -->

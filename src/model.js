@@ -225,6 +225,8 @@ my.Dataset = Backbone.Model.extend({
     return data;
   },
 
+  // ### getFieldsSummary
+  //
   // Get a summary for each field in the form of a `Facet`.
   // 
   // @return null as this is async function. Provides deferred/promise interface.
@@ -248,6 +250,19 @@ my.Dataset = Backbone.Model.extend({
       dfd.resolve(queryResult);
     });
     return dfd.promise();
+  },
+
+  // ### recordSummary
+  //
+  // Get a simple html summary of a Dataset record in form of key/value list
+  recordSummary: function(record) {
+    var html = '';
+    this.fields.each(function(field) { 
+      if (field.id != 'id') {
+        html += '<div><strong span="key">' + field.get('label') + '</strong>: ' + record.getFieldValue(field) + '</div>';
+      }
+    });
+    return html;
   },
 
   // ### _backendFromString(backendString)
@@ -342,16 +357,6 @@ my.Record = Backbone.Model.extend({
       val = field.deriver(val, field, this);
     }
     return val;
-  },
-
-  summary: function(fields) {
-    var html = '';
-    for (key in this.attributes) {
-      if (key != 'id') {
-        html += '<div><strong>' + key + '</strong>: '+ this.attributes[key] + '</div>';
-      }
-    }
-    return html;
   },
 
   // Override Backbone save, fetch and destroy so they do nothing

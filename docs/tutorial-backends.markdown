@@ -1,6 +1,6 @@
 ---
 layout: container
-title: Library - Example - Loading data from different sources using Backends
+title: Tutorial - Backends - Loading data from different sources using Backends
 recline-deps: true
 root: ../
 ---
@@ -8,20 +8,17 @@ root: ../
 <div class="page-header">
   <h1>
     Loading data from different sources using Backends
+    <br />
+    <small>These set of examples will show you how you can load data from different
+sources such as Google Docs or the DataHub using Recline</small>
   </h1>
 </div>
 
-These set of examples will show you how you can load data from different
-sources such as Google Docs or the DataHub using Recline.
 
 <div class="alert alert-info">
 <p><strong>Note</strong>: often you are loading data from a given source in
-order to display it using the various Recline views. However, you can also
-happily use this data with your own code and app and this is a very common
-use-case.</p>
-<p>Moreover, Recline is designed so you need <strong>only</strong> include the
-backend and its dependencies without needing to include any of the dependencies
-for the view portion of the Recline library.</p>
+order to load it into a Recline Dataset and display it in a View. However, you can also
+happily use a Backend to load data on its own without using any other part of the Recline library as all the Backends are designed to have no dependency on other parts of Recline.</p>
 </div>
 
 ## Overview
@@ -61,7 +58,7 @@ Backend not on this list that you would like to see? It's very easy to write a n
 
 ## Preparing your app
 
-This is as per the [quickstart](example-quickstart.html) but the set of files is much more limited if you are just using a Backend. Specifically:
+This is as per the [quickstart](tutorial-views.html) but the set of files is much more limited if you are just using a Backend. Specifically:
 
 {% highlight html %}
 <!-- 3rd party dependencies -->

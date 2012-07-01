@@ -9,9 +9,10 @@ title: Download
   </h1>
 </div>
 
-Besides the library itself, the download package contains full source code,
-unit tests, files for debugging and a build system. The production files
-(included the same way as in the code above) are in the dist folder.
+Besides the library itself, the download package contains full source
+code, unit tests, external vendor libraries and documentation. The
+production files (included the same way as in the code above) are in the
+dist folder.
 
 <p><a href="https://github.com/okfn/recline/zipball/master" class="btn">Download Recline v0.5 (master)</a> (in-progress version)</p>
 
