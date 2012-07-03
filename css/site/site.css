@@ -160,8 +160,12 @@ section.grey:after {
 	color:#333333;
 }
 
-.library .tutorials .well {
+.tutorials .well {
   height: 60px;
+}
+
+.tutorials {
+  margin-bottom: 300px;
 }
 
 /** Code / Pre **/
