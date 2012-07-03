@@ -256,12 +256,13 @@ my.Dataset = Backbone.Model.extend({
   //
   // Get a simple html summary of a Dataset record in form of key/value list
   recordSummary: function(record) {
-    var html = '';
+    var html = '<div class="recline-record-summary">';
     this.fields.each(function(field) { 
       if (field.id != 'id') {
-        html += '<div><strong span="key">' + field.get('label') + '</strong>: ' + record.getFieldValue(field) + '</div>';
+        html += '<div class="' + field.id + '"><strong>' + field.get('label') + '</strong>: ' + record.getFieldValue(field) + '</div>';
       }
     });
+    html += '</div>';
     return html;
   },
 

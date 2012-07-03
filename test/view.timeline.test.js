@@ -22,13 +22,13 @@ test('extract dates and timelineJSON', function () {
             'startDate': new Date('2012-03-20'),
             'endDate': null,
             'headline': '1',
-            'text': '<div><strong>Date</strong>: 2012-03-20</div><div><strong>title</strong>: 1</div>'
+            'text': '<div class="recline-record-summary"><div class="Date"><strong>Date</strong>: 2012-03-20</div><div class="title"><strong>title</strong>: 1</div></div>'
           },
           {
             'startDate': new Date('2012-03-25'),
             'endDate': null,
             'headline': '2',
-            'text': '<div><strong>Date</strong>: 2012-03-25</div><div><strong>title</strong>: 2</div>'
+            'text': '<div class="recline-record-summary"><div class="Date"><strong>Date</strong>: 2012-03-25</div><div class="title"><strong>title</strong>: 2</div></div>'
           }
         ]
       }
