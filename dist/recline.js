@@ -188,6 +188,9 @@ this.recline.Backend.DataProxy = this.recline.Backend.DataProxy || {};
   my.__type__ = 'dataproxy';
   // URL for the dataproxy
   my.dataproxy_url = 'http://jsonpdataproxy.appspot.com';
+  // Timeout for dataproxy (after this time if no response we error)
+  // Needed because use JSONP so do not receive e.g. 500 errors 
+  my.timeout = 5000;
 
   // ## load
   //
@@ -230,12 +233,11 @@ this.recline.Backend.DataProxy = this.recline.Backend.DataProxy || {};
   // a crude way to catch those errors.
   var _wrapInTimeout = function(ourFunction) {
     var dfd = $.Deferred();
-    var timeout = 5000;
     var timer = setTimeout(function() {
       dfd.reject({
-        message: 'Request Error: Backend did not respond after ' + (timeout / 1000) + ' seconds'
+        message: 'Request Error: Backend did not respond after ' + (my.timeout / 1000) + ' seconds'
       });
-    }, timeout);
+    }, my.timeout);
     ourFunction.done(function(arguments) {
         clearTimeout(timer);
         dfd.resolve(arguments);
@@ -743,7 +745,12 @@ this.recline.Backend.Memory = this.recline.Backend.Memory || {};
             var foundmatch = false;
             _.each(self.fields, function(field) {
               var value = rawdoc[field.id];
-              if (value !== null) { value = value.toString(); }
+              if (value !== null) { 
+                value = value.toString();
+              } else {
+                // value can be null (apparently in some cases)
+                value = '';
+              }
               // TODO regexes?
               foundmatch = foundmatch || (value.toLowerCase() === term.toLowerCase());
               // TODO: early out (once we are true should break to spare unnecessary testing)
@@ -795,6 +802,15 @@ this.recline.Backend.Memory = this.recline.Backend.Memory || {};
       });
       return facetResults;
     };
+
+    this.transform = function(editFunc) {
+      var toUpdate = costco.mapDocs(this.data, editFunc);
+      // TODO: very inefficient -- could probably just walk the documents and updates in tandem and update
+      _.each(toUpdate.updates, function(record, idx) {
+        self.data[idx] = record;
+      });
+      return this.save(toUpdate);
+    };
   };
 
 }(jQuery, this.recline.Backend.Memory));
@@ -820,9 +836,9 @@ var costco = function() {
         ;
       if (!after) after = {};
       if (currentColumn) {
-        preview.push({before: JSON.stringify(before[currentColumn]), after: JSON.stringify(after[currentColumn])});      
+        preview.push({before: before[currentColumn], after: after[currentColumn]});      
       } else {
-        preview.push({before: JSON.stringify(before), after: JSON.stringify(after)});      
+        preview.push({before: before, after: after});      
       }
     }
     return preview;
@@ -853,9 +869,9 @@ var costco = function() {
     });
     
     return {
-      edited: edited, 
+      updates: edited, 
       docs: updatedDocs, 
-      deleted: deleted, 
+      deletes: deleted, 
       failed: failed
     };
   }
@@ -895,7 +911,7 @@ my.Dataset = Backbone.Model.extend({
       creates: []
     };
     this.facets = new my.FacetList();
-    this.docCount = null;
+    this.recordCount = null;
     this.queryState = new my.Query();
     this.queryState.bind('change', this.query);
     this.queryState.bind('facet:add', this.query);
@@ -1017,6 +1033,20 @@ my.Dataset = Backbone.Model.extend({
     return this._store.save(this._changes, this.toJSON());
   },
 
+  transform: function(editFunc) {
+    var self = this;
+    if (!this._store.transform) {
+      alert('Transform is not supported with this backend: ' + this.get('backend'));
+      return;
+    }
+    this.trigger('recline:flash', {message: "Updating all visible docs. This could take a while...", persist: true, loader: true});
+    this._store.transform(editFunc).done(function() {
+      // reload data as records have changed
+      self.query();
+      self.trigger('recline:flash', {message: "Records updated successfully"});
+    });
+  },
+
   // ### query
   //
   // AJAX method with promise API to get records from the backend.
@@ -1032,7 +1062,7 @@ my.Dataset = Backbone.Model.extend({
     this.trigger('query:start');
 
     if (queryObj) {
-      this.queryState.set(queryObj);
+      this.queryState.set(queryObj, {silent: true});
     }
     var actualQuery = this.queryState.toJSON();
 
@@ -1051,7 +1081,7 @@ my.Dataset = Backbone.Model.extend({
 
   _handleQueryResult: function(queryResult) {
     var self = this;
-    self.docCount = queryResult.total;
+    self.recordCount = queryResult.total;
     var docs = _.map(queryResult.hits, function(hit) {
       var _doc = new my.Record(hit);
       _doc.bind('change', function(doc) {
@@ -1074,11 +1104,13 @@ my.Dataset = Backbone.Model.extend({
 
   toTemplateJSON: function() {
     var data = this.toJSON();
-    data.docCount = this.docCount;
+    data.recordCount = this.recordCount;
     data.fields = this.fields.toJSON();
     return data;
   },
 
+  // ### getFieldsSummary
+  //
   // Get a summary for each field in the form of a `Facet`.
   // 
   // @return null as this is async function. Provides deferred/promise interface.
@@ -1102,6 +1134,20 @@ my.Dataset = Backbone.Model.extend({
       dfd.resolve(queryResult);
     });
     return dfd.promise();
+  },
+
+  // ### recordSummary
+  //
+  // Get a simple html summary of a Dataset record in form of key/value list
+  recordSummary: function(record) {
+    var html = '<div class="recline-record-summary">';
+    this.fields.each(function(field) { 
+      if (field.id != 'id') {
+        html += '<div class="' + field.id + '"><strong>' + field.get('label') + '</strong>: ' + record.getFieldValue(field) + '</div>';
+      }
+    });
+    html += '</div>';
+    return html;
   },
 
   // ### _backendFromString(backendString)
@@ -1198,16 +1244,6 @@ my.Record = Backbone.Model.extend({
     return val;
   },
 
-  summary: function(fields) {
-    var html = '';
-    for (key in this.attributes) {
-      if (key != 'id') {
-        html += '<div><strong>' + key + '</strong>: '+ this.attributes[key] + '</div>';
-      }
-    }
-    return html;
-  },
-
   // Override Backbone save, fetch and destroy so they do nothing
   // Instead, Dataset object that created this Record should take care of
   // handling these changes (discovery will occur via event notifications)
@@ -1256,6 +1292,9 @@ my.Field = Backbone.Model.extend({
   },
   defaultRenderers: {
     object: function(val, field, doc) {
+      return JSON.stringify(val);
+    },
+    geo_point: function(val, field, doc) {
       return JSON.stringify(val);
     },
     'float': function(val, field, doc) {
@@ -2254,7 +2293,7 @@ my.Map = Backbone.View.extend({
   // If not found, the user will need to define the fields via the editor.
   latitudeFieldNames: ['lat','latitude'],
   longitudeFieldNames: ['lon','longitude'],
-  geometryFieldNames: ['geojson', 'geom','the_geom','geometry','spatial','location'],
+  geometryFieldNames: ['geojson', 'geom','the_geom','geometry','spatial','location', 'geo', 'lonlat'],
 
   initialize: function(options) {
     var self = this;
@@ -2856,7 +2895,7 @@ my.MultiView = Backbone.View.extend({
         </div> \
       </div> \
       <div class="recline-results-info"> \
-        Results found <span class="doc-count">{{docCount}}</span> \
+        <span class="doc-count">{{recordCount}}</span> records\
       </div> \
       <div class="menu-right"> \
         <div class="btn-group" data-toggle="buttons-checkbox"> \
@@ -2887,7 +2926,7 @@ my.MultiView = Backbone.View.extend({
       this.pageViews = [{
         id: 'grid',
         label: 'Grid',
-        view: new my.Grid({
+        view: new my.SlickGrid({
           model: this.model,
           state: this.state.get('view-grid')
         }),
@@ -2912,6 +2951,12 @@ my.MultiView = Backbone.View.extend({
           model: this.model,
           state: this.state.get('view-timeline')
         }),
+      }, {
+        id: 'transform',
+        label: 'Transform',
+        view: new my.Transform({
+          model: this.model
+        })
       }];
     }
     // these must be called after pageViews are created
@@ -2933,7 +2978,7 @@ my.MultiView = Backbone.View.extend({
       });
     this.model.bind('query:done', function() {
         self.clearNotifications();
-        self.el.find('.doc-count').text(self.model.docCount || 'Unknown');
+        self.el.find('.doc-count').text(self.model.recordCount || 'Unknown');
       });
     this.model.bind('query:fail', function(error) {
         self.clearNotifications();
@@ -3037,6 +3082,8 @@ my.MultiView = Backbone.View.extend({
       this.$filterEditor.toggle();
     } else if (action === 'fields') {
       this.$fieldsView.toggle();
+    } else if (action === 'transform') {
+      this.transformView.el.toggle();
     }
   },
 
@@ -3256,6 +3303,8 @@ this.recline.View = this.recline.View || {};
 // https://github.com/mleibman/SlickGrid
 //
 // Initialize it with a `recline.Model.Dataset`.
+//
+// NB: you need an explicit height on the element for slickgrid to work
 my.SlickGrid = Backbone.View.extend({
   tagName:  "div",
   className: "recline-slickgrid",
@@ -3263,6 +3312,7 @@ my.SlickGrid = Backbone.View.extend({
   initialize: function(modelEtc) {
     var self = this;
     this.el = $(this.el);
+    this.el.addClass('recline-slickgrid');
     _.bindAll(this, 'render');
     this.model.currentRecords.bind('add', this.render);
     this.model.currentRecords.bind('reset', this.render);
@@ -3301,7 +3351,6 @@ my.SlickGrid = Backbone.View.extend({
 
   render: function() {
     var self = this;
-    this.el = $(this.el);
 
     var options = {
       enableCellNavigation: true,
@@ -3648,7 +3697,7 @@ my.Timeline = Backbone.View.extend({
         "startDate": start,
         "endDate": end,
         "headline": String(record.get('title') || ''),
-        "text": record.get('description') || record.summary()
+        "text": record.get('description') || this.model.recordSummary(record)
       };
       return tlEntry;
     } else {
@@ -3733,61 +3782,23 @@ this.recline.View = this.recline.View || {};
 
 // ## ColumnTransform
 //
-// View (Dialog) for doing data transformations (on columns of data).
-my.ColumnTransform = Backbone.View.extend({
-  className: 'transform-column-view modal fade in',
+// View (Dialog) for doing data transformations
+my.Transform = Backbone.View.extend({
+  className: 'recline-transform',
   template: ' \
-    <div class="modal-header"> \
-      <a class="close" data-dismiss="modal">×</a> \
-      <h3>Functional transform on column {{name}}</h3> \
+    <div class="script"> \
+      <h2> \
+        Transform Script \
+        <button class="okButton btn btn-primary">Run on all records</button> \
+      </h2> \
+      <textarea class="expression-preview-code"></textarea> \
     </div> \
-    <div class="modal-body"> \
-      <div class="grid-layout layout-tight layout-full"> \
-        <table> \
-        <tbody> \
-        <tr> \
-          <td colspan="4"> \
-            <div class="grid-layout layout-tight layout-full"> \
-              <table rows="4" cols="4"> \
-              <tbody> \
-              <tr style="vertical-align: bottom;"> \
-                <td colspan="4"> \
-                  Expression \
-                </td> \
-              </tr> \
-              <tr> \
-                <td colspan="3"> \
-                  <div class="input-container"> \
-                    <textarea class="expression-preview-code"></textarea> \
-                  </div> \
-                </td> \
-                <td class="expression-preview-parsing-status" width="150" style="vertical-align: top;"> \
-                  No syntax error. \
-                </td> \
-              </tr> \
-              <tr> \
-                <td colspan="4"> \
-                  <div id="expression-preview-tabs"> \
-                    <span>Preview</span> \
-                    <div id="expression-preview-tabs-preview"> \
-                      <div class="expression-preview-container"> \
-                      </div> \
-                    </div> \
-                  </div> \
-                </td> \
-              </tr> \
-              </tbody> \
-              </table> \
-            </div> \
-          </td> \
-        </tr> \
-        </tbody> \
-        </table> \
-      </div> \
+    <div class="expression-preview-parsing-status"> \
+      No syntax error. \
     </div> \
-    <div class="modal-footer"> \
-      <button class="okButton btn primary">&nbsp;&nbsp;Update All&nbsp;&nbsp;</button> \
-      <button class="cancelButton btn danger">Cancel</button> \
+    <div class="preview"> \
+      <h3>Preview</h3> \
+      <div class="expression-preview-container"></div> \
     </div> \
   ',
 
@@ -3796,19 +3807,23 @@ my.ColumnTransform = Backbone.View.extend({
     'keydown .expression-preview-code': 'onEditorKeydown'
   },
 
-  initialize: function() {
+  initialize: function(options) {
     this.el = $(this.el);
+    this.render();
   },
 
   render: function() {
-    var htmls = Mustache.render(this.template, 
-      {name: this.state.currentColumn}
-      );
+    var htmls = Mustache.render(this.template);
     this.el.html(htmls);
     // Put in the basic (identity) transform script
     // TODO: put this into the template?
     var editor = this.el.find('.expression-preview-code');
-    editor.val("function(doc) {\n  doc['"+ this.state.currentColumn+"'] = doc['"+ this.state.currentColumn+"'];\n  return doc;\n}");
+    if (this.model.fields.length > 0) {
+      var col = this.model.fields.models[0].id;
+    } else {
+      var col = 'unknown';
+    }
+    editor.val("function(doc) {\n  doc['"+ col +"'] = doc['"+ col +"'];\n  return doc;\n}");
     editor.focus().get(0).setSelectionRange(18, 18);
     editor.keydown();
   },
@@ -3821,58 +3836,34 @@ my.ColumnTransform = Backbone.View.extend({
       this.trigger('recline:flash', {message: "Error with function! " + editFunc.errorMessage});
       return;
     }
-    this.el.modal('hide');
-    this.trigger('recline:flash', {message: "Updating all visible docs. This could take a while...", persist: true, loader: true});
-      var docs = self.model.currentRecords.map(function(doc) {
-       return doc.toJSON();
-      });
-    // TODO: notify about failed docs? 
-    var toUpdate = costco.mapDocs(docs, editFunc).edited;
-    var totalToUpdate = toUpdate.length;
-    function onCompletedUpdate() {
-      totalToUpdate += -1;
-      if (totalToUpdate === 0) {
-        self.trigger('recline:flash', {message: toUpdate.length + " records updated successfully"});
-        alert('WARNING: We have only updated the docs in this view. (Updating of all docs not yet implemented!)');
-        self.remove();
-      }
-    }
-    // TODO: Very inefficient as we search through all docs every time!
-    _.each(toUpdate, function(editedDoc) {
-      var realDoc = self.model.currentRecords.get(editedDoc.id);
-      realDoc.set(editedDoc);
-      realDoc.save().then(onCompletedUpdate).fail(onCompletedUpdate);
-    });
-    this.el.remove();
+    this.model.transform(editFunc);
   },
 
   editPreviewTemplate: ' \
-    <div class="expression-preview-table-wrapper"> \
-      <table class="table table-condensed"> \
+      <table class="table table-condensed table-bordered before-after"> \
       <thead> \
       <tr> \
-        <th class="expression-preview-heading"> \
-          before \
-        </th> \
-        <th class="expression-preview-heading"> \
-          after \
-        </th> \
+        <th>Field</th> \
+        <th>Before</th> \
+        <th>After</th> \
       </tr> \
       </thead> \
       <tbody> \
-      {{#rows}} \
+      {{#row}} \
       <tr> \
-        <td class="expression-preview-value"> \
+        <td> \
+          {{field}} \
+        </td> \
+        <td class="before {{#different}}different{{/different}}"> \
           {{before}} \
         </td> \
-        <td class="expression-preview-value"> \
+        <td class="after {{#different}}different{{/different}}"> \
           {{after}} \
         </td> \
       </tr> \
-      {{/rows}} \
+      {{/row}} \
       </tbody> \
       </table> \
-    </div> \
   ',
 
   onEditorKeydown: function(e) {
@@ -3886,10 +3877,26 @@ my.ColumnTransform = Backbone.View.extend({
         var docs = self.model.currentRecords.map(function(doc) {
           return doc.toJSON();
         });
-        var previewData = costco.previewTransform(docs, editFunc, self.state.currentColumn);
+        var previewData = costco.previewTransform(docs, editFunc);
         var $el = self.el.find('.expression-preview-container');
-        var templated = Mustache.render(self.editPreviewTemplate, {rows: previewData.slice(0,4)});
-        $el.html(templated);
+        var fields = self.model.fields.toJSON();
+        var rows = _.map(previewData.slice(0,4), function(row) {
+          return _.map(fields, function(field) {
+            return {
+              field: field.id,
+              before: row.before[field.id],
+              after: row.after[field.id],
+              different: !_.isEqual(row.before[field.id], row.after[field.id])
+            }
+          });
+        });
+        $el.html('');
+        _.each(rows, function(row) {
+          var templated = Mustache.render(self.editPreviewTemplate, {
+            row: row
+          });
+          $el.append(templated);
+        });
       } else {
         errors.text(editFunc.errorMessage);
       }
