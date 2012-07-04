@@ -6,7 +6,9 @@ this.recline.Model = this.recline.Model || {};
 
 // ## <a id="dataset">Dataset</a>
 my.Dataset = Backbone.Model.extend({
-  __type__: 'Dataset',
+  constructor: function Dataset() {
+    Backbone.Model.prototype.constructor.apply(this, arguments);
+  },
 
   // ### initialize
   initialize: function() {
@@ -331,7 +333,10 @@ my.Dataset.restore = function(state) {
 // 
 // A single entry or row in the dataset
 my.Record = Backbone.Model.extend({
-  __type__: 'Record',
+  constructor: function Record() {
+    Backbone.Model.prototype.constructor.apply(this, arguments);
+  },
+
   initialize: function() {
     _.bindAll(this, 'getFieldValue');
   },
@@ -369,14 +374,21 @@ my.Record = Backbone.Model.extend({
   destroy: function() { this.trigger('destroy', this); }
 });
 
+
 // ## A Backbone collection of Records
 my.RecordList = Backbone.Collection.extend({
-  __type__: 'RecordList',
+  constructor: function RecordList() {
+    Backbone.Collection.prototype.constructor.apply(this, arguments);
+  },
   model: my.Record
 });
 
+
 // ## <a id="field">A Field (aka Column) on a Dataset</a>
 my.Field = Backbone.Model.extend({
+  constructor: function Field() {
+    Backbone.Model.prototype.constructor.apply(this, arguments);
+  },
   // ### defaults - define default values
   defaults: {
     label: null,
@@ -445,11 +457,17 @@ my.Field = Backbone.Model.extend({
 });
 
 my.FieldList = Backbone.Collection.extend({
+  constructor: function FieldList() {
+    Backbone.Collection.prototype.constructor.apply(this, arguments);
+  },
   model: my.Field
 });
 
 // ## <a id="query">Query</a>
 my.Query = Backbone.Model.extend({
+  constructor: function Query() {
+    Backbone.Model.prototype.constructor.apply(this, arguments);
+  },
   defaults: function() {
     return {
       size: 100,
@@ -534,6 +552,9 @@ my.Query = Backbone.Model.extend({
 
 // ## <a id="facet">A Facet (Result)</a>
 my.Facet = Backbone.Model.extend({
+  constructor: function Facet() {
+    Backbone.Model.prototype.constructor.apply(this, arguments);
+  },
   defaults: function() {
     return {
       _type: 'terms',
@@ -547,6 +568,9 @@ my.Facet = Backbone.Model.extend({
 
 // ## A Collection/List of Facets
 my.FacetList = Backbone.Collection.extend({
+  constructor: function FacetList() {
+    Backbone.Collection.prototype.constructor.apply(this, arguments);
+  },
   model: my.Facet
 });
 
