@@ -164,8 +164,8 @@ section.grey:after {
   height: 60px;
 }
 
-.tutorials {
-  margin-bottom: 300px;
+.tutorials:last-child {
+  margin-bottom: 200px;
 }
 
 /** Code / Pre **/

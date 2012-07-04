@@ -8,6 +8,12 @@ var $el = $('.ex-2');
 // (even for the case of in memory data where querying in fact happens synchronously)
 // On completion the display function will be called
 dataset.query({q: 'UK', size: 2}).done(function() {
-  display(dataset);
+  $('.ex-2').append('Total found: ' + dataset.recordCount);
+  $('.ex-2').append(' Total returned: ' + dataset.currentRecords.length);
+  $('.ex-2').append(
+    $('<pre />').html(
+      JSON.stringify(dataset.currentRecords.toJSON(), null, 2)
+    )
+  );
 });
 
