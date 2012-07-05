@@ -100,7 +100,7 @@ my.Transform = Backbone.View.extend({
       var editFunc = costco.evalFunction(e.target.value);
       if (!editFunc.errorMessage) {
         errors.text('No syntax error.');
-        var docs = self.model.currentRecords.map(function(doc) {
+        var docs = self.model.records.map(function(doc) {
           return doc.toJSON();
         });
         var previewData = costco.previewTransform(docs, editFunc);

@@ -17,9 +17,9 @@ my.Grid = Backbone.View.extend({
     var self = this;
     this.el = $(this.el);
     _.bindAll(this, 'render', 'onHorizontalScroll');
-    this.model.currentRecords.bind('add', this.render);
-    this.model.currentRecords.bind('reset', this.render);
-    this.model.currentRecords.bind('remove', this.render);
+    this.model.records.bind('add', this.render);
+    this.model.records.bind('reset', this.render);
+    this.model.records.bind('remove', this.render);
     this.tempState = {};
     var state = _.extend({
         hiddenFields: []
@@ -77,13 +77,13 @@ my.Grid = Backbone.View.extend({
       showColumn: function() { self.showColumn(e); },
       deleteRow: function() {
         var self = this;
-        var doc = _.find(self.model.currentRecords.models, function(doc) {
+        var doc = _.find(self.model.records.models, function(doc) {
           // important this is == as the currentRow will be string (as comes
           // from DOM) while id may be int
           return doc.id == self.tempState.currentRow;
         });
         doc.destroy().then(function() { 
-            self.model.currentRecords.remove(doc);
+            self.model.records.remove(doc);
             self.trigger('recline:flash', {message: "Row deleted successfully"});
           }).fail(function(err) {
             self.trigger('recline:flash', {message: "Errorz! " + err});
@@ -213,7 +213,7 @@ my.Grid = Backbone.View.extend({
     });
     var htmls = Mustache.render(this.template, this.toTemplateJSON());
     this.el.html(htmls);
-    this.model.currentRecords.forEach(function(doc) {
+    this.model.records.forEach(function(doc) {
       var tr = $('<tr />');
       self.el.find('tbody').append(tr);
       var newView = new my.GridRow({

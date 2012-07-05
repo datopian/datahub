@@ -41,7 +41,7 @@ my.Timeline = Backbone.View.extend({
     this.model.fields.bind('reset', function() {
       self._setupTemporalField();
     });
-    this.model.currentRecords.bind('all', function() {
+    this.model.records.bind('all', function() {
       self.reloadData();
     });
     var stateData = _.extend({
@@ -120,7 +120,7 @@ my.Timeline = Backbone.View.extend({
         ]
       }
     };
-    this.model.currentRecords.each(function(record) {
+    this.model.records.each(function(record) {
       var newEntry = self.convertRecord(record, self.fields);
       if (newEntry) {
         out.timeline.date.push(newEntry); 

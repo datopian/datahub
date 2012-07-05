@@ -30,7 +30,7 @@ The basic thing we want to do with Datasets is query and filter them. This is ve
 {% include tutorial-basics-ex-2.js %}
 {% endhighlight %}
 
-This results in the following. Note how recordCount is now 3 (the total number of records matched by the query) but that currentRecords only contains 2 records as we restricted number of returned records using the size attribute.
+This results in the following. Note how recordCount is now 3 (the total number of records matched by the query) but that records only contains 2 records as we restricted number of returned records using the size attribute.
 
 <div class="ex-2 well">&nbsp;</div>
 

@@ -3,7 +3,7 @@ function onChange() {
   $('.ex-events').append('<br />');
 }
 
-dataset.currentRecords.bind('reset', onChange);
+dataset.records.bind('reset', onChange);
 
 dataset.query({q: 'DE'});
 dataset.query({q: 'UK'});

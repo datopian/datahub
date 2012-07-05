@@ -9,10 +9,10 @@ var $el = $('.ex-2');
 // On completion the display function will be called
 dataset.query({q: 'UK', size: 2}).done(function() {
   $('.ex-2').append('Total found: ' + dataset.recordCount);
-  $('.ex-2').append(' Total returned: ' + dataset.currentRecords.length);
+  $('.ex-2').append(' Total returned: ' + dataset.records.length);
   $('.ex-2').append(
     $('<pre />').html(
-      JSON.stringify(dataset.currentRecords.toJSON(), null, 2)
+      JSON.stringify(dataset.records.toJSON(), null, 2)
     )
   );
 });

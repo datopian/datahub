@@ -22,7 +22,7 @@ my.Dataset = Backbone.Model.extend({
       }
     }
     this.fields = new my.FieldList();
-    this.currentRecords = new my.RecordList();
+    this.records = new my.RecordList();
     this._changes = {
       deletes: [],
       updates: [],
@@ -172,7 +172,7 @@ my.Dataset = Backbone.Model.extend({
   // It will query based on current query state (given by this.queryState)
   // updated by queryObj (if provided).
   //
-  // Resulting RecordList are used to reset this.currentRecords and are
+  // Resulting RecordList are used to reset this.records and are
   // also returned.
   query: function(queryObj) {
     var self = this;
@@ -188,7 +188,7 @@ my.Dataset = Backbone.Model.extend({
       .done(function(queryResult) {
         self._handleQueryResult(queryResult);
         self.trigger('query:done');
-        dfd.resolve(self.currentRecords);
+        dfd.resolve(self.records);
       })
       .fail(function(arguments) {
         self.trigger('query:fail', arguments);
@@ -210,7 +210,7 @@ my.Dataset = Backbone.Model.extend({
       });
       return _doc;
     });
-    self.currentRecords.reset(docs);
+    self.records.reset(docs);
     if (queryResult.facets) {
       var facets = _.map(queryResult.facets, function(facetResult, facetId) {
         facetResult.id = facetId;

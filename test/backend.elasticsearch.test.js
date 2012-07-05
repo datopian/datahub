@@ -302,7 +302,7 @@ test("write", function() {
     id: id,
     title: 'my title'
   });
-  dataset.currentRecords.add(rec);
+  dataset.records.add(rec);
   // have to do this explicitly as we not really supporting adding new items atm
   dataset._changes.creates.push(rec.toJSON());
   var jqxhr = dataset.save();

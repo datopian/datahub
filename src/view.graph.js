@@ -43,8 +43,8 @@ my.Graph = Backbone.View.extend({
     this.model.bind('change', this.render);
     this.model.fields.bind('reset', this.render);
     this.model.fields.bind('add', this.render);
-    this.model.currentRecords.bind('add', this.redraw);
-    this.model.currentRecords.bind('reset', this.redraw);
+    this.model.records.bind('add', this.redraw);
+    this.model.records.bind('reset', this.redraw);
     // because we cannot redraw when hidden we may need when becoming visible
     this.bind('view:show', function() {
       if (this.needToRedraw) {
@@ -89,7 +89,7 @@ my.Graph = Backbone.View.extend({
     //   Uncaught Invalid dimensions for plot, width = 0, height = 0
     // * There is no data for the plot -- either same error or may have issues later with errors like 'non-existent node-value' 
     var areWeVisible = !jQuery.expr.filters.hidden(this.el[0]);
-    if ((!areWeVisible || this.model.currentRecords.length === 0)) {
+    if ((!areWeVisible || this.model.records.length === 0)) {
       this.needToRedraw = true;
       return;
     }
@@ -119,8 +119,8 @@ my.Graph = Backbone.View.extend({
     // However, that is non-trivial to work out from a dataset (datasets may
     // have no field type info). Thus at present we only do this for bars.
     var tickFormatter = function (val) {
-      if (self.model.currentRecords.models[val]) {
-        var out = self.model.currentRecords.models[val].get(self.state.attributes.group);
+      if (self.model.records.models[val]) {
+        var out = self.model.records.models[val].get(self.state.attributes.group);
         // if the value was in fact a number we want that not the 
         if (typeof(out) == 'number') {
           return val;
@@ -176,7 +176,7 @@ my.Graph = Backbone.View.extend({
           tickLength: 1,
           tickFormatter: tickFormatter,
           min: -0.5,
-          max: self.model.currentRecords.length - 0.5
+          max: self.model.records.length - 0.5
         }
       }
     };
@@ -214,8 +214,8 @@ my.Graph = Backbone.View.extend({
             y = _tmp;
           }
           // convert back from 'index' value on x-axis (e.g. in cases where non-number values)
-          if (self.model.currentRecords.models[x]) {
-            x = self.model.currentRecords.models[x].get(self.state.attributes.group);
+          if (self.model.records.models[x]) {
+            x = self.model.records.models[x].get(self.state.attributes.group);
           } else {
             x = x.toFixed(2);
           }
@@ -249,7 +249,7 @@ my.Graph = Backbone.View.extend({
     var series = [];
     _.each(this.state.attributes.series, function(field) {
       var points = [];
-      _.each(self.model.currentRecords.models, function(doc, index) {
+      _.each(self.model.records.models, function(doc, index) {
         var xfield = self.model.fields.get(self.state.attributes.group);
         var x = doc.getFieldValue(xfield);
         // time series

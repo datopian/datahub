@@ -74,11 +74,11 @@ test('Lat/Lon geom fields', function () {
   equal(_getFeaturesCount(view.features),6);
 
   // Delete a record
-  view.model.currentRecords.remove(view.model.currentRecords.get('1'));
+  view.model.records.remove(view.model.records.get('1'));
   equal(_getFeaturesCount(view.features),5);
 
   // Add a new one
-  view.model.currentRecords.add({id: 7, x: 7, y: 14, z: 21, country: 'KX', label: 'seventh', lat:13.23, lon:23.56}),
+  view.model.records.add({id: 7, x: 7, y: 14, z: 21, country: 'KX', label: 'seventh', lat:13.23, lon:23.56}),
   equal(_getFeaturesCount(view.features),6);
 
   view.remove();
@@ -98,11 +98,11 @@ test('GeoJSON geom field', function () {
   equal(_getFeaturesCount(view.features),3);
 
   // Delete a record
-  view.model.currentRecords.remove(view.model.currentRecords.get('2'));
+  view.model.records.remove(view.model.records.get('2'));
   equal(_getFeaturesCount(view.features),2);
 
   // Add it back
-  view.model.currentRecords.add({id: 2, x: 3, y: 6, z: 9, geom: {type:"LineString",coordinates:[[100.0, 0.0],[101.0, 1.0]]}}),
+  view.model.records.add({id: 2, x: 3, y: 6, z: 9, geom: {type:"LineString",coordinates:[[100.0, 0.0],[101.0, 1.0]]}}),
   equal(_getFeaturesCount(view.features),3);
 
   view.remove();

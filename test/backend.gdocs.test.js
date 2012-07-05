@@ -181,7 +181,7 @@ test("GDocs Backend", function() {
   });
 
   dataset.fetch().then(function() {
-    var docList = dataset.currentRecords;
+    var docList = dataset.records;
     deepEqual(['column-2', 'column-1'], _.pluck(dataset.fields.toJSON(), 'id'));
     equal(3, docList.length);
     equal("A", docList.models[0].get('column-1'));

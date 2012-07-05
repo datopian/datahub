@@ -41,13 +41,13 @@ dataset.fetch();
 
 // we will now have the following (and more) set up - see below for details 
 dataset.fields // collection of Fields (columns) for this Dataset
-dataset.currentRecords // collection of Records resulting from latest query
+dataset.records // collection of Records resulting from latest query
 dataset.docCount // total number of Records in the last query
 {% endhighlight %}
 
 ### Key Attributes
 
-* currentRecords: a collection of `Record`s currently loaded for viewing
+* records: a collection of `Record`s currently loaded for viewing
   (updated by calling query method) - note that this need <strong>not</strong>
   be all the records in the dataset (for example, you may have connected to a
   source where the complete dataset contains a million records but you have

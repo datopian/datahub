@@ -47,7 +47,7 @@ Here's a summary of the main objects and their events:
   * Standard Backbone events for changes to attributes (note that this will **not** include changes to records)
   * *query:start / query:end* called at start and completion of a query
 
-* Dataset.currentRecords: Backbone.Collection of "current" records (i.e. those resulting from latest query) with standard Backbone set of events: *add, reset, remove* 
+* Dataset.records: Backbone.Collection of "current" records (i.e. those resulting from latest query) with standard Backbone set of events: *add, reset, remove* 
 
 * Dataset.queryState: queryState is a Query object with standard Backbone Model set of events
 

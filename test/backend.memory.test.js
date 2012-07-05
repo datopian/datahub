@@ -206,7 +206,7 @@ test('query sort', function () {
     ]
   };
   dataset.query(queryObj).then(function() {
-    var doc0 = dataset.currentRecords.models[0].toJSON();
+    var doc0 = dataset.records.models[0].toJSON();
     equal(doc0.x, 6);
   });
 });
@@ -215,13 +215,13 @@ test('query string', function () {
   var dataset = makeBackendDataset();
   dataset.fetch();
   dataset.query({q: 'UK'}).then(function() {
-    equal(dataset.currentRecords.length, 3);
-    deepEqual(dataset.currentRecords.pluck('country'), ['UK', 'UK', 'UK']);
+    equal(dataset.records.length, 3);
+    deepEqual(dataset.records.pluck('country'), ['UK', 'UK', 'UK']);
   });
 
   dataset.query({q: 'UK 6'}).then(function() {
-    equal(dataset.currentRecords.length, 1);
-    deepEqual(dataset.currentRecords.models[0].id, 1);
+    equal(dataset.records.length, 1);
+    deepEqual(dataset.records.models[0].id, 1);
   });
 });
 
@@ -229,8 +229,8 @@ test('filters', function () {
   var dataset = makeBackendDataset();
   dataset.queryState.addFilter({type: 'term', field: 'country', term: 'UK'});
   dataset.query().then(function() {
-    equal(dataset.currentRecords.length, 3);
-    deepEqual(dataset.currentRecords.pluck('country'), ['UK', 'UK', 'UK']);
+    equal(dataset.records.length, 3);
+    deepEqual(dataset.records.pluck('country'), ['UK', 'UK', 'UK']);
   });
 });
 

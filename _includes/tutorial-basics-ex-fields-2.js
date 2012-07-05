@@ -5,6 +5,6 @@ dataset.fields.models[6] = new recline.Model.Field({
   label: 'Location',
   type: 'geo_point'
 });
-var rec = dataset.currentRecords.at(0);
+var rec = dataset.records.at(0);
 $el.append(dataset.recordSummary(rec));
 

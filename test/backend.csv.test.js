@@ -29,8 +29,8 @@ test("parseCSV", function() {
     backend: 'csv'
   });
   dataset.fetch();
-  equal(dataset.currentRecords.length, 3);
-  var row = dataset.currentRecords.models[0].toJSON();
+  equal(dataset.records.length, 3);
+  var row = dataset.records.models[0].toJSON();
   deepEqual(row, {Name: 'Jones, Jay', Value: 10});
 });
 
