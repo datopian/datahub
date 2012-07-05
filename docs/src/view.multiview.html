@@ -78,7 +78,7 @@ initialized the MultiView with the relevant views themselves.</p>             </
 <span class="s1">        &lt;/div&gt; \</span>
 <span class="s1">      &lt;/div&gt; \</span>
 <span class="s1">      &lt;div class=&quot;recline-results-info&quot;&gt; \</span>
-<span class="s1">        Results found &lt;span class=&quot;doc-count&quot;&gt;{{docCount}}&lt;/span&gt; \</span>
+<span class="s1">        &lt;span class=&quot;doc-count&quot;&gt;{{recordCount}}&lt;/span&gt; records\</span>
 <span class="s1">      &lt;/div&gt; \</span>
 <span class="s1">      &lt;div class=&quot;menu-right&quot;&gt; \</span>
 <span class="s1">        &lt;div class=&quot;btn-group&quot; data-toggle=&quot;buttons-checkbox&quot;&gt; \</span>
@@ -107,7 +107,7 @@ initialized the MultiView with the relevant views themselves.</p>             </
       <span class="k">this</span><span class="p">.</span><span class="nx">pageViews</span> <span class="o">=</span> <span class="p">[{</span>
         <span class="nx">id</span><span class="o">:</span> <span class="s1">&#39;grid&#39;</span><span class="p">,</span>
         <span class="nx">label</span><span class="o">:</span> <span class="s1">&#39;Grid&#39;</span><span class="p">,</span>
-        <span class="nx">view</span><span class="o">:</span> <span class="k">new</span> <span class="nx">my</span><span class="p">.</span><span class="nx">Grid</span><span class="p">({</span>
+        <span class="nx">view</span><span class="o">:</span> <span class="k">new</span> <span class="nx">my</span><span class="p">.</span><span class="nx">SlickGrid</span><span class="p">({</span>
           <span class="nx">model</span><span class="o">:</span> <span class="k">this</span><span class="p">.</span><span class="nx">model</span><span class="p">,</span>
           <span class="nx">state</span><span class="o">:</span> <span class="k">this</span><span class="p">.</span><span class="nx">state</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s1">&#39;view-grid&#39;</span><span class="p">)</span>
         <span class="p">}),</span>
@@ -132,6 +132,12 @@ initialized the MultiView with the relevant views themselves.</p>             </
           <span class="nx">model</span><span class="o">:</span> <span class="k">this</span><span class="p">.</span><span class="nx">model</span><span class="p">,</span>
           <span class="nx">state</span><span class="o">:</span> <span class="k">this</span><span class="p">.</span><span class="nx">state</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s1">&#39;view-timeline&#39;</span><span class="p">)</span>
         <span class="p">}),</span>
+      <span class="p">},</span> <span class="p">{</span>
+        <span class="nx">id</span><span class="o">:</span> <span class="s1">&#39;transform&#39;</span><span class="p">,</span>
+        <span class="nx">label</span><span class="o">:</span> <span class="s1">&#39;Transform&#39;</span><span class="p">,</span>
+        <span class="nx">view</span><span class="o">:</span> <span class="k">new</span> <span class="nx">my</span><span class="p">.</span><span class="nx">Transform</span><span class="p">({</span>
+          <span class="nx">model</span><span class="o">:</span> <span class="k">this</span><span class="p">.</span><span class="nx">model</span>
+        <span class="p">})</span>
       <span class="p">}];</span>
     <span class="p">}</span></pre></div>             </td>           </tr>                               <tr id="section-5">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-5">&#182;</a>               </div>               <p>these must be called after pageViews are created</p>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="k">this</span><span class="p">.</span><span class="nx">render</span><span class="p">();</span>
     <span class="k">this</span><span class="p">.</span><span class="nx">_bindStateChanges</span><span class="p">();</span>
@@ -149,7 +155,7 @@ initialized the MultiView with the relevant views themselves.</p>             </
       <span class="p">});</span>
     <span class="k">this</span><span class="p">.</span><span class="nx">model</span><span class="p">.</span><span class="nx">bind</span><span class="p">(</span><span class="s1">&#39;query:done&#39;</span><span class="p">,</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
         <span class="nx">self</span><span class="p">.</span><span class="nx">clearNotifications</span><span class="p">();</span>
-        <span class="nx">self</span><span class="p">.</span><span class="nx">el</span><span class="p">.</span><span class="nx">find</span><span class="p">(</span><span class="s1">&#39;.doc-count&#39;</span><span class="p">).</span><span class="nx">text</span><span class="p">(</span><span class="nx">self</span><span class="p">.</span><span class="nx">model</span><span class="p">.</span><span class="nx">docCount</span> <span class="o">||</span> <span class="s1">&#39;Unknown&#39;</span><span class="p">);</span>
+        <span class="nx">self</span><span class="p">.</span><span class="nx">el</span><span class="p">.</span><span class="nx">find</span><span class="p">(</span><span class="s1">&#39;.doc-count&#39;</span><span class="p">).</span><span class="nx">text</span><span class="p">(</span><span class="nx">self</span><span class="p">.</span><span class="nx">model</span><span class="p">.</span><span class="nx">recordCount</span> <span class="o">||</span> <span class="s1">&#39;Unknown&#39;</span><span class="p">);</span>
       <span class="p">});</span>
     <span class="k">this</span><span class="p">.</span><span class="nx">model</span><span class="p">.</span><span class="nx">bind</span><span class="p">(</span><span class="s1">&#39;query:fail&#39;</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">error</span><span class="p">)</span> <span class="p">{</span>
         <span class="nx">self</span><span class="p">.</span><span class="nx">clearNotifications</span><span class="p">();</span>
@@ -242,6 +248,8 @@ TODO: set query state ...?</p>             </td>             <td class="code">  
       <span class="k">this</span><span class="p">.</span><span class="nx">$filterEditor</span><span class="p">.</span><span class="nx">toggle</span><span class="p">();</span>
     <span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="nx">action</span> <span class="o">===</span> <span class="s1">&#39;fields&#39;</span><span class="p">)</span> <span class="p">{</span>
       <span class="k">this</span><span class="p">.</span><span class="nx">$fieldsView</span><span class="p">.</span><span class="nx">toggle</span><span class="p">();</span>
+    <span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="nx">action</span> <span class="o">===</span> <span class="s1">&#39;transform&#39;</span><span class="p">)</span> <span class="p">{</span>
+      <span class="k">this</span><span class="p">.</span><span class="nx">transformView</span><span class="p">.</span><span class="nx">el</span><span class="p">.</span><span class="nx">toggle</span><span class="p">();</span>
     <span class="p">}</span>
   <span class="p">},</span>
 

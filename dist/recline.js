@@ -890,7 +890,9 @@ this.recline.Model = this.recline.Model || {};
 
 // ## <a id="dataset">Dataset</a>
 my.Dataset = Backbone.Model.extend({
-  __type__: 'Dataset',
+  constructor: function Dataset() {
+    Backbone.Model.prototype.constructor.apply(this, arguments);
+  },
 
   // ### initialize
   initialize: function() {
@@ -904,7 +906,7 @@ my.Dataset = Backbone.Model.extend({
       }
     }
     this.fields = new my.FieldList();
-    this.currentRecords = new my.RecordList();
+    this.records = new my.RecordList();
     this._changes = {
       deletes: [],
       updates: [],
@@ -1054,7 +1056,7 @@ my.Dataset = Backbone.Model.extend({
   // It will query based on current query state (given by this.queryState)
   // updated by queryObj (if provided).
   //
-  // Resulting RecordList are used to reset this.currentRecords and are
+  // Resulting RecordList are used to reset this.records and are
   // also returned.
   query: function(queryObj) {
     var self = this;
@@ -1070,7 +1072,7 @@ my.Dataset = Backbone.Model.extend({
       .done(function(queryResult) {
         self._handleQueryResult(queryResult);
         self.trigger('query:done');
-        dfd.resolve(self.currentRecords);
+        dfd.resolve(self.records);
       })
       .fail(function(arguments) {
         self.trigger('query:fail', arguments);
@@ -1092,7 +1094,7 @@ my.Dataset = Backbone.Model.extend({
       });
       return _doc;
     });
-    self.currentRecords.reset(docs);
+    self.records.reset(docs);
     if (queryResult.facets) {
       var facets = _.map(queryResult.facets, function(facetResult, facetId) {
         facetResult.id = facetId;
@@ -1215,7 +1217,10 @@ my.Dataset.restore = function(state) {
 // 
 // A single entry or row in the dataset
 my.Record = Backbone.Model.extend({
-  __type__: 'Record',
+  constructor: function Record() {
+    Backbone.Model.prototype.constructor.apply(this, arguments);
+  },
+
   initialize: function() {
     _.bindAll(this, 'getFieldValue');
   },
@@ -1253,14 +1258,21 @@ my.Record = Backbone.Model.extend({
   destroy: function() { this.trigger('destroy', this); }
 });
 
+
 // ## A Backbone collection of Records
 my.RecordList = Backbone.Collection.extend({
-  __type__: 'RecordList',
+  constructor: function RecordList() {
+    Backbone.Collection.prototype.constructor.apply(this, arguments);
+  },
   model: my.Record
 });
 
+
 // ## <a id="field">A Field (aka Column) on a Dataset</a>
 my.Field = Backbone.Model.extend({
+  constructor: function Field() {
+    Backbone.Model.prototype.constructor.apply(this, arguments);
+  },
   // ### defaults - define default values
   defaults: {
     label: null,
@@ -1329,11 +1341,17 @@ my.Field = Backbone.Model.extend({
 });
 
 my.FieldList = Backbone.Collection.extend({
+  constructor: function FieldList() {
+    Backbone.Collection.prototype.constructor.apply(this, arguments);
+  },
   model: my.Field
 });
 
 // ## <a id="query">Query</a>
 my.Query = Backbone.Model.extend({
+  constructor: function Query() {
+    Backbone.Model.prototype.constructor.apply(this, arguments);
+  },
   defaults: function() {
     return {
       size: 100,
@@ -1418,6 +1436,9 @@ my.Query = Backbone.Model.extend({
 
 // ## <a id="facet">A Facet (Result)</a>
 my.Facet = Backbone.Model.extend({
+  constructor: function Facet() {
+    Backbone.Model.prototype.constructor.apply(this, arguments);
+  },
   defaults: function() {
     return {
       _type: 'terms',
@@ -1431,6 +1452,9 @@ my.Facet = Backbone.Model.extend({
 
 // ## A Collection/List of Facets
 my.FacetList = Backbone.Collection.extend({
+  constructor: function FacetList() {
+    Backbone.Collection.prototype.constructor.apply(this, arguments);
+  },
   model: my.Facet
 });
 
@@ -1495,8 +1519,8 @@ my.Graph = Backbone.View.extend({
     this.model.bind('change', this.render);
     this.model.fields.bind('reset', this.render);
     this.model.fields.bind('add', this.render);
-    this.model.currentRecords.bind('add', this.redraw);
-    this.model.currentRecords.bind('reset', this.redraw);
+    this.model.records.bind('add', this.redraw);
+    this.model.records.bind('reset', this.redraw);
     // because we cannot redraw when hidden we may need when becoming visible
     this.bind('view:show', function() {
       if (this.needToRedraw) {
@@ -1541,7 +1565,7 @@ my.Graph = Backbone.View.extend({
     //   Uncaught Invalid dimensions for plot, width = 0, height = 0
     // * There is no data for the plot -- either same error or may have issues later with errors like 'non-existent node-value' 
     var areWeVisible = !jQuery.expr.filters.hidden(this.el[0]);
-    if ((!areWeVisible || this.model.currentRecords.length === 0)) {
+    if ((!areWeVisible || this.model.records.length === 0)) {
       this.needToRedraw = true;
       return;
     }
@@ -1571,8 +1595,8 @@ my.Graph = Backbone.View.extend({
     // However, that is non-trivial to work out from a dataset (datasets may
     // have no field type info). Thus at present we only do this for bars.
     var tickFormatter = function (val) {
-      if (self.model.currentRecords.models[val]) {
-        var out = self.model.currentRecords.models[val].get(self.state.attributes.group);
+      if (self.model.records.models[val]) {
+        var out = self.model.records.models[val].get(self.state.attributes.group);
         // if the value was in fact a number we want that not the 
         if (typeof(out) == 'number') {
           return val;
@@ -1628,7 +1652,7 @@ my.Graph = Backbone.View.extend({
           tickLength: 1,
           tickFormatter: tickFormatter,
           min: -0.5,
-          max: self.model.currentRecords.length - 0.5
+          max: self.model.records.length - 0.5
         }
       }
     };
@@ -1666,8 +1690,8 @@ my.Graph = Backbone.View.extend({
             y = _tmp;
           }
           // convert back from 'index' value on x-axis (e.g. in cases where non-number values)
-          if (self.model.currentRecords.models[x]) {
-            x = self.model.currentRecords.models[x].get(self.state.attributes.group);
+          if (self.model.records.models[x]) {
+            x = self.model.records.models[x].get(self.state.attributes.group);
           } else {
             x = x.toFixed(2);
           }
@@ -1701,7 +1725,7 @@ my.Graph = Backbone.View.extend({
     var series = [];
     _.each(this.state.attributes.series, function(field) {
       var points = [];
-      _.each(self.model.currentRecords.models, function(doc, index) {
+      _.each(self.model.records.models, function(doc, index) {
         var xfield = self.model.fields.get(self.state.attributes.group);
         var x = doc.getFieldValue(xfield);
         // time series
@@ -1904,9 +1928,9 @@ my.Grid = Backbone.View.extend({
     var self = this;
     this.el = $(this.el);
     _.bindAll(this, 'render', 'onHorizontalScroll');
-    this.model.currentRecords.bind('add', this.render);
-    this.model.currentRecords.bind('reset', this.render);
-    this.model.currentRecords.bind('remove', this.render);
+    this.model.records.bind('add', this.render);
+    this.model.records.bind('reset', this.render);
+    this.model.records.bind('remove', this.render);
     this.tempState = {};
     var state = _.extend({
         hiddenFields: []
@@ -1964,13 +1988,13 @@ my.Grid = Backbone.View.extend({
       showColumn: function() { self.showColumn(e); },
       deleteRow: function() {
         var self = this;
-        var doc = _.find(self.model.currentRecords.models, function(doc) {
+        var doc = _.find(self.model.records.models, function(doc) {
           // important this is == as the currentRow will be string (as comes
           // from DOM) while id may be int
           return doc.id == self.tempState.currentRow;
         });
         doc.destroy().then(function() { 
-            self.model.currentRecords.remove(doc);
+            self.model.records.remove(doc);
             self.trigger('recline:flash', {message: "Row deleted successfully"});
           }).fail(function(err) {
             self.trigger('recline:flash', {message: "Errorz! " + err});
@@ -2100,7 +2124,7 @@ my.Grid = Backbone.View.extend({
     });
     var htmls = Mustache.render(this.template, this.toTemplateJSON());
     this.el.html(htmls);
-    this.model.currentRecords.forEach(function(doc) {
+    this.model.records.forEach(function(doc) {
       var tr = $('<tr />');
       self.el.find('tbody').append(tr);
       var newView = new my.GridRow({
@@ -2306,13 +2330,13 @@ my.Map = Backbone.View.extend({
     });
 
     // Listen to changes in the records
-    this.model.currentRecords.bind('add', function(doc){self.redraw('add',doc)});
-    this.model.currentRecords.bind('change', function(doc){
+    this.model.records.bind('add', function(doc){self.redraw('add',doc)});
+    this.model.records.bind('change', function(doc){
         self.redraw('remove',doc);
         self.redraw('add',doc);
     });
-    this.model.currentRecords.bind('remove', function(doc){self.redraw('remove',doc)});
-    this.model.currentRecords.bind('reset', function(){self.redraw('reset')});
+    this.model.records.bind('remove', function(doc){self.redraw('remove',doc)});
+    this.model.records.bind('reset', function(){self.redraw('reset')});
 
     this.bind('view:show',function(){
       // If the div was hidden, Leaflet needs to recalculate some sizes
@@ -2388,7 +2412,7 @@ my.Map = Backbone.View.extend({
     if (this._geomReady() && this.mapReady){
       if (action == 'reset' || action == 'refresh'){
         this.features.clearLayers();
-        this._add(this.model.currentRecords.models);
+        this._add(this.model.records.models);
       } else if (action == 'add' && doc){
         this._add(doc);
       } else if (action == 'remove' && doc){
@@ -3314,9 +3338,9 @@ my.SlickGrid = Backbone.View.extend({
     this.el = $(this.el);
     this.el.addClass('recline-slickgrid');
     _.bindAll(this, 'render');
-    this.model.currentRecords.bind('add', this.render);
-    this.model.currentRecords.bind('reset', this.render);
-    this.model.currentRecords.bind('remove', this.render);
+    this.model.records.bind('add', this.render);
+    this.model.records.bind('reset', this.render);
+    this.model.records.bind('remove', this.render);
 
     var state = _.extend({
         hiddenColumns: [],
@@ -3418,7 +3442,7 @@ my.SlickGrid = Backbone.View.extend({
 
     var data = [];
 
-    this.model.currentRecords.each(function(doc){
+    this.model.records.each(function(doc){
       var row = {};
       self.model.fields.each(function(field){
         row[field.id] = doc.getFieldValueUnrendered(field);
@@ -3636,7 +3660,7 @@ my.Timeline = Backbone.View.extend({
     this.model.fields.bind('reset', function() {
       self._setupTemporalField();
     });
-    this.model.currentRecords.bind('all', function() {
+    this.model.records.bind('all', function() {
       self.reloadData();
     });
     var stateData = _.extend({
@@ -3715,7 +3739,7 @@ my.Timeline = Backbone.View.extend({
         ]
       }
     };
-    this.model.currentRecords.each(function(record) {
+    this.model.records.each(function(record) {
       var newEntry = self.convertRecord(record, self.fields);
       if (newEntry) {
         out.timeline.date.push(newEntry); 
@@ -3874,7 +3898,7 @@ my.Transform = Backbone.View.extend({
       var editFunc = costco.evalFunction(e.target.value);
       if (!editFunc.errorMessage) {
         errors.text('No syntax error.');
-        var docs = self.model.currentRecords.map(function(doc) {
+        var docs = self.model.records.map(function(doc) {
           return doc.toJSON();
         });
         var previewData = costco.previewTransform(docs, editFunc);

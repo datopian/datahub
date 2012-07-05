@@ -1,0 +1,79 @@
+<!DOCTYPE html>  <html> <head>   <title>widget.facetviewer.js</title>   <meta http-equiv="content-type" content="text/html; charset=UTF-8">   <link rel="stylesheet" media="all" href="docco.css" /> </head> <body>   <div id="container">     <div id="background"></div>            <div id="jump_to">         Jump To &hellip;         <div id="jump_wrapper">           <div id="jump_page">                                           <a class="source" href="backend.couchdb.html">                 backend.couchdb.js               </a>                                           <a class="source" href="backend.csv.html">                 backend.csv.js               </a>                                           <a class="source" href="backend.dataproxy.html">                 backend.dataproxy.js               </a>                                           <a class="source" href="backend.elasticsearch.html">                 backend.elasticsearch.js               </a>                                           <a class="source" href="backend.gdocs.html">                 backend.gdocs.js               </a>                                           <a class="source" href="backend.memory.html">                 backend.memory.js               </a>                                           <a class="source" href="costco.html">                 costco.js               </a>                                           <a class="source" href="model.html">                 model.js               </a>                                           <a class="source" href="view.graph.html">                 view.graph.js               </a>                                           <a class="source" href="view.grid.html">                 view.grid.js               </a>                                           <a class="source" href="view.map.html">                 view.map.js               </a>                                           <a class="source" href="view.multiview.html">                 view.multiview.js               </a>                                           <a class="source" href="view.slickgrid.html">                 view.slickgrid.js               </a>                                           <a class="source" href="view.timeline.html">                 view.timeline.js               </a>                                           <a class="source" href="view.transform.html">                 view.transform.js               </a>                                           <a class="source" href="widget.facetviewer.html">                 widget.facetviewer.js               </a>                                           <a class="source" href="widget.fields.html">                 widget.fields.js               </a>                                           <a class="source" href="widget.filtereditor.html">                 widget.filtereditor.js               </a>                                           <a class="source" href="widget.pager.html">                 widget.pager.js               </a>                                           <a class="source" href="widget.queryeditor.html">                 widget.queryeditor.js               </a>                        </div>         </div>       </div>          <table cellpadding="0" cellspacing="0">       <thead>         <tr>           <th class="docs">             <h1>               widget.facetviewer.js             </h1>           </th>           <th class="code">           </th>         </tr>       </thead>       <tbody>                               <tr id="section-1">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-1">&#182;</a>               </div>                            </td>             <td class="code">               <div class="highlight"><pre><span class="cm">/*jshint multistr:true */</span>
+
+<span class="k">this</span><span class="p">.</span><span class="nx">recline</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">recline</span> <span class="o">||</span> <span class="p">{};</span>
+<span class="k">this</span><span class="p">.</span><span class="nx">recline</span><span class="p">.</span><span class="nx">View</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">recline</span><span class="p">.</span><span class="nx">View</span> <span class="o">||</span> <span class="p">{};</span>
+
+<span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">$</span><span class="p">,</span> <span class="nx">my</span><span class="p">)</span> <span class="p">{</span>
+
+<span class="nx">my</span><span class="p">.</span><span class="nx">FacetViewer</span> <span class="o">=</span> <span class="nx">Backbone</span><span class="p">.</span><span class="nx">View</span><span class="p">.</span><span class="nx">extend</span><span class="p">({</span>
+  <span class="nx">className</span><span class="o">:</span> <span class="s1">&#39;recline-facet-viewer well&#39;</span><span class="p">,</span> 
+  <span class="nx">template</span><span class="o">:</span> <span class="s1">&#39; \</span>
+<span class="s1">    &lt;a class=&quot;close js-hide&quot; href=&quot;#&quot;&gt;&amp;times;&lt;/a&gt; \</span>
+<span class="s1">    &lt;div class=&quot;facets row&quot;&gt; \</span>
+<span class="s1">      &lt;div class=&quot;span1&quot;&gt; \</span>
+<span class="s1">        &lt;h3&gt;Facets&lt;/h3&gt; \</span>
+<span class="s1">      &lt;/div&gt; \</span>
+<span class="s1">      {{#facets}} \</span>
+<span class="s1">      &lt;div class=&quot;facet-summary span2 dropdown&quot; data-facet=&quot;{{id}}&quot;&gt; \</span>
+<span class="s1">        &lt;a class=&quot;btn dropdown-toggle&quot; data-toggle=&quot;dropdown&quot; href=&quot;#&quot;&gt;&lt;i class=&quot;icon-chevron-down&quot;&gt;&lt;/i&gt; {{id}} {{label}}&lt;/a&gt; \</span>
+<span class="s1">        &lt;ul class=&quot;facet-items dropdown-menu&quot;&gt; \</span>
+<span class="s1">        {{#terms}} \</span>
+<span class="s1">          &lt;li&gt;&lt;a class=&quot;facet-choice js-facet-filter&quot; data-value=&quot;{{term}}&quot;&gt;{{term}} ({{count}})&lt;/a&gt;&lt;/li&gt; \</span>
+<span class="s1">        {{/terms}} \</span>
+<span class="s1">        {{#entries}} \</span>
+<span class="s1">          &lt;li&gt;&lt;a class=&quot;facet-choice js-facet-filter&quot; data-value=&quot;{{time}}&quot;&gt;{{term}} ({{count}})&lt;/a&gt;&lt;/li&gt; \</span>
+<span class="s1">        {{/entries}} \</span>
+<span class="s1">        &lt;/ul&gt; \</span>
+<span class="s1">      &lt;/div&gt; \</span>
+<span class="s1">      {{/facets}} \</span>
+<span class="s1">    &lt;/div&gt; \</span>
+<span class="s1">  &#39;</span><span class="p">,</span>
+
+  <span class="nx">events</span><span class="o">:</span> <span class="p">{</span>
+    <span class="s1">&#39;click .js-hide&#39;</span><span class="o">:</span> <span class="s1">&#39;onHide&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;click .js-facet-filter&#39;</span><span class="o">:</span> <span class="s1">&#39;onFacetFilter&#39;</span>
+  <span class="p">},</span>
+  <span class="nx">initialize</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">model</span><span class="p">)</span> <span class="p">{</span>
+    <span class="nx">_</span><span class="p">.</span><span class="nx">bindAll</span><span class="p">(</span><span class="k">this</span><span class="p">,</span> <span class="s1">&#39;render&#39;</span><span class="p">);</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">el</span> <span class="o">=</span> <span class="nx">$</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">el</span><span class="p">);</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">model</span><span class="p">.</span><span class="nx">facets</span><span class="p">.</span><span class="nx">bind</span><span class="p">(</span><span class="s1">&#39;all&#39;</span><span class="p">,</span> <span class="k">this</span><span class="p">.</span><span class="nx">render</span><span class="p">);</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">model</span><span class="p">.</span><span class="nx">fields</span><span class="p">.</span><span class="nx">bind</span><span class="p">(</span><span class="s1">&#39;all&#39;</span><span class="p">,</span> <span class="k">this</span><span class="p">.</span><span class="nx">render</span><span class="p">);</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">render</span><span class="p">();</span>
+  <span class="p">},</span>
+  <span class="nx">render</span><span class="o">:</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+    <span class="kd">var</span> <span class="nx">tmplData</span> <span class="o">=</span> <span class="p">{</span>
+      <span class="nx">facets</span><span class="o">:</span> <span class="k">this</span><span class="p">.</span><span class="nx">model</span><span class="p">.</span><span class="nx">facets</span><span class="p">.</span><span class="nx">toJSON</span><span class="p">(),</span>
+      <span class="nx">fields</span><span class="o">:</span> <span class="k">this</span><span class="p">.</span><span class="nx">model</span><span class="p">.</span><span class="nx">fields</span><span class="p">.</span><span class="nx">toJSON</span><span class="p">()</span>
+    <span class="p">};</span>
+    <span class="nx">tmplData</span><span class="p">.</span><span class="nx">facets</span> <span class="o">=</span> <span class="nx">_</span><span class="p">.</span><span class="nx">map</span><span class="p">(</span><span class="nx">tmplData</span><span class="p">.</span><span class="nx">facets</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">facet</span><span class="p">)</span> <span class="p">{</span>
+      <span class="k">if</span> <span class="p">(</span><span class="nx">facet</span><span class="p">.</span><span class="nx">_type</span> <span class="o">===</span> <span class="s1">&#39;date_histogram&#39;</span><span class="p">)</span> <span class="p">{</span>
+        <span class="nx">facet</span><span class="p">.</span><span class="nx">entries</span> <span class="o">=</span> <span class="nx">_</span><span class="p">.</span><span class="nx">map</span><span class="p">(</span><span class="nx">facet</span><span class="p">.</span><span class="nx">entries</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">entry</span><span class="p">)</span> <span class="p">{</span>
+          <span class="nx">entry</span><span class="p">.</span><span class="nx">term</span> <span class="o">=</span> <span class="k">new</span> <span class="nb">Date</span><span class="p">(</span><span class="nx">entry</span><span class="p">.</span><span class="nx">time</span><span class="p">).</span><span class="nx">toDateString</span><span class="p">();</span>
+          <span class="k">return</span> <span class="nx">entry</span><span class="p">;</span>
+        <span class="p">});</span>
+      <span class="p">}</span>
+      <span class="k">return</span> <span class="nx">facet</span><span class="p">;</span>
+    <span class="p">});</span>
+    <span class="kd">var</span> <span class="nx">templated</span> <span class="o">=</span> <span class="nx">Mustache</span><span class="p">.</span><span class="nx">render</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">template</span><span class="p">,</span> <span class="nx">tmplData</span><span class="p">);</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">el</span><span class="p">.</span><span class="nx">html</span><span class="p">(</span><span class="nx">templated</span><span class="p">);</span></pre></div>             </td>           </tr>                               <tr id="section-2">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-2">&#182;</a>               </div>               <p>are there actually any facets to show?</p>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="k">if</span> <span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">model</span><span class="p">.</span><span class="nx">facets</span><span class="p">.</span><span class="nx">length</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+      <span class="k">this</span><span class="p">.</span><span class="nx">el</span><span class="p">.</span><span class="nx">show</span><span class="p">();</span>
+    <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+      <span class="k">this</span><span class="p">.</span><span class="nx">el</span><span class="p">.</span><span class="nx">hide</span><span class="p">();</span>
+    <span class="p">}</span>
+  <span class="p">},</span>
+  <span class="nx">onHide</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">e</span><span class="p">)</span> <span class="p">{</span>
+    <span class="nx">e</span><span class="p">.</span><span class="nx">preventDefault</span><span class="p">();</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">el</span><span class="p">.</span><span class="nx">hide</span><span class="p">();</span>
+  <span class="p">},</span>
+  <span class="nx">onFacetFilter</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">e</span><span class="p">)</span> <span class="p">{</span>
+    <span class="kd">var</span> <span class="nx">$target</span><span class="o">=</span> <span class="nx">$</span><span class="p">(</span><span class="nx">e</span><span class="p">.</span><span class="nx">target</span><span class="p">);</span>
+    <span class="kd">var</span> <span class="nx">fieldId</span> <span class="o">=</span> <span class="nx">$target</span><span class="p">.</span><span class="nx">closest</span><span class="p">(</span><span class="s1">&#39;.facet-summary&#39;</span><span class="p">).</span><span class="nx">attr</span><span class="p">(</span><span class="s1">&#39;data-facet&#39;</span><span class="p">);</span>
+    <span class="kd">var</span> <span class="nx">value</span> <span class="o">=</span> <span class="nx">$target</span><span class="p">.</span><span class="nx">attr</span><span class="p">(</span><span class="s1">&#39;data-value&#39;</span><span class="p">);</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">model</span><span class="p">.</span><span class="nx">queryState</span><span class="p">.</span><span class="nx">addTermFilter</span><span class="p">(</span><span class="nx">fieldId</span><span class="p">,</span> <span class="nx">value</span><span class="p">);</span>
+  <span class="p">}</span>
+<span class="p">});</span>
+
+
+<span class="p">})(</span><span class="nx">jQuery</span><span class="p">,</span> <span class="nx">recline</span><span class="p">.</span><span class="nx">View</span><span class="p">);</span>
+
+</pre></div>             </td>           </tr>                </tbody>     </table>   </div> </body> </html> 

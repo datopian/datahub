@@ -1,0 +1,146 @@
+<!DOCTYPE html>  <html> <head>   <title>widget.filtereditor.js</title>   <meta http-equiv="content-type" content="text/html; charset=UTF-8">   <link rel="stylesheet" media="all" href="docco.css" /> </head> <body>   <div id="container">     <div id="background"></div>            <div id="jump_to">         Jump To &hellip;         <div id="jump_wrapper">           <div id="jump_page">                                           <a class="source" href="backend.couchdb.html">                 backend.couchdb.js               </a>                                           <a class="source" href="backend.csv.html">                 backend.csv.js               </a>                                           <a class="source" href="backend.dataproxy.html">                 backend.dataproxy.js               </a>                                           <a class="source" href="backend.elasticsearch.html">                 backend.elasticsearch.js               </a>                                           <a class="source" href="backend.gdocs.html">                 backend.gdocs.js               </a>                                           <a class="source" href="backend.memory.html">                 backend.memory.js               </a>                                           <a class="source" href="costco.html">                 costco.js               </a>                                           <a class="source" href="model.html">                 model.js               </a>                                           <a class="source" href="view.graph.html">                 view.graph.js               </a>                                           <a class="source" href="view.grid.html">                 view.grid.js               </a>                                           <a class="source" href="view.map.html">                 view.map.js               </a>                                           <a class="source" href="view.multiview.html">                 view.multiview.js               </a>                                           <a class="source" href="view.slickgrid.html">                 view.slickgrid.js               </a>                                           <a class="source" href="view.timeline.html">                 view.timeline.js               </a>                                           <a class="source" href="view.transform.html">                 view.transform.js               </a>                                           <a class="source" href="widget.facetviewer.html">                 widget.facetviewer.js               </a>                                           <a class="source" href="widget.fields.html">                 widget.fields.js               </a>                                           <a class="source" href="widget.filtereditor.html">                 widget.filtereditor.js               </a>                                           <a class="source" href="widget.pager.html">                 widget.pager.js               </a>                                           <a class="source" href="widget.queryeditor.html">                 widget.queryeditor.js               </a>                        </div>         </div>       </div>          <table cellpadding="0" cellspacing="0">       <thead>         <tr>           <th class="docs">             <h1>               widget.filtereditor.js             </h1>           </th>           <th class="code">           </th>         </tr>       </thead>       <tbody>                               <tr id="section-1">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-1">&#182;</a>               </div>                            </td>             <td class="code">               <div class="highlight"><pre><span class="cm">/*jshint multistr:true */</span>
+
+<span class="k">this</span><span class="p">.</span><span class="nx">recline</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">recline</span> <span class="o">||</span> <span class="p">{};</span>
+<span class="k">this</span><span class="p">.</span><span class="nx">recline</span><span class="p">.</span><span class="nx">View</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">recline</span><span class="p">.</span><span class="nx">View</span> <span class="o">||</span> <span class="p">{};</span>
+
+<span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">$</span><span class="p">,</span> <span class="nx">my</span><span class="p">)</span> <span class="p">{</span>
+
+<span class="nx">my</span><span class="p">.</span><span class="nx">FilterEditor</span> <span class="o">=</span> <span class="nx">Backbone</span><span class="p">.</span><span class="nx">View</span><span class="p">.</span><span class="nx">extend</span><span class="p">({</span>
+  <span class="nx">className</span><span class="o">:</span> <span class="s1">&#39;recline-filter-editor well&#39;</span><span class="p">,</span> 
+  <span class="nx">template</span><span class="o">:</span> <span class="s1">&#39; \</span>
+<span class="s1">    &lt;div class=&quot;filters&quot;&gt; \</span>
+<span class="s1">      &lt;h3&gt;Filters&lt;/h3&gt; \</span>
+<span class="s1">      &lt;a href=&quot;#&quot; class=&quot;js-add-filter&quot;&gt;Add filter&lt;/a&gt; \</span>
+<span class="s1">      &lt;form class=&quot;form-stacked js-add&quot; style=&quot;display: none;&quot;&gt; \</span>
+<span class="s1">        &lt;fieldset&gt; \</span>
+<span class="s1">          &lt;label&gt;Filter type&lt;/label&gt; \</span>
+<span class="s1">          &lt;select class=&quot;filterType&quot;&gt; \</span>
+<span class="s1">            &lt;option value=&quot;term&quot;&gt;Term (text)&lt;/option&gt; \</span>
+<span class="s1">            &lt;option value=&quot;geo_distance&quot;&gt;Geo distance&lt;/option&gt; \</span>
+<span class="s1">          &lt;/select&gt; \</span>
+<span class="s1">          &lt;label&gt;Field&lt;/label&gt; \</span>
+<span class="s1">          &lt;select class=&quot;fields&quot;&gt; \</span>
+<span class="s1">            {{#fields}} \</span>
+<span class="s1">            &lt;option value=&quot;{{id}}&quot;&gt;{{label}}&lt;/option&gt; \</span>
+<span class="s1">            {{/fields}} \</span>
+<span class="s1">          &lt;/select&gt; \</span>
+<span class="s1">          &lt;button type=&quot;submit&quot; class=&quot;btn&quot;&gt;Add&lt;/button&gt; \</span>
+<span class="s1">        &lt;/fieldset&gt; \</span>
+<span class="s1">      &lt;/form&gt; \</span>
+<span class="s1">      &lt;form class=&quot;form-stacked js-edit&quot;&gt; \</span>
+<span class="s1">        {{#filters}} \</span>
+<span class="s1">          {{{filterRender}}} \</span>
+<span class="s1">        {{/filters}} \</span>
+<span class="s1">        {{#filters.length}} \</span>
+<span class="s1">        &lt;button type=&quot;submit&quot; class=&quot;btn&quot;&gt;Update&lt;/button&gt; \</span>
+<span class="s1">        {{/filters.length}} \</span>
+<span class="s1">      &lt;/form&gt; \</span>
+<span class="s1">    &lt;/div&gt; \</span>
+<span class="s1">  &#39;</span><span class="p">,</span>
+  <span class="nx">filterTemplates</span><span class="o">:</span> <span class="p">{</span>
+    <span class="nx">term</span><span class="o">:</span> <span class="s1">&#39; \</span>
+<span class="s1">      &lt;div class=&quot;filter-{{type}} filter&quot;&gt; \</span>
+<span class="s1">        &lt;fieldset&gt; \</span>
+<span class="s1">          &lt;legend&gt; \</span>
+<span class="s1">            {{field}} &lt;small&gt;{{type}}&lt;/small&gt; \</span>
+<span class="s1">            &lt;a class=&quot;js-remove-filter&quot; href=&quot;#&quot; title=&quot;Remove this filter&quot;&gt;&amp;times;&lt;/a&gt; \</span>
+<span class="s1">          &lt;/legend&gt; \</span>
+<span class="s1">          &lt;input type=&quot;text&quot; value=&quot;{{term}}&quot; name=&quot;term&quot; data-filter-field=&quot;{{field}}&quot; data-filter-id=&quot;{{id}}&quot; data-filter-type=&quot;{{type}}&quot; /&gt; \</span>
+<span class="s1">        &lt;/fieldset&gt; \</span>
+<span class="s1">      &lt;/div&gt; \</span>
+<span class="s1">    &#39;</span><span class="p">,</span>
+    <span class="nx">geo_distance</span><span class="o">:</span> <span class="s1">&#39; \</span>
+<span class="s1">      &lt;div class=&quot;filter-{{type}} filter&quot;&gt; \</span>
+<span class="s1">        &lt;fieldset&gt; \</span>
+<span class="s1">          &lt;legend&gt; \</span>
+<span class="s1">            {{field}} &lt;small&gt;{{type}}&lt;/small&gt; \</span>
+<span class="s1">            &lt;a class=&quot;js-remove-filter&quot; href=&quot;#&quot; title=&quot;Remove this filter&quot;&gt;&amp;times;&lt;/a&gt; \</span>
+<span class="s1">          &lt;/legend&gt; \</span>
+<span class="s1">          &lt;label class=&quot;control-label&quot; for=&quot;&quot;&gt;Longitude&lt;/label&gt; \</span>
+<span class="s1">          &lt;input type=&quot;text&quot; value=&quot;{{point.lon}}&quot; name=&quot;lon&quot; data-filter-field=&quot;{{field}}&quot; data-filter-id=&quot;{{id}}&quot; data-filter-type=&quot;{{type}}&quot; /&gt; \</span>
+<span class="s1">          &lt;label class=&quot;control-label&quot; for=&quot;&quot;&gt;Latitude&lt;/label&gt; \</span>
+<span class="s1">          &lt;input type=&quot;text&quot; value=&quot;{{point.lat}}&quot; name=&quot;lat&quot; data-filter-field=&quot;{{field}}&quot; data-filter-id=&quot;{{id}}&quot; data-filter-type=&quot;{{type}}&quot; /&gt; \</span>
+<span class="s1">          &lt;label class=&quot;control-label&quot; for=&quot;&quot;&gt;Distance (km)&lt;/label&gt; \</span>
+<span class="s1">          &lt;input type=&quot;text&quot; value=&quot;{{distance}}&quot; name=&quot;distance&quot; data-filter-field=&quot;{{field}}&quot; data-filter-id=&quot;{{id}}&quot; data-filter-type=&quot;{{type}}&quot; /&gt; \</span>
+<span class="s1">        &lt;/fieldset&gt; \</span>
+<span class="s1">      &lt;/div&gt; \</span>
+<span class="s1">    &#39;</span>
+  <span class="p">},</span>
+  <span class="nx">events</span><span class="o">:</span> <span class="p">{</span>
+    <span class="s1">&#39;click .js-remove-filter&#39;</span><span class="o">:</span> <span class="s1">&#39;onRemoveFilter&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;click .js-add-filter&#39;</span><span class="o">:</span> <span class="s1">&#39;onAddFilterShow&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;submit form.js-edit&#39;</span><span class="o">:</span> <span class="s1">&#39;onTermFiltersUpdate&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;submit form.js-add&#39;</span><span class="o">:</span> <span class="s1">&#39;onAddFilter&#39;</span>
+  <span class="p">},</span>
+  <span class="nx">initialize</span><span class="o">:</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">el</span> <span class="o">=</span> <span class="nx">$</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">el</span><span class="p">);</span>
+    <span class="nx">_</span><span class="p">.</span><span class="nx">bindAll</span><span class="p">(</span><span class="k">this</span><span class="p">,</span> <span class="s1">&#39;render&#39;</span><span class="p">);</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">model</span><span class="p">.</span><span class="nx">fields</span><span class="p">.</span><span class="nx">bind</span><span class="p">(</span><span class="s1">&#39;all&#39;</span><span class="p">,</span> <span class="k">this</span><span class="p">.</span><span class="nx">render</span><span class="p">);</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">model</span><span class="p">.</span><span class="nx">queryState</span><span class="p">.</span><span class="nx">bind</span><span class="p">(</span><span class="s1">&#39;change&#39;</span><span class="p">,</span> <span class="k">this</span><span class="p">.</span><span class="nx">render</span><span class="p">);</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">model</span><span class="p">.</span><span class="nx">queryState</span><span class="p">.</span><span class="nx">bind</span><span class="p">(</span><span class="s1">&#39;change:filters:new-blank&#39;</span><span class="p">,</span> <span class="k">this</span><span class="p">.</span><span class="nx">render</span><span class="p">);</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">render</span><span class="p">();</span>
+  <span class="p">},</span>
+  <span class="nx">render</span><span class="o">:</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+    <span class="kd">var</span> <span class="nx">self</span> <span class="o">=</span> <span class="k">this</span><span class="p">;</span>
+    <span class="kd">var</span> <span class="nx">tmplData</span> <span class="o">=</span> <span class="nx">$</span><span class="p">.</span><span class="nx">extend</span><span class="p">(</span><span class="kc">true</span><span class="p">,</span> <span class="p">{},</span> <span class="k">this</span><span class="p">.</span><span class="nx">model</span><span class="p">.</span><span class="nx">queryState</span><span class="p">.</span><span class="nx">toJSON</span><span class="p">());</span></pre></div>             </td>           </tr>                               <tr id="section-2">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-2">&#182;</a>               </div>               <p>we will use idx in list as there id ...</p>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="nx">tmplData</span><span class="p">.</span><span class="nx">filters</span> <span class="o">=</span> <span class="nx">_</span><span class="p">.</span><span class="nx">map</span><span class="p">(</span><span class="nx">tmplData</span><span class="p">.</span><span class="nx">filters</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">filter</span><span class="p">,</span> <span class="nx">idx</span><span class="p">)</span> <span class="p">{</span>
+      <span class="nx">filter</span><span class="p">.</span><span class="nx">id</span> <span class="o">=</span> <span class="nx">idx</span><span class="p">;</span>
+      <span class="k">return</span> <span class="nx">filter</span><span class="p">;</span>
+    <span class="p">});</span>
+    <span class="nx">tmplData</span><span class="p">.</span><span class="nx">fields</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">model</span><span class="p">.</span><span class="nx">fields</span><span class="p">.</span><span class="nx">toJSON</span><span class="p">();</span>
+    <span class="nx">tmplData</span><span class="p">.</span><span class="nx">filterRender</span> <span class="o">=</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+      <span class="k">return</span> <span class="nx">Mustache</span><span class="p">.</span><span class="nx">render</span><span class="p">(</span><span class="nx">self</span><span class="p">.</span><span class="nx">filterTemplates</span><span class="p">[</span><span class="k">this</span><span class="p">.</span><span class="nx">type</span><span class="p">],</span> <span class="k">this</span><span class="p">);</span>
+    <span class="p">};</span>
+    <span class="kd">var</span> <span class="nx">out</span> <span class="o">=</span> <span class="nx">Mustache</span><span class="p">.</span><span class="nx">render</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">template</span><span class="p">,</span> <span class="nx">tmplData</span><span class="p">);</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">el</span><span class="p">.</span><span class="nx">html</span><span class="p">(</span><span class="nx">out</span><span class="p">);</span>
+  <span class="p">},</span>
+  <span class="nx">onAddFilterShow</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">e</span><span class="p">)</span> <span class="p">{</span>
+    <span class="nx">e</span><span class="p">.</span><span class="nx">preventDefault</span><span class="p">();</span>
+    <span class="kd">var</span> <span class="nx">$target</span> <span class="o">=</span> <span class="nx">$</span><span class="p">(</span><span class="nx">e</span><span class="p">.</span><span class="nx">target</span><span class="p">);</span>
+    <span class="nx">$target</span><span class="p">.</span><span class="nx">hide</span><span class="p">();</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">el</span><span class="p">.</span><span class="nx">find</span><span class="p">(</span><span class="s1">&#39;form.js-add&#39;</span><span class="p">).</span><span class="nx">show</span><span class="p">();</span>
+  <span class="p">},</span>
+  <span class="nx">onAddFilter</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">e</span><span class="p">)</span> <span class="p">{</span>
+    <span class="nx">e</span><span class="p">.</span><span class="nx">preventDefault</span><span class="p">();</span>
+    <span class="kd">var</span> <span class="nx">$target</span> <span class="o">=</span> <span class="nx">$</span><span class="p">(</span><span class="nx">e</span><span class="p">.</span><span class="nx">target</span><span class="p">);</span>
+    <span class="nx">$target</span><span class="p">.</span><span class="nx">hide</span><span class="p">();</span>
+    <span class="kd">var</span> <span class="nx">filterType</span> <span class="o">=</span> <span class="nx">$target</span><span class="p">.</span><span class="nx">find</span><span class="p">(</span><span class="s1">&#39;select.filterType&#39;</span><span class="p">).</span><span class="nx">val</span><span class="p">();</span>
+    <span class="kd">var</span> <span class="nx">field</span> <span class="o">=</span> <span class="nx">$target</span><span class="p">.</span><span class="nx">find</span><span class="p">(</span><span class="s1">&#39;select.fields&#39;</span><span class="p">).</span><span class="nx">val</span><span class="p">();</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">model</span><span class="p">.</span><span class="nx">queryState</span><span class="p">.</span><span class="nx">addFilter</span><span class="p">({</span><span class="nx">type</span><span class="o">:</span> <span class="nx">filterType</span><span class="p">,</span> <span class="nx">field</span><span class="o">:</span> <span class="nx">field</span><span class="p">});</span></pre></div>             </td>           </tr>                               <tr id="section-3">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-3">&#182;</a>               </div>               <p>trigger render explicitly as queryState change will not be triggered (as blank value for filter)</p>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="k">this</span><span class="p">.</span><span class="nx">render</span><span class="p">();</span>
+  <span class="p">},</span>
+  <span class="nx">onRemoveFilter</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">e</span><span class="p">)</span> <span class="p">{</span>
+    <span class="nx">e</span><span class="p">.</span><span class="nx">preventDefault</span><span class="p">();</span>
+    <span class="kd">var</span> <span class="nx">$target</span> <span class="o">=</span> <span class="nx">$</span><span class="p">(</span><span class="nx">e</span><span class="p">.</span><span class="nx">target</span><span class="p">);</span>
+    <span class="kd">var</span> <span class="nx">filterId</span> <span class="o">=</span> <span class="nx">$target</span><span class="p">.</span><span class="nx">closest</span><span class="p">(</span><span class="s1">&#39;.filter&#39;</span><span class="p">).</span><span class="nx">attr</span><span class="p">(</span><span class="s1">&#39;data-filter-id&#39;</span><span class="p">);</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">model</span><span class="p">.</span><span class="nx">queryState</span><span class="p">.</span><span class="nx">removeFilter</span><span class="p">(</span><span class="nx">filterId</span><span class="p">);</span>
+  <span class="p">},</span>
+  <span class="nx">onTermFiltersUpdate</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">e</span><span class="p">)</span> <span class="p">{</span>
+   <span class="kd">var</span> <span class="nx">self</span> <span class="o">=</span> <span class="k">this</span><span class="p">;</span>
+    <span class="nx">e</span><span class="p">.</span><span class="nx">preventDefault</span><span class="p">();</span>
+    <span class="kd">var</span> <span class="nx">filters</span> <span class="o">=</span> <span class="nx">self</span><span class="p">.</span><span class="nx">model</span><span class="p">.</span><span class="nx">queryState</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s1">&#39;filters&#39;</span><span class="p">);</span>
+    <span class="kd">var</span> <span class="nx">$form</span> <span class="o">=</span> <span class="nx">$</span><span class="p">(</span><span class="nx">e</span><span class="p">.</span><span class="nx">target</span><span class="p">);</span>
+    <span class="nx">_</span><span class="p">.</span><span class="nx">each</span><span class="p">(</span><span class="nx">$form</span><span class="p">.</span><span class="nx">find</span><span class="p">(</span><span class="s1">&#39;input&#39;</span><span class="p">),</span> <span class="kd">function</span><span class="p">(</span><span class="nx">input</span><span class="p">)</span> <span class="p">{</span>
+      <span class="kd">var</span> <span class="nx">$input</span> <span class="o">=</span> <span class="nx">$</span><span class="p">(</span><span class="nx">input</span><span class="p">);</span>
+      <span class="kd">var</span> <span class="nx">filterType</span> <span class="o">=</span> <span class="nx">$input</span><span class="p">.</span><span class="nx">attr</span><span class="p">(</span><span class="s1">&#39;data-filter-type&#39;</span><span class="p">);</span>
+      <span class="kd">var</span> <span class="nx">fieldId</span> <span class="o">=</span> <span class="nx">$input</span><span class="p">.</span><span class="nx">attr</span><span class="p">(</span><span class="s1">&#39;data-filter-field&#39;</span><span class="p">);</span>
+      <span class="kd">var</span> <span class="nx">filterIndex</span> <span class="o">=</span> <span class="nb">parseInt</span><span class="p">(</span><span class="nx">$input</span><span class="p">.</span><span class="nx">attr</span><span class="p">(</span><span class="s1">&#39;data-filter-id&#39;</span><span class="p">));</span>
+      <span class="kd">var</span> <span class="nx">name</span> <span class="o">=</span> <span class="nx">$input</span><span class="p">.</span><span class="nx">attr</span><span class="p">(</span><span class="s1">&#39;name&#39;</span><span class="p">);</span>
+      <span class="kd">var</span> <span class="nx">value</span> <span class="o">=</span> <span class="nx">$input</span><span class="p">.</span><span class="nx">val</span><span class="p">();</span>
+      <span class="k">if</span> <span class="p">(</span><span class="nx">filterType</span> <span class="o">===</span> <span class="s1">&#39;term&#39;</span><span class="p">)</span> <span class="p">{</span>
+        <span class="nx">filters</span><span class="p">[</span><span class="nx">filterIndex</span><span class="p">].</span><span class="nx">term</span> <span class="o">=</span> <span class="nx">value</span><span class="p">;</span>
+      <span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="nx">filterType</span> <span class="o">===</span> <span class="s1">&#39;geo_distance&#39;</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">if</span> <span class="p">(</span><span class="nx">name</span> <span class="o">===</span> <span class="s1">&#39;distance&#39;</span><span class="p">)</span> <span class="p">{</span>
+          <span class="nx">filters</span><span class="p">[</span><span class="nx">filterIndex</span><span class="p">].</span><span class="nx">distance</span> <span class="o">=</span> <span class="nb">parseFloat</span><span class="p">(</span><span class="nx">value</span><span class="p">);</span>
+        <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+          <span class="nx">filters</span><span class="p">[</span><span class="nx">filterIndex</span><span class="p">].</span><span class="nx">point</span><span class="p">[</span><span class="nx">name</span><span class="p">]</span> <span class="o">=</span> <span class="nb">parseFloat</span><span class="p">(</span><span class="nx">value</span><span class="p">);</span>
+        <span class="p">}</span>
+      <span class="p">}</span>
+    <span class="p">});</span>
+    <span class="nx">self</span><span class="p">.</span><span class="nx">model</span><span class="p">.</span><span class="nx">queryState</span><span class="p">.</span><span class="nx">set</span><span class="p">({</span><span class="nx">filters</span><span class="o">:</span> <span class="nx">filters</span><span class="p">});</span>
+    <span class="nx">self</span><span class="p">.</span><span class="nx">model</span><span class="p">.</span><span class="nx">queryState</span><span class="p">.</span><span class="nx">trigger</span><span class="p">(</span><span class="s1">&#39;change&#39;</span><span class="p">);</span>
+  <span class="p">}</span>
+<span class="p">});</span>
+
+
+<span class="p">})(</span><span class="nx">jQuery</span><span class="p">,</span> <span class="nx">recline</span><span class="p">.</span><span class="nx">View</span><span class="p">);</span>
+
+</pre></div>             </td>           </tr>                </tbody>     </table>   </div> </body> </html> 
