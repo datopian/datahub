@@ -3848,7 +3848,6 @@ my.Transform = Backbone.View.extend({
       var col = 'unknown';
     }
     editor.val("function(doc) {\n  doc['"+ col +"'] = doc['"+ col +"'];\n  return doc;\n}");
-    editor.focus().get(0).setSelectionRange(18, 18);
     editor.keydown();
   },
 
