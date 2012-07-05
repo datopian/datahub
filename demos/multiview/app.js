@@ -2,7 +2,10 @@ jQuery(function($) {
   window.dataExplorer = null;
   window.explorerDiv = $('.data-explorer-here');
 
-  // see if we have any configuration from query string
+  // This is some fancy stuff to allow configuring the multiview from
+  // parameters in the query string
+  //
+  // For more on state see the view documentation.
   var state = recline.View.parseQueryString(decodeURIComponent(window.location.search));
   if (state) {
     _.each(state, function(value, key) {
@@ -37,10 +40,42 @@ var createExplorer = function(dataset, state) {
   var $el = $('<div />');
   $el.appendTo(window.explorerDiv);
 
+  var views = [
+    {
+      id: 'grid',
+      label: 'Grid',
+      view: new recline.View.SlickGrid({
+        model: dataset
+      }),
+    },
+    {
+      id: 'graph',
+      label: 'Graph',
+      view: new recline.View.Graph({
+        model: dataset
+      }),
+    },
+    {
+      id: 'map',
+      label: 'Map',
+      view: new recline.View.Map({
+        model: dataset
+      }),
+    },
+    {
+      id: 'transform',
+      label: 'Transform',
+      view: new recline.View.Transform({
+        model: dataset
+      })
+    }
+  ];
+
   window.dataExplorer = new recline.View.MultiView({
     model: dataset,
     el: $el,
-    state: state
+    state: state,
+    views: views
   });
 }
 
