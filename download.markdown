@@ -9,16 +9,31 @@ title: Download
   </h1>
 </div>
 
-Single file containing all of Recline library:
+<div class="row">
+<div class="span4">
+  <a href="dist/recline.js" class="btn">
+    <strong>recline.js (master) &raquo;</strong>
+    <br />
+    Single file containing all of Recline library
+  </a>
+</div>
+<div class="span4">
+  <a href="dist/recline.dataset.js" class="btn">
+    <strong>recline.dataset.js (master) &raquo;</strong>
+    <br />
+    Single file with only the core data objects Dataset, Record etc without any Views or backends
+  </a>
+</div>
+<div class="span4">
+  <a href="https://github.com/okfn/recline/zipball/master" class="btn">
+    <strong>Full package (master) &raquo;</strong>
+    <br />
+    Everything - library, source code, unit tests, vendor libraries and documentation
+  </a>
+</div>
+</div>
 
-<p><a href="dist/recline.js" class="btn">recline.js all-in-one (master)</a></p>
-
-Download package: besides the library itself, the download package contains
-full source code, unit tests, external vendor libraries and documentation. The
-production files (included the same way as in the code above) are in the dist
-folder.
-
-<p><a href="https://github.com/okfn/recline/zipball/master" class="btn">Download Recline v0.5 (master)</a> (in-progress version)</p>
+<p style="margin-top: 20px;">After downloading recline you'll want to use it in your project -- see below or tutorials for details.</p>
 
 ### Changelog
 
