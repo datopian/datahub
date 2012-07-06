@@ -1,10 +1,6 @@
-Recline DataExplorer is an open-source pure javascript data explorer and data
-refinery. Imagine it as a spreadsheet plus Google Refine plus Visualization
-toolkit, all in pure javascript and html.
+A simple but powerful library for building data applications in pure Javascript and HTML.
 
-Designed for standalone use or as a library to integrate into your own app.
-
-<h3><a href="http://okfnlabs.org/recline/">Recline Website - including Overview, Documentation, Demos etc</a></h3>
+<h3><a href="http://reclinejs.com/">Recline Website - including Overview, Documentation, Demos etc</a></h3>
 
 
 ## Features
@@ -12,13 +8,10 @@ Designed for standalone use or as a library to integrate into your own app.
 * Open-source (and heavy reuser of existing open-source libraries)
 * Pure javascript (no Flash) and designed for integration -- so it is easy to
   embed in other sites and applications
-* View and edit your data in clean tabular interface
+* View and edit your data in clean grid interface
 * Bulk update/clean your data using an easy scripting UI
 * Visualize your data
-* And more ... see <http://okfnlabs.org/recline/>
-
-![screenshot](http://farm8.staticflickr.com/7020/6847468031_0f474de5f7_b.jpg)
-
+* And more ... see <http://reclinejs.com/>
 
 ## Developer Notes
 
@@ -27,16 +20,17 @@ Running the tests by opening `test/index.html` in your browser.
 
 ## Changelog
 
-### v0.5 - Master
+### v0.5 - July 5th 2012 (first public release)
 
-In progress.
+[40 closed issues](https://github.com/okfn/recline/issues?milestone=2&page=1&state=closed)
 
-Possible breaking changes:
+Lots of breaking changes to the API from v0.4 (should be very few going forwards) including:
 
 * State only stores backend (name) and dataset url (in url field) rather than entire dataset object
 * Backends heavily reorganized
 * Rename Document -> Record
 * Rename DataExplorer view to MultiView
+* ...
 
 ### v0.4 - April 26th 2012
 
