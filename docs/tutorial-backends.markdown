@@ -103,5 +103,5 @@ a bespoke chooser and a Kartograph (svg-only) map.
 ## Writing your own backend
 
 Writing your own backend is easy to do. Details of the required API are in the
-[Backend documentation](docs/backends.html).
+[Backend documentation](/backends.html).
 
