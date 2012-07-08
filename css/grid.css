@@ -20,8 +20,9 @@ table.recline-grid {
   white-space: normal;
 }
 
-.recline-grid td {
+.recline-grid tbody tr {
   vertical-align: top;
+  border-bottom: solid 1px #ccc;
 }
 
 .recline-grid tbody tr:last-child {
