@@ -34,7 +34,6 @@ my.QueryEditor = Backbone.View.extend({
   },
   render: function() {
     var tmplData = this.model.toJSON();
-    tmplData.to = this.model.get('from') + this.model.get('size');
     var templated = Mustache.render(this.template, tmplData);
     this.el.html(templated);
   }
