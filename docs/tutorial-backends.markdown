@@ -30,6 +30,13 @@ source. They provide methods for loading and saving Datasets and individuals
 Documents as well as for bulk loading via a query API and doing bulk transforms
 on the backend.
 
+Backends come in 2 flavours:
+
+1. Loader backends - only implement fetch method. The data is then cached in a Memory.Store on the Dataset and interacted with there. This is best for sources which just allow you to load data or where you want to load the data once and work with it locally.
+2. Store backends - these support fetch, query and, if write-enabled, save. These are suitable where the backend contains a lot of data (infeasible to load locally - for examples a million rows) or where the backend has capabilities you want to take advantage of.
+
+### Instantiation and Use
+
 You can use a backend directly e.g.
 
 {% highlight javascript %}
@@ -55,10 +62,11 @@ recline.Backend.ElasticSearch can be identified as 'ElasticSearch' or
 
 ### Included Backends
 
-* [elasticsearch: ElasticSearch Backend](docs/backend/elasticsearch.html)
-* [dataproxy: DataProxy Backend (CSV and XLS on the Web)](docs/backend/dataproxy.html)
-* [gdocs: Google Docs (Spreadsheet) Backend](docs/backend/gdocs.html)
-* [csv: Local CSV file backend](docs/backend/csv.html)
+* [gdocs: Google Docs (Spreadsheet)](src/backend.gdocs.html)
+* [csv: CSV files](src/backend.csv.html)
+* [elasticsearch: ElasticSearch](src/backend.elasticsearch.html) - this also covers the DataHub as it has an ElasticSearch compatible API
+* [dataproxy: DataProxy (CSV and XLS on the Web)](src/backend.dataproxy.html)
+* [couchdb: CouchDB](src/backend.couchdb.html)
 
 Backend not on this list that you would like to see? It's very easy to write a
 new backend -- see below for more details.
@@ -106,6 +114,102 @@ a bespoke chooser and a Kartograph (svg-only) map.
 <script type="text/javascript">
 {% include example-backends-gdocs.js %}
 </script>
+
+
+## Loading Data from ElasticSearch and the DataHub
+
+Recline supports ElasticSearch as a full read/write/query backend. It also means that Recline can load data from the [DataHub's](http://datahub.io/) data API as that is ElasticSearch compatible. Here's an example, using [this dataset about Rendition flights](http://datahub.io/dataset/rendition-on-record/ac5a28ea-eb52-4b0a-a399-5dcc1becf9d9') on the DataHub:
+
+{% highlight javascript %}
+{% include example-backends-elasticsearch.js %}
+{% endhighlight %}
+
+### Result
+
+<div id="my-elasticsearch" class="doc-ex-rendered">&nbsp;</div>
+
+<script type="text/javascript">
+{% include example-backends-elasticsearch.js %}
+</script>
+
+
+## Loading data from CSV files
+
+For loading data from CSV files there are 3 cases:
+
+1. CSV is online but on same domain -- we can then load using AJAX (as no problems with same origin policy)
+2. CSV is on local disk -- if your browser supports HTML5 File API we can load the CSV file off disk
+3. CSV is online but not on same domain -- use DataProxy (see below)
+
+### Local online CSV file
+
+Let's start with first case: loading a "local" online CSV file. We'll be using this [example file]({{page.root}}/demos/data/sample.csv).
+
+{% highlight javascript %}
+{% include example-backends-online-csv.js %}
+{% endhighlight %}
+
+#### Result
+
+<div id="my-online-csv" class="doc-ex-rendered">&nbsp;</div>
+
+<script type="text/javascript">
+{% include example-backends-online-csv.js %}
+</script>
+
+### CSV file on disk
+
+This requires your browser to support the HTML5 file API. Suppose we have a file input like:
+
+<input type="file" class="my-file-input" />
+
+Then we can load the file into a Recline Dataset as follows:
+
+{% highlight javascript %}
+{% include example-backends-csv-disk.js %}
+{% endhighlight %}
+
+#### Try it out!
+
+Try it out by clicking on the file input above, selecting a CSV file and seeing what happens.
+
+<div id="my-csv-disk" class="doc-ex-rendered">&nbsp;</div>
+
+<script type="text/javascript">
+{% include example-backends-csv-disk.js %}
+</script>
+
+
+## Loading data from CSV and Excel files online using DataProxy
+
+The [DataProxy](http://github.com/okfn/dataproxy) is a web-service run by the Open Knowledge Foundation that converts CSV and Excel files to JSON. It has a convenient JSON-p-able API which means we can use it to load data from online CSV and Excel into Recline Datasets.
+
+Recline ships with a simple DataProxy "backend" that takes care of fetching data from the DataProxy source.
+
+The main limitation of the DataProxy is that it can only handle Excel files up to a certain size (5mb) and that as we must use JSONP to access it error information can be limited.
+
+{% highlight javascript %}
+{% include example-backends-dataproxy.js %}
+{% endhighlight %}
+
+### Result
+
+<div id="my-dataproxy" class="doc-ex-rendered">&nbsp;</div>
+
+<script type="text/javascript">
+{% include example-backends-dataproxy.js %}
+</script>
+
+### Customizing the timeout
+
+As we must use JSONP in this backend we have the problem that if DataProxy errors (e.g. 500) this won't be picked up. To deal with this and prevent the case where the request never finishes We have a timeout on the request after which the Backend sends back an error stating that request timed out.
+
+You can customize the length of this timeout by setting the following constant:
+
+{% highlight javascript %}
+// Customize the timeout (in milliseconds) - default is 5000
+recline.Backend.DataProxy.timeout = 10000;
+{% endhighlight %}
 
 
 ## Writing your own backend

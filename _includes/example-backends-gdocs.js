@@ -15,7 +15,7 @@ $('#my-gdocs').append(grid.el);
 // Now do the query to the backend to load data
 dataset.fetch().done(function(dataset) {
   if (console) {
-    console.log(dataset.currentDocuments);
+    console.log(dataset.records);
   }
 });
 
