@@ -39,7 +39,7 @@ this.recline.Backend.CSV = this.recline.Backend.CSV || {};
       });
     } else if (dataset.url) {
       $.get(dataset.url).done(function(data) {
-        var rows = my.parseCSV(dataset.data, dataset);
+        var rows = my.parseCSV(data, dataset);
         dfd.resolve({
           records: rows,
           useMemoryStore: true
