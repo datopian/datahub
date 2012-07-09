@@ -202,6 +202,7 @@ my.Dataset = Backbone.Model.extend({
     self.recordCount = queryResult.total;
     var docs = _.map(queryResult.hits, function(hit) {
       var _doc = new my.Record(hit);
+      _doc.fields = self.fields;
       _doc.bind('change', function(doc) {
         self._changes.updates.push(doc.toJSON());
       });
@@ -254,18 +255,9 @@ my.Dataset = Backbone.Model.extend({
     return dfd.promise();
   },
 
-  // ### recordSummary
-  //
-  // Get a simple html summary of a Dataset record in form of key/value list
+  // Deprecated (as of v0.5) - use record.summary()
   recordSummary: function(record) {
-    var html = '<div class="recline-record-summary">';
-    this.fields.each(function(field) { 
-      if (field.id != 'id') {
-        html += '<div class="' + field.id + '"><strong>' + field.get('label') + '</strong>: ' + record.getFieldValue(field) + '</div>';
-      }
-    });
-    html += '</div>';
-    return html;
+    return record.summary();
   },
 
   // ### _backendFromString(backendString)
@@ -329,14 +321,22 @@ my.Dataset.restore = function(state) {
   return dataset;
 };
 
-// ## <a id="record">A Record (aka Row)</a>
+// ## <a id="record">A Record</a>
 // 
-// A single entry or row in the dataset
+// A single record (or row) in the dataset
 my.Record = Backbone.Model.extend({
   constructor: function Record() {
     Backbone.Model.prototype.constructor.apply(this, arguments);
   },
 
+  // ### initialize
+  // 
+  // Create a Record
+  //
+  // You usually will not do this directly but will have records created by
+  // Dataset e.g. in query method
+  //
+  // Certain methods require presence of a fields attribute (identical to that on Dataset)
   initialize: function() {
     _.bindAll(this, 'getFieldValue');
   },
@@ -363,6 +363,21 @@ my.Record = Backbone.Model.extend({
       val = field.deriver(val, field, this);
     }
     return val;
+  },
+
+  // ### summary
+  //
+  // Get a simple html summary of this record in form of key/value list
+  summary: function(record) {
+    var self = this;
+    var html = '<div class="recline-record-summary">';
+    this.fields.each(function(field) { 
+      if (field.id != 'id') {
+        html += '<div class="' + field.id + '"><strong>' + field.get('label') + '</strong>: ' + self.getFieldValue(field) + '</div>';
+      }
+    });
+    html += '</div>';
+    return html;
   },
 
   // Override Backbone save, fetch and destroy so they do nothing

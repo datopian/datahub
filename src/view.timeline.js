@@ -102,7 +102,7 @@ my.Timeline = Backbone.View.extend({
         "startDate": start,
         "endDate": end,
         "headline": String(record.get('title') || ''),
-        "text": record.get('description') || this.model.recordSummary(record)
+        "text": record.get('description') || record.summary()
       };
       return tlEntry;
     } else {

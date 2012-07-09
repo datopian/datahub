@@ -247,6 +247,22 @@ test('_normalizeRecordsAndFields', function () {
   });
 });
 
+
+// =================================
+// Record
+
+module("Model Record");
+
+test('summary', function () {
+  var dataset = new recline.Model.Dataset({
+    records: [ {a: 1, b: 2} ]
+  });
+  var record = dataset.records.at(0);
+  var out = record.summary();
+  var exp = '<div class="recline-record-summary"><div class="a"><strong>a</strong>: 1</div><div class="b"><strong>b</strong>: 2</div></div>'
+  equal(out, exp);
+});
+
 // =================================
 // Query
 

@@ -2,23 +2,28 @@
 // must have div with class="ex-1"
 var $el = $('.ex-1');
 
-// we will define this function display so we can reuse it below!
-function display(dataset) {
-  // total number of records resulting from latest query
-  $el.append('Total found: ' + dataset.recordCount + '<br />');
-  $el.append('Total returned: ' + dataset.records.length);
+// total number of records resulting from latest query
+$el.append('Total found: ' + dataset.recordCount + '<br />');
+$el.append('Total returned: ' + dataset.records.length);
 
-  $el.append('<hr />');
+$el.append('<hr />');
 
-  // dataset.records is a Backbone Collection of Records that resulted from latest query (hence "current")
-  // Get the first record in the list - it returns an instance of the Record object
-  var record = dataset.records.at(0);
+// get 2nd record in list (note collection indexes off 0!)
+// this is an instance of a Record object
+var record = dataset.records.at(1);
 
-  // Use the summary helper method which produces proper html
-  // You could also do record.toJSON() to get a hash of the record data
-  $el.append(dataset.recordSummary(record));
-}
+// if records have an id you can get by id too ...
+// var record = dataset.records.get(record-id);
 
-// now display our existing dataset ...
-display(dataset);
+// To get record attribute we use 'get'
+var recdate = record.get('date');
+
+$el.append('Date is: ' + recdate);
+$el.append('<hr />');
+
+// We can also convert the Record back to simple JS object
+var simple = record.toJSON();
+
+$el.append('<h4>Record as simple object</h4>');
+$el.append('<pre>' + JSON.stringify(simple, null, 2) + '</pre>');
 
