@@ -166,6 +166,12 @@ this.recline.Backend.ElasticSearch = this.recline.Backend.ElasticSearch || {};
     var es = new my.Wrapper(dataset.url, my.esOptions);
     var dfd = $.Deferred();
     es.mapping().done(function(schema) {
+
+      if (!schema){
+        dfd.reject({'message':'Elastic Search did not return a mapping'});
+        return;
+      }
+
       // only one top level key in ES = the type so we can ignore it
       var key = _.keys(schema)[0];
       var fieldData = _.map(schema[key].properties, function(dict, fieldName) {
