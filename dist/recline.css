@@ -39,12 +39,9 @@ table.recline-grid {
   white-space: normal;
 }
 
-.recline-grid td {
+.recline-grid tbody tr {
   vertical-align: top;
-}
-
-.recline-grid tr td:first-child, .recline-grid tr th:first-child {
-  width: 20px;
+  border-bottom: solid 1px #ccc;
 }
 
 .recline-grid tbody tr:last-child {
@@ -56,9 +53,7 @@ table.recline-grid {
 }
 
 /* direct borrowing from twitter buttons */
-.recline-grid th,
-.transform-column-view .expression-preview-table-wrapper th
-{
+.recline-grid th {
   background-color: #e6e6e6;
   background-repeat: no-repeat;
   background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#ffffff), color-stop(25%, #ffffff), to(#e6e6e6));
@@ -207,12 +202,6 @@ div.data-table-cell-content-numeric > a.data-table-cell-edit {
 /**********************************************************
   * Read-only mode
   *********************************************************/
-
-.recline-read-only .recline-grid.no-hidden tr td:first-child,
-.recline-read-only .recline-grid.no-hidden tr th:first-child
-{
-  display: none;
-}
 
 .recline-read-only .recline-grid .write-op,
 .recline-read-only .recline-grid a.data-table-cell-edit

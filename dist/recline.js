@@ -39,7 +39,7 @@ this.recline.Backend.CSV = this.recline.Backend.CSV || {};
       });
     } else if (dataset.url) {
       $.get(dataset.url).done(function(data) {
-        var rows = my.parseCSV(dataset.data, dataset);
+        var rows = my.parseCSV(data, dataset);
         dfd.resolve({
           records: rows,
           useMemoryStore: true
@@ -1086,6 +1086,7 @@ my.Dataset = Backbone.Model.extend({
     self.recordCount = queryResult.total;
     var docs = _.map(queryResult.hits, function(hit) {
       var _doc = new my.Record(hit);
+      _doc.fields = self.fields;
       _doc.bind('change', function(doc) {
         self._changes.updates.push(doc.toJSON());
       });
@@ -1138,18 +1139,9 @@ my.Dataset = Backbone.Model.extend({
     return dfd.promise();
   },
 
-  // ### recordSummary
-  //
-  // Get a simple html summary of a Dataset record in form of key/value list
+  // Deprecated (as of v0.5) - use record.summary()
   recordSummary: function(record) {
-    var html = '<div class="recline-record-summary">';
-    this.fields.each(function(field) { 
-      if (field.id != 'id') {
-        html += '<div class="' + field.id + '"><strong>' + field.get('label') + '</strong>: ' + record.getFieldValue(field) + '</div>';
-      }
-    });
-    html += '</div>';
-    return html;
+    return record.summary();
   },
 
   // ### _backendFromString(backendString)
@@ -1213,14 +1205,22 @@ my.Dataset.restore = function(state) {
   return dataset;
 };
 
-// ## <a id="record">A Record (aka Row)</a>
+// ## <a id="record">A Record</a>
 // 
-// A single entry or row in the dataset
+// A single record (or row) in the dataset
 my.Record = Backbone.Model.extend({
   constructor: function Record() {
     Backbone.Model.prototype.constructor.apply(this, arguments);
   },
 
+  // ### initialize
+  // 
+  // Create a Record
+  //
+  // You usually will not do this directly but will have records created by
+  // Dataset e.g. in query method
+  //
+  // Certain methods require presence of a fields attribute (identical to that on Dataset)
   initialize: function() {
     _.bindAll(this, 'getFieldValue');
   },
@@ -1247,6 +1247,21 @@ my.Record = Backbone.Model.extend({
       val = field.deriver(val, field, this);
     }
     return val;
+  },
+
+  // ### summary
+  //
+  // Get a simple html summary of this record in form of key/value list
+  summary: function(record) {
+    var self = this;
+    var html = '<div class="recline-record-summary">';
+    this.fields.each(function(field) { 
+      if (field.id != 'id') {
+        html += '<div class="' + field.id + '"><strong>' + field.get('label') + '</strong>: ' + self.getFieldValue(field) + '</div>';
+      }
+    });
+    html += '</div>';
+    return html;
   },
 
   // Override Backbone save, fetch and destroy so they do nothing
@@ -1940,84 +1955,12 @@ my.Grid = Backbone.View.extend({
   },
 
   events: {
-    'click .column-header-menu .data-table-menu li a': 'onColumnHeaderClick',
-    'click .row-header-menu': 'onRowHeaderClick',
-    'click .root-header-menu': 'onRootHeaderClick',
-    'click .data-table-menu li a': 'onMenuClick',
     // does not work here so done at end of render function
     // 'scroll .recline-grid tbody': 'onHorizontalScroll'
   },
 
   // ======================================================
   // Column and row menus
-
-  onColumnHeaderClick: function(e) {
-    this.tempState.currentColumn = $(e.target).closest('.column-header').attr('data-field');
-  },
-
-  onRowHeaderClick: function(e) {
-    this.tempState.currentRow = $(e.target).parents('tr:first').attr('data-id');
-  },
-  
-  onRootHeaderClick: function(e) {
-    var tmpl = ' \
-        {{#columns}} \
-        <li><a data-action="showColumn" data-column="{{.}}" href="JavaScript:void(0);">Show column: {{.}}</a></li> \
-        {{/columns}}';
-    var tmp = Mustache.render(tmpl, {'columns': this.state.get('hiddenFields')});
-    this.el.find('.root-header-menu .dropdown-menu').html(tmp);
-  },
-
-  onMenuClick: function(e) {
-    var self = this;
-    e.preventDefault();
-    var actions = {
-      bulkEdit: function() { self.showTransformColumnDialog('bulkEdit', {name: self.tempState.currentColumn}); },
-      facet: function() { 
-        self.model.queryState.addFacet(self.tempState.currentColumn);
-      },
-      facet_histogram: function() {
-        self.model.queryState.addHistogramFacet(self.tempState.currentColumn);
-      },
-      filter: function() {
-        self.model.queryState.addTermFilter(self.tempState.currentColumn, '');
-      },
-      sortAsc: function() { self.setColumnSort('asc'); },
-      sortDesc: function() { self.setColumnSort('desc'); },
-      hideColumn: function() { self.hideColumn(); },
-      showColumn: function() { self.showColumn(e); },
-      deleteRow: function() {
-        var self = this;
-        var doc = _.find(self.model.records.models, function(doc) {
-          // important this is == as the currentRow will be string (as comes
-          // from DOM) while id may be int
-          return doc.id == self.tempState.currentRow;
-        });
-        doc.destroy().then(function() { 
-            self.model.records.remove(doc);
-            self.trigger('recline:flash', {message: "Row deleted successfully"});
-          }).fail(function(err) {
-            self.trigger('recline:flash', {message: "Errorz! " + err});
-          });
-      }
-    };
-    actions[$(e.target).attr('data-action')]();
-  },
-
-  showTransformColumnDialog: function() {
-    var self = this;
-    var view = new my.ColumnTransform({
-      model: this.model
-    });
-    // pass the flash message up the chain
-    view.bind('recline:flash', function(flash) {
-      self.trigger('recline:flash', flash);
-    });
-    view.state = this.tempState;
-    view.render();
-    this.el.append(view.el);
-    view.el.modal();
-  },
 
   setColumnSort: function(order) {
     var sort = [{}];
@@ -2052,33 +1995,8 @@ my.Grid = Backbone.View.extend({
     <table class="recline-grid table-striped table-condensed" cellspacing="0"> \
       <thead class="fixed-header"> \
         <tr> \
-          {{#notEmpty}} \
-            <th class="column-header"> \
-              <div class="btn-group root-header-menu"> \
-                <a class="btn dropdown-toggle" data-toggle="dropdown"><span class="caret"></span></a> \
-                <ul class="dropdown-menu data-table-menu"> \
-                </ul> \
-              </div> \
-              <span class="column-header-name"></span> \
-            </th> \
-          {{/notEmpty}} \
           {{#fields}} \
-            <th class="column-header {{#hidden}}hidden{{/hidden}}" data-field="{{id}}" style="width: {{width}}px; max-width: {{width}}px; min-width: {{width}}px;"> \
-              <div class="btn-group column-header-menu"> \
-                <a class="btn dropdown-toggle" data-toggle="dropdown"><i class="icon-cog"></i><span class="caret"></span></a> \
-                <ul class="dropdown-menu data-table-menu pull-right"> \
-                  <li><a data-action="facet" href="JavaScript:void(0);">Term Facet</a></li> \
-                  <li><a data-action="facet_histogram" href="JavaScript:void(0);">Date Histogram Facet</a></li> \
-                  <li><a data-action="filter" href="JavaScript:void(0);">Text Filter</a></li> \
-                  <li class="divider"></li> \
-                  <li><a data-action="sortAsc" href="JavaScript:void(0);">Sort ascending</a></li> \
-                  <li><a data-action="sortDesc" href="JavaScript:void(0);">Sort descending</a></li> \
-                  <li class="divider"></li> \
-                  <li><a data-action="hideColumn" href="JavaScript:void(0);">Hide this column</a></li> \
-                  <li class="divider"></li> \
-                  <li class="write-op"><a data-action="bulkEdit" href="JavaScript:void(0);">Transform...</a></li> \
-                </ul> \
-              </div> \
+            <th class="column-header {{#hidden}}hidden{{/hidden}}" data-field="{{id}}" style="width: {{width}}px; max-width: {{width}}px; min-width: {{width}}px;" title="{{label}}"> \
               <span class="column-header-name">{{label}}</span> \
             </th> \
           {{/fields}} \
@@ -2181,14 +2099,6 @@ my.GridRow = Backbone.View.extend({
   },
 
   template: ' \
-      <td> \
-        <div class="btn-group row-header-menu"> \
-          <a class="btn dropdown-toggle" data-toggle="dropdown"><span class="caret"></span></a> \
-          <ul class="dropdown-menu data-table-menu"> \
-            <li class="write-op"><a data-action="deleteRow" href="JavaScript:void(0);">Delete this row</a></li> \
-          </ul> \
-        </div> \
-      </td> \
       {{#cells}} \
       <td data-field="{{field}}" style="width: {{width}}px; max-width: {{width}}px; min-width: {{width}}px;"> \
         <div class="data-table-cell-content"> \
@@ -3721,7 +3631,7 @@ my.Timeline = Backbone.View.extend({
         "startDate": start,
         "endDate": end,
         "headline": String(record.get('title') || ''),
-        "text": record.get('description') || this.model.recordSummary(record)
+        "text": record.get('description') || record.summary()
       };
       return tlEntry;
     } else {
@@ -4365,7 +4275,6 @@ my.QueryEditor = Backbone.View.extend({
   },
   render: function() {
     var tmplData = this.model.toJSON();
-    tmplData.to = this.model.get('from') + this.model.get('size');
     var templated = Mustache.render(this.template, tmplData);
     this.el.html(templated);
   }
