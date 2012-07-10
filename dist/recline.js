@@ -419,6 +419,12 @@ this.recline.Backend.ElasticSearch = this.recline.Backend.ElasticSearch || {};
     var es = new my.Wrapper(dataset.url, my.esOptions);
     var dfd = $.Deferred();
     es.mapping().done(function(schema) {
+
+      if (!schema){
+        dfd.reject({'message':'Elastic Search did not return a mapping'});
+        return;
+      }
+
       // only one top level key in ES = the type so we can ignore it
       var key = _.keys(schema)[0];
       var fieldData = _.map(schema[key].properties, function(dict, fieldName) {
@@ -3333,10 +3339,10 @@ my.SlickGrid = Backbone.View.extend({
     // Order them if there is ordering info on the state
     if (this.state.get('columnsOrder')){
       visibleColumns = visibleColumns.sort(function(a,b){
-        return _.indexOf(self.state.get('columnsOrder'),a.id) > _.indexOf(self.state.get('columnsOrder'),b.id);
+        return _.indexOf(self.state.get('columnsOrder'),a.id) > _.indexOf(self.state.get('columnsOrder'),b.id) ? 1 : -1;
       });
       columns = columns.sort(function(a,b){
-        return _.indexOf(self.state.get('columnsOrder'),a.id) > _.indexOf(self.state.get('columnsOrder'),b.id);
+        return _.indexOf(self.state.get('columnsOrder'),a.id) > _.indexOf(self.state.get('columnsOrder'),b.id) ? 1 : -1;
       });
     }
 
