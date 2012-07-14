@@ -10,21 +10,22 @@ this.recline.View = this.recline.View || {};
 //
 // View (Dialog) for doing data transformations
 my.Transform = Backbone.View.extend({
-  className: 'recline-transform',
   template: ' \
-    <div class="script"> \
-      <h2> \
-        Transform Script \
-        <button class="okButton btn btn-primary">Run on all records</button> \
-      </h2> \
-      <textarea class="expression-preview-code"></textarea> \
-    </div> \
-    <div class="expression-preview-parsing-status"> \
-      No syntax error. \
-    </div> \
-    <div class="preview"> \
-      <h3>Preview</h3> \
-      <div class="expression-preview-container"></div> \
+    <div class="recline-transform"> \
+      <div class="script"> \
+        <h2> \
+          Transform Script \
+          <button class="okButton btn btn-primary">Run on all records</button> \
+        </h2> \
+        <textarea class="expression-preview-code"></textarea> \
+      </div> \
+      <div class="expression-preview-parsing-status"> \
+        No syntax error. \
+      </div> \
+      <div class="preview"> \
+        <h3>Preview</h3> \
+        <div class="expression-preview-container"></div> \
+      </div> \
     </div> \
   ',
 
