@@ -57,7 +57,7 @@ my.Transform = Backbone.View.extend({
   onSubmit: function(e) {
     var self = this;
     var funcText = this.el.find('.expression-preview-code').val();
-    var editFunc = costco.evalFunction(funcText);
+    var editFunc = recline.Data.Transform.evalFunction(funcText);
     if (editFunc.errorMessage) {
       this.trigger('recline:flash', {message: "Error with function! " + editFunc.errorMessage});
       return;
@@ -97,13 +97,13 @@ my.Transform = Backbone.View.extend({
     // if you don't setTimeout it won't grab the latest character if you call e.target.value
     window.setTimeout( function() {
       var errors = self.el.find('.expression-preview-parsing-status');
-      var editFunc = costco.evalFunction(e.target.value);
+      var editFunc = recline.Data.Transform.evalFunction(e.target.value);
       if (!editFunc.errorMessage) {
         errors.text('No syntax error.');
         var docs = self.model.records.map(function(doc) {
           return doc.toJSON();
         });
-        var previewData = costco.previewTransform(docs, editFunc);
+        var previewData = recline.Data.Transform.previewTransform(docs, editFunc);
         var $el = self.el.find('.expression-preview-container');
         var fields = self.model.fields.toJSON();
         var rows = _.map(previewData.slice(0,4), function(row) {

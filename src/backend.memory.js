@@ -168,7 +168,7 @@ this.recline.Backend.Memory = this.recline.Backend.Memory || {};
     };
 
     this.transform = function(editFunc) {
-      var toUpdate = costco.mapDocs(this.data, editFunc);
+      var toUpdate = recline.Data.Transform.mapDocs(this.data, editFunc);
       // TODO: very inefficient -- could probably just walk the documents and updates in tandem and update
       _.each(toUpdate.updates, function(record, idx) {
         self.data[idx] = record;
