@@ -169,10 +169,12 @@ my.Graph = Backbone.View.extend({
     if (this.model.fields.get(this.state.get('group')).get('type') === 'date') {
       xaxis.mode = 'time';
       xaxis.timeformat = '%y-%b';
-      xaxis.autoscaleMargin = 2;
+      xaxis.autoscale = true;
+      xaxis.autoscaleMargin = 0.02;
     };
     var yaxis = {};
-    yaxis.autoscaleMargin = 2;
+    yaxis.autoscale = true;
+    yaxis.autoscaleMargin = 0.02;
     
     var mouse = {};
     mouse.track = true;
