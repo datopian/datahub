@@ -149,6 +149,90 @@ this.recline.Backend.CSV = this.recline.Backend.CSV || {};
     return out;
   };
 
+  // Converts an array of arrays into a Comma Separated Values string.
+  // Each array becomes a line in the CSV.
+  //
+  // Nulls are converted to empty fields and integers or floats are converted to non-quoted numbers.
+  //
+  // @return The array serialized as a CSV
+  // @type String
+  // 
+  // @param {Array} a The array of arrays to convert
+  // @param {Object} options Options for loading CSV including
+  //	@param {String} [separator=','] Separator for CSV file
+  // Heavily based on uselesscode's JS CSV parser (MIT Licensed):
+  // http://www.uselesscode.org/javascript/csv/
+  my.serializeCSV= function(a, options) {
+    var options = options || {};
+    var separator = options.separator || ',';
+    var delimiter = options.delimiter || '"';
+
+    var cur = '', // The character we are currently processing.
+      field = '', // Buffer for building up the current field
+      row = '',
+      out = '',
+      i,
+      j,
+      processField;
+
+    processField = function (field) {
+      console.log(field);
+      if (field === null) {
+        // If field is null set to empty string
+        field = '';
+      } else if (typeof field === "string")) {
+        // Convert string to delimited string
+        field = delimiter + field + delimiter;
+      } else if (typeof field === "number") {
+        // Convert number to string
+        field = field.toString(10);
+      }
+
+      console.log(field);
+      return field;
+    };
+
+    for (i = 0; i < a.length; i += 1) {
+      cur = a[i];
+
+      for (j = 0; j < cur.length; j += 1) {
+        field = processField(cur[j]);
+        // If this is EOR append row to output and flush row
+        if (j === (cur.length - 1)) {
+          row += field;
+          out += row + "\n";
+          row = '';
+        } else {
+          // Add the current field to the current row
+          row += field + separator;
+        }
+        // Flush the field buffer
+        field = '';
+      }
+    }
+
+    return out;
+  };
+
+  var rxHasComma = /^\d+$/,
+    rxIsFloat = /^\d*\.\d+$|^\d+\.\d*$/,
+    // If a string has leading or trailing space,
+    // contains a comma double quote or a newline
+    // it needs to be quoted in CSV output
+    rxNeedsQuoting = /^\s|\s$|,|"|\n/,
+    trim = (function () {
+      // Fx 3.1 has a native trim function, it's about 10x faster, use it if it exists
+      if (String.prototype.trim) {
+        return function (s) {
+          return s.trim();
+        };
+      } else {
+        return function (s) {
+          return s.replace(/^\s*/, '').replace(/\s*$/, '');
+        };
+      }
+    }());
+
   var rxIsInt = /^\d+$/,
     rxIsFloat = /^\d*\.\d+$|^\d+\.\d*$/,
     // If a string has leading or trailing space,
@@ -810,7 +894,7 @@ this.recline.Backend.Memory = this.recline.Backend.Memory || {};
     };
 
     this.transform = function(editFunc) {
-      var toUpdate = costco.mapDocs(this.data, editFunc);
+      var toUpdate = recline.Data.Transform.mapDocs(this.data, editFunc);
       // TODO: very inefficient -- could probably just walk the documents and updates in tandem and update
       _.each(toUpdate.updates, function(record, idx) {
         self.data[idx] = record;
@@ -820,74 +904,73 @@ this.recline.Backend.Memory = this.recline.Backend.Memory || {};
   };
 
 }(jQuery, this.recline.Backend.Memory));
+this.recline = this.recline || {};
+this.recline.Data = this.recline.Data || {};
+
+(function(my) {
 // adapted from https://github.com/harthur/costco. heather rules
 
-var costco = function() {
-  
-  function evalFunction(funcString) {
-    try {
-      eval("var editFunc = " + funcString);
-    } catch(e) {
-      return {errorMessage: e+""};
-    }
-    return editFunc;
-  }
-  
-  function previewTransform(docs, editFunc, currentColumn) {
-    var preview = [];
-    var updated = mapDocs($.extend(true, {}, docs), editFunc);
-    for (var i = 0; i < updated.docs.length; i++) {      
-      var before = docs[i]
-        , after = updated.docs[i]
-        ;
-      if (!after) after = {};
-      if (currentColumn) {
-        preview.push({before: before[currentColumn], after: after[currentColumn]});      
-      } else {
-        preview.push({before: before, after: after});      
-      }
-    }
-    return preview;
-  }
+my.Transform = {};
 
-  function mapDocs(docs, editFunc) {
-    var edited = []
-      , deleted = []
-      , failed = []
-      ;
-    
-    var updatedDocs = _.map(docs, function(doc) {
-      try {
-        var updated = editFunc(_.clone(doc));
-      } catch(e) {
-        failed.push(doc);
-        return;
-      }
-      if(updated === null) {
-        updated = {_deleted: true};
-        edited.push(updated);
-        deleted.push(doc);
-      }
-      else if(updated && !_.isEqual(updated, doc)) {
-        edited.push(updated);
-      }
-      return updated;      
-    });
-    
-    return {
-      updates: edited, 
-      docs: updatedDocs, 
-      deletes: deleted, 
-      failed: failed
-    };
+my.Transform.evalFunction = function(funcString) {
+  try {
+    eval("var editFunc = " + funcString);
+  } catch(e) {
+    return {errorMessage: e+""};
   }
+  return editFunc;
+};
+
+my.Transform.previewTransform = function(docs, editFunc, currentColumn) {
+  var preview = [];
+  var updated = my.Transform.mapDocs($.extend(true, {}, docs), editFunc);
+  for (var i = 0; i < updated.docs.length; i++) {      
+    var before = docs[i]
+      , after = updated.docs[i]
+      ;
+    if (!after) after = {};
+    if (currentColumn) {
+      preview.push({before: before[currentColumn], after: after[currentColumn]});      
+    } else {
+      preview.push({before: before, after: after});      
+    }
+  }
+  return preview;
+};
+
+my.Transform.mapDocs = function(docs, editFunc) {
+  var edited = []
+    , deleted = []
+    , failed = []
+    ;
+  
+  var updatedDocs = _.map(docs, function(doc) {
+    try {
+      var updated = editFunc(_.clone(doc));
+    } catch(e) {
+      failed.push(doc);
+      return;
+    }
+    if(updated === null) {
+      updated = {_deleted: true};
+      edited.push(updated);
+      deleted.push(doc);
+    }
+    else if(updated && !_.isEqual(updated, doc)) {
+      edited.push(updated);
+    }
+    return updated;      
+  });
   
   return {
-    evalFunction: evalFunction,
-    previewTransform: previewTransform,
-    mapDocs: mapDocs
+    updates: edited, 
+    docs: updatedDocs, 
+    deletes: deleted, 
+    failed: failed
   };
-}();
+};
+
+}(this.recline.Data))
 // # Recline Backbone Models
 this.recline = this.recline || {};
 this.recline.Model = this.recline.Model || {};
@@ -3724,21 +3807,22 @@ this.recline.View = this.recline.View || {};
 //
 // View (Dialog) for doing data transformations
 my.Transform = Backbone.View.extend({
-  className: 'recline-transform',
   template: ' \
-    <div class="script"> \
-      <h2> \
-        Transform Script \
-        <button class="okButton btn btn-primary">Run on all records</button> \
-      </h2> \
-      <textarea class="expression-preview-code"></textarea> \
-    </div> \
-    <div class="expression-preview-parsing-status"> \
-      No syntax error. \
-    </div> \
-    <div class="preview"> \
-      <h3>Preview</h3> \
-      <div class="expression-preview-container"></div> \
+    <div class="recline-transform"> \
+      <div class="script"> \
+        <h2> \
+          Transform Script \
+          <button class="okButton btn btn-primary">Run on all records</button> \
+        </h2> \
+        <textarea class="expression-preview-code"></textarea> \
+      </div> \
+      <div class="expression-preview-parsing-status"> \
+        No syntax error. \
+      </div> \
+      <div class="preview"> \
+        <h3>Preview</h3> \
+        <div class="expression-preview-container"></div> \
+      </div> \
     </div> \
   ',
 
@@ -3770,7 +3854,7 @@ my.Transform = Backbone.View.extend({
   onSubmit: function(e) {
     var self = this;
     var funcText = this.el.find('.expression-preview-code').val();
-    var editFunc = costco.evalFunction(funcText);
+    var editFunc = recline.Data.Transform.evalFunction(funcText);
     if (editFunc.errorMessage) {
       this.trigger('recline:flash', {message: "Error with function! " + editFunc.errorMessage});
       return;
@@ -3810,13 +3894,13 @@ my.Transform = Backbone.View.extend({
     // if you don't setTimeout it won't grab the latest character if you call e.target.value
     window.setTimeout( function() {
       var errors = self.el.find('.expression-preview-parsing-status');
-      var editFunc = costco.evalFunction(e.target.value);
+      var editFunc = recline.Data.Transform.evalFunction(e.target.value);
       if (!editFunc.errorMessage) {
         errors.text('No syntax error.');
         var docs = self.model.records.map(function(doc) {
           return doc.toJSON();
         });
-        var previewData = costco.previewTransform(docs, editFunc);
+        var previewData = recline.Data.Transform.previewTransform(docs, editFunc);
         var $el = self.el.find('.expression-preview-container');
         var fields = self.model.fields.toJSON();
         var rows = _.map(previewData.slice(0,4), function(row) {
