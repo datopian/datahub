@@ -73,7 +73,7 @@ test("serializeCSV", function() {
 
   var array = recline.Backend.CSV.serializeCSV(csv);
   var exp = '"Jones, Jay",10\n' +
-  '"Xyz ""ABC"" O\'Brien",11:35\n' +
+  '"Xyz \"ABC\" O\'Brien",11:35\n' +
   '"Other, AN",12:35\n';
   deepEqual(array, exp);
 });
