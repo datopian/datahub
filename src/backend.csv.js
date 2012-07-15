@@ -149,6 +149,90 @@ this.recline.Backend.CSV = this.recline.Backend.CSV || {};
     return out;
   };
 
+  // Converts an array of arrays into a Comma Separated Values string.
+  // Each array becomes a line in the CSV.
+  //
+  // Nulls are converted to empty fields and integers or floats are converted to non-quoted numbers.
+  //
+  // @return The array serialized as a CSV
+  // @type String
+  // 
+  // @param {Array} a The array of arrays to convert
+  // @param {Object} options Options for loading CSV including
+  //	@param {String} [separator=','] Separator for CSV file
+  // Heavily based on uselesscode's JS CSV parser (MIT Licensed):
+  // http://www.uselesscode.org/javascript/csv/
+  my.serializeCSV= function(a, options) {
+    var options = options || {};
+    var separator = options.separator || ',';
+    var delimiter = options.delimiter || '"';
+
+    var cur = '', // The character we are currently processing.
+      field = '', // Buffer for building up the current field
+      row = '',
+      out = '',
+      i,
+      j,
+      processField;
+
+    processField = function (field) {
+      console.log(field);
+      if (field === null) {
+        // If field is null set to empty string
+        field = '';
+      } else if (typeof field === "string")) {
+        // Convert string to delimited string
+        field = delimiter + field + delimiter;
+      } else if (typeof field === "number") {
+        // Convert number to string
+        field = field.toString(10);
+      }
+
+      console.log(field);
+      return field;
+    };
+
+    for (i = 0; i < a.length; i += 1) {
+      cur = a[i];
+
+      for (j = 0; j < cur.length; j += 1) {
+        field = processField(cur[j]);
+        // If this is EOR append row to output and flush row
+        if (j === (cur.length - 1)) {
+          row += field;
+          out += row + "\n";
+          row = '';
+        } else {
+          // Add the current field to the current row
+          row += field + separator;
+        }
+        // Flush the field buffer
+        field = '';
+      }
+    }
+
+    return out;
+  };
+
+  var rxHasComma = /^\d+$/,
+    rxIsFloat = /^\d*\.\d+$|^\d+\.\d*$/,
+    // If a string has leading or trailing space,
+    // contains a comma double quote or a newline
+    // it needs to be quoted in CSV output
+    rxNeedsQuoting = /^\s|\s$|,|"|\n/,
+    trim = (function () {
+      // Fx 3.1 has a native trim function, it's about 10x faster, use it if it exists
+      if (String.prototype.trim) {
+        return function (s) {
+          return s.trim();
+        };
+      } else {
+        return function (s) {
+          return s.replace(/^\s*/, '').replace(/\s*$/, '');
+        };
+      }
+    }());
+
   var rxIsInt = /^\d+$/,
     rxIsFloat = /^\d*\.\d+$|^\d+\.\d*$/,
     // If a string has leading or trailing space,
