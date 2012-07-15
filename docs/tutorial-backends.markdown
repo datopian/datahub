@@ -215,5 +215,5 @@ recline.Backend.DataProxy.timeout = 10000;
 ## Writing your own backend
 
 Writing your own backend is easy to do. Details of the required API are in the
-[Backend documentation](/backends.html).
+[Backend documentation](backends.html).
 
