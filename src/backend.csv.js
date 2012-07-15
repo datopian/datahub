@@ -179,7 +179,7 @@ this.recline.Backend.CSV = this.recline.Backend.CSV || {};
       if (field === null) {
         // If field is null set to empty string
         field = '';
-      } else if (typeof field === "string") {
+      } else if (typeof field === "string" && rxNeedsQuoting.test(field)) {
         // Convert string to delimited string
         field = delimiter + field + delimiter;
       } else if (typeof field === "number") {
@@ -211,25 +211,6 @@ this.recline.Backend.CSV = this.recline.Backend.CSV || {};
 
     return out;
   };
-
-  var rxHasComma = /^\d+$/,
-    rxIsFloat = /^\d*\.\d+$|^\d+\.\d*$/,
-    // If a string has leading or trailing space,
-    // contains a comma double quote or a newline
-    // it needs to be quoted in CSV output
-    rxNeedsQuoting = /^\s|\s$|,|"|\n/,
-    trim = (function () {
-      // Fx 3.1 has a native trim function, it's about 10x faster, use it if it exists
-      if (String.prototype.trim) {
-        return function (s) {
-          return s.trim();
-        };
-      } else {
-        return function (s) {
-          return s.replace(/^\s*/, '').replace(/\s*$/, '');
-        };
-      }
-    }());
 
   var rxIsInt = /^\d+$/,
     rxIsFloat = /^\d*\.\d+$|^\d+\.\d*$/,
