@@ -176,11 +176,10 @@ this.recline.Backend.CSV = this.recline.Backend.CSV || {};
       processField;
 
     processField = function (field) {
-      console.log(field);
       if (field === null) {
         // If field is null set to empty string
         field = '';
-      } else if (typeof field === "string")) {
+      } else if (typeof field === "string") {
         // Convert string to delimited string
         field = delimiter + field + delimiter;
       } else if (typeof field === "number") {
@@ -188,7 +187,6 @@ this.recline.Backend.CSV = this.recline.Backend.CSV || {};
         field = field.toString(10);
       }
 
-      console.log(field);
       return field;
     };
 
