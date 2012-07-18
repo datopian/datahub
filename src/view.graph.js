@@ -25,7 +25,7 @@ my.Graph = Backbone.View.extend({
   className: "recline-graph",
 
   template: ' \
-  <div class="panel graph"> \
+  <div class="panel graph" style="display: block;"> \
     <div class="js-temp-notice alert alert-block"> \
       <h3 class="alert-heading">Hey there!</h3> \
       <p>There\'s no graph here yet because we don\'t know what fields you\'d like to see plotted.</p> \
@@ -37,6 +37,8 @@ my.Graph = Backbone.View.extend({
 
   initialize: function(options) {
     var self = this;
+    this.graphColors = ["#edc240", "#afd8f8", "#cb4b4b", "#4da74d", "#9440ed"];
+
     this.el = $(this.el);
     _.bindAll(this, 'render', 'redraw');
     this.needToRedraw = false;
@@ -93,14 +95,14 @@ my.Graph = Backbone.View.extend({
       this.needToRedraw = true;
       return;
     }
+
     // check we have something to plot
     if (this.state.get('group') && this.state.get('series')) {
       // faff around with width because flot draws axes *outside* of the element width which means graph can get push down as it hits element next to it
       this.$graph.width(this.el.width() - 20);
       var series = this.createSeries();
       var options = this.getGraphOptions(this.state.attributes.graphType);
-      this.plot = $.plot(this.$graph, series, options);
-      this.setupTooltips();
+      this.plot = Flotr.draw(this.$graph.get(0), series, options);
     }
   },
 
@@ -130,83 +132,10 @@ my.Graph = Backbone.View.extend({
       }
       return val;
     };
-
-    var xaxis = {};
-    // check for time series on x-axis
-    if (this.model.fields.get(this.state.get('group')).get('type') === 'date') {
-      xaxis.mode = 'time';
-      xaxis.timeformat = '%y-%b';
-    }
-    var optionsPerGraphType = { 
-      lines: {
-        series: { 
-          lines: { show: true }
-        },
-        xaxis: xaxis
-      },
-      points: {
-        series: {
-          points: { show: true }
-        },
-        xaxis: xaxis,
-        grid: { hoverable: true, clickable: true }
-      },
-      'lines-and-points': {
-        series: {
-          points: { show: true },
-          lines: { show: true }
-        },
-        xaxis: xaxis,
-        grid: { hoverable: true, clickable: true }
-      },
-      bars: {
-        series: {
-          lines: {show: false},
-          bars: {
-            show: true,
-            barWidth: 1,
-            align: "center",
-            fill: true,
-            horizontal: true
-          }
-        },
-        grid: { hoverable: true, clickable: true },
-        yaxis: {
-          tickSize: 1,
-          tickLength: 1,
-          tickFormatter: tickFormatter,
-          min: -0.5,
-          max: self.model.records.length - 0.5
-        }
-      }
-    };
-    return optionsPerGraphType[typeId];
-  },
-
-  setupTooltips: function() {
-    var self = this;
-    function showTooltip(x, y, contents) {
-      $('<div id="flot-tooltip">' + contents + '</div>').css( {
-        position: 'absolute',
-        display: 'none',
-        top: y + 5,
-        left: x + 5,
-        border: '1px solid #fdd',
-        padding: '2px',
-        'background-color': '#fee',
-        opacity: 0.80
-      }).appendTo("body").fadeIn(200);
-    }
-
-    var previousPoint = null;
-    this.$graph.bind("plothover", function (event, pos, item) {
-      if (item) {
-        if (previousPoint != item.datapoint) {
-          previousPoint = item.datapoint;
-          
-          $("#flot-tooltip").remove();
-          var x = item.datapoint[0];
-          var y = item.datapoint[1];
+    
+    var trackFormatter = function (obj) {
+          var x = obj.x;
+          var y = obj.y;
           // it's horizontal so we have to flip
           if (self.state.attributes.graphType === 'bars') {
             var _tmp = x;
@@ -214,34 +143,119 @@ my.Graph = Backbone.View.extend({
             y = _tmp;
           }
           // convert back from 'index' value on x-axis (e.g. in cases where non-number values)
-          if (self.model.records.models[x]) {
-            x = self.model.records.models[x].get(self.state.attributes.group);
-          } else {
-            x = x.toFixed(2);
-          }
-          y = y.toFixed(2);
+          //if (self.model.records.models[x]) {
+          //  x = self.model.records.models[x].get(self.state.attributes.group);
+          //};
 
           // is it time series
           var xfield = self.model.fields.get(self.state.attributes.group);
           var isDateTime = xfield.get('type') === 'date';
           if (isDateTime) {
-            x = new Date(parseInt(x)).toLocaleDateString();
+            x = x.toLocaleDateString();
           }
-          
+
           var content = _.template('<%= group %> = <%= x %>, <%= series %> = <%= y %>', {
             group: self.state.attributes.group,
             x: x,
-            series: item.series.label,
+            series: obj.series.label,
             y: y
           });
-          showTooltip(item.pageX, item.pageY, content);
-        }
-      }
-      else {
-        $("#flot-tooltip").remove();
-        previousPoint = null;            
-      }
-    });
+        
+        return content;
+    };
+    
+    var xaxis = {};
+    // check for time series on x-axis
+    if (this.model.fields.get(this.state.get('group')).get('type') === 'date') {
+      xaxis.mode = 'time';
+      xaxis.timeformat = '%y-%b';
+      xaxis.autoscale = true;
+      xaxis.autoscaleMargin = 0.02;
+    };
+    var yaxis = {};
+    yaxis.autoscale = true;
+    yaxis.autoscaleMargin = 0.02;
+    
+    var mouse = {};
+    mouse.track = true;
+    mouse.relative = true;
+    mouse.trackFormatter = trackFormatter;
+    
+    var legend = {};
+    legend.position = 'ne';
+    
+    // mouse.lineColor is set in createSeries
+    var optionsPerGraphType = { 
+      lines: {
+        legend: legend,
+        colors: this.graphColors,
+        lines: { show: true },
+        xaxis: xaxis,
+        yaxis: yaxis,
+        mouse: mouse
+      },
+      points: {
+        legend: legend,
+        colors: this.graphColors,
+        points: { show: true, hitRadius: 5 },
+        xaxis: xaxis,
+        yaxis: yaxis,
+        mouse: mouse,
+        grid: { hoverable: true, clickable: true }
+      },
+      'lines-and-points': {
+        legend: legend,
+        colors: this.graphColors,
+        points: { show: true, hitRadius: 5 },
+        lines: { show: true },
+        xaxis: xaxis,
+        yaxis: yaxis,
+        mouse: mouse,
+        grid: { hoverable: true, clickable: true }
+      },
+      bars: {
+        legend: legend,
+        colors: this.graphColors,
+        lines: { show: false },
+        yaxis: yaxis,
+        mouse: { 
+            track: true,
+            relative: true,
+            trackFormatter: trackFormatter,
+            fillColor: '#FFFFFF',
+            fillOpacity: 0.3,
+            position: 'e'
+        },
+        bars: {
+            show: true,
+            horizontal: true,
+            shadowSize: 0,
+            barWidth: 0.8         
+        },
+      },
+      columns: {
+        legend: legend,
+        colors: this.graphColors,
+        lines: { show: false },
+        yaxis: yaxis,
+        mouse: { 
+            track: true,
+            relative: true,
+            trackFormatter: trackFormatter,
+            fillColor: '#FFFFFF',
+            fillOpacity: 0.3,
+            position: 'n'
+        },
+        bars: {
+            show: true,
+            horizontal: false,
+            shadowSize: 0,
+            barWidth: 0.8         
+        },
+      },
+      grid: { hoverable: true, clickable: true },
+    };
+    return optionsPerGraphType[typeId];
   },
 
   createSeries: function () {
@@ -272,7 +286,7 @@ my.Graph = Backbone.View.extend({
           points.push([x, y]);
         }
       });
-      series.push({data: points, label: field});
+      series.push({data: points, label: field, mouse:{lineColor: self.graphColors[series.length]}});
     });
     return series;
   }
@@ -291,6 +305,7 @@ my.GraphControls = Backbone.View.extend({
           <option value="lines">Lines</option> \
           <option value="points">Points</option> \
           <option value="bars">Bars</option> \
+          <option value="columns">Columns</option> \
           </select> \
         </div> \
         <label>Group Column (x-axis)</label> \
