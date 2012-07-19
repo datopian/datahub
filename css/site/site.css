@@ -8,77 +8,18 @@ Author URI:         http://www.mintcanary.com/
 /* -------------------------------------------------- 
    Table of Contents
 -----------------------------------------------------
-:: Imports
-:: Bootstrap Mods
 :: General Styles
-:: Elements
 :: Layout
-:: Homepage
+:: 
+:: 
+:: 
 */
-
-/* ---------------------------------------------------
-   Imports
---------------------------------------------------- */
-
-@import url(http://fonts.googleapis.com/css?family=Open+Sans:400,400italic,700);
-
-/* ---------------------------------------------------
-   Bootstrap Mods
---------------------------------------------------- */
-
-.btn-primary {
-  background-color: #c7231d;
-  background-image: -moz-linear-gradient(top, #c7231d, #bc130e);
-  background-image: -ms-linear-gradient(top, #c7231d, #bc130e);
-  background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#c7231d), to(#bc130e));
-  background-image: -webkit-linear-gradient(top, #c7231d, #bc130e);
-  background-image: -o-linear-gradient(top, #c7231d, #bc130e);
-  background-image: linear-gradient(top, #c7231d, #bc130e);
-  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#c7231d', endColorstr='#bc130e', GradientType=0);
-  border-color: #bc130e #bc130e #bc130e;
-  filter: progid:dximagetransform.microsoft.gradient(enabled=false);
-}
-.btn-primary:hover,
-.btn-primary:active,
-.btn-primary.active,
-.btn-primary.disabled,
-.btn-primary[disabled] {
-  background-color: #bc130e;
-}
-
-.btn-info {
-  background-color: #545454;
-  background-image: -moz-linear-gradient(top, #545454, #454545);
-  background-image: -ms-linear-gradient(top, #545454, #454545);
-  background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#545454), to(#454545));
-  background-image: -webkit-linear-gradient(top, #545454, #454545);
-  background-image: -o-linear-gradient(top, #545454, #454545);
-  background-image: linear-gradient(top, #545454, #454545);
-  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#545454', endColorstr='#454545', GradientType=0);
-  border-color: #454545 #454545 #454545;
-  filter: progid:dximagetransform.microsoft.gradient(enabled=false);
-}
-.btn-info:hover,
-.btn-info:active,
-.btn-info.active,
-.btn-info.disabled,
-.btn-info[disabled] {
-  background-color: #454545;
-}
-
-.btn-large {
-  padding: 9px 20px;
-  -webkit-border-radius: 25px;
-  -moz-border-radius: 25px;
-  border-radius: 25px;
-	font-family:'Open Sans', Helvetica, Arial, sans-serif;
-	font-weight:700;
-}
-
 
 /* ---------------------------------------------------
    General Styles
 --------------------------------------------------- */
+
+@import url(http://fonts.googleapis.com/css?family=Open+Sans:400,400italic,700);
 
 h1, h2, h3, h4, h5, h6 {
 	font-family:'Open Sans', Helvetica, Arial, sans-serif;
@@ -91,33 +32,9 @@ a:hover {
   color: #bc130e;
 }
 
-
-/* ---------------------------------------------------
-   Elements
---------------------------------------------------- */
-
-.box {
-	background-color:#FFF;
-	padding:25px;
-	-webkit-border-radius: 3px;
-  -moz-border-radius: 3px;
-  border-radius: 3px;
-	-webkit-box-shadow: 0px 0px 2px 0px rgba(0, 0, 0, 0.4);
-  box-shadow: 0px 0px 2px 0px rgba(0, 0, 0, 0.4)
-}
-
 /* ---------------------------------------------------
    Layout
 --------------------------------------------------- */
-
-html {
-	background-color:#040404;
-}
-
-body {
-  padding-top: 60px;
-	background-color:#FFFFFF;
-}
 
 .navbar .logo-icon img {
   margin-top: 6px;
@@ -157,58 +74,13 @@ body {
   box-shadow: none;
 }
 
+body {
+  padding-top: 60px;
+}
+
 section {
 	padding-top:20px;
 }
-
-section:after,
-section:before {
-	background-size:10px 75px;
-}
-
-section.grey {
-	background: #ffffff; /* Old browsers */
-  background: -moz-linear-gradient(top, #f5f5f5 0%, #ffffff 100%); /* FF3.6+ */
-  background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#f5f5f5), color-stop(100%,#ffffff)); /* Chrome,Safari4+ */
-  background: -webkit-linear-gradient(top, #f5f5f5 0%,#ffffff 100%); /* Chrome10+,Safari5.1+ */
-  background: -o-linear-gradient(top, #f5f5f5 0%,#ffffff 100%); /* Opera 11.10+ */
-  background: -ms-linear-gradient(top, #f5f5f5 0%,#ffffff 100%); /* IE10+ */
-  background: linear-gradient(to bottom, #f5f5f5 0%,#ffffff 100%); /* W3C */
-  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#f5f5f5', endColorstr='#ffffff',GradientType=0 ); /* IE6-9 */
-}
-
-.footer {
-	background-color:#040404;
-	color:#CCC;
-  margin-top: 30px;
-}
-.footer:before {
-	content: " ";
-	height:7px;
-	display:block;
-	background-image: url(images/zigzags.png);
-	background-repeat: repeat-x;
-	background-position: center -50px;
-	margin-top:-27px;
-}
-.footer:after {
-	display:none;
-}
-.footer .row {
-	margin-top:15px;
-	margin-bottom:15px;
-}
-.footer a {
-	color:#CCC;
-}
-.footer a.btn {
-	color:#333333;
-}
-
-
-/* ---------------------------------------------------
-   Homepage
---------------------------------------------------- */
 
 .home-page.page-header {
 	margin-top:-10px;
@@ -225,9 +97,10 @@ section.grey {
 	margin-bottom:0px;
 	border:none;
 	font-family:'Open Sans', Helvetica, Arial, sans-serif;
-}
-.home-page.page-header h1 {
-	padding-top:15px;
+  padding: 60px;
+  padding-bottom: 200px;
+  /* hide crocodile top to footer on front page */
+  margin-bottom: -30px;
 }
 .home-page.page-header a {
 	color:#FFF;
@@ -242,92 +115,50 @@ section.grey {
 }
 .home-page.page-header .inner {
 	padding:0px 0px 30px 40px;
-	
-}
-.home-page.page-header .inner p {
-	font-size:20px;
-  line-height: 24px;
-	font-style:italic;
-	font-family:'Open Sans', Helvetica, Arial, sans-serif;
-}
-.home-page.page-header .inner .buttons {
-	padding:15px 0px;
-}
-.home-page.page-header .inner .buttons .btn {
-	margin-right:10px;
-}
-
-.home-page.page-header .inner .buttons .btn-large {
-	line-height:22px;
-	height:22px;
-}
-
-.home-page.page-header .inner .buttons .btn-large .icon-white.icon-arrow-down {
-	background-image: url(images/icons/white.png);
-	background-position: 0px 2px;
-	height:30px;
-	width:20px;
-	margin:-2px 3px 0px -3px;
-}
-.home-page.page-header .inner .buttons .btn-large .icon-white.icon-github {
-	background-image: url(images/icons/white.png);
-	background-position: -100px 2px;
-	height:30px;
-	width:36px;
-	margin:-3px 3px 0 -7px;
+	font-size:16px;
+  line-height: 23px;
+  width: 400px;
 }
 
 .home-page.page-header:after {
+	margin-top:-14px;
+}
+
+section.grey {
+	background-color:#f5f5f5;
+}
+
+section.grey:after {
+	background-position: center -50px;
+}
+
+.footer {
+	background-color:#040404;
+	color:#CCC;
+  margin-top: 30px;
+}
+.footer:before {
 	content: " ";
-	height:7px;
+	height:14px;
 	display:block;
-	margin-top:-7px;
 	background-image: url(images/zigzags.png);
 	background-repeat: repeat-x;
+	background-position: center -100px;
+	margin-top:-34px;
 }
-
-.box.docs {
-	background-image: url(images/docs.png);
-	background-repeat: no-repeat;
-	background-position: 180px 18px;
+.footer:after {
+	display:none;
 }
-.box.tuts {
-	background-image: url(images/bulb.png);
-	background-repeat: no-repeat;
-	background-position: 169px -8px;
+.footer .row {
+	margin-top:15px;
+	margin-bottom:15px;
 }
-.box.demos {
-	background-image: url(images/graph.png);
-	background-repeat: no-repeat;
-	background-position: 150px center;
+.footer a {
+	color:#CCC;
 }
-.box.docs,
-.box.tuts,
-.box.demos {
-	min-height:100px;
-}
-.box.docs a,
-.box.tuts a,
-.box.demos a {
+.footer a.btn {
 	color:#333333;
 }
-.box.docs ul,
-.box.tuts ul,
-.box.demos ul {
-	list-style:none;
-	margin:0px;
-}
-.box.docs ul a,
-.box.tuts ul a,
-.box.demos ul a {
-	color:#999999;
-}
-.box.docs ul a:hover,
-.box.tuts ul a:hover,
-.box.demos ul a:hover {
-	color:#333333;
-}
-
 
 .tutorials .well {
   height: 60px;
@@ -356,3 +187,4 @@ section.grey {
 .doc-ex-rendered {
   margin-bottom: 20px;
 }
+
