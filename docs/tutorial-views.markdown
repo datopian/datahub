@@ -126,7 +126,7 @@ library and the Recline Graph view:
 <link rel="stylesheet" href="css/graph.css">
 
 <!-- javascript -->
-<script type="text/javascript" src="vendor/jquery.flot/0.7/jquery.flot.js"></script>
+<script type="text/javascript" src="vendor/flotr2/flotr2.js"></script>
 <script type="text/javascript" src="src/view.graph.js"></script>
 {% endhighlight %}
 
