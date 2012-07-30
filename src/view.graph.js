@@ -115,22 +115,9 @@ my.Graph = Backbone.View.extend({
   // @param typeId graphType id (lines, lines-and-points etc)
   getGraphOptions: function(typeId) { 
     var self = this;
-    // special tickformatter to show labels rather than numbers
-    // TODO: we should really use tickFormatter and 1 interval ticks if (and
-    // only if) x-axis values are non-numeric
-    // However, that is non-trivial to work out from a dataset (datasets may
-    // have no field type info). Thus at present we only do this for bars.
-    var tickFormatter = function (val) {
-      if (self.model.records.models[val]) {
-        var out = self.model.records.models[val].get(self.state.attributes.group);
-        // if the value was in fact a number we want that not the 
-        if (typeof(out) == 'number') {
-          return val;
-        } else {
-          return out;
-        }
-      }
-      return val;
+
+    var tickFormatter = function (x) {
+      return getFormattedX(x);
     };
     
     var trackFormatter = function (obj) {
@@ -142,17 +129,8 @@ my.Graph = Backbone.View.extend({
             x = y;
             y = _tmp;
           }
-          // convert back from 'index' value on x-axis (e.g. in cases where non-number values)
-          //if (self.model.records.models[x]) {
-          //  x = self.model.records.models[x].get(self.state.attributes.group);
-          //};
-
-          // is it time series
-          var xfield = self.model.fields.get(self.state.attributes.group);
-          var isDateTime = xfield.get('type') === 'date';
-          if (isDateTime) {
-            x = x.toLocaleDateString();
-          }
+          
+          x = getFormattedX(x);
 
           var content = _.template('<%= group %> = <%= x %>, <%= series %> = <%= y %>', {
             group: self.state.attributes.group,
@@ -164,14 +142,26 @@ my.Graph = Backbone.View.extend({
         return content;
     };
     
+    var getFormattedX = function (x) {
+      var xfield = self.model.fields.get(self.state.attributes.group);
+
+      // time series
+      var isDateTime = xfield.get('type') === 'date';
+
+      if (self.model.records.models[parseInt(x)]) {
+        x = self.model.records.models[parseInt(x)].get(self.state.attributes.group);
+        if (isDateTime) {
+          x = new Date(x).toLocaleDateString();
+        }
+      } else if (isDateTime) {
+        x = new Date(parseInt(x)).toLocaleDateString();
+      }
+      return x;    
+    }
+    
     var xaxis = {};
-    // check for time series on x-axis
-    if (this.model.fields.get(this.state.get('group')).get('type') === 'date') {
-      xaxis.mode = 'time';
-      xaxis.timeformat = '%y-%b';
-      xaxis.autoscale = true;
-      xaxis.autoscaleMargin = 0.02;
-    };
+    xaxis.tickFormatter = tickFormatter;
+
     var yaxis = {};
     yaxis.autoscale = true;
     yaxis.autoscaleMargin = 0.02;
@@ -217,7 +207,8 @@ my.Graph = Backbone.View.extend({
         legend: legend,
         colors: this.graphColors,
         lines: { show: false },
-        yaxis: yaxis,
+        xaxis: yaxis,
+        yaxis: xaxis,
         mouse: { 
             track: true,
             relative: true,
@@ -237,6 +228,7 @@ my.Graph = Backbone.View.extend({
         legend: legend,
         colors: this.graphColors,
         lines: { show: false },
+        xaxis: xaxis,
         yaxis: yaxis,
         mouse: { 
             track: true,
@@ -258,7 +250,7 @@ my.Graph = Backbone.View.extend({
     return optionsPerGraphType[typeId];
   },
 
-  createSeries: function () {
+  createSeries: function() {
     var self = this;
     var series = [];
     _.each(this.state.attributes.series, function(field) {
@@ -266,19 +258,30 @@ my.Graph = Backbone.View.extend({
       _.each(self.model.records.models, function(doc, index) {
         var xfield = self.model.fields.get(self.state.attributes.group);
         var x = doc.getFieldValue(xfield);
+
         // time series
         var isDateTime = xfield.get('type') === 'date';
+        
         if (isDateTime) {
-          x = moment(x).toDate();
-        }
-        var yfield = self.model.fields.get(field);
-        var y = doc.getFieldValue(yfield);
-        if (typeof x === 'string') {
+          // datetime
+          if (self.state.attributes.graphType != 'bars' && self.state.attributes.graphType != 'columns') {
+            // not bar or column
+            x = new Date(x).getTime();
+          } else {
+            // bar or column
+            x = index;
+          }
+        } else if (typeof x === 'string') {
+          // string
           x = parseFloat(x);
           if (isNaN(x)) {
             x = index;
           }
         }
+
+        var yfield = self.model.fields.get(field);
+        var y = doc.getFieldValue(yfield);
+        
         // horizontal bar chart
         if (self.state.attributes.graphType == 'bars') {
           points.push([y, x]);
