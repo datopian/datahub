@@ -31,8 +31,9 @@ this.recline.Backend.GDocs = this.recline.Backend.GDocs || {};
   my.fetch = function(dataset) {
     var dfd = $.Deferred(); 
     var url = my.getSpreadsheetAPIUrl(dataset.url);
+    
     $.getJSON(url, function(d) {
-      result = my.parseData(d);
+      var result = my.parseData(d);
       var fields = _.map(result.fields, function(fieldId) {
         return {id: fieldId};
       });
@@ -42,6 +43,7 @@ this.recline.Backend.GDocs = this.recline.Backend.GDocs || {};
         useMemoryStore: true
       });
     });
+
     return dfd.promise();
   };
 
@@ -56,67 +58,66 @@ this.recline.Backend.GDocs = this.recline.Backend.GDocs || {};
   // 
   // Issues: seems google docs return columns in rows in random order and not even sure whether consistent across rows.
   my.parseData = function(gdocsSpreadsheet) {
-    var options = {};
-    if (arguments.length > 1) {
-      options = arguments[1];
-    }
+    var options = arguments[1] || {};
+    var colTypes = options.colTypes || {};
     var results = {
-      fields: [],
+      fields : [],
       records: []
     };
-    // default is no special info on type of columns
-    var colTypes = {};
-    if (options.colTypes) {
-      colTypes = options.colTypes;
-    }
-    if (gdocsSpreadsheet.feed.entry.length > 0) {
-      for (var k in gdocsSpreadsheet.feed.entry[0]) {
-        if (k.substr(0, 3) == 'gsx') {
-          var col = k.substr(4);
-          results.fields.push(col);
-        }
+    var entries = gdocsSpreadsheet.feed.entry || [];
+    var key;
+    var colName;
+    // percentage values (e.g. 23.3%)
+    var rep = /^([\d\.\-]+)\%$/;
+
+    for(key in entries[0]) {
+      // it's barely possible it has inherited keys starting with 'gsx$'
+      if(/^gsx/.test(key)) {
+        colName = key.substr(4);
+        results.fields.push(colName);
       }
     }
 
     // converts non numberical values that should be numerical (22.3%[string] -> 0.223[float])
-    var rep = /^([\d\.\-]+)\%$/;
-    results.records = _.map(gdocsSpreadsheet.feed.entry, function(entry) {
+    results.records = _.map(entries, function(entry) {
       var row = {};
+
       _.each(results.fields, function(col) {
         var _keyname = 'gsx$' + col;
-        var value = entry[_keyname]['$t'];
+        var value = entry[_keyname].$t;
+        var num;
+ 
+        // TODO decide the entry format of percentage data to be parsed
+        // TODO cover this part of code with test
+        // TODO use the regexp only once
         // if labelled as % and value contains %, convert
-        if (colTypes[col] == 'percent') {
-          if (rep.test(value)) {
-            var value2 = rep.exec(value);
-            var value3 = parseFloat(value2);
-            value = value3 / 100;
-          }
+        if(colTypes[col] === 'percent' && rep.test(value)) {
+          num   = rep.exec(value)[1];
+          value = parseFloat(num) / 100;
         }
+
         row[col] = value;
       });
+
       return row;
     });
+
     return results;
   };
 
   // Convenience function to get GDocs JSON API Url from standard URL
   my.getSpreadsheetAPIUrl = function(url) {
-    if (url.indexOf('feeds/list') != -1) {
-      return url;
-    } else {
-      // https://docs.google.com/spreadsheet/ccc?key=XXXX#gid=0
-      var regex = /.*spreadsheet\/ccc?.*key=([^#?&+]+).*/;
-      var matches = url.match(regex);
-      if (matches) {
-        var key = matches[1];
-        var worksheet = 1;
-        var out = 'https://spreadsheets.google.com/feeds/list/' + key + '/' + worksheet + '/public/values?alt=json';
-        return out;
-      } else {
-        alert('Failed to extract gdocs key from ' + url);
-      }
+    // https://docs.google.com/spreadsheet/ccc?key=XXXX#gid=0
+    var regex = /.*spreadsheet\/ccc?.*key=([^#?&+]+).*/;
+    var matches = url.match(regex);
+    var key;
+    // TODO check possible worksheet options
+    var worksheet = 1;
+    
+    if(!!matches) {
+        key = matches[1];
+        url = 'https://spreadsheets.google.com/feeds/list/'+ key +'/'+ worksheet +'/public/values?alt=json';
     }
+    return url;
   };
 }(jQuery, this.recline.Backend.GDocs));
-
