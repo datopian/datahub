@@ -1,4 +1,5 @@
 .DS_Store
 sandbox/*
 .*.swp
+.*.swo
 _site/*
