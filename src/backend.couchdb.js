@@ -150,11 +150,13 @@ my.__type__ = 'couchdb';
   // ## CouchDB Backend
   //
   // Backbone connector for a CouchDB backend.
+  // 
+  // The couchdb is referring to my apache reverse proxy.  You will need a proxy to connect to the database.
   //
   // Usage: (also see demos/couchdb_multiview)
   // var dataset = new recline.Model.Dataset({
-  //      db_url: '/couchdb/iid',
-  //      view_url: '/couchdb/iid/_design/latlon/_view/latlon',
+  //     db_url: '/couchdb/mydb',	  	
+  //     view_url: '/couchdb/mydb/_design/design1/_views/view1',
   //      backend: 'couchdb',
   //      query_options: {
   //              'key': '_id'
