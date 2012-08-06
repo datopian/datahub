@@ -2,8 +2,8 @@ this.recline = this.recline || {};
 this.recline.Backend = this.recline.Backend || {};
 this.recline.Backend.CouchDB = this.recline.Backend.CouchDB || {};
 
-(function($, my) {
-  my.__type__ = 'couchdb';
+(function($, my) {  
+my.__type__ = 'couchdb';
 
   // ## CouchDB Wrapper
   //
@@ -11,9 +11,10 @@ this.recline.Backend.CouchDB = this.recline.Backend.CouchDB || {};
   // @param {String} endpoint: url for CouchDB database, e.g. for Couchdb running
   // on localhost:5984 with database // ckan-std it would be:
   // 
-  // <pre>http://localhost:5984/ckan-std</pre>
   //
   // TODO Add user/password arguments for couchdb authentication support.
+  // 
+  // See the example how to use this in: "demos/couchdb_multiview"
   my.CouchDBWrapper = function(db_url, view_url, options) { 
     var self = this;
     self.endpoint = db_url;
@@ -150,17 +151,16 @@ this.recline.Backend.CouchDB = this.recline.Backend.CouchDB || {};
   //
   // Backbone connector for a CouchDB backend.
   //
-  // Usage:
-  //
-  // var backend = new recline.Backend.CouchDB();
+  // Usage: (also see demos/couchdb_multiview)
   // var dataset = new recline.Model.Dataset({
-  //     db_url: '/couchdb/mydb',
-  //     view_url: '/couchdb/mydb/_design/design1/_views/view1',
-  //     query_options: {
-  //          'key': 'some_document_key'
-  //     }
+  //      db_url: '/couchdb/iid',
+  //      view_url: '/couchdb/iid/_design/latlon/_view/latlon',
+  //      backend: 'couchdb',
+  //      query_options: {
+  //              'key': '_id'
+  //      }
   // });
-  // backend.fetch(dataset.toJSON());
+  //
   // backend.query(query, dataset.toJSON()).done(function () { ... });
   //
   // Alternatively:
@@ -494,6 +494,6 @@ _deleteDocument = function (del_doc, dataset) {
       dfd.reject(args);
     });
     return dfd.promise();
+    }
 };
-
 }(jQuery, this.recline.Backend.CouchDB));
