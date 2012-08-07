@@ -191,9 +191,11 @@ test("GDocs Backend", function() {
 
 test("GDocs Backend.getUrl", function() { 
   var key = 'Abc_dajkdkjdafkj';
-  var url = 'https://docs.google.com/spreadsheet/ccc?key=' + key + '#gid=0'
+  var gid = 0;
+  var worksheet = 1;
+  var url = 'https://docs.google.com/spreadsheet/ccc?key=' + key + '#gid=' + gid
   var out = recline.Backend.GDocs.getSpreadsheetAPIUrl(url);
-  var exp = 'https://spreadsheets.google.com/feeds/list/' + key + '/1/public/values?alt=json'
+  var exp = 'https://spreadsheets.google.com/feeds/list/' + key + '/' + worksheet + '/public/values?alt=json'
   equal(exp, out);
 });
 

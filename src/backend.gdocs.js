@@ -57,8 +57,8 @@ this.recline.Backend.GDocs = this.recline.Backend.GDocs || {};
   // :return: tabular data object (hash with keys: field and data).
   // 
   // Issues: seems google docs return columns in rows in random order and not even sure whether consistent across rows.
-  my.parseData = function(gdocsSpreadsheet) {
-    var options = arguments[1] || {};
+  my.parseData = function(gdocsSpreadsheet, options) {
+    var options  = options || {};
     var colTypes = options.colTypes || {};
     var results = {
       fields : [],
@@ -87,7 +87,6 @@ this.recline.Backend.GDocs = this.recline.Backend.GDocs || {};
         var value = entry[_keyname].$t;
         var num;
  
-        // TODO decide the entry format of percentage data to be parsed
         // TODO cover this part of code with test
         // TODO use the regexp only once
         // if labelled as % and value contains %, convert
@@ -107,15 +106,16 @@ this.recline.Backend.GDocs = this.recline.Backend.GDocs || {};
 
   // Convenience function to get GDocs JSON API Url from standard URL
   my.getSpreadsheetAPIUrl = function(url) {
-    // https://docs.google.com/spreadsheet/ccc?key=XXXX#gid=0
-    var regex = /.*spreadsheet\/ccc?.*key=([^#?&+]+).*/;
+    // https://docs.google.com/spreadsheet/ccc?key=XXXX#gid=YYY
+    var regex = /.*spreadsheet\/ccc?.*key=([^#?&+]+).*gid=([\d]+).*/;
     var matches = url.match(regex);
     var key;
-    // TODO check possible worksheet options
-    var worksheet = 1;
+    var worksheet;
     
     if(!!matches) {
-        key = matches[1];
+        key       = matches[1];
+        // the gid in url is 0-based and feed url is 1-based
+        worksheet = parseInt(matches[2]) + 1;
         url = 'https://spreadsheets.google.com/feeds/list/'+ key +'/'+ worksheet +'/public/values?alt=json';
     }
     return url;
