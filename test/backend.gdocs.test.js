@@ -193,10 +193,12 @@ test("GDocs Backend.getUrl", function() {
   var key = 'Abc_dajkdkjdafkj';
   var gid = 0;
   var worksheet = 1;
-  var url = 'https://docs.google.com/spreadsheet/ccc?key=' + key + '#gid=' + gid
-  var out = recline.Backend.GDocs.getSpreadsheetAPIUrl(url);
-  var exp = 'https://spreadsheets.google.com/feeds/list/' + key + '/' + worksheet + '/public/values?alt=json'
-  equal(exp, out);
+  var url  = 'https://docs.google.com/spreadsheet/ccc?key=' + key + '#gid=' + gid
+  var out  = recline.Backend.GDocs.getGDocsAPIUrls(url);
+  var exp1 = 'https://spreadsheets.google.com/feeds/list/' + key + '/' + worksheet + '/public/values?alt=json'
+  var exp2 = 'https://spreadsheets.google.com/feeds/worksheets/' + key + '/public/basic?alt=json'
+  equal(exp1, out.worksheet);
+  equal(exp2, out.spreadsheet);
 });
 
 })(this.jQuery);

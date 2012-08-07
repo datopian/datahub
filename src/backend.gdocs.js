@@ -29,18 +29,37 @@ this.recline.Backend.GDocs = this.recline.Backend.GDocs || {};
   // * fields: array of Field objects
   // * records: array of objects for each row
   my.fetch = function(dataset) {
-    var dfd = $.Deferred(); 
-    var url = my.getSpreadsheetAPIUrl(dataset.url);
-    
-    $.getJSON(url, function(d) {
-      var result = my.parseData(d);
-      var fields = _.map(result.fields, function(fieldId) {
-        return {id: fieldId};
+    var dfd  = $.Deferred(); 
+    var urls = my.getGDocsAPIUrls(dataset.url);
+
+    // TODO cover it with tests
+    // get the spreadsheet title
+    (function () {
+      var titleDfd = $.Deferred();
+
+      $.getJSON(urls.spreadsheet, function (d) {
+          titleDfd.resolve({
+              spreadsheetTitle: d.feed.title.$t
+          });
       });
-      dfd.resolve({
-        records: result.records,
-        fields: fields,
-        useMemoryStore: true
+
+      return titleDfd.promise();
+    }()).then(function (response) {
+
+      // get the actual worksheet data
+      $.getJSON(urls.worksheet, function(d) {
+        var result = my.parseData(d);
+        var fields = _.map(result.fields, function(fieldId) {
+          return {id: fieldId};
+        });
+
+        dfd.resolve({
+          spreadsheetTitle: response.spreadsheetTitle,
+          worksheetTitle  : result.worksheetTitle,
+          records         : result.records,
+          fields          : fields,
+          useMemoryStore  : true
+        });
       });
     });
 
@@ -101,23 +120,39 @@ this.recline.Backend.GDocs = this.recline.Backend.GDocs || {};
       return row;
     });
 
+    results.worksheetTitle = gdocsSpreadsheet.feed.title.$t;
     return results;
   };
 
   // Convenience function to get GDocs JSON API Url from standard URL
-  my.getSpreadsheetAPIUrl = function(url) {
+  my.getGDocsAPIUrls = function(url) {
     // https://docs.google.com/spreadsheet/ccc?key=XXXX#gid=YYY
     var regex = /.*spreadsheet\/ccc?.*key=([^#?&+]+).*gid=([\d]+).*/;
     var matches = url.match(regex);
     var key;
     var worksheet;
+    var urls;
     
     if(!!matches) {
-        key       = matches[1];
+        key = matches[1];
         // the gid in url is 0-based and feed url is 1-based
         worksheet = parseInt(matches[2]) + 1;
-        url = 'https://spreadsheets.google.com/feeds/list/'+ key +'/'+ worksheet +'/public/values?alt=json';
+        urls = {
+          worksheet  : 'https://spreadsheets.google.com/feeds/list/'+ key +'/'+ worksheet +'/public/values?alt=json',
+          spreadsheet: 'https://spreadsheets.google.com/feeds/worksheets/'+ key +'/public/basic?alt=json'
+        }
     }
-    return url;
+    else {
+        // we assume that it's one of the feeds urls
+        key = url.split('/')[5];
+        // by default then, take first worksheet
+        worksheet = 1;
+        urls = {
+          worksheet  : 'https://spreadsheets.google.com/feeds/list/'+ key +'/'+ worksheet +'/public/values?alt=json',
+          spreadsheet: 'https://spreadsheets.google.com/feeds/worksheets/'+ key +'/public/basic?alt=json'
+        }            
+    }
+
+    return urls;
   };
 }(jQuery, this.recline.Backend.GDocs));
