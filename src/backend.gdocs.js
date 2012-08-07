@@ -54,11 +54,13 @@ this.recline.Backend.GDocs = this.recline.Backend.GDocs || {};
         });
 
         dfd.resolve({
-          spreadsheetTitle: response.spreadsheetTitle,
-          worksheetTitle  : result.worksheetTitle,
-          records         : result.records,
-          fields          : fields,
-          useMemoryStore  : true
+          metadata: {
+              spreadsheetTitle: response.spreadsheetTitle,
+              worksheetTitle  : result.worksheetTitle
+          },
+          records       : result.records,
+          fields        : fields,
+          useMemoryStore: true
         });
       });
     });
