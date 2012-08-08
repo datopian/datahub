@@ -63,8 +63,10 @@ this.recline.Backend.Memory = this.recline.Backend.Memory || {};
       var numRows = queryObj.size || this.data.length;
       var start = queryObj.from || 0;
       var results = this.data;
+      
       results = this._applyFilters(results, queryObj);
       results = this._applyFreeTextQuery(results, queryObj);
+
       // not complete sorting!
       _.each(queryObj.sort, function(sortObj) {
         var fieldName = _.keys(sortObj)[0];
@@ -89,11 +91,25 @@ this.recline.Backend.Memory = this.recline.Backend.Memory || {};
     // in place filtering
     this._applyFilters = function(results, queryObj) {
       _.each(queryObj.filters, function(filter) {
-        // if a term filter ...
-        if (filter.type === 'term') {
-          results = _.filter(results, function(doc) {
-            return (doc[filter.field] == filter.term);
-          });
+        switch (filter.type) {
+          case 'term': 
+            results = _.filter(results, function(doc) {
+              return (doc[filter.field] === filter.term);
+            });
+            break;
+          case 'range':
+            results = _.filter(results, function (doc) {
+              var start = filter.start;
+              var stop  = filter.stop;
+              var value = doc[filter.field];
+
+              // implicit string to number casting is done in JS if needed
+              return (value >= start && value <= stop);
+            });
+            break;
+          case 'geo_distance':
+            // TODO code here
+            break;
         }
       });
       return results;

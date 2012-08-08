@@ -16,6 +16,7 @@ my.FilterEditor = Backbone.View.extend({
           <label>Filter type</label> \
           <select class="filterType"> \
             <option value="term">Term (text)</option> \
+            <option value="range">Range</option> \
             <option value="geo_distance">Geo distance</option> \
           </select> \
           <label>Field</label> \
@@ -46,6 +47,20 @@ my.FilterEditor = Backbone.View.extend({
             <a class="js-remove-filter" href="#" title="Remove this filter">&times;</a> \
           </legend> \
           <input type="text" value="{{term}}" name="term" data-filter-field="{{field}}" data-filter-id="{{id}}" data-filter-type="{{type}}" /> \
+        </fieldset> \
+      </div> \
+    ',
+    range: ' \
+      <div class="filter-{{type}} filter"> \
+        <fieldset> \
+          <legend> \
+            {{field}} <small>{{type}}</small> \
+            <a class="js-remove-filter" href="#" title="Remove this filter">&times;</a> \
+          </legend> \
+          <label class="control-label" for="">From</label> \
+          <input type="text" value="{{start}}" name="start" data-filter-field="{{field}}" data-filter-id="{{id}}" data-filter-type="{{type}}" /> \
+          <label class="control-label" for="">To</label> \
+          <input type="text" value="{{stop}}" name="stop" data-filter-field="{{field}}" data-filter-id="{{id}}" data-filter-type="{{type}}" /> \
         </fieldset> \
       </div> \
     ',
@@ -124,19 +139,27 @@ my.FilterEditor = Backbone.View.extend({
     var $form = $(e.target);
     _.each($form.find('input'), function(input) {
       var $input = $(input);
-      var filterType = $input.attr('data-filter-type');
-      var fieldId = $input.attr('data-filter-field');
+      var filterType  = $input.attr('data-filter-type');
+      var fieldId     = $input.attr('data-filter-field');
       var filterIndex = parseInt($input.attr('data-filter-id'));
-      var name = $input.attr('name');
-      var value = $input.val();
-      if (filterType === 'term') {
-        filters[filterIndex].term = value;
-      } else if (filterType === 'geo_distance') {
-        if (name === 'distance') {
-          filters[filterIndex].distance = parseFloat(value);
-        } else {
-          filters[filterIndex].point[name] = parseFloat(value);
-        }
+      var name        = $input.attr('name');
+      var value       = $input.val();
+
+      switch (filterType) {
+        case 'term':
+          filters[filterIndex].term = value;
+          break;
+        case 'range':
+          filters[filterIndex][name] = value;
+          break;
+        case 'geo_distance':
+          if(name === 'distance') {
+            filters[filterIndex].distance = parseFloat(value);
+          }
+          else {
+            filters[filterIndex].point[name] = parseFloat(value);
+          }
+          break;
       }
     });
     self.model.queryState.set({filters: filters});

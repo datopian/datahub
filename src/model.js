@@ -495,8 +495,14 @@ my.Query = Backbone.Model.extend({
   _filterTemplates: {
     term: {
       type: 'term',
+      // TODO do we need this attribute here?
       field: '',
       term: ''
+    },
+    range: {
+      type: 'range',
+      start: '',
+      stop: ''
     },
     geo_distance: {
       distance: 10,
