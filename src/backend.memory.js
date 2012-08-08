@@ -90,30 +90,43 @@ this.recline.Backend.Memory = this.recline.Backend.Memory || {};
 
     // in place filtering
     this._applyFilters = function(results, queryObj) {
-      _.each(queryObj.filters, function(filter) {
-        switch (filter.type) {
-          case 'term': 
-            results = _.filter(results, function(doc) {
-              return (doc[filter.field] === filter.term);
-            });
-            break;
-          case 'range':
-            results = _.filter(results, function (doc) {
-              // TODO handle different data types correctly
-              var number = !isNaN(parseFloat(filter.start, 10));
-              var start  = number ? parseFloat(filter.start, 10) : filter.start;
-              var stop   = number ? parseFloat(filter.stop, 10) : filter.stop;
-              var value  = number ? parseFloat(doc[filter.field]) : doc[filter.field];
+      var filters = queryObj.filters;
+      // register filters
+      var filterFunctions = {
+        term         : term,
+        range        : range,
+        geo_distance : geo_distance
+      };
 
-              return (value >= start && value <= stop);
-            });
-            break;
-          case 'geo_distance':
-            // TODO code here
-            break;
-        }
+      // filter records
+      return _.filter(results, function (record) {
+        var passes = _.map(filters, function (filter) {
+          return filterFunctions[filter.type](record, filter);
+        });
+
+        // return only these records that pass all filters
+        return _.all(passes, _.identity);
       });
-      return results;
+
+      // filters definitions
+
+      function term(record, filter) {
+        return (record[filter.field] === filter.term);
+      }
+
+      function range(record, filter) {
+        // TODO handle different data types correctly
+        var number = !isNaN(parseFloat(filter.start, 10));
+        var start  = number ? parseFloat(filter.start, 10) : filter.start;
+        var stop   = number ? parseFloat(filter.stop, 10) : filter.stop;
+        var value  = number ? parseFloat(record[filter.field]) : record[filter.field];
+
+        return (value >= start && value <= stop);
+      }
+
+      function geo_distance() {
+        // TODO code here
+      }
     };
 
     // we OR across fields but AND across terms in query string
