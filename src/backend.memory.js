@@ -99,11 +99,12 @@ this.recline.Backend.Memory = this.recline.Backend.Memory || {};
             break;
           case 'range':
             results = _.filter(results, function (doc) {
-              var start = filter.start;
-              var stop  = filter.stop;
-              var value = doc[filter.field];
+              // TODO handle different data types correctly
+              var number = !isNaN(parseFloat(filter.start, 10));
+              var start  = number ? parseFloat(filter.start, 10) : filter.start;
+              var stop   = number ? parseFloat(filter.stop, 10) : filter.stop;
+              var value  = number ? parseFloat(doc[filter.field]) : doc[filter.field];
 
-              // implicit string to number casting is done in JS if needed
               return (value >= start && value <= stop);
             });
             break;
