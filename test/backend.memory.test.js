@@ -3,12 +3,12 @@
 module("Backend Memory - Store");
 
 var memoryData = [
-  {id: 0, x: 1, y: 2, z: 3, country: 'DE', label: 'first'}
-  , {id: 1, x: 2, y: 4, z: 6, country: 'UK', label: 'second'}
-  , {id: 2, x: 3, y: 6, z: 9, country: 'US', label: 'third'}
-  , {id: 3, x: 4, y: 8, z: 12, country: 'UK', label: 'fourth'}
-  , {id: 4, x: 5, y: 10, z: 15, country: 'UK', label: 'fifth'}
-  , {id: 5, x: 6, y: 12, z: 18, country: 'DE', label: 'sixth'}
+  {id: 0, date: '2011-01-01', x: 1, y: 2, z: 3, country: 'DE', label: 'first'}
+  , {id: 1, date: '2011-02-03', x: 2, y: 4, z: 6, country: 'UK', label: 'second'}
+  , {id: 2, date: '2011-04-05', x: 3, y: 6, z: 9, country: 'US', label: 'third'}
+  , {id: 3, date: '2011-06-07', x: 4, y: 8, z: 12, country: 'UK', label: 'fourth'}
+  , {id: 4, date: '2011-08-09', x: 5, y: 10, z: 15, country: 'UK', label: 'fifth'}
+  , {id: 5, date: '2011-10-11', x: 6, y: 12, z: 18, country: 'DE', label: 'sixth'}
 ];
 
 var _wrapData = function() {
@@ -18,8 +18,8 @@ var _wrapData = function() {
 
 test('basics', function () {
   var data = _wrapData();
-  equal(data.fields.length, 6);
-  deepEqual(['id', 'x', 'y', 'z', 'country', 'label'], _.pluck(data.fields, 'id'));
+  equal(data.fields.length, 7);
+  deepEqual(['id', 'date', 'x', 'y', 'z', 'country', 'label'], _.pluck(data.fields, 'id'));
   equal(memoryData.length, data.data.length);
 });
 
@@ -82,10 +82,24 @@ test('query string', function () {
 test('filters', function () {
   var data = _wrapData();
   var query = new recline.Model.Query();
-  query.addFilter({type: 'term', field: 'country', term: 'UK'});
+  query.addFilter({type: 'term', fieldType: 'string', field: 'country', term: 'UK'});
   data.query(query.toJSON()).then(function(out) {
     equal(out.total, 3);
-    deepEqual(_.pluck(out.hits, 'country'), ['UK', 'UK', 'UK']);
+    deepEqual(_.pluck(out.hits, 'country'), ['UK','UK','UK']);
+  });
+
+  query = new recline.Model.Query();
+  query.addFilter({type: 'range', fieldType: 'date', field: 'date', start: '2011-01-01', stop: '2011-05-01'});
+  data.query(query.toJSON()).then(function(out) {
+    equal(out.total, 3);
+    deepEqual(_.pluck(out.hits, 'date'), ['2011-01-01','2011-02-03','2011-04-05']);
+  });
+  
+  query = new recline.Model.Query();
+  query.addFilter({type: 'range', fieldType: 'number', field: 'z', start: '0', stop: '10'});
+  data.query(query.toJSON()).then(function(out) {
+    equal(out.total, 3);
+    deepEqual(_.pluck(out.hits, 'z'), [3,6,9]);
   });
 });
 
@@ -156,14 +170,14 @@ function makeBackendDataset() {
     id: 'test-dataset',
     title: 'My Test Dataset',
     name: '1-my-test-dataset',
-    fields: [{id: 'x'}, {id: 'y'}, {id: 'z'}, {id: 'country'}, {id: 'label'}],
+    fields: [{id: 'date'}, {id: 'x'}, {id: 'y'}, {id: 'z'}, {id: 'country'}, {id: 'label'}],
     records: [
-      {id: 0, x: 1, y: 2, z: 3, country: 'DE', label: 'first'}
-      , {id: 1, x: 2, y: 4, z: 6, country: 'UK', label: 'second'}
-      , {id: 2, x: 3, y: 6, z: 9, country: 'US', label: 'third'}
-      , {id: 3, x: 4, y: 8, z: 12, country: 'UK', label: 'fourth'}
-      , {id: 4, x: 5, y: 10, z: 15, country: 'UK', label: 'fifth'}
-      , {id: 5, x: 6, y: 12, z: 18, country: 'DE', label: 'sixth'}
+      {id: 0, date: '2011-01-01', x: 1, y: 2, z: 3, country: 'DE', label: 'first'}
+      , {id: 1, date: '2011-02-03', x: 2, y: 4, z: 6, country: 'UK', label: 'second'}
+      , {id: 2, date: '2011-04-05', x: 3, y: 6, z: 9, country: 'US', label: 'third'}
+      , {id: 3, date: '2011-06-07', x: 4, y: 8, z: 12, country: 'UK', label: 'fourth'}
+      , {id: 4, date: '2011-08-09', x: 5, y: 10, z: 15, country: 'UK', label: 'fifth'}
+      , {id: 5, date: '2011-10-11', x: 6, y: 12, z: 18, country: 'DE', label: 'sixth'}
     ]
   });
   dataset.fetch();
@@ -227,10 +241,24 @@ test('query string', function () {
 
 test('filters', function () {
   var dataset = makeBackendDataset();
-  dataset.queryState.addFilter({type: 'term', field: 'country', term: 'UK'});
+  dataset.queryState.addFilter({type: 'term', fieldType: 'string', field: 'country', term: 'UK'});
   dataset.query().then(function() {
     equal(dataset.records.length, 3);
     deepEqual(dataset.records.pluck('country'), ['UK', 'UK', 'UK']);
+  });
+
+  dataset = makeBackendDataset();
+  dataset.queryState.addFilter({type: 'range', fieldType: 'date', field: 'date', start: '2011-01-01', stop: '2011-05-01'});
+  dataset.query().then(function() {
+    equal(dataset.records.length, 3);
+    deepEqual(dataset.records.pluck('date'), ['2011-01-01','2011-02-03','2011-04-05']);
+  });
+  
+  dataset = makeBackendDataset();
+  dataset.queryState.addFilter({type: 'range', fieldType: 'number', field: 'z', start: '0', stop: '10'});
+  dataset.query().then(function() {
+    equal(dataset.records.length, 3);
+    deepEqual(dataset.records.pluck('z'), [3,6,9]);
   });
 });
 

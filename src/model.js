@@ -505,6 +505,7 @@ my.Query = Backbone.Model.extend({
       stop: ''
     },
     geo_distance: {
+      type: 'geo_distance',
       distance: 10,
       unit: 'km',
       point: {

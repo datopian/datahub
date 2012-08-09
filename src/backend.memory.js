@@ -97,6 +97,11 @@ this.recline.Backend.Memory = this.recline.Backend.Memory || {};
         range        : range,
         geo_distance : geo_distance
       };
+      var dataParsers = {
+        number : function (e) { return parseFloat(e, 10); },
+        string : function (e) { return e.toString() },
+        date   : function (e) { return new Date(e).valueOf() }
+      };
 
       // filter records
       return _.filter(results, function (record) {
@@ -111,15 +116,18 @@ this.recline.Backend.Memory = this.recline.Backend.Memory || {};
       // filters definitions
 
       function term(record, filter) {
-        return (record[filter.field] === filter.term);
+        var parse = dataParsers[filter.fieldType];
+        var value = parse(record[filter.field]);
+        var term  = parse(filter.term);
+
+        return (value === term);
       }
 
       function range(record, filter) {
-        // TODO handle different data types correctly
-        var number = !isNaN(parseFloat(filter.start, 10));
-        var start  = number ? parseFloat(filter.start, 10) : filter.start;
-        var stop   = number ? parseFloat(filter.stop, 10) : filter.stop;
-        var value  = number ? parseFloat(record[filter.field]) : record[filter.field];
+        var parse = dataParsers[filter.fieldType];
+        var value = parse(record[filter.field]);
+        var start = parse(filter.start);
+        var stop  = parse(filter.stop);
 
         return (value >= start && value <= stop);
       }
