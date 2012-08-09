@@ -523,7 +523,8 @@ my.Query = Backbone.Model.extend({
     // crude deep copy
     var ourfilter = JSON.parse(JSON.stringify(filter));
     // not full specified so use template and over-write
-    if (_.keys(filter).length <= 2) {
+    // 3 as for 'type', 'field' and 'fieldType'
+    if (_.keys(filter).length <= 3) {
       ourfilter = _.extend(this._filterTemplates[filter.type], ourfilter);
     }
     var filters = this.get('filters');

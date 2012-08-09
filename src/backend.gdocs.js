@@ -55,6 +55,7 @@ this.recline.Backend.GDocs = this.recline.Backend.GDocs || {};
 
         dfd.resolve({
           metadata: {
+              title: response.spreadsheetTitle +" :: "+ result.worksheetTitle,
               spreadsheetTitle: response.spreadsheetTitle,
               worksheetTitle  : result.worksheetTitle
           },
