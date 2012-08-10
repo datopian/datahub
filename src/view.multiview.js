@@ -50,6 +50,30 @@ this.recline.View = this.recline.View || {};
 // ];
 // </pre>
 //
+// **sidebarViews**: (optional) the sidebar views (Filters, Fields) for
+// MultiView to show. This is an array of view hashes. If not provided
+// initialize with (recline.View.)FilterEditor and Fields views (with obvious 
+// id and labels!).
+//
+// <pre>
+// var sidebarViews = [
+//   {
+//     id: 'filterEditor', // used for routing
+//     label: 'Filters', // used for view switcher
+//     view: new recline.View.FielterEditor({
+//       model: dataset
+//     })
+//   },
+//   {
+//     id: 'fieldsView',
+//     label: 'Fields',
+//     view: new recline.View.Fields({
+//       model: dataset
+//     })
+//   }
+// ];
+// </pre>
+//
 // **state**: standard state config for this view. This state is slightly
 //  special as it includes config of many of the subviews.
 //
@@ -107,6 +131,7 @@ my.MultiView = Backbone.View.extend({
     var self = this;
     this.el = $(this.el);
     this._setupState(options.state);
+
     // Hash of 'page' views (i.e. those for whole page) keyed by page name
     if (options.views) {
       this.pageViews = options.views;
@@ -143,6 +168,24 @@ my.MultiView = Backbone.View.extend({
         id: 'transform',
         label: 'Transform',
         view: new my.Transform({
+          model: this.model
+        })
+      }];
+    }
+    // Hashes of sidebar elements
+    if(options.sidebarViews) {
+      this.sidebarViews = options.sidebarViews;
+    } else {
+      this.sidebarViews = [{
+        id: 'filterEditor',
+        label: 'Filters',
+        view: new my.FilterEditor({
+          model: this.model
+        })
+      }, {
+        id: 'fieldsView',
+        label: 'Fields',
+        view: new my.Fields({
           model: this.model
         })
       }];
@@ -218,6 +261,11 @@ my.MultiView = Backbone.View.extend({
       }
     });
 
+    _.each(this.sidebarViews, function(view) {
+      this['$'+view.id] = view.view.el;
+      $dataSidebar.append(view.view.el);
+    });
+
     var pager = new recline.View.Pager({
       model: this.model.queryState
     });
@@ -228,17 +276,6 @@ my.MultiView = Backbone.View.extend({
     });
     this.el.find('.query-editor-here').append(queryEditor.el);
 
-    var filterEditor = new recline.View.FilterEditor({
-      model: this.model
-    });
-    this.$filterEditor = filterEditor.el;
-    $dataSidebar.append(filterEditor.el);
-
-    var fieldsView = new recline.View.Fields({
-      model: this.model
-    });
-    this.$fieldsView = fieldsView.el;
-    $dataSidebar.append(fieldsView.el);
   },
 
   updateNav: function(pageName) {
