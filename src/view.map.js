@@ -24,11 +24,10 @@ this.recline.View = this.recline.View || {};
 //   }
 // </pre>
 my.Map = Backbone.View.extend({
-  tagName:  'div',
-  className: 'recline-map',
-
   template: ' \
-    <div class="panel map"></div> \
+    <div class="recline-map"> \
+      <div class="panel map"></div> \
+    </div> \
 ',
 
   // These are the default (case-insensitive) names of field that are used if found.
@@ -40,6 +39,18 @@ my.Map = Backbone.View.extend({
   initialize: function(options) {
     var self = this;
     this.el = $(this.el);
+    this.visible = true;
+    this.mapReady = false;
+
+    var stateData = _.extend({
+        geomField: null,
+        lonField: null,
+        latField: null,
+        autoZoom: true
+      },
+      options.state
+    );
+    this.state = new recline.Model.ObjectState(stateData);
 
     // Listen to changes in the fields
     this.model.fields.bind('change', function() {
@@ -56,15 +67,6 @@ my.Map = Backbone.View.extend({
     this.model.records.bind('remove', function(doc){self.redraw('remove',doc)});
     this.model.records.bind('reset', function(){self.redraw('reset')});
 
-    var stateData = _.extend({
-        geomField: null,
-        lonField: null,
-        latField: null,
-        autoZoom: true
-      },
-      options.state
-    );
-    this.state = new recline.Model.ObjectState(stateData);
     this.menu = new my.MapMenu({
       model: this.model,
       state: this.state.toJSON()
@@ -74,10 +76,6 @@ my.Map = Backbone.View.extend({
       self.redraw();
     });
     this.elSidebar = this.menu.el;
-
-    this.mapReady = false;
-    this.render();
-    this.redraw();
   },
 
   // ### Public: Adds the necessary elements to the page.
@@ -89,6 +87,7 @@ my.Map = Backbone.View.extend({
     htmls = Mustache.render(this.template, this.model.toTemplateJSON());
     $(this.el).html(htmls);
     this.$map = this.el.find('.panel.map');
+    this.redraw();
     return this;
   },
 

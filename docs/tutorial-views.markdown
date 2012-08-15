@@ -224,6 +224,6 @@ var map = new recline.View.Map({
   model: dataset
 });
 $el.append(map.el);
-map.redraw();
+map.render();
 </script>
 
