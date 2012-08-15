@@ -30,6 +30,7 @@ test('basics', function () {
     model: dataset
   });
   $('.fixtures').append(view.el);
+  view.render();
 
   //Fire query, otherwise the map won't be initialized
   dataset.query();
@@ -50,6 +51,7 @@ test('_setupGeometryField', function () {
   var view = new recline.View.Map({
     model: dataset
   });
+  view.render();
   var exp = {
     geomField: null,
     lonField: 'lon',
@@ -66,6 +68,7 @@ test('Lat/Lon geom fields', function () {
     model: dataset
   });
   $('.fixtures').append(view.el);
+  view.render();
 
   // Not really needed but fire query to test that resetting works!
   dataset.query();
@@ -90,6 +93,7 @@ test('GeoJSON geom field', function () {
     model: dataset
   });
   $('.fixtures').append(view.el);
+  view.render();
 
   //Fire query, otherwise the map won't be initialized
   dataset.query();
@@ -137,6 +141,7 @@ test('Popup', function () {
     model: dataset
   });
   $('.fixtures').append(view.el);
+  view.render();
 
   //Fire query, otherwise the map won't be initialized
   dataset.query();
