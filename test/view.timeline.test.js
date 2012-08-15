@@ -41,6 +41,7 @@ test('render etc', function () {
   var view = new recline.View.Timeline({
     model: dataset
   });
+  view.render();
   $('.fixtures').append(view.el);
   view._initTimeline();
   assertPresent('.vmm-timeline', view.el);
