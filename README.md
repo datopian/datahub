@@ -20,6 +20,11 @@ Running the tests by opening `test/index.html` in your browser.
 
 ## Changelog
 
+### v0.6 - Aug/Sept 2012 (tbc)
+
+[v0.6 milestone](https://github.com/okfn/recline/issues?milestone=5)
+
+
 ### v0.5 - July 5th 2012 (first public release)
 
 [40 closed issues](https://github.com/okfn/recline/issues?milestone=2&page=1&state=closed)
