@@ -21,18 +21,16 @@ this.recline.View = this.recline.View || {};
 // NB: should *not* provide an el argument to the view but must let the view
 // generate the element itself (you can then append view.el to the DOM.
 my.Graph = Backbone.View.extend({
-  tagName:  "div",
-  className: "recline-graph",
-
   template: ' \
-  <div class="panel graph" style="display: block;"> \
-    <div class="js-temp-notice alert alert-block"> \
-      <h3 class="alert-heading">Hey there!</h3> \
-      <p>There\'s no graph here yet because we don\'t know what fields you\'d like to see plotted.</p> \
-      <p>Please tell us by <strong>using the menu on the right</strong> and a graph will automatically appear.</p> \
+    <div class="recline-graph"> \
+      <div class="panel graph" style="display: block;"> \
+        <div class="js-temp-notice alert alert-block"> \
+          <h3 class="alert-heading">Hey there!</h3> \
+          <p>There\'s no graph here yet because we don\'t know what fields you\'d like to see plotted.</p> \
+          <p>Please tell us by <strong>using the menu on the right</strong> and a graph will automatically appear.</p> \
+        </div> \
+      </div> \
     </div> \
-  </div> \
-</div> \
 ',
 
   initialize: function(options) {
@@ -65,7 +63,6 @@ my.Graph = Backbone.View.extend({
       self.redraw();
     });
     this.elSidebar = this.editor.el;
-    this.render();
   },
 
   render: function() {

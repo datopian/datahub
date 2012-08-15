@@ -13,8 +13,6 @@ if (typeof VMM !== 'undefined') {
 //
 // Timeline view using http://timeline.verite.co/
 my.Timeline = Backbone.View.extend({
-  tagName:  'div',
-
   template: ' \
     <div class="recline-timeline"> \
       <div id="vmm-timeline-id"></div> \
@@ -46,18 +44,17 @@ my.Timeline = Backbone.View.extend({
     );
     this.state = new recline.Model.ObjectState(stateData);
     this._setupTemporalField();
-    this.render();
-    // can only call _initTimeline once view in DOM as Timeline uses $
-    // internally to look up element
-    if ($(this.elementId).length > 0) {
-      this._initTimeline();
-    }
   },
 
   render: function() {
     var tmplData = {};
     var htmls = Mustache.render(this.template, tmplData);
     this.el.html(htmls);
+    // can only call _initTimeline once view in DOM as Timeline uses $
+    // internally to look up element
+    if ($(this.elementId).length > 0) {
+      this._initTimeline();
+    }
   },
 
   show: function() {

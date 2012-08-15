@@ -14,9 +14,6 @@ this.recline.View = this.recline.View || {};
 //
 // NB: you need an explicit height on the element for slickgrid to work
 my.SlickGrid = Backbone.View.extend({
-  tagName:  "div",
-  className: "recline-slickgrid",
-
   initialize: function(modelEtc) {
     var self = this;
     this.el = $(this.el);

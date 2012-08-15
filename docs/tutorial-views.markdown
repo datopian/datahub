@@ -156,6 +156,7 @@ var graph = new recline.View.Graph({
   }
 });
 $el.append(graph.el);
+graph.render();
 graph.redraw();
 {% endhighlight %}
 
@@ -174,6 +175,7 @@ var graph = new recline.View.Graph({
   }
 });
 $el.append(graph.el);
+graph.render();
 graph.redraw();
 </script>
 
@@ -213,7 +215,7 @@ var map = new recline.View.Map({
   model: dataset
 });
 $el.append(map.el);
-map.redraw();
+map.render();
 {% endhighlight %}
 
 <div id="mymap">&nbsp;</div>

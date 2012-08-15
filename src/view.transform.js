@@ -36,7 +36,6 @@ my.Transform = Backbone.View.extend({
 
   initialize: function(options) {
     this.el = $(this.el);
-    this.render();
   },
 
   render: function() {
