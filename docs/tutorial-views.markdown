@@ -227,3 +227,39 @@ $el.append(map.el);
 map.render();
 </script>
 
+### Creating a Timeline
+
+Now, let's create a timeline for this dataset using the date information which is
+present on these data points.
+
+First, add the additional dependencies for the timeline view. The timeline is built on the excellent Verite Timeline widget so that library is the key one for this view:
+
+{% highlight html %}
+<!-- css -->
+<link rel="stylesheet" href="vendor/timeline/20120520/css/timeline.css">
+
+<!-- javascript -->
+<script type="text/javascript" src="vendor/moment/1.6.2/moment.js"></script>
+<script type="text/javascript" src="vendor/timeline/20120520/js/timeline.js"></script>
+{% endhighlight %}
+
+Now, create a new div for the map:
+
+{% highlight html %}
+<div id="mytimeline"></div>
+{% endhighlight %}
+
+Now let's create the timeline, we will use the existing dataset object created
+previously:
+
+{% highlight javascript %}
+{% include tutorial-views-timeline.js %}
+{% endhighlight %}
+
+<div id="mytimeline">&nbsp;</div>
+<div style="clear: both;"></div>
+
+<script type="text/javascript">
+{% include tutorial-views-timeline.js %}
+</script>
+
