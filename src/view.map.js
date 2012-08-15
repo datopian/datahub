@@ -56,22 +56,6 @@ my.Map = Backbone.View.extend({
     this.model.records.bind('remove', function(doc){self.redraw('remove',doc)});
     this.model.records.bind('reset', function(){self.redraw('reset')});
 
-    this.bind('view:show',function(){
-      // If the div was hidden, Leaflet needs to recalculate some sizes
-      // to display properly
-      if (self.map){
-        self.map.invalidateSize();
-        if (self._zoomPending && self.state.get('autoZoom')) {
-          self._zoomToFeatures();
-          self._zoomPending = false;
-        }
-      }
-      self.visible = true;
-    });
-    this.bind('view:hide',function(){
-      self.visible = false;
-    });
-
     var stateData = _.extend({
         geomField: null,
         lonField: null,
@@ -144,6 +128,23 @@ my.Map = Backbone.View.extend({
         }
       }
     }
+  },
+
+  show: function() {
+    // If the div was hidden, Leaflet needs to recalculate some sizes
+    // to display properly
+    if (this.map){
+      this.map.invalidateSize();
+      if (this._zoomPending && this.state.get('autoZoom')) {
+        this._zoomToFeatures();
+        this._zoomPending = false;
+      }
+    }
+    this.visible = true;
+  },
+
+  hide: function() {
+    this.visible = false;
   },
 
   _geomReady: function() {

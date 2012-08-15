@@ -47,12 +47,6 @@ my.Graph = Backbone.View.extend({
     this.model.fields.bind('add', this.render);
     this.model.records.bind('add', this.redraw);
     this.model.records.bind('reset', this.redraw);
-    // because we cannot redraw when hidden we may need when becoming visible
-    this.bind('view:show', function() {
-      if (this.needToRedraw) {
-        self.redraw();
-      }
-    });
     var stateData = _.extend({
         group: null,
         // so that at least one series chooser box shows up
@@ -103,6 +97,13 @@ my.Graph = Backbone.View.extend({
       var series = this.createSeries();
       var options = this.getGraphOptions(this.state.attributes.graphType);
       this.plot = Flotr.draw(this.$graph.get(0), series, options);
+    }
+  },
+
+  show: function() {
+    // because we cannot redraw when hidden we may need to when becoming visible
+    if (this.needToRedraw) {
+      this.redraw();
     }
   },
 

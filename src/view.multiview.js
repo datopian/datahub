@@ -289,13 +289,17 @@ my.MultiView = Backbone.View.extend({
         if (view.view.elSidebar) {
           view.view.elSidebar.show();
         }
-        view.view.trigger('view:show');
+        if (view.view.show) {
+          view.view.show();
+        }
       } else {
         view.view.el.hide();
         if (view.view.elSidebar) {
           view.view.elSidebar.hide();
         }
-        view.view.trigger('view:hide');
+        if (view.view.hide) {
+          view.view.hide();
+        }
       }
     });
   },

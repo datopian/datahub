@@ -32,12 +32,6 @@ my.Timeline = Backbone.View.extend({
     this.el = $(this.el);
     this.timeline = new VMM.Timeline();
     this._timelineIsInitialized = false;
-    this.bind('view:show', function() {
-      // only call _initTimeline once view in DOM as Timeline uses $ internally to look up element
-      if (self._timelineIsInitialized === false) {
-        self._initTimeline();
-      }
-    });
     this.model.fields.bind('reset', function() {
       self._setupTemporalField();
     });
@@ -64,6 +58,13 @@ my.Timeline = Backbone.View.extend({
     var tmplData = {};
     var htmls = Mustache.render(this.template, tmplData);
     this.el.html(htmls);
+  },
+
+  show: function() {
+    // only call _initTimeline once view in DOM as Timeline uses $ internally to look up element
+    if (this._timelineIsInitialized === false) {
+      this._initTimeline();
+    }
   },
 
   _initTimeline: function() {
