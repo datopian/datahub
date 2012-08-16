@@ -32,6 +32,7 @@ test('get State', function () {
   equal(state.get('query').size, 100);
   deepEqual(state.get('view-graph').group, null);
   equal(state.get('backend'), 'memory');
+  equal(state.get('dataset').url, 'xyz');
   ok(state.get('url') === url);
   $el.remove();
 });
@@ -78,8 +79,22 @@ test('restore (from serialized state)', function() {
   });
   var state = explorer.state.toJSON();
   var explorerNew = recline.View.MultiView.restore(state);
+  equal(explorerNew.model.get('backend'), 'memory');
   var out = explorerNew.state.toJSON();
   equal(out.backend, state.backend);
+
+  var dataset = new recline.Model.Dataset({
+    url: 'http://data.london.gov.uk/datafiles/transport/tfl_passengers.csv',
+    format: 'csv',
+    backend: 'dataproxy'
+  });
+  var explorer = new recline.View.MultiView({
+    model: dataset,
+  });
+  var state = explorer.state.toJSON();
+  var explorerNew = recline.View.MultiView.restore(state);
+  equal(explorerNew.model.get('backend'), 'dataproxy');
+  equal(explorerNew.model.get('format'), 'csv');
 });
 
 })(this.jQuery);
