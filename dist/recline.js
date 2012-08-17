@@ -3225,7 +3225,6 @@ my.MultiView = Backbone.View.extend({
     graphState = graphState ? JSON.parse(graphState) : {};
 
     // now get default data + hash url plus initial state and initial our state object with it
-    console.log(this.model.toJSON());
     var stateData = _.extend({
         query: query,
         'view-graph': graphState,
