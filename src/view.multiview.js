@@ -441,15 +441,6 @@ my.MultiView = Backbone.View.extend({
 //
 // This inverts the state serialization process in Multiview
 my.MultiView.restore = function(state) {
-// <pre>
-// {
-//   backend: {backend type - i.e. value of dataset.backend.__type__}
-//   dataset: {dataset info needed for loading -- result of dataset.toJSON() would be sufficient but can be simpler }
-//   // convenience - if url provided and dataste not this be used as dataset url
-//   url: {dataset url}
-//   ...
-// }
-  var dataset = null;
   // hack-y - restoring a memory dataset does not mean much ... (but useful for testing!)
   if (state.backend === 'memory') {
     var datasetInfo = {
@@ -464,7 +455,7 @@ my.MultiView.restore = function(state) {
       state.dataset
     );
   }
-  dataset = new recline.Model.Dataset(datasetInfo);
+  var dataset = new recline.Model.Dataset(datasetInfo);
   var explorer = new my.MultiView({
     model: dataset,
     state: state
