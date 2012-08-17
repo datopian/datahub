@@ -24,6 +24,10 @@ Running the tests by opening `test/index.html` in your browser.
 
 [v0.6 milestone](https://github.com/okfn/recline/issues?milestone=5)
 
+Possible breaking changes
+
+* Dataset.restore method removed (not used internally except from Multiview.restore)
+* Views no longer call render in initialize but must be called client code
 
 ### v0.5 - July 5th 2012 (first public release)
 
