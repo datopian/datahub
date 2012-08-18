@@ -1,3 +1,4 @@
+(function ($) {
 module("Backend CKAN");
 
 test("fetch", function() { 
@@ -162,3 +163,4 @@ var sample_data = {
   "success": true
 };
 
+})(this.jQuery);

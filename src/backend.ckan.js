@@ -37,7 +37,7 @@ this.recline.Backend.Ckan = this.recline.Backend.Ckan || {};
     return dfd.promise();
   };
 
-  my.query = function(dataset, queryObj) {
+  my.query = function(queryObj, dataset) {
     var wrapper = my.DataStore(dataset.url);
     var actualQuery = {
       resource_id: dataset.id,
