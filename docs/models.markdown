@@ -16,10 +16,9 @@ Records. Additionally, there is a a Field object for describing the columns of
 a Dataset, a Query object for describing queries, and a Facet object for
 holding summary information about a Field (or multiple Fields).
 
-# Models
-
 All the models are Backbone models, that is they extend Backbone.Model. Note,
-however that they do not 'sync' (load/save) like normal Backbone models.
+however, that they do not 'sync' (load/save) like normal Backbone models.
+
 
 <h2 id="dataset">Dataset</h2>
 
@@ -92,8 +91,7 @@ var field = new Field({
   label: 'My Field Name',
 
   // (optional: defaults to string) the type of the data in this field.
-  // Should be a string as per type names defined by ElasticSearch - see
-  //  Types list on <http://www.elasticsearch.org/guide/reference/mapping/>
+  // For list of type names see below
   type: 'string',
 
   // (optional - defaults to null) used to indicate how the data should be
@@ -104,6 +102,21 @@ var field = new Field({
   // is just derived from other fields (see below).
   is_derived: false
 {% endhighlight %}
+
+#### Types
+
+Types are based on the [type set of elasticsearch][types-1] with a few minor additions and modifications:
+
+[types-1]: http://www.elasticsearch.org/guide/reference/mapping/
+
+* string
+* integer (long)
+* float (double)
+* boolean
+* geo_point
+* geojson
+* array
+* object
 
 #### Rendering, types and formats
 
