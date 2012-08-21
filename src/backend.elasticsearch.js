@@ -119,6 +119,19 @@ this.recline.Backend.ElasticSearch = this.recline.Backend.ElasticSearch || {};
       return out;
     },
 
+    // convert from Recline sort structure to ES form
+    // http://www.elasticsearch.org/guide/reference/api/search/sort.html
+    this._normalizeSort = function(sort) {
+      var out = _.map(sort, function(sortObj) {
+        var _tmp = {};
+        var _tmp2 = _.clone(sortObj);
+        delete _tmp2['field'];
+        _tmp[sortObj.field] = _tmp2;
+        return _tmp;
+      });
+      return out;
+    },
+
     this._convertFilter = function(filter) {
       var out = {};
       out[filter.type] = {}
@@ -137,10 +150,12 @@ this.recline.Backend.ElasticSearch = this.recline.Backend.ElasticSearch || {};
     // @return deferred supporting promise API
     this.query = function(queryObj) {
       var esQuery = (queryObj && queryObj.toJSON) ? queryObj.toJSON() : _.extend({}, queryObj);
-      var queryNormalized = this._normalizeQuery(queryObj);
+      esQuery.query = this._normalizeQuery(queryObj);
       delete esQuery.q;
       delete esQuery.filters;
-      esQuery.query = queryNormalized;
+      if (esQuery.sort && esQuery.sort.length > 0) {
+        esQuery.sort = this._normalizeSort(esQuery.sort);
+      }
       var data = {source: JSON.stringify(esQuery)};
       var url = this.endpoint + '/_search';
       var jqxhr = makeRequest({

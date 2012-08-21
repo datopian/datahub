@@ -193,7 +193,7 @@ Query object has the following key attributes:
 
  * size (=limit): number of results to return
  * from (=offset): offset into result set - http://www.elasticsearch.org/guide/reference/api/search/from-size.html
- * sort: sort order - <http://www.elasticsearch.org/guide/reference/api/search/sort.html>
+ * sort: sort order - see below
  * query: Query in ES Query DSL <http://www.elasticsearch.org/guide/reference/api/search/query.html>
  * filter: See filters and <a href="http://www.elasticsearch.org/guide/reference/query-dsl/filtered-query.html">Filtered Query</a>
  * fields: set of fields to return - http://www.elasticsearch.org/guide/reference/api/search/fields.html
@@ -211,6 +211,24 @@ Additions:
 
 * filters: array of ElasticSearch filters. These will be and-ed together for
   execution.
+
+#### Sort
+
+Sort structure is inspired by <http://www.elasticsearch.org/guide/reference/api/search/sort.html> but with some standardization.
+
+Sort structure must be as follows:
+
+    "sort" : [
+          { field: "post_date",  "order" : "desc"},
+          { field: "user" },
+          { "name" : "desc" },
+          { "age" : "desc" },
+          {"_score": null}
+      ]
+
+If order is omitted it is assumed to be "desc" except in the case of _score.
+_score is a special case which is used for match score if that is supported by
+the backend.
 
 #### Examples
 
