@@ -40,7 +40,7 @@ test('query sort', function () {
   var data = _wrapData();
   var queryObj = {
     sort: [
-      {'y': {order: 'desc'}}
+      {field: 'y', order: 'desc'}
     ]
   };
   data.query(queryObj).then(function(out) {
@@ -49,7 +49,7 @@ test('query sort', function () {
 
   var queryObj = {
     sort: [
-      {'country': {order: 'desc'}}
+      {field: 'country', order: 'desc'}
     ]
   };
   data.query(queryObj).then(function(out) {
@@ -58,7 +58,7 @@ test('query sort', function () {
 
   var queryObj = {
     sort: [
-      {'country': {order: 'asc'}}
+      {field: 'country', order: 'asc'}
     ]
   };
   data.query(queryObj).then(function(out) {
@@ -216,7 +216,7 @@ test('query sort', function () {
   var data = dataset._store.data;
   var queryObj = {
     sort: [
-      {'y': {order: 'desc'}}
+      {field: 'y', order: 'desc'}
     ]
   };
   dataset.query(queryObj).then(function() {
