@@ -38,7 +38,7 @@ this.recline.Backend.Ckan = this.recline.Backend.Ckan || {};
   };
 
   my.query = function(queryObj, dataset) {
-    var wrapper = my.DataStore(dataset.url);
+    var wrapper = my.DataStore();
     var actualQuery = {
       resource_id: dataset.id,
       q: queryObj.q,
@@ -67,7 +67,7 @@ this.recline.Backend.Ckan = this.recline.Backend.Ckan || {};
       endpoint: endpoint || my.API_ENDPOINT
     };
     that.search = function(data) {
-      var searchUrl = my.endpoint + '/3/action/datastore_search';
+      var searchUrl = that.endpoint + '/3/action/datastore_search';
       var jqxhr = $.ajax({
         url: searchUrl,
         data: data,
