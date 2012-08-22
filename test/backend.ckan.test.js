@@ -1,6 +1,31 @@
 (function ($) {
 module("Backend CKAN");
 
+test('_normalizeQuery', function() {
+  var dataset = new recline.Model.Dataset({
+    url: 'does-not-matter',
+    id: 'xyz',
+    backend: 'ckan'
+  });
+
+  var queryObj = {
+    q: 'abc',
+    sort: [
+      { field: 'location', order: 'desc' },
+      { field: 'last' }
+    ]
+  };
+  var out = recline.Backend.Ckan._normalizeQuery(queryObj, dataset);
+  var exp = {
+    resource_id: dataset.id,
+    q: 'abc',
+    sort: 'location desc,last ',
+    limit: 10,
+    offset: 0
+  };
+  deepEqual(out, exp);
+});
+
 test("fetch", function() { 
   var dataset = new recline.Model.Dataset({
     url: 'http://localhost:5000/dataset/test-data-viewer/resource/4f1299ab-a100-4e5f-ba81-e6d234a2f3bd',

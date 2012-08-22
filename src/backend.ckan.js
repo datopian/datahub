@@ -37,14 +37,26 @@ this.recline.Backend.Ckan = this.recline.Backend.Ckan || {};
     return dfd.promise();
   };
 
-  my.query = function(queryObj, dataset) {
-    var wrapper = my.DataStore();
+  // only put in the module namespace so we can access for tests!
+  my._normalizeQuery = function(queryObj, dataset) {
     var actualQuery = {
       resource_id: dataset.id,
       q: queryObj.q,
-      limit: queryObj.size,
-      offset: queryObj.from
+      limit: queryObj.size || 10,
+      offset: queryObj.from || 0
     };
+    if (queryObj.sort && queryObj.sort.length > 0) {
+      var _tmp = _.map(queryObj.sort, function(sortObj) {
+        return sortObj.field + ' ' + (sortObj.order || '');
+      });
+      actualQuery.sort = _tmp.join(',');
+    }
+    return actualQuery;
+  }
+
+  my.query = function(queryObj, dataset) {
+    var actualQuery = my._normalizeQuery(queryObj, dataset);
+    var wrapper = my.DataStore();
     var dfd = $.Deferred();
     var jqxhr = wrapper.search(actualQuery);
     jqxhr.done(function(results) {
