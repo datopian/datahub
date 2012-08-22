@@ -652,14 +652,15 @@ this.recline.Backend.Memory = this.recline.Backend.Memory || {};
       results = this._applyFilters(results, queryObj);
       results = this._applyFreeTextQuery(results, queryObj);
 
-      // not complete sorting!
+      // TODO: this is not complete sorting!
+      // What's wrong is we sort on the *last* entry in the sort list if there are multiple sort criteria
       _.each(queryObj.sort, function(sortObj) {
-        var fieldName = _.keys(sortObj)[0];
+        var fieldName = sortObj.field;
         results = _.sortBy(results, function(doc) {
           var _out = doc[fieldName];
           return _out;
         });
-        if (sortObj[fieldName].order == 'desc') {
+        if (sortObj.order == 'desc') {
           results.reverse();
         }
       });

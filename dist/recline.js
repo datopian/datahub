@@ -1,5 +1,105 @@
 this.recline = this.recline || {};
 this.recline.Backend = this.recline.Backend || {};
+this.recline.Backend.Ckan = this.recline.Backend.Ckan || {};
+
+(function($, my) {
+  // ## CKAN Backend
+  //
+  // This provides connection to the CKAN DataStore (v2)
+  //
+  // General notes
+  // 
+  // * Every dataset must have an id equal to its resource id on the CKAN instance
+  // * You should set the CKAN API endpoint for requests by setting API_ENDPOINT value on this module (recline.Backend.Ckan.API_ENDPOINT)
+
+  my.__type__ = 'ckan';
+
+  // Default CKAN API endpoint used for requests (you can change this but it will affect every request!)
+  my.API_ENDPOINT = 'http://datahub.io/api';
+
+  // ### fetch
+  my.fetch = function(dataset) {
+    var wrapper = my.DataStore();
+    var dfd = $.Deferred();
+    var jqxhr = wrapper.search({resource_id: dataset.id, limit: 0});
+    jqxhr.done(function(results) {
+      // map ckan types to our usual types ...
+      var fields = _.map(results.result.fields, function(field) {
+        field.type = field.type in CKAN_TYPES_MAP ? CKAN_TYPES_MAP[field.type] : field.type;
+        return field;
+      });
+      var out = {
+        fields: fields,
+        useMemoryStore: false
+      };
+      dfd.resolve(out);  
+    });
+    return dfd.promise();
+  };
+
+  // only put in the module namespace so we can access for tests!
+  my._normalizeQuery = function(queryObj, dataset) {
+    var actualQuery = {
+      resource_id: dataset.id,
+      q: queryObj.q,
+      limit: queryObj.size || 10,
+      offset: queryObj.from || 0
+    };
+    if (queryObj.sort && queryObj.sort.length > 0) {
+      var _tmp = _.map(queryObj.sort, function(sortObj) {
+        return sortObj.field + ' ' + (sortObj.order || '');
+      });
+      actualQuery.sort = _tmp.join(',');
+    }
+    return actualQuery;
+  }
+
+  my.query = function(queryObj, dataset) {
+    var actualQuery = my._normalizeQuery(queryObj, dataset);
+    var wrapper = my.DataStore();
+    var dfd = $.Deferred();
+    var jqxhr = wrapper.search(actualQuery);
+    jqxhr.done(function(results) {
+      var out = {
+        total: results.result.total,
+        hits: results.result.records,
+      };
+      dfd.resolve(out);  
+    });
+    return dfd.promise();
+  };
+
+  // ### DataStore
+  //
+  // Simple wrapper around the CKAN DataStore API
+  //
+  // @param endpoint: CKAN api endpoint (e.g. http://datahub.io/api)
+  my.DataStore = function(endpoint) { 
+    var that = {
+      endpoint: endpoint || my.API_ENDPOINT
+    };
+    that.search = function(data) {
+      var searchUrl = that.endpoint + '/3/action/datastore_search';
+      var jqxhr = $.ajax({
+        url: searchUrl,
+        data: data,
+        dataType: 'json'
+      });
+      return jqxhr;
+    }
+
+    return that;
+  }
+
+  var CKAN_TYPES_MAP = {
+    'int4': 'integer',
+    'float8': 'float',
+    'text': 'string'
+  };
+
+}(jQuery, this.recline.Backend.Ckan));
+this.recline = this.recline || {};
+this.recline.Backend = this.recline.Backend || {};
 this.recline.Backend.CSV = this.recline.Backend.CSV || {};
 
 (function(my) {
@@ -435,6 +535,19 @@ this.recline.Backend.ElasticSearch = this.recline.Backend.ElasticSearch || {};
       return out;
     },
 
+    // convert from Recline sort structure to ES form
+    // http://www.elasticsearch.org/guide/reference/api/search/sort.html
+    this._normalizeSort = function(sort) {
+      var out = _.map(sort, function(sortObj) {
+        var _tmp = {};
+        var _tmp2 = _.clone(sortObj);
+        delete _tmp2['field'];
+        _tmp[sortObj.field] = _tmp2;
+        return _tmp;
+      });
+      return out;
+    },
+
     this._convertFilter = function(filter) {
       var out = {};
       out[filter.type] = {}
@@ -453,10 +566,12 @@ this.recline.Backend.ElasticSearch = this.recline.Backend.ElasticSearch || {};
     // @return deferred supporting promise API
     this.query = function(queryObj) {
       var esQuery = (queryObj && queryObj.toJSON) ? queryObj.toJSON() : _.extend({}, queryObj);
-      var queryNormalized = this._normalizeQuery(queryObj);
+      esQuery.query = this._normalizeQuery(queryObj);
       delete esQuery.q;
       delete esQuery.filters;
-      esQuery.query = queryNormalized;
+      if (esQuery.sort && esQuery.sort.length > 0) {
+        esQuery.sort = this._normalizeSort(esQuery.sort);
+      }
       var data = {source: JSON.stringify(esQuery)};
       var url = this.endpoint + '/_search';
       var jqxhr = makeRequest({
@@ -811,14 +926,15 @@ this.recline.Backend.Memory = this.recline.Backend.Memory || {};
       results = this._applyFilters(results, queryObj);
       results = this._applyFreeTextQuery(results, queryObj);
 
-      // not complete sorting!
+      // TODO: this is not complete sorting!
+      // What's wrong is we sort on the *last* entry in the sort list if there are multiple sort criteria
       _.each(queryObj.sort, function(sortObj) {
-        var fieldName = _.keys(sortObj)[0];
+        var fieldName = sortObj.field;
         results = _.sortBy(results, function(doc) {
           var _out = doc[fieldName];
           return _out;
         });
-        if (sortObj[fieldName].order == 'desc') {
+        if (sortObj.order == 'desc') {
           results.reverse();
         }
       });
@@ -3542,15 +3658,17 @@ my.SlickGrid = Backbone.View.extend({
     // Column sorting
     var sortInfo = this.model.queryState.get('sort');
     if (sortInfo){
-      var column = _.keys(sortInfo[0])[0];
-      var sortAsc = !(sortInfo[0][column].order == 'desc');
+      var column = sortInfo[0].field;
+      var sortAsc = !(sortInfo[0].order == 'desc');
       this.grid.setSortColumn(column, sortAsc);
     }
 
     this.grid.onSort.subscribe(function(e, args){
       var order = (args.sortAsc) ? 'asc':'desc';
-      var sort = [{}];
-      sort[0][args.sortCol.field] = {order: order};
+      var sort = [{
+        field: args.sortCol.field,
+        order: order
+      }];
       self.model.query({sort: sort});
     });
 
