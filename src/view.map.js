@@ -187,7 +187,7 @@ my.Map = Backbone.View.extend({
         feature.properties.cid = doc.cid;
 
         try {
-          self.features.addGeoJSON(feature);
+          self.features.addData(feature);
         } catch (except) {
           wrongSoFar += 1;
           var msg = 'Wrong geometry value';
@@ -216,7 +216,7 @@ my.Map = Backbone.View.extend({
 
     _.each(docs,function(doc){
       for (key in self.features._layers){
-        if (self.features._layers[key].cid == doc.cid){
+        if (self.features._layers[key].feature.properties.cid == doc.cid){
           self.features.removeLayer(self.features._layers[key]);
         }
       }
@@ -343,25 +343,7 @@ my.Map = Backbone.View.extend({
       if (e.properties && e.properties.cid){
         e.layer.cid = e.properties.cid;
        }
-
     });
-
-    // This will be available in the next Leaflet stable release.
-    // In the meantime we add it manually to our layer.
-    this.features.getBounds = function(){
-      var bounds = new L.LatLngBounds();
-      this._iterateLayers(function (layer) {
-        if (layer instanceof L.Marker){
-          bounds.extend(layer.getLatLng());
-        } else {
-          if (layer.getBounds){
-            bounds.extend(layer.getBounds().getNorthEast());
-            bounds.extend(layer.getBounds().getSouthWest());
-          }
-        }
-      }, this);
-      return (typeof bounds.getNorthEast() !== 'undefined') ? bounds : null;
-    }
 
     this.map.addLayer(this.features);
 
