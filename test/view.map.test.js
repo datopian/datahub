@@ -178,7 +178,7 @@ test('MapMenu', function () {
 
 var _getFeaturesCount = function(features){
   var cnt = 0;
-  features._iterateLayers(function(layer){
+  _.each(features._layers, function(layer) {
     cnt++;
   });
   return cnt;

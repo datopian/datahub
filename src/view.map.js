@@ -54,18 +54,18 @@ my.Map = Backbone.View.extend({
 
     // Listen to changes in the fields
     this.model.fields.bind('change', function() {
-      self._setupGeometryField()
-      self.render()
+      self._setupGeometryField();
+      self.render();
     });
 
     // Listen to changes in the records
-    this.model.records.bind('add', function(doc){self.redraw('add',doc)});
+    this.model.records.bind('add', function(doc){self.redraw('add',doc);});
     this.model.records.bind('change', function(doc){
         self.redraw('remove',doc);
         self.redraw('add',doc);
     });
-    this.model.records.bind('remove', function(doc){self.redraw('remove',doc)});
-    this.model.records.bind('reset', function(){self.redraw('reset')});
+    this.model.records.bind('remove', function(doc){self.redraw('remove',doc);});
+    this.model.records.bind('reset', function(){self.redraw('reset');});
 
     this.menu = new my.MapMenu({
       model: this.model,
@@ -165,7 +165,7 @@ my.Map = Backbone.View.extend({
 
     var count = 0;
     var wrongSoFar = 0;
-    _.every(docs,function(doc){
+    _.every(docs, function(doc){
       count += 1;
       var feature = self._getGeometryFromRecord(doc);
       if (typeof feature === 'undefined' || feature === null){
@@ -174,7 +174,7 @@ my.Map = Backbone.View.extend({
       } else if (feature instanceof Object){
         // Build popup contents
         // TODO: mustache?
-        html = ''
+        html = '';
         for (key in doc.attributes){
           if (!(self.state.get('geomField') && key == self.state.get('geomField'))){
             html += '<div><strong>' + key + '</strong>: '+ doc.attributes[key] + '</div>';
@@ -187,7 +187,11 @@ my.Map = Backbone.View.extend({
         feature.properties.cid = doc.cid;
 
         try {
-          self.features.addGeoJSON(feature);
+          self.features.addData(feature);
+
+          if (feature.properties && feature.properties.popupContent) {
+            self.features.bindPopup(feature.properties.popupContent);
+          }
         } catch (except) {
           wrongSoFar += 1;
           var msg = 'Wrong geometry value';
@@ -197,7 +201,7 @@ my.Map = Backbone.View.extend({
           }
         }
       } else {
-        wrongSoFar += 1
+        wrongSoFar += 1;
         if (wrongSoFar <= 10) {
           self.trigger('recline:flash', {message: 'Wrong geometry value', category:'error'});
         }
@@ -216,7 +220,7 @@ my.Map = Backbone.View.extend({
 
     _.each(docs,function(doc){
       for (key in self.features._layers){
-        if (self.features._layers[key].cid == doc.cid){
+        if (self.features._layers[key].feature.properties.cid == doc.cid){
           self.features.removeLayer(self.features._layers[key]);
         }
       }
@@ -315,10 +319,10 @@ my.Map = Backbone.View.extend({
   //
   _zoomToFeatures: function(){
     var bounds = this.features.getBounds();
-    if (bounds){
+    if (bounds.getNorthEast()){
       this.map.fitBounds(bounds);
     } else {
-      this.map.setView(new L.LatLng(0, 0), 2);
+      this.map.setView([0, 0], 2);
     }
   },
 
@@ -336,36 +340,9 @@ my.Map = Backbone.View.extend({
     this.map.addLayer(bg);
 
     this.features = new L.GeoJSON();
-    this.features.on('featureparse', function (e) {
-      if (e.properties && e.properties.popupContent){
-        e.layer.bindPopup(e.properties.popupContent);
-       }
-      if (e.properties && e.properties.cid){
-        e.layer.cid = e.properties.cid;
-       }
-
-    });
-
-    // This will be available in the next Leaflet stable release.
-    // In the meantime we add it manually to our layer.
-    this.features.getBounds = function(){
-      var bounds = new L.LatLngBounds();
-      this._iterateLayers(function (layer) {
-        if (layer instanceof L.Marker){
-          bounds.extend(layer.getLatLng());
-        } else {
-          if (layer.getBounds){
-            bounds.extend(layer.getBounds().getNorthEast());
-            bounds.extend(layer.getBounds().getSouthWest());
-          }
-        }
-      }, this);
-      return (typeof bounds.getNorthEast() !== 'undefined') ? bounds : null;
-    }
-
     this.map.addLayer(this.features);
 
-    this.map.setView(new L.LatLng(0, 0), 2);
+    this.map.setView([0, 0], 2);
 
     this.mapReady = true;
   },
