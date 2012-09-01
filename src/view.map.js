@@ -54,18 +54,18 @@ my.Map = Backbone.View.extend({
 
     // Listen to changes in the fields
     this.model.fields.bind('change', function() {
-      self._setupGeometryField()
-      self.render()
+      self._setupGeometryField();
+      self.render();
     });
 
     // Listen to changes in the records
-    this.model.records.bind('add', function(doc){self.redraw('add',doc)});
+    this.model.records.bind('add', function(doc){self.redraw('add',doc);});
     this.model.records.bind('change', function(doc){
         self.redraw('remove',doc);
         self.redraw('add',doc);
     });
-    this.model.records.bind('remove', function(doc){self.redraw('remove',doc)});
-    this.model.records.bind('reset', function(){self.redraw('reset')});
+    this.model.records.bind('remove', function(doc){self.redraw('remove',doc);});
+    this.model.records.bind('reset', function(){self.redraw('reset');});
 
     this.menu = new my.MapMenu({
       model: this.model,
