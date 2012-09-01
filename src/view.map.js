@@ -329,7 +329,7 @@ my.Map = Backbone.View.extend({
   //
   _zoomToFeatures: function(){
     var bounds = this.features.getBounds();
-    if (bounds){
+    if (bounds.getNorthEast()){
       this.map.fitBounds(bounds);
     } else {
       this.map.setView(new L.LatLng(0, 0), 2);
