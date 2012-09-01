@@ -163,8 +163,6 @@ my.Map = Backbone.View.extend({
 
     if (!(docs instanceof Array)) docs = [docs];
 
-    //var markerCluster = new L.MarkerClusterGroup();
-
     var count = 0;
     var wrongSoFar = 0;
     _.every(docs, function(doc){
@@ -190,13 +188,6 @@ my.Map = Backbone.View.extend({
 
         try {
           self.features.addData(feature);
-          /*var marker = new L.Marker(
-            new L.LatLng(
-              feature.coordinates[1],
-              feature.coordinates[0]
-            )
-          );
-          markerCluster.addLayer(marker);*/
 
           if (feature.properties && feature.properties.popupContent) {
             self.features.bindPopup(feature.properties.popupContent);
@@ -217,7 +208,6 @@ my.Map = Backbone.View.extend({
       }
       return true;
     });
-    //self.features.addLayer(markerCluster);
   },
 
   // Private: Remove one or n features to the map
@@ -332,7 +322,7 @@ my.Map = Backbone.View.extend({
     if (bounds.getNorthEast()){
       this.map.fitBounds(bounds);
     } else {
-      this.map.setView(new L.LatLng(0, 0), 2);
+      this.map.setView([0, 0], 2);
     }
   },
 
@@ -352,7 +342,7 @@ my.Map = Backbone.View.extend({
     this.features = new L.GeoJSON();
     this.map.addLayer(this.features);
 
-    this.map.setView(new L.LatLng(0, 0), 2);
+    this.map.setView([0, 0], 2);
 
     this.mapReady = true;
   },
