@@ -163,9 +163,11 @@ my.Map = Backbone.View.extend({
 
     if (!(docs instanceof Array)) docs = [docs];
 
+    //var markerCluster = new L.MarkerClusterGroup();
+
     var count = 0;
     var wrongSoFar = 0;
-    _.every(docs,function(doc){
+    _.every(docs, function(doc){
       count += 1;
       var feature = self._getGeometryFromRecord(doc);
       if (typeof feature === 'undefined' || feature === null){
@@ -174,7 +176,7 @@ my.Map = Backbone.View.extend({
       } else if (feature instanceof Object){
         // Build popup contents
         // TODO: mustache?
-        html = ''
+        html = '';
         for (key in doc.attributes){
           if (!(self.state.get('geomField') && key == self.state.get('geomField'))){
             html += '<div><strong>' + key + '</strong>: '+ doc.attributes[key] + '</div>';
@@ -188,6 +190,20 @@ my.Map = Backbone.View.extend({
 
         try {
           self.features.addData(feature);
+          /*var marker = new L.Marker(
+            new L.LatLng(
+              feature.coordinates[1],
+              feature.coordinates[0]
+            )
+          );
+          markerCluster.addLayer(marker);*/
+
+          if (feature.properties && feature.properties.popupContent) {
+            self.features.bindPopup(feature.properties.popupContent);
+          }
+          if (feature.properties && feature.properties.cid){
+            self.features.cid = feature.properties.cid;
+          }
         } catch (except) {
           wrongSoFar += 1;
           var msg = 'Wrong geometry value';
@@ -197,13 +213,14 @@ my.Map = Backbone.View.extend({
           }
         }
       } else {
-        wrongSoFar += 1
+        wrongSoFar += 1;
         if (wrongSoFar <= 10) {
           self.trigger('recline:flash', {message: 'Wrong geometry value', category:'error'});
         }
       }
       return true;
     });
+    //self.features.addLayer(markerCluster);
   },
 
   // Private: Remove one or n features to the map
@@ -336,15 +353,6 @@ my.Map = Backbone.View.extend({
     this.map.addLayer(bg);
 
     this.features = new L.GeoJSON();
-    this.features.on('featureparse', function (e) {
-      if (e.properties && e.properties.popupContent){
-        e.layer.bindPopup(e.properties.popupContent);
-       }
-      if (e.properties && e.properties.cid){
-        e.layer.cid = e.properties.cid;
-       }
-    });
-
     this.map.addLayer(this.features);
 
     this.map.setView(new L.LatLng(0, 0), 2);
