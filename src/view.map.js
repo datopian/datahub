@@ -201,9 +201,6 @@ my.Map = Backbone.View.extend({
           if (feature.properties && feature.properties.popupContent) {
             self.features.bindPopup(feature.properties.popupContent);
           }
-          if (feature.properties && feature.properties.cid){
-            self.features.cid = feature.properties.cid;
-          }
         } catch (except) {
           wrongSoFar += 1;
           var msg = 'Wrong geometry value';
