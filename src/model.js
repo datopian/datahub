@@ -110,6 +110,10 @@ my.Dataset = Backbone.Model.extend({
       // unique.
       var seen = {};
       fields = _.map(fields, function(field, index) {
+        if (typeof(field) === 'number') {
+          // Convert field to string for replace.
+          field = field+'';
+        }
         // cannot use trim as not supported by IE7
         var fieldId = field.replace(/^\s+|\s+$/g, '');
         if (fieldId === '') {
