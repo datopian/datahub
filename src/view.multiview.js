@@ -143,28 +143,28 @@ my.MultiView = Backbone.View.extend({
         view: new my.SlickGrid({
           model: this.model,
           state: this.state.get('view-grid')
-        }),
+        })
       }, {
         id: 'graph',
         label: 'Graph',
         view: new my.Graph({
           model: this.model,
           state: this.state.get('view-graph')
-        }),
+        })
       }, {
         id: 'map',
         label: 'Map',
         view: new my.Map({
           model: this.model,
           state: this.state.get('view-map')
-        }),
+        })
       }, {
         id: 'timeline',
         label: 'Timeline',
         view: new my.Timeline({
           model: this.model,
           state: this.state.get('view-timeline')
-        }),
+        })
       }, {
         id: 'transform',
         label: 'Transform',
@@ -375,7 +375,7 @@ my.MultiView = Backbone.View.extend({
     var self = this;
     _.each(this.pageViews, function(pageView) {
       pageView.view.bind('recline:flash', function(flash) {
-        self.notify(flash); 
+        self.notify(flash);
       });
     });
   },
@@ -397,14 +397,15 @@ my.MultiView = Backbone.View.extend({
       },
       flash
     );
+    var _template;
     if (tmplData.loader) {
-      var _template = ' \
+      _template = ' \
         <div class="alert alert-info alert-loader"> \
           {{message}} \
           <span class="notification-loader">&nbsp;</span> \
         </div>';
     } else {
-      var _template = ' \
+      _template = ' \
         <div class="alert alert-{{category}} fade in" data-alert="alert"><a class="close" data-dismiss="alert" href="#">×</a> \
           {{message}} \
         </div>';
