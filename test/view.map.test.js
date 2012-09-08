@@ -32,9 +32,6 @@ test('basics', function () {
   $('.fixtures').append(view.el);
   view.render();
 
-  //Fire query, otherwise the map won't be initialized
-  dataset.query();
-
   assertPresent('.editor-field-type', view.elSidebar);
 
   // Check that the Leaflet map was set up
@@ -95,9 +92,6 @@ test('GeoJSON geom field', function () {
   $('.fixtures').append(view.el);
   view.render();
 
-  //Fire query, otherwise the map won't be initialized
-  dataset.query();
-
   // Check that all features were created
   equal(_getFeaturesCount(view.features),3);
 
@@ -142,9 +136,6 @@ test('Popup', function () {
   });
   $('.fixtures').append(view.el);
   view.render();
-
-  //Fire query, otherwise the map won't be initialized
-  dataset.query();
 
   var marker = view.el.find('.leaflet-marker-icon').first();
 
