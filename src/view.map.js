@@ -23,6 +23,11 @@ this.recline.View = this.recline.View || {};
 //     latField: {id of field containing latitude in the dataset}
 //   }
 // </pre>
+//
+// Useful attributes to know about (if e.g. customizing)
+//
+// * map: the Leaflet map (L.Map)
+// * features: Leaflet GeoJSON layer containing all the features (L.GeoJSON)
 my.Map = Backbone.View.extend({
   template: ' \
     <div class="recline-map"> \
@@ -41,6 +46,8 @@ my.Map = Backbone.View.extend({
     this.el = $(this.el);
     this.visible = true;
     this.mapReady = false;
+    // this will be the Leaflet L.Map object (setup below)
+    this.map = null;
 
     var stateData = _.extend({
         geomField: null,
@@ -77,6 +84,34 @@ my.Map = Backbone.View.extend({
     });
     this.elSidebar = this.menu.el;
   },
+
+  // ## Customization Functions
+  //
+  // The following methods are designed for overriding in order to customize
+  // behaviour
+
+  // ### infobox
+  //
+  // Function to create infoboxes used in popups. The default behaviour is very simple and just lists all attributes.
+  // 
+  // Users should override this function to customize behaviour i.e.
+  //
+  //     view = new View({...});
+  //     view.infobox = function(record) {
+  //       ...
+  //     }
+  infobox: function(record) {
+    var html = '';
+    for (key in record.attributes){
+      if (!(this.state.get('geomField') && key == this.state.get('geomField'))){
+        html += '<div><strong>' + key + '</strong>: '+ record.attributes[key] + '</div>';
+      }
+    }
+    return html;
+  },
+
+  // END: Customization section
+  // ----
 
   // ### Public: Adds the necessary elements to the page.
   //
@@ -172,19 +207,12 @@ my.Map = Backbone.View.extend({
         // Empty field
         return true;
       } else if (feature instanceof Object){
-        // Build popup contents
-        // TODO: mustache?
-        html = '';
-        for (key in doc.attributes){
-          if (!(self.state.get('geomField') && key == self.state.get('geomField'))){
-            html += '<div><strong>' + key + '</strong>: '+ doc.attributes[key] + '</div>';
-          }
-        }
-        feature.properties = {popupContent: html};
-
-        // Add a reference to the model id, which will allow us to
-        // link this Leaflet layer to a Recline doc
-        feature.properties.cid = doc.cid;
+        feature.properties = {
+          popupContent: self.infobox(doc),
+          // Add a reference to the model id, which will allow us to
+          // link this Leaflet layer to a Recline doc
+          cid: doc.cid
+        };
 
         try {
           self.features.addData(feature);
