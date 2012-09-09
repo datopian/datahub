@@ -59,8 +59,9 @@ this.recline.Backend.CSV = this.recline.Backend.CSV || {};
   // 
   // @param {String} s The string to convert
   // @param {Object} options Options for loading CSV including
-  // 	@param {Boolean} [trim=false] If set to True leading and trailing whitespace is stripped off of each non-quoted field as it is imported
-  //	@param {String} [separator=','] Separator for CSV file
+  // 	  @param {Boolean} [trim=false] If set to True leading and trailing whitespace is stripped off of each non-quoted field as it is imported
+  //	  @param {String} [separator=','] Separator for CSV file
+  //
   // Heavily based on uselesscode's JS CSV parser (MIT Licensed):
   // http://www.uselesscode.org/javascript/csv/
   my.parseCSV= function(s, options) {
@@ -149,20 +150,45 @@ this.recline.Backend.CSV = this.recline.Backend.CSV || {};
     return out;
   };
 
-  // Converts an array of arrays into a Comma Separated Values string.
-  // Each array becomes a line in the CSV.
+  // ### serializeCSV
+  // 
+  // Convert an Object or a simple array of arrays into a Comma
+  // Separated Values string.
   //
   // Nulls are converted to empty fields and integers or floats are converted to non-quoted numbers.
   //
   // @return The array serialized as a CSV
   // @type String
   // 
-  // @param {Array} a The array of arrays to convert
-  // @param {Object} options Options for loading CSV including
-  //	@param {String} [separator=','] Separator for CSV file
-  // Heavily based on uselesscode's JS CSV parser (MIT Licensed):
+  // @param {Object or Array} dataToSerialize The Object or array of arrays to convert. Object structure must be as follows:
+  //
+  //     {
+  //       fields: [ {id: .., ...}, {id: ..., 
+  //       records: [ { record }, { record }, ... ]
+  //       ... // more attributes we do not care about
+  //     }
+  // 
+  // @param {Object} options Options for serializing CSV including
+  //   @param {String} [separator=','] separator for CSV file
+  //   @param {String} [delimiter='"'] delimiter for fields
+  //
+  // Heavily based on uselesscode's JS CSV serializer (MIT Licensed):
   // http://www.uselesscode.org/javascript/csv/
-  my.serializeCSV= function(a, options) {
+  my.serializeCSV= function(dataToSerialize, options) {
+    var a = null;
+    if (dataToSerialize instanceof Array) {
+      a = dataToSerialize;
+    } else {
+      a = [];
+      var fieldNames = _.pluck(dataToSerialize.fields, 'id');
+      a.push(fieldNames);
+      _.each(dataToSerialize.records, function(record, index) {
+        var tmp = _.map(fieldNames, function(fn) {
+          return record[fn];
+        });
+        a.push(tmp);
+      });
+    }
     var options = options || {};
     var separator = options.separator || ',';
     var delimiter = options.delimiter || '"';

@@ -64,7 +64,7 @@ test("parseCSVdelimiter", function() {
 
 });
 
-test("serializeCSV", function() {
+test("serializeCSV - Array", function() {
   var csv = [
     ['Jones, Jay', 10],
     ['Xyz "ABC" O\'Brien', '11:35' ],
@@ -78,5 +78,22 @@ test("serializeCSV", function() {
   deepEqual(array, exp);
 });
 
+test("serializeCSV - Object", function() {
+  var indata = {
+    fields: [ {id: 'name'}, {id: 'number'}],
+    records: [
+      {name: 'Jones, Jay', number: 10},
+      {name: 'Xyz "ABC" O\'Brien', number: '11:35' },
+      {name: 'Other, AN', number: '12:35' }
+    ]
+  };
+
+  var array = recline.Backend.CSV.serializeCSV(indata);
+  var exp = 'name,number\n' +
+  '"Jones, Jay",10\n' +
+  '"Xyz \"ABC\" O\'Brien",11:35\n' +
+  '"Other, AN",12:35\n';
+  deepEqual(array, exp);
+});
 
 })(this.jQuery);
