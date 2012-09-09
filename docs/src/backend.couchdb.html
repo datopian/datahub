@@ -1,17 +1,17 @@
-<!DOCTYPE html>  <html> <head>   <title>backend.couchdb.js</title>   <meta http-equiv="content-type" content="text/html; charset=UTF-8">   <link rel="stylesheet" media="all" href="docco.css" /> </head> <body>   <div id="container">     <div id="background"></div>            <div id="jump_to">         Jump To &hellip;         <div id="jump_wrapper">           <div id="jump_page">                                           <a class="source" href="backend.couchdb.html">                 backend.couchdb.js               </a>                                           <a class="source" href="backend.csv.html">                 backend.csv.js               </a>                                           <a class="source" href="backend.dataproxy.html">                 backend.dataproxy.js               </a>                                           <a class="source" href="backend.elasticsearch.html">                 backend.elasticsearch.js               </a>                                           <a class="source" href="backend.gdocs.html">                 backend.gdocs.js               </a>                                           <a class="source" href="backend.memory.html">                 backend.memory.js               </a>                                           <a class="source" href="backend.solr.html">                 backend.solr.js               </a>                                           <a class="source" href="data.transform.html">                 data.transform.js               </a>                                           <a class="source" href="model.html">                 model.js               </a>                                           <a class="source" href="view.graph.html">                 view.graph.js               </a>                                           <a class="source" href="view.grid.html">                 view.grid.js               </a>                                           <a class="source" href="view.map.html">                 view.map.js               </a>                                           <a class="source" href="view.multiview.html">                 view.multiview.js               </a>                                           <a class="source" href="view.slickgrid.html">                 view.slickgrid.js               </a>                                           <a class="source" href="view.timeline.html">                 view.timeline.js               </a>                                           <a class="source" href="view.transform.html">                 view.transform.js               </a>                                           <a class="source" href="widget.facetviewer.html">                 widget.facetviewer.js               </a>                                           <a class="source" href="widget.fields.html">                 widget.fields.js               </a>                                           <a class="source" href="widget.filtereditor.html">                 widget.filtereditor.js               </a>                                           <a class="source" href="widget.pager.html">                 widget.pager.js               </a>                                           <a class="source" href="widget.queryeditor.html">                 widget.queryeditor.js               </a>                        </div>         </div>       </div>          <table cellpadding="0" cellspacing="0">       <thead>         <tr>           <th class="docs">             <h1>               backend.couchdb.js             </h1>           </th>           <th class="code">           </th>         </tr>       </thead>       <tbody>                               <tr id="section-1">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-1">&#182;</a>               </div>                            </td>             <td class="code">               <div class="highlight"><pre><span class="k">this</span><span class="p">.</span><span class="nx">recline</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">recline</span> <span class="o">||</span> <span class="p">{};</span>
+<!DOCTYPE html>  <html> <head>   <title>backend.couchdb.js</title>   <meta http-equiv="content-type" content="text/html; charset=UTF-8">   <link rel="stylesheet" media="all" href="docco.css" /> </head> <body>   <div id="container">     <div id="background"></div>            <div id="jump_to">         Jump To &hellip;         <div id="jump_wrapper">           <div id="jump_page">                                           <a class="source" href="backend.ckan.html">                 backend.ckan.js               </a>                                           <a class="source" href="backend.couchdb.html">                 backend.couchdb.js               </a>                                           <a class="source" href="backend.csv.html">                 backend.csv.js               </a>                                           <a class="source" href="backend.dataproxy.html">                 backend.dataproxy.js               </a>                                           <a class="source" href="backend.elasticsearch.html">                 backend.elasticsearch.js               </a>                                           <a class="source" href="backend.gdocs.html">                 backend.gdocs.js               </a>                                           <a class="source" href="backend.memory.html">                 backend.memory.js               </a>                                           <a class="source" href="data.transform.html">                 data.transform.js               </a>                                           <a class="source" href="model.html">                 model.js               </a>                                           <a class="source" href="view.graph.html">                 view.graph.js               </a>                                           <a class="source" href="view.grid.html">                 view.grid.js               </a>                                           <a class="source" href="view.map.html">                 view.map.js               </a>                                           <a class="source" href="view.multiview.html">                 view.multiview.js               </a>                                           <a class="source" href="view.slickgrid.html">                 view.slickgrid.js               </a>                                           <a class="source" href="view.timeline.html">                 view.timeline.js               </a>                                           <a class="source" href="view.transform.html">                 view.transform.js               </a>                                           <a class="source" href="widget.facetviewer.html">                 widget.facetviewer.js               </a>                                           <a class="source" href="widget.fields.html">                 widget.fields.js               </a>                                           <a class="source" href="widget.filtereditor.html">                 widget.filtereditor.js               </a>                                           <a class="source" href="widget.pager.html">                 widget.pager.js               </a>                                           <a class="source" href="widget.queryeditor.html">                 widget.queryeditor.js               </a>                        </div>         </div>       </div>          <table cellpadding="0" cellspacing="0">       <thead>         <tr>           <th class="docs">             <h1>               backend.couchdb.js             </h1>           </th>           <th class="code">           </th>         </tr>       </thead>       <tbody>                               <tr id="section-1">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-1">&#182;</a>               </div>                            </td>             <td class="code">               <div class="highlight"><pre><span class="k">this</span><span class="p">.</span><span class="nx">recline</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">recline</span> <span class="o">||</span> <span class="p">{};</span>
 <span class="k">this</span><span class="p">.</span><span class="nx">recline</span><span class="p">.</span><span class="nx">Backend</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">recline</span><span class="p">.</span><span class="nx">Backend</span> <span class="o">||</span> <span class="p">{};</span>
 <span class="k">this</span><span class="p">.</span><span class="nx">recline</span><span class="p">.</span><span class="nx">Backend</span><span class="p">.</span><span class="nx">CouchDB</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">recline</span><span class="p">.</span><span class="nx">Backend</span><span class="p">.</span><span class="nx">CouchDB</span> <span class="o">||</span> <span class="p">{};</span>
 
-<span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">$</span><span class="p">,</span> <span class="nx">my</span><span class="p">)</span> <span class="p">{</span>
-  <span class="nx">my</span><span class="p">.</span><span class="nx">__type__</span> <span class="o">=</span> <span class="s1">&#39;couchdb&#39;</span><span class="p">;</span></pre></div>             </td>           </tr>                               <tr id="section-2">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-2">&#182;</a>               </div>               <h2>CouchDB Wrapper</h2>
+<span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">$</span><span class="p">,</span> <span class="nx">my</span><span class="p">)</span> <span class="p">{</span>  
+<span class="nx">my</span><span class="p">.</span><span class="nx">__type__</span> <span class="o">=</span> <span class="s1">&#39;couchdb&#39;</span><span class="p">;</span></pre></div>             </td>           </tr>                               <tr id="section-2">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-2">&#182;</a>               </div>               <h2>CouchDB Wrapper</h2>
 
 <p>Connecting to [CouchDB] (http://www.couchdb.apache.org/) endpoints.
 @param {String} endpoint: url for CouchDB database, e.g. for Couchdb running
 on localhost:5984 with database // ckan-std it would be:</p>
 
-<pre>http://localhost:5984/ckan-std</pre>
+<p>TODO Add user/password arguments for couchdb authentication support.</p>
 
-<p>TODO Add user/password arguments for couchdb authentication support.</p>             </td>             <td class="code">               <div class="highlight"><pre>  <span class="nx">my</span><span class="p">.</span><span class="nx">CouchDBWrapper</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">db_url</span><span class="p">,</span> <span class="nx">view_url</span><span class="p">,</span> <span class="nx">options</span><span class="p">)</span> <span class="p">{</span> 
+<p>See the example how to use this in: "demos/couchdb/"</p>             </td>             <td class="code">               <div class="highlight"><pre>  <span class="nx">my</span><span class="p">.</span><span class="nx">CouchDBWrapper</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">db_url</span><span class="p">,</span> <span class="nx">view_url</span><span class="p">,</span> <span class="nx">options</span><span class="p">)</span> <span class="p">{</span> 
     <span class="kd">var</span> <span class="nx">self</span> <span class="o">=</span> <span class="k">this</span><span class="p">;</span>
     <span class="nx">self</span><span class="p">.</span><span class="nx">endpoint</span> <span class="o">=</span> <span class="nx">db_url</span><span class="p">;</span>
     <span class="nx">self</span><span class="p">.</span><span class="nx">view_url</span> <span class="o">=</span> <span class="p">(</span><span class="nx">view_url</span><span class="p">)</span> <span class="o">?</span> <span class="nx">view_url</span> <span class="o">:</span> <span class="nx">db_url</span><span class="o">+</span><span class="s1">&#39;/&#39;</span><span class="o">+</span><span class="s1">&#39;_all_docs&#39;</span><span class="p">;</span>
@@ -124,31 +124,34 @@ See: http://wiki.apache.org/couchdb/HTTP<em>view</em>API</p>             </td>  
 
 <p>Backbone connector for a CouchDB backend.</p>
 
-<p>Usage:</p>
-
-<p>var backend = new recline.Backend.CouchDB();
-var dataset = new recline.Model.Dataset({
-    db<em>url: '/couchdb/mydb',
-    view</em>url: '/couchdb/mydb/<em>design/design1/</em>views/view1',
-    query<em>options: {
-         'key': 'some</em>document_key'
-    }
+<pre><code>var dataset = new recline.Model.Dataset({
+  db_url: path-to-couchdb-database e.g. '/couchdb/mydb',        
+  view_url: path-to-couchdb-database-view e.g. '/couchdb/mydb/_design/design1/_views/view1',
+  backend: 'couchdb',
+  query_options: {
+    'key': '_id'
+  }
 });
-backend.fetch(dataset.toJSON());
-backend.query(query, dataset.toJSON()).done(function () { ... });</p>
 
-<p>Alternatively:
-var dataset = new recline.Model.Dataset({ ... }, 'couchdb');
+backend.query(query, dataset.toJSON()).done(function () { ... });
+</code></pre>
+
+<p>Alternatively:</p>
+
+<pre><code>var dataset = new recline.Model.Dataset({ ... }, 'couchdb');
 dataset.fetch();
-var results = dataset.query(query_obj);</p>
+var results = dataset.query(query_obj);
+</code></pre>
 
-<p>Additionally, the Dataset instance may define three methods:
-   function record<em>update (record, document) { ... }
+<p>Additionally, the Dataset instance may define three methods:</p>
+
+<p>function record<em>update (record, document) { ... }
    function record</em>delete (record, document) { ... }
-   function record<em>create (record, document) { ... }
-Where <code>record</code> is the JSON representation of the Record/Document instance
+   function record_create (record, document) { ... }</p>
+
+<p>Where <code>record</code> is the JSON representation of the Record/Document instance
 and <code>document</code> is the JSON document stored in couchdb.
-When _all</em>docs view is used (default), a record is the same as a document
+When <em>all</em>docs view is used (default), a record is the same as a document
 so these methods need not be defined.
 They are most useful when using a custom view that performs a map-reduce
 operation on each document to yield a record. Hence, when the record is 
@@ -422,8 +425,8 @@ we should remove it before sending it to the server.</p>             </td>      
       <span class="nx">dfd</span><span class="p">.</span><span class="nx">reject</span><span class="p">(</span><span class="nx">args</span><span class="p">);</span>
     <span class="p">});</span>
     <span class="k">return</span> <span class="nx">dfd</span><span class="p">.</span><span class="nx">promise</span><span class="p">();</span>
+    <span class="p">}</span>
 <span class="p">};</span>
-
 <span class="p">}(</span><span class="nx">jQuery</span><span class="p">,</span> <span class="k">this</span><span class="p">.</span><span class="nx">recline</span><span class="p">.</span><span class="nx">Backend</span><span class="p">.</span><span class="nx">CouchDB</span><span class="p">));</span>
 
 </pre></div>             </td>           </tr>                </tbody>     </table>   </div> </body> </html> 
