@@ -1,62 +1,9 @@
-<!DOCTYPE HTML>
-<html>
-<head>
-  <link rel="stylesheet" href="../../vendor/bootstrap/2.0.2/css/bootstrap.css" />
-
-  <link rel="stylesheet" href="../../vendor/leaflet/0.3.1/leaflet.css">
-  <!--[if lte IE 8]>
-  <link rel="stylesheet" href="../../vendor/leaflet/0.3.1/leaflet.ie.css" />
-  <![endif]-->
-  <link rel="stylesheet" href="../../vendor/slickgrid/2.0.1/slick.grid.css">
-
-  <!-- Recline CSS components -->
-  <link rel="stylesheet" href="../../css/grid.css">
-  <link rel="stylesheet" href="../../css/slickgrid.css">
-  <link rel="stylesheet" href="../../css/graph.css">
-  <link rel="stylesheet" href="../../css/transform.css">
-  <link rel="stylesheet" href="../../css/map.css">
-  <link rel="stylesheet" href="../../css/multiview.css">
-<!-- 3rd party dependencies --> 
-  <script type="text/javascript" src="../../vendor/jquery/1.7.1/jquery.js"></script>
-  <script type="text/javascript" src="../../vendor/underscore/1.1.6/underscore.js"></script>
-  <script type="text/javascript" src="../../vendor/backbone/0.5.1/backbone.js"></script>
-  <script type="text/javascript" src="../../vendor/mustache/0.5.0-dev/mustache.js"></script>
-  <script type="text/javascript" src="../../vendor/bootstrap/2.0.2/bootstrap.js"></script>
-  <script type="text/javascript" src="../../vendor/jquery.flot/0.7/jquery.flot.js"></script>
-  <script type="text/javascript" src="../../vendor/leaflet/0.3.1/leaflet.js"></script>
-  <script type="text/javascript" src="../../vendor/slickgrid/2.0.1/jquery-ui-1.8.16.custom.min.js"></script>
-  <script type="text/javascript" src="../../vendor/slickgrid/2.0.1/jquery.event.drag-2.0.min.js"></script>
-  <script type="text/javascript" src="../../vendor/slickgrid/2.0.1/slick.grid.min.js"></script>
-  <script type="text/javascript" src="../../vendor/moment/1.6.2/moment.js"></script>
-  <script type="text/javascript" src="../../vendor/timeline/20120520/js/timeline.js"></script>
-
-  <script type="text/javascript" src="../../src/backend.couchdb.js"></script>
-  <script type="text/javascript" src="../../src/view.grid.js"></script>
-  <script type="text/javascript" src="../../src/view.slickgrid.js"></script>
-  <script type="text/javascript" src="../../src/view.transform.js"></script>
-  <script type="text/javascript" src="../../src/costco.js"></script>
-  <script type="text/javascript" src="../../src/view.graph.js"></script>
-  <script type="text/javascript" src="../../src/view.map.js"></script>
-  <script type="text/javascript" src="../../src/view.timeline.js"></script>
-  <script type="text/javascript" src="../../src/widget.pager.js"></script>
-  <script type="text/javascript" src="../../src/widget.queryeditor.js"></script>
-  <script type="text/javascript" src="../../src/widget.filtereditor.js"></script>
-  <script type="text/javascript" src="../../src/widget.fields.js"></script>
-  <script type="text/javascript" src="../../src/view.multiview.js"></script>
-<script type="text/javascript" src="../../dist/recline.js"></script>
-
-</style>
-
-</head>
-<body>
-
-<div class="ex-1"></div>
-<!--
-<div id="mymap"></div>
-<div id="mygraph"></div>
-<div id="mygrid"></div>
-<div style="clear: both;"></div>
--->
+---
+layout: container
+title: CouchDB Multiview - Demos
+recline-deps: true
+root: ../../
+---
 
 <style type="text/css">
 .recline-slickgrid {
@@ -68,11 +15,26 @@
 }
 </style>
 
+<div class="instructions">
+  <h2>Instructions</h2>
+  <p>To use this demo you will need a CouchDB instance running and accessible over HTTP. You should then pass the following 2 query parameters to this page:</p>
+
+<pre>url: url-to-your-couchdb-instance
+view_url: url-to-your-couchdb-view
+
+Example:
+http://path-to-this-page/?url=/mycouchdb/&amp;view_url=/mycouchdb/_design/yourdesigndoc/_view/yourview
+</pre>
+
+  <p>Note that if the CouchDB database is <em>not</em> running on the same domain as this page then the host it is on <em>must</em> support CORS &ndash; the simplest approach here is probably to set up a reverse proxy or proxy so your CouchDB database appears on the local domain at e.g. /mycouchdb/.</p>
+</div>
+
+<h2>Demo</h2>
+
 <div class="data-explorer-here"></div>
 
 <div style="clear: both;"></div>
 
+<script type="text/javascript" src="../../src/backend.couchdb.js"></script>
 <script type="text/javascript" src="app.js"></script>
 
-</body>
-</html>
