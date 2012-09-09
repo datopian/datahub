@@ -59,8 +59,13 @@ this.recline.Backend.CSV = this.recline.Backend.CSV || {};
   // 
   // @param {String} s The string to convert
   // @param {Object} options Options for loading CSV including
-  // 	  @param {Boolean} [trim=false] If set to True leading and trailing whitespace is stripped off of each non-quoted field as it is imported
-  //	  @param {String} [separator=','] Separator for CSV file
+  // 	  @param {Boolean} [trim=false] If set to True leading and trailing
+  // 	    whitespace is stripped off of each non-quoted field as it is imported
+  //	  @param {String} [delimiter=','] A one-character string used to separate
+  //	    fields. It defaults to ','
+  //    @param {String} [quotechar='"'] A one-character string used to quote
+  //      fields containing special characters, such as the delimiter or
+  //      quotechar, or which contain new-line characters. It defaults to '"'
   //
   // Heavily based on uselesscode's JS CSV parser (MIT Licensed):
   // http://www.uselesscode.org/javascript/csv/
@@ -70,8 +75,8 @@ this.recline.Backend.CSV = this.recline.Backend.CSV || {};
 
     var options = options || {};
     var trm = (options.trim === false) ? false : true;
-    var separator = options.separator || ',';
-    var delimiter = options.delimiter || '"';
+    var delimiter = options.delimiter || ',';
+    var quotechar = options.quotechar || '"';
 
     var cur = '', // The character we are currently processing.
       inQuote = false,
@@ -106,7 +111,7 @@ this.recline.Backend.CSV = this.recline.Backend.CSV || {};
       cur = s.charAt(i);
 
       // If we are at a EOF or EOR
-      if (inQuote === false && (cur === separator || cur === "\n")) {
+      if (inQuote === false && (cur === delimiter || cur === "\n")) {
 	field = processField(field);
         // Add the current field to the current row
         row.push(field);
@@ -119,8 +124,8 @@ this.recline.Backend.CSV = this.recline.Backend.CSV || {};
         field = '';
         fieldQuoted = false;
       } else {
-        // If it's not a delimiter, add it to the field buffer
-        if (cur !== delimiter) {
+        // If it's not a quotechar, add it to the field buffer
+        if (cur !== quotechar) {
           field += cur;
         } else {
           if (!inQuote) {
@@ -128,9 +133,9 @@ this.recline.Backend.CSV = this.recline.Backend.CSV || {};
             inQuote = true;
             fieldQuoted = true;
           } else {
-            // Next char is delimiter, this is an escaped delimiter
-            if (s.charAt(i + 1) === delimiter) {
-              field += delimiter;
+            // Next char is quotechar, this is an escaped quotechar
+            if (s.charAt(i + 1) === quotechar) {
+              field += quotechar;
               // Skip the next char
               i += 1;
             } else {
@@ -168,9 +173,9 @@ this.recline.Backend.CSV = this.recline.Backend.CSV || {};
   //       ... // more attributes we do not care about
   //     }
   // 
-  // @param {Object} options Options for serializing CSV including
-  //   @param {String} [separator=','] separator for CSV file
-  //   @param {String} [delimiter='"'] delimiter for fields
+  // @param {object} options Options for serializing the CSV file including
+  //   delimiter and quotechar (see parseCSV options parameter above for
+  //   details on these).
   //
   // Heavily based on uselesscode's JS CSV serializer (MIT Licensed):
   // http://www.uselesscode.org/javascript/csv/
@@ -190,8 +195,8 @@ this.recline.Backend.CSV = this.recline.Backend.CSV || {};
       });
     }
     var options = options || {};
-    var separator = options.separator || ',';
-    var delimiter = options.delimiter || '"';
+    var delimiter = options.delimiter || ',';
+    var quotechar = options.quotechar || '"';
 
     var cur = '', // The character we are currently processing.
       field = '', // Buffer for building up the current field
@@ -207,7 +212,7 @@ this.recline.Backend.CSV = this.recline.Backend.CSV || {};
         field = '';
       } else if (typeof field === "string" && rxNeedsQuoting.test(field)) {
         // Convert string to delimited string
-        field = delimiter + field + delimiter;
+        field = quotechar + field + quotechar;
       } else if (typeof field === "number") {
         // Convert number to string
         field = field.toString(10);
@@ -228,7 +233,7 @@ this.recline.Backend.CSV = this.recline.Backend.CSV || {};
           row = '';
         } else {
           // Add the current field to the current row
-          row += field + separator;
+          row += field + delimiter;
         }
         // Flush the field buffer
         field = '';

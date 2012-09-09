@@ -34,12 +34,12 @@ test("parseCSV", function() {
   deepEqual(row, {Name: 'Jones, Jay', Value: 10});
 });
 
-test("parseCSVsemicolon", function() {
+test("parseCSV - semicolon", function() {
   var csv = '"Jones; Jay";10\n' +
   '"Xyz ""ABC"" O\'Brien";11:35\n' +
   '"Other; AN";12:35\n';
 
-  var array = recline.Backend.CSV.parseCSV(csv, {separator : ';'});
+  var array = recline.Backend.CSV.parseCSV(csv, {delimiter : ';'});
   var exp = [
     ['Jones; Jay', 10],
     ['Xyz "ABC" O\'Brien', '11:35' ],
@@ -49,12 +49,12 @@ test("parseCSVsemicolon", function() {
 
 });
 
-test("parseCSVdelimiter", function() {
+test("parseCSV - quotechar", function() {
   var csv = "'Jones, Jay',10\n" +
   "'Xyz \"ABC\" O''Brien',11:35\n" +
   "'Other; AN',12:35\n";
 
-  var array = recline.Backend.CSV.parseCSV(csv, {delimiter:"'"});
+  var array = recline.Backend.CSV.parseCSV(csv, {quotechar:"'"});
   var exp = [
     ["Jones, Jay", 10],
     ["Xyz \"ABC\" O'Brien", "11:35" ],
