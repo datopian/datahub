@@ -28,10 +28,10 @@ For small bugfixes or enhancements:
 For larger changes:
 
 * Cleanup your code and affected code parts
-* Run the tests from test/index.html in different browsers (at least Chrome and FF)
+* Run the tests from `/test/index.html` in different browsers (at least Chrome and FF)
 * Update the documentation and tutorials where necessary
-* Update _layouts/recline-deps.html if you change required files (e.g. leaflet libraries)
-* Try to build the demos in /demos with jekyll and then check out the demos/multiview/ which utilizes most aspects of Recline
+* Update `/_includes/recline-deps.html` if you change required files (e.g. leaflet libraries)
+* Try to build the demos in `/demos/` with jekyll and then check out the `/demos/multiview/` which utilizes most aspects of Recline
 
 
 ## Changelog
