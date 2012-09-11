@@ -404,8 +404,6 @@ my.Map = Backbone.View.extend({
           return marker;
         }
     });
-    //this.map.addLayer(this.features);
-    //this.map.addLayer(this.markers);
 
     this.map.setView([0, 0], 2);
 
