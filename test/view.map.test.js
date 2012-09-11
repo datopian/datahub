@@ -53,7 +53,8 @@ test('_setupGeometryField', function () {
     geomField: null,
     lonField: 'lon',
     latField: 'lat',
-    autoZoom: true
+    autoZoom: true,
+    cluster: true
   };
   deepEqual(view.state.toJSON(), exp);
   deepEqual(view.menu.state.toJSON(), exp);
@@ -132,7 +133,10 @@ test('_getGeometryFromRecord non-GeoJSON', function () {
 test('Popup', function () {
   var dataset = GeoJSONFixture.getDataset();
   var view = new recline.View.Map({
-    model: dataset
+    model: dataset,
+    state: {
+      cluster: false
+    }
   });
   $('.fixtures').append(view.el);
   view.render();
@@ -161,7 +165,10 @@ test('Popup', function () {
 test('Popup - Custom', function () {
   var dataset = GeoJSONFixture.getDataset();
   var view = new recline.View.Map({
-    model: dataset
+    model: dataset,
+    state: {
+      cluster: false
+    }
   });
   $('.fixtures').append(view.el);
   view.infobox = function(record) {
