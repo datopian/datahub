@@ -2501,18 +2501,18 @@ my.Map = Backbone.View.extend({
 
     // Listen to changes in the fields
     this.model.fields.bind('change', function() {
-      self._setupGeometryField()
-      self.render()
+      self._setupGeometryField();
+      self.render();
     });
 
     // Listen to changes in the records
-    this.model.records.bind('add', function(doc){self.redraw('add',doc)});
+    this.model.records.bind('add', function(doc){self.redraw('add',doc);});
     this.model.records.bind('change', function(doc){
         self.redraw('remove',doc);
         self.redraw('add',doc);
     });
-    this.model.records.bind('remove', function(doc){self.redraw('remove',doc)});
-    this.model.records.bind('reset', function(){self.redraw('reset')});
+    this.model.records.bind('remove', function(doc){self.redraw('remove',doc);});
+    this.model.records.bind('reset', function(){self.redraw('reset');});
 
     this.menu = new my.MapMenu({
       model: this.model,
@@ -2612,7 +2612,7 @@ my.Map = Backbone.View.extend({
 
     var count = 0;
     var wrongSoFar = 0;
-    _.every(docs,function(doc){
+    _.every(docs, function(doc){
       count += 1;
       var feature = self._getGeometryFromRecord(doc);
       if (typeof feature === 'undefined' || feature === null){
@@ -2621,7 +2621,7 @@ my.Map = Backbone.View.extend({
       } else if (feature instanceof Object){
         // Build popup contents
         // TODO: mustache?
-        html = ''
+        html = '';
         for (key in doc.attributes){
           if (!(self.state.get('geomField') && key == self.state.get('geomField'))){
             html += '<div><strong>' + key + '</strong>: '+ doc.attributes[key] + '</div>';
@@ -2634,7 +2634,11 @@ my.Map = Backbone.View.extend({
         feature.properties.cid = doc.cid;
 
         try {
-          self.features.addGeoJSON(feature);
+          self.features.addData(feature);
+
+          if (feature.properties && feature.properties.popupContent) {
+            self.features.bindPopup(feature.properties.popupContent);
+          }
         } catch (except) {
           wrongSoFar += 1;
           var msg = 'Wrong geometry value';
@@ -2644,7 +2648,7 @@ my.Map = Backbone.View.extend({
           }
         }
       } else {
-        wrongSoFar += 1
+        wrongSoFar += 1;
         if (wrongSoFar <= 10) {
           self.trigger('recline:flash', {message: 'Wrong geometry value', category:'error'});
         }
@@ -2663,7 +2667,7 @@ my.Map = Backbone.View.extend({
 
     _.each(docs,function(doc){
       for (key in self.features._layers){
-        if (self.features._layers[key].cid == doc.cid){
+        if (self.features._layers[key].feature.properties.cid == doc.cid){
           self.features.removeLayer(self.features._layers[key]);
         }
       }
@@ -2762,10 +2766,10 @@ my.Map = Backbone.View.extend({
   //
   _zoomToFeatures: function(){
     var bounds = this.features.getBounds();
-    if (bounds){
+    if (bounds.getNorthEast()){
       this.map.fitBounds(bounds);
     } else {
-      this.map.setView(new L.LatLng(0, 0), 2);
+      this.map.setView([0, 0], 2);
     }
   },
 
@@ -2779,39 +2783,13 @@ my.Map = Backbone.View.extend({
 
     var mapUrl = "http://otile{s}.mqcdn.com/tiles/1.0.0/osm/{z}/{x}/{y}.png";
     var osmAttribution = 'Map data &copy; 2011 OpenStreetMap contributors, Tiles Courtesy of <a href="http://www.mapquest.com/" target="_blank">MapQuest</a> <img src="http://developer.mapquest.com/content/osm/mq_logo.png">';
-    var bg = new L.TileLayer(mapUrl, {maxZoom: 18, attribution: osmAttribution, subdomains: '1234'});
+    var bg = new L.TileLayer(mapUrl, {maxZoom: 18, attribution: osmAttribution ,subdomains: '1234'});
     this.map.addLayer(bg);
 
     this.features = new L.GeoJSON();
-    this.features.on('featureparse', function (e) {
-      if (e.properties && e.properties.popupContent){
-        e.layer.bindPopup(e.properties.popupContent);
-       }
-      if (e.properties && e.properties.cid){
-        e.layer.cid = e.properties.cid;
-       }
-    });
-
-    // This will be available in the next Leaflet stable release.
-    // In the meantime we add it manually to our layer.
-    this.features.getBounds = function(){
-      var bounds = new L.LatLngBounds();
-      this._iterateLayers(function (layer) {
-        if (layer instanceof L.Marker){
-          bounds.extend(layer.getLatLng());
-        } else {
-          if (layer.getBounds){
-            bounds.extend(layer.getBounds().getNorthEast());
-            bounds.extend(layer.getBounds().getSouthWest());
-          }
-        }
-      }, this);
-      return (typeof bounds.getNorthEast() !== 'undefined') ? bounds : null;
-    }
-
     this.map.addLayer(this.features);
 
-    this.map.setView(new L.LatLng(0, 0), 2);
+    this.map.setView([0, 0], 2);
 
     this.mapReady = true;
   },
@@ -3111,8 +3089,9 @@ my.MultiView = Backbone.View.extend({
       </div> \
       <div class="menu-right"> \
         <div class="btn-group" data-toggle="buttons-checkbox"> \
-          <a href="#" class="btn active" data-action="filters">Filters</a> \
-          <a href="#" class="btn active" data-action="fields">Fields</a> \
+          {{#sidebarViews}} \
+          <a href="#" data-action="{{id}}" class="btn active">{{label}}</a> \
+          {{/sidebarViews}} \
         </div> \
       </div> \
       <div class="query-editor-here" style="display:inline;"></div> \
@@ -3142,28 +3121,28 @@ my.MultiView = Backbone.View.extend({
         view: new my.SlickGrid({
           model: this.model,
           state: this.state.get('view-grid')
-        }),
+        })
       }, {
         id: 'graph',
         label: 'Graph',
         view: new my.Graph({
           model: this.model,
           state: this.state.get('view-graph')
-        }),
+        })
       }, {
         id: 'map',
         label: 'Map',
         view: new my.Map({
           model: this.model,
           state: this.state.get('view-map')
-        }),
+        })
       }, {
         id: 'timeline',
         label: 'Timeline',
         view: new my.Timeline({
           model: this.model,
           state: this.state.get('view-timeline')
-        }),
+        })
       }, {
         id: 'transform',
         label: 'Transform',
@@ -3246,6 +3225,7 @@ my.MultiView = Backbone.View.extend({
   render: function() {
     var tmplData = this.model.toTemplateJSON();
     tmplData.views = this.pageViews;
+    tmplData.sidebarViews = this.sidebarViews;
     var template = Mustache.render(this.template, tmplData);
     $(this.el).html(template);
 
@@ -3265,7 +3245,7 @@ my.MultiView = Backbone.View.extend({
     _.each(this.sidebarViews, function(view) {
       this['$'+view.id] = view.view.el;
       $dataSidebar.append(view.view.el);
-    });
+    }, this);
 
     var pager = new recline.View.Pager({
       model: this.model.queryState
@@ -3308,13 +3288,7 @@ my.MultiView = Backbone.View.extend({
   _onMenuClick: function(e) {
     e.preventDefault();
     var action = $(e.target).attr('data-action');
-    if (action === 'filters') {
-      this.$filterEditor.toggle();
-    } else if (action === 'fields') {
-      this.$fieldsView.toggle();
-    } else if (action === 'transform') {
-      this.transformView.el.toggle();
-    }
+    this['$'+action].toggle();
   },
 
   _onSwitchView: function(e) {
@@ -3379,7 +3353,7 @@ my.MultiView = Backbone.View.extend({
     var self = this;
     _.each(this.pageViews, function(pageView) {
       pageView.view.bind('recline:flash', function(flash) {
-        self.notify(flash); 
+        self.notify(flash);
       });
     });
   },
@@ -3401,14 +3375,15 @@ my.MultiView = Backbone.View.extend({
       },
       flash
     );
+    var _template;
     if (tmplData.loader) {
-      var _template = ' \
+      _template = ' \
         <div class="alert alert-info alert-loader"> \
           {{message}} \
           <span class="notification-loader">&nbsp;</span> \
         </div>';
     } else {
-      var _template = ' \
+      _template = ' \
         <div class="alert alert-{{category}} fade in" data-alert="alert"><a class="close" data-dismiss="alert" href="#">×</a> \
           {{message}} \
         </div>';
