@@ -130,13 +130,34 @@ test('_getGeometryFromRecord non-GeoJSON', function () {
   });
 });
 
+test('many markers', function () {
+  var data = [];
+  for (var i = 0; i<1000; i++) {
+    data.push({ id: i, lon: 13+3*i, lat: 52+i/10});
+  }
+  var fields = [
+    {id: 'id'},
+    {id: 'lat'},
+    {id: 'lon'}
+  ];
+
+  var dataset = new recline.Model.Dataset({records: data, fields: fields});
+  var view = new recline.View.Map({
+    model: dataset
+  });
+  $('.fixtures').append(view.el);
+  view.render();
+
+  dataset.query();
+
+  equal(view.state.get('cluster'), true);
+  view.remove();
+});
+
 test('Popup', function () {
   var dataset = GeoJSONFixture.getDataset();
   var view = new recline.View.Map({
-    model: dataset,
-    state: {
-      cluster: false
-    }
+    model: dataset
   });
   $('.fixtures').append(view.el);
   view.render();

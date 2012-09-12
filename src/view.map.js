@@ -92,6 +92,9 @@ my.Map = Backbone.View.extend({
       self.state.set(self.menu.state.toJSON());
       self.redraw();
     });
+    this.state.bind('change', function() {
+      self.redraw();
+    });
     this.elSidebar = this.menu.el;
   },
 
@@ -179,7 +182,7 @@ my.Map = Backbone.View.extend({
       var countAfter = 0;
       this.features.eachLayer(function(){countAfter++;});
       var sizeIncreased = countAfter - countBefore > 0;
-      if (!this.state.get('cluster') && countAfter > 100 && sizeIncreased) {
+      if (!this.state.get('cluster') && countAfter > 99 && sizeIncreased) {
         this.state.set({cluster: true});
         return;
       }
