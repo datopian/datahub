@@ -118,26 +118,27 @@ my.Graph = Backbone.View.extend({
       return getFormattedX(x);
     };
     
+    // infoboxes on mouse hover on points/bars etc
     var trackFormatter = function (obj) {
-          var x = obj.x;
-          var y = obj.y;
-          // it's horizontal so we have to flip
-          if (self.state.attributes.graphType === 'bars') {
-            var _tmp = x;
-            x = y;
-            y = _tmp;
-          }
-          
-          x = getFormattedX(x);
+      var x = obj.x;
+      var y = obj.y;
+      // it's horizontal so we have to flip
+      if (self.state.attributes.graphType === 'bars') {
+        var _tmp = x;
+        x = y;
+        y = _tmp;
+      }
+      
+      x = getFormattedX(x);
 
-          var content = _.template('<%= group %> = <%= x %>, <%= series %> = <%= y %>', {
-            group: self.state.attributes.group,
-            x: x,
-            series: obj.series.label,
-            y: y
-          });
-        
-        return content;
+      var content = _.template('<%= group %> = <%= x %>, <%= series %> = <%= y %>', {
+        group: self.state.attributes.group,
+        x: x,
+        series: obj.series.label,
+        y: y
+      });
+      
+      return content;
     };
     
     var getFormattedX = function (x) {
@@ -208,18 +209,18 @@ my.Graph = Backbone.View.extend({
         xaxis: yaxis,
         yaxis: xaxis,
         mouse: { 
-            track: true,
-            relative: true,
-            trackFormatter: trackFormatter,
-            fillColor: '#FFFFFF',
-            fillOpacity: 0.3,
-            position: 'e'
+          track: true,
+          relative: true,
+          trackFormatter: trackFormatter,
+          fillColor: '#FFFFFF',
+          fillOpacity: 0.3,
+          position: 'e'
         },
         bars: {
-            show: true,
-            horizontal: true,
-            shadowSize: 0,
-            barWidth: 0.8         
+          show: true,
+          horizontal: true,
+          shadowSize: 0,
+          barWidth: 0.8         
         },
       },
       columns: {

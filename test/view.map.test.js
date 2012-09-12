@@ -32,9 +32,6 @@ test('basics', function () {
   $('.fixtures').append(view.el);
   view.render();
 
-  //Fire query, otherwise the map won't be initialized
-  dataset.query();
-
   assertPresent('.editor-field-type', view.elSidebar);
 
   // Check that the Leaflet map was set up
@@ -95,9 +92,6 @@ test('GeoJSON geom field', function () {
   $('.fixtures').append(view.el);
   view.render();
 
-  //Fire query, otherwise the map won't be initialized
-  dataset.query();
-
   // Check that all features were created
   equal(_getFeaturesCount(view.features),3);
 
@@ -143,9 +137,6 @@ test('Popup', function () {
   $('.fixtures').append(view.el);
   view.render();
 
-  //Fire query, otherwise the map won't be initialized
-  dataset.query();
-
   var marker = view.el.find('.leaflet-marker-icon').first();
 
   assertPresent(marker);
@@ -163,6 +154,30 @@ test('Popup', function () {
       ok((text.indexOf(field.id) !== -1))
     }
   });
+
+  view.remove();
+});
+
+test('Popup - Custom', function () {
+  var dataset = GeoJSONFixture.getDataset();
+  var view = new recline.View.Map({
+    model: dataset
+  });
+  $('.fixtures').append(view.el);
+  view.infobox = function(record) {
+    var html = Mustache.render('<h3>{{x}}</h3>y: {{y}}', record.toJSON());
+    return html;
+  };
+  view.render();
+
+  var marker = view.el.find('.leaflet-marker-icon').first();
+  _.values(view.features._layers)[0].fire('click');
+  var popup = view.el.find('.leaflet-popup-content');
+
+  assertPresent(popup);
+
+  var text = popup.html();
+  ok((text.indexOf('<h3>3</h3>y: 6') != -1))
 
   view.remove();
 });

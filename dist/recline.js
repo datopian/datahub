@@ -159,8 +159,14 @@ this.recline.Backend.CSV = this.recline.Backend.CSV || {};
   // 
   // @param {String} s The string to convert
   // @param {Object} options Options for loading CSV including
-  // 	@param {Boolean} [trim=false] If set to True leading and trailing whitespace is stripped off of each non-quoted field as it is imported
-  //	@param {String} [separator=','] Separator for CSV file
+  // 	  @param {Boolean} [trim=false] If set to True leading and trailing
+  // 	    whitespace is stripped off of each non-quoted field as it is imported
+  //	  @param {String} [delimiter=','] A one-character string used to separate
+  //	    fields. It defaults to ','
+  //    @param {String} [quotechar='"'] A one-character string used to quote
+  //      fields containing special characters, such as the delimiter or
+  //      quotechar, or which contain new-line characters. It defaults to '"'
+  //
   // Heavily based on uselesscode's JS CSV parser (MIT Licensed):
   // http://www.uselesscode.org/javascript/csv/
   my.parseCSV= function(s, options) {
@@ -169,8 +175,8 @@ this.recline.Backend.CSV = this.recline.Backend.CSV || {};
 
     var options = options || {};
     var trm = (options.trim === false) ? false : true;
-    var separator = options.separator || ',';
-    var delimiter = options.delimiter || '"';
+    var delimiter = options.delimiter || ',';
+    var quotechar = options.quotechar || '"';
 
     var cur = '', // The character we are currently processing.
       inQuote = false,
@@ -205,7 +211,7 @@ this.recline.Backend.CSV = this.recline.Backend.CSV || {};
       cur = s.charAt(i);
 
       // If we are at a EOF or EOR
-      if (inQuote === false && (cur === separator || cur === "\n")) {
+      if (inQuote === false && (cur === delimiter || cur === "\n")) {
 	field = processField(field);
         // Add the current field to the current row
         row.push(field);
@@ -218,8 +224,8 @@ this.recline.Backend.CSV = this.recline.Backend.CSV || {};
         field = '';
         fieldQuoted = false;
       } else {
-        // If it's not a delimiter, add it to the field buffer
-        if (cur !== delimiter) {
+        // If it's not a quotechar, add it to the field buffer
+        if (cur !== quotechar) {
           field += cur;
         } else {
           if (!inQuote) {
@@ -227,9 +233,9 @@ this.recline.Backend.CSV = this.recline.Backend.CSV || {};
             inQuote = true;
             fieldQuoted = true;
           } else {
-            // Next char is delimiter, this is an escaped delimiter
-            if (s.charAt(i + 1) === delimiter) {
-              field += delimiter;
+            // Next char is quotechar, this is an escaped quotechar
+            if (s.charAt(i + 1) === quotechar) {
+              field += quotechar;
               // Skip the next char
               i += 1;
             } else {
@@ -249,23 +255,48 @@ this.recline.Backend.CSV = this.recline.Backend.CSV || {};
     return out;
   };
 
-  // Converts an array of arrays into a Comma Separated Values string.
-  // Each array becomes a line in the CSV.
+  // ### serializeCSV
+  // 
+  // Convert an Object or a simple array of arrays into a Comma
+  // Separated Values string.
   //
   // Nulls are converted to empty fields and integers or floats are converted to non-quoted numbers.
   //
   // @return The array serialized as a CSV
   // @type String
   // 
-  // @param {Array} a The array of arrays to convert
-  // @param {Object} options Options for loading CSV including
-  //	@param {String} [separator=','] Separator for CSV file
-  // Heavily based on uselesscode's JS CSV parser (MIT Licensed):
+  // @param {Object or Array} dataToSerialize The Object or array of arrays to convert. Object structure must be as follows:
+  //
+  //     {
+  //       fields: [ {id: .., ...}, {id: ..., 
+  //       records: [ { record }, { record }, ... ]
+  //       ... // more attributes we do not care about
+  //     }
+  // 
+  // @param {object} options Options for serializing the CSV file including
+  //   delimiter and quotechar (see parseCSV options parameter above for
+  //   details on these).
+  //
+  // Heavily based on uselesscode's JS CSV serializer (MIT Licensed):
   // http://www.uselesscode.org/javascript/csv/
-  my.serializeCSV= function(a, options) {
+  my.serializeCSV= function(dataToSerialize, options) {
+    var a = null;
+    if (dataToSerialize instanceof Array) {
+      a = dataToSerialize;
+    } else {
+      a = [];
+      var fieldNames = _.pluck(dataToSerialize.fields, 'id');
+      a.push(fieldNames);
+      _.each(dataToSerialize.records, function(record, index) {
+        var tmp = _.map(fieldNames, function(fn) {
+          return record[fn];
+        });
+        a.push(tmp);
+      });
+    }
     var options = options || {};
-    var separator = options.separator || ',';
-    var delimiter = options.delimiter || '"';
+    var delimiter = options.delimiter || ',';
+    var quotechar = options.quotechar || '"';
 
     var cur = '', // The character we are currently processing.
       field = '', // Buffer for building up the current field
@@ -281,7 +312,7 @@ this.recline.Backend.CSV = this.recline.Backend.CSV || {};
         field = '';
       } else if (typeof field === "string" && rxNeedsQuoting.test(field)) {
         // Convert string to delimited string
-        field = delimiter + field + delimiter;
+        field = quotechar + field + quotechar;
       } else if (typeof field === "number") {
         // Convert number to string
         field = field.toString(10);
@@ -302,7 +333,7 @@ this.recline.Backend.CSV = this.recline.Backend.CSV || {};
           row = '';
         } else {
           // Add the current field to the current row
-          row += field + separator;
+          row += field + delimiter;
         }
         // Flush the field buffer
         field = '';
@@ -1848,26 +1879,27 @@ my.Graph = Backbone.View.extend({
       return getFormattedX(x);
     };
     
+    // infoboxes on mouse hover on points/bars etc
     var trackFormatter = function (obj) {
-          var x = obj.x;
-          var y = obj.y;
-          // it's horizontal so we have to flip
-          if (self.state.attributes.graphType === 'bars') {
-            var _tmp = x;
-            x = y;
-            y = _tmp;
-          }
-          
-          x = getFormattedX(x);
+      var x = obj.x;
+      var y = obj.y;
+      // it's horizontal so we have to flip
+      if (self.state.attributes.graphType === 'bars') {
+        var _tmp = x;
+        x = y;
+        y = _tmp;
+      }
+      
+      x = getFormattedX(x);
 
-          var content = _.template('<%= group %> = <%= x %>, <%= series %> = <%= y %>', {
-            group: self.state.attributes.group,
-            x: x,
-            series: obj.series.label,
-            y: y
-          });
-        
-        return content;
+      var content = _.template('<%= group %> = <%= x %>, <%= series %> = <%= y %>', {
+        group: self.state.attributes.group,
+        x: x,
+        series: obj.series.label,
+        y: y
+      });
+      
+      return content;
     };
     
     var getFormattedX = function (x) {
@@ -1938,18 +1970,18 @@ my.Graph = Backbone.View.extend({
         xaxis: yaxis,
         yaxis: xaxis,
         mouse: { 
-            track: true,
-            relative: true,
-            trackFormatter: trackFormatter,
-            fillColor: '#FFFFFF',
-            fillOpacity: 0.3,
-            position: 'e'
+          track: true,
+          relative: true,
+          trackFormatter: trackFormatter,
+          fillColor: '#FFFFFF',
+          fillOpacity: 0.3,
+          position: 'e'
         },
         bars: {
-            show: true,
-            horizontal: true,
-            shadowSize: 0,
-            barWidth: 0.8         
+          show: true,
+          horizontal: true,
+          shadowSize: 0,
+          barWidth: 0.8         
         },
       },
       columns: {
@@ -2470,6 +2502,11 @@ this.recline.View = this.recline.View || {};
 //     latField: {id of field containing latitude in the dataset}
 //   }
 // </pre>
+//
+// Useful attributes to know about (if e.g. customizing)
+//
+// * map: the Leaflet map (L.Map)
+// * features: Leaflet GeoJSON layer containing all the features (L.GeoJSON)
 my.Map = Backbone.View.extend({
   template: ' \
     <div class="recline-map"> \
@@ -2488,6 +2525,8 @@ my.Map = Backbone.View.extend({
     this.el = $(this.el);
     this.visible = true;
     this.mapReady = false;
+    // this will be the Leaflet L.Map object (setup below)
+    this.map = null;
 
     var stateData = _.extend({
         geomField: null,
@@ -2524,6 +2563,34 @@ my.Map = Backbone.View.extend({
     });
     this.elSidebar = this.menu.el;
   },
+
+  // ## Customization Functions
+  //
+  // The following methods are designed for overriding in order to customize
+  // behaviour
+
+  // ### infobox
+  //
+  // Function to create infoboxes used in popups. The default behaviour is very simple and just lists all attributes.
+  // 
+  // Users should override this function to customize behaviour i.e.
+  //
+  //     view = new View({...});
+  //     view.infobox = function(record) {
+  //       ...
+  //     }
+  infobox: function(record) {
+    var html = '';
+    for (key in record.attributes){
+      if (!(this.state.get('geomField') && key == this.state.get('geomField'))){
+        html += '<div><strong>' + key + '</strong>: '+ record.attributes[key] + '</div>';
+      }
+    }
+    return html;
+  },
+
+  // END: Customization section
+  // ----
 
   // ### Public: Adds the necessary elements to the page.
   //
@@ -2619,19 +2686,12 @@ my.Map = Backbone.View.extend({
         // Empty field
         return true;
       } else if (feature instanceof Object){
-        // Build popup contents
-        // TODO: mustache?
-        html = '';
-        for (key in doc.attributes){
-          if (!(self.state.get('geomField') && key == self.state.get('geomField'))){
-            html += '<div><strong>' + key + '</strong>: '+ doc.attributes[key] + '</div>';
-          }
-        }
-        feature.properties = {popupContent: html};
-
-        // Add a reference to the model id, which will allow us to
-        // link this Leaflet layer to a Recline doc
-        feature.properties.cid = doc.cid;
+        feature.properties = {
+          popupContent: self.infobox(doc),
+          // Add a reference to the model id, which will allow us to
+          // link this Leaflet layer to a Recline doc
+          cid: doc.cid
+        };
 
         try {
           self.features.addData(feature);

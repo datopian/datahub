@@ -17,6 +17,22 @@ A simple but powerful library for building data applications in pure Javascript 
 
 Running the tests by opening `test/index.html` in your browser.
 
+### Contributing
+
+We welcome patches and pull requests and have a few guidelines.
+
+For small bugfixes or enhancements:
+
+* Please run the tests
+
+For larger changes:
+
+* Cleanup your code and affected code parts
+* Run the tests from test/index.html in different browsers (at least Chrome and FF)
+* Update the documentation and tutorials where necessary
+* Update _layouts/recline-deps.html if you change required files (e.g. leaflet libraries)
+* Try to build the demos in /demos with jekyll and then check out the demos/multiview/ which utilizes most aspects of Recline
+
 
 ## Changelog
 
