@@ -101,6 +101,10 @@ L.MarkerClusterGroup = L.FeatureGroup.extend({
 	},
 
 	removeLayer: function (layer) {
+		if (!layer.__parent) {
+			return this;
+		}
+
 		if (this._unspiderfy) {
 			this._unspiderfy();
 			this._unspiderfyLayer(layer);
@@ -156,17 +160,34 @@ L.MarkerClusterGroup = L.FeatureGroup.extend({
 	},
 
 	zoomToShowLayer: function (layer, callback) {
-		layer.__parent.zoomToBounds();
-		setTimeout(function () {
-			if (layer._icon) {
-				callback();
-			} else {
-				layer.__parent.spiderfy();
-				setTimeout(function () {
+
+		var showMarker = function () {
+			if ((layer._icon || layer.__parent._icon) && !this._inZoomAnimation) {
+				this._map.off('moveend', showMarker, this);
+				this.off('animationend', showMarker, this);
+
+				if (layer._icon) {
 					callback();
-				}, L.DomUtil.TRANSITION ? 250 : 0); //TODO: This is hardcoded based on the time to spiderfy
+				} else if (layer.__parent._icon) {
+					var afterSpiderfy = function () {
+						this.off('spiderfied', afterSpiderfy, this);
+						callback();
+					};
+
+					this.on('spiderfied', afterSpiderfy, this);
+					layer.__parent.spiderfy();
+				}
 			}
-		}, L.DomUtil.TRANSITION ? 600 : 0); //TODO: This is hardcoded based on the leaflet time to zoom
+		};
+
+		if ((layer._icon || layer.__parent._icon) && this._map.getBounds().contains(layer.__parent._latlng)) {
+			//Layer or cluster is already visible
+			showMarker.call(this);
+		} else {
+			this._map.on('moveend', showMarker, this);
+			this.on('animationend', showMarker, this);
+			layer.__parent.zoomToBounds();
+		}
 	},
 
 	//Overrides FeatureGroup.onAdd
@@ -540,6 +561,7 @@ L.MarkerClusterGroup.include(!L.DomUtil.TRANSITION ? {
 			this._map._mapPane.className = this._map._mapPane.className.replace(' leaflet-cluster-anim', '');
 		}
 		this._inZoomAnimation--;
+		this.fire('animationend');
 	},
 	_animationZoomIn: function (previousZoomLevel, newZoomLevel) {
 		var me = this,
@@ -992,18 +1014,13 @@ L.MarkerCluster = L.Marker.extend({
 			i;
 
 		this._bounds = new L.LatLngBounds();
+		delete this._wLatLng;
 
 		for (i = markers.length - 1; i >= 0; i--) {
-			this._bounds.extend(markers[i].getLatLng());
+			this._expandBounds(markers[i]);
 		}
 		for (i = childClusters.length - 1; i >= 0; i--) {
-			this._bounds.extend(childClusters[i]._bounds);
-		}
-
-		if (this._childCount === 0) {
-			delete this._latlng;
-		} else {
-			this.setLatLng(this._wLatLng);
+			this._expandBounds(childClusters[i]);
 		}
 	},
 
@@ -1372,6 +1389,7 @@ L.MarkerCluster.include(!L.DomUtil.TRANSITION ? {
 			m._spiderLeg = leg;
 		}
 		this.setOpacity(0.3);
+		group.fire('spiderfied');
 	},
 
 	_animationUnspiderfy: function () {
@@ -1488,6 +1506,7 @@ L.MarkerCluster.include(!L.DomUtil.TRANSITION ? {
 
 		setTimeout(function () {
 			group._animationEnd();
+			group.fire('spiderfied');
 		}, 250);
 	},
 
@@ -1572,7 +1591,13 @@ L.MarkerClusterGroup.include({
 
 	_spiderfierOnAdd: function () {
 		this._map.on('click', this._unspiderfyWrapper, this);
-		this._map.on('zoomstart', this._unspiderfyZoomStart, this);
+
+		if (this._map.options.zoomAnimation) {
+			this._map.on('zoomstart', this._unspiderfyZoomStart, this);
+		} else {
+			//Browsers without zoomAnimation don't fire zoomstart
+			this._map.on('zoomend', this._unspiderfyWrapper, this);
+		}
 
 		if (L.Browser.svg && !L.Browser.touch) {
 			this._map._initPathRoot();

@@ -182,7 +182,7 @@ my.Map = Backbone.View.extend({
       var countAfter = 0;
       this.features.eachLayer(function(){countAfter++;});
       var sizeIncreased = countAfter - countBefore > 0;
-      if (!this.state.get('cluster') && countAfter > 99 && sizeIncreased) {
+      if (!this.state.get('cluster') && countAfter > 64 && sizeIncreased) {
         this.state.set({cluster: true});
         return;
       }
