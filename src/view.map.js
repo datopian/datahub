@@ -217,9 +217,6 @@ my.Map = Backbone.View.extend({
         try {
           self.features.addData(feature);
 
-          if (feature.properties && feature.properties.popupContent) {
-            self.features.bindPopup(feature.properties.popupContent);
-          }
         } catch (except) {
           wrongSoFar += 1;
           var msg = 'Wrong geometry value';
@@ -367,7 +364,11 @@ my.Map = Backbone.View.extend({
     var bg = new L.TileLayer(mapUrl, {maxZoom: 18, attribution: osmAttribution ,subdomains: '1234'});
     this.map.addLayer(bg);
 
-    this.features = new L.GeoJSON();
+    this.features = new L.GeoJSON(null,
+      {onEachFeature: function(feature,layer) {
+        layer.bindPopup(feature.properties.popupContent);
+        }
+        });
     this.map.addLayer(this.features);
 
     this.map.setView([0, 0], 2);
