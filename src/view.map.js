@@ -54,7 +54,7 @@ my.Map = Backbone.View.extend({
         lonField: null,
         latField: null,
         autoZoom: true,
-        cluster: true
+        cluster: false
       },
       options.state
     );
@@ -156,6 +156,13 @@ my.Map = Backbone.View.extend({
     }
 
     if (this._geomReady() && this.mapReady){
+      // removing ad re-adding the layer enables faster bulk loading
+      this.map.removeLayer(this.features);
+      this.map.removeLayer(this.markers);
+
+      var countBefore = 0;
+      this.features.eachLayer(function(){countBefore++;});
+
       if (action == 'refresh' || action == 'reset') {
         this.features.clearLayers();
         // recreate cluster group because of issues with clearLayer
@@ -167,6 +174,16 @@ my.Map = Backbone.View.extend({
       } else if (action == 'remove' && doc){
         this._remove(doc);
       }
+
+      // enable clustering if there is a large number of markers
+      var countAfter = 0;
+      this.features.eachLayer(function(){countAfter++;});
+      var sizeIncreased = countAfter - countBefore > 0;
+      if (!this.state.get('cluster') && countAfter > 100 && sizeIncreased) {
+        this.state.set({cluster: true});
+        return;
+      }
+
       if (this.state.get('autoZoom')){
         if (this.visible){
           this._zoomToFeatures();
@@ -174,8 +191,6 @@ my.Map = Backbone.View.extend({
           this._zoomPending = true;
         }
       }
-      this.map.removeLayer(this.features);
-      this.map.removeLayer(this.markers);
       if (this.state.get('cluster')) {
         this.map.addLayer(this.markers);
       } else {
@@ -218,9 +233,6 @@ my.Map = Backbone.View.extend({
 
     if (!(docs instanceof Array)) docs = [docs];
 
-    // removing ad re-adding the layer enables faster bulk loading
-    self.map.removeLayer(self.markers);
-
     var count = 0;
     var wrongSoFar = 0;
     _.every(docs, function(doc){
@@ -259,8 +271,6 @@ my.Map = Backbone.View.extend({
       }
       return true;
     });
-
-    self.map.addLayer(self.markers);
   },
 
   // Private: Remove one or n features from the map
@@ -394,9 +404,6 @@ my.Map = Backbone.View.extend({
 
     this.markers = new L.MarkerClusterGroup(this._clusterOptions);
 
-    m = this.map;
-    l = this.markers;
-
     this.features = new L.GeoJSON(null,{
         pointToLayer: function (feature, latlng) {
           var marker = new L.marker(latlng);
@@ -479,7 +486,7 @@ my.MapMenu = Backbone.View.extend({
           <input type="checkbox" id="editor-auto-zoom" value="autozoom" checked="checked" /> \
           Auto zoom to features</label> \
         <label class="checkbox"> \
-          <input type="checkbox" id="editor-cluster" value="cluster" checked="checked" /> \
+          <input type="checkbox" id="editor-cluster" value="cluster"/> \
           Cluster markers</label> \
       </div> \
       <input type="hidden" class="editor-id" value="map-1" /> \

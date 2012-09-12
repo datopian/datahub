@@ -54,7 +54,7 @@ test('_setupGeometryField', function () {
     lonField: 'lon',
     latField: 'lat',
     autoZoom: true,
-    cluster: true
+    cluster: false
   };
   deepEqual(view.state.toJSON(), exp);
   deepEqual(view.menu.state.toJSON(), exp);
@@ -165,10 +165,7 @@ test('Popup', function () {
 test('Popup - Custom', function () {
   var dataset = GeoJSONFixture.getDataset();
   var view = new recline.View.Map({
-    model: dataset,
-    state: {
-      cluster: false
-    }
+    model: dataset
   });
   $('.fixtures').append(view.el);
   view.infobox = function(record) {

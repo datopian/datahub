@@ -42,6 +42,8 @@ For larger changes:
 
 Possible breaking changes
 
+* Updated Leaflet to latest version 0.4.4 #220
+* Added marker clustering in map view to handle a large number of markers
 * Dataset.restore method removed (not used internally except from Multiview.restore)
 * Views no longer call render in initialize but must be called client code
 
