@@ -177,7 +177,7 @@ test('Popup - Custom', function () {
   assertPresent(popup);
 
   var text = popup.html();
-  ok((text.indexOf('<h3>3</h3>y: 6') != -1))
+  ok((text.indexOf('<h3>1</h3>y: 2') != -1))
 
   view.remove();
 });
