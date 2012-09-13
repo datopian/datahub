@@ -148,7 +148,7 @@ this.recline.Backend.Memory = this.recline.Backend.Memory || {};
             var foundmatch = false;
             _.each(self.fields, function(field) {
               var value = rawdoc[field.id];
-              if (value !== null) { 
+              if ((value !== null) && (value !== undefined)) { 
                 value = value.toString();
               } else {
                 // value can be null (apparently in some cases)
