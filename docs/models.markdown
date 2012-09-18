@@ -32,7 +32,7 @@ var dataset = new recline.model.Dataset({
   // information about data source e.g.
   url: http://url.to.my.data.endpoint/
   // backend string or object
-  backend: the backend we are using - see below
+  backend: a string identifying the backend we are using - see below
 });
 
 // initialize dataset with data from the backend.
@@ -55,7 +55,10 @@ dataset.docCount // total number of Records in the last query
   fields on this Dataset (this can be set explicitly, or, will be set by
   Dataset.fetch()
 * docCount: total number of records in this dataset
-* backend: the Backend (instance) for this Dataset.
+* backend: the Backend (instance) for this Dataset. (NB: this is a the backend
+  attribute on the object itself not the backend in the Backbone attributes
+  i.e. the result of dataset.get('backend'). The latter is a string identifying
+  the backend.
 * queryState: a `Query` object which stores current queryState.  queryState may
   be edited by other components (e.g. a query editor view) changes will trigger
   a Dataset query.

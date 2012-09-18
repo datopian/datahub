@@ -262,22 +262,8 @@ my.Dataset = Backbone.Model.extend({
 
   // ### _backendFromString(backendString)
   //
-  // See backend argument to initialize for details
+  // Look up a backend module from a backend string (look in recline.Backend)
   _backendFromString: function(backendString) {
-    var parts = backendString.split('.');
-    // walk through the specified path xxx.yyy.zzz to get the final object which should be backend class
-    var current = window;
-    for(ii=0;ii<parts.length;ii++) {
-      if (!current) {
-        break;
-      }
-      current = current[parts[ii]];
-    }
-    if (current) {
-      return current;
-    }
-
-    // alternatively we just had a simple string
     var backend = null;
     if (recline && recline.Backend) {
       _.each(_.keys(recline.Backend), function(name) {
