@@ -28,10 +28,10 @@ For small bugfixes or enhancements:
 For larger changes:
 
 * Cleanup your code and affected code parts
-* Run the tests from test/index.html in different browsers (at least Chrome and FF)
+* Run the tests from `/test/index.html` in different browsers (at least Chrome and FF)
 * Update the documentation and tutorials where necessary
-* Update _layouts/recline-deps.html if you change required files (e.g. leaflet libraries)
-* Try to build the demos in /demos with jekyll and then check out the demos/multiview/ which utilizes most aspects of Recline
+* Update `/_includes/recline-deps.html` if you change required files (e.g. leaflet libraries)
+* Try to build the demos in `/demos/` with jekyll and then check out the `/demos/multiview/` which utilizes most aspects of Recline
 
 
 ## Changelog
@@ -42,6 +42,8 @@ For larger changes:
 
 Possible breaking changes
 
+* Updated Leaflet to latest version 0.4.4 #220
+* Added marker clustering in map view to handle a large number of markers
 * Dataset.restore method removed (not used internally except from Multiview.restore)
 * Views no longer call render in initialize but must be called client code
 

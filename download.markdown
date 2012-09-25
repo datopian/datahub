@@ -79,6 +79,7 @@ Optional dependencies:
 * [Mustache.js](https://github.com/janl/mustache.js/) &gt;= 0.5.0-dev (required for all views)
 * [JQuery Flot](http://code.google.com/p/flot/) >= 0.7 (required for for graph view)
 * [Leaflet](http://leaflet.cloudmade.com/) >= 0.4.4 (required for map view)
+* [Leaflet.markercluster](https://github.com/danzel/Leaflet.markercluster)  as of 2012-09-12 (required for marker clustering)
 * [Verite Timeline](https://github.com/VeriteCo/Timeline/) as of 2012-05-02 (required for the timeline view)
 * [Bootstrap](http://twitter.github.com/bootstrap/) &gt;= v2.0 (default option for CSS and UI JS but you can use your own)
 
