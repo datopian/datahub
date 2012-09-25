@@ -254,10 +254,6 @@ my.Map = Backbone.View.extend({
 
         try {
           self.features.addData(feature);
-
-          if (feature.properties && feature.properties.popupContent) {
-            self.features.bindPopup(feature.properties.popupContent);
-          }
         } catch (except) {
           wrongSoFar += 1;
           var msg = 'Wrong geometry value';
@@ -411,6 +407,7 @@ my.Map = Backbone.View.extend({
     this.features = new L.GeoJSON(null,{
         pointToLayer: function (feature, latlng) {
           var marker = new L.marker(latlng);
+          marker.bindPopup(feature.properties.popupContent);
           self.markers.addLayer(marker);
           return marker;
         }
