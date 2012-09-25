@@ -1032,20 +1032,23 @@ this.recline.Backend.Memory = this.recline.Backend.Memory || {};
     this._applyFreeTextQuery = function(results, queryObj) {
       if (queryObj.q) {
         var terms = queryObj.q.split(' ');
+        var patterns=_.map(terms, function(term) {
+          return new RegExp(term.toLowerCase());;
+          });
         results = _.filter(results, function(rawdoc) {
           var matches = true;
-          _.each(terms, function(term) {
+          _.each(patterns, function(pattern) {
             var foundmatch = false;
             _.each(self.fields, function(field) {
               var value = rawdoc[field.id];
-              if (value !== null) { 
+              if ((value !== null) && (value !== undefined)) { 
                 value = value.toString();
               } else {
                 // value can be null (apparently in some cases)
                 value = '';
               }
               // TODO regexes?
-              foundmatch = foundmatch || (value.toLowerCase() === term.toLowerCase());
+              foundmatch = foundmatch || (pattern.test(value.toLowerCase()));
               // TODO: early out (once we are true should break to spare unnecessary testing)
               // if (foundmatch) return true;
             });
@@ -2696,9 +2699,6 @@ my.Map = Backbone.View.extend({
         try {
           self.features.addData(feature);
 
-          if (feature.properties && feature.properties.popupContent) {
-            self.features.bindPopup(feature.properties.popupContent);
-          }
         } catch (except) {
           wrongSoFar += 1;
           var msg = 'Wrong geometry value';
@@ -2846,7 +2846,11 @@ my.Map = Backbone.View.extend({
     var bg = new L.TileLayer(mapUrl, {maxZoom: 18, attribution: osmAttribution ,subdomains: '1234'});
     this.map.addLayer(bg);
 
-    this.features = new L.GeoJSON();
+    this.features = new L.GeoJSON(null,
+      {onEachFeature: function(feature,layer) {
+        layer.bindPopup(feature.properties.popupContent);
+        }
+        });
     this.map.addLayer(this.features);
 
     this.map.setView([0, 0], 2);
