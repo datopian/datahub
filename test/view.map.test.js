@@ -53,7 +53,8 @@ test('_setupGeometryField', function () {
     geomField: null,
     lonField: 'lon',
     latField: 'lat',
-    autoZoom: true
+    autoZoom: true,
+    cluster: false
   };
   deepEqual(view.state.toJSON(), exp);
   deepEqual(view.menu.state.toJSON(), exp);
@@ -127,6 +128,30 @@ test('_getGeometryFromRecord non-GeoJSON', function () {
     var out = view._getGeometryFromRecord(record);
     deepEqual(out.coordinates, item[1]);
   });
+});
+
+test('many markers', function () {
+  var data = [];
+  for (var i = 0; i<1000; i++) {
+    data.push({ id: i, lon: 13+3*i, lat: 52+i/10});
+  }
+  var fields = [
+    {id: 'id'},
+    {id: 'lat'},
+    {id: 'lon'}
+  ];
+
+  var dataset = new recline.Model.Dataset({records: data, fields: fields});
+  var view = new recline.View.Map({
+    model: dataset
+  });
+  $('.fixtures').append(view.el);
+  view.render();
+
+  dataset.query();
+
+  equal(view.state.get('cluster'), true);
+  view.remove();
 });
 
 test('Popup', function () {
