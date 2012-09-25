@@ -74,7 +74,7 @@ test('query string', function () {
   });
 
   data.query({q: 'UK 6'}).then(function(out) {
-    equal(out.total, 1);
+    equal(out.total, 2); // the new regex support will find 2 hits
     deepEqual(out.hits[0].id, 1);
   });
 });
@@ -234,7 +234,7 @@ test('query string', function () {
   });
 
   dataset.query({q: 'UK 6'}).then(function() {
-    equal(dataset.records.length, 1);
+    equal(dataset.records.length, 2);
     deepEqual(dataset.records.models[0].id, 1);
   });
 });
