@@ -139,7 +139,7 @@ Where the arguments passed in are as follows:
 
 * `value`: the value of the cell (record value for this field)
 * `field`: corresponding `Field` object
-* `record : is the `Record` object (as simple JS object)
+* `record`: is the `Record` object (as simple JS object)
 
 Note that implementing functions can ignore arguments (e.g.  function(value)
 would be a valid formatter function).
