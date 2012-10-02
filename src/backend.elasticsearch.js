@@ -230,7 +230,7 @@ this.recline.Backend.ElasticSearch = this.recline.Backend.ElasticSearch || {};
     var jqxhr = es.query(queryObj);
     jqxhr.done(function(results) {
       var out = {
-        total: results.hits.total,
+        total: results.hits.total
       };
       out.hits = _.map(results.hits.hits, function(hit) {
         if (!('id' in hit._source) && hit._id) {
