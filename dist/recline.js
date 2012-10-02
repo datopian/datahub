@@ -680,7 +680,7 @@ this.recline.Backend.ElasticSearch = this.recline.Backend.ElasticSearch || {};
     var jqxhr = es.query(queryObj);
     jqxhr.done(function(results) {
       var out = {
-        total: results.hits.total,
+        total: results.hits.total
       };
       out.hits = _.map(results.hits.hits, function(hit) {
         if (!('id' in hit._source) && hit._id) {
@@ -2040,7 +2040,7 @@ my.Graph = Backbone.View.extend({
           horizontal: true,
           shadowSize: 0,
           barWidth: 0.8         
-        },
+        }
       },
       columns: {
         legend: legend,
@@ -2061,9 +2061,9 @@ my.Graph = Backbone.View.extend({
             horizontal: false,
             shadowSize: 0,
             barWidth: 0.8         
-        },
+        }
       },
-      grid: { hoverable: true, clickable: true },
+      grid: { hoverable: true, clickable: true }
     };
     return optionsPerGraphType[typeId];
   },
@@ -2243,7 +2243,7 @@ my.GraphControls = Backbone.View.extend({
   addSeries: function (idx) {
     var data = _.extend({
       seriesIndex: idx,
-      seriesName: String.fromCharCode(idx + 64 + 1),
+      seriesName: String.fromCharCode(idx + 64 + 1)
     }, this.model.toTemplateJSON());
 
     var htmls = Mustache.render(this.templateSeriesEditor, data);
@@ -3249,7 +3249,7 @@ my.MultiView = Backbone.View.extend({
   <div class="recline-data-explorer"> \
     <div class="alert-messages"></div> \
     \
-    <div class="header"> \
+    <div class="header clearfix"> \
       <div class="navigation"> \
         <div class="btn-group" data-toggle="buttons-radio"> \
         {{#views}} \
@@ -3268,7 +3268,6 @@ my.MultiView = Backbone.View.extend({
         </div> \
       </div> \
       <div class="query-editor-here" style="display:inline;"></div> \
-      <div class="clearfix"></div> \
     </div> \
     <div class="data-view-sidebar"></div> \
     <div class="data-view-container"></div> \
