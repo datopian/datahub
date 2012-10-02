@@ -135,7 +135,7 @@ test('update and delete', function () {
   equal(data.data[0].x, newVal);
 
   // Test Delete
-  data.delete(doc1);
+  data.remove(doc1);
   equal(data.data.length, 5);
   equal(data.data[0].x, memoryData[1].x);
 });
