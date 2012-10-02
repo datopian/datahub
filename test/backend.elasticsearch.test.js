@@ -220,7 +220,7 @@ test("write", function() {
       equal(data._version, 2);
 
       // delete
-      var jqxhr = backend.delete(rec.id);
+      var jqxhr = backend.remove(rec.id);
       jqxhr.done(function(data) {
         ok(data.ok);
         rec = null;
