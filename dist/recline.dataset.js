@@ -608,7 +608,7 @@ this.recline.Backend.Memory = this.recline.Backend.Memory || {};
       });
     };
 
-    this.delete = function(doc) {
+    this.remove = function(doc) {
       var newdocs = _.reject(self.data, function(internalDoc) {
         return (doc.id === internalDoc.id);
       });
@@ -623,7 +623,7 @@ this.recline.Backend.Memory = this.recline.Backend.Memory || {};
         self.update(record);
       });
       _.each(changes.deletes, function(record) {
-        self.delete(record);
+        self.remove(record);
       });
       dfd.resolve();
       return dfd.promise();
