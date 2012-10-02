@@ -79,7 +79,7 @@ this.recline.Backend.ElasticSearch = this.recline.Backend.ElasticSearch || {};
     //
     // @param {Object} id id of object to delete
     // @return deferred supporting promise API
-    this.delete = function(id) {
+    this.remove = function(id) {
       url = this.endpoint;
       url += '/' + id;
       return makeRequest({
@@ -219,7 +219,7 @@ this.recline.Backend.ElasticSearch = this.recline.Backend.ElasticSearch || {};
     else if (changes.updates.length >0) {
       return es.upsert(changes.updates[0]);
     } else if (changes.deletes.length > 0) {
-      return es.delete(changes.deletes[0].id);
+      return es.remove(changes.deletes[0].id);
     }
   };
 

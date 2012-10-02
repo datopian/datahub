@@ -97,7 +97,7 @@ my.__type__ = 'couchdb';
     //
     // @param {Object} id id of object to delete
     // @return deferred supporting promise API
-    this.delete = function(_id) {
+    this.remove = function(_id) {
       url = self.endpoint;
       url += '/' + _id;
       return self._makeRequest({
@@ -475,7 +475,7 @@ _deleteDocument = function (del_doc, dataset) {
   var cdb      = new my.CouchDBWrapper(db_url, view_url);
 
   if (view_url.search('_all_docs') !== -1) 
-    return cdb.delete(_id);
+    return cdb.remove(_id);
   else {
     _id = model.get('_id').split('__')[0];
     var jqxhr = cdb.get(_id);
@@ -484,7 +484,7 @@ _deleteDocument = function (del_doc, dataset) {
       if (dataset.record_delete)
         old_doc = dataset.record_delete(del_doc, old_doc);
       if (_.isNull(del_doc))
-        dfd.resolve(cdb.delete(_id)); // XXX is this the right thing to do?
+        dfd.resolve(cdb.remove(_id)); // XXX is this the right thing to do?
       else {
         // couchdb uses _id to identify documents, Backbone models use id.
         // we should remove it before sending it to the server.
