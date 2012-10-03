@@ -5,10 +5,18 @@ this.recline.View = this.recline.View || {};
 
 (function($, my) {
 
+// ## FacetViewer
+//
+// Widget for displaying facets 
+//
+// Usage:
+//
+//      var viewer = new FacetViewer({
+//        model: dataset
+//      });
 my.FacetViewer = Backbone.View.extend({
-  className: 'recline-facet-viewer well', 
+  className: 'recline-facet-viewer', 
   template: ' \
-    <a class="close js-hide" href="#">&times;</a> \
     <div class="facets row"> \
       <div class="span1"> \
         <h3>Facets</h3> \
@@ -30,7 +38,6 @@ my.FacetViewer = Backbone.View.extend({
   ',
 
   events: {
-    'click .js-hide': 'onHide',
     'click .js-facet-filter': 'onFacetFilter'
   },
   initialize: function(model) {
