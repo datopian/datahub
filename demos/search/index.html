@@ -1,0 +1,82 @@
+---
+layout: container
+title: Demos - Search
+recline-deps: true
+root: ../../
+---
+
+<style type="text/css">
+.info {
+  margin-bottom: 40px;
+}
+
+/***************** Search Section ****************/
+.record {
+  border-bottom: #eee 1px solid;
+  padding: 5px;
+}
+
+.controls .query-here {
+  width: 500px;
+  margin: auto;
+}
+
+.controls .query-here .text-query input {
+  width: 400px;
+  /* fix offset bug ...*/
+  margin-left: -4px;
+}
+
+.pager-here {
+  width: 200px;
+  margin: auto;
+}
+
+.recline-pager {
+  float: left;
+  margin: auto;
+  display: block;
+  margin-left: 20px;
+}
+
+.recline-pager .pagination input {
+  width: 30px;
+  height: 18px;
+  padding: 2px 4px;
+  margin: 0;
+  margin-top: -4px;
+}
+
+.recline-pager .pagination a {
+  line-height: 26px;
+  padding: 0 6px;
+}
+
+.body {
+  clear: both;
+}
+
+.results {
+  margin-right: 300px;
+}
+
+.sidebar {
+  width: 250px;
+  float: right;
+}
+</style>
+
+<div class="page-header">
+  <h1>Recline Search Demo</h1>
+</div>
+
+<div class="info">
+  <p>This demo shows how Recline can be used to build a search app (<a href="app.js">source JS</a>). The default version uses local example data but you can also connect directly to a SOLR or ElasticSearch endpoint for example.</p>
+</div>
+
+<div class="search-here"></div>
+
+<div style="clear: both;"></div>
+
+<script type="text/javascript" src="app.js"></script>
+
