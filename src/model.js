@@ -470,16 +470,15 @@ my.Query = Backbone.Model.extend({
       }
     }
   },  
-  // ### addFilter
+  // ### addFilter(filter)
   //
-  // Add a new filter (appended to the list of filters)
+  // Add a new filter specified by the filter hash and append to the list of filters
   //
   // @param filter an object specifying the filter - see _filterTemplates for examples. If only type is provided will generate a filter by cloning _filterTemplates
   addFilter: function(filter) {
     // crude deep copy
     var ourfilter = JSON.parse(JSON.stringify(filter));
-    // not full specified so use template and over-write
-    // 3 as for 'type', 'field' and 'fieldType'
+    // not fully specified so use template and over-write
     if (_.keys(filter).length <= 3) {
       ourfilter = _.extend(this._filterTemplates[filter.type], ourfilter);
     }

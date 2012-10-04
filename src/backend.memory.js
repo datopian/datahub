@@ -24,7 +24,7 @@ this.recline.Backend.Memory = this.recline.Backend.Memory || {};
     } else {
       if (data) {
         this.fields = _.map(data[0], function(value, key) {
-          return {id: key};
+          return {id: key, type: 'string'};
         });
       }
     }
@@ -99,10 +99,20 @@ this.recline.Backend.Memory = this.recline.Backend.Memory || {};
         geo_distance : geo_distance
       };
       var dataParsers = {
-        number : function (e) { return parseFloat(e, 10); },
+        integer: function (e) { return parseFloat(e, 10); },
+        'float': function (e) { return parseFloat(e, 10); },
         string : function (e) { return e.toString() },
-        date   : function (e) { return new Date(e).valueOf() }
+        date   : function (e) { return new Date(e).valueOf() },
+        datetime   : function (e) { return new Date(e).valueOf() }
       };
+      var keyedFields = {};
+      _.each(self.fields, function(field) {
+        keyedFields[field.id] = field;
+      });
+      function getDataParser(filter) {
+        var fieldType = keyedFields[filter.field].type || 'string';
+        return dataParsers[fieldType];
+      }
 
       // filter records
       return _.filter(results, function (record) {
@@ -115,9 +125,8 @@ this.recline.Backend.Memory = this.recline.Backend.Memory || {};
       });
 
       // filters definitions
-
       function term(record, filter) {
-        var parse = dataParsers[filter.fieldType];
+        var parse = getDataParser(filter);
         var value = parse(record[filter.field]);
         var term  = parse(filter.term);
 
@@ -125,7 +134,7 @@ this.recline.Backend.Memory = this.recline.Backend.Memory || {};
       }
 
       function range(record, filter) {
-        var parse = dataParsers[filter.fieldType];
+        var parse = getDataParser(filter);
         var value = parse(record[filter.field]);
         var start = parse(filter.start);
         var stop  = parse(filter.stop);

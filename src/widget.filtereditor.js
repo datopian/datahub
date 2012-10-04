@@ -122,8 +122,7 @@ my.FilterEditor = Backbone.View.extend({
     $target.hide();
     var filterType = $target.find('select.filterType').val();
     var field      = $target.find('select.fields').val();
-    var fieldType  = this.model.fields.find(function (e) { return e.get('id') === field }).get('type');
-    this.model.queryState.addFilter({type: filterType, field: field, fieldType: fieldType});
+    this.model.queryState.addFilter({type: filterType, field: field});
     // trigger render explicitly as queryState change will not be triggered (as blank value for filter)
     this.render();
   },
