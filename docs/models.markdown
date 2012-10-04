@@ -115,6 +115,8 @@ Types are based on the [type set of elasticsearch][types-1] with a few minor add
 * string
 * integer (long)
 * float (double)
+* date
+* datetime
 * boolean
 * geo_point
 * geojson
