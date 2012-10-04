@@ -18,9 +18,10 @@ var createSearch = function(dataset, state) {
     {{#records}} \
       <div class="record"> \
         <h3> \
-          {{title}} \
+          {{title}} <em>by {{Author}}</em> \
         </h3> \
-        <p>{{description}} \
+        <p>{{description}}</p> \
+        <p><code>${{price}}</code></p> \
       </div> \
     {{/records}} \
   ';
@@ -36,7 +37,7 @@ var createSearch = function(dataset, state) {
     },
     {silent: true}
   );
-  dataset.queryState.addFacet('author');
+  dataset.queryState.addFacet('Author');
   dataset.query();
 }
 
@@ -97,15 +98,21 @@ var SearchView = Backbone.View.extend({
 var simpleData = [
   {
     title: 'War and Peace',
-    description: 'The epic tale ...',
-    author: 'Tolstoy',
+    description: 'The epic tale of love, war and history',
+    Author: 'Tolstoy',
     price: 7.99
   },
   {
     title: 'Anna Karenina',
     description: 'How things go wrong in love and ultimately lead to suicide. This is why you should not have affairs, girls!',
-    author: 'Tolstoy',
+    Author: 'Tolstoy',
     price: 8.50
+  },
+  {
+    title: "Fathers and Sons",
+    description: "Another 19th century Russian novel",
+    Author: "Turgenev",
+    price: 11
   }
 ];
 
