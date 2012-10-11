@@ -917,7 +917,7 @@ this.recline.Backend.Memory = this.recline.Backend.Memory || {};
     } else {
       if (data) {
         this.fields = _.map(data[0], function(value, key) {
-          return {id: key};
+          return {id: key, type: 'string'};
         });
       }
     }
@@ -992,10 +992,20 @@ this.recline.Backend.Memory = this.recline.Backend.Memory || {};
         geo_distance : geo_distance
       };
       var dataParsers = {
-        number : function (e) { return parseFloat(e, 10); },
+        integer: function (e) { return parseFloat(e, 10); },
+        'float': function (e) { return parseFloat(e, 10); },
         string : function (e) { return e.toString() },
-        date   : function (e) { return new Date(e).valueOf() }
+        date   : function (e) { return new Date(e).valueOf() },
+        datetime   : function (e) { return new Date(e).valueOf() }
       };
+      var keyedFields = {};
+      _.each(self.fields, function(field) {
+        keyedFields[field.id] = field;
+      });
+      function getDataParser(filter) {
+        var fieldType = keyedFields[filter.field].type || 'string';
+        return dataParsers[fieldType];
+      }
 
       // filter records
       return _.filter(results, function (record) {
@@ -1008,9 +1018,8 @@ this.recline.Backend.Memory = this.recline.Backend.Memory || {};
       });
 
       // filters definitions
-
       function term(record, filter) {
-        var parse = dataParsers[filter.fieldType];
+        var parse = getDataParser(filter);
         var value = parse(record[filter.field]);
         var term  = parse(filter.term);
 
@@ -1018,7 +1027,7 @@ this.recline.Backend.Memory = this.recline.Backend.Memory || {};
       }
 
       function range(record, filter) {
-        var parse = dataParsers[filter.fieldType];
+        var parse = getDataParser(filter);
         var value = parse(record[filter.field]);
         var start = parse(filter.start);
         var stop  = parse(filter.stop);
@@ -1718,16 +1727,15 @@ my.Query = Backbone.Model.extend({
       }
     }
   },  
-  // ### addFilter
+  // ### addFilter(filter)
   //
-  // Add a new filter (appended to the list of filters)
+  // Add a new filter specified by the filter hash and append to the list of filters
   //
   // @param filter an object specifying the filter - see _filterTemplates for examples. If only type is provided will generate a filter by cloning _filterTemplates
   addFilter: function(filter) {
     // crude deep copy
     var ourfilter = JSON.parse(JSON.stringify(filter));
-    // not full specified so use template and over-write
-    // 3 as for 'type', 'field' and 'fieldType'
+    // not fully specified so use template and over-write
     if (_.keys(filter).length <= 3) {
       ourfilter = _.extend(this._filterTemplates[filter.type], ourfilter);
     }
@@ -4301,20 +4309,27 @@ this.recline.View = this.recline.View || {};
 
 (function($, my) {
 
+// ## FacetViewer
+//
+// Widget for displaying facets 
+//
+// Usage:
+//
+//      var viewer = new FacetViewer({
+//        model: dataset
+//      });
 my.FacetViewer = Backbone.View.extend({
-  className: 'recline-facet-viewer well', 
+  className: 'recline-facet-viewer', 
   template: ' \
-    <a class="close js-hide" href="#">&times;</a> \
-    <div class="facets row"> \
-      <div class="span1"> \
-        <h3>Facets</h3> \
-      </div> \
+    <div class="facets"> \
       {{#facets}} \
-      <div class="facet-summary span2 dropdown" data-facet="{{id}}"> \
-        <a class="btn dropdown-toggle" data-toggle="dropdown" href="#"><i class="icon-chevron-down"></i> {{id}} {{label}}</a> \
-        <ul class="facet-items dropdown-menu"> \
+      <div class="facet-summary" data-facet="{{id}}"> \
+        <h3> \
+          {{id}} \
+        </h3> \
+        <ul class="facet-items"> \
         {{#terms}} \
-          <li><a class="facet-choice js-facet-filter" data-value="{{term}}">{{term}} ({{count}})</a></li> \
+          <li><a class="facet-choice js-facet-filter" data-value="{{term}}" href="#{{term}}">{{term}} ({{count}})</a></li> \
         {{/terms}} \
         {{#entries}} \
           <li><a class="facet-choice js-facet-filter" data-value="{{time}}">{{term}} ({{count}})</a></li> \
@@ -4326,7 +4341,6 @@ my.FacetViewer = Backbone.View.extend({
   ',
 
   events: {
-    'click .js-hide': 'onHide',
     'click .js-facet-filter': 'onFacetFilter'
   },
   initialize: function(model) {
@@ -4338,10 +4352,9 @@ my.FacetViewer = Backbone.View.extend({
   },
   render: function() {
     var tmplData = {
-      facets: this.model.facets.toJSON(),
       fields: this.model.fields.toJSON()
     };
-    tmplData.facets = _.map(tmplData.facets, function(facet) {
+    tmplData.facets = _.map(this.model.facets.toJSON(), function(facet) {
       if (facet._type === 'date_histogram') {
         facet.entries = _.map(facet.entries, function(entry) {
           entry.term = new Date(entry.time).toDateString();
@@ -4364,10 +4377,13 @@ my.FacetViewer = Backbone.View.extend({
     this.el.hide();
   },
   onFacetFilter: function(e) {
+    e.preventDefault();
     var $target= $(e.target);
     var fieldId = $target.closest('.facet-summary').attr('data-facet');
     var value = $target.attr('data-value');
-    this.model.queryState.addTermFilter(fieldId, value);
+    this.model.queryState.addFilter({type: 'term', field: fieldId, term: value});
+    // have to trigger explicitly for some reason
+    this.model.query();
   }
 });
 
@@ -4613,8 +4629,7 @@ my.FilterEditor = Backbone.View.extend({
     $target.hide();
     var filterType = $target.find('select.filterType').val();
     var field      = $target.find('select.fields').val();
-    var fieldType  = this.model.fields.find(function (e) { return e.get('id') === field }).get('type');
-    this.model.queryState.addFilter({type: filterType, field: field, fieldType: fieldType});
+    this.model.queryState.addFilter({type: filterType, field: field});
     // trigger render explicitly as queryState change will not be triggered (as blank value for filter)
     this.render();
   },
