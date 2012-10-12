@@ -134,12 +134,19 @@ this.recline.Backend.Memory = this.recline.Backend.Memory || {};
       }
 
       function range(record, filter) {
+        var startnull = (filter.start == null || filter.start === '');
+        var stopnull = (filter.stop == null || filter.stop === '');
         var parse = getDataParser(filter);
         var value = parse(record[filter.field]);
         var start = parse(filter.start);
         var stop  = parse(filter.stop);
 
-        return (value >= start && value <= stop);
+        // if at least one end of range is set do not allow '' to get through
+        // note that for strings '' <= {any-character} e.g. '' <= 'a'
+        if ((!startnull || !stopnull) && value === '') {
+          return false;
+        }
+        return ((startnull || value >= start) && (stopnull || value <= stop));
       }
 
       function geo_distance() {

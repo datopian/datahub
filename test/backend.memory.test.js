@@ -114,6 +114,42 @@ test('filters', function () {
   });
 });
 
+
+test('filters with nulls', function () {
+  var data = _wrapData();
+
+  query = new recline.Model.Query();
+  query.addFilter({type: 'range', field: 'z', start: '', stop: null});
+  data.query(query.toJSON()).then(function(out) {
+    equal(out.total, 6);
+  });
+
+  query = new recline.Model.Query();
+  query.addFilter({type: 'range', field: 'x', start: '', stop: '3'});
+  data.query(query.toJSON()).then(function(out) {
+    equal(out.total, 3);
+  });
+
+  query = new recline.Model.Query();
+  query.addFilter({type: 'range', field: 'x', start: '3', stop: ''});
+  data.query(query.toJSON()).then(function(out) {
+    equal(out.total, 4);
+  });
+
+  data.data[5].country = '';
+  query = new recline.Model.Query();
+  query.addFilter({type: 'range', field: 'country', start: '', stop: 'Z'});
+  data.query(query.toJSON()).then(function(out) {
+    equal(out.total, 5);
+  });
+
+  query = new recline.Model.Query();
+  query.addFilter({type: 'range', field: 'x', start: '', stop: ''});
+  data.query(query.toJSON()).then(function(out) {
+    equal(out.total, 6);
+  });
+});
+
 test('facet', function () {
   var data = _wrapData();
   var query = new recline.Model.Query();
