@@ -10,10 +10,10 @@ root: ../
   </h1>
 </div>
 
-Models help you structure your work with data by providing some standard
-objects. The key ones are Dataset and Record -- a Dataset being a collection of
-Records. Additionally, there is a a Field object for describing the columns of
-a Dataset, a Query object for describing queries, and a Facet object for
+Models help you structure your work with data by providing several objects and
+functions. The key ones are Dataset and Record -- a Dataset being a collection
+of Records. Additionally, there is a a Field object for describing the columns
+of a Dataset, a Query object for describing queries, and a Facet object for
 holding summary information about a Field (or multiple Fields).
 
 All the models are Backbone models, that is they extend Backbone.Model. Note,
@@ -70,8 +70,8 @@ dataset.docCount // total number of Records in the last query
 dataset.query(queryObj)
 {% endhighlight %}
 
-`queryObj` an object following the <a href="#query-structure">query
-pecification below</a>.
+`queryObj` is an object following the <a href="#query-structure">query
+specification below</a>.
 
 
 <h2 id="record">Record (aka Row)</h2>
@@ -108,20 +108,37 @@ var field = new Field({
 
 #### Types
 
-Types are based on the [type set of elasticsearch][types-1] with a few minor additions and modifications:
+The type attribute is a string indicating the type of this field.
 
-[types-1]: http://www.elasticsearch.org/guide/reference/mapping/
+Types are
+based on the [type set of json-schmea][types-1] with a few minor additions and
+modifications (cf other type lists include those in [Elasticsearch](es-types)).
 
-* string
-* integer (long)
-* float (double)
-* date
-* datetime
-* boolean
+The type list is as follows (brackets indicate
+possible aliases for specific types - these types will be recognized and
+normalized to the default type name for that type):
+
+* string (text)
+* number (double, float) - a number including floating point numbers.
+* integer (int) - an integer.
+* date - a date. The preferred format is YYYY-MM-DD.
+* time - a time without a date
+* date-time (dateTime, timestamp) a date-time. It is recommended this be in ISO 8601
+  format of YYYY-MM- DDThh:mm:ssZ in UTC time.
+* boolean (bool)
+* binary - base64 representation of binary data.
 * geo_point
 * geojson
 * array
-* object
+* object (json)
+* any - value of field may be any type
+
+<div class="alert">NB: types are not validated so you can set the type to
+whatever value you like (it does not have to be in the above list). However,
+using types outside of the specified list may limit functionality.</div> 
+
+[types-1]: http://tools.ietf.org/html/draft-zyp-json-schema-03#section-5.1
+[es-types]: http://www.elasticsearch.org/guide/reference/mapping/
 
 #### Rendering, types and formats
 
@@ -247,7 +264,7 @@ the backend.
 </pre>
 
 
-<h2>Facet <small>&ndash; Store summary information (e.g. values and counts) about a field obtained by some 'faceting' or 'group by' method</small>
+<h2>Facet <small>&ndash; Summary information (e.g. values and counts) about a field obtained by a 'faceting' or 'group by' method</small>
 </h2>
 
 Structure of a facet follows that of Facet results in ElasticSearch, see:
@@ -261,7 +278,7 @@ key used to specify this facet in the facet query):
 {
   id: "id-of-facet",
   // type of this facet (terms, range, histogram etc)
-  \_type : "terms",
+  _type : "terms",
   // total number of tokens in the facet
   total: 5,
   // @property {number} number of records which have no value for the field
