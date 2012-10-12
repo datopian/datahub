@@ -30,11 +30,11 @@ test('basics', function () {
   equal(dataset.records.length, 3);
 
   // now remove filter
+  $editForm = view.el.find('form.js-edit');
   $editForm.find('.js-remove-filter').click();
-  // hmmm, not working yet but works by eye!
-  // $editForm = view.el.find('form.js-edit');
-  // equal($editForm.find('.filter-term').length, 0)
-  // equal(dataset.records.length, 6);
+  $editForm = view.el.find('form.js-edit');
+  equal($editForm.find('.filter-term').length, 0)
+  equal(dataset.records.length, 6);
 
   view.remove();
 });
