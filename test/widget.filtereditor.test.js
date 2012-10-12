@@ -29,11 +29,31 @@ test('basics', function () {
   equal(dataset.queryState.attributes.filters[0].term, 'UK');
   equal(dataset.records.length, 3);
 
+  // now set a second range filter ...
+  view.el.find('.js-add-filter').click();
+  var $addForm = view.el.find('form.js-add');
+  $addForm.find('select.fields').val('x');
+  $addForm.find('select.filterType').val('range');
+  $addForm.submit();
+
+  $editForm = view.el.find('form.js-edit');
+  $editForm.find('.filter-range input').first().val('2');
+  $editForm.find('.filter-range input').last().val('4');
+  $editForm.submit();
+  equal(dataset.queryState.attributes.filters[1].start, 2);
+  equal(dataset.records.length, 2);
+
   // now remove filter
   $editForm = view.el.find('form.js-edit');
-  $editForm.find('.js-remove-filter').click();
+  $editForm.find('.js-remove-filter').last().click();
   $editForm = view.el.find('form.js-edit');
-  equal($editForm.find('.filter-term').length, 0)
+  equal($editForm.find('.filter').length, 1)
+  equal(dataset.records.length, 3);
+
+  $editForm = view.el.find('form.js-edit');
+  $editForm.find('.js-remove-filter').last().click();
+  $editForm = view.el.find('form.js-edit');
+  equal($editForm.find('.filter').length, 0)
   equal(dataset.records.length, 6);
 
   view.remove();

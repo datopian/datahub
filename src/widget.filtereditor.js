@@ -13,17 +13,17 @@ my.FilterEditor = Backbone.View.extend({
       <a href="#" class="js-add-filter">Add filter</a> \
       <form class="form-stacked js-add" style="display: none;"> \
         <fieldset> \
-          <label>Filter type</label> \
-          <select class="filterType"> \
-            <option value="term">Term (text)</option> \
-            <option value="range">Range</option> \
-            <option value="geo_distance">Geo distance</option> \
-          </select> \
           <label>Field</label> \
           <select class="fields"> \
             {{#fields}} \
             <option value="{{id}}">{{label}}</option> \
             {{/fields}} \
+          </select> \
+          <label>Filter type</label> \
+          <select class="filterType"> \
+            <option value="term">Value</option> \
+            <option value="range">Range</option> \
+            <option value="geo_distance">Geo distance</option> \
           </select> \
           <button type="submit" class="btn">Add</button> \
         </fieldset> \
@@ -44,7 +44,7 @@ my.FilterEditor = Backbone.View.extend({
         <fieldset> \
           <legend> \
             {{field}} <small>{{type}}</small> \
-            <a class="js-remove-filter" href="#" title="Remove this filter">&times;</a> \
+            <a class="js-remove-filter" href="#" title="Remove this filter" data-filter-id="{{id}}">&times;</a> \
           </legend> \
           <input type="text" value="{{term}}" name="term" data-filter-field="{{field}}" data-filter-id="{{id}}" data-filter-type="{{type}}" /> \
         </fieldset> \
@@ -55,7 +55,7 @@ my.FilterEditor = Backbone.View.extend({
         <fieldset> \
           <legend> \
             {{field}} <small>{{type}}</small> \
-            <a class="js-remove-filter" href="#" title="Remove this filter">&times;</a> \
+            <a class="js-remove-filter" href="#" title="Remove this filter" data-filter-id="{{id}}">&times;</a> \
           </legend> \
           <label class="control-label" for="">From</label> \
           <input type="text" value="{{start}}" name="start" data-filter-field="{{field}}" data-filter-id="{{id}}" data-filter-type="{{type}}" /> \
@@ -69,7 +69,7 @@ my.FilterEditor = Backbone.View.extend({
         <fieldset> \
           <legend> \
             {{field}} <small>{{type}}</small> \
-            <a class="js-remove-filter" href="#" title="Remove this filter">&times;</a> \
+            <a class="js-remove-filter" href="#" title="Remove this filter" data-filter-id="{{id}}">&times;</a> \
           </legend> \
           <label class="control-label" for="">Longitude</label> \
           <input type="text" value="{{point.lon}}" name="lon" data-filter-field="{{field}}" data-filter-id="{{id}}" data-filter-type="{{type}}" /> \
@@ -129,7 +129,7 @@ my.FilterEditor = Backbone.View.extend({
   onRemoveFilter: function(e) {
     e.preventDefault();
     var $target = $(e.target);
-    var filterId = $target.closest('.filter').attr('data-filter-id');
+    var filterId = $target.attr('data-filter-id');
     this.model.queryState.removeFilter(filterId);
   },
   onTermFiltersUpdate: function(e) {
