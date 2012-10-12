@@ -145,7 +145,8 @@ my.Graph = Backbone.View.extend({
       var xfield = self.model.fields.get(self.state.attributes.group);
 
       // time series
-      var isDateTime = xfield.get('type') === 'date';
+      var xtype = xfield.get('type');
+      var isDateTime = (xtype === 'date' || xtype === 'date-time' || xtype  === 'time');
 
       if (self.model.records.models[parseInt(x)]) {
         x = self.model.records.models[parseInt(x)].get(self.state.attributes.group);
@@ -259,7 +260,8 @@ my.Graph = Backbone.View.extend({
         var x = doc.getFieldValue(xfield);
 
         // time series
-        var isDateTime = xfield.get('type') === 'date';
+        var xtype = xfield.get('type');
+        var isDateTime = (xtype === 'date' || xtype === 'date-time' || xtype  === 'time');
         
         if (isDateTime) {
           // datetime

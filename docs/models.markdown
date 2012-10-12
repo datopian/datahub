@@ -118,12 +118,12 @@ The type list is as follows (brackets indicate
 possible aliases for specific types - these types will be recognized and
 normalized to the default type name for that type):
 
-* string (text)
-* number (double, float) - a number including floating point numbers.
+* string (text) - a string
+* number (double, float, numeric) - a number including floating point numbers.
 * integer (int) - an integer.
 * date - a date. The preferred format is YYYY-MM-DD.
 * time - a time without a date
-* date-time (dateTime, timestamp) a date-time. It is recommended this be in ISO 8601
+* date-time (datetime, timestamp) a date-time. It is recommended this be in ISO 8601
   format of YYYY-MM- DDThh:mm:ssZ in UTC time.
 * boolean (bool)
 * binary - base64 representation of binary data.

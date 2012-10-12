@@ -94,10 +94,7 @@ this.recline.Backend.Ckan = this.recline.Backend.Ckan || {};
   var CKAN_TYPES_MAP = {
     'int4': 'integer',
     'int8': 'integer',
-    'float8': 'float',
-    'text': 'string',
-    'json': 'object',
-    'timestamp': 'date'
+    'float8': 'float'
   };
 
 }(jQuery, this.recline.Backend.Ckan));

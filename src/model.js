@@ -380,6 +380,9 @@ my.Field = Backbone.Model.extend({
     if (this.attributes.label === null) {
       this.set({label: this.id});
     }
+    if (this.attributes.type.toLowerCase() in this._typeMap) {
+      this.attributes.type = this._typeMap[this.attributes.type.toLowerCase()];
+    }
     if (options) {
       this.renderer = options.renderer;
       this.deriver = options.deriver;
@@ -389,6 +392,17 @@ my.Field = Backbone.Model.extend({
     }
     this.facets = new my.FacetList();
   },
+  _typeMap: {
+    'text': 'string',
+    'double': 'number',
+    'float': 'number',
+    'numeric': 'number',
+    'int': 'integer',
+    'datetime': 'date-time',
+    'bool': 'boolean',
+    'timestamp': 'date-time',
+    'json': 'object'
+  },
   defaultRenderers: {
     object: function(val, field, doc) {
       return JSON.stringify(val);
@@ -396,7 +410,7 @@ my.Field = Backbone.Model.extend({
     geo_point: function(val, field, doc) {
       return JSON.stringify(val);
     },
-    'float': function(val, field, doc) {
+    'number': function(val, field, doc) {
       var format = field.get('format'); 
       if (format === 'percentage') {
         return val + '%';
