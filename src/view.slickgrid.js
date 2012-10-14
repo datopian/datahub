@@ -12,7 +12,24 @@ this.recline.View = this.recline.View || {};
 //
 // Initialize it with a `recline.Model.Dataset`.
 //
-// NB: you need an explicit height on the element for slickgrid to work
+// Additional options to drive SlickGrid grid can be given through state.
+// The following keys allow for customization:
+// * gridOptions: to add options at grid level
+// * columnsEditor: to add editor for editable columns
+//
+// For example:
+//    var grid = new recline.View.SlickGrid({
+//         model: dataset,
+//         el: $el,
+//         state: {
+//          gridOptions: {editable: true},
+//          columnsEditor: [
+//            {column: 'date', editor: Slick.Editor.Date },
+//            {column: 'title', editor: Slick.Editor.Text}
+//          ]
+//        }
+//      });
+//// NB: you need an explicit height on the element for slickgrid to work
 my.SlickGrid = Backbone.View.extend({
   initialize: function(modelEtc) {
     var self = this;
@@ -28,9 +45,13 @@ my.SlickGrid = Backbone.View.extend({
         columnsOrder: [],
         columnsSort: {},
         columnsWidth: [],
+        columnsEditor: [],
+        options: {},
         fitColumns: false
       }, modelEtc.state
+
     );
+//      this.grid_options = modelEtc.options;
     this.state = new recline.Model.ObjectState(state);
   },
 
@@ -40,13 +61,13 @@ my.SlickGrid = Backbone.View.extend({
   render: function() {
     var self = this;
 
-    var options = {
+    var options = _.extend({
       enableCellNavigation: true,
       enableColumnReorder: true,
       explicitInitialization: true,
       syncColumnCellResize: true,
       forceFitColumns: this.state.get('fitColumns')
-    };
+    }, self.state.get('gridOptions'));
 
     // We need all columns, even the hidden ones, to show on the column picker
     var columns = [];
@@ -76,6 +97,10 @@ my.SlickGrid = Backbone.View.extend({
         column['width'] = widthInfo.width;
       }
 
+      var editInfo = _.find(self.state.get('columnsEditor'),function(c){return c.column == field.id});
+      if (editInfo){
+        column['editor'] = editInfo.editor;
+      }
       columns.push(column);
     });
 
@@ -104,14 +129,29 @@ my.SlickGrid = Backbone.View.extend({
     }
     columns = columns.concat(tempHiddenColumns);
 
-    var data = [];
+    function RowSet() {
+      var models = [];
+      var rows = [];
+
+      this.push = function(model, row) {
+        models.push(model);
+        rows.push(row);
+      }
+
+      this.getLength = function() { return rows.length; }
+      this.getItem = function(index) { return rows[index];}
+      this.getItemMetadata= function(index) { return {};}
+      this.getModel= function(index) { return models[index]; }
+    };
+
+    var data = new RowSet();
 
     this.model.records.each(function(doc){
       var row = {};
       self.model.fields.each(function(field){
         row[field.id] = doc.getFieldValueUnrendered(field);
       });
-      data.push(row);
+      data.push(doc, row);
     });
 
     this.grid = new Slick.Grid(this.el, data, visibleColumns, options);
@@ -147,6 +187,17 @@ my.SlickGrid = Backbone.View.extend({
           }
         });
         self.state.set({columnsWidth:columnsWidth});
+    });
+
+    this.grid.onCellChange.subscribe(function (e, args) {
+      // We need to change the model associated value
+      //
+      var grid = args.grid;
+      var model = data.getModel(args.row);
+      var field = grid.getColumns()[args.cell]['id'];
+      var v = {};
+      v[field] = args.item[field];
+      model.set(v);
     });
 
     var columnpicker = new Slick.Controls.ColumnPicker(columns, this.grid,
