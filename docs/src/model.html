@@ -297,6 +297,9 @@ WARNING: these will not persist <em>unless</em> you call save on Dataset</p>    
     <span class="k">if</span> <span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">attributes</span><span class="p">.</span><span class="nx">label</span> <span class="o">===</span> <span class="kc">null</span><span class="p">)</span> <span class="p">{</span>
       <span class="k">this</span><span class="p">.</span><span class="nx">set</span><span class="p">({</span><span class="nx">label</span><span class="o">:</span> <span class="k">this</span><span class="p">.</span><span class="nx">id</span><span class="p">});</span>
     <span class="p">}</span>
+    <span class="k">if</span> <span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">attributes</span><span class="p">.</span><span class="nx">type</span><span class="p">.</span><span class="nx">toLowerCase</span><span class="p">()</span> <span class="k">in</span> <span class="k">this</span><span class="p">.</span><span class="nx">_typeMap</span><span class="p">)</span> <span class="p">{</span>
+      <span class="k">this</span><span class="p">.</span><span class="nx">attributes</span><span class="p">.</span><span class="nx">type</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">_typeMap</span><span class="p">[</span><span class="k">this</span><span class="p">.</span><span class="nx">attributes</span><span class="p">.</span><span class="nx">type</span><span class="p">.</span><span class="nx">toLowerCase</span><span class="p">()];</span>
+    <span class="p">}</span>
     <span class="k">if</span> <span class="p">(</span><span class="nx">options</span><span class="p">)</span> <span class="p">{</span>
       <span class="k">this</span><span class="p">.</span><span class="nx">renderer</span> <span class="o">=</span> <span class="nx">options</span><span class="p">.</span><span class="nx">renderer</span><span class="p">;</span>
       <span class="k">this</span><span class="p">.</span><span class="nx">deriver</span> <span class="o">=</span> <span class="nx">options</span><span class="p">.</span><span class="nx">deriver</span><span class="p">;</span>
@@ -306,6 +309,17 @@ WARNING: these will not persist <em>unless</em> you call save on Dataset</p>    
     <span class="p">}</span>
     <span class="k">this</span><span class="p">.</span><span class="nx">facets</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">my</span><span class="p">.</span><span class="nx">FacetList</span><span class="p">();</span>
   <span class="p">},</span>
+  <span class="nx">_typeMap</span><span class="o">:</span> <span class="p">{</span>
+    <span class="s1">&#39;text&#39;</span><span class="o">:</span> <span class="s1">&#39;string&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;double&#39;</span><span class="o">:</span> <span class="s1">&#39;number&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;float&#39;</span><span class="o">:</span> <span class="s1">&#39;number&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;numeric&#39;</span><span class="o">:</span> <span class="s1">&#39;number&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;int&#39;</span><span class="o">:</span> <span class="s1">&#39;integer&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;datetime&#39;</span><span class="o">:</span> <span class="s1">&#39;date-time&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;bool&#39;</span><span class="o">:</span> <span class="s1">&#39;boolean&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;timestamp&#39;</span><span class="o">:</span> <span class="s1">&#39;date-time&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;json&#39;</span><span class="o">:</span> <span class="s1">&#39;object&#39;</span>
+  <span class="p">},</span>
   <span class="nx">defaultRenderers</span><span class="o">:</span> <span class="p">{</span>
     <span class="nx">object</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">val</span><span class="p">,</span> <span class="nx">field</span><span class="p">,</span> <span class="nx">doc</span><span class="p">)</span> <span class="p">{</span>
       <span class="k">return</span> <span class="nx">JSON</span><span class="p">.</span><span class="nx">stringify</span><span class="p">(</span><span class="nx">val</span><span class="p">);</span>
@@ -313,7 +327,7 @@ WARNING: these will not persist <em>unless</em> you call save on Dataset</p>    
     <span class="nx">geo_point</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">val</span><span class="p">,</span> <span class="nx">field</span><span class="p">,</span> <span class="nx">doc</span><span class="p">)</span> <span class="p">{</span>
       <span class="k">return</span> <span class="nx">JSON</span><span class="p">.</span><span class="nx">stringify</span><span class="p">(</span><span class="nx">val</span><span class="p">);</span>
     <span class="p">},</span>
-    <span class="s1">&#39;float&#39;</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">val</span><span class="p">,</span> <span class="nx">field</span><span class="p">,</span> <span class="nx">doc</span><span class="p">)</span> <span class="p">{</span>
+    <span class="s1">&#39;number&#39;</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">val</span><span class="p">,</span> <span class="nx">field</span><span class="p">,</span> <span class="nx">doc</span><span class="p">)</span> <span class="p">{</span>
       <span class="kd">var</span> <span class="nx">format</span> <span class="o">=</span> <span class="nx">field</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s1">&#39;format&#39;</span><span class="p">);</span> 
       <span class="k">if</span> <span class="p">(</span><span class="nx">format</span> <span class="o">===</span> <span class="s1">&#39;percentage&#39;</span><span class="p">)</span> <span class="p">{</span>
         <span class="k">return</span> <span class="nx">val</span> <span class="o">+</span> <span class="s1">&#39;%&#39;</span><span class="p">;</span>
