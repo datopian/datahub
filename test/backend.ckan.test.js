@@ -1,6 +1,17 @@
 (function ($) {
 module("Backend CKAN");
 
+test('_parseCkanResourceUrl', function() {
+  var resid = 'eb23e809-ccbb-4ad1-820a-19586fc4bebd';
+  var url = 'http://demo.ckan.org/dataset/some-dataset/resource/' + resid;
+  var out = recline.Backend.Ckan._parseCkanResourceUrl(url);
+  var exp = {
+    resource_id: resid,
+    endpoint: 'http://demo.ckan.org/api'
+  }
+  deepEqual(out, exp);
+});
+
 test('_normalizeQuery', function() {
   var dataset = new recline.Model.Dataset({
     url: 'does-not-matter',
