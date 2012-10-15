@@ -380,6 +380,9 @@ my.Field = Backbone.Model.extend({
     if (this.attributes.label === null) {
       this.set({label: this.id});
     }
+    if (this.attributes.type.toLowerCase() in this._typeMap) {
+      this.attributes.type = this._typeMap[this.attributes.type.toLowerCase()];
+    }
     if (options) {
       this.renderer = options.renderer;
       this.deriver = options.deriver;
@@ -389,6 +392,17 @@ my.Field = Backbone.Model.extend({
     }
     this.facets = new my.FacetList();
   },
+  _typeMap: {
+    'text': 'string',
+    'double': 'number',
+    'float': 'number',
+    'numeric': 'number',
+    'int': 'integer',
+    'datetime': 'date-time',
+    'bool': 'boolean',
+    'timestamp': 'date-time',
+    'json': 'object'
+  },
   defaultRenderers: {
     object: function(val, field, doc) {
       return JSON.stringify(val);
@@ -396,7 +410,7 @@ my.Field = Backbone.Model.extend({
     geo_point: function(val, field, doc) {
       return JSON.stringify(val);
     },
-    'float': function(val, field, doc) {
+    'number': function(val, field, doc) {
       var format = field.get('format'); 
       if (format === 'percentage') {
         return val + '%';
@@ -470,16 +484,15 @@ my.Query = Backbone.Model.extend({
       }
     }
   },  
-  // ### addFilter
+  // ### addFilter(filter)
   //
-  // Add a new filter (appended to the list of filters)
+  // Add a new filter specified by the filter hash and append to the list of filters
   //
   // @param filter an object specifying the filter - see _filterTemplates for examples. If only type is provided will generate a filter by cloning _filterTemplates
   addFilter: function(filter) {
     // crude deep copy
     var ourfilter = JSON.parse(JSON.stringify(filter));
-    // not full specified so use template and over-write
-    // 3 as for 'type', 'field' and 'fieldType'
+    // not fully specified so use template and over-write
     if (_.keys(filter).length <= 3) {
       ourfilter = _.extend(this._filterTemplates[filter.type], ourfilter);
     }
@@ -595,7 +608,7 @@ this.recline.Backend.Memory = this.recline.Backend.Memory || {};
     } else {
       if (data) {
         this.fields = _.map(data[0], function(value, key) {
-          return {id: key};
+          return {id: key, type: 'string'};
         });
       }
     }
@@ -670,10 +683,20 @@ this.recline.Backend.Memory = this.recline.Backend.Memory || {};
         geo_distance : geo_distance
       };
       var dataParsers = {
-        number : function (e) { return parseFloat(e, 10); },
+        integer: function (e) { return parseFloat(e, 10); },
+        'float': function (e) { return parseFloat(e, 10); },
         string : function (e) { return e.toString() },
-        date   : function (e) { return new Date(e).valueOf() }
+        date   : function (e) { return new Date(e).valueOf() },
+        datetime   : function (e) { return new Date(e).valueOf() }
       };
+      var keyedFields = {};
+      _.each(self.fields, function(field) {
+        keyedFields[field.id] = field;
+      });
+      function getDataParser(filter) {
+        var fieldType = keyedFields[filter.field].type || 'string';
+        return dataParsers[fieldType];
+      }
 
       // filter records
       return _.filter(results, function (record) {
@@ -686,9 +709,8 @@ this.recline.Backend.Memory = this.recline.Backend.Memory || {};
       });
 
       // filters definitions
-
       function term(record, filter) {
-        var parse = dataParsers[filter.fieldType];
+        var parse = getDataParser(filter);
         var value = parse(record[filter.field]);
         var term  = parse(filter.term);
 
@@ -696,12 +718,19 @@ this.recline.Backend.Memory = this.recline.Backend.Memory || {};
       }
 
       function range(record, filter) {
-        var parse = dataParsers[filter.fieldType];
+        var startnull = (filter.start == null || filter.start === '');
+        var stopnull = (filter.stop == null || filter.stop === '');
+        var parse = getDataParser(filter);
         var value = parse(record[filter.field]);
         var start = parse(filter.start);
         var stop  = parse(filter.stop);
 
-        return (value >= start && value <= stop);
+        // if at least one end of range is set do not allow '' to get through
+        // note that for strings '' <= {any-character} e.g. '' <= 'a'
+        if ((!startnull || !stopnull) && value === '') {
+          return false;
+        }
+        return ((startnull || value >= start) && (stopnull || value <= stop));
       }
 
       function geo_distance() {

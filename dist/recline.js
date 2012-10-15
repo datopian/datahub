@@ -9,17 +9,38 @@ this.recline.Backend.Ckan = this.recline.Backend.Ckan || {};
   //
   // General notes
   // 
+  // We need 2 things to make most requests:
+  //
+  // 1. CKAN API endpoint
+  // 2. ID of resource for which request is being made
+  //
+  // There are 2 ways to specify this information.
+  //
+  // EITHER (checked in order): 
+  //
   // * Every dataset must have an id equal to its resource id on the CKAN instance
-  // * You should set the CKAN API endpoint for requests by setting API_ENDPOINT value on this module (recline.Backend.Ckan.API_ENDPOINT)
+  // * The dataset has an endpoint attribute pointing to the CKAN API endpoint
+  //
+  // OR:
+  // 
+  // Set the url attribute of the dataset to point to the Resource on the CKAN instance. The endpoint and id will then be automatically computed.
 
   my.__type__ = 'ckan';
 
   // Default CKAN API endpoint used for requests (you can change this but it will affect every request!)
+  //
+  // DEPRECATION: this will be removed in v0.7. Please set endpoint attribute on dataset instead
   my.API_ENDPOINT = 'http://datahub.io/api';
 
   // ### fetch
   my.fetch = function(dataset) {
-    var wrapper = my.DataStore();
+    if (dataset.endpoint) {
+      var wrapper = my.DataStore(dataset.endpoint);
+    } else {
+      var out = my._parseCkanResourceUrl(dataset.url);
+      dataset.id = out.resource_id;
+      var wrapper = my.DataStore(out.endpoint);
+    }
     var dfd = $.Deferred();
     var jqxhr = wrapper.search({resource_id: dataset.id, limit: 0});
     jqxhr.done(function(results) {
@@ -55,8 +76,14 @@ this.recline.Backend.Ckan = this.recline.Backend.Ckan || {};
   }
 
   my.query = function(queryObj, dataset) {
+    if (dataset.endpoint) {
+      var wrapper = my.DataStore(dataset.endpoint);
+    } else {
+      var out = my._parseCkanResourceUrl(dataset.url);
+      dataset.id = out.resource_id;
+      var wrapper = my.DataStore(out.endpoint);
+    }
     var actualQuery = my._normalizeQuery(queryObj, dataset);
-    var wrapper = my.DataStore();
     var dfd = $.Deferred();
     var jqxhr = wrapper.search(actualQuery);
     jqxhr.done(function(results) {
@@ -89,15 +116,24 @@ this.recline.Backend.Ckan = this.recline.Backend.Ckan || {};
     }
 
     return that;
-  }
+  };
+
+  // Parse a normal CKAN resource URL and return API endpoint etc
+  //
+  // Normal URL is something like http://demo.ckan.org/dataset/some-dataset/resource/eb23e809-ccbb-4ad1-820a-19586fc4bebd
+  my._parseCkanResourceUrl = function(url) {
+    parts = url.split('/');
+    var len = parts.length;
+    return {
+      resource_id: parts[len-1],
+      endpoint: parts.slice(0,[len-4]).join('/') + '/api'
+    }
+  };
 
   var CKAN_TYPES_MAP = {
     'int4': 'integer',
     'int8': 'integer',
-    'float8': 'float',
-    'text': 'string',
-    'json': 'object',
-    'timestamp': 'date'
+    'float8': 'float'
   };
 
 }(jQuery, this.recline.Backend.Ckan));
@@ -917,7 +953,7 @@ this.recline.Backend.Memory = this.recline.Backend.Memory || {};
     } else {
       if (data) {
         this.fields = _.map(data[0], function(value, key) {
-          return {id: key};
+          return {id: key, type: 'string'};
         });
       }
     }
@@ -992,10 +1028,20 @@ this.recline.Backend.Memory = this.recline.Backend.Memory || {};
         geo_distance : geo_distance
       };
       var dataParsers = {
-        number : function (e) { return parseFloat(e, 10); },
+        integer: function (e) { return parseFloat(e, 10); },
+        'float': function (e) { return parseFloat(e, 10); },
         string : function (e) { return e.toString() },
-        date   : function (e) { return new Date(e).valueOf() }
+        date   : function (e) { return new Date(e).valueOf() },
+        datetime   : function (e) { return new Date(e).valueOf() }
       };
+      var keyedFields = {};
+      _.each(self.fields, function(field) {
+        keyedFields[field.id] = field;
+      });
+      function getDataParser(filter) {
+        var fieldType = keyedFields[filter.field].type || 'string';
+        return dataParsers[fieldType];
+      }
 
       // filter records
       return _.filter(results, function (record) {
@@ -1008,9 +1054,8 @@ this.recline.Backend.Memory = this.recline.Backend.Memory || {};
       });
 
       // filters definitions
-
       function term(record, filter) {
-        var parse = dataParsers[filter.fieldType];
+        var parse = getDataParser(filter);
         var value = parse(record[filter.field]);
         var term  = parse(filter.term);
 
@@ -1018,12 +1063,19 @@ this.recline.Backend.Memory = this.recline.Backend.Memory || {};
       }
 
       function range(record, filter) {
-        var parse = dataParsers[filter.fieldType];
+        var startnull = (filter.start == null || filter.start === '');
+        var stopnull = (filter.stop == null || filter.stop === '');
+        var parse = getDataParser(filter);
         var value = parse(record[filter.field]);
         var start = parse(filter.start);
         var stop  = parse(filter.stop);
 
-        return (value >= start && value <= stop);
+        // if at least one end of range is set do not allow '' to get through
+        // note that for strings '' <= {any-character} e.g. '' <= 'a'
+        if ((!startnull || !stopnull) && value === '') {
+          return false;
+        }
+        return ((startnull || value >= start) && (stopnull || value <= stop));
       }
 
       function geo_distance() {
@@ -1628,6 +1680,9 @@ my.Field = Backbone.Model.extend({
     if (this.attributes.label === null) {
       this.set({label: this.id});
     }
+    if (this.attributes.type.toLowerCase() in this._typeMap) {
+      this.attributes.type = this._typeMap[this.attributes.type.toLowerCase()];
+    }
     if (options) {
       this.renderer = options.renderer;
       this.deriver = options.deriver;
@@ -1637,6 +1692,17 @@ my.Field = Backbone.Model.extend({
     }
     this.facets = new my.FacetList();
   },
+  _typeMap: {
+    'text': 'string',
+    'double': 'number',
+    'float': 'number',
+    'numeric': 'number',
+    'int': 'integer',
+    'datetime': 'date-time',
+    'bool': 'boolean',
+    'timestamp': 'date-time',
+    'json': 'object'
+  },
   defaultRenderers: {
     object: function(val, field, doc) {
       return JSON.stringify(val);
@@ -1644,7 +1710,7 @@ my.Field = Backbone.Model.extend({
     geo_point: function(val, field, doc) {
       return JSON.stringify(val);
     },
-    'float': function(val, field, doc) {
+    'number': function(val, field, doc) {
       var format = field.get('format'); 
       if (format === 'percentage') {
         return val + '%';
@@ -1718,16 +1784,15 @@ my.Query = Backbone.Model.extend({
       }
     }
   },  
-  // ### addFilter
+  // ### addFilter(filter)
   //
-  // Add a new filter (appended to the list of filters)
+  // Add a new filter specified by the filter hash and append to the list of filters
   //
   // @param filter an object specifying the filter - see _filterTemplates for examples. If only type is provided will generate a filter by cloning _filterTemplates
   addFilter: function(filter) {
     // crude deep copy
     var ourfilter = JSON.parse(JSON.stringify(filter));
-    // not full specified so use template and over-write
-    // 3 as for 'type', 'field' and 'fieldType'
+    // not fully specified so use template and over-write
     if (_.keys(filter).length <= 3) {
       ourfilter = _.extend(this._filterTemplates[filter.type], ourfilter);
     }
@@ -1964,7 +2029,8 @@ my.Graph = Backbone.View.extend({
       var xfield = self.model.fields.get(self.state.attributes.group);
 
       // time series
-      var isDateTime = xfield.get('type') === 'date';
+      var xtype = xfield.get('type');
+      var isDateTime = (xtype === 'date' || xtype === 'date-time' || xtype  === 'time');
 
       if (self.model.records.models[parseInt(x)]) {
         x = self.model.records.models[parseInt(x)].get(self.state.attributes.group);
@@ -2078,7 +2144,8 @@ my.Graph = Backbone.View.extend({
         var x = doc.getFieldValue(xfield);
 
         // time series
-        var isDateTime = xfield.get('type') === 'date';
+        var xtype = xfield.get('type');
+        var isDateTime = (xtype === 'date' || xtype === 'date-time' || xtype  === 'time');
         
         if (isDateTime) {
           // datetime
@@ -3770,7 +3837,7 @@ my.SlickGrid = Backbone.View.extend({
     });
 
     // Order them if there is ordering info on the state
-    if (this.state.get('columnsOrder')){
+    if (this.state.get('columnsOrder') && this.state.get('columnsOrder').length > 0) {
       visibleColumns = visibleColumns.sort(function(a,b){
         return _.indexOf(self.state.get('columnsOrder'),a.id) > _.indexOf(self.state.get('columnsOrder'),b.id) ? 1 : -1;
       });
@@ -4301,20 +4368,27 @@ this.recline.View = this.recline.View || {};
 
 (function($, my) {
 
+// ## FacetViewer
+//
+// Widget for displaying facets 
+//
+// Usage:
+//
+//      var viewer = new FacetViewer({
+//        model: dataset
+//      });
 my.FacetViewer = Backbone.View.extend({
-  className: 'recline-facet-viewer well', 
+  className: 'recline-facet-viewer', 
   template: ' \
-    <a class="close js-hide" href="#">&times;</a> \
-    <div class="facets row"> \
-      <div class="span1"> \
-        <h3>Facets</h3> \
-      </div> \
+    <div class="facets"> \
       {{#facets}} \
-      <div class="facet-summary span2 dropdown" data-facet="{{id}}"> \
-        <a class="btn dropdown-toggle" data-toggle="dropdown" href="#"><i class="icon-chevron-down"></i> {{id}} {{label}}</a> \
-        <ul class="facet-items dropdown-menu"> \
+      <div class="facet-summary" data-facet="{{id}}"> \
+        <h3> \
+          {{id}} \
+        </h3> \
+        <ul class="facet-items"> \
         {{#terms}} \
-          <li><a class="facet-choice js-facet-filter" data-value="{{term}}">{{term}} ({{count}})</a></li> \
+          <li><a class="facet-choice js-facet-filter" data-value="{{term}}" href="#{{term}}">{{term}} ({{count}})</a></li> \
         {{/terms}} \
         {{#entries}} \
           <li><a class="facet-choice js-facet-filter" data-value="{{time}}">{{term}} ({{count}})</a></li> \
@@ -4326,7 +4400,6 @@ my.FacetViewer = Backbone.View.extend({
   ',
 
   events: {
-    'click .js-hide': 'onHide',
     'click .js-facet-filter': 'onFacetFilter'
   },
   initialize: function(model) {
@@ -4338,10 +4411,9 @@ my.FacetViewer = Backbone.View.extend({
   },
   render: function() {
     var tmplData = {
-      facets: this.model.facets.toJSON(),
       fields: this.model.fields.toJSON()
     };
-    tmplData.facets = _.map(tmplData.facets, function(facet) {
+    tmplData.facets = _.map(this.model.facets.toJSON(), function(facet) {
       if (facet._type === 'date_histogram') {
         facet.entries = _.map(facet.entries, function(entry) {
           entry.term = new Date(entry.time).toDateString();
@@ -4364,10 +4436,13 @@ my.FacetViewer = Backbone.View.extend({
     this.el.hide();
   },
   onFacetFilter: function(e) {
+    e.preventDefault();
     var $target= $(e.target);
     var fieldId = $target.closest('.facet-summary').attr('data-facet');
     var value = $target.attr('data-value');
-    this.model.queryState.addTermFilter(fieldId, value);
+    this.model.queryState.addFilter({type: 'term', field: fieldId, term: value});
+    // have to trigger explicitly for some reason
+    this.model.query();
   }
 });
 
@@ -4504,17 +4579,17 @@ my.FilterEditor = Backbone.View.extend({
       <a href="#" class="js-add-filter">Add filter</a> \
       <form class="form-stacked js-add" style="display: none;"> \
         <fieldset> \
-          <label>Filter type</label> \
-          <select class="filterType"> \
-            <option value="term">Term (text)</option> \
-            <option value="range">Range</option> \
-            <option value="geo_distance">Geo distance</option> \
-          </select> \
           <label>Field</label> \
           <select class="fields"> \
             {{#fields}} \
             <option value="{{id}}">{{label}}</option> \
             {{/fields}} \
+          </select> \
+          <label>Filter type</label> \
+          <select class="filterType"> \
+            <option value="term">Value</option> \
+            <option value="range">Range</option> \
+            <option value="geo_distance">Geo distance</option> \
           </select> \
           <button type="submit" class="btn">Add</button> \
         </fieldset> \
@@ -4535,7 +4610,7 @@ my.FilterEditor = Backbone.View.extend({
         <fieldset> \
           <legend> \
             {{field}} <small>{{type}}</small> \
-            <a class="js-remove-filter" href="#" title="Remove this filter">&times;</a> \
+            <a class="js-remove-filter" href="#" title="Remove this filter" data-filter-id="{{id}}">&times;</a> \
           </legend> \
           <input type="text" value="{{term}}" name="term" data-filter-field="{{field}}" data-filter-id="{{id}}" data-filter-type="{{type}}" /> \
         </fieldset> \
@@ -4546,7 +4621,7 @@ my.FilterEditor = Backbone.View.extend({
         <fieldset> \
           <legend> \
             {{field}} <small>{{type}}</small> \
-            <a class="js-remove-filter" href="#" title="Remove this filter">&times;</a> \
+            <a class="js-remove-filter" href="#" title="Remove this filter" data-filter-id="{{id}}">&times;</a> \
           </legend> \
           <label class="control-label" for="">From</label> \
           <input type="text" value="{{start}}" name="start" data-filter-field="{{field}}" data-filter-id="{{id}}" data-filter-type="{{type}}" /> \
@@ -4560,7 +4635,7 @@ my.FilterEditor = Backbone.View.extend({
         <fieldset> \
           <legend> \
             {{field}} <small>{{type}}</small> \
-            <a class="js-remove-filter" href="#" title="Remove this filter">&times;</a> \
+            <a class="js-remove-filter" href="#" title="Remove this filter" data-filter-id="{{id}}">&times;</a> \
           </legend> \
           <label class="control-label" for="">Longitude</label> \
           <input type="text" value="{{point.lon}}" name="lon" data-filter-field="{{field}}" data-filter-id="{{id}}" data-filter-type="{{type}}" /> \
@@ -4613,15 +4688,14 @@ my.FilterEditor = Backbone.View.extend({
     $target.hide();
     var filterType = $target.find('select.filterType').val();
     var field      = $target.find('select.fields').val();
-    var fieldType  = this.model.fields.find(function (e) { return e.get('id') === field }).get('type');
-    this.model.queryState.addFilter({type: filterType, field: field, fieldType: fieldType});
+    this.model.queryState.addFilter({type: filterType, field: field});
     // trigger render explicitly as queryState change will not be triggered (as blank value for filter)
     this.render();
   },
   onRemoveFilter: function(e) {
     e.preventDefault();
     var $target = $(e.target);
-    var filterId = $target.closest('.filter').attr('data-filter-id');
+    var filterId = $target.attr('data-filter-id');
     this.model.queryState.removeFilter(filterId);
   },
   onTermFiltersUpdate: function(e) {
