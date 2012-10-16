@@ -1,37 +1,17 @@
 jQuery(function($) {
-  window.dataExplorer = null;
-  window.explorerDiv = $('.search-here');
+  var $el = $('.search-here');
 
   // var url = 'http://openspending.org/api/search';
   // var url = 'http://localhost:9200/tmp/sfpd-last-month';
+
+  // Crate our Recline Dataset
+  // Here we are just using the local data
   var dataset = new recline.Model.Dataset({
     records: simpleData
   });
-  createSearch(dataset);
-});
 
-var createSearch = function(dataset, state) {
-  // remove existing data explorer view
-  var $el = $('<div />');
-  $el.appendTo(window.explorerDiv);
-  var template = ' \
-    {{#records}} \
-      <div class="record"> \
-        <h3> \
-          {{title}} <em>by {{Author}}</em> \
-        </h3> \
-        <p>{{description}}</p> \
-        <p><code>${{price}}</code></p> \
-      </div> \
-    {{/records}} \
-  ';
-
-  window.dataExplorer = new SearchView({
-    el: $el,
-    model: dataset,
-    template: template 
-  });
-
+  // Optional
+  // Let's configure the initial query a bit and set up facets
   dataset.queryState.set({
       size: 10
     },
@@ -39,13 +19,23 @@ var createSearch = function(dataset, state) {
   );
   dataset.queryState.addFacet('Author');
   dataset.query();
-}
+
+  // The search view allows us to customize the template used to render the
+  // list of results
+  var template = getTemplate();
+  var searchView = new SearchView({
+    el: $el,
+    model: dataset,
+    template: template 
+  });
+  searchView.render();
+});
 
 // Simple Search View
 //
 // Pulls together various Recline UI components and the central Dataset and Query (state) object
 //
-// Plus support for customization e.g. of item template
+// Plus support for customization e.g. of template for list of results
 var SearchView = Backbone.View.extend({
   initialize: function(options) {
     this.el = $(this.el);
@@ -94,6 +84,24 @@ var SearchView = Backbone.View.extend({
     this.el.find('.query-here').append(queryEditor.el);
   }
 });
+
+// --------------------------------------------------------
+// Stuff specific to this demo
+
+function getTemplate() {
+  template = ' \
+    {{#records}} \
+      <div class="record"> \
+        <h3> \
+          {{title}} <em>by {{Author}}</em> \
+        </h3> \
+        <p>{{description}}</p> \
+        <p><code>${{price}}</code></p> \
+      </div> \
+    {{/records}} \
+  ';
+  return template;
+}
 
 var simpleData = [
   {
