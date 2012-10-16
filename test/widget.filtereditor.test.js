@@ -29,12 +29,32 @@ test('basics', function () {
   equal(dataset.queryState.attributes.filters[0].term, 'UK');
   equal(dataset.records.length, 3);
 
+  // now set a second range filter ...
+  view.el.find('.js-add-filter').click();
+  var $addForm = view.el.find('form.js-add');
+  $addForm.find('select.fields').val('x');
+  $addForm.find('select.filterType').val('range');
+  $addForm.submit();
+
+  $editForm = view.el.find('form.js-edit');
+  $editForm.find('.filter-range input').first().val('2');
+  $editForm.find('.filter-range input').last().val('4');
+  $editForm.submit();
+  equal(dataset.queryState.attributes.filters[1].start, 2);
+  equal(dataset.records.length, 2);
+
   // now remove filter
-  $editForm.find('.js-remove-filter').click();
-  // hmmm, not working yet but works by eye!
-  // $editForm = view.el.find('form.js-edit');
-  // equal($editForm.find('.filter-term').length, 0)
-  // equal(dataset.records.length, 6);
+  $editForm = view.el.find('form.js-edit');
+  $editForm.find('.js-remove-filter').last().click();
+  $editForm = view.el.find('form.js-edit');
+  equal($editForm.find('.filter').length, 1)
+  equal(dataset.records.length, 3);
+
+  $editForm = view.el.find('form.js-edit');
+  $editForm.find('.js-remove-filter').last().click();
+  $editForm = view.el.find('form.js-edit');
+  equal($editForm.find('.filter').length, 0)
+  equal(dataset.records.length, 6);
 
   view.remove();
 });
@@ -56,7 +76,7 @@ test('geo_distance', function () {
   $editForm = view.el.find('form.js-edit');
   equal($editForm.find('.filter-geo_distance').length, 1)
   deepEqual(_.sortBy(_.keys(dataset.queryState.attributes.filters[0]),_.identity), 
-            ["distance", "field", "fieldType", "point", "type", "unit"]);
+            ["distance", "field", "point", "type", "unit"]);
 
   // now set filter value and apply
   $editForm.find('input[name="lat"]').val(10);

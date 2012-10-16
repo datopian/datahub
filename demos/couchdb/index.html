@@ -1,0 +1,40 @@
+---
+layout: container
+title: CouchDB Multiview - Demos
+recline-deps: true
+root: ../../
+---
+
+<style type="text/css">
+.recline-slickgrid {
+  height: 550px;
+}
+
+.recline-timeline .vmm-timeline {
+  height: 550px;
+}
+</style>
+
+<div class="instructions">
+  <h2>Instructions</h2>
+  <p>To use this demo you will need a CouchDB instance running and accessible over HTTP. You should then pass the following 2 query parameters to this page:</p>
+
+<pre>url: url-to-your-couchdb-instance
+view_url: url-to-your-couchdb-view
+
+Example:
+http://path-to-this-page/?url=/mycouchdb/&amp;view_url=/mycouchdb/_design/yourdesigndoc/_view/yourview
+</pre>
+
+  <p>Note that if the CouchDB database is <em>not</em> running on the same domain as this page then the host it is on <em>must</em> support CORS &ndash; the simplest approach here is probably to set up a reverse proxy or proxy so your CouchDB database appears on the local domain at e.g. /mycouchdb/.</p>
+</div>
+
+<h2>Demo</h2>
+
+<div class="data-explorer-here"></div>
+
+<div style="clear: both;"></div>
+
+<script type="text/javascript" src="../../src/backend.couchdb.js"></script>
+<script type="text/javascript" src="app.js"></script>
+

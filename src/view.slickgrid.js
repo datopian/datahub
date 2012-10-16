@@ -85,7 +85,7 @@ my.SlickGrid = Backbone.View.extend({
     });
 
     // Order them if there is ordering info on the state
-    if (this.state.get('columnsOrder')){
+    if (this.state.get('columnsOrder') && this.state.get('columnsOrder').length > 0) {
       visibleColumns = visibleColumns.sort(function(a,b){
         return _.indexOf(self.state.get('columnsOrder'),a.id) > _.indexOf(self.state.get('columnsOrder'),b.id) ? 1 : -1;
       });
@@ -119,15 +119,17 @@ my.SlickGrid = Backbone.View.extend({
     // Column sorting
     var sortInfo = this.model.queryState.get('sort');
     if (sortInfo){
-      var column = _.keys(sortInfo[0])[0];
-      var sortAsc = !(sortInfo[0][column].order == 'desc');
+      var column = sortInfo[0].field;
+      var sortAsc = !(sortInfo[0].order == 'desc');
       this.grid.setSortColumn(column, sortAsc);
     }
 
     this.grid.onSort.subscribe(function(e, args){
       var order = (args.sortAsc) ? 'asc':'desc';
-      var sort = [{}];
-      sort[0][args.sortCol.field] = {order: order};
+      var sort = [{
+        field: args.sortCol.field,
+        order: order
+      }];
       self.model.query({sort: sort});
     });
 

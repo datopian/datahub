@@ -1,6 +1,11 @@
-  <link rel="stylesheet" href="{{page.root}}vendor/leaflet/0.3.1/leaflet.css">
+  <link rel="stylesheet" href="{{page.root}}vendor/leaflet/0.4.4/leaflet.css">
   <!--[if lte IE 8]>
-  <link rel="stylesheet" href="{{page.root}}vendor/leaflet/0.3.1/leaflet.ie.css" />
+  <link rel="stylesheet" href="{{page.root}}vendor/leaflet/0.4.4/leaflet.ie.css" />
+  <![endif]-->
+  <link rel="stylesheet" href="{{page.root}}vendor/leaflet.markercluster/MarkerCluster.css">
+  <link rel="stylesheet" href="{{page.root}}vendor/leaflet.markercluster/MarkerCluster.Default.css">
+  <!--[if lte IE 8]>
+  <link rel="stylesheet" href="{{page.root}}vendor/leaflet.markercluster/MarkerCluster.Default.ie.css" />
   <![endif]-->
   <link rel="stylesheet" href="{{page.root}}vendor/slickgrid/2.0.1/slick.grid.css">
   <link rel="stylesheet" href="{{page.root}}vendor/timeline/20120520/css/timeline.css">
@@ -16,12 +21,13 @@
 
   <!-- 3rd party JS libraries -->
   <script type="text/javascript" src="{{page.root}}vendor/jquery/1.7.1/jquery.js"></script>
-  <script type="text/javascript" src="{{page.root}}vendor/underscore/1.1.6/underscore.js"></script>
-  <script type="text/javascript" src="{{page.root}}vendor/backbone/0.5.1/backbone.js"></script>
+  <script type="text/javascript" src="{{page.root}}vendor/underscore/1.4.2/underscore.js"></script>
+  <script type="text/javascript" src="{{page.root}}vendor/backbone/0.9.2/backbone.js"></script>
   <script type="text/javascript" src="{{page.root}}vendor/mustache/0.5.0-dev/mustache.js"></script>
   <script type="text/javascript" src="{{page.root}}vendor/bootstrap/2.0.2/bootstrap.js"></script>
   <script type="text/javascript" src="{{page.root}}vendor/flotr2/flotr2.js"></script>
-  <script type="text/javascript" src="{{page.root}}vendor/leaflet/0.3.1/leaflet.js"></script>
+  <script type="text/javascript" src="{{page.root}}vendor/leaflet/0.4.4/leaflet.js"></script>
+  <script type="text/javascript" src="{{page.root}}vendor/leaflet.markercluster/leaflet.markercluster.js"></script>
   <script type="text/javascript" src="{{page.root}}vendor/slickgrid/2.0.1/jquery-ui-1.8.16.custom.min.js"></script>
   <script type="text/javascript" src="{{page.root}}vendor/slickgrid/2.0.1/jquery.event.drag-2.0.min.js"></script>
   <script type="text/javascript" src="{{page.root}}vendor/slickgrid/2.0.1/slick.grid.min.js"></script>
@@ -36,12 +42,14 @@
   -->
 
   <!-- model and backends -->
+  <script type="text/javascript" src="{{page.root}}src/ecma-fixes.js"></script>
   <script type="text/javascript" src="{{page.root}}src/model.js"></script>
   <script type="text/javascript" src="{{page.root}}src/backend.memory.js"></script>
   <script type="text/javascript" src="{{page.root}}src/backend.dataproxy.js"></script>
   <script type="text/javascript" src="{{page.root}}src/backend.gdocs.js"></script>
   <script type="text/javascript" src="{{page.root}}src/backend.elasticsearch.js"></script>
   <script type="text/javascript" src="{{page.root}}src/backend.csv.js"></script>
+  <script type="text/javascript" src="{{page.root}}src/backend.ckan.js"></script>
 
   <!-- views -->
   <script type="text/javascript" src="{{page.root}}src/view.grid.js"></script>
@@ -54,6 +62,7 @@
   <script type="text/javascript" src="{{page.root}}src/widget.pager.js"></script>
   <script type="text/javascript" src="{{page.root}}src/widget.queryeditor.js"></script>
   <script type="text/javascript" src="{{page.root}}src/widget.filtereditor.js"></script>
+  <script type="text/javascript" src="{{page.root}}src/widget.facetviewer.js"></script>
   <script type="text/javascript" src="{{page.root}}src/widget.fields.js"></script>
   <script type="text/javascript" src="{{page.root}}src/view.multiview.js"></script>
 

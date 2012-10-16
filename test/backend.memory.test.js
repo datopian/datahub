@@ -11,9 +11,20 @@ var memoryData = [
   , {id: 5, date: '2011-10-11', x: 6, y: 12, z: 18, country: 'DE', label: 'sixth'}
 ];
 
+var memoryFields = [
+  {id: 'id'},
+  {id: 'date', type: 'date'},
+  {id: 'x', type: 'integer'},
+  {id: 'y', type: 'integer'},
+  {id: 'z', type: 'integer'},
+  {id: 'country'},
+  {id: 'label'}
+];
+
 var _wrapData = function() {
   var dataCopy = $.extend(true, [], memoryData);
-  return new recline.Backend.Memory.Store(dataCopy);
+  // return new recline.Backend.Memory.Store(dataCopy, fields);
+  return new recline.Backend.Memory.Store(dataCopy, memoryFields);
 }
 
 test('basics', function () {
@@ -40,7 +51,7 @@ test('query sort', function () {
   var data = _wrapData();
   var queryObj = {
     sort: [
-      {'y': {order: 'desc'}}
+      {field: 'y', order: 'desc'}
     ]
   };
   data.query(queryObj).then(function(out) {
@@ -49,7 +60,7 @@ test('query sort', function () {
 
   var queryObj = {
     sort: [
-      {'country': {order: 'desc'}}
+      {field: 'country', order: 'desc'}
     ]
   };
   data.query(queryObj).then(function(out) {
@@ -58,7 +69,7 @@ test('query sort', function () {
 
   var queryObj = {
     sort: [
-      {'country': {order: 'asc'}}
+      {field: 'country', order: 'asc'}
     ]
   };
   data.query(queryObj).then(function(out) {
@@ -74,7 +85,7 @@ test('query string', function () {
   });
 
   data.query({q: 'UK 6'}).then(function(out) {
-    equal(out.total, 1);
+    equal(out.total, 2); // the new regex support will find 2 hits
     deepEqual(out.hits[0].id, 1);
   });
 });
@@ -82,24 +93,60 @@ test('query string', function () {
 test('filters', function () {
   var data = _wrapData();
   var query = new recline.Model.Query();
-  query.addFilter({type: 'term', fieldType: 'string', field: 'country', term: 'UK'});
+  query.addFilter({type: 'term', field: 'country', term: 'UK'});
   data.query(query.toJSON()).then(function(out) {
     equal(out.total, 3);
     deepEqual(_.pluck(out.hits, 'country'), ['UK','UK','UK']);
   });
 
   query = new recline.Model.Query();
-  query.addFilter({type: 'range', fieldType: 'date', field: 'date', start: '2011-01-01', stop: '2011-05-01'});
+  query.addFilter({type: 'range', field: 'date', start: '2011-01-01', stop: '2011-05-01'});
   data.query(query.toJSON()).then(function(out) {
     equal(out.total, 3);
     deepEqual(_.pluck(out.hits, 'date'), ['2011-01-01','2011-02-03','2011-04-05']);
   });
   
   query = new recline.Model.Query();
-  query.addFilter({type: 'range', fieldType: 'number', field: 'z', start: '0', stop: '10'});
+  query.addFilter({type: 'range', field: 'z', start: '0', stop: '10'});
   data.query(query.toJSON()).then(function(out) {
     equal(out.total, 3);
     deepEqual(_.pluck(out.hits, 'z'), [3,6,9]);
+  });
+});
+
+
+test('filters with nulls', function () {
+  var data = _wrapData();
+
+  query = new recline.Model.Query();
+  query.addFilter({type: 'range', field: 'z', start: '', stop: null});
+  data.query(query.toJSON()).then(function(out) {
+    equal(out.total, 6);
+  });
+
+  query = new recline.Model.Query();
+  query.addFilter({type: 'range', field: 'x', start: '', stop: '3'});
+  data.query(query.toJSON()).then(function(out) {
+    equal(out.total, 3);
+  });
+
+  query = new recline.Model.Query();
+  query.addFilter({type: 'range', field: 'x', start: '3', stop: ''});
+  data.query(query.toJSON()).then(function(out) {
+    equal(out.total, 4);
+  });
+
+  data.data[5].country = '';
+  query = new recline.Model.Query();
+  query.addFilter({type: 'range', field: 'country', start: '', stop: 'Z'});
+  data.query(query.toJSON()).then(function(out) {
+    equal(out.total, 5);
+  });
+
+  query = new recline.Model.Query();
+  query.addFilter({type: 'range', field: 'x', start: '', stop: ''});
+  data.query(query.toJSON()).then(function(out) {
+    equal(out.total, 6);
   });
 });
 
@@ -135,7 +182,7 @@ test('update and delete', function () {
   equal(data.data[0].x, newVal);
 
   // Test Delete
-  data.delete(doc1);
+  data.remove(doc1);
   equal(data.data.length, 5);
   equal(data.data[0].x, memoryData[1].x);
 });
@@ -148,13 +195,23 @@ test('update and delete', function () {
 
 module("Backend Memory - Model Integration");
 
+var memoryFields = [
+  {id: 'id'},
+  {id: 'date', type: 'date'},
+  {id: 'x', type: 'integer'},
+  {id: 'y', type: 'integer'},
+  {id: 'z', type: 'integer'},
+  {id: 'country'},
+  {id: 'label'}
+];
+
 var memoryData = {
   metadata: {
     title: 'My Test Dataset'
     , name: '1-my-test-dataset' 
     , id: 'test-dataset'
   },
-  fields: [{id: 'x'}, {id: 'y'}, {id: 'z'}, {id: 'country'}, {id: 'label'}],
+  fields: memoryFields,
   records: [
     {id: 0, x: 1, y: 2, z: 3, country: 'DE', label: 'first'}
     , {id: 1, x: 2, y: 4, z: 6, country: 'UK', label: 'second'}
@@ -170,7 +227,7 @@ function makeBackendDataset() {
     id: 'test-dataset',
     title: 'My Test Dataset',
     name: '1-my-test-dataset',
-    fields: [{id: 'date'}, {id: 'x'}, {id: 'y'}, {id: 'z'}, {id: 'country'}, {id: 'label'}],
+    fields: memoryFields,
     records: [
       {id: 0, date: '2011-01-01', x: 1, y: 2, z: 3, country: 'DE', label: 'first'}
       , {id: 1, date: '2011-02-03', x: 2, y: 4, z: 6, country: 'UK', label: 'second'}
@@ -216,7 +273,7 @@ test('query sort', function () {
   var data = dataset._store.data;
   var queryObj = {
     sort: [
-      {'y': {order: 'desc'}}
+      {field: 'y', order: 'desc'}
     ]
   };
   dataset.query(queryObj).then(function() {
@@ -234,28 +291,28 @@ test('query string', function () {
   });
 
   dataset.query({q: 'UK 6'}).then(function() {
-    equal(dataset.records.length, 1);
+    equal(dataset.records.length, 2);
     deepEqual(dataset.records.models[0].id, 1);
   });
 });
 
 test('filters', function () {
   var dataset = makeBackendDataset();
-  dataset.queryState.addFilter({type: 'term', fieldType: 'string', field: 'country', term: 'UK'});
+  dataset.queryState.addFilter({type: 'term', field: 'country', term: 'UK'});
   dataset.query().then(function() {
     equal(dataset.records.length, 3);
     deepEqual(dataset.records.pluck('country'), ['UK', 'UK', 'UK']);
   });
 
   dataset = makeBackendDataset();
-  dataset.queryState.addFilter({type: 'range', fieldType: 'date', field: 'date', start: '2011-01-01', stop: '2011-05-01'});
+  dataset.queryState.addFilter({type: 'range', field: 'date', start: '2011-01-01', stop: '2011-05-01'});
   dataset.query().then(function() {
     equal(dataset.records.length, 3);
     deepEqual(dataset.records.pluck('date'), ['2011-01-01','2011-02-03','2011-04-05']);
   });
   
   dataset = makeBackendDataset();
-  dataset.queryState.addFilter({type: 'range', fieldType: 'number', field: 'z', start: '0', stop: '10'});
+  dataset.queryState.addFilter({type: 'range', field: 'z', start: '0', stop: '10'});
   dataset.query().then(function() {
     equal(dataset.records.length, 3);
     deepEqual(dataset.records.pluck('z'), [3,6,9]);

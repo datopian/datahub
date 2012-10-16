@@ -118,33 +118,35 @@ my.Graph = Backbone.View.extend({
       return getFormattedX(x);
     };
     
+    // infoboxes on mouse hover on points/bars etc
     var trackFormatter = function (obj) {
-          var x = obj.x;
-          var y = obj.y;
-          // it's horizontal so we have to flip
-          if (self.state.attributes.graphType === 'bars') {
-            var _tmp = x;
-            x = y;
-            y = _tmp;
-          }
-          
-          x = getFormattedX(x);
+      var x = obj.x;
+      var y = obj.y;
+      // it's horizontal so we have to flip
+      if (self.state.attributes.graphType === 'bars') {
+        var _tmp = x;
+        x = y;
+        y = _tmp;
+      }
+      
+      x = getFormattedX(x);
 
-          var content = _.template('<%= group %> = <%= x %>, <%= series %> = <%= y %>', {
-            group: self.state.attributes.group,
-            x: x,
-            series: obj.series.label,
-            y: y
-          });
-        
-        return content;
+      var content = _.template('<%= group %> = <%= x %>, <%= series %> = <%= y %>', {
+        group: self.state.attributes.group,
+        x: x,
+        series: obj.series.label,
+        y: y
+      });
+      
+      return content;
     };
     
     var getFormattedX = function (x) {
       var xfield = self.model.fields.get(self.state.attributes.group);
 
       // time series
-      var isDateTime = xfield.get('type') === 'date';
+      var xtype = xfield.get('type');
+      var isDateTime = (xtype === 'date' || xtype === 'date-time' || xtype  === 'time');
 
       if (self.model.records.models[parseInt(x)]) {
         x = self.model.records.models[parseInt(x)].get(self.state.attributes.group);
@@ -208,19 +210,19 @@ my.Graph = Backbone.View.extend({
         xaxis: yaxis,
         yaxis: xaxis,
         mouse: { 
-            track: true,
-            relative: true,
-            trackFormatter: trackFormatter,
-            fillColor: '#FFFFFF',
-            fillOpacity: 0.3,
-            position: 'e'
+          track: true,
+          relative: true,
+          trackFormatter: trackFormatter,
+          fillColor: '#FFFFFF',
+          fillOpacity: 0.3,
+          position: 'e'
         },
         bars: {
-            show: true,
-            horizontal: true,
-            shadowSize: 0,
-            barWidth: 0.8         
-        },
+          show: true,
+          horizontal: true,
+          shadowSize: 0,
+          barWidth: 0.8         
+        }
       },
       columns: {
         legend: legend,
@@ -241,9 +243,9 @@ my.Graph = Backbone.View.extend({
             horizontal: false,
             shadowSize: 0,
             barWidth: 0.8         
-        },
+        }
       },
-      grid: { hoverable: true, clickable: true },
+      grid: { hoverable: true, clickable: true }
     };
     return optionsPerGraphType[typeId];
   },
@@ -258,7 +260,8 @@ my.Graph = Backbone.View.extend({
         var x = doc.getFieldValue(xfield);
 
         // time series
-        var isDateTime = xfield.get('type') === 'date';
+        var xtype = xfield.get('type');
+        var isDateTime = (xtype === 'date' || xtype === 'date-time' || xtype  === 'time');
         
         if (isDateTime) {
           // datetime
@@ -423,7 +426,7 @@ my.GraphControls = Backbone.View.extend({
   addSeries: function (idx) {
     var data = _.extend({
       seriesIndex: idx,
-      seriesName: String.fromCharCode(idx + 64 + 1),
+      seriesName: String.fromCharCode(idx + 64 + 1)
     }, this.model.toTemplateJSON());
 
     var htmls = Mustache.render(this.templateSeriesEditor, data);

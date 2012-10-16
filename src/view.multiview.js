@@ -98,7 +98,7 @@ my.MultiView = Backbone.View.extend({
   <div class="recline-data-explorer"> \
     <div class="alert-messages"></div> \
     \
-    <div class="header"> \
+    <div class="header clearfix"> \
       <div class="navigation"> \
         <div class="btn-group" data-toggle="buttons-radio"> \
         {{#views}} \
@@ -111,12 +111,12 @@ my.MultiView = Backbone.View.extend({
       </div> \
       <div class="menu-right"> \
         <div class="btn-group" data-toggle="buttons-checkbox"> \
-          <a href="#" class="btn active" data-action="filters">Filters</a> \
-          <a href="#" class="btn active" data-action="fields">Fields</a> \
+          {{#sidebarViews}} \
+          <a href="#" data-action="{{id}}" class="btn active">{{label}}</a> \
+          {{/sidebarViews}} \
         </div> \
       </div> \
       <div class="query-editor-here" style="display:inline;"></div> \
-      <div class="clearfix"></div> \
     </div> \
     <div class="data-view-sidebar"></div> \
     <div class="data-view-container"></div> \
@@ -142,28 +142,28 @@ my.MultiView = Backbone.View.extend({
         view: new my.SlickGrid({
           model: this.model,
           state: this.state.get('view-grid')
-        }),
+        })
       }, {
         id: 'graph',
         label: 'Graph',
         view: new my.Graph({
           model: this.model,
           state: this.state.get('view-graph')
-        }),
+        })
       }, {
         id: 'map',
         label: 'Map',
         view: new my.Map({
           model: this.model,
           state: this.state.get('view-map')
-        }),
+        })
       }, {
         id: 'timeline',
         label: 'Timeline',
         view: new my.Timeline({
           model: this.model,
           state: this.state.get('view-timeline')
-        }),
+        })
       }, {
         id: 'transform',
         label: 'Transform',
@@ -246,6 +246,7 @@ my.MultiView = Backbone.View.extend({
   render: function() {
     var tmplData = this.model.toTemplateJSON();
     tmplData.views = this.pageViews;
+    tmplData.sidebarViews = this.sidebarViews;
     var template = Mustache.render(this.template, tmplData);
     $(this.el).html(template);
 
@@ -265,7 +266,7 @@ my.MultiView = Backbone.View.extend({
     _.each(this.sidebarViews, function(view) {
       this['$'+view.id] = view.view.el;
       $dataSidebar.append(view.view.el);
-    });
+    }, this);
 
     var pager = new recline.View.Pager({
       model: this.model.queryState
@@ -308,13 +309,7 @@ my.MultiView = Backbone.View.extend({
   _onMenuClick: function(e) {
     e.preventDefault();
     var action = $(e.target).attr('data-action');
-    if (action === 'filters') {
-      this.$filterEditor.toggle();
-    } else if (action === 'fields') {
-      this.$fieldsView.toggle();
-    } else if (action === 'transform') {
-      this.transformView.el.toggle();
-    }
+    this['$'+action].toggle();
   },
 
   _onSwitchView: function(e) {
@@ -379,7 +374,7 @@ my.MultiView = Backbone.View.extend({
     var self = this;
     _.each(this.pageViews, function(pageView) {
       pageView.view.bind('recline:flash', function(flash) {
-        self.notify(flash); 
+        self.notify(flash);
       });
     });
   },
@@ -401,14 +396,15 @@ my.MultiView = Backbone.View.extend({
       },
       flash
     );
+    var _template;
     if (tmplData.loader) {
-      var _template = ' \
+      _template = ' \
         <div class="alert alert-info alert-loader"> \
           {{message}} \
           <span class="notification-loader">&nbsp;</span> \
         </div>';
     } else {
-      var _template = ' \
+      _template = ' \
         <div class="alert alert-{{category}} fade in" data-alert="alert"><a class="close" data-dismiss="alert" href="#">×</a> \
           {{message}} \
         </div>';

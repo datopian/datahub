@@ -19,10 +19,15 @@ Author URI:         http://www.mintcanary.com/
    General Styles
 --------------------------------------------------- */
 
-@import url(http://fonts.googleapis.com/css?family=Open+Sans:400,400italic,700);
+@import url(http://fonts.googleapis.com/css?family=PT+Sans:400,400italic,700);
 
 h1, h2, h3, h4, h5, h6 {
-	font-family:'Open Sans', Helvetica, Arial, sans-serif;
+	font-family:'PT Sans',Helvetica, Arial, sans-serif;
+}
+
+body, p {
+  font-family: 'PT Sans',Helvetica,Arial,sans-serif;
+  font-size: 15px;
 }
 
 a {
@@ -43,7 +48,7 @@ a:hover {
 }
 
 .navbar .brand {
-	font-family:'Open Sans', Helvetica, Arial, sans-serif;
+	font-family:'PT Sans', Helvetica, Arial, sans-serif;
 	font-style:italic;
 	font-size:18px;
 	font-weight:400;
@@ -53,6 +58,7 @@ a:hover {
 
 .navbar .nav > li > a {
   padding: 15px 10px;
+  font-size: 13px;
 }
 
 .navbar .divider-vertical {
@@ -96,7 +102,7 @@ section {
 	padding:0px;
 	margin-bottom:0px;
 	border:none;
-	font-family:'Open Sans', Helvetica, Arial, sans-serif;
+	font-family:'PT Sans', Helvetica, Arial, sans-serif;
   padding: 60px;
   padding-bottom: 200px;
   /* hide crocodile top to footer on front page */

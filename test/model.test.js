@@ -38,6 +38,28 @@ test('Field: basics', function () {
   equal('XX', out[0].label);
 });
 
+test('Field: type mapping', function () {
+  var tests = [
+    { input: 'text', exp: 'string'},
+    { input: 'int', exp: 'integer'},
+    { input: 'float', exp: 'number'},
+    { input: 'double', exp: 'number'},
+    { input: 'datetime', exp: 'date-time'},
+    { input: 'dateTime', exp: 'date-time'},
+    { input: 'bool', exp: 'boolean'},
+    { input: 'timestamp', exp: 'date-time'},
+    { input: 'json', exp: 'object'}
+  ];
+  
+  _.each(tests, function(data) {
+    var field = new recline.Model.Field({
+      id: 'x',
+      type: data.input
+    });
+    equal(field.get('type'), data.exp);
+  });
+});
+
 test('Field: default renderers', function () {
   var doc = new recline.Model.Record({
     x: 12.3,

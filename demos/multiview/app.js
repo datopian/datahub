@@ -19,7 +19,13 @@ jQuery(function($) {
   }
   var dataset = null;
   if (state.dataset || state.url) {
-    dataset = recline.Model.Dataset.restore(state);
+    var datasetInfo = _.extend({
+        url: state.url,
+        backend: state.backend
+      },
+      state.dataset
+    );
+    dataset = new recline.Model.Dataset(datasetInfo);
   } else {
     var dataset = new recline.Model.Dataset({
       records: [
@@ -68,21 +74,21 @@ var createExplorer = function(dataset, state) {
       label: 'Grid',
       view: new recline.View.SlickGrid({
         model: dataset
-      }),
+      })
     },
     {
       id: 'graph',
       label: 'Graph',
       view: new recline.View.Graph({
         model: dataset
-      }),
+      })
     },
     {
       id: 'map',
       label: 'Map',
       view: new recline.View.Map({
         model: dataset
-      }),
+      })
     },
     {
       id: 'transform',

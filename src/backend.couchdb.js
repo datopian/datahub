@@ -2,8 +2,8 @@ this.recline = this.recline || {};
 this.recline.Backend = this.recline.Backend || {};
 this.recline.Backend.CouchDB = this.recline.Backend.CouchDB || {};
 
-(function($, my) {
-  my.__type__ = 'couchdb';
+(function($, my) {  
+my.__type__ = 'couchdb';
 
   // ## CouchDB Wrapper
   //
@@ -11,9 +11,10 @@ this.recline.Backend.CouchDB = this.recline.Backend.CouchDB || {};
   // @param {String} endpoint: url for CouchDB database, e.g. for Couchdb running
   // on localhost:5984 with database // ckan-std it would be:
   // 
-  // <pre>http://localhost:5984/ckan-std</pre>
   //
   // TODO Add user/password arguments for couchdb authentication support.
+  // 
+  // See the example how to use this in: "demos/couchdb/"
   my.CouchDBWrapper = function(db_url, view_url, options) { 
     var self = this;
     self.endpoint = db_url;
@@ -96,7 +97,7 @@ this.recline.Backend.CouchDB = this.recline.Backend.CouchDB || {};
     //
     // @param {Object} id id of object to delete
     // @return deferred supporting promise API
-    this.delete = function(_id) {
+    this.remove = function(_id) {
       url = self.endpoint;
       url += '/' + _id;
       return self._makeRequest({
@@ -149,29 +150,30 @@ this.recline.Backend.CouchDB = this.recline.Backend.CouchDB || {};
   // ## CouchDB Backend
   //
   // Backbone connector for a CouchDB backend.
+  // 
+  //     var dataset = new recline.Model.Dataset({
+  //       db_url: path-to-couchdb-database e.g. '/couchdb/mydb',	  	
+  //       view_url: path-to-couchdb-database-view e.g. '/couchdb/mydb/_design/design1/_views/view1',
+  //       backend: 'couchdb',
+  //       query_options: {
+  //         'key': '_id'
+  //       }
+  //     });
   //
-  // Usage:
-  //
-  // var backend = new recline.Backend.CouchDB();
-  // var dataset = new recline.Model.Dataset({
-  //     db_url: '/couchdb/mydb',
-  //     view_url: '/couchdb/mydb/_design/design1/_views/view1',
-  //     query_options: {
-  //          'key': 'some_document_key'
-  //     }
-  // });
-  // backend.fetch(dataset.toJSON());
-  // backend.query(query, dataset.toJSON()).done(function () { ... });
+  //     backend.query(query, dataset.toJSON()).done(function () { ... });
   //
   // Alternatively:
-  // var dataset = new recline.Model.Dataset({ ... }, 'couchdb');
-  // dataset.fetch();
-  // var results = dataset.query(query_obj);
+  // 
+  //     var dataset = new recline.Model.Dataset({ ... }, 'couchdb');
+  //     dataset.fetch();
+  //     var results = dataset.query(query_obj);
   // 
   // Additionally, the Dataset instance may define three methods:
+  //
   //    function record_update (record, document) { ... }
   //    function record_delete (record, document) { ... }
   //    function record_create (record, document) { ... }
+  //
   // Where `record` is the JSON representation of the Record/Document instance
   // and `document` is the JSON document stored in couchdb.
   // When _all_docs view is used (default), a record is the same as a document
@@ -473,7 +475,7 @@ _deleteDocument = function (del_doc, dataset) {
   var cdb      = new my.CouchDBWrapper(db_url, view_url);
 
   if (view_url.search('_all_docs') !== -1) 
-    return cdb.delete(_id);
+    return cdb.remove(_id);
   else {
     _id = model.get('_id').split('__')[0];
     var jqxhr = cdb.get(_id);
@@ -482,7 +484,7 @@ _deleteDocument = function (del_doc, dataset) {
       if (dataset.record_delete)
         old_doc = dataset.record_delete(del_doc, old_doc);
       if (_.isNull(del_doc))
-        dfd.resolve(cdb.delete(_id)); // XXX is this the right thing to do?
+        dfd.resolve(cdb.remove(_id)); // XXX is this the right thing to do?
       else {
         // couchdb uses _id to identify documents, Backbone models use id.
         // we should remove it before sending it to the server.
@@ -494,6 +496,6 @@ _deleteDocument = function (del_doc, dataset) {
       dfd.reject(args);
     });
     return dfd.promise();
+    }
 };
-
 }(jQuery, this.recline.Backend.CouchDB));

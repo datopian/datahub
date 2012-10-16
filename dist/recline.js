@@ -1,5 +1,144 @@
 this.recline = this.recline || {};
 this.recline.Backend = this.recline.Backend || {};
+this.recline.Backend.Ckan = this.recline.Backend.Ckan || {};
+
+(function($, my) {
+  // ## CKAN Backend
+  //
+  // This provides connection to the CKAN DataStore (v2)
+  //
+  // General notes
+  // 
+  // We need 2 things to make most requests:
+  //
+  // 1. CKAN API endpoint
+  // 2. ID of resource for which request is being made
+  //
+  // There are 2 ways to specify this information.
+  //
+  // EITHER (checked in order): 
+  //
+  // * Every dataset must have an id equal to its resource id on the CKAN instance
+  // * The dataset has an endpoint attribute pointing to the CKAN API endpoint
+  //
+  // OR:
+  // 
+  // Set the url attribute of the dataset to point to the Resource on the CKAN instance. The endpoint and id will then be automatically computed.
+
+  my.__type__ = 'ckan';
+
+  // Default CKAN API endpoint used for requests (you can change this but it will affect every request!)
+  //
+  // DEPRECATION: this will be removed in v0.7. Please set endpoint attribute on dataset instead
+  my.API_ENDPOINT = 'http://datahub.io/api';
+
+  // ### fetch
+  my.fetch = function(dataset) {
+    if (dataset.endpoint) {
+      var wrapper = my.DataStore(dataset.endpoint);
+    } else {
+      var out = my._parseCkanResourceUrl(dataset.url);
+      dataset.id = out.resource_id;
+      var wrapper = my.DataStore(out.endpoint);
+    }
+    var dfd = $.Deferred();
+    var jqxhr = wrapper.search({resource_id: dataset.id, limit: 0});
+    jqxhr.done(function(results) {
+      // map ckan types to our usual types ...
+      var fields = _.map(results.result.fields, function(field) {
+        field.type = field.type in CKAN_TYPES_MAP ? CKAN_TYPES_MAP[field.type] : field.type;
+        return field;
+      });
+      var out = {
+        fields: fields,
+        useMemoryStore: false
+      };
+      dfd.resolve(out);  
+    });
+    return dfd.promise();
+  };
+
+  // only put in the module namespace so we can access for tests!
+  my._normalizeQuery = function(queryObj, dataset) {
+    var actualQuery = {
+      resource_id: dataset.id,
+      q: queryObj.q,
+      limit: queryObj.size || 10,
+      offset: queryObj.from || 0
+    };
+    if (queryObj.sort && queryObj.sort.length > 0) {
+      var _tmp = _.map(queryObj.sort, function(sortObj) {
+        return sortObj.field + ' ' + (sortObj.order || '');
+      });
+      actualQuery.sort = _tmp.join(',');
+    }
+    return actualQuery;
+  }
+
+  my.query = function(queryObj, dataset) {
+    if (dataset.endpoint) {
+      var wrapper = my.DataStore(dataset.endpoint);
+    } else {
+      var out = my._parseCkanResourceUrl(dataset.url);
+      dataset.id = out.resource_id;
+      var wrapper = my.DataStore(out.endpoint);
+    }
+    var actualQuery = my._normalizeQuery(queryObj, dataset);
+    var dfd = $.Deferred();
+    var jqxhr = wrapper.search(actualQuery);
+    jqxhr.done(function(results) {
+      var out = {
+        total: results.result.total,
+        hits: results.result.records,
+      };
+      dfd.resolve(out);  
+    });
+    return dfd.promise();
+  };
+
+  // ### DataStore
+  //
+  // Simple wrapper around the CKAN DataStore API
+  //
+  // @param endpoint: CKAN api endpoint (e.g. http://datahub.io/api)
+  my.DataStore = function(endpoint) { 
+    var that = {
+      endpoint: endpoint || my.API_ENDPOINT
+    };
+    that.search = function(data) {
+      var searchUrl = that.endpoint + '/3/action/datastore_search';
+      var jqxhr = $.ajax({
+        url: searchUrl,
+        data: data,
+        dataType: 'json'
+      });
+      return jqxhr;
+    }
+
+    return that;
+  };
+
+  // Parse a normal CKAN resource URL and return API endpoint etc
+  //
+  // Normal URL is something like http://demo.ckan.org/dataset/some-dataset/resource/eb23e809-ccbb-4ad1-820a-19586fc4bebd
+  my._parseCkanResourceUrl = function(url) {
+    parts = url.split('/');
+    var len = parts.length;
+    return {
+      resource_id: parts[len-1],
+      endpoint: parts.slice(0,[len-4]).join('/') + '/api'
+    }
+  };
+
+  var CKAN_TYPES_MAP = {
+    'int4': 'integer',
+    'int8': 'integer',
+    'float8': 'float'
+  };
+
+}(jQuery, this.recline.Backend.Ckan));
+this.recline = this.recline || {};
+this.recline.Backend = this.recline.Backend || {};
 this.recline.Backend.CSV = this.recline.Backend.CSV || {};
 
 (function(my) {
@@ -59,8 +198,14 @@ this.recline.Backend.CSV = this.recline.Backend.CSV || {};
   // 
   // @param {String} s The string to convert
   // @param {Object} options Options for loading CSV including
-  // 	@param {Boolean} [trim=false] If set to True leading and trailing whitespace is stripped off of each non-quoted field as it is imported
-  //	@param {String} [separator=','] Separator for CSV file
+  // 	  @param {Boolean} [trim=false] If set to True leading and trailing
+  // 	    whitespace is stripped off of each non-quoted field as it is imported
+  //	  @param {String} [delimiter=','] A one-character string used to separate
+  //	    fields. It defaults to ','
+  //    @param {String} [quotechar='"'] A one-character string used to quote
+  //      fields containing special characters, such as the delimiter or
+  //      quotechar, or which contain new-line characters. It defaults to '"'
+  //
   // Heavily based on uselesscode's JS CSV parser (MIT Licensed):
   // http://www.uselesscode.org/javascript/csv/
   my.parseCSV= function(s, options) {
@@ -69,8 +214,8 @@ this.recline.Backend.CSV = this.recline.Backend.CSV || {};
 
     var options = options || {};
     var trm = (options.trim === false) ? false : true;
-    var separator = options.separator || ',';
-    var delimiter = options.delimiter || '"';
+    var delimiter = options.delimiter || ',';
+    var quotechar = options.quotechar || '"';
 
     var cur = '', // The character we are currently processing.
       inQuote = false,
@@ -105,7 +250,7 @@ this.recline.Backend.CSV = this.recline.Backend.CSV || {};
       cur = s.charAt(i);
 
       // If we are at a EOF or EOR
-      if (inQuote === false && (cur === separator || cur === "\n")) {
+      if (inQuote === false && (cur === delimiter || cur === "\n")) {
 	field = processField(field);
         // Add the current field to the current row
         row.push(field);
@@ -118,8 +263,8 @@ this.recline.Backend.CSV = this.recline.Backend.CSV || {};
         field = '';
         fieldQuoted = false;
       } else {
-        // If it's not a delimiter, add it to the field buffer
-        if (cur !== delimiter) {
+        // If it's not a quotechar, add it to the field buffer
+        if (cur !== quotechar) {
           field += cur;
         } else {
           if (!inQuote) {
@@ -127,9 +272,9 @@ this.recline.Backend.CSV = this.recline.Backend.CSV || {};
             inQuote = true;
             fieldQuoted = true;
           } else {
-            // Next char is delimiter, this is an escaped delimiter
-            if (s.charAt(i + 1) === delimiter) {
-              field += delimiter;
+            // Next char is quotechar, this is an escaped quotechar
+            if (s.charAt(i + 1) === quotechar) {
+              field += quotechar;
               // Skip the next char
               i += 1;
             } else {
@@ -149,23 +294,48 @@ this.recline.Backend.CSV = this.recline.Backend.CSV || {};
     return out;
   };
 
-  // Converts an array of arrays into a Comma Separated Values string.
-  // Each array becomes a line in the CSV.
+  // ### serializeCSV
+  // 
+  // Convert an Object or a simple array of arrays into a Comma
+  // Separated Values string.
   //
   // Nulls are converted to empty fields and integers or floats are converted to non-quoted numbers.
   //
   // @return The array serialized as a CSV
   // @type String
   // 
-  // @param {Array} a The array of arrays to convert
-  // @param {Object} options Options for loading CSV including
-  //	@param {String} [separator=','] Separator for CSV file
-  // Heavily based on uselesscode's JS CSV parser (MIT Licensed):
+  // @param {Object or Array} dataToSerialize The Object or array of arrays to convert. Object structure must be as follows:
+  //
+  //     {
+  //       fields: [ {id: .., ...}, {id: ..., 
+  //       records: [ { record }, { record }, ... ]
+  //       ... // more attributes we do not care about
+  //     }
+  // 
+  // @param {object} options Options for serializing the CSV file including
+  //   delimiter and quotechar (see parseCSV options parameter above for
+  //   details on these).
+  //
+  // Heavily based on uselesscode's JS CSV serializer (MIT Licensed):
   // http://www.uselesscode.org/javascript/csv/
-  my.serializeCSV= function(a, options) {
+  my.serializeCSV= function(dataToSerialize, options) {
+    var a = null;
+    if (dataToSerialize instanceof Array) {
+      a = dataToSerialize;
+    } else {
+      a = [];
+      var fieldNames = _.pluck(dataToSerialize.fields, 'id');
+      a.push(fieldNames);
+      _.each(dataToSerialize.records, function(record, index) {
+        var tmp = _.map(fieldNames, function(fn) {
+          return record[fn];
+        });
+        a.push(tmp);
+      });
+    }
     var options = options || {};
-    var separator = options.separator || ',';
-    var delimiter = options.delimiter || '"';
+    var delimiter = options.delimiter || ',';
+    var quotechar = options.quotechar || '"';
 
     var cur = '', // The character we are currently processing.
       field = '', // Buffer for building up the current field
@@ -181,7 +351,7 @@ this.recline.Backend.CSV = this.recline.Backend.CSV || {};
         field = '';
       } else if (typeof field === "string" && rxNeedsQuoting.test(field)) {
         // Convert string to delimited string
-        field = delimiter + field + delimiter;
+        field = quotechar + field + quotechar;
       } else if (typeof field === "number") {
         // Convert number to string
         field = field.toString(10);
@@ -202,7 +372,7 @@ this.recline.Backend.CSV = this.recline.Backend.CSV || {};
           row = '';
         } else {
           // Add the current field to the current row
-          row += field + separator;
+          row += field + delimiter;
         }
         // Flush the field buffer
         field = '';
@@ -395,7 +565,7 @@ this.recline.Backend.ElasticSearch = this.recline.Backend.ElasticSearch || {};
     //
     // @param {Object} id id of object to delete
     // @return deferred supporting promise API
-    this.delete = function(id) {
+    this.remove = function(id) {
       url = this.endpoint;
       url += '/' + id;
       return makeRequest({
@@ -435,6 +605,19 @@ this.recline.Backend.ElasticSearch = this.recline.Backend.ElasticSearch || {};
       return out;
     },
 
+    // convert from Recline sort structure to ES form
+    // http://www.elasticsearch.org/guide/reference/api/search/sort.html
+    this._normalizeSort = function(sort) {
+      var out = _.map(sort, function(sortObj) {
+        var _tmp = {};
+        var _tmp2 = _.clone(sortObj);
+        delete _tmp2['field'];
+        _tmp[sortObj.field] = _tmp2;
+        return _tmp;
+      });
+      return out;
+    },
+
     this._convertFilter = function(filter) {
       var out = {};
       out[filter.type] = {}
@@ -453,10 +636,12 @@ this.recline.Backend.ElasticSearch = this.recline.Backend.ElasticSearch || {};
     // @return deferred supporting promise API
     this.query = function(queryObj) {
       var esQuery = (queryObj && queryObj.toJSON) ? queryObj.toJSON() : _.extend({}, queryObj);
-      var queryNormalized = this._normalizeQuery(queryObj);
+      esQuery.query = this._normalizeQuery(queryObj);
       delete esQuery.q;
       delete esQuery.filters;
-      esQuery.query = queryNormalized;
+      if (esQuery.sort && esQuery.sort.length > 0) {
+        esQuery.sort = this._normalizeSort(esQuery.sort);
+      }
       var data = {source: JSON.stringify(esQuery)};
       var url = this.endpoint + '/_search';
       var jqxhr = makeRequest({
@@ -520,7 +705,7 @@ this.recline.Backend.ElasticSearch = this.recline.Backend.ElasticSearch || {};
     else if (changes.updates.length >0) {
       return es.upsert(changes.updates[0]);
     } else if (changes.deletes.length > 0) {
-      return es.delete(changes.deletes[0].id);
+      return es.remove(changes.deletes[0].id);
     }
   };
 
@@ -531,7 +716,7 @@ this.recline.Backend.ElasticSearch = this.recline.Backend.ElasticSearch || {};
     var jqxhr = es.query(queryObj);
     jqxhr.done(function(results) {
       var out = {
-        total: results.hits.total,
+        total: results.hits.total
       };
       out.hits = _.map(results.hits.hits, function(hit) {
         if (!('id' in hit._source) && hit._id) {
@@ -768,7 +953,7 @@ this.recline.Backend.Memory = this.recline.Backend.Memory || {};
     } else {
       if (data) {
         this.fields = _.map(data[0], function(value, key) {
-          return {id: key};
+          return {id: key, type: 'string'};
         });
       }
     }
@@ -781,7 +966,7 @@ this.recline.Backend.Memory = this.recline.Backend.Memory || {};
       });
     };
 
-    this.delete = function(doc) {
+    this.remove = function(doc) {
       var newdocs = _.reject(self.data, function(internalDoc) {
         return (doc.id === internalDoc.id);
       });
@@ -796,7 +981,7 @@ this.recline.Backend.Memory = this.recline.Backend.Memory || {};
         self.update(record);
       });
       _.each(changes.deletes, function(record) {
-        self.delete(record);
+        self.remove(record);
       });
       dfd.resolve();
       return dfd.promise();
@@ -811,14 +996,15 @@ this.recline.Backend.Memory = this.recline.Backend.Memory || {};
       results = this._applyFilters(results, queryObj);
       results = this._applyFreeTextQuery(results, queryObj);
 
-      // not complete sorting!
+      // TODO: this is not complete sorting!
+      // What's wrong is we sort on the *last* entry in the sort list if there are multiple sort criteria
       _.each(queryObj.sort, function(sortObj) {
-        var fieldName = _.keys(sortObj)[0];
+        var fieldName = sortObj.field;
         results = _.sortBy(results, function(doc) {
           var _out = doc[fieldName];
           return _out;
         });
-        if (sortObj[fieldName].order == 'desc') {
+        if (sortObj.order == 'desc') {
           results.reverse();
         }
       });
@@ -842,10 +1028,20 @@ this.recline.Backend.Memory = this.recline.Backend.Memory || {};
         geo_distance : geo_distance
       };
       var dataParsers = {
-        number : function (e) { return parseFloat(e, 10); },
+        integer: function (e) { return parseFloat(e, 10); },
+        'float': function (e) { return parseFloat(e, 10); },
         string : function (e) { return e.toString() },
-        date   : function (e) { return new Date(e).valueOf() }
+        date   : function (e) { return new Date(e).valueOf() },
+        datetime   : function (e) { return new Date(e).valueOf() }
       };
+      var keyedFields = {};
+      _.each(self.fields, function(field) {
+        keyedFields[field.id] = field;
+      });
+      function getDataParser(filter) {
+        var fieldType = keyedFields[filter.field].type || 'string';
+        return dataParsers[fieldType];
+      }
 
       // filter records
       return _.filter(results, function (record) {
@@ -858,9 +1054,8 @@ this.recline.Backend.Memory = this.recline.Backend.Memory || {};
       });
 
       // filters definitions
-
       function term(record, filter) {
-        var parse = dataParsers[filter.fieldType];
+        var parse = getDataParser(filter);
         var value = parse(record[filter.field]);
         var term  = parse(filter.term);
 
@@ -868,12 +1063,19 @@ this.recline.Backend.Memory = this.recline.Backend.Memory || {};
       }
 
       function range(record, filter) {
-        var parse = dataParsers[filter.fieldType];
+        var startnull = (filter.start == null || filter.start === '');
+        var stopnull = (filter.stop == null || filter.stop === '');
+        var parse = getDataParser(filter);
         var value = parse(record[filter.field]);
         var start = parse(filter.start);
         var stop  = parse(filter.stop);
 
-        return (value >= start && value <= stop);
+        // if at least one end of range is set do not allow '' to get through
+        // note that for strings '' <= {any-character} e.g. '' <= 'a'
+        if ((!startnull || !stopnull) && value === '') {
+          return false;
+        }
+        return ((startnull || value >= start) && (stopnull || value <= stop));
       }
 
       function geo_distance() {
@@ -885,20 +1087,23 @@ this.recline.Backend.Memory = this.recline.Backend.Memory || {};
     this._applyFreeTextQuery = function(results, queryObj) {
       if (queryObj.q) {
         var terms = queryObj.q.split(' ');
+        var patterns=_.map(terms, function(term) {
+          return new RegExp(term.toLowerCase());;
+          });
         results = _.filter(results, function(rawdoc) {
           var matches = true;
-          _.each(terms, function(term) {
+          _.each(patterns, function(pattern) {
             var foundmatch = false;
             _.each(self.fields, function(field) {
               var value = rawdoc[field.id];
-              if (value !== null) { 
+              if ((value !== null) && (value !== undefined)) { 
                 value = value.toString();
               } else {
                 // value can be null (apparently in some cases)
                 value = '';
               }
               // TODO regexes?
-              foundmatch = foundmatch || (value.toLowerCase() === term.toLowerCase());
+              foundmatch = foundmatch || (pattern.test(value.toLowerCase()));
               // TODO: early out (once we are true should break to spare unnecessary testing)
               // if (foundmatch) return true;
             });
@@ -1027,7 +1232,73 @@ my.Transform.mapDocs = function(docs, editFunc) {
 };
 
 }(this.recline.Data))
-// # Recline Backbone Models
+// This file adds in full array method support in browsers that don't support it
+// see: http://stackoverflow.com/questions/2790001/fixing-javascript-array-functions-in-internet-explorer-indexof-foreach-etc
+
+// Add ECMA262-5 Array methods if not supported natively
+if (!('indexOf' in Array.prototype)) {
+    Array.prototype.indexOf= function(find, i /*opt*/) {
+        if (i===undefined) i= 0;
+        if (i<0) i+= this.length;
+        if (i<0) i= 0;
+        for (var n= this.length; i<n; i++)
+            if (i in this && this[i]===find)
+                return i;
+        return -1;
+    };
+}
+if (!('lastIndexOf' in Array.prototype)) {
+    Array.prototype.lastIndexOf= function(find, i /*opt*/) {
+        if (i===undefined) i= this.length-1;
+        if (i<0) i+= this.length;
+        if (i>this.length-1) i= this.length-1;
+        for (i++; i-->0;) /* i++ because from-argument is sadly inclusive */
+            if (i in this && this[i]===find)
+                return i;
+        return -1;
+    };
+}
+if (!('forEach' in Array.prototype)) {
+    Array.prototype.forEach= function(action, that /*opt*/) {
+        for (var i= 0, n= this.length; i<n; i++)
+            if (i in this)
+                action.call(that, this[i], i, this);
+    };
+}
+if (!('map' in Array.prototype)) {
+    Array.prototype.map= function(mapper, that /*opt*/) {
+        var other= new Array(this.length);
+        for (var i= 0, n= this.length; i<n; i++)
+            if (i in this)
+                other[i]= mapper.call(that, this[i], i, this);
+        return other;
+    };
+}
+if (!('filter' in Array.prototype)) {
+    Array.prototype.filter= function(filter, that /*opt*/) {
+        var other= [], v;
+        for (var i=0, n= this.length; i<n; i++)
+            if (i in this && filter.call(that, v= this[i], i, this))
+                other.push(v);
+        return other;
+    };
+}
+if (!('every' in Array.prototype)) {
+    Array.prototype.every= function(tester, that /*opt*/) {
+        for (var i= 0, n= this.length; i<n; i++)
+            if (i in this && !tester.call(that, this[i], i, this))
+                return false;
+        return true;
+    };
+}
+if (!('some' in Array.prototype)) {
+    Array.prototype.some= function(tester, that /*opt*/) {
+        for (var i= 0, n= this.length; i<n; i++)
+            if (i in this && tester.call(that, this[i], i, this))
+                return true;
+        return false;
+    };
+}// # Recline Backbone Models
 this.recline = this.recline || {};
 this.recline.Model = this.recline.Model || {};
 
@@ -1291,22 +1562,8 @@ my.Dataset = Backbone.Model.extend({
 
   // ### _backendFromString(backendString)
   //
-  // See backend argument to initialize for details
+  // Look up a backend module from a backend string (look in recline.Backend)
   _backendFromString: function(backendString) {
-    var parts = backendString.split('.');
-    // walk through the specified path xxx.yyy.zzz to get the final object which should be backend class
-    var current = window;
-    for(ii=0;ii<parts.length;ii++) {
-      if (!current) {
-        break;
-      }
-      current = current[parts[ii]];
-    }
-    if (current) {
-      return current;
-    }
-
-    // alternatively we just had a simple string
     var backend = null;
     if (recline && recline.Backend) {
       _.each(_.keys(recline.Backend), function(name) {
@@ -1423,6 +1680,9 @@ my.Field = Backbone.Model.extend({
     if (this.attributes.label === null) {
       this.set({label: this.id});
     }
+    if (this.attributes.type.toLowerCase() in this._typeMap) {
+      this.attributes.type = this._typeMap[this.attributes.type.toLowerCase()];
+    }
     if (options) {
       this.renderer = options.renderer;
       this.deriver = options.deriver;
@@ -1432,6 +1692,17 @@ my.Field = Backbone.Model.extend({
     }
     this.facets = new my.FacetList();
   },
+  _typeMap: {
+    'text': 'string',
+    'double': 'number',
+    'float': 'number',
+    'numeric': 'number',
+    'int': 'integer',
+    'datetime': 'date-time',
+    'bool': 'boolean',
+    'timestamp': 'date-time',
+    'json': 'object'
+  },
   defaultRenderers: {
     object: function(val, field, doc) {
       return JSON.stringify(val);
@@ -1439,7 +1710,7 @@ my.Field = Backbone.Model.extend({
     geo_point: function(val, field, doc) {
       return JSON.stringify(val);
     },
-    'float': function(val, field, doc) {
+    'number': function(val, field, doc) {
       var format = field.get('format'); 
       if (format === 'percentage') {
         return val + '%';
@@ -1513,16 +1784,15 @@ my.Query = Backbone.Model.extend({
       }
     }
   },  
-  // ### addFilter
+  // ### addFilter(filter)
   //
-  // Add a new filter (appended to the list of filters)
+  // Add a new filter specified by the filter hash and append to the list of filters
   //
   // @param filter an object specifying the filter - see _filterTemplates for examples. If only type is provided will generate a filter by cloning _filterTemplates
   addFilter: function(filter) {
     // crude deep copy
     var ourfilter = JSON.parse(JSON.stringify(filter));
-    // not full specified so use template and over-write
-    // 3 as for 'type', 'field' and 'fieldType'
+    // not fully specified so use template and over-write
     if (_.keys(filter).length <= 3) {
       ourfilter = _.extend(this._filterTemplates[filter.type], ourfilter);
     }
@@ -1732,33 +2002,35 @@ my.Graph = Backbone.View.extend({
       return getFormattedX(x);
     };
     
+    // infoboxes on mouse hover on points/bars etc
     var trackFormatter = function (obj) {
-          var x = obj.x;
-          var y = obj.y;
-          // it's horizontal so we have to flip
-          if (self.state.attributes.graphType === 'bars') {
-            var _tmp = x;
-            x = y;
-            y = _tmp;
-          }
-          
-          x = getFormattedX(x);
+      var x = obj.x;
+      var y = obj.y;
+      // it's horizontal so we have to flip
+      if (self.state.attributes.graphType === 'bars') {
+        var _tmp = x;
+        x = y;
+        y = _tmp;
+      }
+      
+      x = getFormattedX(x);
 
-          var content = _.template('<%= group %> = <%= x %>, <%= series %> = <%= y %>', {
-            group: self.state.attributes.group,
-            x: x,
-            series: obj.series.label,
-            y: y
-          });
-        
-        return content;
+      var content = _.template('<%= group %> = <%= x %>, <%= series %> = <%= y %>', {
+        group: self.state.attributes.group,
+        x: x,
+        series: obj.series.label,
+        y: y
+      });
+      
+      return content;
     };
     
     var getFormattedX = function (x) {
       var xfield = self.model.fields.get(self.state.attributes.group);
 
       // time series
-      var isDateTime = xfield.get('type') === 'date';
+      var xtype = xfield.get('type');
+      var isDateTime = (xtype === 'date' || xtype === 'date-time' || xtype  === 'time');
 
       if (self.model.records.models[parseInt(x)]) {
         x = self.model.records.models[parseInt(x)].get(self.state.attributes.group);
@@ -1822,19 +2094,19 @@ my.Graph = Backbone.View.extend({
         xaxis: yaxis,
         yaxis: xaxis,
         mouse: { 
-            track: true,
-            relative: true,
-            trackFormatter: trackFormatter,
-            fillColor: '#FFFFFF',
-            fillOpacity: 0.3,
-            position: 'e'
+          track: true,
+          relative: true,
+          trackFormatter: trackFormatter,
+          fillColor: '#FFFFFF',
+          fillOpacity: 0.3,
+          position: 'e'
         },
         bars: {
-            show: true,
-            horizontal: true,
-            shadowSize: 0,
-            barWidth: 0.8         
-        },
+          show: true,
+          horizontal: true,
+          shadowSize: 0,
+          barWidth: 0.8         
+        }
       },
       columns: {
         legend: legend,
@@ -1855,9 +2127,9 @@ my.Graph = Backbone.View.extend({
             horizontal: false,
             shadowSize: 0,
             barWidth: 0.8         
-        },
+        }
       },
-      grid: { hoverable: true, clickable: true },
+      grid: { hoverable: true, clickable: true }
     };
     return optionsPerGraphType[typeId];
   },
@@ -1872,7 +2144,8 @@ my.Graph = Backbone.View.extend({
         var x = doc.getFieldValue(xfield);
 
         // time series
-        var isDateTime = xfield.get('type') === 'date';
+        var xtype = xfield.get('type');
+        var isDateTime = (xtype === 'date' || xtype === 'date-time' || xtype  === 'time');
         
         if (isDateTime) {
           // datetime
@@ -2037,7 +2310,7 @@ my.GraphControls = Backbone.View.extend({
   addSeries: function (idx) {
     var data = _.extend({
       seriesIndex: idx,
-      seriesName: String.fromCharCode(idx + 64 + 1),
+      seriesName: String.fromCharCode(idx + 64 + 1)
     }, this.model.toTemplateJSON());
 
     var htmls = Mustache.render(this.templateSeriesEditor, data);
@@ -2354,6 +2627,11 @@ this.recline.View = this.recline.View || {};
 //     latField: {id of field containing latitude in the dataset}
 //   }
 // </pre>
+//
+// Useful attributes to know about (if e.g. customizing)
+//
+// * map: the Leaflet map (L.Map)
+// * features: Leaflet GeoJSON layer containing all the features (L.GeoJSON)
 my.Map = Backbone.View.extend({
   template: ' \
     <div class="recline-map"> \
@@ -2372,31 +2650,43 @@ my.Map = Backbone.View.extend({
     this.el = $(this.el);
     this.visible = true;
     this.mapReady = false;
+    // this will be the Leaflet L.Map object (setup below)
+    this.map = null;
 
     var stateData = _.extend({
         geomField: null,
         lonField: null,
         latField: null,
-        autoZoom: true
+        autoZoom: true,
+        cluster: false
       },
       options.state
     );
     this.state = new recline.Model.ObjectState(stateData);
 
+    this._clusterOptions = {
+      zoomToBoundsOnClick: true,
+      //disableClusteringAtZoom: 10,
+      maxClusterRadius: 80,
+      singleMarkerMode: false,
+      skipDuplicateAddTesting: true,
+      animateAddingMarkers: false
+    };
+
     // Listen to changes in the fields
     this.model.fields.bind('change', function() {
-      self._setupGeometryField()
-      self.render()
+      self._setupGeometryField();
+      self.render();
     });
 
     // Listen to changes in the records
-    this.model.records.bind('add', function(doc){self.redraw('add',doc)});
+    this.model.records.bind('add', function(doc){self.redraw('add',doc);});
     this.model.records.bind('change', function(doc){
         self.redraw('remove',doc);
         self.redraw('add',doc);
     });
-    this.model.records.bind('remove', function(doc){self.redraw('remove',doc)});
-    this.model.records.bind('reset', function(){self.redraw('reset')});
+    this.model.records.bind('remove', function(doc){self.redraw('remove',doc);});
+    this.model.records.bind('reset', function(){self.redraw('reset');});
 
     this.menu = new my.MapMenu({
       model: this.model,
@@ -2406,8 +2696,39 @@ my.Map = Backbone.View.extend({
       self.state.set(self.menu.state.toJSON());
       self.redraw();
     });
+    this.state.bind('change', function() {
+      self.redraw();
+    });
     this.elSidebar = this.menu.el;
   },
+
+  // ## Customization Functions
+  //
+  // The following methods are designed for overriding in order to customize
+  // behaviour
+
+  // ### infobox
+  //
+  // Function to create infoboxes used in popups. The default behaviour is very simple and just lists all attributes.
+  //
+  // Users should override this function to customize behaviour i.e.
+  //
+  //     view = new View({...});
+  //     view.infobox = function(record) {
+  //       ...
+  //     }
+  infobox: function(record) {
+    var html = '';
+    for (key in record.attributes){
+      if (!(this.state.get('geomField') && key == this.state.get('geomField'))){
+        html += '<div><strong>' + key + '</strong>: '+ record.attributes[key] + '</div>';
+      }
+    }
+    return html;
+  },
+
+  // END: Customization section
+  // ----
 
   // ### Public: Adds the necessary elements to the page.
   //
@@ -2442,20 +2763,45 @@ my.Map = Backbone.View.extend({
     }
 
     if (this._geomReady() && this.mapReady){
-      if (action == 'reset' || action == 'refresh'){
+      // removing ad re-adding the layer enables faster bulk loading
+      this.map.removeLayer(this.features);
+      this.map.removeLayer(this.markers);
+
+      var countBefore = 0;
+      this.features.eachLayer(function(){countBefore++;});
+
+      if (action == 'refresh' || action == 'reset') {
         this.features.clearLayers();
+        // recreate cluster group because of issues with clearLayer
+        this.map.removeLayer(this.markers);
+        this.markers = new L.MarkerClusterGroup(this._clusterOptions);
         this._add(this.model.records.models);
       } else if (action == 'add' && doc){
         this._add(doc);
       } else if (action == 'remove' && doc){
         this._remove(doc);
       }
+
+      // enable clustering if there is a large number of markers
+      var countAfter = 0;
+      this.features.eachLayer(function(){countAfter++;});
+      var sizeIncreased = countAfter - countBefore > 0;
+      if (!this.state.get('cluster') && countAfter > 64 && sizeIncreased) {
+        this.state.set({cluster: true});
+        return;
+      }
+
       if (this.state.get('autoZoom')){
         if (this.visible){
           this._zoomToFeatures();
         } else {
           this._zoomPending = true;
         }
+      }
+      if (this.state.get('cluster')) {
+        this.map.addLayer(this.markers);
+      } else {
+        this.map.addLayer(this.features);
       }
     }
   },
@@ -2496,29 +2842,22 @@ my.Map = Backbone.View.extend({
 
     var count = 0;
     var wrongSoFar = 0;
-    _.every(docs,function(doc){
+    _.every(docs, function(doc){
       count += 1;
       var feature = self._getGeometryFromRecord(doc);
       if (typeof feature === 'undefined' || feature === null){
         // Empty field
         return true;
       } else if (feature instanceof Object){
-        // Build popup contents
-        // TODO: mustache?
-        html = ''
-        for (key in doc.attributes){
-          if (!(self.state.get('geomField') && key == self.state.get('geomField'))){
-            html += '<div><strong>' + key + '</strong>: '+ doc.attributes[key] + '</div>';
-          }
-        }
-        feature.properties = {popupContent: html};
-
-        // Add a reference to the model id, which will allow us to
-        // link this Leaflet layer to a Recline doc
-        feature.properties.cid = doc.cid;
+        feature.properties = {
+          popupContent: self.infobox(doc),
+          // Add a reference to the model id, which will allow us to
+          // link this Leaflet layer to a Recline doc
+          cid: doc.cid
+        };
 
         try {
-          self.features.addGeoJSON(feature);
+          self.features.addData(feature);
         } catch (except) {
           wrongSoFar += 1;
           var msg = 'Wrong geometry value';
@@ -2528,7 +2867,7 @@ my.Map = Backbone.View.extend({
           }
         }
       } else {
-        wrongSoFar += 1
+        wrongSoFar += 1;
         if (wrongSoFar <= 10) {
           self.trigger('recline:flash', {message: 'Wrong geometry value', category:'error'});
         }
@@ -2537,7 +2876,7 @@ my.Map = Backbone.View.extend({
     });
   },
 
-  // Private: Remove one or n features to the map
+  // Private: Remove one or n features from the map
   //
   _remove: function(docs){
 
@@ -2547,7 +2886,7 @@ my.Map = Backbone.View.extend({
 
     _.each(docs,function(doc){
       for (key in self.features._layers){
-        if (self.features._layers[key].cid == doc.cid){
+        if (self.features._layers[key].feature.properties.cid == doc.cid){
           self.features.removeLayer(self.features._layers[key]);
         }
       }
@@ -2646,10 +2985,10 @@ my.Map = Backbone.View.extend({
   //
   _zoomToFeatures: function(){
     var bounds = this.features.getBounds();
-    if (bounds){
+    if (bounds && bounds.getNorthEast() && bounds.getSouthWest()){
       this.map.fitBounds(bounds);
     } else {
-      this.map.setView(new L.LatLng(0, 0), 2);
+      this.map.setView([0, 0], 2);
     }
   },
 
@@ -2659,6 +2998,7 @@ my.Map = Backbone.View.extend({
   // on [OpenStreetMap](http://openstreetmap.org).
   //
   _setupMap: function(){
+    var self = this;
     this.map = new L.Map(this.$map.get(0));
 
     var mapUrl = "http://otile{s}.mqcdn.com/tiles/1.0.0/osm/{z}/{x}/{y}.png";
@@ -2666,37 +3006,18 @@ my.Map = Backbone.View.extend({
     var bg = new L.TileLayer(mapUrl, {maxZoom: 18, attribution: osmAttribution ,subdomains: '1234'});
     this.map.addLayer(bg);
 
-    this.features = new L.GeoJSON();
-    this.features.on('featureparse', function (e) {
-      if (e.properties && e.properties.popupContent){
-        e.layer.bindPopup(e.properties.popupContent);
-       }
-      if (e.properties && e.properties.cid){
-        e.layer.cid = e.properties.cid;
-       }
+    this.markers = new L.MarkerClusterGroup(this._clusterOptions);
 
+    this.features = new L.GeoJSON(null,{
+        pointToLayer: function (feature, latlng) {
+          var marker = new L.marker(latlng);
+          marker.bindPopup(feature.properties.popupContent);
+          self.markers.addLayer(marker);
+          return marker;
+        }
     });
 
-    // This will be available in the next Leaflet stable release.
-    // In the meantime we add it manually to our layer.
-    this.features.getBounds = function(){
-      var bounds = new L.LatLngBounds();
-      this._iterateLayers(function (layer) {
-        if (layer instanceof L.Marker){
-          bounds.extend(layer.getLatLng());
-        } else {
-          if (layer.getBounds){
-            bounds.extend(layer.getBounds().getNorthEast());
-            bounds.extend(layer.getBounds().getSouthWest());
-          }
-        }
-      }, this);
-      return (typeof bounds.getNorthEast() !== 'undefined') ? bounds : null;
-    }
-
-    this.map.addLayer(this.features);
-
-    this.map.setView(new L.LatLng(0, 0), 2);
+    this.map.setView([0, 0], 2);
 
     this.mapReady = true;
   },
@@ -2767,19 +3088,23 @@ my.MapMenu = Backbone.View.extend({
       </div> \
       <div class="editor-options" > \
         <label class="checkbox"> \
-          <input type="checkbox" id="editor-auto-zoom" checked="checked" /> \
+          <input type="checkbox" id="editor-auto-zoom" value="autozoom" checked="checked" /> \
           Auto zoom to features</label> \
+        <label class="checkbox"> \
+          <input type="checkbox" id="editor-cluster" value="cluster"/> \
+          Cluster markers</label> \
       </div> \
       <input type="hidden" class="editor-id" value="map-1" /> \
       </div> \
     </form> \
-',
+  ',
 
   // Define here events for UI elements
   events: {
     'click .editor-update-map': 'onEditorSubmit',
     'change .editor-field-type': 'onFieldTypeChange',
-    'click #editor-auto-zoom': 'onAutoZoomChange'
+    'click #editor-auto-zoom': 'onAutoZoomChange',
+    'click #editor-cluster': 'onClusteringChange'
   },
 
   initialize: function(options) {
@@ -2812,9 +3137,13 @@ my.MapMenu = Backbone.View.extend({
     }
     if (this.state.get('autoZoom')) {
       this.el.find('#editor-auto-zoom').attr('checked', 'checked');
-    }
-    else {
+    } else {
       this.el.find('#editor-auto-zoom').removeAttr('checked');
+    }
+    if (this.state.get('cluster')) {
+      this.el.find('#editor-cluster').attr('checked', 'checked');
+    } else {
+      this.el.find('#editor-cluster').removeAttr('checked');
     }
     return this;
   },
@@ -2864,6 +3193,10 @@ my.MapMenu = Backbone.View.extend({
 
   onAutoZoomChange: function(e){
     this.state.set({autoZoom: !this.state.get('autoZoom')});
+  },
+
+  onClusteringChange: function(e){
+    this.state.set({cluster: !this.state.get('cluster')});
   },
 
   // Private: Helper function to select an option from a select list
@@ -2983,7 +3316,7 @@ my.MultiView = Backbone.View.extend({
   <div class="recline-data-explorer"> \
     <div class="alert-messages"></div> \
     \
-    <div class="header"> \
+    <div class="header clearfix"> \
       <div class="navigation"> \
         <div class="btn-group" data-toggle="buttons-radio"> \
         {{#views}} \
@@ -2996,12 +3329,12 @@ my.MultiView = Backbone.View.extend({
       </div> \
       <div class="menu-right"> \
         <div class="btn-group" data-toggle="buttons-checkbox"> \
-          <a href="#" class="btn active" data-action="filters">Filters</a> \
-          <a href="#" class="btn active" data-action="fields">Fields</a> \
+          {{#sidebarViews}} \
+          <a href="#" data-action="{{id}}" class="btn active">{{label}}</a> \
+          {{/sidebarViews}} \
         </div> \
       </div> \
       <div class="query-editor-here" style="display:inline;"></div> \
-      <div class="clearfix"></div> \
     </div> \
     <div class="data-view-sidebar"></div> \
     <div class="data-view-container"></div> \
@@ -3027,28 +3360,28 @@ my.MultiView = Backbone.View.extend({
         view: new my.SlickGrid({
           model: this.model,
           state: this.state.get('view-grid')
-        }),
+        })
       }, {
         id: 'graph',
         label: 'Graph',
         view: new my.Graph({
           model: this.model,
           state: this.state.get('view-graph')
-        }),
+        })
       }, {
         id: 'map',
         label: 'Map',
         view: new my.Map({
           model: this.model,
           state: this.state.get('view-map')
-        }),
+        })
       }, {
         id: 'timeline',
         label: 'Timeline',
         view: new my.Timeline({
           model: this.model,
           state: this.state.get('view-timeline')
-        }),
+        })
       }, {
         id: 'transform',
         label: 'Transform',
@@ -3131,6 +3464,7 @@ my.MultiView = Backbone.View.extend({
   render: function() {
     var tmplData = this.model.toTemplateJSON();
     tmplData.views = this.pageViews;
+    tmplData.sidebarViews = this.sidebarViews;
     var template = Mustache.render(this.template, tmplData);
     $(this.el).html(template);
 
@@ -3150,7 +3484,7 @@ my.MultiView = Backbone.View.extend({
     _.each(this.sidebarViews, function(view) {
       this['$'+view.id] = view.view.el;
       $dataSidebar.append(view.view.el);
-    });
+    }, this);
 
     var pager = new recline.View.Pager({
       model: this.model.queryState
@@ -3193,13 +3527,7 @@ my.MultiView = Backbone.View.extend({
   _onMenuClick: function(e) {
     e.preventDefault();
     var action = $(e.target).attr('data-action');
-    if (action === 'filters') {
-      this.$filterEditor.toggle();
-    } else if (action === 'fields') {
-      this.$fieldsView.toggle();
-    } else if (action === 'transform') {
-      this.transformView.el.toggle();
-    }
+    this['$'+action].toggle();
   },
 
   _onSwitchView: function(e) {
@@ -3264,7 +3592,7 @@ my.MultiView = Backbone.View.extend({
     var self = this;
     _.each(this.pageViews, function(pageView) {
       pageView.view.bind('recline:flash', function(flash) {
-        self.notify(flash); 
+        self.notify(flash);
       });
     });
   },
@@ -3286,14 +3614,15 @@ my.MultiView = Backbone.View.extend({
       },
       flash
     );
+    var _template;
     if (tmplData.loader) {
-      var _template = ' \
+      _template = ' \
         <div class="alert alert-info alert-loader"> \
           {{message}} \
           <span class="notification-loader">&nbsp;</span> \
         </div>';
     } else {
-      var _template = ' \
+      _template = ' \
         <div class="alert alert-{{category}} fade in" data-alert="alert"><a class="close" data-dismiss="alert" href="#">×</a> \
           {{message}} \
         </div>';
@@ -3508,7 +3837,7 @@ my.SlickGrid = Backbone.View.extend({
     });
 
     // Order them if there is ordering info on the state
-    if (this.state.get('columnsOrder')){
+    if (this.state.get('columnsOrder') && this.state.get('columnsOrder').length > 0) {
       visibleColumns = visibleColumns.sort(function(a,b){
         return _.indexOf(self.state.get('columnsOrder'),a.id) > _.indexOf(self.state.get('columnsOrder'),b.id) ? 1 : -1;
       });
@@ -3542,15 +3871,17 @@ my.SlickGrid = Backbone.View.extend({
     // Column sorting
     var sortInfo = this.model.queryState.get('sort');
     if (sortInfo){
-      var column = _.keys(sortInfo[0])[0];
-      var sortAsc = !(sortInfo[0][column].order == 'desc');
+      var column = sortInfo[0].field;
+      var sortAsc = !(sortInfo[0].order == 'desc');
       this.grid.setSortColumn(column, sortAsc);
     }
 
     this.grid.onSort.subscribe(function(e, args){
       var order = (args.sortAsc) ? 'asc':'desc';
-      var sort = [{}];
-      sort[0][args.sortCol.field] = {order: order};
+      var sort = [{
+        field: args.sortCol.field,
+        order: order
+      }];
       self.model.query({sort: sort});
     });
 
@@ -4037,20 +4368,27 @@ this.recline.View = this.recline.View || {};
 
 (function($, my) {
 
+// ## FacetViewer
+//
+// Widget for displaying facets 
+//
+// Usage:
+//
+//      var viewer = new FacetViewer({
+//        model: dataset
+//      });
 my.FacetViewer = Backbone.View.extend({
-  className: 'recline-facet-viewer well', 
+  className: 'recline-facet-viewer', 
   template: ' \
-    <a class="close js-hide" href="#">&times;</a> \
-    <div class="facets row"> \
-      <div class="span1"> \
-        <h3>Facets</h3> \
-      </div> \
+    <div class="facets"> \
       {{#facets}} \
-      <div class="facet-summary span2 dropdown" data-facet="{{id}}"> \
-        <a class="btn dropdown-toggle" data-toggle="dropdown" href="#"><i class="icon-chevron-down"></i> {{id}} {{label}}</a> \
-        <ul class="facet-items dropdown-menu"> \
+      <div class="facet-summary" data-facet="{{id}}"> \
+        <h3> \
+          {{id}} \
+        </h3> \
+        <ul class="facet-items"> \
         {{#terms}} \
-          <li><a class="facet-choice js-facet-filter" data-value="{{term}}">{{term}} ({{count}})</a></li> \
+          <li><a class="facet-choice js-facet-filter" data-value="{{term}}" href="#{{term}}">{{term}} ({{count}})</a></li> \
         {{/terms}} \
         {{#entries}} \
           <li><a class="facet-choice js-facet-filter" data-value="{{time}}">{{term}} ({{count}})</a></li> \
@@ -4062,7 +4400,6 @@ my.FacetViewer = Backbone.View.extend({
   ',
 
   events: {
-    'click .js-hide': 'onHide',
     'click .js-facet-filter': 'onFacetFilter'
   },
   initialize: function(model) {
@@ -4074,10 +4411,9 @@ my.FacetViewer = Backbone.View.extend({
   },
   render: function() {
     var tmplData = {
-      facets: this.model.facets.toJSON(),
       fields: this.model.fields.toJSON()
     };
-    tmplData.facets = _.map(tmplData.facets, function(facet) {
+    tmplData.facets = _.map(this.model.facets.toJSON(), function(facet) {
       if (facet._type === 'date_histogram') {
         facet.entries = _.map(facet.entries, function(entry) {
           entry.term = new Date(entry.time).toDateString();
@@ -4100,10 +4436,13 @@ my.FacetViewer = Backbone.View.extend({
     this.el.hide();
   },
   onFacetFilter: function(e) {
+    e.preventDefault();
     var $target= $(e.target);
     var fieldId = $target.closest('.facet-summary').attr('data-facet');
     var value = $target.attr('data-value');
-    this.model.queryState.addTermFilter(fieldId, value);
+    this.model.queryState.addFilter({type: 'term', field: fieldId, term: value});
+    // have to trigger explicitly for some reason
+    this.model.query();
   }
 });
 
@@ -4240,17 +4579,17 @@ my.FilterEditor = Backbone.View.extend({
       <a href="#" class="js-add-filter">Add filter</a> \
       <form class="form-stacked js-add" style="display: none;"> \
         <fieldset> \
-          <label>Filter type</label> \
-          <select class="filterType"> \
-            <option value="term">Term (text)</option> \
-            <option value="range">Range</option> \
-            <option value="geo_distance">Geo distance</option> \
-          </select> \
           <label>Field</label> \
           <select class="fields"> \
             {{#fields}} \
             <option value="{{id}}">{{label}}</option> \
             {{/fields}} \
+          </select> \
+          <label>Filter type</label> \
+          <select class="filterType"> \
+            <option value="term">Value</option> \
+            <option value="range">Range</option> \
+            <option value="geo_distance">Geo distance</option> \
           </select> \
           <button type="submit" class="btn">Add</button> \
         </fieldset> \
@@ -4271,7 +4610,7 @@ my.FilterEditor = Backbone.View.extend({
         <fieldset> \
           <legend> \
             {{field}} <small>{{type}}</small> \
-            <a class="js-remove-filter" href="#" title="Remove this filter">&times;</a> \
+            <a class="js-remove-filter" href="#" title="Remove this filter" data-filter-id="{{id}}">&times;</a> \
           </legend> \
           <input type="text" value="{{term}}" name="term" data-filter-field="{{field}}" data-filter-id="{{id}}" data-filter-type="{{type}}" /> \
         </fieldset> \
@@ -4282,7 +4621,7 @@ my.FilterEditor = Backbone.View.extend({
         <fieldset> \
           <legend> \
             {{field}} <small>{{type}}</small> \
-            <a class="js-remove-filter" href="#" title="Remove this filter">&times;</a> \
+            <a class="js-remove-filter" href="#" title="Remove this filter" data-filter-id="{{id}}">&times;</a> \
           </legend> \
           <label class="control-label" for="">From</label> \
           <input type="text" value="{{start}}" name="start" data-filter-field="{{field}}" data-filter-id="{{id}}" data-filter-type="{{type}}" /> \
@@ -4296,7 +4635,7 @@ my.FilterEditor = Backbone.View.extend({
         <fieldset> \
           <legend> \
             {{field}} <small>{{type}}</small> \
-            <a class="js-remove-filter" href="#" title="Remove this filter">&times;</a> \
+            <a class="js-remove-filter" href="#" title="Remove this filter" data-filter-id="{{id}}">&times;</a> \
           </legend> \
           <label class="control-label" for="">Longitude</label> \
           <input type="text" value="{{point.lon}}" name="lon" data-filter-field="{{field}}" data-filter-id="{{id}}" data-filter-type="{{type}}" /> \
@@ -4349,15 +4688,14 @@ my.FilterEditor = Backbone.View.extend({
     $target.hide();
     var filterType = $target.find('select.filterType').val();
     var field      = $target.find('select.fields').val();
-    var fieldType  = this.model.fields.find(function (e) { return e.get('id') === field }).get('type');
-    this.model.queryState.addFilter({type: filterType, field: field, fieldType: fieldType});
+    this.model.queryState.addFilter({type: filterType, field: field});
     // trigger render explicitly as queryState change will not be triggered (as blank value for filter)
     this.render();
   },
   onRemoveFilter: function(e) {
     e.preventDefault();
     var $target = $(e.target);
-    var filterId = $target.closest('.filter').attr('data-filter-id');
+    var filterId = $target.attr('data-filter-id');
     this.model.queryState.removeFilter(filterId);
   },
   onTermFiltersUpdate: function(e) {

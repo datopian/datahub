@@ -1,4 +1,41 @@
+(function ($) {
 module("Backend CKAN");
+
+test('_parseCkanResourceUrl', function() {
+  var resid = 'eb23e809-ccbb-4ad1-820a-19586fc4bebd';
+  var url = 'http://demo.ckan.org/dataset/some-dataset/resource/' + resid;
+  var out = recline.Backend.Ckan._parseCkanResourceUrl(url);
+  var exp = {
+    resource_id: resid,
+    endpoint: 'http://demo.ckan.org/api'
+  }
+  deepEqual(out, exp);
+});
+
+test('_normalizeQuery', function() {
+  var dataset = new recline.Model.Dataset({
+    url: 'does-not-matter',
+    id: 'xyz',
+    backend: 'ckan'
+  });
+
+  var queryObj = {
+    q: 'abc',
+    sort: [
+      { field: 'location', order: 'desc' },
+      { field: 'last' }
+    ]
+  };
+  var out = recline.Backend.Ckan._normalizeQuery(queryObj, dataset);
+  var exp = {
+    resource_id: dataset.id,
+    q: 'abc',
+    sort: 'location desc,last ',
+    limit: 10,
+    offset: 0
+  };
+  deepEqual(out, exp);
+});
 
 test("fetch", function() { 
   var dataset = new recline.Model.Dataset({
@@ -162,3 +199,4 @@ var sample_data = {
   "success": true
 };
 
+})(this.jQuery);

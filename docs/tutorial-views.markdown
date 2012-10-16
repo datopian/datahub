@@ -189,14 +189,20 @@ library and the Recline Map view:
 
 {% highlight html %}
 <!-- css -->
-<link rel="stylesheet" href="vendor/leaflet/0.3.1/leaflet.css">
+<link rel="stylesheet" href="vendor/leaflet/0.4.4/leaflet.css">
 <!--[if lte IE 8]>
-<link rel="stylesheet" href="vendor/leaflet/0.3.1/leaflet.ie.css" />
+<link rel="stylesheet" href="vendor/leaflet/0.4.4/leaflet.ie.css" />
+<![endif]-->
+<link rel="stylesheet" href="vendor/leaflet.markercluster/MarkerCluster.css">
+<link rel="stylesheet" href="vendor/leaflet.markercluster/MarkerCluster.Default.css">
+<!--[if lte IE 8]>
+<link rel="stylesheet" href="vendor/leaflet.markercluster/MarkerCluster.Default.ie.css" />
 <![endif]-->
 <link rel="stylesheet" href="css/map.css">
 
 <!-- javascript -->
-<script type="text/javascript" src="vendor/leaflet/0.3.1/leaflet.js"></script>
+<script type="text/javascript" src="vendor/leaflet/0.4.4/leaflet.js"></script>
+<script type="text/javascript" src="vendor/leaflet.markercluster/leaflet.markercluster.js"></script>
 <script type="text/javascript" src="src/view-map.js"></script>
 {% endhighlight %}
 

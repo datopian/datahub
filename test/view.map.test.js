@@ -32,9 +32,6 @@ test('basics', function () {
   $('.fixtures').append(view.el);
   view.render();
 
-  //Fire query, otherwise the map won't be initialized
-  dataset.query();
-
   assertPresent('.editor-field-type', view.elSidebar);
 
   // Check that the Leaflet map was set up
@@ -56,7 +53,8 @@ test('_setupGeometryField', function () {
     geomField: null,
     lonField: 'lon',
     latField: 'lat',
-    autoZoom: true
+    autoZoom: true,
+    cluster: false
   };
   deepEqual(view.state.toJSON(), exp);
   deepEqual(view.menu.state.toJSON(), exp);
@@ -95,9 +93,6 @@ test('GeoJSON geom field', function () {
   $('.fixtures').append(view.el);
   view.render();
 
-  //Fire query, otherwise the map won't be initialized
-  dataset.query();
-
   // Check that all features were created
   equal(_getFeaturesCount(view.features),3);
 
@@ -135,6 +130,30 @@ test('_getGeometryFromRecord non-GeoJSON', function () {
   });
 });
 
+test('many markers', function () {
+  var data = [];
+  for (var i = 0; i<1000; i++) {
+    data.push({ id: i, lon: 13+3*i, lat: 52+i/10});
+  }
+  var fields = [
+    {id: 'id'},
+    {id: 'lat'},
+    {id: 'lon'}
+  ];
+
+  var dataset = new recline.Model.Dataset({records: data, fields: fields});
+  var view = new recline.View.Map({
+    model: dataset
+  });
+  $('.fixtures').append(view.el);
+  view.render();
+
+  dataset.query();
+
+  equal(view.state.get('cluster'), true);
+  view.remove();
+});
+
 test('Popup', function () {
   var dataset = GeoJSONFixture.getDataset();
   var view = new recline.View.Map({
@@ -142,9 +161,6 @@ test('Popup', function () {
   });
   $('.fixtures').append(view.el);
   view.render();
-
-  //Fire query, otherwise the map won't be initialized
-  dataset.query();
 
   var marker = view.el.find('.leaflet-marker-icon').first();
 
@@ -167,6 +183,30 @@ test('Popup', function () {
   view.remove();
 });
 
+test('Popup - Custom', function () {
+  var dataset = GeoJSONFixture.getDataset();
+  var view = new recline.View.Map({
+    model: dataset
+  });
+  $('.fixtures').append(view.el);
+  view.infobox = function(record) {
+    var html = Mustache.render('<h3>{{x}}</h3>y: {{y}}', record.toJSON());
+    return html;
+  };
+  view.render();
+
+  var marker = view.el.find('.leaflet-marker-icon').first();
+  _.values(view.features._layers)[0].fire('click');
+  var popup = view.el.find('.leaflet-popup-content');
+
+  assertPresent(popup);
+
+  var text = popup.html();
+  ok((text.indexOf('<h3>1</h3>y: 2') != -1))
+
+  view.remove();
+});
+
 test('MapMenu', function () {
   var dataset = Fixture.getDataset();
   var controls = new recline.View.MapMenu({
@@ -178,7 +218,7 @@ test('MapMenu', function () {
 
 var _getFeaturesCount = function(features){
   var cnt = 0;
-  features._iterateLayers(function(layer){
+  _.each(features._layers, function(layer) {
     cnt++;
   });
   return cnt;
