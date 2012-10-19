@@ -2,7 +2,7 @@ this.recline = this.recline || {};
 this.recline.Backend = this.recline.Backend || {};
 this.recline.Backend.CSV = this.recline.Backend.CSV || {};
 
-(function(my) {
+(function($, my) {
   // ## fetch
   //
   // 3 options
@@ -273,4 +273,4 @@ this.recline.Backend.CSV = this.recline.Backend.CSV || {};
   }
 
 
-}(this.recline.Backend.CSV));
+}(jQuery, this.recline.Backend.CSV));
