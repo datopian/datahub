@@ -196,52 +196,53 @@ test("query", function() {
   $.ajax.restore();
 });
 
-test("write", function() { 
-  var url = 'http://localhost:9200/recline-test/es-write';
-  var backend = new recline.Backend.ElasticSearch.Wrapper(url);
-  stop();
-
-  var id = parseInt(Math.random()*100000000).toString();
-  var rec = {
-    id: id,
-    title: 'my title'
-  };
-  var jqxhr = backend.upsert(rec);
-  jqxhr.done(function(data) {
-    ok(data.ok);
-    equal(data._id, id);
-    equal(data._type, 'es-write');
-    equal(data._version, 1);
-    
-    // update
-    rec.title = 'new title';
-    var jqxhr = backend.upsert(rec);
-    jqxhr.done(function(data) {
-      equal(data._version, 2);
-
-      // delete
-      var jqxhr = backend.remove(rec.id);
-      jqxhr.done(function(data) {
-        ok(data.ok);
-        rec = null;
-
-        // try to get ...
-        var jqxhr = backend.get(id);
-        jqxhr.done(function(data) {
-          // should not be here
-          ok(false, 'Should have got 404');
-        }).error(function(error) {
-          equal(error.status, 404);
-          start();
-        });
-      });
-    });
-  }).fail(function(error) {
-    console.log(error);
-    ok(false, 'Basic request failed - is ElasticSearch running locally on port 9200 (required for this test!)');
-    start();
-  });
-});
+// DISABLED - this test requires ElasticSearch to be running locally
+// test("write", function() { 
+//   var url = 'http://localhost:9200/recline-test/es-write';
+//   var backend = new recline.Backend.ElasticSearch.Wrapper(url);
+//   stop();
+// 
+//   var id = parseInt(Math.random()*100000000).toString();
+//   var rec = {
+//     id: id,
+//     title: 'my title'
+//   };
+//   var jqxhr = backend.upsert(rec);
+//   jqxhr.done(function(data) {
+//     ok(data.ok);
+//     equal(data._id, id);
+//     equal(data._type, 'es-write');
+//     equal(data._version, 1);
+//     
+//     // update
+//     rec.title = 'new title';
+//     var jqxhr = backend.upsert(rec);
+//     jqxhr.done(function(data) {
+//       equal(data._version, 2);
+// 
+//       // delete
+//       var jqxhr = backend.remove(rec.id);
+//       jqxhr.done(function(data) {
+//         ok(data.ok);
+//         rec = null;
+// 
+//         // try to get ...
+//         var jqxhr = backend.get(id);
+//         jqxhr.done(function(data) {
+//           // should not be here
+//           ok(false, 'Should have got 404');
+//         }).error(function(error) {
+//           equal(error.status, 404);
+//           start();
+//         });
+//       });
+//     });
+//   }).fail(function(error) {
+//     console.log(error);
+//     ok(false, 'Basic request failed - is ElasticSearch running locally on port 9200 (required for this test!)');
+//     start();
+//   });
+// });
 
 
 // ==================================================
@@ -289,63 +290,64 @@ test("query", function() {
   $.ajax.restore();
 });
 
-test("write", function() { 
-  var dataset = new recline.Model.Dataset({
-    url: 'http://localhost:9200/recline-test/es-write',
-    backend: 'elasticsearch'
-  });
-
-  stop();
-
-  var id = parseInt(Math.random()*100000000).toString();
-  var rec = new recline.Model.Record({
-    id: id,
-    title: 'my title'
-  });
-  dataset.records.add(rec);
-  // have to do this explicitly as we not really supporting adding new items atm
-  dataset._changes.creates.push(rec.toJSON());
-  var jqxhr = dataset.save();
-  jqxhr.done(function(data) {
-    ok(data.ok);
-    equal(data._id, id);
-    equal(data._type, 'es-write');
-    equal(data._version, 1);
-    
-    // update
-    rec.set({title: 'new title'});
-    // again set up by hand ...
-    dataset._changes.creates = [];
-    dataset._changes.updates.push(rec.toJSON());
-    var jqxhr = dataset.save();
-    jqxhr.done(function(data) {
-      equal(data._version, 2);
-
-      // delete
-      dataset._changes.updates = 0;
-      dataset._changes.deletes.push(rec.toJSON());
-      var jqxhr = dataset.save();
-      jqxhr.done(function(data) {
-        ok(data.ok);
-        rec = null;
-
-        // try to get ...
-        var es = new recline.Backend.ElasticSearch.Wrapper(dataset.get('url'));
-        var jqxhr = es.get(id);
-        jqxhr.done(function(data) {
-          // should not be here
-          ok(false, 'Should have got 404');
-        }).error(function(error) {
-          equal(error.status, 404);
-          start();
-        });
-      });
-    });
-  }).fail(function(error) {
-    console.log(error);
-    ok(false, 'Basic request failed - is ElasticSearch running locally on port 9200 (required for this test!)');
-    start();
-  });
-});
+// DISABLED - this test requires ElasticSearch to be running locally
+// test("write", function() { 
+//   var dataset = new recline.Model.Dataset({
+//     url: 'http://localhost:9200/recline-test/es-write',
+//     backend: 'elasticsearch'
+//   });
+// 
+//   stop();
+// 
+//   var id = parseInt(Math.random()*100000000).toString();
+//   var rec = new recline.Model.Record({
+//     id: id,
+//     title: 'my title'
+//   });
+//   dataset.records.add(rec);
+//   // have to do this explicitly as we not really supporting adding new items atm
+//   dataset._changes.creates.push(rec.toJSON());
+//   var jqxhr = dataset.save();
+//   jqxhr.done(function(data) {
+//     ok(data.ok);
+//     equal(data._id, id);
+//     equal(data._type, 'es-write');
+//     equal(data._version, 1);
+//     
+//     // update
+//     rec.set({title: 'new title'});
+//     // again set up by hand ...
+//     dataset._changes.creates = [];
+//     dataset._changes.updates.push(rec.toJSON());
+//     var jqxhr = dataset.save();
+//     jqxhr.done(function(data) {
+//       equal(data._version, 2);
+// 
+//       // delete
+//       dataset._changes.updates = 0;
+//       dataset._changes.deletes.push(rec.toJSON());
+//       var jqxhr = dataset.save();
+//       jqxhr.done(function(data) {
+//         ok(data.ok);
+//         rec = null;
+// 
+//         // try to get ...
+//         var es = new recline.Backend.ElasticSearch.Wrapper(dataset.get('url'));
+//         var jqxhr = es.get(id);
+//         jqxhr.done(function(data) {
+//           // should not be here
+//           ok(false, 'Should have got 404');
+//         }).error(function(error) {
+//           equal(error.status, 404);
+//           start();
+//         });
+//       });
+//     });
+//   }).fail(function(error) {
+//     console.log(error);
+//     ok(false, 'Basic request failed - is ElasticSearch running locally on port 9200 (required for this test!)');
+//     start();
+//   });
+// });
 
 })(this.jQuery);
