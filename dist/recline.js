@@ -141,16 +141,26 @@ this.recline = this.recline || {};
 this.recline.Backend = this.recline.Backend || {};
 this.recline.Backend.CSV = this.recline.Backend.CSV || {};
 
-(function(my) {
+// Note that provision of jQuery is optional (it is **only** needed if you use fetch on a remote file)
+(function(my, $) {
+
   // ## fetch
   //
-  // 3 options
+  // fetch supports 3 options depending on the attribute provided on the dataset argument
   //
-  // 1. CSV local fileobject -> HTML5 file object + CSV parser
-  // 2. Already have CSV string (in data) attribute -> CSV parser
-  // 2. online CSV file that is ajax-able -> ajax + csv parser
+  // 1. `dataset.file`: `file` is an HTML5 file object. This is opened and parsed with the CSV parser.
+  // 2. `dataset.data`: `data` is a string in CSV format. This is passed directly to the CSV parser
+  // 3. `dataset.url`: a url to an online CSV file that is ajax accessible (note this usually requires either local or on a server that is CORS enabled). The file is then loaded using $.ajax and parsed using the CSV parser (NB: this requires jQuery)
   //
-  // All options generates similar data and give a memory store outcome
+  // All options generates similar data and use the memory store outcome, that is they return something like:
+  //
+  // <pre>
+  // {
+  //   records: [ [...], [...], ... ],
+  //   metadata: { may be some metadata e.g. file name }
+  //   useMemoryStore: true
+  // }
+  // </pre>
   my.fetch = function(dataset) {
     var dfd = $.Deferred();
     if (dataset.file) {
@@ -188,6 +198,8 @@ this.recline.Backend.CSV = this.recline.Backend.CSV || {};
     return dfd.promise();
   };
 
+  // ## parseCSV
+  //
   // Converts a Comma Separated Values string into an array of arrays.
   // Each line in the CSV becomes an array.
   //
@@ -294,7 +306,7 @@ this.recline.Backend.CSV = this.recline.Backend.CSV || {};
     return out;
   };
 
-  // ### serializeCSV
+  // ## serializeCSV
   // 
   // Convert an Object or a simple array of arrays into a Comma
   // Separated Values string.
@@ -412,7 +424,7 @@ this.recline.Backend.CSV = this.recline.Backend.CSV || {};
   }
 
 
-}(this.recline.Backend.CSV));
+}(this.recline.Backend.CSV, jQuery));
 this.recline = this.recline || {};
 this.recline.Backend = this.recline.Backend || {};
 this.recline.Backend.DataProxy = this.recline.Backend.DataProxy || {};
@@ -1405,11 +1417,12 @@ my.Dataset = Backbone.Model.extend({
     } 
 
     // fields is an array of strings (i.e. list of field headings/ids)
-    if (fields && fields.length > 0 && typeof fields[0] === 'string') {
+    if (fields && fields.length > 0 && typeof(fields[0]) != 'object') {
       // Rename duplicate fieldIds as each field name needs to be
       // unique.
       var seen = {};
       fields = _.map(fields, function(field, index) {
+        field = field.toString();
         // cannot use trim as not supported by IE7
         var fieldId = field.replace(/^\s+|\s+$/g, '');
         if (fieldId === '') {
@@ -3764,7 +3777,24 @@ this.recline.View = this.recline.View || {};
 //
 // Initialize it with a `recline.Model.Dataset`.
 //
-// NB: you need an explicit height on the element for slickgrid to work
+// Additional options to drive SlickGrid grid can be given through state.
+// The following keys allow for customization:
+// * gridOptions: to add options at grid level
+// * columnsEditor: to add editor for editable columns
+//
+// For example:
+//    var grid = new recline.View.SlickGrid({
+//         model: dataset,
+//         el: $el,
+//         state: {
+//          gridOptions: {editable: true},
+//          columnsEditor: [
+//            {column: 'date', editor: Slick.Editor.Date },
+//            {column: 'title', editor: Slick.Editor.Text}
+//          ]
+//        }
+//      });
+//// NB: you need an explicit height on the element for slickgrid to work
 my.SlickGrid = Backbone.View.extend({
   initialize: function(modelEtc) {
     var self = this;
@@ -3780,9 +3810,13 @@ my.SlickGrid = Backbone.View.extend({
         columnsOrder: [],
         columnsSort: {},
         columnsWidth: [],
+        columnsEditor: [],
+        options: {},
         fitColumns: false
       }, modelEtc.state
+
     );
+//      this.grid_options = modelEtc.options;
     this.state = new recline.Model.ObjectState(state);
   },
 
@@ -3792,13 +3826,13 @@ my.SlickGrid = Backbone.View.extend({
   render: function() {
     var self = this;
 
-    var options = {
+    var options = _.extend({
       enableCellNavigation: true,
       enableColumnReorder: true,
       explicitInitialization: true,
       syncColumnCellResize: true,
       forceFitColumns: this.state.get('fitColumns')
-    };
+    }, self.state.get('gridOptions'));
 
     // We need all columns, even the hidden ones, to show on the column picker
     var columns = [];
@@ -3828,6 +3862,10 @@ my.SlickGrid = Backbone.View.extend({
         column['width'] = widthInfo.width;
       }
 
+      var editInfo = _.find(self.state.get('columnsEditor'),function(c){return c.column == field.id});
+      if (editInfo){
+        column['editor'] = editInfo.editor;
+      }
       columns.push(column);
     });
 
@@ -3856,14 +3894,29 @@ my.SlickGrid = Backbone.View.extend({
     }
     columns = columns.concat(tempHiddenColumns);
 
-    var data = [];
+    function RowSet() {
+      var models = [];
+      var rows = [];
+
+      this.push = function(model, row) {
+        models.push(model);
+        rows.push(row);
+      }
+
+      this.getLength = function() { return rows.length; }
+      this.getItem = function(index) { return rows[index];}
+      this.getItemMetadata= function(index) { return {};}
+      this.getModel= function(index) { return models[index]; }
+    };
+
+    var data = new RowSet();
 
     this.model.records.each(function(doc){
       var row = {};
       self.model.fields.each(function(field){
         row[field.id] = doc.getFieldValueUnrendered(field);
       });
-      data.push(row);
+      data.push(doc, row);
     });
 
     this.grid = new Slick.Grid(this.el, data, visibleColumns, options);
@@ -3899,6 +3952,17 @@ my.SlickGrid = Backbone.View.extend({
           }
         });
         self.state.set({columnsWidth:columnsWidth});
+    });
+
+    this.grid.onCellChange.subscribe(function (e, args) {
+      // We need to change the model associated value
+      //
+      var grid = args.grid;
+      var model = data.getModel(args.row);
+      var field = grid.getColumns()[args.cell]['id'];
+      var v = {};
+      v[field] = args.item[field];
+      model.set(v);
     });
 
     var columnpicker = new Slick.Controls.ColumnPicker(columns, this.grid,
