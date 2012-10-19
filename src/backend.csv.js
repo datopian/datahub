@@ -2,16 +2,26 @@ this.recline = this.recline || {};
 this.recline.Backend = this.recline.Backend || {};
 this.recline.Backend.CSV = this.recline.Backend.CSV || {};
 
-(function(my) {
+// Note that provision of jQuery is optional (it is **only** needed if you use fetch on a remote file)
+(function(my, $) {
+
   // ## fetch
   //
-  // 3 options
+  // fetch supports 3 options depending on the attribute provided on the dataset argument
   //
-  // 1. CSV local fileobject -> HTML5 file object + CSV parser
-  // 2. Already have CSV string (in data) attribute -> CSV parser
-  // 2. online CSV file that is ajax-able -> ajax + csv parser
+  // 1. `dataset.file`: `file` is an HTML5 file object. This is opened and parsed with the CSV parser.
+  // 2. `dataset.data`: `data` is a string in CSV format. This is passed directly to the CSV parser
+  // 3. `dataset.url`: a url to an online CSV file that is ajax accessible (note this usually requires either local or on a server that is CORS enabled). The file is then loaded using $.ajax and parsed using the CSV parser (NB: this requires jQuery)
   //
-  // All options generates similar data and give a memory store outcome
+  // All options generates similar data and use the memory store outcome, that is they return something like:
+  //
+  // <pre>
+  // {
+  //   records: [ [...], [...], ... ],
+  //   metadata: { may be some metadata e.g. file name }
+  //   useMemoryStore: true
+  // }
+  // </pre>
   my.fetch = function(dataset) {
     var dfd = $.Deferred();
     if (dataset.file) {
@@ -49,6 +59,8 @@ this.recline.Backend.CSV = this.recline.Backend.CSV || {};
     return dfd.promise();
   };
 
+  // ## parseCSV
+  //
   // Converts a Comma Separated Values string into an array of arrays.
   // Each line in the CSV becomes an array.
   //
@@ -155,7 +167,7 @@ this.recline.Backend.CSV = this.recline.Backend.CSV || {};
     return out;
   };
 
-  // ### serializeCSV
+  // ## serializeCSV
   // 
   // Convert an Object or a simple array of arrays into a Comma
   // Separated Values string.
@@ -273,4 +285,4 @@ this.recline.Backend.CSV = this.recline.Backend.CSV || {};
   }
 
 
-}(this.recline.Backend.CSV));
+}(this.recline.Backend.CSV, jQuery));
