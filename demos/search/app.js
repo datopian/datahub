@@ -82,13 +82,18 @@ var SearchView = Backbone.View.extend({
     </div> \
     <div class="pager-here"></div> \
   ',
-
+ 
   render: function() {
-    // templateResults is just for one result ...
-    var tmpl = '{{#records}}' + this.templateResults + '{{/records}}'; 
-    var results = Mustache.render(tmpl, {
-      records: this.model.records.toJSON()
-    });
+    var results = '';
+    if (_.isFunction(this.templateResults)) {
+      var results = _.map(this.model.records.toJSON(), this.templateResults).join('\n');
+    } else {
+      // templateResults is just for one result ...
+      var tmpl = '{{#records}}' + this.templateResults + '{{/records}}'; 
+      var results = Mustache.render(tmpl, {
+        records: this.model.records.toJSON()
+      });
+    }
     var html = Mustache.render(this.template, {
       results: results
     });
@@ -116,6 +121,73 @@ var SearchView = Backbone.View.extend({
 // Stuff very specific to this demo
 
 function setupMoreComplexExample(config) {
+  var $el = $('.search-here');
+  var dataset = new recline.Model.Dataset(config);
+  // async as may be fetching remote
+  dataset.fetch().done(function() {
+    if (dataset.get('url').indexOf('openspending') === -1) {
+      // generic template function
+      var template = function(record) {
+        var template = '<div class="record"> \
+          <ul> \
+           {{#data}} \
+           <li>{{key}}: {{value}}</li> \
+           {{/data}} \
+        </div> \
+        ';
+        var data = _.map(_.keys(record), function(key) {
+          return { key: key, value: record[key] };
+        });
+        return Mustache.render(template, {
+          data: data
+        });
+      }
+    } else {
+      // generic template function
+      var template = function(record) {
+        record['time'] = record['time.label_facet']
+        var template = '<div class="record"> \
+          <h3> \
+            <a href="http://openspending.org/{{record.dataset}}/entries/{{record.id}}">{{record.dataset}} {{record.time}}</a> \
+            &ndash; <img src="http://openspending.org/static/img/icons/cd_16x16.png" /> {{amount_formatted}} \
+          </h3> \
+          <ul> \
+           {{#data}} \
+           <li>{{key}}: {{value}}</li> \
+           {{/data}} \
+        </div> \
+        ';
+        var data = [];
+        _.each(_.keys(record), function(key) {
+          if (key !='_id' && key != 'id') {
+            data.push({ key: key, value: record[key] });
+          }
+        });
+        return Mustache.render(template, {
+          record: record,
+          amount_formatted: formatAmount(record['amount']),
+          data: data
+        });
+      }
+    }
+
+    var searchView = new SearchView({
+      el: $el,
+      model: dataset,
+      template: template 
+    });
+    searchView.render();
+
+    dataset.queryState.set({
+        size: 10
+      },
+      {silent: true}
+    );
+    if (dataset.get('url').indexOf('openspending') != -1) {
+      dataset.queryState.addFacet('dataset');
+    }
+    dataset.query();
+  });
 };
 
 var sampleData = [
@@ -139,3 +211,20 @@ var sampleData = [
   }
 ];
 
+var formatAmount = function (num) {
+  var billion = 1000000000;
+  var million = 1000000;
+  var thousand = 1000;
+  var numabs = Math.abs(num);
+  if (numabs > billion) {
+    return (num / billion).toFixed(0) + 'bn';
+  }
+  if (numabs > (million / 2)) {
+    return (num / million).toFixed(0) + 'm';
+  }
+  if (numabs > thousand) {
+    return (num / thousand).toFixed(0) + 'k';
+  } else {
+    return num.toFixed(0);
+  }
+};
