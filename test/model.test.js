@@ -180,6 +180,21 @@ test('_normalizeRecordsAndFields', function () {
         records: null
       },
     },
+    {
+      in_: {
+        fields: [ 1, 1, 3 ],
+        records: null
+      },
+      exp: {
+        fields: [
+          {id: '1'},
+          {id: '11'},
+          {id: '3'}
+        ],
+        records: null
+      },
+    },
+    // field is *not* a string
     // records array but no fields
     {
       in_: {
@@ -267,6 +282,7 @@ test('_normalizeRecordsAndFields', function () {
     out = dataset._normalizeRecordsAndFields(item.in_.records, item.in_.fields);
     deepEqual(out, item.exp);
   });
+
 });
 
 
