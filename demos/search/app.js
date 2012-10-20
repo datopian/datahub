@@ -74,6 +74,7 @@ var SearchView = Backbone.View.extend({
     <div class="controls"> \
       <div class="query-here"></div> \
     </div> \
+    <div class="total"><h2><span></span> records found</h2></div> \
     <div class="body"> \
       <div class="sidebar"></div> \
       <div class="results"> \
@@ -98,6 +99,8 @@ var SearchView = Backbone.View.extend({
       results: results
     });
     this.el.html(html);
+
+    this.el.find('.total span').text(this.model.recordCount);
 
     var view = new recline.View.FacetViewer({
       model: this.model
@@ -138,8 +141,9 @@ function setupMoreComplexExample(config) {
       },
       {silent: true}
     );
-    if (dataset.get('url').indexOf('openspending') != -1) {
-      dataset.queryState.addFacet('dataset');
+    if (dataset.get('url') in templates) {
+      // for gdocs example
+      dataset.queryState.addFacet('cause');
     }
     dataset.query();
   });
@@ -153,6 +157,7 @@ var templates = {
        {{#data}} \
        <li>{{key}}: {{value}}</li> \
        {{/data}} \
+     </ul> \
     </div> \
     ';
     var data = _.map(_.keys(record), function(key) {
@@ -171,8 +176,9 @@ var templates = {
       </h3> \
       <ul> \
        {{#data}} \
-       <li>{{key}}: {{value}}</li> \
+         <li>{{key}}: {{value}}</li> \
        {{/data}} \
+       </ul> \
     </div> \
     ';
     var data = [];
@@ -184,6 +190,27 @@ var templates = {
     return Mustache.render(template, {
       record: record,
       amount_formatted: formatAmount(record['amount']),
+      data: data
+    });
+  },
+  'https://docs.google.com/spreadsheet/ccc?key=0Aon3JiuouxLUdExXSTl2Y01xZEszOTBFZjVzcGtzVVE': function(record) {
+    var template = '<div class="record"> \
+      <h3> \
+        {{record.incidentsite}} &ndash; {{record.datereported}} &ndash; {{record.estimatedspillvolumebbl}} barrels \
+      </h3> \
+      <ul> \
+       {{#data}} \
+         <li>{{key}}: {{value}}</li> \
+       {{/data}} \
+       </ul> \
+    </div> \
+    ';
+    var data = [];
+    _.each(_.keys(record), function(key) {
+      data.push({ key: key, value: record[key] });
+    });
+    return Mustache.render(template, {
+      record: record,
       data: data
     });
   }
