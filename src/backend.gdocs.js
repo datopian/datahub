@@ -130,7 +130,7 @@ this.recline.Backend.GDocs = this.recline.Backend.GDocs || {};
   // Convenience function to get GDocs JSON API Url from standard URL
   my.getGDocsAPIUrls = function(url) {
     // https://docs.google.com/spreadsheet/ccc?key=XXXX#gid=YYY
-    var regex = /.*spreadsheet\/ccc?.*key=([^#?&+]+).*gid=([\d]+).*/;
+    var regex = /.*spreadsheet\/ccc?.*key=([^#?&+]+)[^#]*(#gid=([\d]+).*)?/;
     var matches = url.match(regex);
     var key;
     var worksheet;
@@ -139,7 +139,10 @@ this.recline.Backend.GDocs = this.recline.Backend.GDocs || {};
     if(!!matches) {
         key = matches[1];
         // the gid in url is 0-based and feed url is 1-based
-        worksheet = parseInt(matches[2]) + 1;
+        worksheet = parseInt(matches[3]) + 1;
+        if (isNaN(worksheet)) {
+          worksheet = 1;
+        }
         urls = {
           worksheet  : 'https://spreadsheets.google.com/feeds/list/'+ key +'/'+ worksheet +'/public/values?alt=json',
           spreadsheet: 'https://spreadsheets.google.com/feeds/worksheets/'+ key +'/public/basic?alt=json'
