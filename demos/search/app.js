@@ -125,52 +125,7 @@ function setupMoreComplexExample(config) {
   var dataset = new recline.Model.Dataset(config);
   // async as may be fetching remote
   dataset.fetch().done(function() {
-    if (dataset.get('url').indexOf('openspending') === -1) {
-      // generic template function
-      var template = function(record) {
-        var template = '<div class="record"> \
-          <ul> \
-           {{#data}} \
-           <li>{{key}}: {{value}}</li> \
-           {{/data}} \
-        </div> \
-        ';
-        var data = _.map(_.keys(record), function(key) {
-          return { key: key, value: record[key] };
-        });
-        return Mustache.render(template, {
-          data: data
-        });
-      }
-    } else {
-      // generic template function
-      var template = function(record) {
-        record['time'] = record['time.label_facet']
-        var template = '<div class="record"> \
-          <h3> \
-            <a href="http://openspending.org/{{record.dataset}}/entries/{{record.id}}">{{record.dataset}} {{record.time}}</a> \
-            &ndash; <img src="http://openspending.org/static/img/icons/cd_16x16.png" /> {{amount_formatted}} \
-          </h3> \
-          <ul> \
-           {{#data}} \
-           <li>{{key}}: {{value}}</li> \
-           {{/data}} \
-        </div> \
-        ';
-        var data = [];
-        _.each(_.keys(record), function(key) {
-          if (key !='_id' && key != 'id') {
-            data.push({ key: key, value: record[key] });
-          }
-        });
-        return Mustache.render(template, {
-          record: record,
-          amount_formatted: formatAmount(record['amount']),
-          data: data
-        });
-      }
-    }
-
+    var template = templates[dataset.get('url')] || templates['generic'];
     var searchView = new SearchView({
       el: $el,
       model: dataset,
@@ -179,7 +134,7 @@ function setupMoreComplexExample(config) {
     searchView.render();
 
     dataset.queryState.set({
-        size: 10
+        size: 5
       },
       {silent: true}
     );
@@ -189,6 +144,50 @@ function setupMoreComplexExample(config) {
     dataset.query();
   });
 };
+
+var templates = {
+  // generic template function
+  'generic': function(record) {
+    var template = '<div class="record"> \
+      <ul> \
+       {{#data}} \
+       <li>{{key}}: {{value}}</li> \
+       {{/data}} \
+    </div> \
+    ';
+    var data = _.map(_.keys(record), function(key) {
+      return { key: key, value: record[key] };
+    });
+    return Mustache.render(template, {
+      data: data
+    });
+  },
+  'http://openspending.org/api/search': function(record) {
+    record['time'] = record['time.label_facet']
+    var template = '<div class="record"> \
+      <h3> \
+        <a href="http://openspending.org/{{record.dataset}}/entries/{{record.id}}">{{record.dataset}} {{record.time}}</a> \
+        &ndash; <img src="http://openspending.org/static/img/icons/cd_16x16.png" /> {{amount_formatted}} \
+      </h3> \
+      <ul> \
+       {{#data}} \
+       <li>{{key}}: {{value}}</li> \
+       {{/data}} \
+    </div> \
+    ';
+    var data = [];
+    _.each(_.keys(record), function(key) {
+      if (key !='_id' && key != 'id') {
+        data.push({ key: key, value: record[key] });
+      }
+    });
+    return Mustache.render(template, {
+      record: record,
+      amount_formatted: formatAmount(record['amount']),
+      data: data
+    });
+  }
+}
 
 var sampleData = [
   {
