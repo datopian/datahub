@@ -207,6 +207,26 @@ test('Popup - Custom', function () {
   view.remove();
 });
 
+test('geoJsonLayerOptions', function () {
+  var dataset = GeoJSONFixture.getDataset();
+  var view = new recline.View.Map({
+    model: dataset
+  });
+  $('.fixtures').append(view.el);
+  view.geoJsonLayerOptions.point 
+  view.geoJsonLayerOptions.pointToLayer = function(feature, latlng) {
+    var marker = new L.CircleMarker(latlng, { radius: 8 } );
+    marker.bindPopup(feature.properties.popupContent);
+    return marker;
+  }
+  view.render();
+
+  // TODO: test it somehow?
+  expect(0);
+
+  view.remove();
+});
+
 test('MapMenu', function () {
   var dataset = Fixture.getDataset();
   var controls = new recline.View.MapMenu({
