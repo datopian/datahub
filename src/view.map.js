@@ -8,9 +8,14 @@ this.recline.View = this.recline.View || {};
 // ## Map view for a Dataset using Leaflet mapping library.
 //
 // This view allows to plot gereferenced records on a map. The location
-// information can be provided either via a field with
-// [GeoJSON](http://geojson.org) objects or two fields with latitude and
-// longitude coordinates.
+// information can be provided in 2 ways:
+//
+// 1. Via a single field. This field must be either a geo_point or 
+// [GeoJSON](http://geojson.org) object
+// 2. Via two fields with latitude and longitude coordinates.
+//
+// Which fields in the data these correspond to can be configured via the state
+// (and are guessed if no info is provided).
 //
 // Initialization arguments are as standard for Dataset Views. State object may
 // have the following (optional) configuration options:
@@ -21,6 +26,9 @@ this.recline.View = this.recline.View || {};
 //     geomField: {id of field containing geometry in the dataset}
 //     lonField: {id of field containing longitude in the dataset}
 //     latField: {id of field containing latitude in the dataset}
+//     autoZoom: true,
+//     // use cluster support
+//     cluster: false
 //   }
 // </pre>
 //
