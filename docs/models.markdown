@@ -118,20 +118,43 @@ The type list is as follows (brackets indicate
 possible aliases for specific types - these types will be recognized and
 normalized to the default type name for that type):
 
-* string (text) - a string
-* number (double, float, numeric) - a number including floating point numbers.
-* integer (int) - an integer.
-* date - a date. The preferred format is YYYY-MM-DD.
-* time - a time without a date
-* date-time (datetime, timestamp) a date-time. It is recommended this be in ISO 8601
+* **string (text)**: a string
+* **number (double, float, numeric)**: a number including floating point numbers.
+* **integer (int)**: an integer.
+* **date**: a date. The preferred format is YYYY-MM-DD.
+* **time**: a time without a date
+* **date-time (datetime, timestamp)**: a date-time. It is recommended this be in ISO 8601
   format of YYYY-MM- DDThh:mm:ssZ in UTC time.
-* boolean (bool)
-* binary - base64 representation of binary data.
-* geo_point
-* geojson
-* array
-* object (json)
-* any - value of field may be any type
+* **boolean (bool)**
+* **binary**: base64 representation of binary data.
+* **geo_point**: as per
+  <http://www.elasticsearch.org/guide/reference/mapping/geo-point-type.html>.
+  That is a field (in these examples named location) that has one of the
+  following structures:
+
+      location: {
+        lon: ...
+        lat: ...
+      }
+      
+      location: [lon,lat]
+      
+      location: "lat, lng"
+
+  As bonus there is also support for (beyond the ES style geo_point):
+
+      // geonames style
+      location: {
+        lng: ...
+        lat: ...
+      }
+      // found on the web
+      location: "(lat, lon)"
+
+* **geojson**: as per <http://geojson.org/>
+* **array**: an array
+* **object (json)**: an object
+* **any**: value of field may be any type
 
 <div class="alert">NB: types are not validated so you can set the type to
 whatever value you like (it does not have to be in the above list). However,
