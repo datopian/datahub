@@ -3,8 +3,8 @@
 var dataset = new recline.Model.Dataset({
   url: '{{page.root}}/demos/data/sample.csv',
   backend: 'csv',
-  // separator: ',',
-  // delimiter: '"',
+  // delimiter: ',',
+  // quotechar: '"',
   // encoding: 'utf8'
 });
 
@@ -13,7 +13,7 @@ var dataset = new recline.Model.Dataset({
 dataset.fetch();
 
 // show the data for illustrations sake
-var grid = new recline.View.Grid({
+var grid = new recline.View.SlickGrid({
   model: dataset
 });
 $('#my-online-csv').append(grid.el);
