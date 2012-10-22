@@ -24,8 +24,8 @@ this.recline.View = this.recline.View || {};
 //         state: {
 //          gridOptions: {editable: true},
 //          columnsEditor: [
-//            {column: 'date', editor: Slick.Editor.Date },
-//            {column: 'title', editor: Slick.Editor.Text}
+//            {column: 'date', editor: Slick.Editors.Date },
+//            {column: 'title', editor: Slick.Editors.Text}
 //          ]
 //        }
 //      });
