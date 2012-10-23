@@ -8,9 +8,14 @@ this.recline.View = this.recline.View || {};
 // ## Map view for a Dataset using Leaflet mapping library.
 //
 // This view allows to plot gereferenced records on a map. The location
-// information can be provided either via a field with
-// [GeoJSON](http://geojson.org) objects or two fields with latitude and
-// longitude coordinates.
+// information can be provided in 2 ways:
+//
+// 1. Via a single field. This field must be either a geo_point or 
+// [GeoJSON](http://geojson.org) object
+// 2. Via two fields with latitude and longitude coordinates.
+//
+// Which fields in the data these correspond to can be configured via the state
+// (and are guessed if no info is provided).
 //
 // Initialization arguments are as standard for Dataset Views. State object may
 // have the following (optional) configuration options:
@@ -21,6 +26,9 @@ this.recline.View = this.recline.View || {};
 //     geomField: {id of field containing geometry in the dataset}
 //     lonField: {id of field containing longitude in the dataset}
 //     latField: {id of field containing latitude in the dataset}
+//     autoZoom: true,
+//     // use cluster support
+//     cluster: false
 //   }
 // </pre>
 //
@@ -123,6 +131,39 @@ my.Map = Backbone.View.extend({
     return html;
   },
 
+  // Options to use for the [Leaflet GeoJSON layer](http://leaflet.cloudmade.com/reference.html#geojson)
+  // See also <http://leaflet.cloudmade.com/examples/geojson.html>
+  //
+  // e.g.
+  //
+  //     pointToLayer: function(feature, latLng)
+  //     onEachFeature: function(feature, layer)
+  //
+  // See defaults for examples
+  geoJsonLayerOptions: {
+    // pointToLayer function to use when creating points
+    //
+    // Default behaviour shown here is to create a marker using the
+    // popupContent set on the feature properties (created via infobox function
+    // during feature generation)
+    //
+    // NB: inside pointToLayer `this` will be set to point to this map view
+    // instance (which allows e.g. this.markers to work in this default case)
+    pointToLayer: function (feature, latlng) {
+      var marker = new L.Marker(latlng);
+      marker.bindPopup(feature.properties.popupContent);
+      // this is for cluster case
+      this.markers.addLayer(marker);
+      return marker;
+    },
+    // onEachFeature default which adds popup in
+    onEachFeature: function(feature, layer) {
+      if (feature.properties && feature.properties.popupContent) {
+        layer.bindPopup(feature.properties.popupContent);
+      }
+    }
+  },
+
   // END: Customization section
   // ----
 
@@ -187,17 +228,21 @@ my.Map = Backbone.View.extend({
         return;
       }
 
+      // this must come before zooming!
+      // if not: errors when using e.g. circle markers like
+      // "Cannot call method 'project' of undefined"
+      if (this.state.get('cluster')) {
+        this.map.addLayer(this.markers);
+      } else {
+        this.map.addLayer(this.features);
+      }
+
       if (this.state.get('autoZoom')){
         if (this.visible){
           this._zoomToFeatures();
         } else {
           this._zoomPending = true;
         }
-      }
-      if (this.state.get('cluster')) {
-        this.map.addLayer(this.markers);
-      } else {
-        this.map.addLayer(this.features);
       }
     }
   },
@@ -315,7 +360,7 @@ my.Map = Backbone.View.extend({
         } else {
           return null;
         }
-      } else if (value && value.slice) {
+      } else if (value && _.isArray(value)) {
         // [ lon, lat ]
         return {
           "type": "Point",
@@ -404,14 +449,11 @@ my.Map = Backbone.View.extend({
 
     this.markers = new L.MarkerClusterGroup(this._clusterOptions);
 
-    this.features = new L.GeoJSON(null,{
-        pointToLayer: function (feature, latlng) {
-          var marker = new L.marker(latlng);
-          marker.bindPopup(feature.properties.popupContent);
-          self.markers.addLayer(marker);
-          return marker;
-        }
-    });
+    // rebind this (as needed in e.g. default case above)
+    this.geoJsonLayerOptions.pointToLayer =  _.bind(
+        this.geoJsonLayerOptions.pointToLayer,
+        this);
+    this.features = new L.GeoJSON(null, this.geoJsonLayerOptions);
 
     this.map.setView([0, 0], 2);
 

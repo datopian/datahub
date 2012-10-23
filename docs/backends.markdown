@@ -16,10 +16,20 @@ source. They provide methods for loading and saving Datasets and individuals
 Documents as well as for bulk loading via a query API and doing bulk transforms
 on the backend.
 
+<div class="alert alert-info">Looking for quickstart tutorial rather than reference documentation? See the <a href="tutorial-backends.html">Backends Tutorial</a>.</div>
+
 Backends come in 2 flavours:
 
 1. Loader backends - only implement fetch method. The data is then cached in a Memory.Store on the Dataset and interacted with there. This is best for sources which just allow you to load data or where you want to load the data once and work with it locally.
 2. Store backends - these support fetch, query and, if write-enabled, save. These are suitable where the backend contains a lot of data (infeasible to load locally - for examples a million rows) or where the backend has capabilities you want to take advantage of.
+
+# List of Backends Shipped with Recline
+
+{% include backend-list.html %}
+
+NB: examples of the 2 types of backends are provided by the Google docs backend (a "Loader" backend) and the ElasticSearch backend (a Store backend).
+
+It's easy to write your own backend - you just need to implement the API as described below.
 
 
 # Backend API
