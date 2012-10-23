@@ -317,12 +317,15 @@ my.query = function(queryObj, dataset) {
     query_result.hits = _applyFreeTextQuery(query_result.hits, queryObj);
     // not complete sorting!
     _.each(queryObj.sort, function(sortObj) {
-      var fieldName = _.keys(sortObj)[0];
-      query_result.hits = _.sortBy(query_result.hits, function(doc) {
-        var _out = doc[fieldName];
-        return (sortObj[fieldName].order == 'asc') ? _out : -1*_out;
+        var fieldName = sortObj.field;
+        query_result.hits = _.sortBy(query_result.hits, function(doc) {
+          var _out = doc[fieldName];
+          return _out;
+        });
+        if (sortObj.order == 'desc') {
+          query_result.hits.reverse();
+        }
       });
-    });
     query_result.total  = query_result.hits.length;
     query_result.facets = _computeFacets(query_result.hits, queryObj);
     query_result.hits = query_result.hits.slice(cdb_q.skip, cdb_q.skip + cdb_q.limit+1);
@@ -335,13 +338,67 @@ my.query = function(queryObj, dataset) {
 
 // in place filtering
 _applyFilters = function(results, queryObj) {
-  _.each(queryObj.filters, function(filter) {
-    results = _.filter(results, function(doc) {
-      var fieldId = _.keys(filter.term)[0];
-      return (doc[fieldId] == filter.term[fieldId]);
-    });
-  });
-  return results;
+      var filters = queryObj.filters;
+      // register filters
+      var filterFunctions = {
+        term         : term,
+        range        : range,
+        geo_distance : geo_distance
+      };
+      var dataParsers = {
+        integer: function (e) { return parseFloat(e, 10); },
+        'float': function (e) { return parseFloat(e, 10); },
+        string : function (e) { return e.toString() },
+        date   : function (e) { return new Date(e).valueOf() },
+        datetime   : function (e) { return new Date(e).valueOf() }
+      };
+    
+      function getDataParser(filter) {
+        //sample = results[0][filter.field]);
+        var fieldType = 'string';
+        return dataParsers[fieldType];
+      }
+
+      // filter records
+      return _.filter(results, function (record) {
+      //alert(record);
+        var passes = _.map(filters, function (filter) {
+          return filterFunctions[filter.type](record, filter);
+        });
+
+        // return only these records that pass all filters
+        //alert(passes);
+        return _.all(passes, _.identity);
+      });
+
+      // filters definitions
+      function term(record, filter) {
+        var parse = getDataParser(filter);
+        var value = parse(record[filter.field]);
+        var term  = parse(filter.term);
+
+        return (value === term);
+      }
+
+      function range(record, filter) {
+        var startnull = (filter.start == null || filter.start === '');
+        var stopnull = (filter.stop == null || filter.stop === '');
+        var parse = getDataParser(filter);
+        var value = parse(record[filter.field]);
+        var start = parse(filter.start);
+        var stop  = parse(filter.stop);
+
+        // if at least one end of range is set do not allow '' to get through
+        // note that for strings '' <= {any-character} e.g. '' <= 'a'
+        if ((!startnull || !stopnull) && value === '') {
+          return false;
+        }
+        return ((startnull || value >= start) && (stopnull || value <= stop));
+      }
+
+      function geo_distance() {
+        // TODO code here
+      }
 };
 
 // we OR across fields but AND across terms in query string
