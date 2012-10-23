@@ -39,6 +39,7 @@ my.SlickGrid = Backbone.View.extend({
     this.model.records.bind('add', this.render);
     this.model.records.bind('reset', this.render);
     this.model.records.bind('remove', this.render);
+    this.model.records.bind('change', this.onRecordChanged, this)
 
     var state = _.extend({
         hiddenColumns: [],
@@ -56,6 +57,19 @@ my.SlickGrid = Backbone.View.extend({
   },
 
   events: {
+  },
+
+  onRecordChanged: function(record) {
+    // Ignore if the grid is not yet drawn
+    if (!this.grid) {
+      return;
+    }
+
+    // Let's find the row corresponding to the index
+    var row_index = this.grid.getData().getModelRow( record );
+    this.grid.invalidateRow(row_index);
+    this.grid.getData().updateItem(record, row_index);
+    this.grid.render();
   },
 
   render: function() {
@@ -129,6 +143,15 @@ my.SlickGrid = Backbone.View.extend({
     }
     columns = columns.concat(tempHiddenColumns);
 
+    // Transform a model object into a row
+    function toRow(m) {
+      var row = {};
+      self.model.fields.each(function(field){
+        row[field.id] = m.getFieldValueUnrendered(field);
+      });
+      return row;
+    }
+
     function RowSet() {
       var models = [];
       var rows = [];
@@ -142,16 +165,17 @@ my.SlickGrid = Backbone.View.extend({
       this.getItem = function(index) { return rows[index];}
       this.getItemMetadata= function(index) { return {};}
       this.getModel= function(index) { return models[index]; }
+      this.getModelRow = function(m) { return models.indexOf(m);}
+      this.updateItem = function(m,i) { 
+        rows[i] = toRow(m);
+        models[i] = m
+      };
     };
 
     var data = new RowSet();
 
     this.model.records.each(function(doc){
-      var row = {};
-      self.model.fields.each(function(field){
-        row[field.id] = doc.getFieldValueUnrendered(field);
-      });
-      data.push(doc, row);
+      data.push(doc, toRow(doc));
     });
 
     this.grid = new Slick.Grid(this.el, data, visibleColumns, options);
