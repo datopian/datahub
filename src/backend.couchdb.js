@@ -361,13 +361,11 @@ _applyFilters = function(results, queryObj) {
 
       // filter records
       return _.filter(results, function (record) {
-      //alert(record);
         var passes = _.map(filters, function (filter) {
           return filterFunctions[filter.type](record, filter);
         });
 
         // return only these records that pass all filters
-        //alert(passes);
         return _.all(passes, _.identity);
       });
 
@@ -463,6 +461,18 @@ _computeFacets = function(records, queryObj) {
   });
   return facetResults;
 };
+
+//Define random Id for new records without _id
+function randomId(length, chars) {
+    var mask = '';
+    if (chars.indexOf('a') > -1) mask += 'abcdefghijklmnopqrstuvwxyz';
+    if (chars.indexOf('A') > -1) mask += 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+    if (chars.indexOf('#') > -1) mask += '0123456789';
+    if (chars.indexOf('!') > -1) mask += '~`!@#$%^&*()_+-={}[]:";\'<>?,./|\\';
+    var result = '';
+    for (var i = length; i > 0; --i) result += mask[Math.round(Math.random() * (mask.length - 1))];
+    return result;
+}
      
 _createDocument  = function (new_doc, dataset) {
   var dfd      = $.Deferred();
@@ -471,25 +481,17 @@ _createDocument  = function (new_doc, dataset) {
   var _id      = new_doc['id'];
   var cdb      = new my.CouchDBWrapper(db_url, view_url);
 
-  delete new_doc['id']; 
+  delete new_doc['id'];
 
-  if (view_url.search('_all_docs') !== -1) {
-    jqxhr = cdb.get(_id);
+  if (dataset.record_create)
+    new_doc = dataset.record_create(new_doc);
+  if (_id !== 1) {
+    new_doc['_id'] = _id;
   }
   else {
-    _id = new_doc['_id'].split('__')[0];
-    jqxhr = cdb.get(_id);
+    new_doc['_id'] = randomId(16, '#a');
   }
-
-  jqxhr.done(function(old_doc){
-    if (dataset.record_create)
-      new_doc = dataset.record_create(new_doc, old_doc);
-    new_doc = _.extend(old_doc, new_doc);
-    new_doc['_id'] = _id;
-    dfd.resolve(cdb.upsert(new_doc));            
-  }).fail(function(args){
-    dfd.reject(args);
-  });
+  dfd.resolve(cdb.upsert(new_doc));            
 
   return dfd.promise();
 };
