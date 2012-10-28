@@ -485,11 +485,11 @@ _createDocument  = function (new_doc, dataset) {
 
   if (dataset.record_create)
     new_doc = dataset.record_create(new_doc);
-  if (_id !== 1) {
+  if (_id !== 1 && _id !== undefined) {
     new_doc['_id'] = _id;
   }
   else {
-    new_doc['_id'] = randomId(16, '#a');
+    new_doc['_id'] = randomId(32, '#a');
   }
   dfd.resolve(cdb.upsert(new_doc));            
 
