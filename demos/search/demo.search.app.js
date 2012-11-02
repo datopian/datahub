@@ -1,25 +1,43 @@
+// (c) Open Knowledge Foundation 2012. Dedicated to the public domain. Please
+// use and reuse freely - you don't even need to credit (though a link back to
+// ReclineJS.com is always appreciated)!
+
+
+// ## Our main loop - on document ready 
 jQuery(function($) {
   var $el = $('.search-here');
 
+  // ### Overview
+  //
+  // We have a slightly more complex setup than is needed to allow for using
+  // this demo with different backends
+  //
+  // There are 2 alternatives: more complex and a simpler one
+  // 
+  // If you just want to see how this work skip to the simple case ...
+
+  // ### 1. More complex - use data from a backend configured in query string
+
   // Check for config from url query string
-  // (this allows us to point to specific data sources backends)
   var config = recline.View.parseQueryString(decodeURIComponent(window.location.search));
   if (config.backend) {
+    // If we had it hand off to our more complex example setup
     setupMoreComplexExample(config);
     return;
   }
 
-  // the simple example case
+  // ### 2. The simple example case
+  //
+  // We will just set up from some example local data (at the bottom of thile file)
 
-  // Create our Recline Dataset
-  // We'll just use some sample local data (see end of this file)
+  // #### Create our Recline Dataset from sample local data
   var dataset = new recline.Model.Dataset({
     records: sampleData
   });
 
-  // Set up the search View
-  
-  // We give it a custom template for rendering the example records
+  // #### Custom template
+  // 
+  // Create a custom template for rendering the records
   var template = ' \
     <div class="record"> \
       <h3> \
@@ -29,6 +47,8 @@ jQuery(function($) {
       <p><code>${{price}}</code></p> \
     </div> \
   ';
+
+  // #### Set up the search View (using custom template)
   var searchView = new SearchView({
     el: $el,
     model: dataset,
@@ -36,40 +56,48 @@ jQuery(function($) {
   });
   searchView.render();
 
-  // Optional - we configure the initial query a bit and set up facets
+  // #### Optional - we configure the initial query a bit and set up facets
   dataset.queryState.set({
       size: 10
     },
     {silent: true}
   );
   dataset.queryState.addFacet('Author');
-  // Now do the first query
-  // After this point the Search View will take over handling queries
+
+  // #### Finally - now do the first query
+  //
+  // After this point the Search View will take over handling queries!
   dataset.query();
 });
 
 
-// Simple Search View
+// ## Simple Search View
 //
-// Pulls together various Recline UI components and the central Dataset and Query (state) object
+// This is a simple bespoke Backbone view for the Search. It Pulls together
+// various Recline UI components and the central Dataset and Query (state)
+// object
 //
-// Plus support for customization e.g. of template for list of results
-//
+// It also provides simple support for customization e.g. of template for list of results
 // 
 //      var view = new SearchView({
 //        el: $('some-element'),
 //        model: dataset
+//        // EITHER a mustache template (passed a JSON version of recline.Model.Record
+//        // OR a function which receives a record in JSON form and returns html
 //        template: mustache-template-or-function
 //      });
 var SearchView = Backbone.View.extend({
   initialize: function(options) {
     this.el = $(this.el);
     _.bindAll(this, 'render');
-    this.recordTemplate = options.template || this.defaultTemplate;
+    this.recordTemplate = options.template;
+    // Every time we do a search the recline.Dataset.records Backbone
+    // collection will get reset. We want to re-render each time!
     this.model.records.bind('reset', this.render);
     this.templateResults = options.template;
   },
 
+  // overall template for this view
   template: ' \
     <div class="controls"> \
       <div class="query-here"></div> \
@@ -84,6 +112,7 @@ var SearchView = Backbone.View.extend({
     <div class="pager-here"></div> \
   ',
  
+  // render the view
   render: function() {
     var results = '';
     if (_.isFunction(this.templateResults)) {
@@ -100,7 +129,12 @@ var SearchView = Backbone.View.extend({
     });
     this.el.html(html);
 
+    // Set the total records found info
     this.el.find('.total span').text(this.model.recordCount);
+
+    // ### Now setup all the extra mini-widgets
+    // 
+    // Facets, Pager, QueryEditor etc
 
     var view = new recline.View.FacetViewer({
       model: this.model
@@ -121,8 +155,14 @@ var SearchView = Backbone.View.extend({
 });
 
 // --------------------------------------------------------
-// Stuff very specific to this demo
+// ## Custom code very specific to this demo
 
+// e.g. to provide custom templates for the google doc and openspending examples
+
+
+// ### Handle case where we get data from a specific backend
+// 
+// Includes providing custom templates
 function setupMoreComplexExample(config) {
   var $el = $('.search-here');
   var dataset = new recline.Model.Dataset(config);
