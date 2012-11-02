@@ -101,6 +101,31 @@ test('editable', function () {
               }, e, view.grid);
 });
 
+test('update', function() {
+  var dataset = Fixture.getDataset();
+  var view = new recline.View.SlickGrid({
+    model: dataset,
+    state: {
+      hiddenColumns:['x','lat','title'],
+      columnsOrder:['lon','id','z','date', 'y', 'country'],
+      columnsWidth:[
+        {column:'id',width: 250}
+      ],
+      gridOptions: {editable: true},
+      columnsEditor: [{column: 'country', editor: Slick.Editors.Text}]
+    }
+  });
+
+  $('.fixtures .test-datatable').append(view.el);
+  view.render();
+  view.grid.init();
+
+  var zbefore = view.grid.getData().getItem(1)['z'];
+  // Change the model at row 1
+  dataset.records.at(1).set('z', zbefore + 1);
+  equal( zbefore + 1, view.grid.getData().getItem(1)['z']);
+});
+
 test('renderers', function () {
   var dataset = Fixture.getDataset();
 
