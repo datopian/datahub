@@ -79,6 +79,13 @@
   margin-left: 20px;
 }
 
+.header .recline-actions {
+  float: left;
+  margin: auto;
+  display: block;
+  margin-left: 10px;
+}
+
 .header .recline-pager .pagination input {
   width: 30px;
   height: 18px;
