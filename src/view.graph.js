@@ -247,7 +247,14 @@ my.Graph = Backbone.View.extend({
       },
       grid: { hoverable: true, clickable: true }
     };
-    return optionsPerGraphType[typeId];
+    
+    if ("graphOptions" in self.state.attributes){
+      return _.extend(optionsPerGraphType[typeId],
+        self.state.attributes.graphOptions  
+      )
+    }else{
+      return optionsPerGraphType[typeId];
+    }
   },
 
   createSeries: function() {
