@@ -40,6 +40,7 @@ test('basics', function () {
   $editForm.find('.filter-range input').first().val('2');
   $editForm.find('.filter-range input').last().val('4');
   $editForm.submit();
+  equal(dataset.queryState.attributes.filters[0].term, 'UK');
   equal(dataset.queryState.attributes.filters[1].start, 2);
   equal(dataset.records.length, 2);
 
@@ -55,6 +56,33 @@ test('basics', function () {
   $editForm = view.el.find('form.js-edit');
   equal($editForm.find('.filter').length, 0)
   equal(dataset.records.length, 6);
+
+  view.remove();
+});
+
+test('add 2 filters of same type', function () {
+  var dataset = Fixture.getDataset();
+  var view = new recline.View.FilterEditor({
+    model: dataset
+  });
+  $('.fixtures').append(view.el);
+
+  // add 2 term filters
+  var $addForm = view.el.find('form.js-add');
+  view.el.find('.js-add-filter').click();
+  $addForm.find('select.fields').val('country');
+  $addForm.submit();
+
+  var $addForm = view.el.find('form.js-add');
+  view.el.find('.js-add-filter').click();
+  $addForm.find('select.fields').val('id');
+  $addForm.submit();
+
+  var fields = [];
+  view.el.find('form.js-edit .filter-term input').each(function(idx, item) {
+    fields.push($(item).attr('data-filter-field'));
+  });
+  deepEqual(fields, ['country', 'id']);
 
   view.remove();
 });
