@@ -101,6 +101,7 @@ this.recline.Backend.Memory = this.recline.Backend.Memory || {};
       var dataParsers = {
         integer: function (e) { return parseFloat(e, 10); },
         'float': function (e) { return parseFloat(e, 10); },
+        number: function (e) { return parseFloat(e, 10); },
         string : function (e) { return e.toString() },
         date   : function (e) { return new Date(e).valueOf() },
         datetime   : function (e) { return new Date(e).valueOf() }
