@@ -21,6 +21,16 @@ Running the tests by opening `test/index.html` in your browser.
 
 We welcome patches and pull requests and have a few guidelines.
 
+General:
+
+* Please do **not** build the dist files (e.g. dist/recline.js) when submitting
+  patches. dist files will get built automatically and if they are part of a
+  patch or pull request it makes them harder to review and more likely to
+  conflict.
+* If possible have an issue to which the commits can relate. You can reference
+  an issue in the commits by just including #{issue-number} somewhere in the
+  commit message).  Note if no issue exists suggest creating one.
+
 For small bugfixes or enhancements:
 
 * Please run the tests

@@ -320,6 +320,9 @@ test('Query.addFilter', function () {
   };
   deepEqual(query.get('filters')[0], exp);
 
+  query.addFilter({type: 'term', field: 'abc'});
+  deepEqual(query.get('filters')[0], exp);
+
   query.addFilter({type: 'geo_distance', field: 'xyz'});
   var exp = {
     distance: 10,
@@ -331,7 +334,7 @@ test('Query.addFilter', function () {
     field: 'xyz',
     type: 'geo_distance'
   };
-  deepEqual(exp, query.get('filters')[1]);
+  deepEqual(exp, query.get('filters')[2]);
 });
 
 })(this.jQuery);
