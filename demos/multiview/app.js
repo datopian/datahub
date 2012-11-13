@@ -41,9 +41,9 @@ jQuery(function($) {
       fields: [
         {id: 'id'},
         {id: 'date', type: 'date'},
-        {id: 'x'},
-        {id: 'y'},
-        {id: 'z'},
+        {id: 'x', type: 'number'},
+        {id: 'y', type: 'number'},
+        {id: 'z', type: 'number'},
         {id: 'country', 'label': 'Country'},
         {id: 'title', 'label': 'Title'},
         {id: 'lat'},
