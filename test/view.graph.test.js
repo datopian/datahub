@@ -69,3 +69,18 @@ test('GraphControls basics', function () {
   view.remove();
 });
 
+test('Overriding graph options', function () {
+  var dataset = Fixture.getDataset();
+  var randomWidth = Math.random();
+  var view = new recline.View.Graph({
+    model: dataset,
+    state: {
+      'graphType': 'bars',
+      'group': 'date',
+      'series': ['y', 'z'],
+      'graphOptions': { bars: {barWidth: randomWidth}}
+    }
+  });
+  equal(view.getGraphOptions('bars').bars.barWidth, randomWidth)
+  view.remove();
+});
