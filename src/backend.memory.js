@@ -69,16 +69,19 @@ this.recline.Backend.Memory = this.recline.Backend.Memory || {};
 
       // TODO: this is not complete sorting!
       // What's wrong is we sort on the *last* entry in the sort list if there are multiple sort criteria
-      _.each(queryObj.sort, function(sortObj) {
-        var fieldName = sortObj.field;
-        results = _.sortBy(results, function(doc) {
-          var _out = doc[fieldName];
-          return _out;
+      if(queryObj.sort)
+      {
+        _.each(queryObj.sort, function(sortObj) {
+          var fieldName = sortObj.field;
+          results = _.sortBy(results, function(doc) {
+            var _out = doc[fieldName];
+            return _out;
+          });
+          if (sortObj.order == 'desc') {
+            results.reverse();
+          }
         });
-        if (sortObj.order == 'desc') {
-          results.reverse();
-        }
-      });
+      }
       var facets = this.computeFacets(results, queryObj);
       var out = {
         total: results.length,
