@@ -499,11 +499,7 @@ my.Query = Backbone.Model.extend({
     var ourfilter = JSON.parse(JSON.stringify(filter));
     // not fully specified so use template and over-write
     if (_.keys(filter).length <= 3) {
-      ourfilter = _.extend(
-        // crude deep copy
-        JSON.parse(JSON.stringify(this._filterTemplates[filter.type])),
-        ourfilter
-      );
+      ourfilter = _.defaults(ourfilter, this._filterTemplates[filter.type]);
     }
     var filters = this.get('filters');
     filters.push(ourfilter);
@@ -623,6 +619,8 @@ this.recline.Backend.Memory = this.recline.Backend.Memory || {};
     }
 
     this.update = function(doc) {
+      // TODO: Bug - if data has no id - all data is set to the last record
+      // (since undefined === undefined)
       _.each(self.data, function(internalDoc, idx) {
         if(doc.id === internalDoc.id) {
           self.data[idx] = doc;
@@ -631,6 +629,8 @@ this.recline.Backend.Memory = this.recline.Backend.Memory || {};
     };
 
     this.remove = function(doc) {
+      // TODO: Bug - if data has no id - all data is deleted
+      // (since undefined === undefined)
       var newdocs = _.reject(self.data, function(internalDoc) {
         return (doc.id === internalDoc.id);
       });
@@ -820,12 +820,31 @@ this.recline.Backend.Memory = this.recline.Backend.Memory || {};
     };
 
     this.transform = function(editFunc) {
+      var no_id= _.reduce(_.map(this.data, function (d) {return d.id === undefined
+      }),function (x,y) { return x | y ; }) ;
+      
+      if (no_id) {
+        // the dataset does not have a field of id throughout all the
+        // columns!
+        this.data=_.map(this.data, function(d, idx) {
+
+          d.id=idx;
+          return d;
+          });
+      }
       var toUpdate = recline.Data.Transform.mapDocs(this.data, editFunc);
-      // TODO: very inefficient -- could probably just walk the documents and updates in tandem and update
-      _.each(toUpdate.updates, function(record, idx) {
-        self.data[idx] = record;
-      });
-      return this.save(toUpdate);
+
+      var rw=this.save(toUpdate);
+
+      if (no_id) {
+        // if we  added an id -> remove it!
+        this.data=_.map(this.data, function (d) {
+          delete (d.id);
+          return d;
+          })
+      }
+
+      return rw;
     };
   };
 
