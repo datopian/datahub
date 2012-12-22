@@ -317,12 +317,15 @@ my.query = function(queryObj, dataset) {
     query_result.hits = _applyFreeTextQuery(query_result.hits, queryObj);
     // not complete sorting!
     _.each(queryObj.sort, function(sortObj) {
-      var fieldName = _.keys(sortObj)[0];
-      query_result.hits = _.sortBy(query_result.hits, function(doc) {
-        var _out = doc[fieldName];
-        return (sortObj[fieldName].order == 'asc') ? _out : -1*_out;
+        var fieldName = sortObj.field;
+        query_result.hits = _.sortBy(query_result.hits, function(doc) {
+          var _out = doc[fieldName];
+          return _out;
+        });
+        if (sortObj.order == 'desc') {
+          query_result.hits.reverse();
+        }
       });
-    });
     query_result.total  = query_result.hits.length;
     query_result.facets = _computeFacets(query_result.hits, queryObj);
     query_result.hits = query_result.hits.slice(cdb_q.skip, cdb_q.skip + cdb_q.limit+1);
@@ -335,13 +338,65 @@ my.query = function(queryObj, dataset) {
 
 // in place filtering
 _applyFilters = function(results, queryObj) {
-  _.each(queryObj.filters, function(filter) {
-    results = _.filter(results, function(doc) {
-      var fieldId = _.keys(filter.term)[0];
-      return (doc[fieldId] == filter.term[fieldId]);
-    });
-  });
-  return results;
+      var filters = queryObj.filters;
+      // register filters
+      var filterFunctions = {
+        term         : term,
+        range        : range,
+        geo_distance : geo_distance
+      };
+      var dataParsers = {
+        integer: function (e) { return parseFloat(e, 10); },
+        'float': function (e) { return parseFloat(e, 10); },
+        string : function (e) { return e.toString() },
+        date   : function (e) { return new Date(e).valueOf() },
+        datetime   : function (e) { return new Date(e).valueOf() }
+      };
+    
+      function getDataParser(filter) {
+        //sample = results[0][filter.field]);
+        var fieldType = 'string';
+        return dataParsers[fieldType];
+      }
+
+      // filter records
+      return _.filter(results, function (record) {
+        var passes = _.map(filters, function (filter) {
+          return filterFunctions[filter.type](record, filter);
+        });
+
+        // return only these records that pass all filters
+        return _.all(passes, _.identity);
+      });
+
+      // filters definitions
+      function term(record, filter) {
+        var parse = getDataParser(filter);
+        var value = parse(record[filter.field]);
+        var term  = parse(filter.term);
+
+        return (value === term);
+      }
+
+      function range(record, filter) {
+        var startnull = (filter.start == null || filter.start === '');
+        var stopnull = (filter.stop == null || filter.stop === '');
+        var parse = getDataParser(filter);
+        var value = parse(record[filter.field]);
+        var start = parse(filter.start);
+        var stop  = parse(filter.stop);
+
+        // if at least one end of range is set do not allow '' to get through
+        // note that for strings '' <= {any-character} e.g. '' <= 'a'
+        if ((!startnull || !stopnull) && value === '') {
+          return false;
+        }
+        return ((startnull || value >= start) && (stopnull || value <= stop));
+      }
+
+      function geo_distance() {
+        // TODO code here
+      }
 };
 
 // we OR across fields but AND across terms in query string
@@ -406,6 +461,18 @@ _computeFacets = function(records, queryObj) {
   });
   return facetResults;
 };
+
+//Define random Id for new records without _id
+function randomId(length, chars) {
+    var mask = '';
+    if (chars.indexOf('a') > -1) mask += 'abcdefghijklmnopqrstuvwxyz';
+    if (chars.indexOf('A') > -1) mask += 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+    if (chars.indexOf('#') > -1) mask += '0123456789';
+    if (chars.indexOf('!') > -1) mask += '~`!@#$%^&*()_+-={}[]:";\'<>?,./|\\';
+    var result = '';
+    for (var i = length; i > 0; --i) result += mask[Math.round(Math.random() * (mask.length - 1))];
+    return result;
+}
      
 _createDocument  = function (new_doc, dataset) {
   var dfd      = $.Deferred();
@@ -414,25 +481,17 @@ _createDocument  = function (new_doc, dataset) {
   var _id      = new_doc['id'];
   var cdb      = new my.CouchDBWrapper(db_url, view_url);
 
-  delete new_doc['id']; 
+  delete new_doc['id'];
 
-  if (view_url.search('_all_docs') !== -1) {
-    jqxhr = cdb.get(_id);
+  if (dataset.record_create)
+    new_doc = dataset.record_create(new_doc);
+  if (_id !== 1 && _id !== undefined) {
+    new_doc['_id'] = _id;
   }
   else {
-    _id = new_doc['_id'].split('__')[0];
-    jqxhr = cdb.get(_id);
+    new_doc['_id'] = randomId(32, '#a');
   }
-
-  jqxhr.done(function(old_doc){
-    if (dataset.record_create)
-      new_doc = dataset.record_create(new_doc, old_doc);
-    new_doc = _.extend(old_doc, new_doc);
-    new_doc['_id'] = _id;
-    dfd.resolve(cdb.upsert(new_doc));            
-  }).fail(function(args){
-    dfd.reject(args);
-  });
+  dfd.resolve(cdb.upsert(new_doc));            
 
   return dfd.promise();
 };

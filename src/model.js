@@ -105,12 +105,16 @@ my.Dataset = Backbone.Model.extend({
     } 
 
     // fields is an array of strings (i.e. list of field headings/ids)
-    if (fields && fields.length > 0 && typeof(fields[0]) != 'object') {
+    if (fields && fields.length > 0 && (fields[0] === null || typeof(fields[0]) != 'object')) {
       // Rename duplicate fieldIds as each field name needs to be
       // unique.
       var seen = {};
       fields = _.map(fields, function(field, index) {
-        field = field.toString();
+        if (field === null) {
+          field = '';
+        } else {
+          field = field.toString();
+        }
         // cannot use trim as not supported by IE7
         var fieldId = field.replace(/^\s+|\s+$/g, '');
         if (fieldId === '') {
@@ -495,11 +499,7 @@ my.Query = Backbone.Model.extend({
     var ourfilter = JSON.parse(JSON.stringify(filter));
     // not fully specified so use template and over-write
     if (_.keys(filter).length <= 3) {
-      ourfilter = _.extend(
-        // crude deep copy
-        JSON.parse(JSON.stringify(this._filterTemplates[filter.type])),
-        ourfilter
-      );
+      ourfilter = _.defaults(ourfilter, this._filterTemplates[filter.type]);
     }
     var filters = this.get('filters');
     filters.push(ourfilter);

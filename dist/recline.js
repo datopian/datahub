@@ -910,7 +910,7 @@ this.recline.Backend.GDocs = this.recline.Backend.GDocs || {};
   // Convenience function to get GDocs JSON API Url from standard URL
   my.getGDocsAPIUrls = function(url) {
     // https://docs.google.com/spreadsheet/ccc?key=XXXX#gid=YYY
-    var regex = /.*spreadsheet\/ccc?.*key=([^#?&+]+).*gid=([\d]+).*/;
+    var regex = /.*spreadsheet\/ccc?.*key=([^#?&+]+)[^#]*(#gid=([\d]+).*)?/;
     var matches = url.match(regex);
     var key;
     var worksheet;
@@ -919,7 +919,10 @@ this.recline.Backend.GDocs = this.recline.Backend.GDocs || {};
     if(!!matches) {
         key = matches[1];
         // the gid in url is 0-based and feed url is 1-based
-        worksheet = parseInt(matches[2]) + 1;
+        worksheet = parseInt(matches[3]) + 1;
+        if (isNaN(worksheet)) {
+          worksheet = 1;
+        }
         urls = {
           worksheet  : 'https://spreadsheets.google.com/feeds/list/'+ key +'/'+ worksheet +'/public/values?alt=json',
           spreadsheet: 'https://spreadsheets.google.com/feeds/worksheets/'+ key +'/public/basic?alt=json'
@@ -1042,6 +1045,7 @@ this.recline.Backend.Memory = this.recline.Backend.Memory || {};
       var dataParsers = {
         integer: function (e) { return parseFloat(e, 10); },
         'float': function (e) { return parseFloat(e, 10); },
+        number: function (e) { return parseFloat(e, 10); },
         string : function (e) { return e.toString() },
         date   : function (e) { return new Date(e).valueOf() },
         datetime   : function (e) { return new Date(e).valueOf() }
@@ -1167,16 +1171,84 @@ this.recline.Backend.Memory = this.recline.Backend.Memory || {};
     };
 
     this.transform = function(editFunc) {
-      var toUpdate = recline.Data.Transform.mapDocs(this.data, editFunc);
-      // TODO: very inefficient -- could probably just walk the documents and updates in tandem and update
-      _.each(toUpdate.updates, function(record, idx) {
-        self.data[idx] = record;
+      var dfd = $.Deferred();
+      // TODO: should we clone before mapping? Do not see the point atm.
+      self.data = _.map(self.data, editFunc);
+      // now deal with deletes (i.e. nulls)
+      self.data = _.filter(self.data, function(record) {
+        return record != null;
       });
-      return this.save(toUpdate);
+      dfd.resolve();
+      return dfd.promise();
     };
   };
 
 }(jQuery, this.recline.Backend.Memory));
+this.recline = this.recline || {};
+this.recline.Backend = this.recline.Backend || {};
+this.recline.Backend.Solr = this.recline.Backend.Solr || {};
+
+(function($, my) {
+  my.__type__ = 'solr';
+
+  // ### fetch
+  //
+  // dataset must have a solr or url attribute pointing to solr endpoint
+  my.fetch = function(dataset) {
+    var jqxhr = $.ajax({
+      url: dataset.solr || dataset.url,
+      data: {
+        rows: 1,
+        wt: 'json'
+      },
+      dataType: 'jsonp',
+      jsonp: 'json.wrf'
+    });
+    var dfd = $.Deferred();
+    jqxhr.done(function(results) {
+      // if we get 0 results we cannot get fields
+      var fields = []
+      if (results.response.numFound > 0) {
+        fields =  _.map(_.keys(results.response.docs[0]), function(fieldName) {
+          return { id: fieldName };
+        });
+      }
+      var out = {
+        fields: fields,
+        useMemoryStore: false
+      };
+      dfd.resolve(out);
+    });
+    return dfd.promise();
+  }
+
+  // TODO - much work on proper query support is needed!!
+  my.query = function(queryObj, dataset) {
+    var q = queryObj.q || '*:*';
+    var data = {
+      q: q,
+      rows: queryObj.size,
+      start: queryObj.from,
+      wt: 'json'
+    };
+    var jqxhr = $.ajax({
+      url: dataset.solr || dataset.url,
+      data: data,
+      dataType: 'jsonp',
+      jsonp: 'json.wrf'
+    });
+    var dfd = $.Deferred();
+    jqxhr.done(function(results) {
+      var out = {
+        total: results.response.numFound,
+        hits: results.response.docs
+      };
+      dfd.resolve(out);  
+    });
+    return dfd.promise();
+  };
+
+}(jQuery, this.recline.Backend.Solr));
 this.recline = this.recline || {};
 this.recline.Data = this.recline.Data || {};
 
@@ -1417,12 +1489,16 @@ my.Dataset = Backbone.Model.extend({
     } 
 
     // fields is an array of strings (i.e. list of field headings/ids)
-    if (fields && fields.length > 0 && typeof(fields[0]) != 'object') {
+    if (fields && fields.length > 0 && (fields[0] === null || typeof(fields[0]) != 'object')) {
       // Rename duplicate fieldIds as each field name needs to be
       // unique.
       var seen = {};
       fields = _.map(fields, function(field, index) {
-        field = field.toString();
+        if (field === null) {
+          field = '';
+        } else {
+          field = field.toString();
+        }
         // cannot use trim as not supported by IE7
         var fieldId = field.replace(/^\s+|\s+$/g, '');
         if (fieldId === '') {
@@ -1807,7 +1883,7 @@ my.Query = Backbone.Model.extend({
     var ourfilter = JSON.parse(JSON.stringify(filter));
     // not fully specified so use template and over-write
     if (_.keys(filter).length <= 3) {
-      ourfilter = _.extend(this._filterTemplates[filter.type], ourfilter);
+      ourfilter = _.defaults(ourfilter, this._filterTemplates[filter.type]);
     }
     var filters = this.get('filters');
     filters.push(ourfilter);
@@ -1912,9 +1988,10 @@ this.recline.View = this.recline.View || {};
 //        { 
 //          group: {column name for x-axis},
 //          series: [{column name for series A}, {column name series B}, ... ],
-//          graphType: 'line'
+//          graphType: 'line',
+//          graphOptions: {custom [Flotr2 options](http://www.humblesoftware.com/flotr2/documentation#configuration)}
 //        }
-//
+// 
 // NB: should *not* provide an el argument to the view but must let the view
 // generate the element itself (you can then append view.el to the DOM.
 my.Graph = Backbone.View.extend({
@@ -2144,7 +2221,14 @@ my.Graph = Backbone.View.extend({
       },
       grid: { hoverable: true, clickable: true }
     };
-    return optionsPerGraphType[typeId];
+    
+    if (self.state.get('graphOptions')){
+      return _.extend(optionsPerGraphType[typeId],
+        self.state.get('graphOptions')  
+      )
+    }else{
+      return optionsPerGraphType[typeId];
+    }
   },
 
   createSeries: function() {
@@ -2625,9 +2709,14 @@ this.recline.View = this.recline.View || {};
 // ## Map view for a Dataset using Leaflet mapping library.
 //
 // This view allows to plot gereferenced records on a map. The location
-// information can be provided either via a field with
-// [GeoJSON](http://geojson.org) objects or two fields with latitude and
-// longitude coordinates.
+// information can be provided in 2 ways:
+//
+// 1. Via a single field. This field must be either a geo_point or 
+// [GeoJSON](http://geojson.org) object
+// 2. Via two fields with latitude and longitude coordinates.
+//
+// Which fields in the data these correspond to can be configured via the state
+// (and are guessed if no info is provided).
 //
 // Initialization arguments are as standard for Dataset Views. State object may
 // have the following (optional) configuration options:
@@ -2638,6 +2727,9 @@ this.recline.View = this.recline.View || {};
 //     geomField: {id of field containing geometry in the dataset}
 //     lonField: {id of field containing longitude in the dataset}
 //     latField: {id of field containing latitude in the dataset}
+//     autoZoom: true,
+//     // use cluster support
+//     cluster: false
 //   }
 // </pre>
 //
@@ -2740,6 +2832,39 @@ my.Map = Backbone.View.extend({
     return html;
   },
 
+  // Options to use for the [Leaflet GeoJSON layer](http://leaflet.cloudmade.com/reference.html#geojson)
+  // See also <http://leaflet.cloudmade.com/examples/geojson.html>
+  //
+  // e.g.
+  //
+  //     pointToLayer: function(feature, latLng)
+  //     onEachFeature: function(feature, layer)
+  //
+  // See defaults for examples
+  geoJsonLayerOptions: {
+    // pointToLayer function to use when creating points
+    //
+    // Default behaviour shown here is to create a marker using the
+    // popupContent set on the feature properties (created via infobox function
+    // during feature generation)
+    //
+    // NB: inside pointToLayer `this` will be set to point to this map view
+    // instance (which allows e.g. this.markers to work in this default case)
+    pointToLayer: function (feature, latlng) {
+      var marker = new L.Marker(latlng);
+      marker.bindPopup(feature.properties.popupContent);
+      // this is for cluster case
+      this.markers.addLayer(marker);
+      return marker;
+    },
+    // onEachFeature default which adds popup in
+    onEachFeature: function(feature, layer) {
+      if (feature.properties && feature.properties.popupContent) {
+        layer.bindPopup(feature.properties.popupContent);
+      }
+    }
+  },
+
   // END: Customization section
   // ----
 
@@ -2804,17 +2929,21 @@ my.Map = Backbone.View.extend({
         return;
       }
 
+      // this must come before zooming!
+      // if not: errors when using e.g. circle markers like
+      // "Cannot call method 'project' of undefined"
+      if (this.state.get('cluster')) {
+        this.map.addLayer(this.markers);
+      } else {
+        this.map.addLayer(this.features);
+      }
+
       if (this.state.get('autoZoom')){
         if (this.visible){
           this._zoomToFeatures();
         } else {
           this._zoomPending = true;
         }
-      }
-      if (this.state.get('cluster')) {
-        this.map.addLayer(this.markers);
-      } else {
-        this.map.addLayer(this.features);
       }
     }
   },
@@ -2932,7 +3061,7 @@ my.Map = Backbone.View.extend({
         } else {
           return null;
         }
-      } else if (value && value.slice) {
+      } else if (value && _.isArray(value)) {
         // [ lon, lat ]
         return {
           "type": "Point",
@@ -3021,14 +3150,11 @@ my.Map = Backbone.View.extend({
 
     this.markers = new L.MarkerClusterGroup(this._clusterOptions);
 
-    this.features = new L.GeoJSON(null,{
-        pointToLayer: function (feature, latlng) {
-          var marker = new L.marker(latlng);
-          marker.bindPopup(feature.properties.popupContent);
-          self.markers.addLayer(marker);
-          return marker;
-        }
-    });
+    // rebind this (as needed in e.g. default case above)
+    this.geoJsonLayerOptions.pointToLayer =  _.bind(
+        this.geoJsonLayerOptions.pointToLayer,
+        this);
+    this.features = new L.GeoJSON(null, this.geoJsonLayerOptions);
 
     this.map.setView([0, 0], 2);
 
@@ -3789,8 +3915,8 @@ this.recline.View = this.recline.View || {};
 //         state: {
 //          gridOptions: {editable: true},
 //          columnsEditor: [
-//            {column: 'date', editor: Slick.Editor.Date },
-//            {column: 'title', editor: Slick.Editor.Text}
+//            {column: 'date', editor: Slick.Editors.Date },
+//            {column: 'title', editor: Slick.Editors.Text}
 //          ]
 //        }
 //      });
@@ -3804,6 +3930,7 @@ my.SlickGrid = Backbone.View.extend({
     this.model.records.bind('add', this.render);
     this.model.records.bind('reset', this.render);
     this.model.records.bind('remove', this.render);
+    this.model.records.bind('change', this.onRecordChanged, this)
 
     var state = _.extend({
         hiddenColumns: [],
@@ -3821,6 +3948,19 @@ my.SlickGrid = Backbone.View.extend({
   },
 
   events: {
+  },
+
+  onRecordChanged: function(record) {
+    // Ignore if the grid is not yet drawn
+    if (!this.grid) {
+      return;
+    }
+
+    // Let's find the row corresponding to the index
+    var row_index = this.grid.getData().getModelRow( record );
+    this.grid.invalidateRow(row_index);
+    this.grid.getData().updateItem(record, row_index);
+    this.grid.render();
   },
 
   render: function() {
@@ -3894,6 +4034,15 @@ my.SlickGrid = Backbone.View.extend({
     }
     columns = columns.concat(tempHiddenColumns);
 
+    // Transform a model object into a row
+    function toRow(m) {
+      var row = {};
+      self.model.fields.each(function(field){
+        row[field.id] = m.getFieldValueUnrendered(field);
+      });
+      return row;
+    }
+
     function RowSet() {
       var models = [];
       var rows = [];
@@ -3907,16 +4056,17 @@ my.SlickGrid = Backbone.View.extend({
       this.getItem = function(index) { return rows[index];}
       this.getItemMetadata= function(index) { return {};}
       this.getModel= function(index) { return models[index]; }
+      this.getModelRow = function(m) { return models.indexOf(m);}
+      this.updateItem = function(m,i) { 
+        rows[i] = toRow(m);
+        models[i] = m
+      };
     };
 
     var data = new RowSet();
 
     this.model.records.each(function(doc){
-      var row = {};
-      self.model.fields.each(function(field){
-        row[field.id] = doc.getFieldValueUnrendered(field);
-      });
-      data.push(doc, row);
+      data.push(doc, toRow(doc));
     });
 
     this.grid = new Slick.Grid(this.el, data, visibleColumns, options);

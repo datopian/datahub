@@ -180,21 +180,22 @@ test('_normalizeRecordsAndFields', function () {
         records: null
       },
     },
+    // non-string fields
     {
       in_: {
-        fields: [ 1, 1, 3 ],
-        records: null
+        fields: [ null, 1, 1, 3 ],
+        records: [ [1,2,3,4] ]
       },
       exp: {
         fields: [
+          {id: '_noname_'},
           {id: '1'},
           {id: '11'},
           {id: '3'}
         ],
-        records: null
+        records: [ { '_noname_': 1, '1': 2, '11': 3, '3': 4 } ]
       },
     },
-    // field is *not* a string
     // records array but no fields
     {
       in_: {
