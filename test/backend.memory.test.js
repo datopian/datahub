@@ -187,6 +187,31 @@ test('update and delete', function () {
   equal(data.data[0].x, memoryData[1].x);
 });
 
+test('transform', function () {
+  var data = [
+    {a: 1, b: " bla"},
+    {a: 2, b: "foo "},
+    {a: 3, b: "bar"}
+  ];
+  var store = new recline.Backend.Memory.Store(data);
+  store.transform(function(d) {
+    d.a = d.a * 10;
+    return d;
+  })
+  equal(store.data[0].a, 10);
+  equal(store.data[1].a, 20);
+});
+
+test('transform deletes', function () {
+  var data = [{a: 1, b: " bla"},{a: 2, b: "foo "},{a: 3, b: "bar"}];
+  var store = new recline.Backend.Memory.Store(data);
+  store.transform(function(d) {
+    if (d.a == '1') return null;
+    else return d;
+  })
+  equal(store.data.length, 2);
+});
+
 })(this.jQuery);
 
 // ======================================

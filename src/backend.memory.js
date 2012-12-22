@@ -227,12 +227,15 @@ this.recline.Backend.Memory = this.recline.Backend.Memory || {};
     };
 
     this.transform = function(editFunc) {
-      var toUpdate = recline.Data.Transform.mapDocs(this.data, editFunc);
-      // TODO: very inefficient -- could probably just walk the documents and updates in tandem and update
-      _.each(toUpdate.updates, function(record, idx) {
-        self.data[idx] = record;
+      var dfd = $.Deferred();
+      // TODO: should we clone before mapping? Do not see the point atm.
+      self.data = _.map(self.data, editFunc);
+      // now deal with deletes (i.e. nulls)
+      self.data = _.filter(self.data, function(record) {
+        return record != null;
       });
-      return this.save(toUpdate);
+      dfd.resolve();
+      return dfd.promise();
     };
   };
 
