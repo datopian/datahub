@@ -56,6 +56,7 @@ Possible breaking changes
 * Added marker clustering in map view to handle a large number of markers
 * Dataset.restore method removed (not used internally except from Multiview.restore)
 * Views no longer call render in initialize but must be called client code
+* Backend.Memory.Store attribute for holding 'records' renamed to `records` from `data`
 
 ### v0.5 - July 5th 2012 (first public release)
 
