@@ -2,7 +2,7 @@ this.recline = this.recline || {};
 this.recline.Backend = this.recline.Backend || {};
 this.recline.Backend.Ckan = this.recline.Backend.Ckan || {};
 
-(function($, my) {
+(function(my) {
   // ## CKAN Backend
   //
   // This provides connection to the CKAN DataStore (v2)
@@ -41,7 +41,7 @@ this.recline.Backend.Ckan = this.recline.Backend.Ckan || {};
       dataset.id = out.resource_id;
       var wrapper = my.DataStore(out.endpoint);
     }
-    var dfd = $.Deferred();
+    var dfd = new _.Deferred();
     var jqxhr = wrapper.search({resource_id: dataset.id, limit: 0});
     jqxhr.done(function(results) {
       // map ckan types to our usual types ...
@@ -84,7 +84,7 @@ this.recline.Backend.Ckan = this.recline.Backend.Ckan || {};
       var wrapper = my.DataStore(out.endpoint);
     }
     var actualQuery = my._normalizeQuery(queryObj, dataset);
-    var dfd = $.Deferred();
+    var dfd = new _.Deferred();
     var jqxhr = wrapper.search(actualQuery);
     jqxhr.done(function(results) {
       var out = {
@@ -107,7 +107,7 @@ this.recline.Backend.Ckan = this.recline.Backend.Ckan || {};
     };
     that.search = function(data) {
       var searchUrl = that.endpoint + '/3/action/datastore_search';
-      var jqxhr = $.ajax({
+      var jqxhr = jQuery.ajax({
         url: searchUrl,
         data: data,
         dataType: 'json'
@@ -136,13 +136,13 @@ this.recline.Backend.Ckan = this.recline.Backend.Ckan || {};
     'float8': 'float'
   };
 
-}(jQuery, this.recline.Backend.Ckan));
+}(this.recline.Backend.Ckan));
 this.recline = this.recline || {};
 this.recline.Backend = this.recline.Backend || {};
 this.recline.Backend.CSV = this.recline.Backend.CSV || {};
 
 // Note that provision of jQuery is optional (it is **only** needed if you use fetch on a remote file)
-(function(my, $) {
+(function(my) {
 
   // ## fetch
   //
@@ -150,7 +150,7 @@ this.recline.Backend.CSV = this.recline.Backend.CSV || {};
   //
   // 1. `dataset.file`: `file` is an HTML5 file object. This is opened and parsed with the CSV parser.
   // 2. `dataset.data`: `data` is a string in CSV format. This is passed directly to the CSV parser
-  // 3. `dataset.url`: a url to an online CSV file that is ajax accessible (note this usually requires either local or on a server that is CORS enabled). The file is then loaded using $.ajax and parsed using the CSV parser (NB: this requires jQuery)
+  // 3. `dataset.url`: a url to an online CSV file that is ajax accessible (note this usually requires either local or on a server that is CORS enabled). The file is then loaded using jQuery.ajax and parsed using the CSV parser (NB: this requires jQuery)
   //
   // All options generates similar data and use the memory store outcome, that is they return something like:
   //
@@ -162,7 +162,7 @@ this.recline.Backend.CSV = this.recline.Backend.CSV || {};
   // }
   // </pre>
   my.fetch = function(dataset) {
-    var dfd = $.Deferred();
+    var dfd = new _.Deferred();
     if (dataset.file) {
       var reader = new FileReader();
       var encoding = dataset.encoding || 'UTF-8';
@@ -187,7 +187,7 @@ this.recline.Backend.CSV = this.recline.Backend.CSV || {};
         useMemoryStore: true
       });
     } else if (dataset.url) {
-      $.get(dataset.url).done(function(data) {
+      jQuery.get(dataset.url).done(function(data) {
         var rows = my.parseCSV(data, dataset);
         dfd.resolve({
           records: rows,
@@ -424,12 +424,12 @@ this.recline.Backend.CSV = this.recline.Backend.CSV || {};
   }
 
 
-}(this.recline.Backend.CSV, jQuery));
+}(this.recline.Backend.CSV));
 this.recline = this.recline || {};
 this.recline.Backend = this.recline.Backend || {};
 this.recline.Backend.DataProxy = this.recline.Backend.DataProxy || {};
 
-(function($, my) {
+(function(my) {
   my.__type__ = 'dataproxy';
   // URL for the dataproxy
   my.dataproxy_url = 'http://jsonpdataproxy.appspot.com';
@@ -448,12 +448,12 @@ this.recline.Backend.DataProxy = this.recline.Backend.DataProxy || {};
       'max-results':  dataset.size || dataset.rows || 1000,
       type: dataset.format || ''
     };
-    var jqxhr = $.ajax({
+    var jqxhr = jQuery.ajax({
       url: my.dataproxy_url,
       data: data,
       dataType: 'jsonp'
     });
-    var dfd = $.Deferred();
+    var dfd = new _.Deferred();
     _wrapInTimeout(jqxhr).done(function(results) {
       if (results.error) {
         dfd.reject(results.error);
@@ -477,7 +477,7 @@ this.recline.Backend.DataProxy = this.recline.Backend.DataProxy || {};
   // Many of backends use JSONP and so will not get error messages and this is
   // a crude way to catch those errors.
   var _wrapInTimeout = function(ourFunction) {
-    var dfd = $.Deferred();
+    var dfd = new _.Deferred();
     var timer = setTimeout(function() {
       dfd.reject({
         message: 'Request Error: Backend did not respond after ' + (my.timeout / 1000) + ' seconds'
@@ -495,7 +495,7 @@ this.recline.Backend.DataProxy = this.recline.Backend.DataProxy || {};
     return dfd.promise();
   }
 
-}(jQuery, this.recline.Backend.DataProxy));
+}(this.recline.Backend.DataProxy));
 this.recline = this.recline || {};
 this.recline.Backend = this.recline.Backend || {};
 this.recline.Backend.ElasticSearch = this.recline.Backend.ElasticSearch || {};
@@ -677,7 +677,7 @@ this.recline.Backend.ElasticSearch = this.recline.Backend.ElasticSearch || {};
   // ### fetch
   my.fetch = function(dataset) {
     var es = new my.Wrapper(dataset.url, my.esOptions);
-    var dfd = $.Deferred();
+    var dfd = new _.Deferred();
     es.mapping().done(function(schema) {
 
       if (!schema){
@@ -705,7 +705,7 @@ this.recline.Backend.ElasticSearch = this.recline.Backend.ElasticSearch || {};
   my.save = function(changes, dataset) {
     var es = new my.Wrapper(dataset.url, my.esOptions);
     if (changes.creates.length + changes.updates.length + changes.deletes.length > 1) {
-      var dfd = $.Deferred();
+      var dfd = new _.Deferred();
       msg = 'Saving more than one item at a time not yet supported';
       alert(msg);
       dfd.reject(msg);
@@ -723,7 +723,7 @@ this.recline.Backend.ElasticSearch = this.recline.Backend.ElasticSearch || {};
 
   // ### query
   my.query = function(queryObj, dataset) {
-    var dfd = $.Deferred();
+    var dfd = new _.Deferred();
     var es = new my.Wrapper(dataset.url, my.esOptions);
     var jqxhr = es.query(queryObj);
     jqxhr.done(function(results) {
@@ -782,7 +782,7 @@ this.recline = this.recline || {};
 this.recline.Backend = this.recline.Backend || {};
 this.recline.Backend.GDocs = this.recline.Backend.GDocs || {};
 
-(function($, my) {
+(function(my) {
   my.__type__ = 'gdocs';
 
   // ## Google spreadsheet backend
@@ -809,15 +809,15 @@ this.recline.Backend.GDocs = this.recline.Backend.GDocs || {};
   // * fields: array of Field objects
   // * records: array of objects for each row
   my.fetch = function(dataset) {
-    var dfd  = $.Deferred(); 
+    var dfd  = new _.Deferred(); 
     var urls = my.getGDocsAPIUrls(dataset.url);
 
     // TODO cover it with tests
     // get the spreadsheet title
     (function () {
-      var titleDfd = $.Deferred();
+      var titleDfd = new _.Deferred();
 
-      $.getJSON(urls.spreadsheet, function (d) {
+      jQuery.getJSON(urls.spreadsheet, function (d) {
           titleDfd.resolve({
               spreadsheetTitle: d.feed.title.$t
           });
@@ -827,7 +827,7 @@ this.recline.Backend.GDocs = this.recline.Backend.GDocs || {};
     }()).then(function (response) {
 
       // get the actual worksheet data
-      $.getJSON(urls.worksheet, function(d) {
+      jQuery.getJSON(urls.worksheet, function(d) {
         var result = my.parseData(d);
         var fields = _.map(result.fields, function(fieldId) {
           return {id: fieldId};
@@ -941,12 +941,12 @@ this.recline.Backend.GDocs = this.recline.Backend.GDocs || {};
 
     return urls;
   };
-}(jQuery, this.recline.Backend.GDocs));
+}(this.recline.Backend.GDocs));
 this.recline = this.recline || {};
 this.recline.Backend = this.recline.Backend || {};
 this.recline.Backend.Memory = this.recline.Backend.Memory || {};
 
-(function($, my) {
+(function(my) {
   my.__type__ = 'memory';
 
   // ## Data Wrapper
@@ -955,42 +955,44 @@ this.recline.Backend.Memory = this.recline.Backend.Memory || {};
   // functionality like querying, faceting, updating (by ID) and deleting (by
   // ID).
   //
-  // @param data list of hashes for each record/row in the data ({key:
+  // @param records list of hashes for each record/row in the data ({key:
   // value, key: value})
   // @param fields (optional) list of field hashes (each hash defining a field
   // as per recline.Model.Field). If fields not specified they will be taken
   // from the data.
-  my.Store = function(data, fields) {
+  my.Store = function(records, fields) {
     var self = this;
-    this.data = data;
+    this.records = records;
+    // backwards compatability (in v0.5 records was named data)
+    this.data = this.records;
     if (fields) {
       this.fields = fields;
     } else {
-      if (data) {
-        this.fields = _.map(data[0], function(value, key) {
+      if (records) {
+        this.fields = _.map(records[0], function(value, key) {
           return {id: key, type: 'string'};
         });
       }
     }
 
     this.update = function(doc) {
-      _.each(self.data, function(internalDoc, idx) {
+      _.each(self.records, function(internalDoc, idx) {
         if(doc.id === internalDoc.id) {
-          self.data[idx] = doc;
+          self.records[idx] = doc;
         }
       });
     };
 
     this.remove = function(doc) {
-      var newdocs = _.reject(self.data, function(internalDoc) {
+      var newdocs = _.reject(self.records, function(internalDoc) {
         return (doc.id === internalDoc.id);
       });
-      this.data = newdocs;
+      this.records = newdocs;
     };
 
     this.save = function(changes, dataset) {
       var self = this;
-      var dfd = $.Deferred();
+      var dfd = new _.Deferred();
       // TODO _.each(changes.creates) { ... }
       _.each(changes.updates, function(record) {
         self.update(record);
@@ -1003,10 +1005,10 @@ this.recline.Backend.Memory = this.recline.Backend.Memory || {};
     },
 
     this.query = function(queryObj) {
-      var dfd = $.Deferred();
-      var numRows = queryObj.size || this.data.length;
+      var dfd = new _.Deferred();
+      var numRows = queryObj.size || this.records.length;
       var start = queryObj.from || 0;
-      var results = this.data;
+      var results = this.records;
       
       results = this._applyFilters(results, queryObj);
       results = this._applyFreeTextQuery(results, queryObj);
@@ -1171,11 +1173,11 @@ this.recline.Backend.Memory = this.recline.Backend.Memory || {};
     };
 
     this.transform = function(editFunc) {
-      var dfd = $.Deferred();
+      var dfd = new _.Deferred();
       // TODO: should we clone before mapping? Do not see the point atm.
-      self.data = _.map(self.data, editFunc);
+      self.records = _.map(self.records, editFunc);
       // now deal with deletes (i.e. nulls)
-      self.data = _.filter(self.data, function(record) {
+      self.records = _.filter(self.records, function(record) {
         return record != null;
       });
       dfd.resolve();
@@ -1183,7 +1185,7 @@ this.recline.Backend.Memory = this.recline.Backend.Memory || {};
     };
   };
 
-}(jQuery, this.recline.Backend.Memory));
+}(this.recline.Backend.Memory));
 this.recline = this.recline || {};
 this.recline.Backend = this.recline.Backend || {};
 this.recline.Backend.Solr = this.recline.Backend.Solr || {};
@@ -1204,7 +1206,7 @@ this.recline.Backend.Solr = this.recline.Backend.Solr || {};
       dataType: 'jsonp',
       jsonp: 'json.wrf'
     });
-    var dfd = $.Deferred();
+    var dfd = new _.Deferred();
     jqxhr.done(function(results) {
       // if we get 0 results we cannot get fields
       var fields = []
@@ -1237,7 +1239,7 @@ this.recline.Backend.Solr = this.recline.Backend.Solr || {};
       dataType: 'jsonp',
       jsonp: 'json.wrf'
     });
-    var dfd = $.Deferred();
+    var dfd = new _.Deferred();
     jqxhr.done(function(results) {
       var out = {
         total: results.response.numFound,
@@ -1386,7 +1388,7 @@ if (!('some' in Array.prototype)) {
 this.recline = this.recline || {};
 this.recline.Model = this.recline.Model || {};
 
-(function($, my) {
+(function(my) {
 
 // ## <a id="dataset">Dataset</a>
 my.Dataset = Backbone.Model.extend({
@@ -1431,7 +1433,7 @@ my.Dataset = Backbone.Model.extend({
   // Retrieve dataset and (some) records from the backend.
   fetch: function() {
     var self = this;
-    var dfd = $.Deferred();
+    var dfd = new _.Deferred();
 
     if (this.backend !== recline.Backend.Memory) {
       this.backend.fetch(this.toJSON())
@@ -1565,7 +1567,7 @@ my.Dataset = Backbone.Model.extend({
   // also returned.
   query: function(queryObj) {
     var self = this;
-    var dfd = $.Deferred();
+    var dfd = new _.Deferred();
     this.trigger('query:start');
 
     if (queryObj) {
@@ -1629,7 +1631,7 @@ my.Dataset = Backbone.Model.extend({
     this.fields.each(function(field) {
       query.addFacet(field.id);
     });
-    var dfd = $.Deferred();
+    var dfd = new _.Deferred();
     this._store.query(query.toJSON(), this.toJSON()).done(function(queryResult) {
       if (queryResult.facets) {
         _.each(queryResult.facets, function(facetResult, facetId) {
@@ -1969,7 +1971,7 @@ Backbone.sync = function(method, model, options) {
   return model.backend.sync(method, model, options);
 };
 
-}(jQuery, this.recline.Model));
+}(this.recline.Model));
 
 /*jshint multistr:true */
 
