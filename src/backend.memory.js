@@ -2,7 +2,7 @@ this.recline = this.recline || {};
 this.recline.Backend = this.recline.Backend || {};
 this.recline.Backend.Memory = this.recline.Backend.Memory || {};
 
-(function($, my) {
+(function(my) {
   my.__type__ = 'memory';
 
   // ## Data Wrapper
@@ -48,7 +48,7 @@ this.recline.Backend.Memory = this.recline.Backend.Memory || {};
 
     this.save = function(changes, dataset) {
       var self = this;
-      var dfd = $.Deferred();
+      var dfd = new _.Deferred();
       // TODO _.each(changes.creates) { ... }
       _.each(changes.updates, function(record) {
         self.update(record);
@@ -61,7 +61,7 @@ this.recline.Backend.Memory = this.recline.Backend.Memory || {};
     },
 
     this.query = function(queryObj) {
-      var dfd = $.Deferred();
+      var dfd = new _.Deferred();
       var numRows = queryObj.size || this.records.length;
       var start = queryObj.from || 0;
       var results = this.records;
@@ -229,7 +229,7 @@ this.recline.Backend.Memory = this.recline.Backend.Memory || {};
     };
 
     this.transform = function(editFunc) {
-      var dfd = $.Deferred();
+      var dfd = new _.Deferred();
       // TODO: should we clone before mapping? Do not see the point atm.
       self.records = _.map(self.records, editFunc);
       // now deal with deletes (i.e. nulls)
@@ -241,4 +241,4 @@ this.recline.Backend.Memory = this.recline.Backend.Memory || {};
     };
   };
 
-}(jQuery, this.recline.Backend.Memory));
+}(this.recline.Backend.Memory));

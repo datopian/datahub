@@ -2,7 +2,7 @@
 this.recline = this.recline || {};
 this.recline.Model = this.recline.Model || {};
 
-(function($, my) {
+(function(my) {
 
 // ## <a id="dataset">Dataset</a>
 my.Dataset = Backbone.Model.extend({
@@ -47,7 +47,7 @@ my.Dataset = Backbone.Model.extend({
   // Retrieve dataset and (some) records from the backend.
   fetch: function() {
     var self = this;
-    var dfd = $.Deferred();
+    var dfd = new _.Deferred();
 
     if (this.backend !== recline.Backend.Memory) {
       this.backend.fetch(this.toJSON())
@@ -181,7 +181,7 @@ my.Dataset = Backbone.Model.extend({
   // also returned.
   query: function(queryObj) {
     var self = this;
-    var dfd = $.Deferred();
+    var dfd = new _.Deferred();
     this.trigger('query:start');
 
     if (queryObj) {
@@ -245,7 +245,7 @@ my.Dataset = Backbone.Model.extend({
     this.fields.each(function(field) {
       query.addFacet(field.id);
     });
-    var dfd = $.Deferred();
+    var dfd = new _.Deferred();
     this._store.query(query.toJSON(), this.toJSON()).done(function(queryResult) {
       if (queryResult.facets) {
         _.each(queryResult.facets, function(facetResult, facetId) {
@@ -585,5 +585,5 @@ Backbone.sync = function(method, model, options) {
   return model.backend.sync(method, model, options);
 };
 
-}(jQuery, this.recline.Model));
+}(this.recline.Model));
 

@@ -197,7 +197,7 @@ my.__type__ = 'couchdb';
     var db_url    = dataset.db_url;
     var view_url  = dataset.view_url;
     var cdb       = new my.CouchDBWrapper(db_url, view_url);
-    var dfd       = $.Deferred();
+    var dfd       = new _.Deferred();
 
     // if 'doc' attribute is present, return schema of that
     // else return schema of 'value' attribute which contains
@@ -239,7 +239,7 @@ my.__type__ = 'couchdb';
 //
 //
 my.save = function (changes, dataset) {
-  var dfd       = $.Deferred();
+  var dfd       = new _.Deferred();
   var total     = changes.creates.length + changes.updates.length + changes.deletes.length;  
   var results   = {'done': [], 'fail': [] };
 
@@ -280,7 +280,7 @@ my.save = function (changes, dataset) {
 // @param {Object} recline.Dataset instance
 // @param {Object} recline.Query instance.
 my.query = function(queryObj, dataset) {
-  var dfd           = $.Deferred();
+  var dfd           = new _.Deferred();
   var db_url        = dataset.db_url;
   var view_url      = dataset.view_url;
   var query_options = dataset.query_options;
@@ -475,7 +475,7 @@ function randomId(length, chars) {
 }
      
 _createDocument  = function (new_doc, dataset) {
-  var dfd      = $.Deferred();
+  var dfd      = new _.Deferred();
   var db_url   = dataset.db_url;
   var view_url = dataset.view_url;
   var _id      = new_doc['id'];
@@ -497,7 +497,7 @@ _createDocument  = function (new_doc, dataset) {
 };
 
 _updateDocument = function (new_doc, dataset) {
-  var dfd      = $.Deferred();
+  var dfd      = new _.Deferred();
   var db_url   = dataset.db_url;
   var view_url = dataset.view_url;
   var _id      = new_doc['id'];
@@ -527,7 +527,7 @@ _updateDocument = function (new_doc, dataset) {
 };
 
 _deleteDocument = function (del_doc, dataset) {
-  var dfd      = $.Deferred();
+  var dfd      = new _.Deferred();
   var db_url   = dataset.db_url;
   var view_url = dataset.view_url;
   var _id      = del_doc['id'];

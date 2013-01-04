@@ -68,15 +68,23 @@ title: Download
 
 ### Dependencies
 
-Recline has dependencies on some third-party libraries, notably JQuery and Backbone:
+Recline has dependencies on some third-party libraries. Specifically, recline.dataset.js depends on:
+
+* [Underscore](http://documentcloud.github.com/underscore/) &gt;= 1.0
+* [Underscore Deferred](https://github.com/wookiehangover/underscore.deferred) v0.4.0
+* [Backbone](http://backbonejs.org/) >= 0.5.1
+
+Those backends which utilize jquery's ajax method depend on jQuery:
 
 * [JQuery](http://jquery.com/) >= 1.6
-* [Backbone](http://backbonejs.org/) >= 0.5.1
-* [Underscore](http://documentcloud.github.com/underscore/) &gt;= 1.0
 
-Optional dependencies:
+All the views require, in addition to those needed for recline.dataset.js:
 
+* [JQuery](http://jquery.com/) >= 1.6
 * [Mustache.js](https://github.com/janl/mustache.js/) &gt;= 0.5.0-dev (required for all views)
+
+Individual views have additional dependencies such as:
+
 * [JQuery Flot](http://code.google.com/p/flot/) >= 0.7 (required for for graph view)
 * [Leaflet](http://leaflet.cloudmade.com/) >= 0.4.4 (required for map view)
 * [Leaflet.markercluster](https://github.com/danzel/Leaflet.markercluster)  as of 2012-09-12 (required for marker clustering)
@@ -84,7 +92,8 @@ Optional dependencies:
 * [Bootstrap](http://twitter.github.com/bootstrap/) &gt;= v2.0 (default option for CSS and UI JS but you can use your own)
 
 If you grab the full zipball for Recline this will include all of the relevant
-dependencies in the vendor directory.
+dependencies in the vendor directory and you can also find them at in the
+[github repo here](https://github.com/okfn/recline/tree/master/vendor).
 
 ### Example
 

@@ -57,6 +57,7 @@ Possible breaking changes
 * Dataset.restore method removed (not used internally except from Multiview.restore)
 * Views no longer call render in initialize but must be called client code
 * Backend.Memory.Store attribute for holding 'records' renamed to `records` from `data`
+* Require new underscore.deferred vendor library for all use (jQuery no longer required if just using recline.dataset.js)
 
 ### v0.5 - July 5th 2012 (first public release)
 

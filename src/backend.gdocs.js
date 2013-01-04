@@ -2,7 +2,7 @@ this.recline = this.recline || {};
 this.recline.Backend = this.recline.Backend || {};
 this.recline.Backend.GDocs = this.recline.Backend.GDocs || {};
 
-(function($, my) {
+(function(my) {
   my.__type__ = 'gdocs';
 
   // ## Google spreadsheet backend
@@ -29,15 +29,15 @@ this.recline.Backend.GDocs = this.recline.Backend.GDocs || {};
   // * fields: array of Field objects
   // * records: array of objects for each row
   my.fetch = function(dataset) {
-    var dfd  = $.Deferred(); 
+    var dfd  = new _.Deferred(); 
     var urls = my.getGDocsAPIUrls(dataset.url);
 
     // TODO cover it with tests
     // get the spreadsheet title
     (function () {
-      var titleDfd = $.Deferred();
+      var titleDfd = new _.Deferred();
 
-      $.getJSON(urls.spreadsheet, function (d) {
+      jQuery.getJSON(urls.spreadsheet, function (d) {
           titleDfd.resolve({
               spreadsheetTitle: d.feed.title.$t
           });
@@ -47,7 +47,7 @@ this.recline.Backend.GDocs = this.recline.Backend.GDocs || {};
     }()).then(function (response) {
 
       // get the actual worksheet data
-      $.getJSON(urls.worksheet, function(d) {
+      jQuery.getJSON(urls.worksheet, function(d) {
         var result = my.parseData(d);
         var fields = _.map(result.fields, function(fieldId) {
           return {id: fieldId};
@@ -161,4 +161,4 @@ this.recline.Backend.GDocs = this.recline.Backend.GDocs || {};
 
     return urls;
   };
-}(jQuery, this.recline.Backend.GDocs));
+}(this.recline.Backend.GDocs));

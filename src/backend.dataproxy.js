@@ -2,7 +2,7 @@ this.recline = this.recline || {};
 this.recline.Backend = this.recline.Backend || {};
 this.recline.Backend.DataProxy = this.recline.Backend.DataProxy || {};
 
-(function($, my) {
+(function(my) {
   my.__type__ = 'dataproxy';
   // URL for the dataproxy
   my.dataproxy_url = 'http://jsonpdataproxy.appspot.com';
@@ -21,12 +21,12 @@ this.recline.Backend.DataProxy = this.recline.Backend.DataProxy || {};
       'max-results':  dataset.size || dataset.rows || 1000,
       type: dataset.format || ''
     };
-    var jqxhr = $.ajax({
+    var jqxhr = jQuery.ajax({
       url: my.dataproxy_url,
       data: data,
       dataType: 'jsonp'
     });
-    var dfd = $.Deferred();
+    var dfd = new _.Deferred();
     _wrapInTimeout(jqxhr).done(function(results) {
       if (results.error) {
         dfd.reject(results.error);
@@ -50,7 +50,7 @@ this.recline.Backend.DataProxy = this.recline.Backend.DataProxy || {};
   // Many of backends use JSONP and so will not get error messages and this is
   // a crude way to catch those errors.
   var _wrapInTimeout = function(ourFunction) {
-    var dfd = $.Deferred();
+    var dfd = new _.Deferred();
     var timer = setTimeout(function() {
       dfd.reject({
         message: 'Request Error: Backend did not respond after ' + (my.timeout / 1000) + ' seconds'
@@ -68,4 +68,4 @@ this.recline.Backend.DataProxy = this.recline.Backend.DataProxy || {};
     return dfd.promise();
   }
 
-}(jQuery, this.recline.Backend.DataProxy));
+}(this.recline.Backend.DataProxy));

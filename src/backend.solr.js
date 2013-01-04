@@ -18,7 +18,7 @@ this.recline.Backend.Solr = this.recline.Backend.Solr || {};
       dataType: 'jsonp',
       jsonp: 'json.wrf'
     });
-    var dfd = $.Deferred();
+    var dfd = new _.Deferred();
     jqxhr.done(function(results) {
       // if we get 0 results we cannot get fields
       var fields = []
@@ -51,7 +51,7 @@ this.recline.Backend.Solr = this.recline.Backend.Solr || {};
       dataType: 'jsonp',
       jsonp: 'json.wrf'
     });
-    var dfd = $.Deferred();
+    var dfd = new _.Deferred();
     jqxhr.done(function(results) {
       var out = {
         total: results.response.numFound,
