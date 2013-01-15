@@ -4986,6 +4986,8 @@ my.Pager = Backbone.View.extend({
     e.preventDefault();
     var newFrom = parseInt(this.el.find('input[name="from"]').val());
     var newSize = parseInt(this.el.find('input[name="to"]').val()) - newFrom;
+    newFrom = Math.max(newFrom, 0);
+    newSize = Math.max(newSize, 1);
     this.model.set({size: newSize, from: newFrom});
   },
   onPaginationUpdate: function(e) {
@@ -4997,6 +4999,7 @@ my.Pager = Backbone.View.extend({
     } else {
       newFrom = this.model.get('from') + this.model.get('size');
     }
+    newFrom = Math.max(newFrom, 0);
     this.model.set({from: newFrom});
   },
   render: function() {
