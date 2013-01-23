@@ -15,7 +15,9 @@ A simple but powerful library for building data applications in pure Javascript 
 
 ## Developer Notes
 
-Running the tests by opening `test/index.html` in your browser.
+Run the tests by opening `test/index.html` in your browser.
+
+Notes on the architecture can be found in the [documentation online](http://okfnlabs.org/recline).
 
 ### Contributing
 
@@ -43,6 +45,16 @@ For larger changes:
 * Update `/_includes/recline-deps.html` if you change required files (e.g. leaflet libraries)
 * Try to build the demos in `/demos/` with jekyll and then check out the `/demos/multiview/` which utilizes most aspects of Recline
 
+### Contributors
+
+* [Rufus Pollock](http://rufuspollock.org/)
+* [Max Ogden](http://maxogden.com/)
+* [John Glover](https://github.com/johnglover)
+* [James Casbon](http://casbon.me/)
+* [Adria Mercader](http://amercader.net/)
+* [Dominik Moritz](https://github.com/domoritz)
+* [Friedrich Lindenberg](http://pudo.org/)
+* And [many more](https://github.com/okfn/recline/graphs/contributors)
 
 ## Changelog
 
