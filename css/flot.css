@@ -1,0 +1,26 @@
+.recline-graph .graph {
+  height: 500px;
+  overflow: hidden;
+}
+
+.recline-graph .legend table {
+  width: auto;
+  margin-bottom: 0;
+}
+
+.recline-graph .legend td {
+  padding: 5px;
+  line-height: 13px;
+}
+
+.recline-graph .graph .alert {
+  width: 450px;
+}
+
+#recline-graph-tooltip {
+    position: absolute;
+    background-color: #FEE !important;
+    color: #000000 !important;
+    opacity: 0.8 !important;
+    border: 1px solid #fdd !important;
+}
