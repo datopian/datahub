@@ -51,7 +51,7 @@ For larger changes:
 * [Max Ogden](http://maxogden.com/)
 * [John Glover](https://github.com/johnglover)
 * [James Casbon](http://casbon.me/)
-* [Adria Mercader](http://amercader.net/)
+* [Adrià Mercader](http://amercader.net/)
 * [Dominik Moritz](https://github.com/domoritz)
 * [Friedrich Lindenberg](http://pudo.org/)
 * And [many more](https://github.com/okfn/recline/graphs/contributors)
