@@ -320,7 +320,7 @@ my.GraphControls = Backbone.View.extend({
           <option value="columns">Columns</option> \
           </select> \
         </div> \
-        <label>Group Column (x-axis)</label> \
+        <label>Group Column (Axis 1)</label> \
         <div class="input editor-group"> \
           <select> \
           <option value="">Please choose ...</option> \
@@ -344,7 +344,7 @@ my.GraphControls = Backbone.View.extend({
 ',
   templateSeriesEditor: ' \
     <div class="editor-series js-series-{{seriesIndex}}"> \
-      <label>Series <span>{{seriesName}} (y-axis)</span> \
+      <label>Series <span>{{seriesName}} (Axis 2)</span> \
         [<a href="#remove" class="action-remove-series">Remove</a>] \
       </label> \
       <div class="input"> \
