@@ -12,10 +12,11 @@ this.recline.View = this.recline.View || {};
 // * model: recline.Model.Dataset
 // * state: (optional) configuration hash of form:
 //
-//        { 
+//        {
 //          group: {column name for x-axis},
 //          series: [{column name for series A}, {column name series B}, ... ],
-//          graphType: 'line'
+//          graphType: 'line',
+//          graphOptions: {custom [flot options]}
 //        }
 //
 // NB: should *not* provide an el argument to the view but must let the view
@@ -80,7 +81,7 @@ my.Flot = Backbone.View.extend({
     // There are issues generating a Flot graph if either:
     // * The relevant div that graph attaches to his hidden at the moment of creating the plot -- Flot will complain with
     //   Uncaught Invalid dimensions for plot, width = 0, height = 0
-    // * There is no data for the plot -- either same error or may have issues later with errors like 'non-existent node-value' 
+    // * There is no data for the plot -- either same error or may have issues later with errors like 'non-existent node-value'
     var areWeVisible = !jQuery.expr.filters.hidden(this.el[0]);
     if ((!areWeVisible || this.model.records.length === 0)) {
       this.needToRedraw = true;
@@ -191,7 +192,7 @@ my.Flot = Backbone.View.extend({
 
       return label;
     };
-    
+
     var xaxis = {};
     xaxis.tickFormatter = tickFormatter;
 
@@ -222,7 +223,7 @@ my.Flot = Backbone.View.extend({
     var yaxis = {};
     yaxis.autoscale = true;
     yaxis.autoscaleMargin = 0.02;
-    
+
     var legend = {};
     legend.position = 'ne';
 
@@ -231,8 +232,8 @@ my.Flot = Backbone.View.extend({
     grid.clickable = true;
     grid.borderColor = "#aaaaaa";
     grid.borderWidth = 1;
-    
-    var optionsPerGraphType = { 
+
+    var optionsPerGraphType = {
       lines: {
         legend: legend,
         colors: this.graphColors,
@@ -262,19 +263,40 @@ my.Flot = Backbone.View.extend({
         legend: legend,
         colors: this.graphColors,
         lines: { show: false },
+        xaxis: yaxis,
+        yaxis: xaxis,
+        grid: grid,
+        bars: {
+          show: true,
+          horizontal: true,
+          shadowSize: 0,
+          align: 'center',
+          barWidth: 0.8
+        }
+      },
+      columns: {
+        legend: legend,
+        colors: this.graphColors,
+        lines: { show: false },
         xaxis: xaxis,
         yaxis: yaxis,
+        grid: grid,
         bars: {
           show: true,
           horizontal: false,
           shadowSize: 0,
           align: 'center',
           barWidth: 0.8
-        },
-        grid: grid
+        }
       }
     };
-    return optionsPerGraphType[typeId];
+
+    if (self.state.get('graphOptions')) {
+      return _.extend(optionsPerGraphType[typeId],
+                      self.state.get('graphOptions'));
+    } else {
+      return optionsPerGraphType[typeId];
+    }
   },
 
   createSeries: function() {
@@ -289,22 +311,29 @@ my.Flot = Backbone.View.extend({
         // time series
         var xtype = xfield.get('type');
         var isDateTime = (xtype === 'date' || xtype === 'date-time' || xtype  === 'time');
-        
+
         if (isDateTime) {
-          // datetime
-          if (self.state.attributes.graphType != 'bars') {
+          if (self.state.attributes.graphType != 'bars' &&
+              self.state.attributes.graphType != 'columns') {
             x = new Date(x).getTime();
           } else {
             x = index;
           }
         } else if (typeof x === 'string') {
-          x = index;
+          x = parseFloat(x);
+          if (isNaN(x)) {
+            x = index;
+          }
         }
 
         var yfield = self.model.fields.get(field);
         var y = doc.getFieldValue(yfield);
-        
-        points.push([x, y]);
+
+        if (self.state.attributes.graphType == 'bars') {
+          points.push([y, x]);
+        } else {
+          points.push([x, y]);
+        }
       });
       series.push({
         data: points,
@@ -329,9 +358,10 @@ my.FlotControls = Backbone.View.extend({
           <option value="lines">Lines</option> \
           <option value="points">Points</option> \
           <option value="bars">Bars</option> \
+          <option value="columns">Columns</option> \
           </select> \
         </div> \
-        <label>X-Axis</label> \
+        <label>Group Column (Axis 1)</label> \
         <div class="input editor-group"> \
           <select> \
           <option value="">Please choose ...</option> \
@@ -344,7 +374,7 @@ my.FlotControls = Backbone.View.extend({
         </div> \
       </div> \
       <div class="editor-buttons"> \
-        <button class="btn editor-add">Add Additional Y-Axis Plot</button> \
+        <button class="btn editor-add">Add Series</button> \
       </div> \
       <div class="editor-buttons editor-submit" comment="hidden temporarily" style="display: none;"> \
         <button class="editor-save">Save</button> \
@@ -355,7 +385,7 @@ my.FlotControls = Backbone.View.extend({
 ',
   templateSeriesEditor: ' \
     <div class="editor-series js-series-{{seriesIndex}}"> \
-      <label>Y-Axis (<span>{{seriesName}})</span> \
+      <label>Series <span>{{seriesName}} (Axis 2)</span> \
         [<a href="#remove" class="action-remove-series">Remove</a>] \
       </label> \
       <div class="input"> \
@@ -470,4 +500,3 @@ my.FlotControls = Backbone.View.extend({
 });
 
 })(jQuery, recline.View);
-
