@@ -203,6 +203,7 @@ my.MultiView = Backbone.View.extend({
     } else {
       this.updateNav(this.pageViews[0].id);
     }
+    this._showHideSidebar();
 
     this.model.bind('query:start', function() {
         self.notify({loader: true, persist: true});
@@ -280,6 +281,20 @@ my.MultiView = Backbone.View.extend({
 
   },
 
+  // hide the sidebar if empty
+  _showHideSidebar: function() {
+    var $dataSidebar = this.el.find('.data-view-sidebar');
+    var visibleChildren = $dataSidebar.children().filter(function() {
+      return $(this).css("display") != "none";
+    }).length;
+
+    if (visibleChildren > 0) {
+      $dataSidebar.show();
+    } else {
+      $dataSidebar.hide();
+    }
+  },
+
   updateNav: function(pageName) {
     this.el.find('.navigation a').removeClass('active');
     var $el = this.el.find('.navigation a[data-view="' + pageName + '"]');
@@ -310,6 +325,7 @@ my.MultiView = Backbone.View.extend({
     e.preventDefault();
     var action = $(e.target).attr('data-action');
     this['$'+action].toggle();
+    this._showHideSidebar();
   },
 
   _onSwitchView: function(e) {
@@ -317,6 +333,7 @@ my.MultiView = Backbone.View.extend({
     var viewName = $(e.target).attr('data-view');
     this.updateNav(viewName);
     this.state.set({currentView: viewName});
+    this._showHideSidebar();
   },
 
   // create a state object for this view and do the job of
