@@ -4,6 +4,7 @@ this.recline.Backend.CSV = this.recline.Backend.CSV || {};
 
 // Note that provision of jQuery is optional (it is **only** needed if you use fetch on a remote file)
 (function(my) {
+  my.__type__ = 'csv';
 
   // ## fetch
   //
