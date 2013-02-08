@@ -5,6 +5,9 @@ this.recline.Backend.Solr = this.recline.Backend.Solr || {};
 (function($, my) {
   my.__type__ = 'solr';
 
+  // use either jQuery or Underscore Deferred depending on what is available
+  var Deferred = _.isUndefined(this.jQuery) ? _.Deferred : jQuery.Deferred;
+
   // ### fetch
   //
   // dataset must have a solr or url attribute pointing to solr endpoint
@@ -18,7 +21,7 @@ this.recline.Backend.Solr = this.recline.Backend.Solr || {};
       dataType: 'jsonp',
       jsonp: 'json.wrf'
     });
-    var dfd = new _.Deferred();
+    var dfd = new Deferred();
     jqxhr.done(function(results) {
       // if we get 0 results we cannot get fields
       var fields = []
@@ -51,7 +54,7 @@ this.recline.Backend.Solr = this.recline.Backend.Solr || {};
       dataType: 'jsonp',
       jsonp: 'json.wrf'
     });
-    var dfd = new _.Deferred();
+    var dfd = new Deferred();
     jqxhr.done(function(results) {
       var out = {
         total: results.response.numFound,

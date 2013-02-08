@@ -6,6 +6,9 @@ this.recline.Backend.CSV = this.recline.Backend.CSV || {};
 (function(my) {
   my.__type__ = 'csv';
 
+  // use either jQuery or Underscore Deferred depending on what is available
+  var Deferred = _.isUndefined(this.jQuery) ? _.Deferred : jQuery.Deferred;
+
   // ## fetch
   //
   // fetch supports 3 options depending on the attribute provided on the dataset argument
@@ -24,7 +27,7 @@ this.recline.Backend.CSV = this.recline.Backend.CSV || {};
   // }
   // </pre>
   my.fetch = function(dataset) {
-    var dfd = new _.Deferred();
+    var dfd = new Deferred();
     if (dataset.file) {
       var reader = new FileReader();
       var encoding = dataset.encoding || 'UTF-8';
