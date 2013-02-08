@@ -2,7 +2,7 @@ this.recline = this.recline || {};
 this.recline.Backend = this.recline.Backend || {};
 this.recline.Backend.Ckan = this.recline.Backend.Ckan || {};
 
-(function($, my) {
+(function(my) {
   // ## CKAN Backend
   //
   // This provides connection to the CKAN DataStore (v2)
@@ -41,7 +41,7 @@ this.recline.Backend.Ckan = this.recline.Backend.Ckan || {};
       dataset.id = out.resource_id;
       var wrapper = my.DataStore(out.endpoint);
     }
-    var dfd = $.Deferred();
+    var dfd = new _.Deferred();
     var jqxhr = wrapper.search({resource_id: dataset.id, limit: 0});
     jqxhr.done(function(results) {
       // map ckan types to our usual types ...
@@ -84,7 +84,7 @@ this.recline.Backend.Ckan = this.recline.Backend.Ckan || {};
       var wrapper = my.DataStore(out.endpoint);
     }
     var actualQuery = my._normalizeQuery(queryObj, dataset);
-    var dfd = $.Deferred();
+    var dfd = new _.Deferred();
     var jqxhr = wrapper.search(actualQuery);
     jqxhr.done(function(results) {
       var out = {
@@ -107,7 +107,7 @@ this.recline.Backend.Ckan = this.recline.Backend.Ckan || {};
     };
     that.search = function(data) {
       var searchUrl = that.endpoint + '/3/action/datastore_search';
-      var jqxhr = $.ajax({
+      var jqxhr = jQuery.ajax({
         url: searchUrl,
         data: data,
         dataType: 'json'
@@ -136,4 +136,4 @@ this.recline.Backend.Ckan = this.recline.Backend.Ckan || {};
     'float8': 'float'
   };
 
-}(jQuery, this.recline.Backend.Ckan));
+}(this.recline.Backend.Ckan));

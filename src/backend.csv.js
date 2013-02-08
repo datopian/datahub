@@ -3,7 +3,8 @@ this.recline.Backend = this.recline.Backend || {};
 this.recline.Backend.CSV = this.recline.Backend.CSV || {};
 
 // Note that provision of jQuery is optional (it is **only** needed if you use fetch on a remote file)
-(function(my, $) {
+(function(my) {
+  my.__type__ = 'csv';
 
   // ## fetch
   //
@@ -11,7 +12,7 @@ this.recline.Backend.CSV = this.recline.Backend.CSV || {};
   //
   // 1. `dataset.file`: `file` is an HTML5 file object. This is opened and parsed with the CSV parser.
   // 2. `dataset.data`: `data` is a string in CSV format. This is passed directly to the CSV parser
-  // 3. `dataset.url`: a url to an online CSV file that is ajax accessible (note this usually requires either local or on a server that is CORS enabled). The file is then loaded using $.ajax and parsed using the CSV parser (NB: this requires jQuery)
+  // 3. `dataset.url`: a url to an online CSV file that is ajax accessible (note this usually requires either local or on a server that is CORS enabled). The file is then loaded using jQuery.ajax and parsed using the CSV parser (NB: this requires jQuery)
   //
   // All options generates similar data and use the memory store outcome, that is they return something like:
   //
@@ -23,7 +24,7 @@ this.recline.Backend.CSV = this.recline.Backend.CSV || {};
   // }
   // </pre>
   my.fetch = function(dataset) {
-    var dfd = $.Deferred();
+    var dfd = new _.Deferred();
     if (dataset.file) {
       var reader = new FileReader();
       var encoding = dataset.encoding || 'UTF-8';
@@ -48,7 +49,7 @@ this.recline.Backend.CSV = this.recline.Backend.CSV || {};
         useMemoryStore: true
       });
     } else if (dataset.url) {
-      $.get(dataset.url).done(function(data) {
+      jQuery.get(dataset.url).done(function(data) {
         var rows = my.parseCSV(data, dataset);
         dfd.resolve({
           records: rows,
@@ -285,4 +286,4 @@ this.recline.Backend.CSV = this.recline.Backend.CSV || {};
   }
 
 
-}(this.recline.Backend.CSV, jQuery));
+}(this.recline.Backend.CSV));

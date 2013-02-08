@@ -15,7 +15,17 @@ A simple but powerful library for building data applications in pure Javascript 
 
 ## Developer Notes
 
-Running the tests by opening `test/index.html` in your browser.
+Run the tests by opening `test/index.html` in your browser.
+
+Note that the demos and documentation utilize the [jekyll templating
+system][jekyll] and to use them *locally* you will need to build them using
+jekyll. Once installed, all you need to do from the command line is run jekyll:
+
+    jekyll
+
+[jekyll]: https://github.com/mojombo/jekyll
+
+Notes on the architecture can be found in the [documentation online](http://okfnlabs.org/recline).
 
 ### Contributing
 
@@ -43,6 +53,16 @@ For larger changes:
 * Update `/_includes/recline-deps.html` if you change required files (e.g. leaflet libraries)
 * Try to build the demos in `/demos/` with jekyll and then check out the `/demos/multiview/` which utilizes most aspects of Recline
 
+### Contributors
+
+* [Rufus Pollock](http://rufuspollock.org/)
+* [Max Ogden](http://maxogden.com/)
+* [John Glover](https://github.com/johnglover)
+* [James Casbon](http://casbon.me/)
+* [Adrià Mercader](http://amercader.net/)
+* [Dominik Moritz](https://github.com/domoritz)
+* [Friedrich Lindenberg](http://pudo.org/)
+* And [many more](https://github.com/okfn/recline/graphs/contributors)
 
 ## Changelog
 
@@ -56,6 +76,8 @@ Possible breaking changes
 * Added marker clustering in map view to handle a large number of markers
 * Dataset.restore method removed (not used internally except from Multiview.restore)
 * Views no longer call render in initialize but must be called client code
+* Backend.Memory.Store attribute for holding 'records' renamed to `records` from `data`
+* Require new underscore.deferred vendor library for all use (jQuery no longer required if just using recline.dataset.js)
 
 ### v0.5 - July 5th 2012 (first public release)
 

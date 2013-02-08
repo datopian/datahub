@@ -2,8 +2,11 @@ this.recline = this.recline || {};
 this.recline.Backend = this.recline.Backend || {};
 this.recline.Backend.Memory = this.recline.Backend.Memory || {};
 
-(function($, my) {
+(function(my) {
   my.__type__ = 'memory';
+
+  // private data - use either jQuery or Underscore Deferred depending on what is available
+  var Deferred = _.isUndefined(this.jQuery) ? _.Deferred : jQuery.Deferred;
 
   // ## Data Wrapper
   //
@@ -11,42 +14,44 @@ this.recline.Backend.Memory = this.recline.Backend.Memory || {};
   // functionality like querying, faceting, updating (by ID) and deleting (by
   // ID).
   //
-  // @param data list of hashes for each record/row in the data ({key:
+  // @param records list of hashes for each record/row in the data ({key:
   // value, key: value})
   // @param fields (optional) list of field hashes (each hash defining a field
   // as per recline.Model.Field). If fields not specified they will be taken
   // from the data.
-  my.Store = function(data, fields) {
+  my.Store = function(records, fields) {
     var self = this;
-    this.data = data;
+    this.records = records;
+    // backwards compatability (in v0.5 records was named data)
+    this.data = this.records;
     if (fields) {
       this.fields = fields;
     } else {
-      if (data) {
-        this.fields = _.map(data[0], function(value, key) {
+      if (records) {
+        this.fields = _.map(records[0], function(value, key) {
           return {id: key, type: 'string'};
         });
       }
     }
 
     this.update = function(doc) {
-      _.each(self.data, function(internalDoc, idx) {
+      _.each(self.records, function(internalDoc, idx) {
         if(doc.id === internalDoc.id) {
-          self.data[idx] = doc;
+          self.records[idx] = doc;
         }
       });
     };
 
     this.remove = function(doc) {
-      var newdocs = _.reject(self.data, function(internalDoc) {
+      var newdocs = _.reject(self.records, function(internalDoc) {
         return (doc.id === internalDoc.id);
       });
-      this.data = newdocs;
+      this.records = newdocs;
     };
 
     this.save = function(changes, dataset) {
       var self = this;
-      var dfd = $.Deferred();
+      var dfd = new Deferred();
       // TODO _.each(changes.creates) { ... }
       _.each(changes.updates, function(record) {
         self.update(record);
@@ -59,10 +64,10 @@ this.recline.Backend.Memory = this.recline.Backend.Memory || {};
     },
 
     this.query = function(queryObj) {
-      var dfd = $.Deferred();
-      var numRows = queryObj.size || this.data.length;
+      var dfd = new Deferred();
+      var numRows = queryObj.size || this.records.length;
       var start = queryObj.from || 0;
-      var results = this.data;
+      var results = this.records;
       
       results = this._applyFilters(results, queryObj);
       results = this._applyFreeTextQuery(results, queryObj);
@@ -227,11 +232,11 @@ this.recline.Backend.Memory = this.recline.Backend.Memory || {};
     };
 
     this.transform = function(editFunc) {
-      var dfd = $.Deferred();
+      var dfd = new Deferred();
       // TODO: should we clone before mapping? Do not see the point atm.
-      self.data = _.map(self.data, editFunc);
+      self.records = _.map(self.records, editFunc);
       // now deal with deletes (i.e. nulls)
-      self.data = _.filter(self.data, function(record) {
+      self.records = _.filter(self.records, function(record) {
         return record != null;
       });
       dfd.resolve();
@@ -239,4 +244,4 @@ this.recline.Backend.Memory = this.recline.Backend.Memory || {};
     };
   };
 
-}(jQuery, this.recline.Backend.Memory));
+}(this.recline.Backend.Memory));

@@ -146,11 +146,6 @@ my.Timeline = Backbone.View.extend({
     if (out.toDate() == 'Invalid Date') {
       return null;
     } else {
-      // fix for moment weirdness around date parsing and time zones
-      // moment('1914-08-01').toDate() => 1914-08-01 00:00 +01:00
-      // which in iso format (with 0 time offset) is 31 July 1914 23:00
-      // meanwhile native new Date('1914-08-01') => 1914-08-01 01:00 +01:00
-      out = out.subtract('minutes', out.zone());
       return out.toDate();
     }
   },

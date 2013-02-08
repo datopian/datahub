@@ -12,16 +12,16 @@ this.recline.View = this.recline.View || {};
 // * model: recline.Model.Dataset
 // * state: (optional) configuration hash of form:
 //
-//        { 
+//        {
 //          group: {column name for x-axis},
 //          series: [{column name for series A}, {column name series B}, ... ],
 //          graphType: 'line',
-//          graphOptions: {custom [Flotr2 options](http://www.humblesoftware.com/flotr2/documentation#configuration)}
+//          graphOptions: {custom [flot options]}
 //        }
-// 
+//
 // NB: should *not* provide an el argument to the view but must let the view
 // generate the element itself (you can then append view.el to the DOM.
-my.Graph = Backbone.View.extend({
+my.Flot = Backbone.View.extend({
   template: ' \
     <div class="recline-graph"> \
       <div class="panel graph" style="display: block;"> \
@@ -39,7 +39,7 @@ my.Graph = Backbone.View.extend({
     this.graphColors = ["#edc240", "#afd8f8", "#cb4b4b", "#4da74d", "#9440ed"];
 
     this.el = $(this.el);
-    _.bindAll(this, 'render', 'redraw');
+    _.bindAll(this, 'render', 'redraw', '_toolTip', '_xaxisLabel');
     this.needToRedraw = false;
     this.model.bind('change', this.render);
     this.model.fields.bind('reset', this.render);
@@ -55,7 +55,8 @@ my.Graph = Backbone.View.extend({
       options.state
     );
     this.state = new recline.Model.ObjectState(stateData);
-    this.editor = new my.GraphControls({
+    this.previousTooltipPoint = {x: null, y: null};
+    this.editor = new my.FlotControls({
       model: this.model,
       state: this.state.toJSON()
     });
@@ -72,16 +73,15 @@ my.Graph = Backbone.View.extend({
     var htmls = Mustache.render(this.template, tmplData);
     $(this.el).html(htmls);
     this.$graph = this.el.find('.panel.graph');
+    this.$graph.on("plothover", this._toolTip);
     return this;
   },
 
   redraw: function() {
-    // There appear to be issues generating a Flot graph if either:
-
+    // There are issues generating a Flot graph if either:
     // * The relevant div that graph attaches to his hidden at the moment of creating the plot -- Flot will complain with
-    //
     //   Uncaught Invalid dimensions for plot, width = 0, height = 0
-    // * There is no data for the plot -- either same error or may have issues later with errors like 'non-existent node-value' 
+    // * There is no data for the plot -- either same error or may have issues later with errors like 'non-existent node-value'
     var areWeVisible = !jQuery.expr.filters.hidden(this.el[0]);
     if ((!areWeVisible || this.model.records.length === 0)) {
       this.needToRedraw = true;
@@ -90,11 +90,12 @@ my.Graph = Backbone.View.extend({
 
     // check we have something to plot
     if (this.state.get('group') && this.state.get('series')) {
-      // faff around with width because flot draws axes *outside* of the element width which means graph can get push down as it hits element next to it
-      this.$graph.width(this.el.width() - 20);
+      // faff around with width because flot draws axes *outside* of the element
+      // width which means graph can get push down as it hits element next to it
+      this.$graph.width(this.el.width() - 240);
       var series = this.createSeries();
-      var options = this.getGraphOptions(this.state.attributes.graphType);
-      this.plot = Flotr.draw(this.$graph.get(0), series, options);
+      var options = this.getGraphOptions(this.state.attributes.graphType, series[0].data.length);
+      this.plot = $.plot(this.$graph, series, options);
     }
   },
 
@@ -105,6 +106,66 @@ my.Graph = Backbone.View.extend({
     }
   },
 
+  // infoboxes on mouse hover on points/bars etc
+  _toolTip: function (event, pos, item) {
+    if (item) {
+      if (this.previousTooltipPoint.x !== item.dataIndex ||
+          this.previousTooltipPoint.y !== item.seriesIndex) {
+        this.previousTooltipPoint.x = item.dataIndex;
+        this.previousTooltipPoint.y = item.seriesIndex;
+        $("#recline-graph-tooltip").remove();
+
+        var x = item.datapoint[0].toFixed(2),
+            y = item.datapoint[1].toFixed(2);
+
+        var content = _.template('<%= group %> = <%= x %>, <%= series %> = <%= y %>', {
+          group: this.state.attributes.group,
+          x: this._xaxisLabel(x),
+          series: item.series.label,
+          y: y
+        });
+
+        // use a different tooltip location offset for bar charts
+        var xLocation, yLocation;
+        if (this.state.attributes.graphType === 'bars') {
+          xLocation = item.pageX + 15;
+          yLocation = item.pageY;
+        } else {
+          xLocation = item.pageX + 10;
+          yLocation = item.pageY - 20;
+        }
+
+        $('<div id="recline-graph-tooltip">' + content + '</div>').css({
+            top: yLocation,
+            left: xLocation
+        }).appendTo("body").fadeIn(200);
+      }
+    } else {
+      $("#recline-graph-tooltip").remove();
+      this.previousTooltipPoint.x = null;
+      this.previousTooltipPoint.y = null;
+    }
+  },
+
+  _xaxisLabel: function (x) {
+    var xfield = this.model.fields.get(this.state.attributes.group);
+
+    // time series
+    var xtype = xfield.get('type');
+    var isDateTime = (xtype === 'date' || xtype === 'date-time' || xtype  === 'time');
+
+    if (this.model.records.models[parseInt(x, 10)]) {
+      x = this.model.records.models[parseInt(x, 10)].get(this.state.attributes.group);
+      if (isDateTime) {
+        x = new Date(x).toLocaleDateString();
+      }
+    } else if (isDateTime) {
+      x = new Date(parseInt(x, 10)).toLocaleDateString();
+    }
+
+    return x;
+  },
+
   // ### getGraphOptions
   //
   // Get options for Flot Graph
@@ -112,78 +173,74 @@ my.Graph = Backbone.View.extend({
   // needs to be function as can depend on state
   //
   // @param typeId graphType id (lines, lines-and-points etc)
-  getGraphOptions: function(typeId) { 
+  // @param numPoints the number of points that will be plotted
+  getGraphOptions: function(typeId, numPoints) {
     var self = this;
 
     var tickFormatter = function (x) {
-      return getFormattedX(x);
-    };
-    
-    // infoboxes on mouse hover on points/bars etc
-    var trackFormatter = function (obj) {
-      var x = obj.x;
-      var y = obj.y;
-      // it's horizontal so we have to flip
-      if (self.state.attributes.graphType === 'bars') {
-        var _tmp = x;
-        x = y;
-        y = _tmp;
+      // convert x to a string and make sure that it is not too long or the
+      // tick labels will overlap
+      // TODO: find a more accurate way of calculating the size of tick labels
+      var label = self._xaxisLabel(x);
+
+      if (typeof label !== 'string') {
+        label = label.toString();
       }
-      
-      x = getFormattedX(x);
-
-      var content = _.template('<%= group %> = <%= x %>, <%= series %> = <%= y %>', {
-        group: self.state.attributes.group,
-        x: x,
-        series: obj.series.label,
-        y: y
-      });
-      
-      return content;
-    };
-    
-    var getFormattedX = function (x) {
-      var xfield = self.model.fields.get(self.state.attributes.group);
-
-      // time series
-      var xtype = xfield.get('type');
-      var isDateTime = (xtype === 'date' || xtype === 'date-time' || xtype  === 'time');
-
-      if (self.model.records.models[parseInt(x)]) {
-        x = self.model.records.models[parseInt(x)].get(self.state.attributes.group);
-        if (isDateTime) {
-          x = new Date(x).toLocaleDateString();
-        }
-      } else if (isDateTime) {
-        x = new Date(parseInt(x)).toLocaleDateString();
+      if (label.length > 8) {
+        label = label.slice(0, 5) + "...";
       }
-      return x;    
-    }
-    
+
+      return label;
+    };
+
     var xaxis = {};
     xaxis.tickFormatter = tickFormatter;
+
+    // calculate the x-axis ticks
+    //
+    // the number of ticks should be a multiple of the number of points so that
+    // each tick lines up with a point
+    if (numPoints) {
+      var ticks = [],
+          maxTicks = 10,
+          x = 1,
+          i = 0;
+
+      while (x <= maxTicks) {
+        if ((numPoints / x) <= maxTicks) {
+          break;
+        }
+        x = x + 1;
+      }
+
+      for (i = 0; i < numPoints; i = i + x) {
+        ticks.push(i);
+      }
+
+      xaxis.ticks = ticks;
+    }
 
     var yaxis = {};
     yaxis.autoscale = true;
     yaxis.autoscaleMargin = 0.02;
-    
-    var mouse = {};
-    mouse.track = true;
-    mouse.relative = true;
-    mouse.trackFormatter = trackFormatter;
-    
+
     var legend = {};
     legend.position = 'ne';
-    
-    // mouse.lineColor is set in createSeries
-    var optionsPerGraphType = { 
+
+    var grid = {};
+    grid.hoverable = true;
+    grid.clickable = true;
+    grid.borderColor = "#aaaaaa";
+    grid.borderWidth = 1;
+
+    var optionsPerGraphType = {
       lines: {
         legend: legend,
         colors: this.graphColors,
         lines: { show: true },
         xaxis: xaxis,
         yaxis: yaxis,
-        mouse: mouse
+        grid: grid
       },
       points: {
         legend: legend,
@@ -191,8 +248,7 @@ my.Graph = Backbone.View.extend({
         points: { show: true, hitRadius: 5 },
         xaxis: xaxis,
         yaxis: yaxis,
-        mouse: mouse,
-        grid: { hoverable: true, clickable: true }
+        grid: grid
       },
       'lines-and-points': {
         legend: legend,
@@ -201,8 +257,7 @@ my.Graph = Backbone.View.extend({
         lines: { show: true },
         xaxis: xaxis,
         yaxis: yaxis,
-        mouse: mouse,
-        grid: { hoverable: true, clickable: true }
+        grid: grid
       },
       bars: {
         legend: legend,
@@ -210,19 +265,13 @@ my.Graph = Backbone.View.extend({
         lines: { show: false },
         xaxis: yaxis,
         yaxis: xaxis,
-        mouse: { 
-          track: true,
-          relative: true,
-          trackFormatter: trackFormatter,
-          fillColor: '#FFFFFF',
-          fillOpacity: 0.3,
-          position: 'e'
-        },
+        grid: grid,
         bars: {
           show: true,
           horizontal: true,
           shadowSize: 0,
-          barWidth: 0.8         
+          align: 'center',
+          barWidth: 0.8
         }
       },
       columns: {
@@ -231,29 +280,21 @@ my.Graph = Backbone.View.extend({
         lines: { show: false },
         xaxis: xaxis,
         yaxis: yaxis,
-        mouse: { 
-            track: true,
-            relative: true,
-            trackFormatter: trackFormatter,
-            fillColor: '#FFFFFF',
-            fillOpacity: 0.3,
-            position: 'n'
-        },
+        grid: grid,
         bars: {
-            show: true,
-            horizontal: false,
-            shadowSize: 0,
-            barWidth: 0.8         
+          show: true,
+          horizontal: false,
+          shadowSize: 0,
+          align: 'center',
+          barWidth: 0.8
         }
-      },
-      grid: { hoverable: true, clickable: true }
+      }
     };
-    
-    if (self.state.get('graphOptions')){
+
+    if (self.state.get('graphOptions')) {
       return _.extend(optionsPerGraphType[typeId],
-        self.state.get('graphOptions')  
-      )
-    }else{
+                      self.state.get('graphOptions'));
+    } else {
       return optionsPerGraphType[typeId];
     }
   },
@@ -270,18 +311,15 @@ my.Graph = Backbone.View.extend({
         // time series
         var xtype = xfield.get('type');
         var isDateTime = (xtype === 'date' || xtype === 'date-time' || xtype  === 'time');
-        
+
         if (isDateTime) {
-          // datetime
-          if (self.state.attributes.graphType != 'bars' && self.state.attributes.graphType != 'columns') {
-            // not bar or column
+          if (self.state.attributes.graphType != 'bars' &&
+              self.state.attributes.graphType != 'columns') {
             x = new Date(x).getTime();
           } else {
-            // bar or column
             x = index;
           }
         } else if (typeof x === 'string') {
-          // string
           x = parseFloat(x);
           if (isNaN(x)) {
             x = index;
@@ -290,21 +328,24 @@ my.Graph = Backbone.View.extend({
 
         var yfield = self.model.fields.get(field);
         var y = doc.getFieldValue(yfield);
-        
-        // horizontal bar chart
+
         if (self.state.attributes.graphType == 'bars') {
           points.push([y, x]);
         } else {
           points.push([x, y]);
         }
       });
-      series.push({data: points, label: field, mouse:{lineColor: self.graphColors[series.length]}});
+      series.push({
+        data: points,
+        label: field,
+        hoverable: true
+      });
     });
     return series;
   }
 });
 
-my.GraphControls = Backbone.View.extend({
+my.FlotControls = Backbone.View.extend({
   className: "editor",
   template: ' \
   <div class="editor"> \
@@ -459,4 +500,3 @@ my.GraphControls = Backbone.View.extend({
 });
 
 })(jQuery, recline.View);
-

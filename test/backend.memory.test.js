@@ -22,16 +22,16 @@ var memoryFields = [
 ];
 
 var _wrapData = function() {
-  var dataCopy = $.extend(true, [], memoryData);
+  var recordsCopy = $.extend(true, [], memoryData);
   // return new recline.Backend.Memory.Store(dataCopy, fields);
-  return new recline.Backend.Memory.Store(dataCopy, memoryFields);
+  return new recline.Backend.Memory.Store(recordsCopy, memoryFields);
 }
 
 test('basics', function () {
   var data = _wrapData();
   equal(data.fields.length, 7);
   deepEqual(['id', 'date', 'x', 'y', 'z', 'country', 'label'], _.pluck(data.fields, 'id'));
-  equal(memoryData.length, data.data.length);
+  equal(memoryData.length, data.records.length);
 });
 
 test('query', function () {
@@ -136,7 +136,7 @@ test('filters with nulls', function () {
     equal(out.total, 4);
   });
 
-  data.data[5].country = '';
+  data.records[5].country = '';
   query = new recline.Model.Query();
   query.addFilter({type: 'range', field: 'country', start: '', stop: 'Z'});
   data.query(query.toJSON()).then(function(out) {
@@ -154,7 +154,7 @@ test('facet', function () {
   var data = _wrapData();
   var query = new recline.Model.Query();
   query.addFacet('country');
-  var out = data.computeFacets(data.data, query.toJSON());
+  var out = data.computeFacets(data.records, query.toJSON());
   var exp = [
     {
       term: 'UK',
@@ -179,12 +179,12 @@ test('update and delete', function () {
   doc1 = $.extend(true, {}, memoryData[0]);
   doc1.x = newVal;
   data.update(doc1);
-  equal(data.data[0].x, newVal);
+  equal(data.records[0].x, newVal);
 
   // Test Delete
   data.remove(doc1);
-  equal(data.data.length, 5);
-  equal(data.data[0].x, memoryData[1].x);
+  equal(data.records.length, 5);
+  equal(data.records[0].x, memoryData[1].x);
 });
 
 test('transform', function () {
@@ -198,8 +198,8 @@ test('transform', function () {
     d.a = d.a * 10;
     return d;
   })
-  equal(store.data[0].a, 10);
-  equal(store.data[1].a, 20);
+  equal(store.records[0].a, 10);
+  equal(store.records[1].a, 20);
 });
 
 test('transform deletes', function () {
@@ -209,7 +209,7 @@ test('transform deletes', function () {
     if (d.a == '1') return null;
     else return d;
   })
-  equal(store.data.length, 2);
+  equal(store.records.length, 2);
 });
 
 })(this.jQuery);
@@ -281,7 +281,7 @@ test('basics', function () {
 test('query', function () {
   var dataset = makeBackendDataset();
   // convenience for tests - get the data that should get changed
-  var data = dataset._store.data;
+  var data = dataset._store.records;
   var dataset = makeBackendDataset();
   var queryObj = {
     size: 4
@@ -295,7 +295,7 @@ test('query', function () {
 test('query sort', function () {
   var dataset = makeBackendDataset();
   // convenience for tests - get the data that should get changed
-  var data = dataset._store.data;
+  var data = dataset._store.records;
   var queryObj = {
     sort: [
       {field: 'y', order: 'desc'}
@@ -372,9 +372,9 @@ test('update and delete', function () {
   // convenience for tests - get the data that should get changed
   var data = dataset._store;
   dataset.query().then(function(docList) {
-    equal(docList.length, Math.min(100, data.data.length));
+    equal(docList.length, Math.min(100, data.records.length));
     var doc1 = docList.models[0];
-    deepEqual(doc1.toJSON(), data.data[0]);
+    deepEqual(doc1.toJSON(), data.records[0]);
 
     // Test UPDATE
     var newVal = 10;
@@ -386,8 +386,8 @@ test('update and delete', function () {
     deepEqual(dataset._changes.deletes[0], doc1.toJSON());
 
     dataset.save().then(function() {
-      equal(data.data.length, 5);
-      equal(data.data[0].x, memoryData.records[1].x);
+      equal(data.records.length, 5);
+      equal(data.records[0].x, memoryData.records[1].x);
     });
   });
 });
