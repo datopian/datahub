@@ -4,6 +4,8 @@ this.recline.Model = this.recline.Model || {};
 
 (function(my) {
 
+var Deferred = _.isUndefined(this.jQuery) ? _.Deferred : jQuery.Deferred;
+
 // ## <a id="dataset">Dataset</a>
 my.Dataset = Backbone.Model.extend({
   constructor: function Dataset() {
@@ -47,7 +49,7 @@ my.Dataset = Backbone.Model.extend({
   // Retrieve dataset and (some) records from the backend.
   fetch: function() {
     var self = this;
-    var dfd = new _.Deferred();
+    var dfd = new Deferred();
 
     if (this.backend !== recline.Backend.Memory) {
       this.backend.fetch(this.toJSON())
@@ -181,7 +183,7 @@ my.Dataset = Backbone.Model.extend({
   // also returned.
   query: function(queryObj) {
     var self = this;
-    var dfd = new _.Deferred();
+    var dfd = new Deferred();
     this.trigger('query:start');
 
     if (queryObj) {
@@ -245,7 +247,7 @@ my.Dataset = Backbone.Model.extend({
     this.fields.each(function(field) {
       query.addFacet(field.id);
     });
-    var dfd = new _.Deferred();
+    var dfd = new Deferred();
     this._store.query(query.toJSON(), this.toJSON()).done(function(queryResult) {
       if (queryResult.facets) {
         _.each(queryResult.facets, function(facetResult, facetId) {
