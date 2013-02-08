@@ -5,6 +5,9 @@ this.recline.Backend.Memory = this.recline.Backend.Memory || {};
 (function(my) {
   my.__type__ = 'memory';
 
+  // private data - use either jQuery or Underscore Deferred depending on what is available
+  var Deferred = _.isUndefined(this.jQuery) ? _.Deferred : jQuery.Deferred;
+
   // ## Data Wrapper
   //
   // Turn a simple array of JS objects into a mini data-store with
@@ -48,7 +51,7 @@ this.recline.Backend.Memory = this.recline.Backend.Memory || {};
 
     this.save = function(changes, dataset) {
       var self = this;
-      var dfd = new _.Deferred();
+      var dfd = new Deferred();
       // TODO _.each(changes.creates) { ... }
       _.each(changes.updates, function(record) {
         self.update(record);
@@ -61,7 +64,7 @@ this.recline.Backend.Memory = this.recline.Backend.Memory || {};
     },
 
     this.query = function(queryObj) {
-      var dfd = new _.Deferred();
+      var dfd = new Deferred();
       var numRows = queryObj.size || this.records.length;
       var start = queryObj.from || 0;
       var results = this.records;
@@ -229,7 +232,7 @@ this.recline.Backend.Memory = this.recline.Backend.Memory || {};
     };
 
     this.transform = function(editFunc) {
-      var dfd = new _.Deferred();
+      var dfd = new Deferred();
       // TODO: should we clone before mapping? Do not see the point atm.
       self.records = _.map(self.records, editFunc);
       // now deal with deletes (i.e. nulls)

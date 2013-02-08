@@ -4,6 +4,7 @@ this.recline.Model = this.recline.Model || {};
 
 (function(my) {
 
+// private - use either jQuery or Underscore Deferred depending on what is available
 var Deferred = _.isUndefined(this.jQuery) ? _.Deferred : jQuery.Deferred;
 
 // ## <a id="dataset">Dataset</a>
