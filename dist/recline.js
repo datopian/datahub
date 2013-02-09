@@ -2508,7 +2508,7 @@ this.recline.View = this.recline.View || {};
 
 (function($, my) {
 
-// ## Graph view for a Dataset using Flot graphing library.
+// ## Graph view for a Dataset using Flotr2 graphing library.
 //
 // Initialization arguments (in a hash in first parameter):
 //
@@ -2524,7 +2524,7 @@ this.recline.View = this.recline.View || {};
 // 
 // NB: should *not* provide an el argument to the view but must let the view
 // generate the element itself (you can then append view.el to the DOM.
-my.Graph = Backbone.View.extend({
+my.Flotr2 = Backbone.View.extend({
   template: ' \
     <div class="recline-graph"> \
       <div class="panel graph" style="display: block;"> \
@@ -2558,7 +2558,7 @@ my.Graph = Backbone.View.extend({
       options.state
     );
     this.state = new recline.Model.ObjectState(stateData);
-    this.editor = new my.GraphControls({
+    this.editor = new my.Flotr2Controls({
       model: this.model,
       state: this.state.toJSON()
     });
@@ -2579,9 +2579,9 @@ my.Graph = Backbone.View.extend({
   },
 
   redraw: function() {
-    // There appear to be issues generating a Flot graph if either:
+    // There appear to be issues generating a Flotr2 graph if either:
 
-    // * The relevant div that graph attaches to his hidden at the moment of creating the plot -- Flot will complain with
+    // * The relevant div that graph attaches to his hidden at the moment of creating the plot -- Flotr2 will complain with
     //
     //   Uncaught Invalid dimensions for plot, width = 0, height = 0
     // * There is no data for the plot -- either same error or may have issues later with errors like 'non-existent node-value' 
@@ -2610,7 +2610,7 @@ my.Graph = Backbone.View.extend({
 
   // ### getGraphOptions
   //
-  // Get options for Flot Graph
+  // Get options for Flotr2 Graph
   //
   // needs to be function as can depend on state
   //
@@ -2807,7 +2807,7 @@ my.Graph = Backbone.View.extend({
   }
 });
 
-my.GraphControls = Backbone.View.extend({
+my.Flotr2Controls = Backbone.View.extend({
   className: "editor",
   template: ' \
   <div class="editor"> \
@@ -2962,6 +2962,11 @@ my.GraphControls = Backbone.View.extend({
 });
 
 })(jQuery, recline.View);
+
+this.recline = this.recline || {};
+this.recline.View = this.recline.View || {};
+this.recline.View.Graph = this.recline.View.Flot;
+this.recline.View.GraphControls = this.recline.View.FlotControls;
 
 /*jshint multistr:true */
 
