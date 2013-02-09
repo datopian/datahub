@@ -23,7 +23,7 @@ this.recline.View = this.recline.View || {};
 // generate the element itself (you can then append view.el to the DOM.
 my.Flot = Backbone.View.extend({
   template: ' \
-    <div class="recline-graph"> \
+    <div class="recline-flot"> \
       <div class="panel graph" style="display: block;"> \
         <div class="js-temp-notice alert alert-block"> \
           <h3 class="alert-heading">Hey there!</h3> \
@@ -110,7 +110,7 @@ my.Flot = Backbone.View.extend({
           this.previousTooltipPoint.y !== item.seriesIndex) {
         this.previousTooltipPoint.x = item.dataIndex;
         this.previousTooltipPoint.y = item.seriesIndex;
-        $("#recline-graph-tooltip").remove();
+        $("#recline-flot-tooltip").remove();
 
         var x = item.datapoint[0].toFixed(2),
             y = item.datapoint[1].toFixed(2);
@@ -132,13 +132,13 @@ my.Flot = Backbone.View.extend({
           yLocation = item.pageY - 20;
         }
 
-        $('<div id="recline-graph-tooltip">' + content + '</div>').css({
+        $('<div id="recline-flot-tooltip">' + content + '</div>').css({
             top: yLocation,
             left: xLocation
         }).appendTo("body").fadeIn(200);
       }
     } else {
-      $("#recline-graph-tooltip").remove();
+      $("#recline-flot-tooltip").remove();
       this.previousTooltipPoint.x = null;
       this.previousTooltipPoint.y = null;
     }
