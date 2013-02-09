@@ -85,7 +85,7 @@ All the views require, in addition to those needed for recline.dataset.js:
 
 Individual views have additional dependencies such as:
 
-* [JQuery Flot](http://code.google.com/p/flot/) >= 0.7 (required for for graph view)
+* [JQuery Flot](http://www.flotcharts.org/) >= 0.7 (required for for graph view)
 * [Leaflet](http://leaflet.cloudmade.com/) >= 0.4.4 (required for map view)
 * [Leaflet.markercluster](https://github.com/danzel/Leaflet.markercluster)  as of 2012-09-12 (required for marker clustering)
 * [Verite Timeline](https://github.com/VeriteCo/Timeline/) as of 2012-05-02 (required for the timeline view)
