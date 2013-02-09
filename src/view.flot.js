@@ -90,9 +90,6 @@ my.Flot = Backbone.View.extend({
 
     // check we have something to plot
     if (this.state.get('group') && this.state.get('series')) {
-      // faff around with width because flot draws axes *outside* of the element
-      // width which means graph can get push down as it hits element next to it
-      this.$graph.width(this.el.width() - 240);
       var series = this.createSeries();
       var options = this.getGraphOptions(this.state.attributes.graphType, series[0].data.length);
       this.plot = $.plot(this.$graph, series, options);
