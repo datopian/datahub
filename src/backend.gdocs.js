@@ -5,6 +5,9 @@ this.recline.Backend.GDocs = this.recline.Backend.GDocs || {};
 (function(my) {
   my.__type__ = 'gdocs';
 
+  // use either jQuery or Underscore Deferred depending on what is available
+  var Deferred = _.isUndefined(this.jQuery) ? _.Deferred : jQuery.Deferred;
+
   // ## Google spreadsheet backend
   // 
   // Fetch data from a Google Docs spreadsheet.
@@ -29,13 +32,13 @@ this.recline.Backend.GDocs = this.recline.Backend.GDocs || {};
   // * fields: array of Field objects
   // * records: array of objects for each row
   my.fetch = function(dataset) {
-    var dfd  = new _.Deferred(); 
+    var dfd  = new Deferred(); 
     var urls = my.getGDocsAPIUrls(dataset.url);
 
     // TODO cover it with tests
     // get the spreadsheet title
     (function () {
-      var titleDfd = new _.Deferred();
+      var titleDfd = new Deferred();
 
       jQuery.getJSON(urls.spreadsheet, function (d) {
           titleDfd.resolve({

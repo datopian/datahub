@@ -20,9 +20,7 @@ See the instructions in the [basic views tutorial](tutorial-views.html).
 
 ### Creating a Dataset
 
-Again like the views tutorial:
-
-Here's some example data We are going to work with:
+Just like in the main tutorial, here's some example data We are going to work with:
 
 {% highlight javascript %}
 {% include data.js %}

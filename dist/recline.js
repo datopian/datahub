@@ -27,6 +27,9 @@ this.recline.Backend.Ckan = this.recline.Backend.Ckan || {};
 
   my.__type__ = 'ckan';
 
+  // private - use either jQuery or Underscore Deferred depending on what is available
+  var Deferred = _.isUndefined(this.jQuery) ? _.Deferred : jQuery.Deferred;
+
   // Default CKAN API endpoint used for requests (you can change this but it will affect every request!)
   //
   // DEPRECATION: this will be removed in v0.7. Please set endpoint attribute on dataset instead
@@ -41,7 +44,7 @@ this.recline.Backend.Ckan = this.recline.Backend.Ckan || {};
       dataset.id = out.resource_id;
       var wrapper = my.DataStore(out.endpoint);
     }
-    var dfd = new _.Deferred();
+    var dfd = new Deferred();
     var jqxhr = wrapper.search({resource_id: dataset.id, limit: 0});
     jqxhr.done(function(results) {
       // map ckan types to our usual types ...
@@ -84,7 +87,7 @@ this.recline.Backend.Ckan = this.recline.Backend.Ckan || {};
       var wrapper = my.DataStore(out.endpoint);
     }
     var actualQuery = my._normalizeQuery(queryObj, dataset);
-    var dfd = new _.Deferred();
+    var dfd = new Deferred();
     var jqxhr = wrapper.search(actualQuery);
     jqxhr.done(function(results) {
       var out = {
@@ -145,6 +148,9 @@ this.recline.Backend.CSV = this.recline.Backend.CSV || {};
 (function(my) {
   my.__type__ = 'csv';
 
+  // use either jQuery or Underscore Deferred depending on what is available
+  var Deferred = _.isUndefined(this.jQuery) ? _.Deferred : jQuery.Deferred;
+
   // ## fetch
   //
   // fetch supports 3 options depending on the attribute provided on the dataset argument
@@ -163,7 +169,7 @@ this.recline.Backend.CSV = this.recline.Backend.CSV || {};
   // }
   // </pre>
   my.fetch = function(dataset) {
-    var dfd = new _.Deferred();
+    var dfd = new Deferred();
     if (dataset.file) {
       var reader = new FileReader();
       var encoding = dataset.encoding || 'UTF-8';
@@ -438,6 +444,10 @@ this.recline.Backend.DataProxy = this.recline.Backend.DataProxy || {};
   // Needed because use JSONP so do not receive e.g. 500 errors 
   my.timeout = 5000;
 
+  
+  // use either jQuery or Underscore Deferred depending on what is available
+  var Deferred = _.isUndefined(this.jQuery) ? _.Deferred : jQuery.Deferred;
+
   // ## load
   //
   // Load data from a URL via the [DataProxy](http://github.com/okfn/dataproxy).
@@ -454,7 +464,7 @@ this.recline.Backend.DataProxy = this.recline.Backend.DataProxy || {};
       data: data,
       dataType: 'jsonp'
     });
-    var dfd = new _.Deferred();
+    var dfd = new Deferred();
     _wrapInTimeout(jqxhr).done(function(results) {
       if (results.error) {
         dfd.reject(results.error);
@@ -478,7 +488,7 @@ this.recline.Backend.DataProxy = this.recline.Backend.DataProxy || {};
   // Many of backends use JSONP and so will not get error messages and this is
   // a crude way to catch those errors.
   var _wrapInTimeout = function(ourFunction) {
-    var dfd = new _.Deferred();
+    var dfd = new Deferred();
     var timer = setTimeout(function() {
       dfd.reject({
         message: 'Request Error: Backend did not respond after ' + (my.timeout / 1000) + ' seconds'
@@ -503,6 +513,9 @@ this.recline.Backend.ElasticSearch = this.recline.Backend.ElasticSearch || {};
 
 (function($, my) {
   my.__type__ = 'elasticsearch';
+
+  // use either jQuery or Underscore Deferred depending on what is available
+  var Deferred = _.isUndefined(this.jQuery) ? _.Deferred : jQuery.Deferred;
 
   // ## ElasticSearch Wrapper
   //
@@ -678,7 +691,7 @@ this.recline.Backend.ElasticSearch = this.recline.Backend.ElasticSearch || {};
   // ### fetch
   my.fetch = function(dataset) {
     var es = new my.Wrapper(dataset.url, my.esOptions);
-    var dfd = new _.Deferred();
+    var dfd = new Deferred();
     es.mapping().done(function(schema) {
 
       if (!schema){
@@ -706,7 +719,7 @@ this.recline.Backend.ElasticSearch = this.recline.Backend.ElasticSearch || {};
   my.save = function(changes, dataset) {
     var es = new my.Wrapper(dataset.url, my.esOptions);
     if (changes.creates.length + changes.updates.length + changes.deletes.length > 1) {
-      var dfd = new _.Deferred();
+      var dfd = new Deferred();
       msg = 'Saving more than one item at a time not yet supported';
       alert(msg);
       dfd.reject(msg);
@@ -724,7 +737,7 @@ this.recline.Backend.ElasticSearch = this.recline.Backend.ElasticSearch || {};
 
   // ### query
   my.query = function(queryObj, dataset) {
-    var dfd = new _.Deferred();
+    var dfd = new Deferred();
     var es = new my.Wrapper(dataset.url, my.esOptions);
     var jqxhr = es.query(queryObj);
     jqxhr.done(function(results) {
@@ -786,6 +799,9 @@ this.recline.Backend.GDocs = this.recline.Backend.GDocs || {};
 (function(my) {
   my.__type__ = 'gdocs';
 
+  // use either jQuery or Underscore Deferred depending on what is available
+  var Deferred = _.isUndefined(this.jQuery) ? _.Deferred : jQuery.Deferred;
+
   // ## Google spreadsheet backend
   // 
   // Fetch data from a Google Docs spreadsheet.
@@ -810,13 +826,13 @@ this.recline.Backend.GDocs = this.recline.Backend.GDocs || {};
   // * fields: array of Field objects
   // * records: array of objects for each row
   my.fetch = function(dataset) {
-    var dfd  = new _.Deferred(); 
+    var dfd  = new Deferred(); 
     var urls = my.getGDocsAPIUrls(dataset.url);
 
     // TODO cover it with tests
     // get the spreadsheet title
     (function () {
-      var titleDfd = new _.Deferred();
+      var titleDfd = new Deferred();
 
       jQuery.getJSON(urls.spreadsheet, function (d) {
           titleDfd.resolve({
@@ -950,6 +966,9 @@ this.recline.Backend.Memory = this.recline.Backend.Memory || {};
 (function(my) {
   my.__type__ = 'memory';
 
+  // private data - use either jQuery or Underscore Deferred depending on what is available
+  var Deferred = _.isUndefined(this.jQuery) ? _.Deferred : jQuery.Deferred;
+
   // ## Data Wrapper
   //
   // Turn a simple array of JS objects into a mini data-store with
@@ -993,7 +1012,7 @@ this.recline.Backend.Memory = this.recline.Backend.Memory || {};
 
     this.save = function(changes, dataset) {
       var self = this;
-      var dfd = new _.Deferred();
+      var dfd = new Deferred();
       // TODO _.each(changes.creates) { ... }
       _.each(changes.updates, function(record) {
         self.update(record);
@@ -1006,7 +1025,7 @@ this.recline.Backend.Memory = this.recline.Backend.Memory || {};
     },
 
     this.query = function(queryObj) {
-      var dfd = new _.Deferred();
+      var dfd = new Deferred();
       var numRows = queryObj.size || this.records.length;
       var start = queryObj.from || 0;
       var results = this.records;
@@ -1174,7 +1193,7 @@ this.recline.Backend.Memory = this.recline.Backend.Memory || {};
     };
 
     this.transform = function(editFunc) {
-      var dfd = new _.Deferred();
+      var dfd = new Deferred();
       // TODO: should we clone before mapping? Do not see the point atm.
       self.records = _.map(self.records, editFunc);
       // now deal with deletes (i.e. nulls)
@@ -1194,6 +1213,9 @@ this.recline.Backend.Solr = this.recline.Backend.Solr || {};
 (function($, my) {
   my.__type__ = 'solr';
 
+  // use either jQuery or Underscore Deferred depending on what is available
+  var Deferred = _.isUndefined(this.jQuery) ? _.Deferred : jQuery.Deferred;
+
   // ### fetch
   //
   // dataset must have a solr or url attribute pointing to solr endpoint
@@ -1207,7 +1229,7 @@ this.recline.Backend.Solr = this.recline.Backend.Solr || {};
       dataType: 'jsonp',
       jsonp: 'json.wrf'
     });
-    var dfd = new _.Deferred();
+    var dfd = new Deferred();
     jqxhr.done(function(results) {
       // if we get 0 results we cannot get fields
       var fields = []
@@ -1240,7 +1262,7 @@ this.recline.Backend.Solr = this.recline.Backend.Solr || {};
       dataType: 'jsonp',
       jsonp: 'json.wrf'
     });
-    var dfd = new _.Deferred();
+    var dfd = new Deferred();
     jqxhr.done(function(results) {
       var out = {
         total: results.response.numFound,
@@ -1391,6 +1413,7 @@ this.recline.Model = this.recline.Model || {};
 
 (function(my) {
 
+// use either jQuery or Underscore Deferred depending on what is available
 var Deferred = _.isUndefined(this.jQuery) ? _.Deferred : jQuery.Deferred;
 
 // ## <a id="dataset">Dataset</a>
@@ -2001,7 +2024,7 @@ this.recline.View = this.recline.View || {};
 // generate the element itself (you can then append view.el to the DOM.
 my.Flot = Backbone.View.extend({
   template: ' \
-    <div class="recline-graph"> \
+    <div class="recline-flot"> \
       <div class="panel graph" style="display: block;"> \
         <div class="js-temp-notice alert alert-block"> \
           <h3 class="alert-heading">Hey there!</h3> \
@@ -2068,9 +2091,6 @@ my.Flot = Backbone.View.extend({
 
     // check we have something to plot
     if (this.state.get('group') && this.state.get('series')) {
-      // faff around with width because flot draws axes *outside* of the element
-      // width which means graph can get push down as it hits element next to it
-      this.$graph.width(this.el.width() - 240);
       var series = this.createSeries();
       var options = this.getGraphOptions(this.state.attributes.graphType, series[0].data.length);
       this.plot = $.plot(this.$graph, series, options);
@@ -2091,7 +2111,7 @@ my.Flot = Backbone.View.extend({
           this.previousTooltipPoint.y !== item.seriesIndex) {
         this.previousTooltipPoint.x = item.dataIndex;
         this.previousTooltipPoint.y = item.seriesIndex;
-        $("#recline-graph-tooltip").remove();
+        $("#recline-flot-tooltip").remove();
 
         var x = item.datapoint[0].toFixed(2),
             y = item.datapoint[1].toFixed(2);
@@ -2113,13 +2133,13 @@ my.Flot = Backbone.View.extend({
           yLocation = item.pageY - 20;
         }
 
-        $('<div id="recline-graph-tooltip">' + content + '</div>').css({
+        $('<div id="recline-flot-tooltip">' + content + '</div>').css({
             top: yLocation,
             left: xLocation
         }).appendTo("body").fadeIn(200);
       }
     } else {
-      $("#recline-graph-tooltip").remove();
+      $("#recline-flot-tooltip").remove();
       this.previousTooltipPoint.x = null;
       this.previousTooltipPoint.y = null;
     }
@@ -2485,7 +2505,7 @@ this.recline.View = this.recline.View || {};
 
 (function($, my) {
 
-// ## Graph view for a Dataset using Flot graphing library.
+// ## Graph view for a Dataset using Flotr2 graphing library.
 //
 // Initialization arguments (in a hash in first parameter):
 //
@@ -2501,7 +2521,7 @@ this.recline.View = this.recline.View || {};
 // 
 // NB: should *not* provide an el argument to the view but must let the view
 // generate the element itself (you can then append view.el to the DOM.
-my.Graph = Backbone.View.extend({
+my.Flotr2 = Backbone.View.extend({
   template: ' \
     <div class="recline-graph"> \
       <div class="panel graph" style="display: block;"> \
@@ -2535,7 +2555,7 @@ my.Graph = Backbone.View.extend({
       options.state
     );
     this.state = new recline.Model.ObjectState(stateData);
-    this.editor = new my.GraphControls({
+    this.editor = new my.Flotr2Controls({
       model: this.model,
       state: this.state.toJSON()
     });
@@ -2556,9 +2576,9 @@ my.Graph = Backbone.View.extend({
   },
 
   redraw: function() {
-    // There appear to be issues generating a Flot graph if either:
+    // There appear to be issues generating a Flotr2 graph if either:
 
-    // * The relevant div that graph attaches to his hidden at the moment of creating the plot -- Flot will complain with
+    // * The relevant div that graph attaches to his hidden at the moment of creating the plot -- Flotr2 will complain with
     //
     //   Uncaught Invalid dimensions for plot, width = 0, height = 0
     // * There is no data for the plot -- either same error or may have issues later with errors like 'non-existent node-value' 
@@ -2587,7 +2607,7 @@ my.Graph = Backbone.View.extend({
 
   // ### getGraphOptions
   //
-  // Get options for Flot Graph
+  // Get options for Flotr2 Graph
   //
   // needs to be function as can depend on state
   //
@@ -2784,7 +2804,7 @@ my.Graph = Backbone.View.extend({
   }
 });
 
-my.GraphControls = Backbone.View.extend({
+my.Flotr2Controls = Backbone.View.extend({
   className: "editor",
   template: ' \
   <div class="editor"> \
@@ -2939,6 +2959,11 @@ my.GraphControls = Backbone.View.extend({
 });
 
 })(jQuery, recline.View);
+
+this.recline = this.recline || {};
+this.recline.View = this.recline.View || {};
+this.recline.View.Graph = this.recline.View.Flot;
+this.recline.View.GraphControls = this.recline.View.FlotControls;
 
 /*jshint multistr:true */
 

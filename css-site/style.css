@@ -21,13 +21,25 @@ Author URI:         http://www.mintcanary.com/
 
 @import url(http://fonts.googleapis.com/css?family=PT+Sans:400,400italic,700);
 
+body, p {
+  font-family: 'PT Sans',Helvetica,Arial,sans-serif;
+  font-size: 15px;
+}
+
 h1, h2, h3, h4, h5, h6 {
 	font-family:'PT Sans',Helvetica, Arial, sans-serif;
 }
 
-body, p {
-  font-family: 'PT Sans',Helvetica,Arial,sans-serif;
-  font-size: 15px;
+h2 {
+  font-size: 24px;
+}
+
+h3 {
+  font-size: 20px;
+}
+
+h4 {
+  font-size: 18px;
 }
 
 a {
