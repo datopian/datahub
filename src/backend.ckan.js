@@ -27,6 +27,9 @@ this.recline.Backend.Ckan = this.recline.Backend.Ckan || {};
 
   my.__type__ = 'ckan';
 
+  // private - use either jQuery or Underscore Deferred depending on what is available
+  var Deferred = _.isUndefined(this.jQuery) ? _.Deferred : jQuery.Deferred;
+
   // Default CKAN API endpoint used for requests (you can change this but it will affect every request!)
   //
   // DEPRECATION: this will be removed in v0.7. Please set endpoint attribute on dataset instead
@@ -41,7 +44,7 @@ this.recline.Backend.Ckan = this.recline.Backend.Ckan || {};
       dataset.id = out.resource_id;
       var wrapper = my.DataStore(out.endpoint);
     }
-    var dfd = new _.Deferred();
+    var dfd = new Deferred();
     var jqxhr = wrapper.search({resource_id: dataset.id, limit: 0});
     jqxhr.done(function(results) {
       // map ckan types to our usual types ...
@@ -73,7 +76,7 @@ this.recline.Backend.Ckan = this.recline.Backend.Ckan || {};
       actualQuery.sort = _tmp.join(',');
     }
     return actualQuery;
-  }
+  };
 
   my.query = function(queryObj, dataset) {
     if (dataset.endpoint) {
@@ -84,12 +87,12 @@ this.recline.Backend.Ckan = this.recline.Backend.Ckan || {};
       var wrapper = my.DataStore(out.endpoint);
     }
     var actualQuery = my._normalizeQuery(queryObj, dataset);
-    var dfd = new _.Deferred();
+    var dfd = new Deferred();
     var jqxhr = wrapper.search(actualQuery);
     jqxhr.done(function(results) {
       var out = {
         total: results.result.total,
-        hits: results.result.records,
+        hits: results.result.records
       };
       dfd.resolve(out);  
     });
@@ -113,7 +116,7 @@ this.recline.Backend.Ckan = this.recline.Backend.Ckan || {};
         dataType: 'json'
       });
       return jqxhr;
-    }
+    };
 
     return that;
   };
@@ -127,7 +130,7 @@ this.recline.Backend.Ckan = this.recline.Backend.Ckan || {};
     return {
       resource_id: parts[len-1],
       endpoint: parts.slice(0,[len-4]).join('/') + '/api'
-    }
+    };
   };
 
   var CKAN_TYPES_MAP = {

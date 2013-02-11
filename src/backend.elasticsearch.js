@@ -5,6 +5,9 @@ this.recline.Backend.ElasticSearch = this.recline.Backend.ElasticSearch || {};
 (function($, my) {
   my.__type__ = 'elasticsearch';
 
+  // use either jQuery or Underscore Deferred depending on what is available
+  var Deferred = _.isUndefined(this.jQuery) ? _.Deferred : jQuery.Deferred;
+
   // ## ElasticSearch Wrapper
   //
   // A simple JS wrapper around an [ElasticSearch](http://www.elasticsearch.org/) endpoints.
@@ -179,7 +182,7 @@ this.recline.Backend.ElasticSearch = this.recline.Backend.ElasticSearch || {};
   // ### fetch
   my.fetch = function(dataset) {
     var es = new my.Wrapper(dataset.url, my.esOptions);
-    var dfd = new _.Deferred();
+    var dfd = new Deferred();
     es.mapping().done(function(schema) {
 
       if (!schema){
@@ -207,7 +210,7 @@ this.recline.Backend.ElasticSearch = this.recline.Backend.ElasticSearch || {};
   my.save = function(changes, dataset) {
     var es = new my.Wrapper(dataset.url, my.esOptions);
     if (changes.creates.length + changes.updates.length + changes.deletes.length > 1) {
-      var dfd = new _.Deferred();
+      var dfd = new Deferred();
       msg = 'Saving more than one item at a time not yet supported';
       alert(msg);
       dfd.reject(msg);
@@ -225,7 +228,7 @@ this.recline.Backend.ElasticSearch = this.recline.Backend.ElasticSearch || {};
 
   // ### query
   my.query = function(queryObj, dataset) {
-    var dfd = new _.Deferred();
+    var dfd = new Deferred();
     var es = new my.Wrapper(dataset.url, my.esOptions);
     var jqxhr = es.query(queryObj);
     jqxhr.done(function(results) {

@@ -93,4 +93,3 @@ my.Fields = Backbone.View.extend({
 });
 
 })(jQuery, recline.View);
-

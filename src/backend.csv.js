@@ -4,6 +4,10 @@ this.recline.Backend.CSV = this.recline.Backend.CSV || {};
 
 // Note that provision of jQuery is optional (it is **only** needed if you use fetch on a remote file)
 (function(my) {
+  my.__type__ = 'csv';
+
+  // use either jQuery or Underscore Deferred depending on what is available
+  var Deferred = _.isUndefined(this.jQuery) ? _.Deferred : jQuery.Deferred;
 
   // ## fetch
   //
@@ -23,7 +27,7 @@ this.recline.Backend.CSV = this.recline.Backend.CSV || {};
   // }
   // </pre>
   my.fetch = function(dataset) {
-    var dfd = new _.Deferred();
+    var dfd = new Deferred();
     if (dataset.file) {
       var reader = new FileReader();
       var encoding = dataset.encoding || 'UTF-8';

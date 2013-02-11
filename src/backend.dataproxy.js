@@ -10,6 +10,10 @@ this.recline.Backend.DataProxy = this.recline.Backend.DataProxy || {};
   // Needed because use JSONP so do not receive e.g. 500 errors 
   my.timeout = 5000;
 
+  
+  // use either jQuery or Underscore Deferred depending on what is available
+  var Deferred = _.isUndefined(this.jQuery) ? _.Deferred : jQuery.Deferred;
+
   // ## load
   //
   // Load data from a URL via the [DataProxy](http://github.com/okfn/dataproxy).
@@ -26,7 +30,7 @@ this.recline.Backend.DataProxy = this.recline.Backend.DataProxy || {};
       data: data,
       dataType: 'jsonp'
     });
-    var dfd = new _.Deferred();
+    var dfd = new Deferred();
     _wrapInTimeout(jqxhr).done(function(results) {
       if (results.error) {
         dfd.reject(results.error);
@@ -50,7 +54,7 @@ this.recline.Backend.DataProxy = this.recline.Backend.DataProxy || {};
   // Many of backends use JSONP and so will not get error messages and this is
   // a crude way to catch those errors.
   var _wrapInTimeout = function(ourFunction) {
-    var dfd = new _.Deferred();
+    var dfd = new Deferred();
     var timer = setTimeout(function() {
       dfd.reject({
         message: 'Request Error: Backend did not respond after ' + (my.timeout / 1000) + ' seconds'

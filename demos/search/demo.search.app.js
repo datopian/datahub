@@ -207,32 +207,6 @@ var templates = {
       data: data
     });
   },
-  'http://openspending.org/api/search': function(record) {
-    record['time'] = record['time.label_facet']
-    var template = '<div class="record"> \
-      <h3> \
-        <a href="http://openspending.org/{{record.dataset}}/entries/{{record.id}}">{{record.dataset}} {{record.time}}</a> \
-        &ndash; <img src="http://openspending.org/static/img/icons/cd_16x16.png" /> {{amount_formatted}} \
-      </h3> \
-      <ul> \
-       {{#data}} \
-         <li>{{key}}: {{value}}</li> \
-       {{/data}} \
-       </ul> \
-    </div> \
-    ';
-    var data = [];
-    _.each(_.keys(record), function(key) {
-      if (key !='_id' && key != 'id') {
-        data.push({ key: key, value: record[key] });
-      }
-    });
-    return Mustache.render(template, {
-      record: record,
-      amount_formatted: formatAmount(record['amount']),
-      data: data
-    });
-  },
   'https://docs.google.com/spreadsheet/ccc?key=0Aon3JiuouxLUdExXSTl2Y01xZEszOTBFZjVzcGtzVVE': function(record) {
     var template = '<div class="record"> \
       <h3> \
