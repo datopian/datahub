@@ -17,6 +17,14 @@ A simple but powerful library for building data applications in pure Javascript 
 
 Run the tests by opening `test/index.html` in your browser.
 
+Note that the demos and documentation utilize the [jekyll templating
+system][jekyll] and to use them *locally* you will need to build them using
+jekyll. Once installed, all you need to do from the command line is run jekyll:
+
+    jekyll
+
+[jekyll]: https://github.com/mojombo/jekyll
+
 Notes on the architecture can be found in the [documentation online](http://okfnlabs.org/recline).
 
 ### Contributing

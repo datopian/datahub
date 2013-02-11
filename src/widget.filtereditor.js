@@ -141,7 +141,7 @@ my.FilterEditor = Backbone.View.extend({
       var $input = $(input);
       var filterType  = $input.attr('data-filter-type');
       var fieldId     = $input.attr('data-filter-field');
-      var filterIndex = parseInt($input.attr('data-filter-id'));
+      var filterIndex = parseInt($input.attr('data-filter-id'), 10);
       var name        = $input.attr('name');
       var value       = $input.val();
 
@@ -162,7 +162,7 @@ my.FilterEditor = Backbone.View.extend({
           break;
       }
     });
-    self.model.queryState.set({filters: filters});
+    self.model.queryState.set({filters: filters, from: 0});
     self.model.queryState.trigger('change');
   }
 });

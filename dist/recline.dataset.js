@@ -4,6 +4,9 @@ this.recline.Model = this.recline.Model || {};
 
 (function(my) {
 
+// use either jQuery or Underscore Deferred depending on what is available
+var Deferred = _.isUndefined(this.jQuery) ? _.Deferred : jQuery.Deferred;
+
 // ## <a id="dataset">Dataset</a>
 my.Dataset = Backbone.Model.extend({
   constructor: function Dataset() {
@@ -47,7 +50,7 @@ my.Dataset = Backbone.Model.extend({
   // Retrieve dataset and (some) records from the backend.
   fetch: function() {
     var self = this;
-    var dfd = new _.Deferred();
+    var dfd = new Deferred();
 
     if (this.backend !== recline.Backend.Memory) {
       this.backend.fetch(this.toJSON())
@@ -181,7 +184,7 @@ my.Dataset = Backbone.Model.extend({
   // also returned.
   query: function(queryObj) {
     var self = this;
-    var dfd = new _.Deferred();
+    var dfd = new Deferred();
     this.trigger('query:start');
 
     if (queryObj) {
@@ -245,7 +248,7 @@ my.Dataset = Backbone.Model.extend({
     this.fields.each(function(field) {
       query.addFacet(field.id);
     });
-    var dfd = new _.Deferred();
+    var dfd = new Deferred();
     this._store.query(query.toJSON(), this.toJSON()).done(function(queryResult) {
       if (queryResult.facets) {
         _.each(queryResult.facets, function(facetResult, facetId) {
@@ -594,6 +597,9 @@ this.recline.Backend.Memory = this.recline.Backend.Memory || {};
 (function(my) {
   my.__type__ = 'memory';
 
+  // private data - use either jQuery or Underscore Deferred depending on what is available
+  var Deferred = _.isUndefined(this.jQuery) ? _.Deferred : jQuery.Deferred;
+
   // ## Data Wrapper
   //
   // Turn a simple array of JS objects into a mini data-store with
@@ -637,7 +643,7 @@ this.recline.Backend.Memory = this.recline.Backend.Memory || {};
 
     this.save = function(changes, dataset) {
       var self = this;
-      var dfd = new _.Deferred();
+      var dfd = new Deferred();
       // TODO _.each(changes.creates) { ... }
       _.each(changes.updates, function(record) {
         self.update(record);
@@ -650,7 +656,7 @@ this.recline.Backend.Memory = this.recline.Backend.Memory || {};
     },
 
     this.query = function(queryObj) {
-      var dfd = new _.Deferred();
+      var dfd = new Deferred();
       var numRows = queryObj.size || this.records.length;
       var start = queryObj.from || 0;
       var results = this.records;
@@ -818,7 +824,7 @@ this.recline.Backend.Memory = this.recline.Backend.Memory || {};
     };
 
     this.transform = function(editFunc) {
-      var dfd = new _.Deferred();
+      var dfd = new Deferred();
       // TODO: should we clone before mapping? Do not see the point atm.
       self.records = _.map(self.records, editFunc);
       // now deal with deletes (i.e. nulls)
