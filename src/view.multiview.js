@@ -278,6 +278,11 @@ my.MultiView = Backbone.View.extend({
       model: this.model.queryState
     });
     this.el.find('.query-editor-here').append(queryEditor.el);
+    
+    var actions = new recline.View.Actions({
+      model: this.model.records
+    });
+    this.el.find('.recline-pager').after(actions.el);
 
   },
 
