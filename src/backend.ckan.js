@@ -76,7 +76,7 @@ this.recline.Backend.Ckan = this.recline.Backend.Ckan || {};
       actualQuery.sort = _tmp.join(',');
     }
     return actualQuery;
-  }
+  };
 
   my.query = function(queryObj, dataset) {
     if (dataset.endpoint) {
@@ -92,7 +92,7 @@ this.recline.Backend.Ckan = this.recline.Backend.Ckan || {};
     jqxhr.done(function(results) {
       var out = {
         total: results.result.total,
-        hits: results.result.records,
+        hits: results.result.records
       };
       dfd.resolve(out);  
     });
@@ -116,7 +116,7 @@ this.recline.Backend.Ckan = this.recline.Backend.Ckan || {};
         dataType: 'json'
       });
       return jqxhr;
-    }
+    };
 
     return that;
   };
@@ -130,7 +130,7 @@ this.recline.Backend.Ckan = this.recline.Backend.Ckan || {};
     return {
       resource_id: parts[len-1],
       endpoint: parts.slice(0,[len-4]).join('/') + '/api'
-    }
+    };
   };
 
   var CKAN_TYPES_MAP = {
