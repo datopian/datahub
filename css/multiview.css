@@ -97,6 +97,7 @@
 
 .recline-filter-editor {
   padding: 8px;
+  display: none;
 }
 
 .recline-filter-editor .filter-term a {
@@ -113,6 +114,10 @@
 /**********************************************************
   * Fields Widget
   *********************************************************/
+
+.recline-fields-view {
+  display: none;
+}
 
 .recline-fields-view .fields-list {
   padding: 0;
