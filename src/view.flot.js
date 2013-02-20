@@ -191,7 +191,7 @@ my.Flot = Backbone.View.extend({
       if (typeof label !== 'string') {
         label = label.toString();
       }
-      if (label.length > 8) {
+      if (self.state.attributes.graphType !== 'bars' && label.length > 8) {
         label = label.slice(0, 5) + "...";
       }
 
@@ -211,11 +211,15 @@ my.Flot = Backbone.View.extend({
           x = 1,
           i = 0;
 
-      while (x <= maxTicks) {
-        if ((numPoints / x) <= maxTicks) {
-          break;
+      // show all ticks in bar graphs
+      // for other graphs only show up to maxTicks ticks
+      if (self.state.attributes.graphType !== 'bars') {
+        while (x <= maxTicks) {
+          if ((numPoints / x) <= maxTicks) {
+            break;
+          }
+          x = x + 1;
         }
-        x = x + 1;
       }
 
       for (i = 0; i < numPoints; i = i + x) {
