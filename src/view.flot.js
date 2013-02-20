@@ -115,6 +115,11 @@ my.Flot = Backbone.View.extend({
         var x = item.datapoint[0].toFixed(2),
             y = item.datapoint[1].toFixed(2);
 
+        if (this.state.attributes.graphType === 'bars') {
+          x = item.datapoint[1].toFixed(2),
+          y = item.datapoint[0].toFixed(2);
+        }
+
         var content = _.template('<%= group %> = <%= x %>, <%= series %> = <%= y %>', {
           group: this.state.attributes.group,
           x: this._xaxisLabel(x),
@@ -125,6 +130,9 @@ my.Flot = Backbone.View.extend({
         // use a different tooltip location offset for bar charts
         var xLocation, yLocation;
         if (this.state.attributes.graphType === 'bars') {
+          xLocation = item.pageX + 15;
+          yLocation = item.pageY - 10;
+        } else if (this.state.attributes.graphType === 'columns') {
           xLocation = item.pageX + 15;
           yLocation = item.pageY;
         } else {
@@ -183,7 +191,7 @@ my.Flot = Backbone.View.extend({
       if (typeof label !== 'string') {
         label = label.toString();
       }
-      if (label.length > 8) {
+      if (self.state.attributes.graphType !== 'bars' && label.length > 8) {
         label = label.slice(0, 5) + "...";
       }
 
@@ -203,11 +211,15 @@ my.Flot = Backbone.View.extend({
           x = 1,
           i = 0;
 
-      while (x <= maxTicks) {
-        if ((numPoints / x) <= maxTicks) {
-          break;
+      // show all ticks in bar graphs
+      // for other graphs only show up to maxTicks ticks
+      if (self.state.attributes.graphType !== 'bars') {
+        while (x <= maxTicks) {
+          if ((numPoints / x) <= maxTicks) {
+            break;
+          }
+          x = x + 1;
         }
-        x = x + 1;
       }
 
       for (i = 0; i < numPoints; i = i + x) {
