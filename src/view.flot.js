@@ -115,6 +115,11 @@ my.Flot = Backbone.View.extend({
         var x = item.datapoint[0].toFixed(2),
             y = item.datapoint[1].toFixed(2);
 
+        if (this.state.attributes.graphType === 'bars') {
+          x = item.datapoint[1].toFixed(2),
+          y = item.datapoint[0].toFixed(2);
+        }
+
         var content = _.template('<%= group %> = <%= x %>, <%= series %> = <%= y %>', {
           group: this.state.attributes.group,
           x: this._xaxisLabel(x),
@@ -125,6 +130,9 @@ my.Flot = Backbone.View.extend({
         // use a different tooltip location offset for bar charts
         var xLocation, yLocation;
         if (this.state.attributes.graphType === 'bars') {
+          xLocation = item.pageX + 15;
+          yLocation = item.pageY - 10;
+        } else if (this.state.attributes.graphType === 'columns') {
           xLocation = item.pageX + 15;
           yLocation = item.pageY;
         } else {
