@@ -60,6 +60,20 @@ test('Field: type mapping', function () {
   });
 });
 
+test('Field: getFieldValue', function () {
+  var doc = new recline.Model.Record({
+    x: 12.3
+  });
+  var field = new recline.Model.Field({id: 'x'});
+  var out = doc.getFieldValue(field);
+  var exp = 12.3;
+  equal(out, exp);
+
+  // bad value 
+  var out = doc.getFieldValue();
+  equal(out, '');
+});
+
 test('Field: default renderers', function () {
   var doc = new recline.Model.Record({
     x: 12.3,
@@ -113,8 +127,10 @@ test('Field: custom deriver and renderer', function () {
   var field = new recline.Model.Field({id: 'computed', is_derived: true}, {
     deriver: deriver
   });
+  var out1 = doc.getFieldValueUnrendered(field);
   var out = doc.getFieldValue(field);
   var exp = 246;
+  equal(out1, exp);
   equal(out, exp);
 
   var field = new recline.Model.Field({id: 'x'}, {
