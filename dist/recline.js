@@ -2253,6 +2253,7 @@ my.Flot = Backbone.View.extend({
     var series = [];
     _.each(this.state.attributes.series, function(field) {
       var points = [];
+      var fieldLabel = self.model.fields.get(field).get('label');
       _.each(self.model.records.models, function(doc, index) {
         var xfield = self.model.fields.get(self.state.attributes.group);
         var x = doc.getFieldValue(xfield);
@@ -2281,7 +2282,7 @@ my.Flot = Backbone.View.extend({
       });
       series.push({
         data: points,
-        label: field,
+        label: fieldLabel,
         hoverable: true
       });
     });
