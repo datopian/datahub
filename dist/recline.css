@@ -40,7 +40,6 @@
 
 .recline-graph .graph .alert {
   width: 450px;
-  margin: auto;
 }
 
 .flotr-mouse-value {
@@ -60,7 +59,8 @@
 
 .flotr-legend-color-box {
     padding: 5px;
-}/**********************************************************
+}
+/**********************************************************
   * (Data) Grid
   *********************************************************/
 
@@ -255,7 +255,6 @@ div.data-table-cell-content-numeric > a.data-table-cell-edit {
 .recline-read-only a.row-header-menu {
   display: none;
 }
-
 .recline-map .map {
   height: 500px;
 }
@@ -286,7 +285,6 @@ div.data-table-cell-content-numeric > a.data-table-cell-edit {
 }
 .recline-data-explorer .data-view-container {
   display: block;
-  margin-right: 225px;
 }
 
 .recline-data-explorer .data-view-sidebar {
@@ -384,6 +382,7 @@ div.data-table-cell-content-numeric > a.data-table-cell-edit {
 
 .recline-filter-editor {
   padding: 8px;
+  display: none;
 }
 
 .recline-filter-editor .filter-term a {
@@ -400,6 +399,10 @@ div.data-table-cell-content-numeric > a.data-table-cell-edit {
 /**********************************************************
   * Fields Widget
   *********************************************************/
+
+.recline-fields-view {
+  display: none;
+}
 
 .recline-fields-view .fields-list {
   padding: 0;
@@ -635,14 +638,17 @@ classes should alter those!
   cursor: pointer;
 }
 
-.recline-transform .script {
-  margin-right: 10px;
+.recline-transform {
+    overflow: hidden;
 }
 
 .recline-transform .script textarea {
   width: 100%;
   height: 100px;
   font-family: monospace;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
 }
 
 .recline-transform h2 {
@@ -652,10 +658,6 @@ classes should alter those!
 .recline-transform h2 .okButton {
   margin-left: 10px;
   margin-top: -2px;
-}
-
-.recline-transform .preview {
-  margin-right: 10px;
 }
 
 .expression-preview-parsing-status {
@@ -673,4 +675,3 @@ classes should alter those!
 .recline-transform .before-after .after.different {
   font-weight: bold;
 }
-

@@ -76,7 +76,7 @@ this.recline.Backend.Ckan = this.recline.Backend.Ckan || {};
       actualQuery.sort = _tmp.join(',');
     }
     return actualQuery;
-  }
+  };
 
   my.query = function(queryObj, dataset) {
     if (dataset.endpoint) {
@@ -92,7 +92,7 @@ this.recline.Backend.Ckan = this.recline.Backend.Ckan || {};
     jqxhr.done(function(results) {
       var out = {
         total: results.result.total,
-        hits: results.result.records,
+        hits: results.result.records
       };
       dfd.resolve(out);  
     });
@@ -116,7 +116,7 @@ this.recline.Backend.Ckan = this.recline.Backend.Ckan || {};
         dataType: 'json'
       });
       return jqxhr;
-    }
+    };
 
     return that;
   };
@@ -130,7 +130,7 @@ this.recline.Backend.Ckan = this.recline.Backend.Ckan || {};
     return {
       resource_id: parts[len-1],
       endpoint: parts.slice(0,[len-4]).join('/') + '/api'
-    }
+    };
   };
 
   var CKAN_TYPES_MAP = {
@@ -1207,74 +1207,6 @@ this.recline.Backend.Memory = this.recline.Backend.Memory || {};
 
 }(this.recline.Backend.Memory));
 this.recline = this.recline || {};
-this.recline.Backend = this.recline.Backend || {};
-this.recline.Backend.Solr = this.recline.Backend.Solr || {};
-
-(function($, my) {
-  my.__type__ = 'solr';
-
-  // use either jQuery or Underscore Deferred depending on what is available
-  var Deferred = _.isUndefined(this.jQuery) ? _.Deferred : jQuery.Deferred;
-
-  // ### fetch
-  //
-  // dataset must have a solr or url attribute pointing to solr endpoint
-  my.fetch = function(dataset) {
-    var jqxhr = $.ajax({
-      url: dataset.solr || dataset.url,
-      data: {
-        rows: 1,
-        wt: 'json'
-      },
-      dataType: 'jsonp',
-      jsonp: 'json.wrf'
-    });
-    var dfd = new Deferred();
-    jqxhr.done(function(results) {
-      // if we get 0 results we cannot get fields
-      var fields = []
-      if (results.response.numFound > 0) {
-        fields =  _.map(_.keys(results.response.docs[0]), function(fieldName) {
-          return { id: fieldName };
-        });
-      }
-      var out = {
-        fields: fields,
-        useMemoryStore: false
-      };
-      dfd.resolve(out);
-    });
-    return dfd.promise();
-  }
-
-  // TODO - much work on proper query support is needed!!
-  my.query = function(queryObj, dataset) {
-    var q = queryObj.q || '*:*';
-    var data = {
-      q: q,
-      rows: queryObj.size,
-      start: queryObj.from,
-      wt: 'json'
-    };
-    var jqxhr = $.ajax({
-      url: dataset.solr || dataset.url,
-      data: data,
-      dataType: 'jsonp',
-      jsonp: 'json.wrf'
-    });
-    var dfd = new Deferred();
-    jqxhr.done(function(results) {
-      var out = {
-        total: results.response.numFound,
-        hits: results.response.docs
-      };
-      dfd.resolve(out);  
-    });
-    return dfd.promise();
-  };
-
-}(jQuery, this.recline.Backend.Solr));
-this.recline = this.recline || {};
 this.recline.Data = this.recline.Data || {};
 
 (function(my) {
@@ -1718,9 +1650,11 @@ my.Record = Backbone.Model.extend({
   //
   // For the provided Field get the corresponding rendered computed data value
   // for this record.
+  //
+  // NB: if field is undefined a default '' value will be returned
   getFieldValue: function(field) {
     val = this.getFieldValueUnrendered(field);
-    if (field.renderer) {
+    if (field && !_.isUndefined(field.renderer)) {
       val = field.renderer(val, field, this.toJSON());
     }
     return val;
@@ -1730,7 +1664,12 @@ my.Record = Backbone.Model.extend({
   //
   // For the provided Field get the corresponding computed data value
   // for this record.
+  //
+  // NB: if field is undefined a default '' value will be returned
   getFieldValueUnrendered: function(field) {
+    if (!field) {
+      return '';
+    }
     var val = this.get(field.id);
     if (field.deriver) {
       val = field.deriver(val, field, this);
@@ -2116,6 +2055,11 @@ my.Flot = Backbone.View.extend({
         var x = item.datapoint[0].toFixed(2),
             y = item.datapoint[1].toFixed(2);
 
+        if (this.state.attributes.graphType === 'bars') {
+          x = item.datapoint[1].toFixed(2),
+          y = item.datapoint[0].toFixed(2);
+        }
+
         var content = _.template('<%= group %> = <%= x %>, <%= series %> = <%= y %>', {
           group: this.state.attributes.group,
           x: this._xaxisLabel(x),
@@ -2126,6 +2070,9 @@ my.Flot = Backbone.View.extend({
         // use a different tooltip location offset for bar charts
         var xLocation, yLocation;
         if (this.state.attributes.graphType === 'bars') {
+          xLocation = item.pageX + 15;
+          yLocation = item.pageY - 10;
+        } else if (this.state.attributes.graphType === 'columns') {
           xLocation = item.pageX + 15;
           yLocation = item.pageY;
         } else {
@@ -2184,8 +2131,8 @@ my.Flot = Backbone.View.extend({
       if (typeof label !== 'string') {
         label = label.toString();
       }
-      if (label.length > 8) {
-        label = label.slice(0, 5) + "...";
+      if (self.state.attributes.graphType !== 'bars' && label.length > 10) {
+        label = label.slice(0, 10) + "...";
       }
 
       return label;
@@ -2204,11 +2151,15 @@ my.Flot = Backbone.View.extend({
           x = 1,
           i = 0;
 
-      while (x <= maxTicks) {
-        if ((numPoints / x) <= maxTicks) {
-          break;
+      // show all ticks in bar graphs
+      // for other graphs only show up to maxTicks ticks
+      if (self.state.attributes.graphType !== 'bars') {
+        while (x <= maxTicks) {
+          if ((numPoints / x) <= maxTicks) {
+            break;
+          }
+          x = x + 1;
         }
-        x = x + 1;
       }
 
       for (i = 0; i < numPoints; i = i + x) {
@@ -2311,12 +2262,7 @@ my.Flot = Backbone.View.extend({
         var isDateTime = (xtype === 'date' || xtype === 'date-time' || xtype  === 'time');
 
         if (isDateTime) {
-          if (self.state.attributes.graphType != 'bars' &&
-              self.state.attributes.graphType != 'columns') {
-            x = new Date(x).getTime();
-          } else {
-            x = index;
-          }
+          x = index;
         } else if (typeof x === 'string') {
           x = parseFloat(x);
           if (isNaN(x)) {
@@ -2964,7 +2910,6 @@ this.recline = this.recline || {};
 this.recline.View = this.recline.View || {};
 this.recline.View.Graph = this.recline.View.Flot;
 this.recline.View.GraphControls = this.recline.View.FlotControls;
-
 /*jshint multistr:true */
 
 this.recline = this.recline || {};
@@ -4001,7 +3946,7 @@ my.MultiView = Backbone.View.extend({
       <div class="menu-right"> \
         <div class="btn-group" data-toggle="buttons-checkbox"> \
           {{#sidebarViews}} \
-          <a href="#" data-action="{{id}}" class="btn active">{{label}}</a> \
+          <a href="#" data-action="{{id}}" class="btn">{{label}}</a> \
           {{/sidebarViews}} \
         </div> \
       </div> \
@@ -4092,6 +4037,7 @@ my.MultiView = Backbone.View.extend({
     } else {
       this.updateNav(this.pageViews[0].id);
     }
+    this._showHideSidebar();
 
     this.model.bind('query:start', function() {
         self.notify({loader: true, persist: true});
@@ -4169,19 +4115,31 @@ my.MultiView = Backbone.View.extend({
 
   },
 
+  // hide the sidebar if empty
+  _showHideSidebar: function() {
+    var $dataSidebar = this.el.find('.data-view-sidebar');
+    var visibleChildren = $dataSidebar.children().filter(function() {
+      return $(this).css("display") != "none";
+    }).length;
+
+    if (visibleChildren > 0) {
+      $dataSidebar.show();
+    } else {
+      $dataSidebar.hide();
+    }
+  },
+
   updateNav: function(pageName) {
     this.el.find('.navigation a').removeClass('active');
     var $el = this.el.find('.navigation a[data-view="' + pageName + '"]');
     $el.addClass('active');
-    // show the specific page
+
+    // add/remove sidebars and hide inactive views
     _.each(this.pageViews, function(view, idx) {
       if (view.id === pageName) {
         view.view.el.show();
         if (view.view.elSidebar) {
           view.view.elSidebar.show();
-        }
-        if (view.view.show) {
-          view.view.show();
         }
       } else {
         view.view.el.hide();
@@ -4193,12 +4151,25 @@ my.MultiView = Backbone.View.extend({
         }
       }
     });
+
+    this._showHideSidebar();
+
+    // call view.view.show after sidebar visibility has been determined so
+    // that views can correctly calculate their maximum width
+    _.each(this.pageViews, function(view, idx) {
+      if (view.id === pageName) {
+        if (view.view.show) {
+          view.view.show();
+        }
+      }
+    });
   },
 
   _onMenuClick: function(e) {
     e.preventDefault();
     var action = $(e.target).attr('data-action');
     this['$'+action].toggle();
+    this._showHideSidebar();
   },
 
   _onSwitchView: function(e) {
@@ -5230,7 +5201,7 @@ my.Fields = Backbone.View.extend({
             </small> \
           </h4> \
         </div> \
-        <div id="collapse{{id}}" class="accordion-body collapse in"> \
+        <div id="collapse{{id}}" class="accordion-body collapse"> \
           <div class="accordion-inner"> \
             {{#facets}} \
             <div class="facet-summary" data-facet="{{id}}"> \
@@ -5249,9 +5220,6 @@ my.Fields = Backbone.View.extend({
     </div> \
   ',
 
-  events: {
-    'click .js-show-hide': 'onShowHide'
-  },
   initialize: function(model) {
     var self = this;
     this.el = $(this.el);
@@ -5269,6 +5237,7 @@ my.Fields = Backbone.View.extend({
       self.model.getFieldsSummary();
       self.render();
     });
+    this.el.find('.collapse').collapse();
     this.render();
   },
   render: function() {
@@ -5283,28 +5252,10 @@ my.Fields = Backbone.View.extend({
     });
     var templated = Mustache.render(this.template, tmplData);
     this.el.html(templated);
-    this.el.find('.collapse').collapse('hide');
-  },
-  onShowHide: function(e) {
-    e.preventDefault();
-    var $target  = $(e.target);
-    // weird collapse class seems to have been removed (can watch this happen
-    // if you watch dom) but could not work why. Absence of collapse then meant
-    // we could not toggle.
-    // This seems to fix the problem.
-    this.el.find('.accordion-body').addClass('collapse');;
-    if ($target.text() === '+') {
-      this.el.find('.collapse').collapse('show');
-      $target.text('-');
-    } else {
-      this.el.find('.collapse').collapse('hide');
-      $target.text('+');
-    }
   }
 });
 
 })(jQuery, recline.View);
-
 /*jshint multistr:true */
 
 this.recline = this.recline || {};
@@ -5430,8 +5381,6 @@ my.FilterEditor = Backbone.View.extend({
     var filterType = $target.find('select.filterType').val();
     var field      = $target.find('select.fields').val();
     this.model.queryState.addFilter({type: filterType, field: field});
-    // trigger render explicitly as queryState change will not be triggered (as blank value for filter)
-    this.render();
   },
   onRemoveFilter: function(e) {
     e.preventDefault();
