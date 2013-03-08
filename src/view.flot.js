@@ -159,14 +159,19 @@ my.Flot = Backbone.View.extend({
     var xtype = xfield.get('type');
     var isDateTime = (xtype === 'date' || xtype === 'date-time' || xtype  === 'time');
 
-    if (this.model.records.models[parseInt(x, 10)]) {
-      x = this.model.records.models[parseInt(x, 10)].get(this.state.attributes.group);
-      if (isDateTime) {
-        x = new Date(x).toLocaleDateString();
-      }
-    } else if (isDateTime) {
-      x = new Date(parseInt(x, 10)).toLocaleDateString();
+    if (this.xvaluesAreIndex) {
+      x = parseInt(x, 10);
+      // HACK: deal with bar graph style cases where x-axis items were strings
+      // In this case x at this point is the index of the item in the list of
+      // records not its actual x-axis value
+      x = this.model.records.models[x].get(this.state.attributes.group);
     }
+    if (isDateTime) {
+      x = new Date(x).toLocaleDateString();
+    }
+    // } else if (isDateTime) {
+    //  x = new Date(parseInt(x, 10)).toLocaleDateString();
+    // }
 
     return x;
   },
@@ -201,31 +206,16 @@ my.Flot = Backbone.View.extend({
     var xaxis = {};
     xaxis.tickFormatter = tickFormatter;
 
-    // calculate the x-axis ticks
-    //
-    // the number of ticks should be a multiple of the number of points so that
-    // each tick lines up with a point
-    if (numPoints) {
-      var ticks = [],
-          maxTicks = 10,
-          x = 1,
-          i = 0;
-
-      // show all ticks in bar graphs
-      // for other graphs only show up to maxTicks ticks
-      if (self.state.attributes.graphType !== 'bars') {
-        while (x <= maxTicks) {
-          if ((numPoints / x) <= maxTicks) {
-            break;
-          }
-          x = x + 1;
-        }
+    // for labels case we only want ticks at the label intervals
+    // HACK: however we also get this case with Date fields. In that case we
+    // could have a lot of values and so we limit to max 30 (we assume)
+    if (this.xvaluesAreIndex) {
+      var numTicks = Math.min(this.model.records.length, 15);
+      var increment = this.model.records.length / numTicks;
+      var ticks = [];
+      for (i=0; i<numTicks; i++) {
+        ticks.push(parseInt(i*increment));
       }
-
-      for (i = 0; i < numPoints; i = i + x) {
-        ticks.push(i);
-      }
-
       xaxis.ticks = ticks;
     }
 
@@ -310,6 +300,7 @@ my.Flot = Backbone.View.extend({
 
   createSeries: function() {
     var self = this;
+    self.xvaluesAreIndex = false;
     var series = [];
     _.each(this.state.attributes.series, function(field) {
       var points = [];
@@ -323,11 +314,13 @@ my.Flot = Backbone.View.extend({
         var isDateTime = (xtype === 'date' || xtype === 'date-time' || xtype  === 'time');
 
         if (isDateTime) {
+          self.xvaluesAreIndex = true;
           x = index;
         } else if (typeof x === 'string') {
           x = parseFloat(x);
-          if (isNaN(x)) {
+          if (isNaN(x)) { // assume this is a string label
             x = index;
+            self.xvaluesAreIndex = true;
           }
         }
 
