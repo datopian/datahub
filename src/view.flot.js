@@ -191,7 +191,7 @@ my.Flot = Backbone.View.extend({
       // convert x to a string and make sure that it is not too long or the
       // tick labels will overlap
       // TODO: find a more accurate way of calculating the size of tick labels
-      var label = self._xaxisLabel(x);
+      var label = self._xaxisLabel(x) || "";
 
       if (typeof label !== 'string') {
         label = label.toString();
