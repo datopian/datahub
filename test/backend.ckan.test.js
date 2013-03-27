@@ -30,6 +30,7 @@ test('_normalizeQuery', function() {
   var exp = {
     resource_id: dataset.id,
     q: 'abc',
+    filters: {},
     sort: 'location desc,last ',
     limit: 10,
     offset: 0
