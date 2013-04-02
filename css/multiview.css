@@ -110,6 +110,18 @@
   width: 175px;
 }
 
+.recline-filter-editor input {
+  margin-top: 0.5em;
+}
+
+.recline-filter-editor .add-filter {
+  margin-top: 1em;
+  margin-bottom: 2em;
+}
+
+.recline-filter-editor .update-filter {
+  margin-top: 1em;
+}
 
 /**********************************************************
   * Fields Widget
