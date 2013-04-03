@@ -66,14 +66,24 @@ this.recline.Backend.Ckan = this.recline.Backend.Ckan || {};
     var actualQuery = {
       resource_id: dataset.id,
       q: queryObj.q,
+      filters: {},
       limit: queryObj.size || 10,
       offset: queryObj.from || 0
     };
+
     if (queryObj.sort && queryObj.sort.length > 0) {
       var _tmp = _.map(queryObj.sort, function(sortObj) {
         return sortObj.field + ' ' + (sortObj.order || '');
       });
       actualQuery.sort = _tmp.join(',');
+    }
+
+    if (queryObj.filters && queryObj.filters.length > 0) {
+      _.each(queryObj.filters, function(filter) {
+        if (filter.type === "term") {
+          actualQuery.filters[filter.field] = filter.term;
+        }
+      });
     }
     return actualQuery;
   };
@@ -105,15 +115,14 @@ this.recline.Backend.Ckan = this.recline.Backend.Ckan || {};
   //
   // @param endpoint: CKAN api endpoint (e.g. http://datahub.io/api)
   my.DataStore = function(endpoint) { 
-    var that = {
-      endpoint: endpoint || my.API_ENDPOINT
-    };
+    var that = {endpoint: endpoint || my.API_ENDPOINT};
+
     that.search = function(data) {
       var searchUrl = that.endpoint + '/3/action/datastore_search';
       var jqxhr = jQuery.ajax({
         url: searchUrl,
-        data: data,
-        dataType: 'json'
+        type: 'POST',
+        data: JSON.stringify(data)
       });
       return jqxhr;
     };
