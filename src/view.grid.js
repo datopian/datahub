@@ -103,12 +103,12 @@ my.Grid = Backbone.View.extend({
     var numFields = this.fields.length;
     // compute field widths (-20 for first menu col + 10px for padding on each col and finally 16px for the scrollbar)
     var fullWidth = self.el.width() - 20 - 10 * numFields - this.scrollbarDimensions.width;
-    var width = parseInt(Math.max(50, fullWidth / numFields));
+    var width = parseInt(Math.max(50, fullWidth / numFields), 10);
     // if columns extend outside viewport then remainder is 0 
     var remainder = Math.max(fullWidth - numFields * width,0);
     _.each(this.fields, function(field, idx) {
       // add the remainder to the first field width so we make up full col
-      if (idx == 0) {
+      if (idx === 0) {
         field.set({width: width+remainder});
       } else {
         field.set({width: width});
