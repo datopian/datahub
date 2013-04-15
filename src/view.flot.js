@@ -208,7 +208,7 @@ my.Flot = Backbone.View.extend({
 
     // for labels case we only want ticks at the label intervals
     // HACK: however we also get this case with Date fields. In that case we
-    // could have a lot of values and so we limit to max 30 (we assume)
+    // could have a lot of values and so we limit to max 15 (we assume)
     if (this.xvaluesAreIndex) {
       var numTicks = Math.min(this.model.records.length, 15);
       var increment = this.model.records.length / numTicks;
