@@ -39,7 +39,7 @@ my.SlickGrid = Backbone.View.extend({
     this.model.records.bind('add', this.render);
     this.model.records.bind('reset', this.render);
     this.model.records.bind('remove', this.render);
-    this.model.records.bind('change', this.onRecordChanged, this)
+    this.model.records.bind('change', this.onRecordChanged, this);
 
     var state = _.extend({
         hiddenColumns: [],
@@ -52,7 +52,6 @@ my.SlickGrid = Backbone.View.extend({
       }, modelEtc.state
 
     );
-//      this.grid_options = modelEtc.options;
     this.state = new recline.Model.ObjectState(state);
   },
 
@@ -95,25 +94,25 @@ my.SlickGrid = Backbone.View.extend({
       } else {
         return value;
       }
-    }
+    };
     _.each(this.model.fields.toJSON(),function(field){
       var column = {
-        id:field['id'],
-        name:field['label'],
-        field:field['id'],
+        id:field.id,
+        name:field.label,
+        field:field.id,
         sortable: true,
         minWidth: 80,
         formatter: formatter
       };
 
-      var widthInfo = _.find(self.state.get('columnsWidth'),function(c){return c.column == field.id});
+      var widthInfo = _.find(self.state.get('columnsWidth'),function(c){return c.column == field.id;});
       if (widthInfo){
-        column['width'] = widthInfo.width;
+        column.width = widthInfo.width;
       }
 
-      var editInfo = _.find(self.state.get('columnsEditor'),function(c){return c.column == field.id});
+      var editInfo = _.find(self.state.get('columnsEditor'),function(c){return c.column == field.id;});
       if (editInfo){
-        column['editor'] = editInfo.editor;
+        column.editor = editInfo.editor;
       }
       columns.push(column);
     });
@@ -159,18 +158,18 @@ my.SlickGrid = Backbone.View.extend({
       this.push = function(model, row) {
         models.push(model);
         rows.push(row);
-      }
-
-      this.getLength = function() { return rows.length; }
-      this.getItem = function(index) { return rows[index];}
-      this.getItemMetadata= function(index) { return {};}
-      this.getModel= function(index) { return models[index]; }
-      this.getModelRow = function(m) { return models.indexOf(m);}
-      this.updateItem = function(m,i) { 
-        rows[i] = toRow(m);
-        models[i] = m
       };
-    };
+
+      this.getLength = function() {return rows.length; };
+      this.getItem = function(index) {return rows[index];};
+      this.getItemMetadata= function(index) {return {};};
+      this.getModel= function(index) {return models[index];};
+      this.getModelRow = function(m) {return models.indexOf(m);};
+      this.updateItem = function(m,i) {
+        rows[i] = toRow(m);
+        models[i] = m;
+      };
+    }
 
     var data = new RowSet();
 
@@ -184,7 +183,7 @@ my.SlickGrid = Backbone.View.extend({
     var sortInfo = this.model.queryState.get('sort');
     if (sortInfo){
       var column = sortInfo[0].field;
-      var sortAsc = !(sortInfo[0].order == 'desc');
+      var sortAsc = sortInfo[0].order !== 'desc';
       this.grid.setSortColumn(column, sortAsc);
     }
 
@@ -218,7 +217,7 @@ my.SlickGrid = Backbone.View.extend({
       //
       var grid = args.grid;
       var model = data.getModel(args.row);
-      var field = grid.getColumns()[args.cell]['id'];
+      var field = grid.getColumns()[args.cell].id;
       var v = {};
       v[field] = args.item[field];
       model.set(v);
@@ -279,7 +278,7 @@ my.SlickGrid = Backbone.View.extend({
       $menu = $('<ul class="dropdown-menu slick-contextmenu" style="display:none;position:absolute;z-index:20;" />').appendTo(document.body);
 
       $menu.bind('mouseleave', function (e) {
-        $(this).fadeOut(options.fadeSpeed)
+        $(this).fadeOut(options.fadeSpeed);
       });
       $menu.bind('click', updateColumn);
 
@@ -296,7 +295,7 @@ my.SlickGrid = Backbone.View.extend({
         $input = $('<input type="checkbox" />').data('column-id', columns[i].id).attr('id','slick-column-vis-'+columns[i].id);
         columnCheckboxes.push($input);
 
-        if (grid.getColumnIndex(columns[i].id) != null) {
+        if (grid.getColumnIndex(columns[i].id) !== null) {
           $input.attr('checked', 'checked');
         }
         $input.appendTo($li);
@@ -323,10 +322,12 @@ my.SlickGrid = Backbone.View.extend({
     }
 
     function updateColumn(e) {
+      var checkbox;
+
       if ($(e.target).data('option') == 'autoresize') {
         var checked;
         if ($(e.target).is('li')){
-            var checkbox = $(e.target).find('input').first();
+            checkbox = $(e.target).find('input').first();
             checked = !checkbox.is(':checked');
             checkbox.attr('checked',checked);
         } else {
@@ -346,7 +347,7 @@ my.SlickGrid = Backbone.View.extend({
       if (($(e.target).is('li') && !$(e.target).hasClass('divider')) ||
             $(e.target).is('input')) {
         if ($(e.target).is('li')){
-            var checkbox = $(e.target).find('input').first();
+            checkbox = $(e.target).find('input').first();
             checkbox.attr('checked',!checkbox.is(':checked'));
         }
         var visibleColumns = [];
@@ -358,7 +359,6 @@ my.SlickGrid = Backbone.View.extend({
             hiddenColumnsIds.push(columns[i].id);
           }
         });
-
 
         if (!visibleColumns.length) {
           $(e.target).attr('checked', 'checked');
