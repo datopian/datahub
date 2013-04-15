@@ -464,13 +464,14 @@ my.MultiView = Backbone.View.extend({
 // This inverts the state serialization process in Multiview
 my.MultiView.restore = function(state) {
   // hack-y - restoring a memory dataset does not mean much ... (but useful for testing!)
+  var datasetInfo;
   if (state.backend === 'memory') {
-    var datasetInfo = {
+    datasetInfo = {
       backend: 'memory',
       records: [{stub: 'this is a stub dataset because we do not restore memory datasets'}]
     };
   } else {
-    var datasetInfo = _.extend({
+    datasetInfo = _.extend({
         url: state.url,
         backend: state.backend
       },
@@ -483,7 +484,7 @@ my.MultiView.restore = function(state) {
     state: state
   });
   return explorer;
-}
+};
 
 // ## Miscellaneous Utilities
 var urlPathRegex = /^([^?]+)(\?.*)?/;
