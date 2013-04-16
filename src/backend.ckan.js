@@ -37,12 +37,13 @@ this.recline.Backend.Ckan = this.recline.Backend.Ckan || {};
 
   // ### fetch
   my.fetch = function(dataset) {
+    var wrapper;
     if (dataset.endpoint) {
-      var wrapper = my.DataStore(dataset.endpoint);
+      wrapper = my.DataStore(dataset.endpoint);
     } else {
       var out = my._parseCkanResourceUrl(dataset.url);
       dataset.id = out.resource_id;
-      var wrapper = my.DataStore(out.endpoint);
+      wrapper = my.DataStore(out.endpoint);
     }
     var dfd = new Deferred();
     var jqxhr = wrapper.search({resource_id: dataset.id, limit: 0});
@@ -89,12 +90,13 @@ this.recline.Backend.Ckan = this.recline.Backend.Ckan || {};
   };
 
   my.query = function(queryObj, dataset) {
+    var wrapper;
     if (dataset.endpoint) {
-      var wrapper = my.DataStore(dataset.endpoint);
+      wrapper = my.DataStore(dataset.endpoint);
     } else {
       var out = my._parseCkanResourceUrl(dataset.url);
       dataset.id = out.resource_id;
-      var wrapper = my.DataStore(out.endpoint);
+      wrapper = my.DataStore(out.endpoint);
     }
     var actualQuery = my._normalizeQuery(queryObj, dataset);
     var dfd = new Deferred();
