@@ -650,6 +650,9 @@ classes should alter those!
   cursor: pointer;
 }
 
+.recline-timeline {
+  position: relative;
+}
 .recline-transform {
     overflow: hidden;
 }
