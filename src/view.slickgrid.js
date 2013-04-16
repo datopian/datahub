@@ -97,20 +97,20 @@ my.SlickGrid = Backbone.View.extend({
     };
     _.each(this.model.fields.toJSON(),function(field){
       var column = {
-        id:field.id,
-        name:field.label,
-        field:field.id,
+        id: field.id,
+        name: field.label,
+        field: field.id,
         sortable: true,
         minWidth: 80,
         formatter: formatter
       };
 
-      var widthInfo = _.find(self.state.get('columnsWidth'),function(c){return c.column == field.id;});
+      var widthInfo = _.find(self.state.get('columnsWidth'),function(c){return c.column === field.id;});
       if (widthInfo){
         column.width = widthInfo.width;
       }
 
-      var editInfo = _.find(self.state.get('columnsEditor'),function(c){return c.column == field.id;});
+      var editInfo = _.find(self.state.get('columnsEditor'),function(c){return c.column === field.id;});
       if (editInfo){
         column.editor = editInfo.editor;
       }
@@ -119,7 +119,7 @@ my.SlickGrid = Backbone.View.extend({
 
     // Restrict the visible columns
     var visibleColumns = columns.filter(function(column) {
-      return _.indexOf(self.state.get('hiddenColumns'), column.id) == -1;
+      return _.indexOf(self.state.get('hiddenColumns'), column.id) === -1;
     });
 
     // Order them if there is ordering info on the state
@@ -136,7 +136,7 @@ my.SlickGrid = Backbone.View.extend({
     // column picker
     var tempHiddenColumns = [];
     for (var i = columns.length -1; i >= 0; i--){
-      if (_.indexOf(_.pluck(visibleColumns,'id'),columns[i].id) == -1){
+      if (_.indexOf(_.pluck(visibleColumns,'id'),columns[i].id) === -1){
         tempHiddenColumns.push(columns.splice(i,1)[0]);
       }
     }
@@ -162,8 +162,8 @@ my.SlickGrid = Backbone.View.extend({
 
       this.getLength = function() {return rows.length; };
       this.getItem = function(index) {return rows[index];};
-      this.getItemMetadata= function(index) {return {};};
-      this.getModel= function(index) {return models[index];};
+      this.getItemMetadata = function(index) {return {};};
+      this.getModel = function(index) {return models[index];};
       this.getModelRow = function(m) {return models.indexOf(m);};
       this.updateItem = function(m,i) {
         rows[i] = toRow(m);
@@ -324,7 +324,7 @@ my.SlickGrid = Backbone.View.extend({
     function updateColumn(e) {
       var checkbox;
 
-      if ($(e.target).data('option') == 'autoresize') {
+      if ($(e.target).data('option') === 'autoresize') {
         var checked;
         if ($(e.target).is('li')){
             checkbox = $(e.target).find('input').first();
