@@ -230,18 +230,6 @@ this.recline.Backend.Memory = this.recline.Backend.Memory || {};
       });
       return facetResults;
     };
-
-    this.transform = function(editFunc) {
-      var dfd = new Deferred();
-      // TODO: should we clone before mapping? Do not see the point atm.
-      self.records = _.map(self.records, editFunc);
-      // now deal with deletes (i.e. nulls)
-      self.records = _.filter(self.records, function(record) {
-        return record != null;
-      });
-      dfd.resolve();
-      return dfd.promise();
-    };
   };
 
 }(this.recline.Backend.Memory));

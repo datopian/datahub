@@ -164,12 +164,6 @@ my.MultiView = Backbone.View.extend({
           model: this.model,
           state: this.state.get('view-timeline')
         })
-      }, {
-        id: 'transform',
-        label: 'Transform',
-        view: new my.Transform({
-          model: this.model
-        })
       }];
     }
     // Hashes of sidebar elements

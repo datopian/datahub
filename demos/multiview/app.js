@@ -89,13 +89,6 @@ var createExplorer = function(dataset, state) {
       view: new recline.View.Map({
         model: dataset
       })
-    },
-    {
-      id: 'transform',
-      label: 'Transform',
-      view: new recline.View.Transform({
-        model: dataset
-      })
     }
   ];
 
