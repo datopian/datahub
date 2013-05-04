@@ -1,7 +1,6 @@
 A simple but powerful library for building data applications in pure Javascript and HTML.
 
-<h3><a href="http://reclinejs.com/">Recline Website - including Overview, Documentation, Demos etc</a></h3>
-
+<h3><a href="http://okfnlabs.org/recline/">Recline Website - including Overview, Documentation, Demos etc</a></h3>
 
 ## Features
 
@@ -11,47 +10,11 @@ A simple but powerful library for building data applications in pure Javascript 
 * View and edit your data in clean grid interface
 * Bulk update/clean your data using an easy scripting UI
 * Visualize your data
-* And more ... see <http://reclinejs.com/>
+* And more ... see <http://okfnlabs.org/recline/>
 
-## Developer Notes
+## Contributing
 
-Run the tests by opening `test/index.html` in your browser.
-
-Note that the demos and documentation utilize the [jekyll templating
-system][jekyll] and to use them *locally* you will need to build them using
-jekyll. Once installed, all you need to do from the command line is run jekyll:
-
-    jekyll
-
-[jekyll]: https://github.com/mojombo/jekyll
-
-Notes on the architecture can be found in the [documentation online](http://okfnlabs.org/recline).
-
-### Contributing
-
-We welcome patches and pull requests and have a few guidelines.
-
-General:
-
-* Please do **not** build the dist files (e.g. dist/recline.js) when submitting
-  patches. dist files will get built automatically and if they are part of a
-  patch or pull request it makes them harder to review and more likely to
-  conflict.
-* If possible have an issue to which the commits can relate. You can reference
-  an issue in the commits by just including #{issue-number} somewhere in the
-  commit message).  Note if no issue exists suggest creating one.
-
-For small bugfixes or enhancements:
-
-* Please run the tests
-
-For larger changes:
-
-* Cleanup your code and affected code parts
-* Run the tests from `/test/index.html` in different browsers (at least Chrome and FF)
-* Update the documentation and tutorials where necessary
-* Update `/_includes/recline-deps.html` if you change required files (e.g. leaflet libraries)
-* Try to build the demos in `/demos/` with jekyll and then check out the `/demos/multiview/` which utilizes most aspects of Recline
+See CONTRIBUTING.md.
 
 ### Contributors
 
@@ -66,7 +29,7 @@ For larger changes:
 
 ## Changelog
 
-### v0.6 - Aug/Sept 2012 (tbc)
+### v0.6 - Sprint 2013 (tbc)
 
 [v0.6 milestone](https://github.com/okfn/recline/issues?milestone=5)
 
