@@ -27,7 +27,7 @@ jQuery(function($) {
     );
     dataset = new recline.Model.Dataset(datasetInfo);
   } else {
-    var dataset = new recline.Model.Dataset({
+    dataset = new recline.Model.Dataset({
       records: [
         {id: 0, date: '2011-01-01', x: 1, y: 2, z: 3, country: 'DE', title: 'first', lat:52.56, lon:13.40},
         {id: 1, date: '2011-02-02', x: 2, y: 4, z: 24, country: 'UK', title: 'second', lat:54.97, lon:-1.60},
@@ -87,13 +87,6 @@ var createExplorer = function(dataset, state) {
       id: 'map',
       label: 'Map',
       view: new recline.View.Map({
-        model: dataset
-      })
-    },
-    {
-      id: 'transform',
-      label: 'Transform',
-      view: new recline.View.Transform({
         model: dataset
       })
     }

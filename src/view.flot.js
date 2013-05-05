@@ -115,6 +115,11 @@ my.Flot = Backbone.View.extend({
         var x = item.datapoint[0].toFixed(2),
             y = item.datapoint[1].toFixed(2);
 
+        if (this.state.attributes.graphType === 'bars') {
+          x = item.datapoint[1].toFixed(2),
+          y = item.datapoint[0].toFixed(2);
+        }
+
         var content = _.template('<%= group %> = <%= x %>, <%= series %> = <%= y %>', {
           group: this.state.attributes.group,
           x: this._xaxisLabel(x),
@@ -125,6 +130,9 @@ my.Flot = Backbone.View.extend({
         // use a different tooltip location offset for bar charts
         var xLocation, yLocation;
         if (this.state.attributes.graphType === 'bars') {
+          xLocation = item.pageX + 15;
+          yLocation = item.pageY - 10;
+        } else if (this.state.attributes.graphType === 'columns') {
           xLocation = item.pageX + 15;
           yLocation = item.pageY;
         } else {
@@ -151,14 +159,19 @@ my.Flot = Backbone.View.extend({
     var xtype = xfield.get('type');
     var isDateTime = (xtype === 'date' || xtype === 'date-time' || xtype  === 'time');
 
-    if (this.model.records.models[parseInt(x, 10)]) {
-      x = this.model.records.models[parseInt(x, 10)].get(this.state.attributes.group);
-      if (isDateTime) {
-        x = new Date(x).toLocaleDateString();
-      }
-    } else if (isDateTime) {
-      x = new Date(parseInt(x, 10)).toLocaleDateString();
+    if (this.xvaluesAreIndex) {
+      x = parseInt(x, 10);
+      // HACK: deal with bar graph style cases where x-axis items were strings
+      // In this case x at this point is the index of the item in the list of
+      // records not its actual x-axis value
+      x = this.model.records.models[x].get(this.state.attributes.group);
     }
+    if (isDateTime) {
+      x = new Date(x).toLocaleDateString();
+    }
+    // } else if (isDateTime) {
+    //  x = new Date(parseInt(x, 10)).toLocaleDateString();
+    // }
 
     return x;
   },
@@ -178,13 +191,13 @@ my.Flot = Backbone.View.extend({
       // convert x to a string and make sure that it is not too long or the
       // tick labels will overlap
       // TODO: find a more accurate way of calculating the size of tick labels
-      var label = self._xaxisLabel(x);
+      var label = self._xaxisLabel(x) || "";
 
       if (typeof label !== 'string') {
         label = label.toString();
       }
-      if (label.length > 8) {
-        label = label.slice(0, 5) + "...";
+      if (self.state.attributes.graphType !== 'bars' && label.length > 10) {
+        label = label.slice(0, 10) + "...";
       }
 
       return label;
@@ -193,27 +206,16 @@ my.Flot = Backbone.View.extend({
     var xaxis = {};
     xaxis.tickFormatter = tickFormatter;
 
-    // calculate the x-axis ticks
-    //
-    // the number of ticks should be a multiple of the number of points so that
-    // each tick lines up with a point
-    if (numPoints) {
-      var ticks = [],
-          maxTicks = 10,
-          x = 1,
-          i = 0;
-
-      while (x <= maxTicks) {
-        if ((numPoints / x) <= maxTicks) {
-          break;
-        }
-        x = x + 1;
+    // for labels case we only want ticks at the label intervals
+    // HACK: however we also get this case with Date fields. In that case we
+    // could have a lot of values and so we limit to max 15 (we assume)
+    if (this.xvaluesAreIndex) {
+      var numTicks = Math.min(this.model.records.length, 15);
+      var increment = this.model.records.length / numTicks;
+      var ticks = [];
+      for (i=0; i<numTicks; i++) {
+        ticks.push(parseInt(i*increment, 10));
       }
-
-      for (i = 0; i < numPoints; i = i + x) {
-        ticks.push(i);
-      }
-
       xaxis.ticks = ticks;
     }
 
@@ -298,9 +300,11 @@ my.Flot = Backbone.View.extend({
 
   createSeries: function() {
     var self = this;
+    self.xvaluesAreIndex = false;
     var series = [];
     _.each(this.state.attributes.series, function(field) {
       var points = [];
+      var fieldLabel = self.model.fields.get(field).get('label');
       _.each(self.model.records.models, function(doc, index) {
         var xfield = self.model.fields.get(self.state.attributes.group);
         var x = doc.getFieldValue(xfield);
@@ -310,16 +314,13 @@ my.Flot = Backbone.View.extend({
         var isDateTime = (xtype === 'date' || xtype === 'date-time' || xtype  === 'time');
 
         if (isDateTime) {
-          if (self.state.attributes.graphType != 'bars' &&
-              self.state.attributes.graphType != 'columns') {
-            x = new Date(x).getTime();
-          } else {
-            x = index;
-          }
+          self.xvaluesAreIndex = true;
+          x = index;
         } else if (typeof x === 'string') {
           x = parseFloat(x);
-          if (isNaN(x)) {
+          if (isNaN(x)) { // assume this is a string label
             x = index;
+            self.xvaluesAreIndex = true;
           }
         }
 
@@ -334,7 +335,7 @@ my.Flot = Backbone.View.extend({
       });
       series.push({
         data: points,
-        label: field,
+        label: fieldLabel,
         hoverable: true
       });
     });

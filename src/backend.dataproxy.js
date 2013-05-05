@@ -5,7 +5,7 @@ this.recline.Backend.DataProxy = this.recline.Backend.DataProxy || {};
 (function(my) {
   my.__type__ = 'dataproxy';
   // URL for the dataproxy
-  my.dataproxy_url = 'http://jsonpdataproxy.appspot.com';
+  my.dataproxy_url = '//jsonpdataproxy.appspot.com';
   // Timeout for dataproxy (after this time if no response we error)
   // Needed because use JSONP so do not receive e.g. 500 errors 
   my.timeout = 5000;
@@ -42,8 +42,8 @@ this.recline.Backend.DataProxy = this.recline.Backend.DataProxy || {};
         useMemoryStore: true
       });
     })
-    .fail(function(arguments) {
-      dfd.reject(arguments);
+    .fail(function(args) {
+      dfd.reject(args);
     });
     return dfd.promise();
   };
@@ -60,16 +60,16 @@ this.recline.Backend.DataProxy = this.recline.Backend.DataProxy || {};
         message: 'Request Error: Backend did not respond after ' + (my.timeout / 1000) + ' seconds'
       });
     }, my.timeout);
-    ourFunction.done(function(arguments) {
+    ourFunction.done(function(args) {
         clearTimeout(timer);
-        dfd.resolve(arguments);
+        dfd.resolve(args);
       })
-      .fail(function(arguments) {
+      .fail(function(args) {
         clearTimeout(timer);
-        dfd.reject(arguments);
+        dfd.reject(args);
       })
       ;
     return dfd.promise();
-  }
+  };
 
 }(this.recline.Backend.DataProxy));

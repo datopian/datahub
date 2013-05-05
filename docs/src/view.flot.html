@@ -1,0 +1,452 @@
+<!DOCTYPE html>  <html> <head>   <title>view.flot.js</title>   <meta http-equiv="content-type" content="text/html; charset=UTF-8">   <link rel="stylesheet" media="all" href="docco.css" /> </head> <body>   <div id="container">     <div id="background"></div>            <div id="jump_to">         Jump To &hellip;         <div id="jump_wrapper">           <div id="jump_page">                                           <a class="source" href="backend.csv.html">                 backend.csv.js               </a>                                           <a class="source" href="backend.dataproxy.html">                 backend.dataproxy.js               </a>                                           <a class="source" href="backend.elasticsearch.html">                 backend.elasticsearch.js               </a>                                           <a class="source" href="backend.gdocs.html">                 backend.gdocs.js               </a>                                           <a class="source" href="backend.memory.html">                 backend.memory.js               </a>                                           <a class="source" href="ecma-fixes.html">                 ecma-fixes.js               </a>                                           <a class="source" href="model.html">                 model.js               </a>                                           <a class="source" href="view.flot.html">                 view.flot.js               </a>                                           <a class="source" href="view.graph.html">                 view.graph.js               </a>                                           <a class="source" href="view.grid.html">                 view.grid.js               </a>                                           <a class="source" href="view.map.html">                 view.map.js               </a>                                           <a class="source" href="view.multiview.html">                 view.multiview.js               </a>                                           <a class="source" href="view.slickgrid.html">                 view.slickgrid.js               </a>                                           <a class="source" href="view.timeline.html">                 view.timeline.js               </a>                                           <a class="source" href="widget.facetviewer.html">                 widget.facetviewer.js               </a>                                           <a class="source" href="widget.fields.html">                 widget.fields.js               </a>                                           <a class="source" href="widget.filtereditor.html">                 widget.filtereditor.js               </a>                                           <a class="source" href="widget.pager.html">                 widget.pager.js               </a>                                           <a class="source" href="widget.queryeditor.html">                 widget.queryeditor.js               </a>                                           <a class="source" href="widget.valuefilter.html">                 widget.valuefilter.js               </a>                        </div>         </div>       </div>          <table cellpadding="0" cellspacing="0">       <thead>         <tr>           <th class="docs">             <h1>               view.flot.js             </h1>           </th>           <th class="code">           </th>         </tr>       </thead>       <tbody>                               <tr id="section-1">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-1">&#182;</a>               </div>                            </td>             <td class="code">               <div class="highlight"><pre><span class="cm">/*jshint multistr:true */</span>
+
+<span class="k">this</span><span class="p">.</span><span class="nx">recline</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">recline</span> <span class="o">||</span> <span class="p">{};</span>
+<span class="k">this</span><span class="p">.</span><span class="nx">recline</span><span class="p">.</span><span class="nx">View</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">recline</span><span class="p">.</span><span class="nx">View</span> <span class="o">||</span> <span class="p">{};</span>
+
+<span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">$</span><span class="p">,</span> <span class="nx">my</span><span class="p">)</span> <span class="p">{</span></pre></div>             </td>           </tr>                               <tr id="section-2">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-2">&#182;</a>               </div>               <h2>Graph view for a Dataset using Flot graphing library.</h2>
+
+<p>Initialization arguments (in a hash in first parameter):</p>
+
+<ul>
+<li>model: recline.Model.Dataset</li>
+<li><p>state: (optional) configuration hash of form:</p>
+
+<p>{
+     group: {column name for x-axis},
+     series: [{column name for series A}, {column name series B}, ... ],
+     graphType: 'line',
+     graphOptions: {custom [flot options]}
+   }</p></li>
+</ul>
+
+<p>NB: should <em>not</em> provide an el argument to the view but must let the view
+generate the element itself (you can then append view.el to the DOM.</p>             </td>             <td class="code">               <div class="highlight"><pre><span class="nx">my</span><span class="p">.</span><span class="nx">Flot</span> <span class="o">=</span> <span class="nx">Backbone</span><span class="p">.</span><span class="nx">View</span><span class="p">.</span><span class="nx">extend</span><span class="p">({</span>
+  <span class="nx">template</span><span class="o">:</span> <span class="s1">&#39; \</span>
+<span class="s1">    &lt;div class=&quot;recline-flot&quot;&gt; \</span>
+<span class="s1">      &lt;div class=&quot;panel graph&quot; style=&quot;display: block;&quot;&gt; \</span>
+<span class="s1">        &lt;div class=&quot;js-temp-notice alert alert-block&quot;&gt; \</span>
+<span class="s1">          &lt;h3 class=&quot;alert-heading&quot;&gt;Hey there!&lt;/h3&gt; \</span>
+<span class="s1">          &lt;p&gt;There\&#39;s no graph here yet because we don\&#39;t know what fields you\&#39;d like to see plotted.&lt;/p&gt; \</span>
+<span class="s1">          &lt;p&gt;Please tell us by &lt;strong&gt;using the menu on the right&lt;/strong&gt; and a graph will automatically appear.&lt;/p&gt; \</span>
+<span class="s1">        &lt;/div&gt; \</span>
+<span class="s1">      &lt;/div&gt; \</span>
+<span class="s1">    &lt;/div&gt; \</span>
+<span class="s1">&#39;</span><span class="p">,</span>
+
+  <span class="nx">initialize</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">options</span><span class="p">)</span> <span class="p">{</span>
+    <span class="kd">var</span> <span class="nx">self</span> <span class="o">=</span> <span class="k">this</span><span class="p">;</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">graphColors</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;#edc240&quot;</span><span class="p">,</span> <span class="s2">&quot;#afd8f8&quot;</span><span class="p">,</span> <span class="s2">&quot;#cb4b4b&quot;</span><span class="p">,</span> <span class="s2">&quot;#4da74d&quot;</span><span class="p">,</span> <span class="s2">&quot;#9440ed&quot;</span><span class="p">];</span>
+
+    <span class="k">this</span><span class="p">.</span><span class="nx">el</span> <span class="o">=</span> <span class="nx">$</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">el</span><span class="p">);</span>
+    <span class="nx">_</span><span class="p">.</span><span class="nx">bindAll</span><span class="p">(</span><span class="k">this</span><span class="p">,</span> <span class="s1">&#39;render&#39;</span><span class="p">,</span> <span class="s1">&#39;redraw&#39;</span><span class="p">,</span> <span class="s1">&#39;_toolTip&#39;</span><span class="p">,</span> <span class="s1">&#39;_xaxisLabel&#39;</span><span class="p">);</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">needToRedraw</span> <span class="o">=</span> <span class="kc">false</span><span class="p">;</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">model</span><span class="p">.</span><span class="nx">bind</span><span class="p">(</span><span class="s1">&#39;change&#39;</span><span class="p">,</span> <span class="k">this</span><span class="p">.</span><span class="nx">render</span><span class="p">);</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">model</span><span class="p">.</span><span class="nx">fields</span><span class="p">.</span><span class="nx">bind</span><span class="p">(</span><span class="s1">&#39;reset&#39;</span><span class="p">,</span> <span class="k">this</span><span class="p">.</span><span class="nx">render</span><span class="p">);</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">model</span><span class="p">.</span><span class="nx">fields</span><span class="p">.</span><span class="nx">bind</span><span class="p">(</span><span class="s1">&#39;add&#39;</span><span class="p">,</span> <span class="k">this</span><span class="p">.</span><span class="nx">render</span><span class="p">);</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">model</span><span class="p">.</span><span class="nx">records</span><span class="p">.</span><span class="nx">bind</span><span class="p">(</span><span class="s1">&#39;add&#39;</span><span class="p">,</span> <span class="k">this</span><span class="p">.</span><span class="nx">redraw</span><span class="p">);</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">model</span><span class="p">.</span><span class="nx">records</span><span class="p">.</span><span class="nx">bind</span><span class="p">(</span><span class="s1">&#39;reset&#39;</span><span class="p">,</span> <span class="k">this</span><span class="p">.</span><span class="nx">redraw</span><span class="p">);</span>
+    <span class="kd">var</span> <span class="nx">stateData</span> <span class="o">=</span> <span class="nx">_</span><span class="p">.</span><span class="nx">extend</span><span class="p">({</span>
+        <span class="nx">group</span><span class="o">:</span> <span class="kc">null</span><span class="p">,</span></pre></div>             </td>           </tr>                               <tr id="section-3">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-3">&#182;</a>               </div>               <p>so that at least one series chooser box shows up</p>             </td>             <td class="code">               <div class="highlight"><pre>        <span class="nx">series</span><span class="o">:</span> <span class="p">[],</span>
+        <span class="nx">graphType</span><span class="o">:</span> <span class="s1">&#39;lines-and-points&#39;</span>
+      <span class="p">},</span>
+      <span class="nx">options</span><span class="p">.</span><span class="nx">state</span>
+    <span class="p">);</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">state</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">recline</span><span class="p">.</span><span class="nx">Model</span><span class="p">.</span><span class="nx">ObjectState</span><span class="p">(</span><span class="nx">stateData</span><span class="p">);</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">previousTooltipPoint</span> <span class="o">=</span> <span class="p">{</span><span class="nx">x</span><span class="o">:</span> <span class="kc">null</span><span class="p">,</span> <span class="nx">y</span><span class="o">:</span> <span class="kc">null</span><span class="p">};</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">editor</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">my</span><span class="p">.</span><span class="nx">FlotControls</span><span class="p">({</span>
+      <span class="nx">model</span><span class="o">:</span> <span class="k">this</span><span class="p">.</span><span class="nx">model</span><span class="p">,</span>
+      <span class="nx">state</span><span class="o">:</span> <span class="k">this</span><span class="p">.</span><span class="nx">state</span><span class="p">.</span><span class="nx">toJSON</span><span class="p">()</span>
+    <span class="p">});</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">editor</span><span class="p">.</span><span class="nx">state</span><span class="p">.</span><span class="nx">bind</span><span class="p">(</span><span class="s1">&#39;change&#39;</span><span class="p">,</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+      <span class="nx">self</span><span class="p">.</span><span class="nx">state</span><span class="p">.</span><span class="nx">set</span><span class="p">(</span><span class="nx">self</span><span class="p">.</span><span class="nx">editor</span><span class="p">.</span><span class="nx">state</span><span class="p">.</span><span class="nx">toJSON</span><span class="p">());</span>
+      <span class="nx">self</span><span class="p">.</span><span class="nx">redraw</span><span class="p">();</span>
+    <span class="p">});</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">elSidebar</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">editor</span><span class="p">.</span><span class="nx">el</span><span class="p">;</span>
+  <span class="p">},</span>
+
+  <span class="nx">render</span><span class="o">:</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+    <span class="kd">var</span> <span class="nx">self</span> <span class="o">=</span> <span class="k">this</span><span class="p">;</span>
+    <span class="kd">var</span> <span class="nx">tmplData</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">model</span><span class="p">.</span><span class="nx">toTemplateJSON</span><span class="p">();</span>
+    <span class="kd">var</span> <span class="nx">htmls</span> <span class="o">=</span> <span class="nx">Mustache</span><span class="p">.</span><span class="nx">render</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">template</span><span class="p">,</span> <span class="nx">tmplData</span><span class="p">);</span>
+    <span class="nx">$</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">el</span><span class="p">).</span><span class="nx">html</span><span class="p">(</span><span class="nx">htmls</span><span class="p">);</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">$graph</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">el</span><span class="p">.</span><span class="nx">find</span><span class="p">(</span><span class="s1">&#39;.panel.graph&#39;</span><span class="p">);</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">$graph</span><span class="p">.</span><span class="nx">on</span><span class="p">(</span><span class="s2">&quot;plothover&quot;</span><span class="p">,</span> <span class="k">this</span><span class="p">.</span><span class="nx">_toolTip</span><span class="p">);</span>
+    <span class="k">return</span> <span class="k">this</span><span class="p">;</span>
+  <span class="p">},</span>
+
+  <span class="nx">redraw</span><span class="o">:</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span></pre></div>             </td>           </tr>                               <tr id="section-4">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-4">&#182;</a>               </div>               <p>There are issues generating a Flot graph if either:
+* The relevant div that graph attaches to his hidden at the moment of creating the plot -- Flot will complain with
+  Uncaught Invalid dimensions for plot, width = 0, height = 0
+* There is no data for the plot -- either same error or may have issues later with errors like 'non-existent node-value'</p>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="kd">var</span> <span class="nx">areWeVisible</span> <span class="o">=</span> <span class="o">!</span><span class="nx">jQuery</span><span class="p">.</span><span class="nx">expr</span><span class="p">.</span><span class="nx">filters</span><span class="p">.</span><span class="nx">hidden</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">el</span><span class="p">[</span><span class="mi">0</span><span class="p">]);</span>
+    <span class="k">if</span> <span class="p">((</span><span class="o">!</span><span class="nx">areWeVisible</span> <span class="o">||</span> <span class="k">this</span><span class="p">.</span><span class="nx">model</span><span class="p">.</span><span class="nx">records</span><span class="p">.</span><span class="nx">length</span> <span class="o">===</span> <span class="mi">0</span><span class="p">))</span> <span class="p">{</span>
+      <span class="k">this</span><span class="p">.</span><span class="nx">needToRedraw</span> <span class="o">=</span> <span class="kc">true</span><span class="p">;</span>
+      <span class="k">return</span><span class="p">;</span>
+    <span class="p">}</span></pre></div>             </td>           </tr>                               <tr id="section-5">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-5">&#182;</a>               </div>               <p>check we have something to plot</p>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="k">if</span> <span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">state</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s1">&#39;group&#39;</span><span class="p">)</span> <span class="o">&amp;&amp;</span> <span class="k">this</span><span class="p">.</span><span class="nx">state</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s1">&#39;series&#39;</span><span class="p">))</span> <span class="p">{</span>
+      <span class="kd">var</span> <span class="nx">series</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">createSeries</span><span class="p">();</span>
+      <span class="kd">var</span> <span class="nx">options</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">getGraphOptions</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">state</span><span class="p">.</span><span class="nx">attributes</span><span class="p">.</span><span class="nx">graphType</span><span class="p">,</span> <span class="nx">series</span><span class="p">[</span><span class="mi">0</span><span class="p">].</span><span class="nx">data</span><span class="p">.</span><span class="nx">length</span><span class="p">);</span>
+      <span class="k">this</span><span class="p">.</span><span class="nx">plot</span> <span class="o">=</span> <span class="nx">$</span><span class="p">.</span><span class="nx">plot</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">$graph</span><span class="p">,</span> <span class="nx">series</span><span class="p">,</span> <span class="nx">options</span><span class="p">);</span>
+    <span class="p">}</span>
+  <span class="p">},</span>
+
+  <span class="nx">show</span><span class="o">:</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span></pre></div>             </td>           </tr>                               <tr id="section-6">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-6">&#182;</a>               </div>               <p>because we cannot redraw when hidden we may need to when becoming visible</p>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="k">if</span> <span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">needToRedraw</span><span class="p">)</span> <span class="p">{</span>
+      <span class="k">this</span><span class="p">.</span><span class="nx">redraw</span><span class="p">();</span>
+    <span class="p">}</span>
+  <span class="p">},</span></pre></div>             </td>           </tr>                               <tr id="section-7">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-7">&#182;</a>               </div>               <p>infoboxes on mouse hover on points/bars etc</p>             </td>             <td class="code">               <div class="highlight"><pre>  <span class="nx">_toolTip</span><span class="o">:</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">event</span><span class="p">,</span> <span class="nx">pos</span><span class="p">,</span> <span class="nx">item</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">if</span> <span class="p">(</span><span class="nx">item</span><span class="p">)</span> <span class="p">{</span>
+      <span class="k">if</span> <span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">previousTooltipPoint</span><span class="p">.</span><span class="nx">x</span> <span class="o">!==</span> <span class="nx">item</span><span class="p">.</span><span class="nx">dataIndex</span> <span class="o">||</span>
+          <span class="k">this</span><span class="p">.</span><span class="nx">previousTooltipPoint</span><span class="p">.</span><span class="nx">y</span> <span class="o">!==</span> <span class="nx">item</span><span class="p">.</span><span class="nx">seriesIndex</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">this</span><span class="p">.</span><span class="nx">previousTooltipPoint</span><span class="p">.</span><span class="nx">x</span> <span class="o">=</span> <span class="nx">item</span><span class="p">.</span><span class="nx">dataIndex</span><span class="p">;</span>
+        <span class="k">this</span><span class="p">.</span><span class="nx">previousTooltipPoint</span><span class="p">.</span><span class="nx">y</span> <span class="o">=</span> <span class="nx">item</span><span class="p">.</span><span class="nx">seriesIndex</span><span class="p">;</span>
+        <span class="nx">$</span><span class="p">(</span><span class="s2">&quot;#recline-flot-tooltip&quot;</span><span class="p">).</span><span class="nx">remove</span><span class="p">();</span>
+
+        <span class="kd">var</span> <span class="nx">x</span> <span class="o">=</span> <span class="nx">item</span><span class="p">.</span><span class="nx">datapoint</span><span class="p">[</span><span class="mi">0</span><span class="p">].</span><span class="nx">toFixed</span><span class="p">(</span><span class="mi">2</span><span class="p">),</span>
+            <span class="nx">y</span> <span class="o">=</span> <span class="nx">item</span><span class="p">.</span><span class="nx">datapoint</span><span class="p">[</span><span class="mi">1</span><span class="p">].</span><span class="nx">toFixed</span><span class="p">(</span><span class="mi">2</span><span class="p">);</span>
+
+        <span class="k">if</span> <span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">state</span><span class="p">.</span><span class="nx">attributes</span><span class="p">.</span><span class="nx">graphType</span> <span class="o">===</span> <span class="s1">&#39;bars&#39;</span><span class="p">)</span> <span class="p">{</span>
+          <span class="nx">x</span> <span class="o">=</span> <span class="nx">item</span><span class="p">.</span><span class="nx">datapoint</span><span class="p">[</span><span class="mi">1</span><span class="p">].</span><span class="nx">toFixed</span><span class="p">(</span><span class="mi">2</span><span class="p">),</span>
+          <span class="nx">y</span> <span class="o">=</span> <span class="nx">item</span><span class="p">.</span><span class="nx">datapoint</span><span class="p">[</span><span class="mi">0</span><span class="p">].</span><span class="nx">toFixed</span><span class="p">(</span><span class="mi">2</span><span class="p">);</span>
+        <span class="p">}</span>
+
+        <span class="kd">var</span> <span class="nx">content</span> <span class="o">=</span> <span class="nx">_</span><span class="p">.</span><span class="nx">template</span><span class="p">(</span><span class="s1">&#39;&lt;%= group %&gt; = &lt;%= x %&gt;, &lt;%= series %&gt; = &lt;%= y %&gt;&#39;</span><span class="p">,</span> <span class="p">{</span>
+          <span class="nx">group</span><span class="o">:</span> <span class="k">this</span><span class="p">.</span><span class="nx">state</span><span class="p">.</span><span class="nx">attributes</span><span class="p">.</span><span class="nx">group</span><span class="p">,</span>
+          <span class="nx">x</span><span class="o">:</span> <span class="k">this</span><span class="p">.</span><span class="nx">_xaxisLabel</span><span class="p">(</span><span class="nx">x</span><span class="p">),</span>
+          <span class="nx">series</span><span class="o">:</span> <span class="nx">item</span><span class="p">.</span><span class="nx">series</span><span class="p">.</span><span class="nx">label</span><span class="p">,</span>
+          <span class="nx">y</span><span class="o">:</span> <span class="nx">y</span>
+        <span class="p">});</span></pre></div>             </td>           </tr>                               <tr id="section-8">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-8">&#182;</a>               </div>               <p>use a different tooltip location offset for bar charts</p>             </td>             <td class="code">               <div class="highlight"><pre>        <span class="kd">var</span> <span class="nx">xLocation</span><span class="p">,</span> <span class="nx">yLocation</span><span class="p">;</span>
+        <span class="k">if</span> <span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">state</span><span class="p">.</span><span class="nx">attributes</span><span class="p">.</span><span class="nx">graphType</span> <span class="o">===</span> <span class="s1">&#39;bars&#39;</span><span class="p">)</span> <span class="p">{</span>
+          <span class="nx">xLocation</span> <span class="o">=</span> <span class="nx">item</span><span class="p">.</span><span class="nx">pageX</span> <span class="o">+</span> <span class="mi">15</span><span class="p">;</span>
+          <span class="nx">yLocation</span> <span class="o">=</span> <span class="nx">item</span><span class="p">.</span><span class="nx">pageY</span> <span class="o">-</span> <span class="mi">10</span><span class="p">;</span>
+        <span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">state</span><span class="p">.</span><span class="nx">attributes</span><span class="p">.</span><span class="nx">graphType</span> <span class="o">===</span> <span class="s1">&#39;columns&#39;</span><span class="p">)</span> <span class="p">{</span>
+          <span class="nx">xLocation</span> <span class="o">=</span> <span class="nx">item</span><span class="p">.</span><span class="nx">pageX</span> <span class="o">+</span> <span class="mi">15</span><span class="p">;</span>
+          <span class="nx">yLocation</span> <span class="o">=</span> <span class="nx">item</span><span class="p">.</span><span class="nx">pageY</span><span class="p">;</span>
+        <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+          <span class="nx">xLocation</span> <span class="o">=</span> <span class="nx">item</span><span class="p">.</span><span class="nx">pageX</span> <span class="o">+</span> <span class="mi">10</span><span class="p">;</span>
+          <span class="nx">yLocation</span> <span class="o">=</span> <span class="nx">item</span><span class="p">.</span><span class="nx">pageY</span> <span class="o">-</span> <span class="mi">20</span><span class="p">;</span>
+        <span class="p">}</span>
+
+        <span class="nx">$</span><span class="p">(</span><span class="s1">&#39;&lt;div id=&quot;recline-flot-tooltip&quot;&gt;&#39;</span> <span class="o">+</span> <span class="nx">content</span> <span class="o">+</span> <span class="s1">&#39;&lt;/div&gt;&#39;</span><span class="p">).</span><span class="nx">css</span><span class="p">({</span>
+            <span class="nx">top</span><span class="o">:</span> <span class="nx">yLocation</span><span class="p">,</span>
+            <span class="nx">left</span><span class="o">:</span> <span class="nx">xLocation</span>
+        <span class="p">}).</span><span class="nx">appendTo</span><span class="p">(</span><span class="s2">&quot;body&quot;</span><span class="p">).</span><span class="nx">fadeIn</span><span class="p">(</span><span class="mi">200</span><span class="p">);</span>
+      <span class="p">}</span>
+    <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+      <span class="nx">$</span><span class="p">(</span><span class="s2">&quot;#recline-flot-tooltip&quot;</span><span class="p">).</span><span class="nx">remove</span><span class="p">();</span>
+      <span class="k">this</span><span class="p">.</span><span class="nx">previousTooltipPoint</span><span class="p">.</span><span class="nx">x</span> <span class="o">=</span> <span class="kc">null</span><span class="p">;</span>
+      <span class="k">this</span><span class="p">.</span><span class="nx">previousTooltipPoint</span><span class="p">.</span><span class="nx">y</span> <span class="o">=</span> <span class="kc">null</span><span class="p">;</span>
+    <span class="p">}</span>
+  <span class="p">},</span>
+
+  <span class="nx">_xaxisLabel</span><span class="o">:</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">x</span><span class="p">)</span> <span class="p">{</span>
+    <span class="kd">var</span> <span class="nx">xfield</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">model</span><span class="p">.</span><span class="nx">fields</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">state</span><span class="p">.</span><span class="nx">attributes</span><span class="p">.</span><span class="nx">group</span><span class="p">);</span></pre></div>             </td>           </tr>                               <tr id="section-9">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-9">&#182;</a>               </div>               <p>time series</p>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="kd">var</span> <span class="nx">xtype</span> <span class="o">=</span> <span class="nx">xfield</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s1">&#39;type&#39;</span><span class="p">);</span>
+    <span class="kd">var</span> <span class="nx">isDateTime</span> <span class="o">=</span> <span class="p">(</span><span class="nx">xtype</span> <span class="o">===</span> <span class="s1">&#39;date&#39;</span> <span class="o">||</span> <span class="nx">xtype</span> <span class="o">===</span> <span class="s1">&#39;date-time&#39;</span> <span class="o">||</span> <span class="nx">xtype</span>  <span class="o">===</span> <span class="s1">&#39;time&#39;</span><span class="p">);</span>
+
+    <span class="k">if</span> <span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">xvaluesAreIndex</span><span class="p">)</span> <span class="p">{</span>
+      <span class="nx">x</span> <span class="o">=</span> <span class="nb">parseInt</span><span class="p">(</span><span class="nx">x</span><span class="p">,</span> <span class="mi">10</span><span class="p">);</span></pre></div>             </td>           </tr>                               <tr id="section-10">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-10">&#182;</a>               </div>               <p>HACK: deal with bar graph style cases where x-axis items were strings
+In this case x at this point is the index of the item in the list of
+records not its actual x-axis value</p>             </td>             <td class="code">               <div class="highlight"><pre>      <span class="nx">x</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">model</span><span class="p">.</span><span class="nx">records</span><span class="p">.</span><span class="nx">models</span><span class="p">[</span><span class="nx">x</span><span class="p">].</span><span class="nx">get</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">state</span><span class="p">.</span><span class="nx">attributes</span><span class="p">.</span><span class="nx">group</span><span class="p">);</span>
+    <span class="p">}</span>
+    <span class="k">if</span> <span class="p">(</span><span class="nx">isDateTime</span><span class="p">)</span> <span class="p">{</span>
+      <span class="nx">x</span> <span class="o">=</span> <span class="k">new</span> <span class="nb">Date</span><span class="p">(</span><span class="nx">x</span><span class="p">).</span><span class="nx">toLocaleDateString</span><span class="p">();</span>
+    <span class="p">}</span></pre></div>             </td>           </tr>                               <tr id="section-11">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-11">&#182;</a>               </div>               <p>} else if (isDateTime) {
+ x = new Date(parseInt(x, 10)).toLocaleDateString();
+}</p>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="k">return</span> <span class="nx">x</span><span class="p">;</span>
+  <span class="p">},</span></pre></div>             </td>           </tr>                               <tr id="section-12">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-12">&#182;</a>               </div>               <h3>getGraphOptions</h3>
+
+<p>Get options for Flot Graph</p>
+
+<p>needs to be function as can depend on state</p>
+
+<p>@param typeId graphType id (lines, lines-and-points etc)
+@param numPoints the number of points that will be plotted</p>             </td>             <td class="code">               <div class="highlight"><pre>  <span class="nx">getGraphOptions</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">typeId</span><span class="p">,</span> <span class="nx">numPoints</span><span class="p">)</span> <span class="p">{</span>
+    <span class="kd">var</span> <span class="nx">self</span> <span class="o">=</span> <span class="k">this</span><span class="p">;</span>
+
+    <span class="kd">var</span> <span class="nx">tickFormatter</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">x</span><span class="p">)</span> <span class="p">{</span></pre></div>             </td>           </tr>                               <tr id="section-13">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-13">&#182;</a>               </div>               <p>convert x to a string and make sure that it is not too long or the
+tick labels will overlap
+TODO: find a more accurate way of calculating the size of tick labels</p>             </td>             <td class="code">               <div class="highlight"><pre>      <span class="kd">var</span> <span class="nx">label</span> <span class="o">=</span> <span class="nx">self</span><span class="p">.</span><span class="nx">_xaxisLabel</span><span class="p">(</span><span class="nx">x</span><span class="p">)</span> <span class="o">||</span> <span class="s2">&quot;&quot;</span><span class="p">;</span>
+
+      <span class="k">if</span> <span class="p">(</span><span class="k">typeof</span> <span class="nx">label</span> <span class="o">!==</span> <span class="s1">&#39;string&#39;</span><span class="p">)</span> <span class="p">{</span>
+        <span class="nx">label</span> <span class="o">=</span> <span class="nx">label</span><span class="p">.</span><span class="nx">toString</span><span class="p">();</span>
+      <span class="p">}</span>
+      <span class="k">if</span> <span class="p">(</span><span class="nx">self</span><span class="p">.</span><span class="nx">state</span><span class="p">.</span><span class="nx">attributes</span><span class="p">.</span><span class="nx">graphType</span> <span class="o">!==</span> <span class="s1">&#39;bars&#39;</span> <span class="o">&amp;&amp;</span> <span class="nx">label</span><span class="p">.</span><span class="nx">length</span> <span class="o">&gt;</span> <span class="mi">10</span><span class="p">)</span> <span class="p">{</span>
+        <span class="nx">label</span> <span class="o">=</span> <span class="nx">label</span><span class="p">.</span><span class="nx">slice</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;...&quot;</span><span class="p">;</span>
+      <span class="p">}</span>
+
+      <span class="k">return</span> <span class="nx">label</span><span class="p">;</span>
+    <span class="p">};</span>
+
+    <span class="kd">var</span> <span class="nx">xaxis</span> <span class="o">=</span> <span class="p">{};</span>
+    <span class="nx">xaxis</span><span class="p">.</span><span class="nx">tickFormatter</span> <span class="o">=</span> <span class="nx">tickFormatter</span><span class="p">;</span></pre></div>             </td>           </tr>                               <tr id="section-14">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-14">&#182;</a>               </div>               <p>for labels case we only want ticks at the label intervals
+HACK: however we also get this case with Date fields. In that case we
+could have a lot of values and so we limit to max 15 (we assume)</p>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="k">if</span> <span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">xvaluesAreIndex</span><span class="p">)</span> <span class="p">{</span>
+      <span class="kd">var</span> <span class="nx">numTicks</span> <span class="o">=</span> <span class="nb">Math</span><span class="p">.</span><span class="nx">min</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">model</span><span class="p">.</span><span class="nx">records</span><span class="p">.</span><span class="nx">length</span><span class="p">,</span> <span class="mi">15</span><span class="p">);</span>
+      <span class="kd">var</span> <span class="nx">increment</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">model</span><span class="p">.</span><span class="nx">records</span><span class="p">.</span><span class="nx">length</span> <span class="o">/</span> <span class="nx">numTicks</span><span class="p">;</span>
+      <span class="kd">var</span> <span class="nx">ticks</span> <span class="o">=</span> <span class="p">[];</span>
+      <span class="k">for</span> <span class="p">(</span><span class="nx">i</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span> <span class="nx">i</span><span class="o">&lt;</span><span class="nx">numTicks</span><span class="p">;</span> <span class="nx">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+        <span class="nx">ticks</span><span class="p">.</span><span class="nx">push</span><span class="p">(</span><span class="nb">parseInt</span><span class="p">(</span><span class="nx">i</span><span class="o">*</span><span class="nx">increment</span><span class="p">,</span> <span class="mi">10</span><span class="p">));</span>
+      <span class="p">}</span>
+      <span class="nx">xaxis</span><span class="p">.</span><span class="nx">ticks</span> <span class="o">=</span> <span class="nx">ticks</span><span class="p">;</span>
+    <span class="p">}</span>
+
+    <span class="kd">var</span> <span class="nx">yaxis</span> <span class="o">=</span> <span class="p">{};</span>
+    <span class="nx">yaxis</span><span class="p">.</span><span class="nx">autoscale</span> <span class="o">=</span> <span class="kc">true</span><span class="p">;</span>
+    <span class="nx">yaxis</span><span class="p">.</span><span class="nx">autoscaleMargin</span> <span class="o">=</span> <span class="mf">0.02</span><span class="p">;</span>
+
+    <span class="kd">var</span> <span class="nx">legend</span> <span class="o">=</span> <span class="p">{};</span>
+    <span class="nx">legend</span><span class="p">.</span><span class="nx">position</span> <span class="o">=</span> <span class="s1">&#39;ne&#39;</span><span class="p">;</span>
+
+    <span class="kd">var</span> <span class="nx">grid</span> <span class="o">=</span> <span class="p">{};</span>
+    <span class="nx">grid</span><span class="p">.</span><span class="nx">hoverable</span> <span class="o">=</span> <span class="kc">true</span><span class="p">;</span>
+    <span class="nx">grid</span><span class="p">.</span><span class="nx">clickable</span> <span class="o">=</span> <span class="kc">true</span><span class="p">;</span>
+    <span class="nx">grid</span><span class="p">.</span><span class="nx">borderColor</span> <span class="o">=</span> <span class="s2">&quot;#aaaaaa&quot;</span><span class="p">;</span>
+    <span class="nx">grid</span><span class="p">.</span><span class="nx">borderWidth</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
+
+    <span class="kd">var</span> <span class="nx">optionsPerGraphType</span> <span class="o">=</span> <span class="p">{</span>
+      <span class="nx">lines</span><span class="o">:</span> <span class="p">{</span>
+        <span class="nx">legend</span><span class="o">:</span> <span class="nx">legend</span><span class="p">,</span>
+        <span class="nx">colors</span><span class="o">:</span> <span class="k">this</span><span class="p">.</span><span class="nx">graphColors</span><span class="p">,</span>
+        <span class="nx">lines</span><span class="o">:</span> <span class="p">{</span> <span class="nx">show</span><span class="o">:</span> <span class="kc">true</span> <span class="p">},</span>
+        <span class="nx">xaxis</span><span class="o">:</span> <span class="nx">xaxis</span><span class="p">,</span>
+        <span class="nx">yaxis</span><span class="o">:</span> <span class="nx">yaxis</span><span class="p">,</span>
+        <span class="nx">grid</span><span class="o">:</span> <span class="nx">grid</span>
+      <span class="p">},</span>
+      <span class="nx">points</span><span class="o">:</span> <span class="p">{</span>
+        <span class="nx">legend</span><span class="o">:</span> <span class="nx">legend</span><span class="p">,</span>
+        <span class="nx">colors</span><span class="o">:</span> <span class="k">this</span><span class="p">.</span><span class="nx">graphColors</span><span class="p">,</span>
+        <span class="nx">points</span><span class="o">:</span> <span class="p">{</span> <span class="nx">show</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span> <span class="nx">hitRadius</span><span class="o">:</span> <span class="mi">5</span> <span class="p">},</span>
+        <span class="nx">xaxis</span><span class="o">:</span> <span class="nx">xaxis</span><span class="p">,</span>
+        <span class="nx">yaxis</span><span class="o">:</span> <span class="nx">yaxis</span><span class="p">,</span>
+        <span class="nx">grid</span><span class="o">:</span> <span class="nx">grid</span>
+      <span class="p">},</span>
+      <span class="s1">&#39;lines-and-points&#39;</span><span class="o">:</span> <span class="p">{</span>
+        <span class="nx">legend</span><span class="o">:</span> <span class="nx">legend</span><span class="p">,</span>
+        <span class="nx">colors</span><span class="o">:</span> <span class="k">this</span><span class="p">.</span><span class="nx">graphColors</span><span class="p">,</span>
+        <span class="nx">points</span><span class="o">:</span> <span class="p">{</span> <span class="nx">show</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span> <span class="nx">hitRadius</span><span class="o">:</span> <span class="mi">5</span> <span class="p">},</span>
+        <span class="nx">lines</span><span class="o">:</span> <span class="p">{</span> <span class="nx">show</span><span class="o">:</span> <span class="kc">true</span> <span class="p">},</span>
+        <span class="nx">xaxis</span><span class="o">:</span> <span class="nx">xaxis</span><span class="p">,</span>
+        <span class="nx">yaxis</span><span class="o">:</span> <span class="nx">yaxis</span><span class="p">,</span>
+        <span class="nx">grid</span><span class="o">:</span> <span class="nx">grid</span>
+      <span class="p">},</span>
+      <span class="nx">bars</span><span class="o">:</span> <span class="p">{</span>
+        <span class="nx">legend</span><span class="o">:</span> <span class="nx">legend</span><span class="p">,</span>
+        <span class="nx">colors</span><span class="o">:</span> <span class="k">this</span><span class="p">.</span><span class="nx">graphColors</span><span class="p">,</span>
+        <span class="nx">lines</span><span class="o">:</span> <span class="p">{</span> <span class="nx">show</span><span class="o">:</span> <span class="kc">false</span> <span class="p">},</span>
+        <span class="nx">xaxis</span><span class="o">:</span> <span class="nx">yaxis</span><span class="p">,</span>
+        <span class="nx">yaxis</span><span class="o">:</span> <span class="nx">xaxis</span><span class="p">,</span>
+        <span class="nx">grid</span><span class="o">:</span> <span class="nx">grid</span><span class="p">,</span>
+        <span class="nx">bars</span><span class="o">:</span> <span class="p">{</span>
+          <span class="nx">show</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span>
+          <span class="nx">horizontal</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span>
+          <span class="nx">shadowSize</span><span class="o">:</span> <span class="mi">0</span><span class="p">,</span>
+          <span class="nx">align</span><span class="o">:</span> <span class="s1">&#39;center&#39;</span><span class="p">,</span>
+          <span class="nx">barWidth</span><span class="o">:</span> <span class="mf">0.8</span>
+        <span class="p">}</span>
+      <span class="p">},</span>
+      <span class="nx">columns</span><span class="o">:</span> <span class="p">{</span>
+        <span class="nx">legend</span><span class="o">:</span> <span class="nx">legend</span><span class="p">,</span>
+        <span class="nx">colors</span><span class="o">:</span> <span class="k">this</span><span class="p">.</span><span class="nx">graphColors</span><span class="p">,</span>
+        <span class="nx">lines</span><span class="o">:</span> <span class="p">{</span> <span class="nx">show</span><span class="o">:</span> <span class="kc">false</span> <span class="p">},</span>
+        <span class="nx">xaxis</span><span class="o">:</span> <span class="nx">xaxis</span><span class="p">,</span>
+        <span class="nx">yaxis</span><span class="o">:</span> <span class="nx">yaxis</span><span class="p">,</span>
+        <span class="nx">grid</span><span class="o">:</span> <span class="nx">grid</span><span class="p">,</span>
+        <span class="nx">bars</span><span class="o">:</span> <span class="p">{</span>
+          <span class="nx">show</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span>
+          <span class="nx">horizontal</span><span class="o">:</span> <span class="kc">false</span><span class="p">,</span>
+          <span class="nx">shadowSize</span><span class="o">:</span> <span class="mi">0</span><span class="p">,</span>
+          <span class="nx">align</span><span class="o">:</span> <span class="s1">&#39;center&#39;</span><span class="p">,</span>
+          <span class="nx">barWidth</span><span class="o">:</span> <span class="mf">0.8</span>
+        <span class="p">}</span>
+      <span class="p">}</span>
+    <span class="p">};</span>
+
+    <span class="k">if</span> <span class="p">(</span><span class="nx">self</span><span class="p">.</span><span class="nx">state</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s1">&#39;graphOptions&#39;</span><span class="p">))</span> <span class="p">{</span>
+      <span class="k">return</span> <span class="nx">_</span><span class="p">.</span><span class="nx">extend</span><span class="p">(</span><span class="nx">optionsPerGraphType</span><span class="p">[</span><span class="nx">typeId</span><span class="p">],</span>
+                      <span class="nx">self</span><span class="p">.</span><span class="nx">state</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s1">&#39;graphOptions&#39;</span><span class="p">));</span>
+    <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+      <span class="k">return</span> <span class="nx">optionsPerGraphType</span><span class="p">[</span><span class="nx">typeId</span><span class="p">];</span>
+    <span class="p">}</span>
+  <span class="p">},</span>
+
+  <span class="nx">createSeries</span><span class="o">:</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+    <span class="kd">var</span> <span class="nx">self</span> <span class="o">=</span> <span class="k">this</span><span class="p">;</span>
+    <span class="nx">self</span><span class="p">.</span><span class="nx">xvaluesAreIndex</span> <span class="o">=</span> <span class="kc">false</span><span class="p">;</span>
+    <span class="kd">var</span> <span class="nx">series</span> <span class="o">=</span> <span class="p">[];</span>
+    <span class="nx">_</span><span class="p">.</span><span class="nx">each</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">state</span><span class="p">.</span><span class="nx">attributes</span><span class="p">.</span><span class="nx">series</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">field</span><span class="p">)</span> <span class="p">{</span>
+      <span class="kd">var</span> <span class="nx">points</span> <span class="o">=</span> <span class="p">[];</span>
+      <span class="kd">var</span> <span class="nx">fieldLabel</span> <span class="o">=</span> <span class="nx">self</span><span class="p">.</span><span class="nx">model</span><span class="p">.</span><span class="nx">fields</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="nx">field</span><span class="p">).</span><span class="nx">get</span><span class="p">(</span><span class="s1">&#39;label&#39;</span><span class="p">);</span>
+      <span class="nx">_</span><span class="p">.</span><span class="nx">each</span><span class="p">(</span><span class="nx">self</span><span class="p">.</span><span class="nx">model</span><span class="p">.</span><span class="nx">records</span><span class="p">.</span><span class="nx">models</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">doc</span><span class="p">,</span> <span class="nx">index</span><span class="p">)</span> <span class="p">{</span>
+        <span class="kd">var</span> <span class="nx">xfield</span> <span class="o">=</span> <span class="nx">self</span><span class="p">.</span><span class="nx">model</span><span class="p">.</span><span class="nx">fields</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="nx">self</span><span class="p">.</span><span class="nx">state</span><span class="p">.</span><span class="nx">attributes</span><span class="p">.</span><span class="nx">group</span><span class="p">);</span>
+        <span class="kd">var</span> <span class="nx">x</span> <span class="o">=</span> <span class="nx">doc</span><span class="p">.</span><span class="nx">getFieldValue</span><span class="p">(</span><span class="nx">xfield</span><span class="p">);</span></pre></div>             </td>           </tr>                               <tr id="section-15">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-15">&#182;</a>               </div>               <p>time series</p>             </td>             <td class="code">               <div class="highlight"><pre>        <span class="kd">var</span> <span class="nx">xtype</span> <span class="o">=</span> <span class="nx">xfield</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s1">&#39;type&#39;</span><span class="p">);</span>
+        <span class="kd">var</span> <span class="nx">isDateTime</span> <span class="o">=</span> <span class="p">(</span><span class="nx">xtype</span> <span class="o">===</span> <span class="s1">&#39;date&#39;</span> <span class="o">||</span> <span class="nx">xtype</span> <span class="o">===</span> <span class="s1">&#39;date-time&#39;</span> <span class="o">||</span> <span class="nx">xtype</span>  <span class="o">===</span> <span class="s1">&#39;time&#39;</span><span class="p">);</span>
+
+        <span class="k">if</span> <span class="p">(</span><span class="nx">isDateTime</span><span class="p">)</span> <span class="p">{</span>
+          <span class="nx">self</span><span class="p">.</span><span class="nx">xvaluesAreIndex</span> <span class="o">=</span> <span class="kc">true</span><span class="p">;</span>
+          <span class="nx">x</span> <span class="o">=</span> <span class="nx">index</span><span class="p">;</span>
+        <span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="k">typeof</span> <span class="nx">x</span> <span class="o">===</span> <span class="s1">&#39;string&#39;</span><span class="p">)</span> <span class="p">{</span>
+          <span class="nx">x</span> <span class="o">=</span> <span class="nb">parseFloat</span><span class="p">(</span><span class="nx">x</span><span class="p">);</span>
+          <span class="k">if</span> <span class="p">(</span><span class="nb">isNaN</span><span class="p">(</span><span class="nx">x</span><span class="p">))</span> <span class="p">{</span> <span class="c1">// assume this is a string label</span>
+            <span class="nx">x</span> <span class="o">=</span> <span class="nx">index</span><span class="p">;</span>
+            <span class="nx">self</span><span class="p">.</span><span class="nx">xvaluesAreIndex</span> <span class="o">=</span> <span class="kc">true</span><span class="p">;</span>
+          <span class="p">}</span>
+        <span class="p">}</span>
+
+        <span class="kd">var</span> <span class="nx">yfield</span> <span class="o">=</span> <span class="nx">self</span><span class="p">.</span><span class="nx">model</span><span class="p">.</span><span class="nx">fields</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="nx">field</span><span class="p">);</span>
+        <span class="kd">var</span> <span class="nx">y</span> <span class="o">=</span> <span class="nx">doc</span><span class="p">.</span><span class="nx">getFieldValue</span><span class="p">(</span><span class="nx">yfield</span><span class="p">);</span>
+
+        <span class="k">if</span> <span class="p">(</span><span class="nx">self</span><span class="p">.</span><span class="nx">state</span><span class="p">.</span><span class="nx">attributes</span><span class="p">.</span><span class="nx">graphType</span> <span class="o">==</span> <span class="s1">&#39;bars&#39;</span><span class="p">)</span> <span class="p">{</span>
+          <span class="nx">points</span><span class="p">.</span><span class="nx">push</span><span class="p">([</span><span class="nx">y</span><span class="p">,</span> <span class="nx">x</span><span class="p">]);</span>
+        <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+          <span class="nx">points</span><span class="p">.</span><span class="nx">push</span><span class="p">([</span><span class="nx">x</span><span class="p">,</span> <span class="nx">y</span><span class="p">]);</span>
+        <span class="p">}</span>
+      <span class="p">});</span>
+      <span class="nx">series</span><span class="p">.</span><span class="nx">push</span><span class="p">({</span>
+        <span class="nx">data</span><span class="o">:</span> <span class="nx">points</span><span class="p">,</span>
+        <span class="nx">label</span><span class="o">:</span> <span class="nx">fieldLabel</span><span class="p">,</span>
+        <span class="nx">hoverable</span><span class="o">:</span> <span class="kc">true</span>
+      <span class="p">});</span>
+    <span class="p">});</span>
+    <span class="k">return</span> <span class="nx">series</span><span class="p">;</span>
+  <span class="p">}</span>
+<span class="p">});</span>
+
+<span class="nx">my</span><span class="p">.</span><span class="nx">FlotControls</span> <span class="o">=</span> <span class="nx">Backbone</span><span class="p">.</span><span class="nx">View</span><span class="p">.</span><span class="nx">extend</span><span class="p">({</span>
+  <span class="nx">className</span><span class="o">:</span> <span class="s2">&quot;editor&quot;</span><span class="p">,</span>
+  <span class="nx">template</span><span class="o">:</span> <span class="s1">&#39; \</span>
+<span class="s1">  &lt;div class=&quot;editor&quot;&gt; \</span>
+<span class="s1">    &lt;form class=&quot;form-stacked&quot;&gt; \</span>
+<span class="s1">      &lt;div class=&quot;clearfix&quot;&gt; \</span>
+<span class="s1">        &lt;label&gt;Graph Type&lt;/label&gt; \</span>
+<span class="s1">        &lt;div class=&quot;input editor-type&quot;&gt; \</span>
+<span class="s1">          &lt;select&gt; \</span>
+<span class="s1">          &lt;option value=&quot;lines-and-points&quot;&gt;Lines and Points&lt;/option&gt; \</span>
+<span class="s1">          &lt;option value=&quot;lines&quot;&gt;Lines&lt;/option&gt; \</span>
+<span class="s1">          &lt;option value=&quot;points&quot;&gt;Points&lt;/option&gt; \</span>
+<span class="s1">          &lt;option value=&quot;bars&quot;&gt;Bars&lt;/option&gt; \</span>
+<span class="s1">          &lt;option value=&quot;columns&quot;&gt;Columns&lt;/option&gt; \</span>
+<span class="s1">          &lt;/select&gt; \</span>
+<span class="s1">        &lt;/div&gt; \</span>
+<span class="s1">        &lt;label&gt;Group Column (Axis 1)&lt;/label&gt; \</span>
+<span class="s1">        &lt;div class=&quot;input editor-group&quot;&gt; \</span>
+<span class="s1">          &lt;select&gt; \</span>
+<span class="s1">          &lt;option value=&quot;&quot;&gt;Please choose ...&lt;/option&gt; \</span>
+<span class="s1">          {{#fields}} \</span>
+<span class="s1">          &lt;option value=&quot;{{id}}&quot;&gt;{{label}}&lt;/option&gt; \</span>
+<span class="s1">          {{/fields}} \</span>
+<span class="s1">          &lt;/select&gt; \</span>
+<span class="s1">        &lt;/div&gt; \</span>
+<span class="s1">        &lt;div class=&quot;editor-series-group&quot;&gt; \</span>
+<span class="s1">        &lt;/div&gt; \</span>
+<span class="s1">      &lt;/div&gt; \</span>
+<span class="s1">      &lt;div class=&quot;editor-buttons&quot;&gt; \</span>
+<span class="s1">        &lt;button class=&quot;btn editor-add&quot;&gt;Add Series&lt;/button&gt; \</span>
+<span class="s1">      &lt;/div&gt; \</span>
+<span class="s1">      &lt;div class=&quot;editor-buttons editor-submit&quot; comment=&quot;hidden temporarily&quot; style=&quot;display: none;&quot;&gt; \</span>
+<span class="s1">        &lt;button class=&quot;editor-save&quot;&gt;Save&lt;/button&gt; \</span>
+<span class="s1">        &lt;input type=&quot;hidden&quot; class=&quot;editor-id&quot; value=&quot;chart-1&quot; /&gt; \</span>
+<span class="s1">      &lt;/div&gt; \</span>
+<span class="s1">    &lt;/form&gt; \</span>
+<span class="s1">  &lt;/div&gt; \</span>
+<span class="s1">&#39;</span><span class="p">,</span>
+  <span class="nx">templateSeriesEditor</span><span class="o">:</span> <span class="s1">&#39; \</span>
+<span class="s1">    &lt;div class=&quot;editor-series js-series-{{seriesIndex}}&quot;&gt; \</span>
+<span class="s1">      &lt;label&gt;Series &lt;span&gt;{{seriesName}} (Axis 2)&lt;/span&gt; \</span>
+<span class="s1">        [&lt;a href=&quot;#remove&quot; class=&quot;action-remove-series&quot;&gt;Remove&lt;/a&gt;] \</span>
+<span class="s1">      &lt;/label&gt; \</span>
+<span class="s1">      &lt;div class=&quot;input&quot;&gt; \</span>
+<span class="s1">        &lt;select&gt; \</span>
+<span class="s1">        {{#fields}} \</span>
+<span class="s1">        &lt;option value=&quot;{{id}}&quot;&gt;{{label}}&lt;/option&gt; \</span>
+<span class="s1">        {{/fields}} \</span>
+<span class="s1">        &lt;/select&gt; \</span>
+<span class="s1">      &lt;/div&gt; \</span>
+<span class="s1">    &lt;/div&gt; \</span>
+<span class="s1">  &#39;</span><span class="p">,</span>
+  <span class="nx">events</span><span class="o">:</span> <span class="p">{</span>
+    <span class="s1">&#39;change form select&#39;</span><span class="o">:</span> <span class="s1">&#39;onEditorSubmit&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;click .editor-add&#39;</span><span class="o">:</span> <span class="s1">&#39;_onAddSeries&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;click .action-remove-series&#39;</span><span class="o">:</span> <span class="s1">&#39;removeSeries&#39;</span>
+  <span class="p">},</span>
+
+  <span class="nx">initialize</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">options</span><span class="p">)</span> <span class="p">{</span>
+    <span class="kd">var</span> <span class="nx">self</span> <span class="o">=</span> <span class="k">this</span><span class="p">;</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">el</span> <span class="o">=</span> <span class="nx">$</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">el</span><span class="p">);</span>
+    <span class="nx">_</span><span class="p">.</span><span class="nx">bindAll</span><span class="p">(</span><span class="k">this</span><span class="p">,</span> <span class="s1">&#39;render&#39;</span><span class="p">);</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">model</span><span class="p">.</span><span class="nx">fields</span><span class="p">.</span><span class="nx">bind</span><span class="p">(</span><span class="s1">&#39;reset&#39;</span><span class="p">,</span> <span class="k">this</span><span class="p">.</span><span class="nx">render</span><span class="p">);</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">model</span><span class="p">.</span><span class="nx">fields</span><span class="p">.</span><span class="nx">bind</span><span class="p">(</span><span class="s1">&#39;add&#39;</span><span class="p">,</span> <span class="k">this</span><span class="p">.</span><span class="nx">render</span><span class="p">);</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">state</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">recline</span><span class="p">.</span><span class="nx">Model</span><span class="p">.</span><span class="nx">ObjectState</span><span class="p">(</span><span class="nx">options</span><span class="p">.</span><span class="nx">state</span><span class="p">);</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">render</span><span class="p">();</span>
+  <span class="p">},</span>
+
+  <span class="nx">render</span><span class="o">:</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+    <span class="kd">var</span> <span class="nx">self</span> <span class="o">=</span> <span class="k">this</span><span class="p">;</span>
+    <span class="kd">var</span> <span class="nx">tmplData</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">model</span><span class="p">.</span><span class="nx">toTemplateJSON</span><span class="p">();</span>
+    <span class="kd">var</span> <span class="nx">htmls</span> <span class="o">=</span> <span class="nx">Mustache</span><span class="p">.</span><span class="nx">render</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">template</span><span class="p">,</span> <span class="nx">tmplData</span><span class="p">);</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">el</span><span class="p">.</span><span class="nx">html</span><span class="p">(</span><span class="nx">htmls</span><span class="p">);</span></pre></div>             </td>           </tr>                               <tr id="section-16">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-16">&#182;</a>               </div>               <p>set up editor from state</p>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="k">if</span> <span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">state</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s1">&#39;graphType&#39;</span><span class="p">))</span> <span class="p">{</span>
+      <span class="k">this</span><span class="p">.</span><span class="nx">_selectOption</span><span class="p">(</span><span class="s1">&#39;.editor-type&#39;</span><span class="p">,</span> <span class="k">this</span><span class="p">.</span><span class="nx">state</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s1">&#39;graphType&#39;</span><span class="p">));</span>
+    <span class="p">}</span>
+    <span class="k">if</span> <span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">state</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s1">&#39;group&#39;</span><span class="p">))</span> <span class="p">{</span>
+      <span class="k">this</span><span class="p">.</span><span class="nx">_selectOption</span><span class="p">(</span><span class="s1">&#39;.editor-group&#39;</span><span class="p">,</span> <span class="k">this</span><span class="p">.</span><span class="nx">state</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s1">&#39;group&#39;</span><span class="p">));</span>
+    <span class="p">}</span></pre></div>             </td>           </tr>                               <tr id="section-17">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-17">&#182;</a>               </div>               <p>ensure at least one series box shows up</p>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="kd">var</span> <span class="nx">tmpSeries</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;&quot;</span><span class="p">];</span>
+    <span class="k">if</span> <span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">state</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s1">&#39;series&#39;</span><span class="p">).</span><span class="nx">length</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+      <span class="nx">tmpSeries</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">state</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s1">&#39;series&#39;</span><span class="p">);</span>
+    <span class="p">}</span>
+    <span class="nx">_</span><span class="p">.</span><span class="nx">each</span><span class="p">(</span><span class="nx">tmpSeries</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">series</span><span class="p">,</span> <span class="nx">idx</span><span class="p">)</span> <span class="p">{</span>
+      <span class="nx">self</span><span class="p">.</span><span class="nx">addSeries</span><span class="p">(</span><span class="nx">idx</span><span class="p">);</span>
+      <span class="nx">self</span><span class="p">.</span><span class="nx">_selectOption</span><span class="p">(</span><span class="s1">&#39;.editor-series.js-series-&#39;</span> <span class="o">+</span> <span class="nx">idx</span><span class="p">,</span> <span class="nx">series</span><span class="p">);</span>
+    <span class="p">});</span>
+    <span class="k">return</span> <span class="k">this</span><span class="p">;</span>
+  <span class="p">},</span></pre></div>             </td>           </tr>                               <tr id="section-18">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-18">&#182;</a>               </div>               <p>Private: Helper function to select an option from a select list</p>             </td>             <td class="code">               <div class="highlight"><pre>  <span class="nx">_selectOption</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">id</span><span class="p">,</span><span class="nx">value</span><span class="p">){</span>
+    <span class="kd">var</span> <span class="nx">options</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">el</span><span class="p">.</span><span class="nx">find</span><span class="p">(</span><span class="nx">id</span> <span class="o">+</span> <span class="s1">&#39; select &gt; option&#39;</span><span class="p">);</span>
+    <span class="k">if</span> <span class="p">(</span><span class="nx">options</span><span class="p">)</span> <span class="p">{</span>
+      <span class="nx">options</span><span class="p">.</span><span class="nx">each</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">opt</span><span class="p">){</span>
+        <span class="k">if</span> <span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">value</span> <span class="o">==</span> <span class="nx">value</span><span class="p">)</span> <span class="p">{</span>
+          <span class="nx">$</span><span class="p">(</span><span class="k">this</span><span class="p">).</span><span class="nx">attr</span><span class="p">(</span><span class="s1">&#39;selected&#39;</span><span class="p">,</span><span class="s1">&#39;selected&#39;</span><span class="p">);</span>
+          <span class="k">return</span> <span class="kc">false</span><span class="p">;</span>
+        <span class="p">}</span>
+      <span class="p">});</span>
+    <span class="p">}</span>
+  <span class="p">},</span>
+
+  <span class="nx">onEditorSubmit</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">e</span><span class="p">)</span> <span class="p">{</span>
+    <span class="kd">var</span> <span class="nx">select</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">el</span><span class="p">.</span><span class="nx">find</span><span class="p">(</span><span class="s1">&#39;.editor-group select&#39;</span><span class="p">);</span>
+    <span class="kd">var</span> <span class="nx">$editor</span> <span class="o">=</span> <span class="k">this</span><span class="p">;</span>
+    <span class="kd">var</span> <span class="nx">$series</span>  <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">el</span><span class="p">.</span><span class="nx">find</span><span class="p">(</span><span class="s1">&#39;.editor-series select&#39;</span><span class="p">);</span>
+    <span class="kd">var</span> <span class="nx">series</span> <span class="o">=</span> <span class="nx">$series</span><span class="p">.</span><span class="nx">map</span><span class="p">(</span><span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
+      <span class="k">return</span> <span class="nx">$</span><span class="p">(</span><span class="k">this</span><span class="p">).</span><span class="nx">val</span><span class="p">();</span>
+    <span class="p">});</span>
+    <span class="kd">var</span> <span class="nx">updatedState</span> <span class="o">=</span> <span class="p">{</span>
+      <span class="nx">series</span><span class="o">:</span> <span class="nx">$</span><span class="p">.</span><span class="nx">makeArray</span><span class="p">(</span><span class="nx">series</span><span class="p">),</span>
+      <span class="nx">group</span><span class="o">:</span> <span class="k">this</span><span class="p">.</span><span class="nx">el</span><span class="p">.</span><span class="nx">find</span><span class="p">(</span><span class="s1">&#39;.editor-group select&#39;</span><span class="p">).</span><span class="nx">val</span><span class="p">(),</span>
+      <span class="nx">graphType</span><span class="o">:</span> <span class="k">this</span><span class="p">.</span><span class="nx">el</span><span class="p">.</span><span class="nx">find</span><span class="p">(</span><span class="s1">&#39;.editor-type select&#39;</span><span class="p">).</span><span class="nx">val</span><span class="p">()</span>
+    <span class="p">};</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">state</span><span class="p">.</span><span class="nx">set</span><span class="p">(</span><span class="nx">updatedState</span><span class="p">);</span>
+  <span class="p">},</span></pre></div>             </td>           </tr>                               <tr id="section-19">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-19">&#182;</a>               </div>               <p>Public: Adds a new empty series select box to the editor.</p>
+
+<p>@param [int] idx index of this series in the list of series</p>
+
+<p>Returns itself.</p>             </td>             <td class="code">               <div class="highlight"><pre>  <span class="nx">addSeries</span><span class="o">:</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">idx</span><span class="p">)</span> <span class="p">{</span>
+    <span class="kd">var</span> <span class="nx">data</span> <span class="o">=</span> <span class="nx">_</span><span class="p">.</span><span class="nx">extend</span><span class="p">({</span>
+      <span class="nx">seriesIndex</span><span class="o">:</span> <span class="nx">idx</span><span class="p">,</span>
+      <span class="nx">seriesName</span><span class="o">:</span> <span class="nb">String</span><span class="p">.</span><span class="nx">fromCharCode</span><span class="p">(</span><span class="nx">idx</span> <span class="o">+</span> <span class="mi">64</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="p">},</span> <span class="k">this</span><span class="p">.</span><span class="nx">model</span><span class="p">.</span><span class="nx">toTemplateJSON</span><span class="p">());</span>
+
+    <span class="kd">var</span> <span class="nx">htmls</span> <span class="o">=</span> <span class="nx">Mustache</span><span class="p">.</span><span class="nx">render</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">templateSeriesEditor</span><span class="p">,</span> <span class="nx">data</span><span class="p">);</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">el</span><span class="p">.</span><span class="nx">find</span><span class="p">(</span><span class="s1">&#39;.editor-series-group&#39;</span><span class="p">).</span><span class="nx">append</span><span class="p">(</span><span class="nx">htmls</span><span class="p">);</span>
+    <span class="k">return</span> <span class="k">this</span><span class="p">;</span>
+  <span class="p">},</span>
+
+  <span class="nx">_onAddSeries</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">e</span><span class="p">)</span> <span class="p">{</span>
+    <span class="nx">e</span><span class="p">.</span><span class="nx">preventDefault</span><span class="p">();</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">addSeries</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">state</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s1">&#39;series&#39;</span><span class="p">).</span><span class="nx">length</span><span class="p">);</span>
+  <span class="p">},</span></pre></div>             </td>           </tr>                               <tr id="section-20">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-20">&#182;</a>               </div>               <p>Public: Removes a series list item from the editor.</p>
+
+<p>Also updates the labels of the remaining series elements.</p>             </td>             <td class="code">               <div class="highlight"><pre>  <span class="nx">removeSeries</span><span class="o">:</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">e</span><span class="p">)</span> <span class="p">{</span>
+    <span class="nx">e</span><span class="p">.</span><span class="nx">preventDefault</span><span class="p">();</span>
+    <span class="kd">var</span> <span class="nx">$el</span> <span class="o">=</span> <span class="nx">$</span><span class="p">(</span><span class="nx">e</span><span class="p">.</span><span class="nx">target</span><span class="p">);</span>
+    <span class="nx">$el</span><span class="p">.</span><span class="nx">parent</span><span class="p">().</span><span class="nx">parent</span><span class="p">().</span><span class="nx">remove</span><span class="p">();</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">onEditorSubmit</span><span class="p">();</span>
+  <span class="p">}</span>
+<span class="p">});</span>
+
+<span class="p">})(</span><span class="nx">jQuery</span><span class="p">,</span> <span class="nx">recline</span><span class="p">.</span><span class="nx">View</span><span class="p">);</span>
+
+</pre></div>             </td>           </tr>                </tbody>     </table>   </div> </body> </html> 

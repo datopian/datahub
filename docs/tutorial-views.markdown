@@ -120,13 +120,16 @@ grid.render();
 Let's create a graph view to display a line graph for this dataset.
 
 First, add the additional dependencies for this view. These are the Flot
-library and the Recline Graph view:
+library and the Recline Flot Graph view:
 
 {% highlight html %}
-<link rel="stylesheet" href="css/graph.css">
+<link rel="stylesheet" href="css/flot.css">
 
 <!-- javascript -->
-<script type="text/javascript" src="vendor/flotr2/flotr2.js"></script>
+<!--[if lte IE 8]>
+<script language="javascript" type="text/javascript" src="vendor/flot/excanvas.min.js"></script>
+<![endif]-->
+<script type="text/javascript" src="vendor/flot/jquery.flot.js"></script>
 <script type="text/javascript" src="src/view.graph.js"></script>
 {% endhighlight %}
 
@@ -251,9 +254,10 @@ First, add the additional dependencies for the timeline view. The timeline is bu
 <script type="text/javascript" src="vendor/timeline/20120520/js/timeline.js"></script>
 {% endhighlight %}
 
-Now, create a new div for the map:
+Now, create a new div for the map (must have an explicit height for the timeline to render):
 
 {% highlight html %}
+<style type="text/css">#mytimeline .recline-timeline { height: 400px; }</style>
 <div id="mytimeline"></div>
 {% endhighlight %}
 
@@ -264,7 +268,8 @@ previously:
 {% include tutorial-views-timeline.js %}
 {% endhighlight %}
 
-<div id="mytimeline">&nbsp;</div>
+<style type="text/css">#mytimeline .recline-timeline { height: 400px; }</style>
+<div id="mytimeline"></div>
 <div style="clear: both;"></div>
 
 <script type="text/javascript">
