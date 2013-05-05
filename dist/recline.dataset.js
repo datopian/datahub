@@ -159,20 +159,6 @@ my.Dataset = Backbone.Model.extend({
     return this._store.save(this._changes, this.toJSON());
   },
 
-  transform: function(editFunc) {
-    var self = this;
-    if (!this._store.transform) {
-      alert('Transform is not supported with this backend: ' + this.get('backend'));
-      return;
-    }
-    this.trigger('recline:flash', {message: "Updating all visible docs. This could take a while...", persist: true, loader: true});
-    this._store.transform(editFunc).done(function() {
-      // reload data as records have changed
-      self.query();
-      self.trigger('recline:flash', {message: "Records updated successfully"});
-    });
-  },
-
   // ### query
   //
   // AJAX method with promise API to get records from the backend.
@@ -828,18 +814,6 @@ this.recline.Backend.Memory = this.recline.Backend.Memory || {};
         tmp.terms = tmp.terms.slice(0, 10);
       });
       return facetResults;
-    };
-
-    this.transform = function(editFunc) {
-      var dfd = new Deferred();
-      // TODO: should we clone before mapping? Do not see the point atm.
-      self.records = _.map(self.records, editFunc);
-      // now deal with deletes (i.e. nulls)
-      self.records = _.filter(self.records, function(record) {
-        return record != null;
-      });
-      dfd.resolve();
-      return dfd.promise();
     };
   };
 
