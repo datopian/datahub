@@ -4,6 +4,7 @@ this.recline = this.recline || {};
 this.recline.View = this.recline.View || {};
 
 (function($, my) {
+  "use strict";
 
 my.QueryEditor = Backbone.View.extend({
   className: 'recline-query-editor', 
