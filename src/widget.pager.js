@@ -4,6 +4,7 @@ this.recline = this.recline || {};
 this.recline.View = this.recline.View || {};
 
 (function($, my) {
+  "use strict";
 
 my.Pager = Backbone.View.extend({
   className: 'recline-pager', 
