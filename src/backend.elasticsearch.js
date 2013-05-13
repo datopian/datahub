@@ -3,10 +3,11 @@ this.recline.Backend = this.recline.Backend || {};
 this.recline.Backend.ElasticSearch = this.recline.Backend.ElasticSearch || {};
 
 (function($, my) {
+  "use strict";
   my.__type__ = 'elasticsearch';
 
   // use either jQuery or Underscore Deferred depending on what is available
-  var Deferred = _.isUndefined(this.jQuery) ? _.Deferred : jQuery.Deferred;
+  var Deferred = _.isUndefined(window.jQuery) ? _.Deferred : jQuery.Deferred;
 
   // ## ElasticSearch Wrapper
   //
@@ -200,8 +201,8 @@ this.recline.Backend.ElasticSearch = this.recline.Backend.ElasticSearch || {};
         fields: fieldData
       });
     })
-    .fail(function(arguments) {
-      dfd.reject(arguments);
+    .fail(function(args) {
+      dfd.reject(args);
     });
     return dfd.promise();
   };

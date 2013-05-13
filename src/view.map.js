@@ -4,7 +4,7 @@ this.recline = this.recline || {};
 this.recline.View = this.recline.View || {};
 
 (function($, my) {
-
+  "use strict";
 // ## Map view for a Dataset using Leaflet mapping library.
 //
 // This view allows to plot gereferenced records on a map. The location
@@ -123,7 +123,7 @@ my.Map = Backbone.View.extend({
   //     }
   infobox: function(record) {
     var html = '';
-    for (key in record.attributes){
+    for (var key in record.attributes){
       if (!(this.state.get('geomField') && key == this.state.get('geomField'))){
         html += '<div><strong>' + key + '</strong>: '+ record.attributes[key] + '</div>';
       }
@@ -172,8 +172,7 @@ my.Map = Backbone.View.extend({
   // Also sets up the editor fields and the map if necessary.
   render: function() {
     var self = this;
-
-    htmls = Mustache.render(this.template, this.model.toTemplateJSON());
+    var htmls = Mustache.render(this.template, this.model.toTemplateJSON());
     $(this.el).html(htmls);
     this.$map = this.el.find('.panel.map');
     this.redraw();
@@ -326,7 +325,7 @@ my.Map = Backbone.View.extend({
     if (!(docs instanceof Array)) docs = [docs];
 
     _.each(docs,function(doc){
-      for (key in self.features._layers){
+      for (var key in self.features._layers){
         if (self.features._layers[key].feature.properties.cid == doc.cid){
           self.features.removeLayer(self.features._layers[key]);
         }
@@ -560,7 +559,7 @@ my.MapMenu = Backbone.View.extend({
   // Also sets up the editor fields and the map if necessary.
   render: function() {
     var self = this;
-    htmls = Mustache.render(this.template, this.model.toTemplateJSON());
+    var htmls = Mustache.render(this.template, this.model.toTemplateJSON());
     $(this.el).html(htmls);
 
     if (this._geomReady() && this.model.fields.length){

@@ -3,10 +3,11 @@ this.recline.Backend = this.recline.Backend || {};
 this.recline.Backend.Memory = this.recline.Backend.Memory || {};
 
 (function(my) {
+  "use strict";
   my.__type__ = 'memory';
 
   // private data - use either jQuery or Underscore Deferred depending on what is available
-  var Deferred = _.isUndefined(this.jQuery) ? _.Deferred : jQuery.Deferred;
+  var Deferred = _.isUndefined(window.jQuery) ? _.Deferred : jQuery.Deferred;
 
   // ## Data Wrapper
   //

@@ -5,6 +5,7 @@ this.recline = this.recline || {};
 this.recline.View = this.recline.View || {};
 
 (function($, my) {
+  "use strict";
 // ## MultiView
 //
 // Manage multiple views together along with query editor etc. Usage:
@@ -519,7 +520,7 @@ my.parseQueryString = function(q) {
 
 // Parse the query string out of the URL hash
 my.parseHashQueryString = function() {
-  q = my.parseHashUrl(window.location.hash).query;
+  var q = my.parseHashUrl(window.location.hash).query;
   return my.parseQueryString(q);
 };
 
