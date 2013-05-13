@@ -16,7 +16,6 @@ my.Grid = Backbone.View.extend({
 
   initialize: function(modelEtc) {
     var self = this;
-    this.el = $(this.el);
     _.bindAll(this, 'render', 'onHorizontalScroll');
     this.model.records.bind('add', this.render);
     this.model.records.bind('reset', this.render);
@@ -60,7 +59,7 @@ my.Grid = Backbone.View.extend({
 
   onHorizontalScroll: function(e) {
     var currentScroll = $(e.target).scrollLeft();
-    this.el.find('.recline-grid thead tr').scrollLeft(currentScroll);
+    this.$el.find('.recline-grid thead tr').scrollLeft(currentScroll);
   },
 
   // ======================================================
@@ -103,7 +102,7 @@ my.Grid = Backbone.View.extend({
     this.scrollbarDimensions = this.scrollbarDimensions || this._scrollbarSize(); // skip measurement if already have dimensions
     var numFields = this.fields.length;
     // compute field widths (-20 for first menu col + 10px for padding on each col and finally 16px for the scrollbar)
-    var fullWidth = self.el.width() - 20 - 10 * numFields - this.scrollbarDimensions.width;
+    var fullWidth = self.$el.width() - 20 - 10 * numFields - this.scrollbarDimensions.width;
     var width = parseInt(Math.max(50, fullWidth / numFields), 10);
     // if columns extend outside viewport then remainder is 0 
     var remainder = Math.max(fullWidth - numFields * width,0);
@@ -116,10 +115,10 @@ my.Grid = Backbone.View.extend({
       }
     });
     var htmls = Mustache.render(this.template, this.toTemplateJSON());
-    this.el.html(htmls);
+    this.$el.html(htmls);
     this.model.records.forEach(function(doc) {
       var tr = $('<tr />');
-      self.el.find('tbody').append(tr);
+      self.$el.find('tbody').append(tr);
       var newView = new my.GridRow({
           model: doc,
           el: tr,
@@ -128,12 +127,12 @@ my.Grid = Backbone.View.extend({
       newView.render();
     });
     // hide extra header col if no scrollbar to avoid unsightly overhang
-    var $tbody = this.el.find('tbody')[0];
+    var $tbody = this.$el.find('tbody')[0];
     if ($tbody.scrollHeight <= $tbody.offsetHeight) {
-      this.el.find('th.last-header').hide();
+      this.$el.find('th.last-header').hide();
     }
-    this.el.find('.recline-grid').toggleClass('no-hidden', (self.state.get('hiddenFields').length === 0));
-    this.el.find('.recline-grid tbody').scroll(this.onHorizontalScroll);
+    this.$el.find('.recline-grid').toggleClass('no-hidden', (self.state.get('hiddenFields').length === 0));
+    this.$el.find('.recline-grid tbody').scroll(this.onHorizontalScroll);
     return this;
   },
 
@@ -169,7 +168,6 @@ my.GridRow = Backbone.View.extend({
   initialize: function(initData) {
     _.bindAll(this, 'render');
     this._fields = initData.fields;
-    this.el = $(this.el);
     this.model.bind('change', this.render);
   },
 
@@ -203,9 +201,9 @@ my.GridRow = Backbone.View.extend({
   },
 
   render: function() {
-    this.el.attr('data-id', this.model.id);
+    this.$el.attr('data-id', this.model.id);
     var html = Mustache.render(this.template, this.toTemplateJSON());
-    $(this.el).html(html);
+    this.$el.html(html);
     return this;
   },
 
@@ -225,7 +223,7 @@ my.GridRow = Backbone.View.extend({
   ',
 
   onEditClick: function(e) {
-    var editing = this.el.find('.data-table-cell-editor-editor');
+    var editing = this.$el.find('.data-table-cell-editor-editor');
     if (editing.length > 0) {
       editing.parents('.data-table-cell-value').html(editing.text()).siblings('.data-table-cell-edit').removeClass("hidden");
     }

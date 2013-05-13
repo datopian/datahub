@@ -51,7 +51,6 @@ my.Map = Backbone.View.extend({
 
   initialize: function(options) {
     var self = this;
-    this.el = $(this.el);
     this.visible = true;
     this.mapReady = false;
     // this will be the Leaflet L.Map object (setup below)
@@ -103,7 +102,7 @@ my.Map = Backbone.View.extend({
     this.state.bind('change', function() {
       self.redraw();
     });
-    this.elSidebar = this.menu.el;
+    this.elSidebar = this.menu.$el;
   },
 
   // ## Customization Functions
@@ -173,8 +172,8 @@ my.Map = Backbone.View.extend({
   render: function() {
     var self = this;
     var htmls = Mustache.render(this.template, this.model.toTemplateJSON());
-    $(this.el).html(htmls);
-    this.$map = this.el.find('.panel.map');
+    this.$el.html(htmls);
+    this.$map = this.$el.find('.panel.map');
     this.redraw();
     return this;
   },
@@ -546,7 +545,6 @@ my.MapMenu = Backbone.View.extend({
 
   initialize: function(options) {
     var self = this;
-    this.el = $(this.el);
     _.bindAll(this, 'render');
     this.model.fields.bind('change', this.render);
     this.state = new recline.Model.ObjectState(options.state);
@@ -560,27 +558,27 @@ my.MapMenu = Backbone.View.extend({
   render: function() {
     var self = this;
     var htmls = Mustache.render(this.template, this.model.toTemplateJSON());
-    $(this.el).html(htmls);
+    this.$el.html(htmls);
 
     if (this._geomReady() && this.model.fields.length){
       if (this.state.get('geomField')){
         this._selectOption('editor-geom-field',this.state.get('geomField'));
-        this.el.find('#editor-field-type-geom').attr('checked','checked').change();
+        this.$el.find('#editor-field-type-geom').attr('checked','checked').change();
       } else{
         this._selectOption('editor-lon-field',this.state.get('lonField'));
         this._selectOption('editor-lat-field',this.state.get('latField'));
-        this.el.find('#editor-field-type-latlon').attr('checked','checked').change();
+        this.$el.find('#editor-field-type-latlon').attr('checked','checked').change();
       }
     }
     if (this.state.get('autoZoom')) {
-      this.el.find('#editor-auto-zoom').attr('checked', 'checked');
+      this.$el.find('#editor-auto-zoom').attr('checked', 'checked');
     } else {
-      this.el.find('#editor-auto-zoom').removeAttr('checked');
+      this.$el.find('#editor-auto-zoom').removeAttr('checked');
     }
     if (this.state.get('cluster')) {
-      this.el.find('#editor-cluster').attr('checked', 'checked');
+      this.$el.find('#editor-cluster').attr('checked', 'checked');
     } else {
-      this.el.find('#editor-cluster').removeAttr('checked');
+      this.$el.find('#editor-cluster').removeAttr('checked');
     }
     return this;
   },
@@ -599,17 +597,17 @@ my.MapMenu = Backbone.View.extend({
   //
   onEditorSubmit: function(e){
     e.preventDefault();
-    if (this.el.find('#editor-field-type-geom').attr('checked')){
+    if (this.$el.find('#editor-field-type-geom').attr('checked')){
       this.state.set({
-        geomField: this.el.find('.editor-geom-field > select > option:selected').val(),
+        geomField: this.$el.find('.editor-geom-field > select > option:selected').val(),
         lonField: null,
         latField: null
       });
     } else {
       this.state.set({
         geomField: null,
-        lonField: this.el.find('.editor-lon-field > select > option:selected').val(),
-        latField: this.el.find('.editor-lat-field > select > option:selected').val()
+        lonField: this.$el.find('.editor-lon-field > select > option:selected').val(),
+        latField: this.$el.find('.editor-lat-field > select > option:selected').val()
       });
     }
     return false;
@@ -620,11 +618,11 @@ my.MapMenu = Backbone.View.extend({
   //
   onFieldTypeChange: function(e){
     if (e.target.value == 'geom'){
-        this.el.find('.editor-field-type-geom').show();
-        this.el.find('.editor-field-type-latlon').hide();
+        this.$el.find('.editor-field-type-geom').show();
+        this.$el.find('.editor-field-type-latlon').hide();
     } else {
-        this.el.find('.editor-field-type-geom').hide();
-        this.el.find('.editor-field-type-latlon').show();
+        this.$el.find('.editor-field-type-geom').hide();
+        this.$el.find('.editor-field-type-latlon').show();
     }
   },
 
@@ -639,7 +637,7 @@ my.MapMenu = Backbone.View.extend({
   // Private: Helper function to select an option from a select list
   //
   _selectOption: function(id,value){
-    var options = this.el.find('.' + id + ' > select > option');
+    var options = this.$el.find('.' + id + ' > select > option');
     if (options){
       options.each(function(opt){
         if (this.value == value) {
