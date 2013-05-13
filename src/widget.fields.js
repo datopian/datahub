@@ -60,7 +60,6 @@ my.Fields = Backbone.View.extend({
 
   initialize: function(model) {
     var self = this;
-    this.el = $(this.el);
     _.bindAll(this, 'render');
 
     // TODO: this is quite restrictive in terms of when it is re-run
@@ -75,7 +74,7 @@ my.Fields = Backbone.View.extend({
       self.model.getFieldsSummary();
       self.render();
     });
-    this.el.find('.collapse').collapse();
+    this.$el.find('.collapse').collapse();
     this.render();
   },
   render: function() {
@@ -89,7 +88,7 @@ my.Fields = Backbone.View.extend({
       tmplData.fields.push(out);
     });
     var templated = Mustache.render(this.template, tmplData);
-    this.el.html(templated);
+    this.$el.html(templated);
   }
 });
 

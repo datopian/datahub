@@ -162,13 +162,13 @@ test('Popup', function () {
   $('.fixtures').append(view.el);
   view.render();
 
-  var marker = view.el.find('.leaflet-marker-icon').first();
+  var marker = view.$el.find('.leaflet-marker-icon').first();
 
   assertPresent(marker);
 
   _.values(view.features._layers)[0].fire('click');
 
-  var popup = view.el.find('.leaflet-popup-content');
+  var popup = view.$el.find('.leaflet-popup-content');
 
   assertPresent(popup);
 
@@ -195,9 +195,9 @@ test('Popup - Custom', function () {
   };
   view.render();
 
-  var marker = view.el.find('.leaflet-marker-icon').first();
+  var marker = view.$el.find('.leaflet-marker-icon').first();
   _.values(view.features._layers)[0].fire('click');
-  var popup = view.el.find('.leaflet-popup-content');
+  var popup = view.$el.find('.leaflet-popup-content');
 
   assertPresent(popup);
 

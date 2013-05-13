@@ -47,7 +47,7 @@ test('render etc', function () {
   assertPresent('.vmm-timeline', view.el);
   assertPresent('.timenav', view.el);
   assertPresent('.timenav', view.el);
-  equal(view.el.find('.marker.active h4').text(), '2011');
+  equal(view.$el.find('.marker.active h4').text(), '2011');
   view.remove();
 });
 

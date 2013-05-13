@@ -130,7 +130,6 @@ my.MultiView = Backbone.View.extend({
 
   initialize: function(options) {
     var self = this;
-    this.el = $(this.el);
     this._setupState(options.state);
 
     // Hash of 'page' views (i.e. those for whole page) keyed by page name
@@ -205,7 +204,7 @@ my.MultiView = Backbone.View.extend({
       });
     this.model.bind('query:done', function() {
         self.clearNotifications();
-        self.el.find('.doc-count').text(self.model.recordCount || 'Unknown');
+        self.$el.find('.doc-count').text(self.model.recordCount || 'Unknown');
       });
     this.model.bind('query:fail', function(error) {
         self.clearNotifications();
@@ -236,7 +235,7 @@ my.MultiView = Backbone.View.extend({
   },
 
   setReadOnly: function() {
-    this.el.addClass('recline-read-only');
+    this.$el.addClass('recline-read-only');
   },
 
   render: function() {
@@ -244,11 +243,11 @@ my.MultiView = Backbone.View.extend({
     tmplData.views = this.pageViews;
     tmplData.sidebarViews = this.sidebarViews;
     var template = Mustache.render(this.template, tmplData);
-    $(this.el).html(template);
+    this.$el.html(template);
 
     // now create and append other views
-    var $dataViewContainer = this.el.find('.data-view-container');
-    var $dataSidebar = this.el.find('.data-view-sidebar');
+    var $dataViewContainer = this.$el.find('.data-view-container');
+    var $dataSidebar = this.$el.find('.data-view-sidebar');
 
     // the main views
     _.each(this.pageViews, function(view, pageName) {
@@ -260,25 +259,25 @@ my.MultiView = Backbone.View.extend({
     });
 
     _.each(this.sidebarViews, function(view) {
-      this['$'+view.id] = view.view.el;
+      this['$'+view.id] = view.view.$el;
       $dataSidebar.append(view.view.el);
     }, this);
 
     var pager = new recline.View.Pager({
       model: this.model.queryState
     });
-    this.el.find('.recline-results-info').after(pager.el);
+    this.$el.find('.recline-results-info').after(pager.el);
 
     var queryEditor = new recline.View.QueryEditor({
       model: this.model.queryState
     });
-    this.el.find('.query-editor-here').append(queryEditor.el);
+    this.$el.find('.query-editor-here').append(queryEditor.el);
 
   },
 
   // hide the sidebar if empty
   _showHideSidebar: function() {
-    var $dataSidebar = this.el.find('.data-view-sidebar');
+    var $dataSidebar = this.$el.find('.data-view-sidebar');
     var visibleChildren = $dataSidebar.children().filter(function() {
       return $(this).css("display") != "none";
     }).length;
@@ -291,19 +290,19 @@ my.MultiView = Backbone.View.extend({
   },
 
   updateNav: function(pageName) {
-    this.el.find('.navigation a').removeClass('active');
-    var $el = this.el.find('.navigation a[data-view="' + pageName + '"]');
+    this.$el.find('.navigation a').removeClass('active');
+    var $el = this.$el.find('.navigation a[data-view="' + pageName + '"]');
     $el.addClass('active');
 
     // add/remove sidebars and hide inactive views
     _.each(this.pageViews, function(view, idx) {
       if (view.id === pageName) {
-        view.view.el.show();
+        view.view.$el.show();
         if (view.view.elSidebar) {
           view.view.elSidebar.show();
         }
       } else {
-        view.view.el.hide();
+        view.view.$el.hide();
         if (view.view.elSidebar) {
           view.view.elSidebar.hide();
         }

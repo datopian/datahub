@@ -34,8 +34,7 @@ this.recline.View = this.recline.View || {};
 my.SlickGrid = Backbone.View.extend({
   initialize: function(modelEtc) {
     var self = this;
-    this.el = $(this.el);
-    this.el.addClass('recline-slickgrid');
+    this.$el.addClass('recline-slickgrid');
     _.bindAll(this, 'render');
     this.model.records.bind('add', this.render);
     this.model.records.bind('reset', this.render);
