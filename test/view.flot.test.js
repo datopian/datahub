@@ -29,8 +29,8 @@ test('initialize', function () {
   // check we have updated editor with state info
   equal(view.elSidebar.find('.editor-type select').val(), 'lines');
   equal(view.elSidebar.find('.editor-group select').val(), 'x');
-  var out = _.map(view.elSidebar.find('.editor-series select'), function($el) {
-    return $($el).val();
+  var out = _.map(view.elSidebar.find('.editor-series select'), function(el) {
+    return $(el).val();
   });
   deepEqual(out, ['y', 'z']);
 

@@ -28,7 +28,6 @@ my.Timeline = Backbone.View.extend({
 
   initialize: function(options) {
     var self = this;
-    this.el = $(this.el);
     this.timeline = new VMM.Timeline();
     this._timelineIsInitialized = false;
     this.model.fields.bind('reset', function() {
@@ -51,7 +50,7 @@ my.Timeline = Backbone.View.extend({
   render: function() {
     var tmplData = {};
     var htmls = Mustache.render(this.template, tmplData);
-    this.el.html(htmls);
+    this.$el.html(htmls);
     // can only call _initTimeline once view in DOM as Timeline uses $
     // internally to look up element
     if ($(this.elementId).length > 0) {
@@ -67,7 +66,7 @@ my.Timeline = Backbone.View.extend({
   },
 
   _initTimeline: function() {
-    var $timeline = this.el.find(this.elementId);
+    var $timeline = this.$el.find(this.elementId);
     var data = this._timelineJSON();
     this.timeline.init(data, this.elementId, this.state.get("timelineJSOptions"));
     this._timelineIsInitialized = true

@@ -7,10 +7,10 @@ test('basics', function () {
   });
   $('.fixtures').append(view.el);
   assertPresent('.js-add-filter', view.elSidebar);
-  var $addForm = view.el.find('form.js-add');
+  var $addForm = view.$el.find('form.js-add');
   ok(!$addForm.is(":visible"));
-  view.el.find('.js-add-filter').click();
-  ok(!view.el.find('.js-add-filter').is(":visible"));
+  view.$el.find('.js-add-filter').click();
+  ok(!view.$el.find('.js-add-filter').is(":visible"));
   ok($addForm.is(":visible"));
 
   // submit the form
@@ -19,7 +19,7 @@ test('basics', function () {
 
   // now check we have new filter
   ok(!$addForm.is(":visible"));
-  $editForm = view.el.find('form.js-edit');
+  $editForm = view.$el.find('form.js-edit');
   equal($editForm.find('.filter-term').length, 1)
   equal(dataset.queryState.attributes.filters[0].field, 'country');
 
@@ -30,13 +30,13 @@ test('basics', function () {
   equal(dataset.records.length, 3);
 
   // now set a second range filter ...
-  view.el.find('.js-add-filter').click();
-  var $addForm = view.el.find('form.js-add');
+  view.$el.find('.js-add-filter').click();
+  var $addForm = view.$el.find('form.js-add');
   $addForm.find('select.fields').val('x');
   $addForm.find('select.filterType').val('range');
   $addForm.submit();
 
-  $editForm = view.el.find('form.js-edit');
+  $editForm = view.$el.find('form.js-edit');
   $editForm.find('.filter-range input').first().val('2');
   $editForm.find('.filter-range input').last().val('4');
   $editForm.submit();
@@ -45,15 +45,15 @@ test('basics', function () {
   equal(dataset.records.length, 2);
 
   // now remove filter
-  $editForm = view.el.find('form.js-edit');
+  $editForm = view.$el.find('form.js-edit');
   $editForm.find('.js-remove-filter').last().click();
-  $editForm = view.el.find('form.js-edit');
+  $editForm = view.$el.find('form.js-edit');
   equal($editForm.find('.filter').length, 1)
   equal(dataset.records.length, 3);
 
-  $editForm = view.el.find('form.js-edit');
+  $editForm = view.$el.find('form.js-edit');
   $editForm.find('.js-remove-filter').last().click();
-  $editForm = view.el.find('form.js-edit');
+  $editForm = view.$el.find('form.js-edit');
   equal($editForm.find('.filter').length, 0)
   equal(dataset.records.length, 6);
 
@@ -68,18 +68,18 @@ test('add 2 filters of same type', function () {
   $('.fixtures').append(view.el);
 
   // add 2 term filters
-  var $addForm = view.el.find('form.js-add');
-  view.el.find('.js-add-filter').click();
+  var $addForm = view.$el.find('form.js-add');
+  view.$el.find('.js-add-filter').click();
   $addForm.find('select.fields').val('country');
   $addForm.submit();
 
-  var $addForm = view.el.find('form.js-add');
-  view.el.find('.js-add-filter').click();
+  var $addForm = view.$el.find('form.js-add');
+  view.$el.find('.js-add-filter').click();
   $addForm.find('select.fields').val('id');
   $addForm.submit();
 
   var fields = [];
-  view.el.find('form.js-edit .filter-term input').each(function(idx, item) {
+  view.$el.find('form.js-edit .filter-term input').each(function(idx, item) {
     fields.push($(item).attr('data-filter-field'));
   });
   deepEqual(fields, ['country', 'id']);
@@ -94,14 +94,14 @@ test('geo_distance', function () {
   });
   $('.fixtures').append(view.el);
 
-  var $addForm = view.el.find('form.js-add');
+  var $addForm = view.$el.find('form.js-add');
   // submit the form
   $addForm.find('select.filterType').val('geo_distance');
   $addForm.find('select.fields').val('lon');
   $addForm.submit();
 
   // now check we have new filter
-  $editForm = view.el.find('form.js-edit');
+  $editForm = view.$el.find('form.js-edit');
   equal($editForm.find('.filter-geo_distance').length, 1)
   deepEqual(_.sortBy(_.keys(dataset.queryState.attributes.filters[0]),_.identity), 
             ["distance", "field", "point", "type", "unit"]);

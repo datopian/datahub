@@ -51,7 +51,6 @@ my.ValueFilter = Backbone.View.extend({
     'submit form.js-add': 'onAddFilter'
   },
   initialize: function() {
-    this.el = $(this.el);
     _.bindAll(this, 'render');
     this.model.fields.bind('all', this.render);
     this.model.queryState.bind('change', this.render);
@@ -71,7 +70,7 @@ my.ValueFilter = Backbone.View.extend({
       return Mustache.render(self.filterTemplates.term, this);
     };
     var out = Mustache.render(this.template, tmplData);
-    this.el.html(out);
+    this.$el.html(out);
   },
   updateFilter: function(input) {
     var self = this;
@@ -85,7 +84,7 @@ my.ValueFilter = Backbone.View.extend({
     e.preventDefault();
     var $target = $(e.target);
     $target.hide();
-    this.el.find('form.js-add').show();
+    this.$el.find('form.js-add').show();
   },
   onAddFilter: function(e) {
     e.preventDefault();
