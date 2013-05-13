@@ -3,6 +3,7 @@ this.recline.Backend = this.recline.Backend || {};
 this.recline.Backend.DataProxy = this.recline.Backend.DataProxy || {};
 
 (function(my) {
+  "use strict";
   my.__type__ = 'dataproxy';
   // URL for the dataproxy
   my.dataproxy_url = '//jsonpdataproxy.appspot.com';
@@ -12,7 +13,7 @@ this.recline.Backend.DataProxy = this.recline.Backend.DataProxy || {};
 
   
   // use either jQuery or Underscore Deferred depending on what is available
-  var Deferred = _.isUndefined(this.jQuery) ? _.Deferred : jQuery.Deferred;
+  var Deferred = _.isUndefined(window.jQuery) ? _.Deferred : jQuery.Deferred;
 
   // ## load
   //

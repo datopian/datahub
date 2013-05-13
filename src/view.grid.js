@@ -4,6 +4,7 @@ this.recline = this.recline || {};
 this.recline.View = this.recline.View || {};
 
 (function($, my) {
+  "use strict";
 // ## (Data) Grid Dataset View
 //
 // Provides a tabular view on a Dataset.
