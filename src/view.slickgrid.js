@@ -118,7 +118,7 @@ my.SlickGrid = Backbone.View.extend({
     });
 
     // Restrict the visible columns
-    var visibleColumns = columns.filter(function(column) {
+    var visibleColumns = _.filter(columns, function(column) {
       return _.indexOf(self.state.get('hiddenColumns'), column.id) === -1;
     });
 
@@ -164,7 +164,7 @@ my.SlickGrid = Backbone.View.extend({
       this.getItem = function(index) {return rows[index];};
       this.getItemMetadata = function(index) {return {};};
       this.getModel = function(index) {return models[index];};
-      this.getModelRow = function(m) {return models.indexOf(m);};
+      this.getModelRow = function(m) {return _.indexOf(models, m);};
       this.updateItem = function(m,i) {
         rows[i] = toRow(m);
         models[i] = m;
