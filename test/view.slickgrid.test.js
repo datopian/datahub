@@ -124,6 +124,8 @@ test('update', function() {
   // Change the model at row 1
   dataset.records.at(1).set('z', zbefore + 1);
   equal( zbefore + 1, view.grid.getData().getItem(1)['z']);
+
+  view.remove();
 });
 
 test('renderers', function () {
