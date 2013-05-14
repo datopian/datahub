@@ -74,6 +74,11 @@ my.Flot = Backbone.View.extend({
     return this;
   },
 
+  remove: function () {
+    this.editor.remove();
+    Backbone.View.prototype.remove.apply(this, arguments);
+  },
+
   redraw: function() {
     // There are issues generating a Flot graph if either:
     // * The relevant div that graph attaches to his hidden at the moment of creating the plot -- Flot will complain with
