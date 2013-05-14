@@ -531,7 +531,6 @@ my.MapMenu = Backbone.View.extend({
           Cluster markers</label> \
       </div> \
       <input type="hidden" class="editor-id" value="map-1" /> \
-      </div> \
     </form> \
   ',
 
