@@ -109,7 +109,7 @@ this.recline.Backend.Memory = this.recline.Backend.Memory || {};
         'float': function (e) { return parseFloat(e, 10); },
         number: function (e) { return parseFloat(e, 10); },
         string : function (e) { return e.toString() },
-        date   : function (e) { return new Date(e).valueOf() },
+        date   : function (e) { return moment(e).valueOf() },
         datetime   : function (e) { return new Date(e).valueOf() }
       };
       var keyedFields = {};

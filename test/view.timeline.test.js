@@ -67,7 +67,7 @@ test('_parseDate', function () {
   ];
   _.each(testData, function(item) {
     var out = view._parseDate(item[0]);
-    if (out) out = out.toISOString();
+    if (out) out = moment(out).toJSON();
     equal(out, item[1]);
   });
 });
