@@ -191,7 +191,6 @@ test("query", function() {
     equal(3, queryResult.hits.total);
     equal(3, queryResult.hits.hits.length);
     equal('Note 1', queryResult.hits.hits[0]._source['title']);
-    start();
   });
   $.ajax.restore();
 });
@@ -284,7 +283,6 @@ test("query", function() {
       equal(3, dataset.recordCount);
       equal(3, recList.length);
       equal('Note 1', recList.models[0].get('title'));
-      start();
     });
   });
   $.ajax.restore();
