@@ -250,7 +250,7 @@ First, add the additional dependencies for the timeline view. The timeline is bu
 <link rel="stylesheet" href="vendor/timeline/20120520/css/timeline.css">
 
 <!-- javascript -->
-<script type="text/javascript" src="vendor/moment/1.6.2/moment.js"></script>
+<script type="text/javascript" src="vendor/moment/2.0.0/moment.js"></script>
 <script type="text/javascript" src="vendor/timeline/20120520/js/timeline.js"></script>
 {% endhighlight %}
 
