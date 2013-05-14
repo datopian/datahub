@@ -42,8 +42,8 @@ my.FacetViewer = Backbone.View.extend({
   },
   initialize: function(model) {
     _.bindAll(this, 'render');
-    this.model.facets.bind('all', this.render);
-    this.model.fields.bind('all', this.render);
+    this.listenTo(this.model.facets, 'all', this.render);
+    this.listenTo(this.model.fields, 'all', this.render);
     this.render();
   },
   render: function() {

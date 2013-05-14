@@ -90,9 +90,8 @@ my.FilterEditor = Backbone.View.extend({
   },
   initialize: function() {
     _.bindAll(this, 'render');
-    this.model.fields.bind('all', this.render);
-    this.model.queryState.bind('change', this.render);
-    this.model.queryState.bind('change:filters:new-blank', this.render);
+    this.listenTo(this.model.fields, 'all', this.render);
+    this.listenTo(this.model.queryState, 'change change:filters:new-blank', this.render);
     this.render();
   },
   render: function() {

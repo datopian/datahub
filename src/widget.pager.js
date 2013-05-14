@@ -25,7 +25,7 @@ my.Pager = Backbone.View.extend({
 
   initialize: function() {
     _.bindAll(this, 'render');
-    this.model.bind('change', this.render);
+    this.listenTo(this.model, 'change', this.render);
     this.render();
   },
   onFormSubmit: function(e) {
