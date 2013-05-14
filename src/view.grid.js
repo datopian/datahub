@@ -87,7 +87,7 @@ my.Grid = Backbone.View.extend({
     var modelData = this.model.toJSON();
     modelData.notEmpty = ( this.fields.length > 0 );
     // TODO: move this sort of thing into a toTemplateJSON method on Dataset?
-    modelData.fields = _.map(this.fields, function(field) {
+    modelData.fields = this.fields.map(function(field) {
       return field.toJSON();
     });
     // last header width = scroll bar - border (2px) */
@@ -96,9 +96,10 @@ my.Grid = Backbone.View.extend({
   },
   render: function() {
     var self = this;
-    this.fields = this.model.fields.filter(function(field) {
+    this.fields = new recline.Model.FieldList(this.model.fields.filter(function(field) {
       return _.indexOf(self.state.get('hiddenFields'), field.id) == -1;
-    });
+    }));
+
     this.scrollbarDimensions = this.scrollbarDimensions || this._scrollbarSize(); // skip measurement if already have dimensions
     var numFields = this.fields.length;
     // compute field widths (-20 for first menu col + 10px for padding on each col and finally 16px for the scrollbar)
@@ -106,7 +107,7 @@ my.Grid = Backbone.View.extend({
     var width = parseInt(Math.max(50, fullWidth / numFields), 10);
     // if columns extend outside viewport then remainder is 0 
     var remainder = Math.max(fullWidth - numFields * width,0);
-    _.each(this.fields, function(field, idx) {
+    this.fields.each(function(field, idx) {
       // add the remainder to the first field width so we make up full col
       if (idx === 0) {
         field.set({width: width+remainder});
