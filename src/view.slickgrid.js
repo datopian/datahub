@@ -35,11 +35,9 @@ my.SlickGrid = Backbone.View.extend({
   initialize: function(modelEtc) {
     var self = this;
     this.$el.addClass('recline-slickgrid');
-    _.bindAll(this, 'render');
-    this.model.records.bind('add', this.render);
-    this.model.records.bind('reset', this.render);
-    this.model.records.bind('remove', this.render);
-    this.model.records.bind('change', this.onRecordChanged, this);
+    _.bindAll(this, 'render', 'onRecordChanged');
+    this.listenTo(this.model.records, 'add remove reset', this.render);
+    this.listenTo(this.model.records, 'change', this.onRecordChanged);
 
     var state = _.extend({
         hiddenColumns: [],

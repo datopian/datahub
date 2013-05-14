@@ -40,11 +40,9 @@ my.Flot = Backbone.View.extend({
 
     _.bindAll(this, 'render', 'redraw', '_toolTip', '_xaxisLabel');
     this.needToRedraw = false;
-    this.model.bind('change', this.render);
-    this.model.fields.bind('reset', this.render);
-    this.model.fields.bind('add', this.render);
-    this.model.records.bind('add', this.redraw);
-    this.model.records.bind('reset', this.redraw);
+    this.listenTo(this.model, 'change', this.render);
+    this.listenTo(this.model.fields, 'reset add', this.render);
+    this.listenTo(this.model.records, 'reset add', this.redraw);
     var stateData = _.extend({
         group: null,
         // so that at least one series chooser box shows up
@@ -59,7 +57,7 @@ my.Flot = Backbone.View.extend({
       model: this.model,
       state: this.state.toJSON()
     });
-    this.editor.state.bind('change', function() {
+    this.listenTo(this.editor.state, 'change', function() {
       self.state.set(self.editor.state.toJSON());
       self.redraw();
     });
@@ -403,8 +401,7 @@ my.FlotControls = Backbone.View.extend({
   initialize: function(options) {
     var self = this;
     _.bindAll(this, 'render');
-    this.model.fields.bind('reset', this.render);
-    this.model.fields.bind('add', this.render);
+    this.listenTo(this.model.fields, 'reset add', this.render);
     this.state = new recline.Model.ObjectState(options.state);
     this.render();
   },
