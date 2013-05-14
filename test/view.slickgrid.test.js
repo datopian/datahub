@@ -83,7 +83,7 @@ test('editable', function () {
 
   $('.fixtures .test-datatable').append(view.el);
   view.render();
-  view.grid.init();
+  view.show();
 
   var new_item = {lon: "foo", id: 1, z: 23, date: "12", y: 3, country: 'FR'};
 
@@ -92,13 +92,15 @@ test('editable', function () {
   });
 
   // Be sure a cell change triggers a change of the model
-      e = new Slick.EventData();
-      return view.grid.onCellChange.notify({ 
-                row: 1,
-                cell: 0,
-                item: new_item,
-                grid: view.grid
-              }, e, view.grid);
+  e = new Slick.EventData();
+  view.grid.onCellChange.notify({
+    row: 1,
+    cell: 0,
+    item: new_item,
+    grid: view.grid
+  }, e, view.grid);
+
+  view.remove();
 });
 
 test('update', function() {

@@ -279,7 +279,7 @@ test('_normalizeRecordsAndFields', function () {
         fields: [{id: 'col1'}, {id: 'col2'}],
         records: [
           {col1: 1, col2: 2},
-          {col1: 3, col2: 4},
+          {col1: 3, col2: 4}
         ]
       },
       exp: {
