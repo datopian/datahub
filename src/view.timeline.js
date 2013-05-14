@@ -134,14 +134,14 @@ my.Timeline = Backbone.View.extend({
     if (!date) {
       return null;
     }
-    var out = date.trim();
+    var out = $.trim(date);
     out = out.replace(/(\d)th/g, '$1');
     out = out.replace(/(\d)st/g, '$1');
-    out = out.trim() ? moment(out) : null;
-    if (out.toDate() == 'Invalid Date') {
-      return null;
-    } else {
+    out = $.trim(out) ? moment(out) : null;
+    if (out && out.isValid()) {
       return out.toDate();
+    } else {
+      return null;
     }
   },
 
