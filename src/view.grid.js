@@ -17,9 +17,7 @@ my.Grid = Backbone.View.extend({
   initialize: function(modelEtc) {
     var self = this;
     _.bindAll(this, 'render', 'onHorizontalScroll');
-    this.model.records.bind('add', this.render);
-    this.model.records.bind('reset', this.render);
-    this.model.records.bind('remove', this.render);
+    this.listenTo(this.model.records, 'add reset remove', this.render);
     this.tempState = {};
     var state = _.extend({
         hiddenFields: []
@@ -169,7 +167,7 @@ my.GridRow = Backbone.View.extend({
   initialize: function(initData) {
     _.bindAll(this, 'render');
     this._fields = initData.fields;
-    this.model.bind('change', this.render);
+    this.listenTo(this.model, 'change', this.render);
   },
 
   template: ' \

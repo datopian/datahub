@@ -77,29 +77,29 @@ my.Map = Backbone.View.extend({
     };
 
     // Listen to changes in the fields
-    this.model.fields.bind('change', function() {
+    this.listenTo(this.model.fields, 'change', function() {
       self._setupGeometryField();
       self.render();
     });
 
     // Listen to changes in the records
-    this.model.records.bind('add', function(doc){self.redraw('add',doc);});
-    this.model.records.bind('change', function(doc){
+    this.listenTo(this.model.records, 'add', function(doc){self.redraw('add',doc);});
+    this.listenTo(this.model.records, 'change', function(doc){
         self.redraw('remove',doc);
         self.redraw('add',doc);
     });
-    this.model.records.bind('remove', function(doc){self.redraw('remove',doc);});
-    this.model.records.bind('reset', function(){self.redraw('reset');});
+    this.listenTo(this.model.records, 'remove', function(doc){self.redraw('remove',doc);});
+    this.listenTo(this.model.records, 'reset', function(){self.redraw('reset');});
 
     this.menu = new my.MapMenu({
       model: this.model,
       state: this.state.toJSON()
     });
-    this.menu.state.bind('change', function() {
+    this.listenTo(this.menu.state, 'change', function() {
       self.state.set(self.menu.state.toJSON());
       self.redraw();
     });
-    this.state.bind('change', function() {
+    this.listenTo(this.state, 'change', function() {
       self.redraw();
     });
     this.elSidebar = this.menu.$el;
@@ -545,9 +545,9 @@ my.MapMenu = Backbone.View.extend({
   initialize: function(options) {
     var self = this;
     _.bindAll(this, 'render');
-    this.model.fields.bind('change', this.render);
+    this.listenTo(this.model.fields, 'change', this.render);
     this.state = new recline.Model.ObjectState(options.state);
-    this.state.bind('change', this.render);
+    this.listenTo(this.state, 'change', this.render);
     this.render();
   },
 

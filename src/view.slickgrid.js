@@ -35,11 +35,9 @@ my.SlickGrid = Backbone.View.extend({
   initialize: function(modelEtc) {
     var self = this;
     this.$el.addClass('recline-slickgrid');
-    _.bindAll(this, 'render');
-    this.model.records.bind('add', this.render);
-    this.model.records.bind('reset', this.render);
-    this.model.records.bind('remove', this.render);
-    this.model.records.bind('change', this.onRecordChanged, this);
+    _.bindAll(this, 'render', 'onRecordChanged');
+    this.listenTo(this.model.records, 'add remove reset', this.render);
+    this.listenTo(this.model.records, 'change', this.onRecordChanged);
 
     var state = _.extend({
         hiddenColumns: [],
@@ -53,6 +51,8 @@ my.SlickGrid = Backbone.View.extend({
 
     );
     this.state = new recline.Model.ObjectState(state);
+
+    this._slickHandler = new Slick.EventHandler();
   },
 
   events: {
@@ -187,7 +187,7 @@ my.SlickGrid = Backbone.View.extend({
       this.grid.setSortColumn(column, sortAsc);
     }
 
-    this.grid.onSort.subscribe(function(e, args){
+    this._slickHandler.subscribe(this.grid.onSort, function(e, args){
       var order = (args.sortAsc) ? 'asc':'desc';
       var sort = [{
         field: args.sortCol.field,
@@ -196,7 +196,7 @@ my.SlickGrid = Backbone.View.extend({
       self.model.query({sort: sort});
     });
 
-    this.grid.onColumnsReordered.subscribe(function(e, args){
+    this._slickHandler.subscribe(this.grid.onColumnsReordered, function(e, args){
       self.state.set({columnsOrder: _.pluck(self.grid.getColumns(),'id')});
     });
 
@@ -212,7 +212,7 @@ my.SlickGrid = Backbone.View.extend({
         self.state.set({columnsWidth:columnsWidth});
     });
 
-    this.grid.onCellChange.subscribe(function (e, args) {
+    this._slickHandler.subscribe(this.grid.onCellChange, function (e, args) {
       // We need to change the model associated value
       //
       var grid = args.grid;
@@ -235,7 +235,12 @@ my.SlickGrid = Backbone.View.extend({
     }
 
     return this;
- },
+  },
+
+  remove: function () {
+    this._slickHandler.unsubscribeAll();
+    Backbone.View.prototype.remove.apply(this, arguments);
+  },
 
   show: function() {
     // If the div is hidden, SlickGrid will calculate wrongly some

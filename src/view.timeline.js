@@ -30,10 +30,10 @@ my.Timeline = Backbone.View.extend({
     var self = this;
     this.timeline = new VMM.Timeline();
     this._timelineIsInitialized = false;
-    this.model.fields.bind('reset', function() {
+    this.listenTo(this.model.fields, 'reset', function() {
       self._setupTemporalField();
     });
-    this.model.records.bind('all', function() {
+    this.listenTo(this.model.records, 'all', function() {
       self.reloadData();
     });
     var stateData = _.extend({

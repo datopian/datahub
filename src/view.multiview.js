@@ -199,30 +199,30 @@ my.MultiView = Backbone.View.extend({
     }
     this._showHideSidebar();
 
-    this.model.bind('query:start', function() {
-        self.notify({loader: true, persist: true});
-      });
-    this.model.bind('query:done', function() {
-        self.clearNotifications();
-        self.$el.find('.doc-count').text(self.model.recordCount || 'Unknown');
-      });
-    this.model.bind('query:fail', function(error) {
-        self.clearNotifications();
-        var msg = '';
-        if (typeof(error) == 'string') {
-          msg = error;
-        } else if (typeof(error) == 'object') {
-          if (error.title) {
-            msg = error.title + ': ';
-          }
-          if (error.message) {
-            msg += error.message;
-          }
-        } else {
-          msg = 'There was an error querying the backend';
+    this.listenTo(this.model, 'query:start', function() {
+      self.notify({loader: true, persist: true});
+    });
+    this.listenTo(this.model, 'query:done', function() {
+      self.clearNotifications();
+      self.$el.find('.doc-count').text(self.model.recordCount || 'Unknown');
+    });
+    this.listenTo(this.model, 'query:fail', function(error) {
+      self.clearNotifications();
+      var msg = '';
+      if (typeof(error) == 'string') {
+        msg = error;
+      } else if (typeof(error) == 'object') {
+        if (error.title) {
+          msg = error.title + ': ';
         }
-        self.notify({message: msg, category: 'error', persist: true});
-      });
+        if (error.message) {
+          msg += error.message;
+        }
+      } else {
+        msg = 'There was an error querying the backend';
+      }
+      self.notify({message: msg, category: 'error', persist: true});
+    });
 
     // retrieve basic data like fields etc
     // note this.model and dataset returned are the same
@@ -263,16 +263,28 @@ my.MultiView = Backbone.View.extend({
       $dataSidebar.append(view.view.el);
     }, this);
 
-    var pager = new recline.View.Pager({
+    this.pager = new recline.View.Pager({
       model: this.model.queryState
     });
-    this.$el.find('.recline-results-info').after(pager.el);
+    this.$el.find('.recline-results-info').after(this.pager.el);
 
-    var queryEditor = new recline.View.QueryEditor({
+    this.queryEditor = new recline.View.QueryEditor({
       model: this.model.queryState
     });
-    this.$el.find('.query-editor-here').append(queryEditor.el);
+    this.$el.find('.query-editor-here').append(this.queryEditor.el);
 
+  },
+
+  remove: function () {
+    _.each(this.pageViews, function (view) {
+      view.view.remove();
+    });
+    _.each(this.sidebarViews, function (view) {
+      view.view.remove();
+    });
+    this.pager.remove();
+    this.queryEditor.remove();
+    Backbone.View.prototype.remove.apply(this, arguments);
   },
 
   // hide the sidebar if empty
@@ -371,7 +383,7 @@ my.MultiView = Backbone.View.extend({
   _bindStateChanges: function() {
     var self = this;
     // finally ensure we update our state object when state of sub-object changes so that state is always up to date
-    this.model.queryState.bind('change', function() {
+    this.listenTo(this.model.queryState, 'change', function() {
       self.state.set({query: self.model.queryState.toJSON()});
     });
     _.each(this.pageViews, function(pageView) {
@@ -379,7 +391,7 @@ my.MultiView = Backbone.View.extend({
         var update = {};
         update['view-' + pageView.id] = pageView.view.state.toJSON();
         self.state.set(update);
-        pageView.view.state.bind('change', function() {
+        self.listenTo(pageView.view.state, 'change', function() {
           var update = {};
           update['view-' + pageView.id] = pageView.view.state.toJSON();
           // had problems where change not being triggered for e.g. grid view so let's do it explicitly
@@ -393,7 +405,7 @@ my.MultiView = Backbone.View.extend({
   _bindFlashNotifications: function() {
     var self = this;
     _.each(this.pageViews, function(pageView) {
-      pageView.view.bind('recline:flash', function(flash) {
+      self.listenTo(pageView.view, 'recline:flash', function(flash) {
         self.notify(flash);
       });
     });
