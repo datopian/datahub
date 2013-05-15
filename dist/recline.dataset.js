@@ -3,9 +3,10 @@ this.recline = this.recline || {};
 this.recline.Model = this.recline.Model || {};
 
 (function(my) {
+  "use strict";
 
 // use either jQuery or Underscore Deferred depending on what is available
-var Deferred = _.isUndefined(this.jQuery) ? _.Deferred : jQuery.Deferred;
+var Deferred = _.isUndefined(window.jQuery) ? _.Deferred : jQuery.Deferred;
 
 // ## <a id="dataset">Dataset</a>
 my.Dataset = Backbone.Model.extend({
@@ -298,7 +299,7 @@ my.Record = Backbone.Model.extend({
   //
   // NB: if field is undefined a default '' value will be returned
   getFieldValue: function(field) {
-    val = this.getFieldValueUnrendered(field);
+    var val = this.getFieldValueUnrendered(field);
     if (field && !_.isUndefined(field.renderer)) {
       val = field.renderer(val, field, this.toJSON());
     }
@@ -588,10 +589,11 @@ this.recline.Backend = this.recline.Backend || {};
 this.recline.Backend.Memory = this.recline.Backend.Memory || {};
 
 (function(my) {
+  "use strict";
   my.__type__ = 'memory';
 
   // private data - use either jQuery or Underscore Deferred depending on what is available
-  var Deferred = _.isUndefined(this.jQuery) ? _.Deferred : jQuery.Deferred;
+  var Deferred = _.isUndefined(window.jQuery) ? _.Deferred : jQuery.Deferred;
 
   // ## Data Wrapper
   //
@@ -693,7 +695,7 @@ this.recline.Backend.Memory = this.recline.Backend.Memory || {};
         'float': function (e) { return parseFloat(e, 10); },
         number: function (e) { return parseFloat(e, 10); },
         string : function (e) { return e.toString() },
-        date   : function (e) { return new Date(e).valueOf() },
+        date   : function (e) { return moment(e).valueOf() },
         datetime   : function (e) { return new Date(e).valueOf() }
       };
       var keyedFields = {};
