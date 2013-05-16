@@ -507,7 +507,7 @@ this.recline.Backend.ElasticSearch = this.recline.Backend.ElasticSearch || {};
 
     this._convertFilter = function(filter) {
       var out = {};
-      out[filter.type] = {}
+      out[filter.type] = {};
       if (filter.type === 'term') {
         out.term[filter.field] = filter.term.toLowerCase();
       } else if (filter.type === 'geo_distance') {
@@ -537,7 +537,7 @@ this.recline.Backend.ElasticSearch = this.recline.Backend.ElasticSearch || {};
         dataType: this.options.dataType
       });
       return jqxhr;
-    }
+    };
   };
 
 
@@ -798,14 +798,14 @@ this.recline.Backend.GDocs = this.recline.Backend.GDocs || {};
     if(!!matches) {
         key = matches[1];
         // the gid in url is 0-based and feed url is 1-based
-        worksheet = parseInt(matches[3]) + 1;
+        worksheet = parseInt(matches[3], 10) + 1;
         if (isNaN(worksheet)) {
           worksheet = 1;
         }
         urls = {
           worksheet  : 'https://spreadsheets.google.com/feeds/list/'+ key +'/'+ worksheet +'/public/values?alt=json',
           spreadsheet: 'https://spreadsheets.google.com/feeds/worksheets/'+ key +'/public/basic?alt=json'
-        }
+        };
     }
     else {
         // we assume that it's one of the feeds urls
@@ -815,7 +815,7 @@ this.recline.Backend.GDocs = this.recline.Backend.GDocs || {};
         urls = {
           worksheet  : 'https://spreadsheets.google.com/feeds/list/'+ key +'/'+ worksheet +'/public/values?alt=json',
           spreadsheet: 'https://spreadsheets.google.com/feeds/worksheets/'+ key +'/public/basic?alt=json'
-        }            
+        };
     }
 
     return urls;
@@ -931,9 +931,9 @@ this.recline.Backend.Memory = this.recline.Backend.Memory || {};
         integer: function (e) { return parseFloat(e, 10); },
         'float': function (e) { return parseFloat(e, 10); },
         number: function (e) { return parseFloat(e, 10); },
-        string : function (e) { return e.toString() },
-        date   : function (e) { return moment(e).valueOf() },
-        datetime   : function (e) { return new Date(e).valueOf() }
+        string : function (e) { return e.toString(); },
+        date   : function (e) { return moment(e).valueOf(); },
+        datetime   : function (e) { return new Date(e).valueOf(); }
       };
       var keyedFields = {};
       _.each(self.fields, function(field) {
@@ -964,8 +964,8 @@ this.recline.Backend.Memory = this.recline.Backend.Memory || {};
       }
 
       function range(record, filter) {
-        var startnull = (filter.start == null || filter.start === '');
-        var stopnull = (filter.stop == null || filter.stop === '');
+        var startnull = (filter.start === null || filter.start === '');
+        var stopnull = (filter.stop === null || filter.stop === '');
         var parse = getDataParser(filter);
         var value = parse(record[filter.field]);
         var start = parse(filter.start);
@@ -989,8 +989,8 @@ this.recline.Backend.Memory = this.recline.Backend.Memory || {};
       if (queryObj.q) {
         var terms = queryObj.q.split(' ');
         var patterns=_.map(terms, function(term) {
-          return new RegExp(term.toLowerCase());;
-          });
+          return new RegExp(term.toLowerCase());
+        });
         results = _.filter(results, function(rawdoc) {
           var matches = true;
           _.each(patterns, function(pattern) {
@@ -1926,7 +1926,7 @@ my.Flot = Backbone.View.extend({
       var numTicks = Math.min(this.model.records.length, 15);
       var increment = this.model.records.length / numTicks;
       var ticks = [];
-      for (i=0; i<numTicks; i++) {
+      for (var i=0; i<numTicks; i++) {
         ticks.push(parseInt(i*increment, 10));
       }
       xaxis.ticks = ticks;
