@@ -108,9 +108,9 @@ this.recline.Backend.Memory = this.recline.Backend.Memory || {};
         integer: function (e) { return parseFloat(e, 10); },
         'float': function (e) { return parseFloat(e, 10); },
         number: function (e) { return parseFloat(e, 10); },
-        string : function (e) { return e.toString() },
-        date   : function (e) { return moment(e).valueOf() },
-        datetime   : function (e) { return new Date(e).valueOf() }
+        string : function (e) { return e.toString(); },
+        date   : function (e) { return moment(e).valueOf(); },
+        datetime   : function (e) { return new Date(e).valueOf(); }
       };
       var keyedFields = {};
       _.each(self.fields, function(field) {
@@ -141,8 +141,8 @@ this.recline.Backend.Memory = this.recline.Backend.Memory || {};
       }
 
       function range(record, filter) {
-        var startnull = (filter.start == null || filter.start === '');
-        var stopnull = (filter.stop == null || filter.stop === '');
+        var startnull = (filter.start === null || filter.start === '');
+        var stopnull = (filter.stop === null || filter.stop === '');
         var parse = getDataParser(filter);
         var value = parse(record[filter.field]);
         var start = parse(filter.start);
@@ -166,8 +166,8 @@ this.recline.Backend.Memory = this.recline.Backend.Memory || {};
       if (queryObj.q) {
         var terms = queryObj.q.split(' ');
         var patterns=_.map(terms, function(term) {
-          return new RegExp(term.toLowerCase());;
-          });
+          return new RegExp(term.toLowerCase());
+        });
         results = _.filter(results, function(rawdoc) {
           var matches = true;
           _.each(patterns, function(pattern) {

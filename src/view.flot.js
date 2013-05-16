@@ -215,7 +215,7 @@ my.Flot = Backbone.View.extend({
       var numTicks = Math.min(this.model.records.length, 15);
       var increment = this.model.records.length / numTicks;
       var ticks = [];
-      for (i=0; i<numTicks; i++) {
+      for (var i=0; i<numTicks; i++) {
         ticks.push(parseInt(i*increment, 10));
       }
       xaxis.ticks = ticks;

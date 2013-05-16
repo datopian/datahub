@@ -138,7 +138,7 @@ this.recline.Backend.ElasticSearch = this.recline.Backend.ElasticSearch || {};
 
     this._convertFilter = function(filter) {
       var out = {};
-      out[filter.type] = {}
+      out[filter.type] = {};
       if (filter.type === 'term') {
         out.term[filter.field] = filter.term.toLowerCase();
       } else if (filter.type === 'geo_distance') {
@@ -168,7 +168,7 @@ this.recline.Backend.ElasticSearch = this.recline.Backend.ElasticSearch || {};
         dataType: this.options.dataType
       });
       return jqxhr;
-    }
+    };
   };
 
 
