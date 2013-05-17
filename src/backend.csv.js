@@ -129,7 +129,7 @@ this.recline.Backend.CSV = this.recline.Backend.CSV || {};
 
       // If we are at a EOF or EOR
       if (inQuote === false && (cur === delimiter || cur === "\n")) {
-	field = processField(field);
+        field = processField(field);
         // Add the current field to the current row
         row.push(field);
         // If this is EOR append row to output and flush row
@@ -168,6 +168,9 @@ this.recline.Backend.CSV = this.recline.Backend.CSV || {};
     field = processField(field);
     row.push(field);
     out.push(row);
+
+    // Expose the ability to discard initial rows
+    if (options.skipInitialRows) out = out.slice(options.skipInitialRows);
 
     return out;
   };
