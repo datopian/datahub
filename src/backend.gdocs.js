@@ -7,7 +7,7 @@ this.recline.Backend.GDocs = this.recline.Backend.GDocs || {};
   my.__type__ = 'gdocs';
 
   // use either jQuery or Underscore Deferred depending on what is available
-  var Deferred = _.isUndefined(window.jQuery) ? _.Deferred : jQuery.Deferred;
+  var Deferred = (typeof jQuery !== "undefined" && jQuery.Deferred) || _.Deferred;
 
   // ## Google spreadsheet backend
   // 

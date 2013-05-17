@@ -6,7 +6,7 @@ this.recline.Model = this.recline.Model || {};
   "use strict";
 
 // use either jQuery or Underscore Deferred depending on what is available
-var Deferred = _.isUndefined(window.jQuery) ? _.Deferred : jQuery.Deferred;
+var Deferred = (typeof jQuery !== "undefined" && jQuery.Deferred) || _.Deferred;
 
 // ## <a id="dataset">Dataset</a>
 my.Dataset = Backbone.Model.extend({

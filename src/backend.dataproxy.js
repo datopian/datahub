@@ -13,7 +13,7 @@ this.recline.Backend.DataProxy = this.recline.Backend.DataProxy || {};
 
   
   // use either jQuery or Underscore Deferred depending on what is available
-  var Deferred = _.isUndefined(window.jQuery) ? _.Deferred : jQuery.Deferred;
+  var Deferred = (typeof jQuery !== "undefined" && jQuery.Deferred) || _.Deferred;
 
   // ## load
   //
