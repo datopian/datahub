@@ -6,7 +6,7 @@ this.recline.Model = this.recline.Model || {};
   "use strict";
 
 // use either jQuery or Underscore Deferred depending on what is available
-var Deferred = _.isUndefined(window.jQuery) ? _.Deferred : jQuery.Deferred;
+var Deferred = (typeof jQuery !== "undefined" && jQuery.Deferred) || _.Deferred;
 
 // ## <a id="dataset">Dataset</a>
 my.Dataset = Backbone.Model.extend({
@@ -16,6 +16,7 @@ my.Dataset = Backbone.Model.extend({
 
   // ### initialize
   initialize: function() {
+    var self = this;
     _.bindAll(this, 'query');
     this.backend = null;
     if (this.get('backend')) {
@@ -35,8 +36,9 @@ my.Dataset = Backbone.Model.extend({
     this.facets = new my.FacetList();
     this.recordCount = null;
     this.queryState = new my.Query();
-    this.queryState.bind('change', this.query);
-    this.queryState.bind('facet:add', this.query);
+    this.queryState.bind('change facet:add', function () {
+      self.query(); // We want to call query() without any arguments.
+    });
     // store is what we query and save against
     // store will either be the backend or be a memory store if Backend fetch
     // tells us to use memory store
@@ -593,7 +595,7 @@ this.recline.Backend.Memory = this.recline.Backend.Memory || {};
   my.__type__ = 'memory';
 
   // private data - use either jQuery or Underscore Deferred depending on what is available
-  var Deferred = _.isUndefined(window.jQuery) ? _.Deferred : jQuery.Deferred;
+  var Deferred = (typeof jQuery !== "undefined" && jQuery.Deferred) || _.Deferred;
 
   // ## Data Wrapper
   //
