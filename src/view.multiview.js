@@ -228,10 +228,6 @@ my.MultiView = Backbone.View.extend({
     // note this.model and dataset returned are the same
     // TODO: set query state ...?
     this.model.queryState.set(self.state.get('query'), {silent: true});
-    this.model.fetch()
-      .fail(function(error) {
-        self.notify({message: error.message, category: 'error', persist: true});
-      });
   },
 
   setReadOnly: function() {
