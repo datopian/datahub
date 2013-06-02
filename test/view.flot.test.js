@@ -48,7 +48,9 @@ test('dates in graph view', function () {
       'series': ['y', 'z']
     }
   });
+  view.render();
   $('.fixtures').append(view.el);
+  view.redraw();
 
   view.remove();
 });

@@ -155,25 +155,17 @@ my.Flot = Backbone.View.extend({
   },
 
   _xaxisLabel: function (x) {
-    var xfield = this.model.fields.get(this.state.attributes.group);
-
-    // time series
-    var xtype = xfield.get('type');
-    var isDateTime = (xtype === 'date' || xtype === 'date-time' || xtype  === 'time');
-
-    if (this.xvaluesAreIndex) {
+    if (this._groupFieldIsDateTime()) {
+      // oddly x comes through as milliseconds *string* (rather than int
+      // or float) so we have to reparse
+      x = new Date(parseFloat(x)).toLocaleDateString();
+    } else if (this.xvaluesAreIndex) {
       x = parseInt(x, 10);
       // HACK: deal with bar graph style cases where x-axis items were strings
       // In this case x at this point is the index of the item in the list of
       // records not its actual x-axis value
       x = this.model.records.models[x].get(this.state.attributes.group);
     }
-    if (isDateTime) {
-      x = new Date(x).toLocaleDateString();
-    }
-    // } else if (isDateTime) {
-    //  x = new Date(parseInt(x, 10)).toLocaleDateString();
-    // }
 
     return x;
   },
@@ -188,25 +180,26 @@ my.Flot = Backbone.View.extend({
   // @param numPoints the number of points that will be plotted
   getGraphOptions: function(typeId, numPoints) {
     var self = this;
-
-    var tickFormatter = function (x) {
-      // convert x to a string and make sure that it is not too long or the
-      // tick labels will overlap
-      // TODO: find a more accurate way of calculating the size of tick labels
-      var label = self._xaxisLabel(x) || "";
-
-      if (typeof label !== 'string') {
-        label = label.toString();
-      }
-      if (self.state.attributes.graphType !== 'bars' && label.length > 10) {
-        label = label.slice(0, 10) + "...";
-      }
-
-      return label;
-    };
-
+    var groupFieldIsDateTime = self._groupFieldIsDateTime();
     var xaxis = {};
-    xaxis.tickFormatter = tickFormatter;
+
+    if (!groupFieldIsDateTime) {
+      xaxis.tickFormatter = function (x) {
+        // convert x to a string and make sure that it is not too long or the
+        // tick labels will overlap
+        // TODO: find a more accurate way of calculating the size of tick labels
+        var label = self._xaxisLabel(x) || "";
+
+        if (typeof label !== 'string') {
+          label = label.toString();
+        }
+        if (self.state.attributes.graphType !== 'bars' && label.length > 10) {
+          label = label.slice(0, 10) + "...";
+        }
+
+        return label;
+      };
+    }
 
     // for labels case we only want ticks at the label intervals
     // HACK: however we also get this case with Date fields. In that case we
@@ -219,6 +212,8 @@ my.Flot = Backbone.View.extend({
         ticks.push(parseInt(i*increment, 10));
       }
       xaxis.ticks = ticks;
+    } else if (groupFieldIsDateTime) {
+      xaxis.mode = 'time';
     }
 
     var yaxis = {};
@@ -300,24 +295,31 @@ my.Flot = Backbone.View.extend({
     }
   },
 
+  _groupFieldIsDateTime: function() {
+    var xfield = this.model.fields.get(this.state.attributes.group);
+    var xtype = xfield.get('type');
+    var isDateTime = (xtype === 'date' || xtype === 'date-time' || xtype  === 'time');
+    return isDateTime;
+  },
+
   createSeries: function() {
     var self = this;
     self.xvaluesAreIndex = false;
     var series = [];
+    var xfield = self.model.fields.get(self.state.attributes.group);
+    var isDateTime = self._groupFieldIsDateTime();
+
     _.each(this.state.attributes.series, function(field) {
       var points = [];
       var fieldLabel = self.model.fields.get(field).get('label');
       _.each(self.model.records.models, function(doc, index) {
-        var xfield = self.model.fields.get(self.state.attributes.group);
         var x = doc.getFieldValue(xfield);
 
-        // time series
-        var xtype = xfield.get('type');
-        var isDateTime = (xtype === 'date' || xtype === 'date-time' || xtype  === 'time');
-
         if (isDateTime) {
-          self.xvaluesAreIndex = true;
-          x = index;
+          var _date = moment(x);
+          if (_date.isValid()) {
+            x = _date.toDate().getTime();
+          }
         } else if (typeof x === 'string') {
           x = parseFloat(x);
           if (isNaN(x)) { // assume this is a string label

@@ -130,6 +130,7 @@ library and the Recline Flot Graph view:
 <script language="javascript" type="text/javascript" src="vendor/flot/excanvas.min.js"></script>
 <![endif]-->
 <script type="text/javascript" src="vendor/flot/jquery.flot.js"></script>
+<script type="text/javascript" src="vendor/flot/jquery.flot.time.js"></script>
 <script type="text/javascript" src="src/view.graph.js"></script>
 {% endhighlight %}
 
