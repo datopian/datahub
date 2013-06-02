@@ -1199,7 +1199,13 @@ my.Dataset = Backbone.Model.extend({
     }
 
     function handleResults(results) {
-      var out = self._normalizeRecordsAndFields(results.records, results.fields);
+      // if explicitly given the fields
+      // (e.g. var dataset = new Dataset({fields: fields, ...})
+      // use that field info over anything we get back by parsing the data
+      // (results.fields)
+      var fields = self.get('fields') || results.fields;
+
+      var out = self._normalizeRecordsAndFields(results.records, fields);
       if (results.useMemoryStore) {
         self._store = new recline.Backend.Memory.Store(out.records, out.fields);
       }
