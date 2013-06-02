@@ -177,6 +177,25 @@ test('Dataset getFieldsSummary', function () {
   });
 });
 
+test('fetch without and with explicit fields', function () {
+  var dataset = new recline.Model.Dataset({
+    backend: 'csv',
+    data: 'A,B\n1,2\n3,4'
+  });
+  dataset.fetch();
+  equal(dataset.fields.at(0).id, 'A');
+  equal(dataset.fields.at(0).get('type'), 'string');
+
+  var dataset = new recline.Model.Dataset({
+    fields: [{id: 'X', type: 'number'}, {id: 'Y'}],
+    backend: 'csv',
+    data: 'A,B\n1,2\n3,4'
+  });
+  dataset.fetch();
+  equal(dataset.fields.at(0).id, 'X');
+  equal(dataset.fields.at(0).get('type'), 'number');
+});
+
 test('_normalizeRecordsAndFields', function () {
   var data = [
     // fields but no records
