@@ -316,7 +316,8 @@ my.Flot = Backbone.View.extend({
         var x = doc.getFieldValue(xfield);
 
         if (isDateTime) {
-          var _date = moment(x);
+          // cast to string as Date(1990) produces 1970 date but Date('1990') produces 1/1/1990
+          var _date = moment(String(x));
           if (_date.isValid()) {
             x = _date.toDate().getTime();
           }
