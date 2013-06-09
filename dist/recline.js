@@ -2035,7 +2035,7 @@ my.Flot = Backbone.View.extend({
       var points = [];
       var fieldLabel = self.model.fields.get(field).get('label');
       _.each(self.model.records.models, function(doc, index) {
-        var x = doc.getFieldValue(xfield);
+        var x = doc.getFieldValueUnrendered(xfield);
 
         if (isDateTime) {
           // cast to string as Date(1990) produces 1970 date but Date('1990') produces 1/1/1990
@@ -2052,7 +2052,7 @@ my.Flot = Backbone.View.extend({
         }
 
         var yfield = self.model.fields.get(field);
-        var y = doc.getFieldValue(yfield);
+        var y = doc.getFieldValueUnrendered(yfield);
 
         if (self.state.attributes.graphType == 'bars') {
           points.push([y, x]);
