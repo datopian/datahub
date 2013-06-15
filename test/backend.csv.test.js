@@ -64,6 +64,19 @@ test("parseCSV - quotechar", function() {
 
 });
 
+test("parseCSV skipInitialRows", function() {
+  var csv = '"Jones, Jay",10\n' +
+  '"Xyz ""ABC"" O\'Brien",11:35\n' +
+  '"Other, AN",12:35\n';
+
+  var array = recline.Backend.CSV.parseCSV(csv, {skipInitialRows: 1});
+  var exp = [
+    ['Xyz "ABC" O\'Brien', '11:35' ],
+    ['Other, AN', '12:35' ]
+  ];
+  deepEqual(exp, array);
+});
+
 test("serializeCSV - Array", function() {
   var csv = [
     ['Jones, Jay', 10],

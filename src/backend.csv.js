@@ -33,35 +33,43 @@ this.recline.Backend.CSV = this.recline.Backend.CSV || {};
       var reader = new FileReader();
       var encoding = dataset.encoding || 'UTF-8';
       reader.onload = function(e) {
-        var rows = my.parseCSV(e.target.result, dataset);
-        dfd.resolve({
-          records: rows,
-          metadata: {
-            filename: dataset.file.name
-          },
-          useMemoryStore: true
-        });
+        var out = my.extractFields(my.parseCSV(data, dataset), dataset);
+        out.useMemoryStore = true;
+        out.metadata = {
+          filename: dataset.file.name
+        }
+        dfd.resolve(out);
       };
       reader.onerror = function (e) {
         alert('Failed to load file. Code: ' + e.target.error.code);
       };
       reader.readAsText(dataset.file, encoding);
     } else if (dataset.data) {
-      var rows = my.parseCSV(dataset.data, dataset);
-      dfd.resolve({
-        records: rows,
-        useMemoryStore: true
-      });
+      var out = my.extractFields(my.parseCSV(dataset.data, dataset), dataset);
+      out.useMemoryStore = true;
+      dfd.resolve(out);
     } else if (dataset.url) {
       jQuery.get(dataset.url).done(function(data) {
-        var rows = my.parseCSV(data, dataset);
-        dfd.resolve({
-          records: rows,
-          useMemoryStore: true
-        });
+        var out = my.extractFields(my.parseCSV(data, dataset), dataset);
+        out.useMemoryStore = true;
       });
     }
     return dfd.promise();
+  };
+
+  // Convert array of rows in { records: [ ...] , fields: [ ... ] }
+  // @param {Boolean} noHeaderRow If true assume that first row is not a header (i.e. list of fields but is data.
+  my.extractFields = function(rows, noFields) {
+    if (noFields.noHeaderRow !== true && rows.length > 0) {
+      return {
+        fields: rows[0],
+        records: rows.slice(1)
+      }
+    } else {
+      return {
+        records: rows
+      }
+    }
   };
 
   // ## parseCSV
@@ -83,6 +91,8 @@ this.recline.Backend.CSV = this.recline.Backend.CSV || {};
   //    @param {String} [quotechar='"'] A one-character string used to quote
   //      fields containing special characters, such as the delimiter or
   //      quotechar, or which contain new-line characters. It defaults to '"'
+  //
+  //    @param {Integer} skipInitialRows A integer number of rows to skip (default 0)
   //
   // Heavily based on uselesscode's JS CSV parser (MIT Licensed):
   // http://www.uselesscode.org/javascript/csv/

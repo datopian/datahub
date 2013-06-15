@@ -194,6 +194,7 @@ test('fetch without and with explicit fields', function () {
   dataset.fetch();
   equal(dataset.fields.at(0).id, 'X');
   equal(dataset.fields.at(0).get('type'), 'number');
+  equal(dataset.records.at(0).get('X'), 1);
 });
 
 test('_normalizeRecordsAndFields', function () {
