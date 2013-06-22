@@ -33,7 +33,7 @@ this.recline.Backend.CSV = this.recline.Backend.CSV || {};
       var reader = new FileReader();
       var encoding = dataset.encoding || 'UTF-8';
       reader.onload = function(e) {
-        var out = my.extractFields(my.parseCSV(data, dataset), dataset);
+        var out = my.extractFields(my.parseCSV(e.target.result, dataset), dataset);
         out.useMemoryStore = true;
         out.metadata = {
           filename: dataset.file.name
