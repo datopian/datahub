@@ -2531,6 +2531,8 @@ this.recline.View = this.recline.View || {};
 //     latField: {id of field containing latitude in the dataset}
 //     autoZoom: true,
 //     // use cluster support
+//     // cluster: true = always on
+//     // cluster: false = always off
 //     cluster: false
 //   }
 // </pre>
@@ -2718,15 +2720,6 @@ my.Map = Backbone.View.extend({
         this._add(doc);
       } else if (action == 'remove' && doc){
         this._remove(doc);
-      }
-
-      // enable clustering if there is a large number of markers
-      var countAfter = 0;
-      this.features.eachLayer(function(){countAfter++;});
-      var sizeIncreased = countAfter - countBefore > 0;
-      if (!this.state.get('cluster') && countAfter > 64 && sizeIncreased) {
-        this.state.set({cluster: true});
-        return;
       }
 
       // this must come before zooming!
