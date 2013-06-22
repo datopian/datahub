@@ -130,7 +130,7 @@ test('_getGeometryFromRecord non-GeoJSON', function () {
   });
 });
 
-test('many markers', function () {
+test('many markers and clustering', function () {
   var data = [];
   for (var i = 0; i<1000; i++) {
     data.push({ id: i, lon: 13+3*i, lat: 52+i/10});
@@ -150,7 +150,13 @@ test('many markers', function () {
 
   dataset.query();
 
+  // this whole test looks a bit odd now
+  // we used to turn on clustering automatically at a certain level but we do not any more
+  equal(view.state.get('cluster'), false);
+
+  view.state.set({cluster: true});
   equal(view.state.get('cluster'), true);
+
   view.remove();
 });
 
