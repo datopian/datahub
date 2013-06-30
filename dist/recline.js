@@ -52,6 +52,7 @@ this.recline.Backend.CSV = this.recline.Backend.CSV || {};
       jQuery.get(dataset.url).done(function(data) {
         var out = my.extractFields(my.parseCSV(data, dataset), dataset);
         out.useMemoryStore = true;
+        dfd.resolve(out);
       });
     }
     return dfd.promise();
