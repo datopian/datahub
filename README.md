@@ -37,6 +37,7 @@ See CONTRIBUTING.md.
 
 Possible breaking changes
 
+* Many backends moved to their own repositories #314
 * Updated Leaflet to latest version 0.4.4 #220
 * Added marker clustering in map view to handle a large number of markers
 * Dataset.restore method removed (not used internally except from Multiview.restore)

@@ -76,8 +76,8 @@ much more limited if you are just using a Backend. Specifically:
 <script type="text/javascript" src="vendor/jquery/1.7.1/jquery.js"></script>
 <script type="text/javascript" src="vendor/underscore/1.1.6/underscore.js"></script>
 <script type="text/javascript" src="vendor/backbone/0.5.1/backbone.js"></script>
-<!-- include the backend code you need e.g. here for gdocs -->
-<script type="text/javascript" src="src/backend.gdocs.js"></script>
+<!-- include the backend code you need e.g. here for csv -->
+<script type="text/javascript" src="src/backend.csv.js"></script>
 
 <!-- Or you can just include all of recline. -->
 <script type="text/javascript" src="dist/recline.js"></script>
@@ -99,12 +99,16 @@ a bespoke chooser and a Kartograph (svg-only) map.
 </div>
 
 {% highlight javascript %}
+// include the Recline backend for Google Docs
+<script type="text/javascript" src="http://okfnlabs.org/recline.backend.gdocs/backend.gdocs.js"></script>
 {% include example-backends-gdocs.js %}
 {% endhighlight %}
 
 ### Result
 
 <div id="my-gdocs" class="doc-ex-rendered">&nbsp;</div>
+
+<script type="text/javascript" src="http://okfnlabs.org/recline.backend.gdocs/backend.gdocs.js">&nbsp;</script>
 
 <script type="text/javascript">
 {% include example-backends-gdocs.js %}
