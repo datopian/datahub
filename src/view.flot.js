@@ -313,8 +313,6 @@ my.Flot = Backbone.View.extend({
       var points = [];
       var fieldLabel = self.model.fields.get(field).get('label');
 
-      var raw = _.map(self.model.records.models, function(doc, index){ return doc.getFieldValueUnrendered(xfield) });
-
         if (isDateTime){
             var cast = function(x){
                 var _date = moment(String(x));
@@ -323,10 +321,17 @@ my.Flot = Backbone.View.extend({
                 }
                 return x
             }
-        } else if (_.all(raw, function(x){ return !isNaN(parseFloat(x)) })){
-            var cast = function(x){ return parseFloat(x) }
         } else {
-            self.xvaluesAreIndex = true
+            var raw = _.map(self.model.records.models,
+                            function(doc, index){
+                                return doc.getFieldValueUnrendered(xfield)
+                            });
+
+            if (_.all(raw, function(x){ return !isNaN(parseFloat(x)) })){
+                var cast = function(x){ return parseFloat(x) }
+            } else {
+                self.xvaluesAreIndex = true
+            }
         }
 
       _.each(self.model.records.models, function(doc, index) {
