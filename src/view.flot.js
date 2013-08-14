@@ -15,7 +15,8 @@ this.recline.View = this.recline.View || {};
 //        {
 //          group: {column name for x-axis},
 //          series: [{column name for series A}, {column name series B}, ... ],
-//          graphType: 'line',
+//          // options are: lines, points, lines-and-points, bars, columns
+//          graphType: 'lines',
 //          graphOptions: {custom [flot options]}
 //        }
 //
