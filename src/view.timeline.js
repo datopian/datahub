@@ -28,7 +28,7 @@ my.Timeline = Backbone.View.extend({
 
   initialize: function(options) {
     var self = this;
-    this.timeline = new VMM.Timeline();
+    this.timeline = new VMM.Timeline(this.elementId);
     this._timelineIsInitialized = false;
     this.listenTo(this.model.fields, 'reset', function() {
       self._setupTemporalField();
@@ -39,6 +39,9 @@ my.Timeline = Backbone.View.extend({
     var stateData = _.extend({
         startField: null,
         endField: null,
+        // by default timelinejs (and browsers) will parse ambiguous dates in US format (mm/dd/yyyy)
+        // set to true to interpret dd/dd/dddd as dd/mm/yyyy
+        nonUSDates: false,
         timelineJSOptions: {}
       },
       options.state
@@ -66,9 +69,10 @@ my.Timeline = Backbone.View.extend({
   },
 
   _initTimeline: function() {
-    var $timeline = this.$el.find(this.elementId);
     var data = this._timelineJSON();
-    this.timeline.init(data, this.elementId, this.state.get("timelineJSOptions"));
+    var config = this.state.get("timelineJSOptions");
+    config.id = this.elementId;
+    this.timeline.init(config, data);
     this._timelineIsInitialized = true
   },
 
@@ -130,6 +134,12 @@ my.Timeline = Backbone.View.extend({
     return out;
   },
 
+  // convert dates into a format TimelineJS will handle
+  // TimelineJS does not document this at all so combo of read the code +
+  // trial and error
+  // Summary (AFAICt):
+  // Preferred: [-]yyyy[,mm,dd,hh,mm,ss]
+  // Supported: mm/dd/yyyy
   _parseDate: function(date) {
     if (!date) {
       return null;
@@ -137,12 +147,20 @@ my.Timeline = Backbone.View.extend({
     var out = $.trim(date);
     out = out.replace(/(\d)th/g, '$1');
     out = out.replace(/(\d)st/g, '$1');
-    out = $.trim(out) ? moment(out) : null;
-    if (out && out.isValid()) {
-      return out.toDate();
-    } else {
-      return null;
+    out = $.trim(out);
+    if (out.match(/\d\d\d\d-\d\d-\d\d(T.*)?/)) {
+      out = out.replace(/-/g, ',').replace('T', ',').replace(':',',');
     }
+    if (out.match(/\d\d-\d\d-\d\d.*/)) {
+      out = out.replace(/-/g, '/');
+    }
+    if (this.state.get('nonUSDates')) {
+      var parts = out.match(/(\d\d)\/(\d\d)\/(\d\d.*)/);
+      if (parts) {
+        out = [parts[2], parts[1], parts[3]].join('/');
+      }
+    }
+    return out;
   },
 
   _setupTemporalField: function() {

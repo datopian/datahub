@@ -45,6 +45,7 @@ Possible breaking changes
 * Backend.Memory.Store attribute for holding 'records' renamed to `records` from `data`
 * Require new underscore.deferred vendor library for all use (jQuery no longer required if just using recline.dataset.js)
 * View.el is now the raw DOM element. If you want a jQuery-wrapped version, use view.$el. #350
+* Upgraded timelinejs lib - #316
 
 ### v0.5 - July 5th 2012 (first public release)
 

@@ -7281,7 +7281,10 @@ if(typeof VMM != 'undefined' && typeof VMM.Timeline == 'undefined') {
 			createConfig(c);
 			createStructure();
 			
-			if (type.of(_data) == "string") {
+      // surely this should just be type.of(_data) !== null
+			// if (type.of(_data) == "string") {
+      // OR - should not use _data as an argument
+			if (type.of(_data) != null) {
 				config.source	= _data;
 			}
 			
