@@ -248,11 +248,11 @@ First, add the additional dependencies for the timeline view. The timeline is bu
 
 {% highlight html %}
 <!-- css -->
-<link rel="stylesheet" href="vendor/timeline/20120520/css/timeline.css">
+<link rel="stylesheet" href="vendor/timeline/2.24/css/timeline.css">
 
 <!-- javascript -->
 <script type="text/javascript" src="vendor/moment/2.0.0/moment.js"></script>
-<script type="text/javascript" src="vendor/timeline/20120520/js/timeline.js"></script>
+<script type="text/javascript" src="vendor/timeline/2.24/js/timeline.js"></script>
 {% endhighlight %}
 
 Now, create a new div for the map (must have an explicit height for the timeline to render):

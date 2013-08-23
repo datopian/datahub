@@ -43,11 +43,10 @@ test('render etc', function () {
   });
   $('.fixtures').append(view.el);
   view.render();
-  view._initTimeline();
   assertPresent('.vco-timeline', view.el);
   assertPresent('.timenav', view.el);
   assertPresent('.timenav', view.el);
-  equal(view.$el.find('.marker.active h3').text(), 'firstfirst');
+  equal(view.$el.find('.marker.active h3').text(), 'first');
   view.remove();
 });
 
