@@ -37,7 +37,13 @@ test('extract dates and timelineJSON', function () {
 });
 
 test('render etc', function () {
-  var dataset = Fixture.getDataset();
+  var dataset = new recline.Model.Dataset({
+    records: [
+      {'Date': '-10000', 'title': 'first'},
+      {'Date': '2012-03-20', 'title': 'second'},
+      {'Date': '2012-03-25', 'title': 'third'}
+    ]
+  });
   var view = new recline.View.Timeline({
     model: dataset
   });
@@ -63,6 +69,7 @@ test('_parseDate', function () {
     [ '1914-08-01T08:00', '1914,08,01,08,00' ],
     [ '03-20-1914', '03/20/1914' ],
     [ '20/03/1914', '20/03/1914' ],
+    [ '-10000', '-10000' ],
     [ null, null ]
   ];
   _.each(testData, function(item) {
