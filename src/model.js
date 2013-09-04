@@ -398,7 +398,7 @@ my.Field = Backbone.Model.extend({
       this.deriver = options.deriver;
     }
     if (!this.renderer) {
-      this.renderer = this.defaultRenderers[this.get('type')];
+      this.renderer = data.renderer ? data.renderer : this.defaultRenderers[this.get('type')];
     }
     this.facets = new my.FacetList();
   },
