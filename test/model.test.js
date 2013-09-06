@@ -347,6 +347,30 @@ test('Query', function () {
   deepEqual({terms: {field: 'xyz'}}, query.get('facets')['xyz']);
 });
 
+test('Query.addFacet', function () {
+  var query = new recline.Model.Query();
+  query.addFacet('xyz', 25);
+  deepEqual({terms: {field: 'xyz', "size": 25}}, query.get('facets')['xyz']);
+});
+
+test('Query.removeFacet', function () {
+  var query = new recline.Model.Query();
+  query.addFacet('xyz');
+  deepEqual({terms: {field: 'xyz'}}, query.get('facets')['xyz']);
+  query.removeFacet('xyz');
+  equal(undefined, query.get('facets')['xyz']);
+});
+
+test('Query.clearFacets', function () {
+  var query = new recline.Model.Query();
+  query.addFacet('abc');
+  query.addFacet('xyz');
+  deepEqual({terms: {field: 'xyz'}}, query.get('facets')['xyz']);
+  deepEqual({terms: {field: 'abc'}}, query.get('facets')['abc']);
+  query.clearFacets();
+  deepEqual({}, query.get('facets'));
+});
+
 test('Query.addFilter', function () {
   var query = new recline.Model.Query();
   query.addFilter({type: 'term', field: 'xyz'});
@@ -372,6 +396,26 @@ test('Query.addFilter', function () {
     type: 'geo_distance'
   };
   deepEqual(exp, query.get('filters')[2]);
+});
+
+test('Query.replaceFilter', function () {
+  var query = new recline.Model.Query();
+  query.addFilter({type: 'term', field: 'xyz'});
+  var exp = {
+    field: 'xyz',
+    type: 'term',
+    term: ''
+  };
+  deepEqual(query.get('filters')[0], exp);
+
+  query.replaceFilter({type: 'term', field: 'abc'});
+  exp = {
+    field: 'abc',
+    type: 'term',
+    term: ''
+  };
+  deepEqual(query.get('filters')[0], exp);
+
 });
 
 })(this.jQuery);

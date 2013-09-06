@@ -510,6 +510,23 @@ my.Query = Backbone.Model.extend({
     filters.push(ourfilter);
     this.trigger('change:filters:new-blank');
   },
+  replaceFilter: function(filter) {
+    // delete filter on the same field, then add
+    var filters = this.get('filters');
+    var idx = -1;
+    _.each(this.get('filters'), function(filter, key, list) {
+      if (filter.field == filter.field) {
+        idx = key;
+      }
+    });
+    // trigger just one event (change:filters:new-blank) instead of one for remove and 
+    // one for add
+    if (idx >= 0) {
+      filters.splice(idx, 1);
+      this.set({filters: filters});
+    }
+    this.addFilter(filter);
+  },
   updateFilter: function(index, value) {
   },
   // ### removeFilter
@@ -526,7 +543,7 @@ my.Query = Backbone.Model.extend({
   // Add a Facet to this query
   //
   // See <http://www.elasticsearch.org/guide/reference/api/search/facets/>
-  addFacet: function(fieldId) {
+  addFacet: function(fieldId, size, silent) {
     var facets = this.get('facets');
     // Assume id and fieldId should be the same (TODO: this need not be true if we want to add two different type of facets on same field)
     if (_.contains(_.keys(facets), fieldId)) {
@@ -535,8 +552,13 @@ my.Query = Backbone.Model.extend({
     facets[fieldId] = {
       terms: { field: fieldId }
     };
+    if (!_.isUndefined(size)) {
+      facets[fieldId].terms.size = size;
+    }
     this.set({facets: facets}, {silent: true});
-    this.trigger('facet:add', this);
+    if (!silent) {
+      this.trigger('facet:add', this);
+    }
   },
   addHistogramFacet: function(fieldId) {
     var facets = this.get('facets');
@@ -548,7 +570,30 @@ my.Query = Backbone.Model.extend({
     };
     this.set({facets: facets}, {silent: true});
     this.trigger('facet:add', this);
+  },
+  removeFacet: function(fieldId) {
+    var facets = this.get('facets');
+    // Assume id and fieldId should be the same (TODO: this need not be true if we want to add two different type of facets on same field)
+    if (!_.contains(_.keys(facets), fieldId)) {
+      return;
+    }
+    delete facets[fieldId];
+    this.set({facets: facets}, {silent: true});
+    this.trigger('facet:remove', this);
+  },
+  clearFacets: function() {
+    var facets = this.get('facets');
+    _.each(_.keys(facets), function(fieldId) {
+      delete facets[fieldId];
+    });
+    this.trigger('facet:remove', this);
+  },
+  // trigger a facet add; use this to trigger a single event after adding
+  // multiple facets
+  refreshFacets: function() {
+    this.trigger('facet:add', this);
   }
+
 });
 
 
