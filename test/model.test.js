@@ -353,6 +353,24 @@ test('Query.addFacet', function () {
   deepEqual({terms: {field: 'xyz', "size": 25}}, query.get('facets')['xyz']);
 });
 
+test('Query.removeFacet', function () {
+  var query = new recline.Model.Query();
+  query.addFacet('xyz');
+  deepEqual({terms: {field: 'xyz'}}, query.get('facets')['xyz']);
+  query.removeFacet('xyz');
+  equal(undefined, query.get('facets')['xyz']);
+});
+
+test('Query.clearFacets', function () {
+  var query = new recline.Model.Query();
+  query.addFacet('abc');
+  query.addFacet('xyz');
+  deepEqual({terms: {field: 'xyz'}}, query.get('facets')['xyz']);
+  deepEqual({terms: {field: 'abc'}}, query.get('facets')['abc']);
+  query.clearFacets();
+  deepEqual({}, query.get('facets'));
+});
+
 test('Query.addFilter', function () {
   var query = new recline.Model.Query();
   query.addFilter({type: 'term', field: 'xyz'});
