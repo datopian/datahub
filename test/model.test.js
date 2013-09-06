@@ -347,6 +347,12 @@ test('Query', function () {
   deepEqual({terms: {field: 'xyz'}}, query.get('facets')['xyz']);
 });
 
+test('Query.addFacet', function () {
+  var query = new recline.Model.Query();
+  query.addFacet('xyz', 25);
+  deepEqual({terms: {field: 'xyz', "size": 25}}, query.get('facets')['xyz']);
+});
+
 test('Query.addFilter', function () {
   var query = new recline.Model.Query();
   query.addFilter({type: 'term', field: 'xyz'});
