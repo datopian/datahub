@@ -510,6 +510,23 @@ my.Query = Backbone.Model.extend({
     filters.push(ourfilter);
     this.trigger('change:filters:new-blank');
   },
+  replaceFilter: function(filter) {
+    // delete filter on the same field, then add
+    var filters = this.get('filters');
+    var idx = -1;
+    _.each(this.get('filters'), function(filter, key, list) {
+      if (filter.field == filter.field) {
+        idx = key;
+      }
+    });
+    // trigger just one event (change:filters:new-blank) instead of one for remove and 
+    // one for add
+    if (idx >= 0) {
+      filters.splice(idx, 1);
+      this.set({filters: filters});
+    }
+    this.addFilter(filter);
+  },
   updateFilter: function(index, value) {
   },
   // ### removeFilter
