@@ -43,13 +43,13 @@ my.Dataset = Backbone.Model.extend({
     // store will either be the backend or be a memory store if Backend fetch
     // tells us to use memory store
     this._store = this.backend;
+
+    // if backend has a handleQueryResultFunction, use that
+    this._handleResult = (this.backend != null && _.has(this.backend, 'handleQueryResult')) ? 
+      this.backend.handleQueryResult : this._handleQueryResult;
     if (this.backend == recline.Backend.Memory) {
       this.fetch();
     }
-
-    // if backend has a handleQueryResultFunction, use that
-    this._handleResult = (_.has(this.backend, 'handleQueryResult')) ? 
-      this.backend.handleQueryResult : this._handleQueryResult;
   },
 
   // ### fetch
