@@ -313,21 +313,33 @@ my.Flot = Backbone.View.extend({
     _.each(this.state.attributes.series, function(field) {
       var points = [];
       var fieldLabel = self.model.fields.get(field).get('label');
-      _.each(self.model.records.models, function(doc, index) {
-        var x = doc.getFieldValueUnrendered(xfield);
 
-        if (isDateTime) {
-          // cast to string as Date(1990) produces 1970 date but Date('1990') produces 1/1/1990
-          var _date = moment(String(x));
-          if (_date.isValid()) {
-            x = _date.toDate().getTime();
-          }
-        } else if (typeof x === 'string') {
-          x = parseFloat(x);
-          if (isNaN(x)) { // assume this is a string label
-            x = index;
-            self.xvaluesAreIndex = true;
-          }
+        if (isDateTime){
+            var cast = function(x){
+                var _date = moment(String(x));
+                if (_date.isValid()) {
+                    x = _date.toDate().getTime();
+                }
+                return x
+            }
+        } else {
+            var raw = _.map(self.model.records.models,
+                            function(doc, index){
+                                return doc.getFieldValueUnrendered(xfield)
+                            });
+
+            if (_.all(raw, function(x){ return !isNaN(parseFloat(x)) })){
+                var cast = function(x){ return parseFloat(x) }
+            } else {
+                self.xvaluesAreIndex = true
+            }
+        }
+
+      _.each(self.model.records.models, function(doc, index) {
+        if(self.xvaluesAreIndex){
+            var x = index;
+        }else{
+            var x = cast(doc.getFieldValueUnrendered(xfield));
         }
 
         var yfield = self.model.fields.get(field);
