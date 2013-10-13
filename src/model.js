@@ -43,6 +43,10 @@ my.Dataset = Backbone.Model.extend({
     // store will either be the backend or be a memory store if Backend fetch
     // tells us to use memory store
     this._store = this.backend;
+
+    // if backend has a handleQueryResultFunction, use that
+    this._handleResult = (this.backend != null && _.has(this.backend, 'handleQueryResult')) ? 
+      this.backend.handleQueryResult : this._handleQueryResult;
     if (this.backend == recline.Backend.Memory) {
       this.fetch();
     }
@@ -189,7 +193,7 @@ my.Dataset = Backbone.Model.extend({
 
     this._store.query(actualQuery, this.toJSON())
       .done(function(queryResult) {
-        self._handleQueryResult(queryResult);
+        self._handleResult(queryResult);
         self.trigger('query:done');
         dfd.resolve(self.records);
       })
