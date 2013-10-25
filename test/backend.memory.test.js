@@ -112,6 +112,20 @@ test('filters', function () {
     equal(out.total, 3);
     deepEqual(_.pluck(out.hits, 'z'), [3,6,9]);
   });
+
+  query = new recline.Model.Query();
+  query.addFilter({type: 'range', field: 'date', from: '2011-01-01', to: '2011-05-01'});
+  data.query(query.toJSON()).then(function(out) {
+    equal(out.total, 3);
+    deepEqual(_.pluck(out.hits, 'date'), ['2011-01-01','2011-02-03','2011-04-05']);
+  });
+  
+  query = new recline.Model.Query();
+  query.addFilter({type: 'range', field: 'z', from: '0', to: '10'});
+  data.query(query.toJSON()).then(function(out) {
+    equal(out.total, 3);
+    deepEqual(_.pluck(out.hits, 'z'), [3,6,9]);
+  });
 });
 
 
@@ -125,13 +139,31 @@ test('filters with nulls', function () {
   });
 
   query = new recline.Model.Query();
+  query.addFilter({type: 'range', field: 'z', from: '', to: null});
+  data.query(query.toJSON()).then(function(out) {
+    equal(out.total, 6);
+  });
+
+  query = new recline.Model.Query();
   query.addFilter({type: 'range', field: 'x', start: '', stop: '3'});
   data.query(query.toJSON()).then(function(out) {
     equal(out.total, 3);
   });
 
   query = new recline.Model.Query();
+  query.addFilter({type: 'range', field: 'x', from: '', to: '3'});
+  data.query(query.toJSON()).then(function(out) {
+    equal(out.total, 3);
+  });
+
+  query = new recline.Model.Query();
   query.addFilter({type: 'range', field: 'x', start: '3', stop: ''});
+  data.query(query.toJSON()).then(function(out) {
+    equal(out.total, 4);
+  });
+
+  query = new recline.Model.Query();
+  query.addFilter({type: 'range', field: 'x', from: '3', to: ''});
   data.query(query.toJSON()).then(function(out) {
     equal(out.total, 4);
   });
@@ -144,10 +176,23 @@ test('filters with nulls', function () {
   });
 
   query = new recline.Model.Query();
+  query.addFilter({type: 'range', field: 'country', from: '', to: 'Z'});
+  data.query(query.toJSON()).then(function(out) {
+    equal(out.total, 5);
+  });
+
+  query = new recline.Model.Query();
   query.addFilter({type: 'range', field: 'x', start: '', stop: ''});
   data.query(query.toJSON()).then(function(out) {
     equal(out.total, 6);
   });
+
+  query = new recline.Model.Query();
+  query.addFilter({type: 'range', field: 'x', from: '', to: ''});
+  data.query(query.toJSON()).then(function(out) {
+    equal(out.total, 6);
+  });
+
 });
 
 test('facet', function () {

@@ -141,12 +141,14 @@ this.recline.Backend.Memory = this.recline.Backend.Memory || {};
       }
 
       function range(record, filter) {
-        var startnull = (filter.start === null || filter.start === '');
-        var stopnull = (filter.stop === null || filter.stop === '');
+        var filterStart = filter.start || filter.from;
+        var filterStop = filter.stop || filter.to;
+        var startnull = (_.isUndefined(filterStart) || filterStart === null || filterStart === '');
+        var stopnull = (_.isUndefined(filterStop) || filterStop === null || filterStop === '');
         var parse = getDataParser(filter);
         var value = parse(record[filter.field]);
-        var start = parse(filter.start);
-        var stop  = parse(filter.stop);
+        var start = parse(startnull ? '' : filterStart);
+        var stop  = parse(stopnull ? '' : filterStop);
 
         // if at least one end of range is set do not allow '' to get through
         // note that for strings '' <= {any-character} e.g. '' <= 'a'
