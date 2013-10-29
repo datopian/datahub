@@ -141,21 +141,19 @@ this.recline.Backend.Memory = this.recline.Backend.Memory || {};
       }
 
       function range(record, filter) {
-        var filterStart = filter.start || filter.from;
-        var filterStop = filter.stop || filter.to;
-        var startnull = (_.isUndefined(filterStart) || filterStart === null || filterStart === '');
-        var stopnull = (_.isUndefined(filterStop) || filterStop === null || filterStop === '');
+        var fromnull = (_.isUndefined(filter.from) || filter.from === null || filter.from === '');
+        var tonull = (_.isUndefined(filter.to) || filter.to === null || filter.to === '');
         var parse = getDataParser(filter);
         var value = parse(record[filter.field]);
-        var start = parse(startnull ? '' : filterStart);
-        var stop  = parse(stopnull ? '' : filterStop);
+        var from = parse(fromnull ? '' : filter.from);
+        var to  = parse(tonull ? '' : filter.to);
 
         // if at least one end of range is set do not allow '' to get through
         // note that for strings '' <= {any-character} e.g. '' <= 'a'
-        if ((!startnull || !stopnull) && value === '') {
+        if ((!fromnull || !tonull) && value === '') {
           return false;
         }
-        return ((startnull || value >= start) && (stopnull || value <= stop));
+        return ((fromnull || value >= from) && (tonull || value <= to));
       }
 
       function geo_distance() {
