@@ -41,7 +41,7 @@ test('basics', function () {
   $editForm.find('.filter-range input').last().val('4');
   $editForm.submit();
   equal(dataset.queryState.attributes.filters[0].term, 'UK');
-  equal(dataset.queryState.attributes.filters[1].start, 2);
+  equal(dataset.queryState.attributes.filters[1].from, 2);
   equal(dataset.records.length, 2);
 
   // now remove filter
