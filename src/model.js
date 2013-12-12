@@ -52,6 +52,10 @@ my.Dataset = Backbone.Model.extend({
     }
   },
 
+  sync: function(method, model, options) {
+    return this.backend.sync(method, model, options);
+  },
+
   // ### fetch
   //
   // Retrieve dataset and (some) records from the backend.
@@ -635,9 +639,9 @@ my.ObjectState = Backbone.Model.extend({
 // ## Backbone.sync
 //
 // Override Backbone.sync to hand off to sync function in relevant backend
-Backbone.sync = function(method, model, options) {
-  return model.backend.sync(method, model, options);
-};
+// Backbone.sync = function(method, model, options) {
+//   return model.backend.sync(method, model, options);
+// };
 
 }(this.recline.Model));
 
