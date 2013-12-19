@@ -113,7 +113,10 @@ test('_getGeometryFromRecord non-GeoJSON', function () {
     ["53.3,47.32", [47.32, 53.3]],
     ["53.3, 47.32", [47.32, 53.3]],
     ["(53.3,47.32)", [47.32, 53.3]],
-    [[53.3,47.32], [53.3, 47.32]]
+    [[53.3,47.32], [53.3, 47.32]],
+    ["53.3 N, 113.5 W", [53.3, -113.5]],
+    ["53° 18' N, 113° 30' W", [53.3, -113.5]]
+    ["22°54′30″S 43°11′47″W", [-22.983, -43.3139]]
   ];
   var view = new recline.View.Map({
     model: new recline.Model.Dataset({
@@ -219,7 +222,7 @@ test('geoJsonLayerOptions', function () {
     model: dataset
   });
   $('.fixtures').append(view.el);
-  view.geoJsonLayerOptions.point 
+  view.geoJsonLayerOptions.point
   view.geoJsonLayerOptions.pointToLayer = function(feature, latlng) {
     var marker = new L.CircleMarker(latlng, { radius: 8 } );
     marker.bindPopup(feature.properties.popupContent);
