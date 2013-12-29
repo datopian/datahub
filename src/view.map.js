@@ -335,7 +335,6 @@ my.Map = Backbone.View.extend({
       return(parseFloat(coord));
     }
     var dms = coord.split(/[^\.\d\w]+/);
-    console.log(dms);
     var deg = 0; var m = 0;
     var toDeg = [1, 60, 3600]; // conversion factors for Deg, min, sec
     var i; 
