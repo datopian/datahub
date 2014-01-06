@@ -522,8 +522,8 @@ my.Query = Backbone.Model.extend({
     // delete filter on the same field, then add
     var filters = this.get('filters');
     var idx = -1;
-    _.each(this.get('filters'), function(filter, key, list) {
-      if (filter.field == filter.field) {
+    _.each(this.get('filters'), function(f, key, list) {
+      if (filter.field == f.field) {
         idx = key;
       }
     });

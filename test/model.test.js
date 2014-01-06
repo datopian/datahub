@@ -400,21 +400,53 @@ test('Query.addFilter', function () {
 
 test('Query.replaceFilter', function () {
   var query = new recline.Model.Query();
-  query.addFilter({type: 'term', field: 'xyz'});
+  query.addFilter({type: 'term', field: 'xyz', term: 'one'});
   var exp = {
     field: 'xyz',
     type: 'term',
-    term: ''
+    term: 'one'
   };
   deepEqual(query.get('filters')[0], exp);
 
-  query.replaceFilter({type: 'term', field: 'abc'});
+  query.replaceFilter({type: 'term', field: 'xyz', term: 'two'});
   exp = {
-    field: 'abc',
+    field: 'xyz',
     type: 'term',
-    term: ''
+    term: 'two'
   };
   deepEqual(query.get('filters')[0], exp);
+
+});
+
+test('Query.replaceFilter first filter', function () {
+  // replaceFilter changes filter order
+  var query = new recline.Model.Query();
+  query.addFilter({type: 'term', field: 'abc', term: 'one'});
+  query.addFilter({type: 'term', field: 'xyz', term: 'two'});
+  var exp0 = {
+    field: 'abc',
+    type: 'term',
+    term: 'one'
+  };
+  deepEqual(query.get('filters')[0], exp0);
+  var exp1 = {
+    field: 'xyz',
+    type: 'term',
+    term: 'two'
+  };
+  deepEqual(query.get('filters')[1], exp1);
+
+  var numFilters = query.get('filters').length;
+  query.replaceFilter({type: 'term', field: 'abc', term: 'three'});
+  equal(query.get('filters').length, numFilters);
+  exp0 = {
+    field: 'abc',
+    type: 'term',
+    term: 'three'
+  };
+  // deletes original filter and adds replacement to end
+  deepEqual(query.get('filters')[1], exp0);
+  deepEqual(query.get('filters')[0], exp1);
 
 });
 
