@@ -23,7 +23,11 @@ this.recline.View = this.recline.View || {};
 //         model: dataset,
 //         el: $el,
 //         state: {
-//          gridOptions: {editable: true},
+//          gridOptions: {
+//            editable: true,
+//            enableAddRows: true 
+//            ...
+//          },
 //          columnsEditor: [
 //            {column: 'date', editor: Slick.Editors.Date },
 //            {column: 'title', editor: Slick.Editors.Text}
@@ -113,6 +117,24 @@ my.SlickGrid = Backbone.View.extend({
       var editInfo = _.find(self.state.get('columnsEditor'),function(c){return c.column === field.id;});
       if (editInfo){
         column.editor = editInfo.editor;
+      } else {
+        // guess editor type
+        var typeToEditorMap = {
+          'string': Slick.Editors.LongText,
+          'integer': Slick.Editors.IntegerEditor,
+          'number': Slick.Editors.Text,
+          // TODO: need a way to ensure we format date in the right way
+          // Plus what if dates are in distant past or future ... (?)
+          // 'date': Slick.Editors.DateEditor,
+          'date': Slick.Editors.Text,
+          'boolean': Slick.Editors.YesNoSelectEditor
+          // TODO: (?) percent ...
+        };
+        if (field.type in typeToEditorMap) {
+          column.editor = typeToEditorMap[field.type]
+        } else {
+          column.editor = Slick.Editors.LongText;
+        }
       }
       columns.push(column);
     });
