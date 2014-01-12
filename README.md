@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/okfn/recline.png)](https://travis-ci.org/okfn/recline)
+
 A simple but powerful library for building data applications in pure Javascript and HTML.
 
 <h3><a href="http://okfnlabs.org/recline/">Recline Website - including Overview, Documentation, Demos etc</a></h3>
@@ -35,12 +37,15 @@ See CONTRIBUTING.md.
 
 Possible breaking changes
 
+* Many backends moved to their own repositories #314
 * Updated Leaflet to latest version 0.4.4 #220
 * Added marker clustering in map view to handle a large number of markers
 * Dataset.restore method removed (not used internally except from Multiview.restore)
 * Views no longer call render in initialize but must be called client code
 * Backend.Memory.Store attribute for holding 'records' renamed to `records` from `data`
 * Require new underscore.deferred vendor library for all use (jQuery no longer required if just using recline.dataset.js)
+* View.el is now the raw DOM element. If you want a jQuery-wrapped version, use view.$el. #350
+* Upgraded timelinejs lib - #316
 
 ### v0.5 - July 5th 2012 (first public release)
 

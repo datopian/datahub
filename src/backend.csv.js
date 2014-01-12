@@ -4,10 +4,11 @@ this.recline.Backend.CSV = this.recline.Backend.CSV || {};
 
 // Note that provision of jQuery is optional (it is **only** needed if you use fetch on a remote file)
 (function(my) {
+  "use strict";
   my.__type__ = 'csv';
 
   // use either jQuery or Underscore Deferred depending on what is available
-  var Deferred = _.isUndefined(this.jQuery) ? _.Deferred : jQuery.Deferred;
+  var Deferred = (typeof jQuery !== "undefined" && jQuery.Deferred) || _.Deferred;
 
   // ## fetch
   //
@@ -32,35 +33,44 @@ this.recline.Backend.CSV = this.recline.Backend.CSV || {};
       var reader = new FileReader();
       var encoding = dataset.encoding || 'UTF-8';
       reader.onload = function(e) {
-        var rows = my.parseCSV(e.target.result, dataset);
-        dfd.resolve({
-          records: rows,
-          metadata: {
-            filename: dataset.file.name
-          },
-          useMemoryStore: true
-        });
+        var out = my.extractFields(my.parseCSV(e.target.result, dataset), dataset);
+        out.useMemoryStore = true;
+        out.metadata = {
+          filename: dataset.file.name
+        }
+        dfd.resolve(out);
       };
       reader.onerror = function (e) {
         alert('Failed to load file. Code: ' + e.target.error.code);
       };
       reader.readAsText(dataset.file, encoding);
     } else if (dataset.data) {
-      var rows = my.parseCSV(dataset.data, dataset);
-      dfd.resolve({
-        records: rows,
-        useMemoryStore: true
-      });
+      var out = my.extractFields(my.parseCSV(dataset.data, dataset), dataset);
+      out.useMemoryStore = true;
+      dfd.resolve(out);
     } else if (dataset.url) {
       jQuery.get(dataset.url).done(function(data) {
-        var rows = my.parseCSV(data, dataset);
-        dfd.resolve({
-          records: rows,
-          useMemoryStore: true
-        });
+        var out = my.extractFields(my.parseCSV(data, dataset), dataset);
+        out.useMemoryStore = true;
+        dfd.resolve(out);
       });
     }
     return dfd.promise();
+  };
+
+  // Convert array of rows in { records: [ ...] , fields: [ ... ] }
+  // @param {Boolean} noHeaderRow If true assume that first row is not a header (i.e. list of fields but is data.
+  my.extractFields = function(rows, noFields) {
+    if (noFields.noHeaderRow !== true && rows.length > 0) {
+      return {
+        fields: rows[0],
+        records: rows.slice(1)
+      }
+    } else {
+      return {
+        records: rows
+      }
+    }
   };
 
   // ## parseCSV
@@ -82,6 +92,8 @@ this.recline.Backend.CSV = this.recline.Backend.CSV || {};
   //    @param {String} [quotechar='"'] A one-character string used to quote
   //      fields containing special characters, such as the delimiter or
   //      quotechar, or which contain new-line characters. It defaults to '"'
+  //
+  //    @param {Integer} skipInitialRows A integer number of rows to skip (default 0)
   //
   // Heavily based on uselesscode's JS CSV parser (MIT Licensed):
   // http://www.uselesscode.org/javascript/csv/
@@ -128,7 +140,7 @@ this.recline.Backend.CSV = this.recline.Backend.CSV || {};
 
       // If we are at a EOF or EOR
       if (inQuote === false && (cur === delimiter || cur === "\n")) {
-	field = processField(field);
+        field = processField(field);
         // Add the current field to the current row
         row.push(field);
         // If this is EOR append row to output and flush row
@@ -167,6 +179,9 @@ this.recline.Backend.CSV = this.recline.Backend.CSV || {};
     field = processField(field);
     row.push(field);
     out.push(row);
+
+    // Expose the ability to discard initial rows
+    if (options.skipInitialRows) out = out.slice(options.skipInitialRows);
 
     return out;
   };

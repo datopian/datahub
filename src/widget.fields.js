@@ -20,7 +20,8 @@ this.recline = this.recline || {};
 this.recline.View = this.recline.View || {};
 
 (function($, my) {
-
+  "use strict";
+  
 my.Fields = Backbone.View.extend({
   className: 'recline-fields-view', 
   template: ' \
@@ -59,13 +60,12 @@ my.Fields = Backbone.View.extend({
 
   initialize: function(model) {
     var self = this;
-    this.el = $(this.el);
     _.bindAll(this, 'render');
 
     // TODO: this is quite restrictive in terms of when it is re-run
     // e.g. a change in type will not trigger a re-run atm.
     // being more liberal (e.g. binding to all) can lead to being called a lot (e.g. for change:width)
-    this.model.fields.bind('reset', function(action) {
+    this.listenTo(this.model.fields, 'reset', function(action) {
       self.model.fields.each(function(field) {
         field.facets.unbind('all', self.render);
         field.facets.bind('all', self.render);
@@ -74,7 +74,7 @@ my.Fields = Backbone.View.extend({
       self.model.getFieldsSummary();
       self.render();
     });
-    this.el.find('.collapse').collapse();
+    this.$el.find('.collapse').collapse();
     this.render();
   },
   render: function() {
@@ -88,7 +88,7 @@ my.Fields = Backbone.View.extend({
       tmplData.fields.push(out);
     });
     var templated = Mustache.render(this.template, tmplData);
-    this.el.html(templated);
+    this.$el.html(templated);
   }
 });
 

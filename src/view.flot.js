@@ -4,7 +4,7 @@ this.recline = this.recline || {};
 this.recline.View = this.recline.View || {};
 
 (function($, my) {
-
+  "use strict";
 // ## Graph view for a Dataset using Flot graphing library.
 //
 // Initialization arguments (in a hash in first parameter):
@@ -15,7 +15,8 @@ this.recline.View = this.recline.View || {};
 //        {
 //          group: {column name for x-axis},
 //          series: [{column name for series A}, {column name series B}, ... ],
-//          graphType: 'line',
+//          // options are: lines, points, lines-and-points, bars, columns
+//          graphType: 'lines',
 //          graphOptions: {custom [flot options]}
 //        }
 //
@@ -38,14 +39,11 @@ my.Flot = Backbone.View.extend({
     var self = this;
     this.graphColors = ["#edc240", "#afd8f8", "#cb4b4b", "#4da74d", "#9440ed"];
 
-    this.el = $(this.el);
     _.bindAll(this, 'render', 'redraw', '_toolTip', '_xaxisLabel');
     this.needToRedraw = false;
-    this.model.bind('change', this.render);
-    this.model.fields.bind('reset', this.render);
-    this.model.fields.bind('add', this.render);
-    this.model.records.bind('add', this.redraw);
-    this.model.records.bind('reset', this.redraw);
+    this.listenTo(this.model, 'change', this.render);
+    this.listenTo(this.model.fields, 'reset add', this.render);
+    this.listenTo(this.model.records, 'reset add', this.redraw);
     var stateData = _.extend({
         group: null,
         // so that at least one series chooser box shows up
@@ -60,21 +58,26 @@ my.Flot = Backbone.View.extend({
       model: this.model,
       state: this.state.toJSON()
     });
-    this.editor.state.bind('change', function() {
+    this.listenTo(this.editor.state, 'change', function() {
       self.state.set(self.editor.state.toJSON());
       self.redraw();
     });
-    this.elSidebar = this.editor.el;
+    this.elSidebar = this.editor.$el;
   },
 
   render: function() {
     var self = this;
     var tmplData = this.model.toTemplateJSON();
     var htmls = Mustache.render(this.template, tmplData);
-    $(this.el).html(htmls);
-    this.$graph = this.el.find('.panel.graph');
+    this.$el.html(htmls);
+    this.$graph = this.$el.find('.panel.graph');
     this.$graph.on("plothover", this._toolTip);
     return this;
+  },
+
+  remove: function () {
+    this.editor.remove();
+    Backbone.View.prototype.remove.apply(this, arguments);
   },
 
   redraw: function() {
@@ -82,7 +85,7 @@ my.Flot = Backbone.View.extend({
     // * The relevant div that graph attaches to his hidden at the moment of creating the plot -- Flot will complain with
     //   Uncaught Invalid dimensions for plot, width = 0, height = 0
     // * There is no data for the plot -- either same error or may have issues later with errors like 'non-existent node-value'
-    var areWeVisible = !jQuery.expr.filters.hidden(this.el[0]);
+    var areWeVisible = !jQuery.expr.filters.hidden(this.el);
     if ((!areWeVisible || this.model.records.length === 0)) {
       this.needToRedraw = true;
       return;
@@ -153,25 +156,17 @@ my.Flot = Backbone.View.extend({
   },
 
   _xaxisLabel: function (x) {
-    var xfield = this.model.fields.get(this.state.attributes.group);
-
-    // time series
-    var xtype = xfield.get('type');
-    var isDateTime = (xtype === 'date' || xtype === 'date-time' || xtype  === 'time');
-
-    if (this.xvaluesAreIndex) {
+    if (this._groupFieldIsDateTime()) {
+      // oddly x comes through as milliseconds *string* (rather than int
+      // or float) so we have to reparse
+      x = new Date(parseFloat(x)).toLocaleDateString();
+    } else if (this.xvaluesAreIndex) {
       x = parseInt(x, 10);
       // HACK: deal with bar graph style cases where x-axis items were strings
       // In this case x at this point is the index of the item in the list of
       // records not its actual x-axis value
       x = this.model.records.models[x].get(this.state.attributes.group);
     }
-    if (isDateTime) {
-      x = new Date(x).toLocaleDateString();
-    }
-    // } else if (isDateTime) {
-    //  x = new Date(parseInt(x, 10)).toLocaleDateString();
-    // }
 
     return x;
   },
@@ -186,25 +181,26 @@ my.Flot = Backbone.View.extend({
   // @param numPoints the number of points that will be plotted
   getGraphOptions: function(typeId, numPoints) {
     var self = this;
-
-    var tickFormatter = function (x) {
-      // convert x to a string and make sure that it is not too long or the
-      // tick labels will overlap
-      // TODO: find a more accurate way of calculating the size of tick labels
-      var label = self._xaxisLabel(x) || "";
-
-      if (typeof label !== 'string') {
-        label = label.toString();
-      }
-      if (self.state.attributes.graphType !== 'bars' && label.length > 10) {
-        label = label.slice(0, 10) + "...";
-      }
-
-      return label;
-    };
-
+    var groupFieldIsDateTime = self._groupFieldIsDateTime();
     var xaxis = {};
-    xaxis.tickFormatter = tickFormatter;
+
+    if (!groupFieldIsDateTime) {
+      xaxis.tickFormatter = function (x) {
+        // convert x to a string and make sure that it is not too long or the
+        // tick labels will overlap
+        // TODO: find a more accurate way of calculating the size of tick labels
+        var label = self._xaxisLabel(x) || "";
+
+        if (typeof label !== 'string') {
+          label = label.toString();
+        }
+        if (self.state.attributes.graphType !== 'bars' && label.length > 10) {
+          label = label.slice(0, 10) + "...";
+        }
+
+        return label;
+      };
+    }
 
     // for labels case we only want ticks at the label intervals
     // HACK: however we also get this case with Date fields. In that case we
@@ -213,10 +209,12 @@ my.Flot = Backbone.View.extend({
       var numTicks = Math.min(this.model.records.length, 15);
       var increment = this.model.records.length / numTicks;
       var ticks = [];
-      for (i=0; i<numTicks; i++) {
+      for (var i=0; i<numTicks; i++) {
         ticks.push(parseInt(i*increment, 10));
       }
       xaxis.ticks = ticks;
+    } else if (groupFieldIsDateTime) {
+      xaxis.mode = 'time';
     }
 
     var yaxis = {};
@@ -298,34 +296,54 @@ my.Flot = Backbone.View.extend({
     }
   },
 
+  _groupFieldIsDateTime: function() {
+    var xfield = this.model.fields.get(this.state.attributes.group);
+    var xtype = xfield.get('type');
+    var isDateTime = (xtype === 'date' || xtype === 'date-time' || xtype  === 'time');
+    return isDateTime;
+  },
+
   createSeries: function() {
     var self = this;
     self.xvaluesAreIndex = false;
     var series = [];
+    var xfield = self.model.fields.get(self.state.attributes.group);
+    var isDateTime = self._groupFieldIsDateTime();
+
     _.each(this.state.attributes.series, function(field) {
       var points = [];
       var fieldLabel = self.model.fields.get(field).get('label');
+
+        if (isDateTime){
+            var cast = function(x){
+                var _date = moment(String(x));
+                if (_date.isValid()) {
+                    x = _date.toDate().getTime();
+                }
+                return x
+            }
+        } else {
+            var raw = _.map(self.model.records.models,
+                            function(doc, index){
+                                return doc.getFieldValueUnrendered(xfield)
+                            });
+
+            if (_.all(raw, function(x){ return !isNaN(parseFloat(x)) })){
+                var cast = function(x){ return parseFloat(x) }
+            } else {
+                self.xvaluesAreIndex = true
+            }
+        }
+
       _.each(self.model.records.models, function(doc, index) {
-        var xfield = self.model.fields.get(self.state.attributes.group);
-        var x = doc.getFieldValue(xfield);
-
-        // time series
-        var xtype = xfield.get('type');
-        var isDateTime = (xtype === 'date' || xtype === 'date-time' || xtype  === 'time');
-
-        if (isDateTime) {
-          self.xvaluesAreIndex = true;
-          x = index;
-        } else if (typeof x === 'string') {
-          x = parseFloat(x);
-          if (isNaN(x)) { // assume this is a string label
-            x = index;
-            self.xvaluesAreIndex = true;
-          }
+        if(self.xvaluesAreIndex){
+            var x = index;
+        }else{
+            var x = cast(doc.getFieldValueUnrendered(xfield));
         }
 
         var yfield = self.model.fields.get(field);
-        var y = doc.getFieldValue(yfield);
+        var y = doc.getFieldValueUnrendered(yfield);
 
         if (self.state.attributes.graphType == 'bars') {
           points.push([y, x]);
@@ -403,10 +421,8 @@ my.FlotControls = Backbone.View.extend({
 
   initialize: function(options) {
     var self = this;
-    this.el = $(this.el);
     _.bindAll(this, 'render');
-    this.model.fields.bind('reset', this.render);
-    this.model.fields.bind('add', this.render);
+    this.listenTo(this.model.fields, 'reset add', this.render);
     this.state = new recline.Model.ObjectState(options.state);
     this.render();
   },
@@ -415,7 +431,7 @@ my.FlotControls = Backbone.View.extend({
     var self = this;
     var tmplData = this.model.toTemplateJSON();
     var htmls = Mustache.render(this.template, tmplData);
-    this.el.html(htmls);
+    this.$el.html(htmls);
 
     // set up editor from state
     if (this.state.get('graphType')) {
@@ -439,7 +455,7 @@ my.FlotControls = Backbone.View.extend({
   // Private: Helper function to select an option from a select list
   //
   _selectOption: function(id,value){
-    var options = this.el.find(id + ' select > option');
+    var options = this.$el.find(id + ' select > option');
     if (options) {
       options.each(function(opt){
         if (this.value == value) {
@@ -451,16 +467,16 @@ my.FlotControls = Backbone.View.extend({
   },
 
   onEditorSubmit: function(e) {
-    var select = this.el.find('.editor-group select');
+    var select = this.$el.find('.editor-group select');
     var $editor = this;
-    var $series  = this.el.find('.editor-series select');
+    var $series = this.$el.find('.editor-series select');
     var series = $series.map(function () {
       return $(this).val();
     });
     var updatedState = {
       series: $.makeArray(series),
-      group: this.el.find('.editor-group select').val(),
-      graphType: this.el.find('.editor-type select').val()
+      group: this.$el.find('.editor-group select').val(),
+      graphType: this.$el.find('.editor-type select').val()
     };
     this.state.set(updatedState);
   },
@@ -477,7 +493,7 @@ my.FlotControls = Backbone.View.extend({
     }, this.model.toTemplateJSON());
 
     var htmls = Mustache.render(this.templateSeriesEditor, data);
-    this.el.find('.editor-series-group').append(htmls);
+    this.$el.find('.editor-series-group').append(htmls);
     return this;
   },
 

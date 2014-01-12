@@ -4,6 +4,7 @@ this.recline = this.recline || {};
 this.recline.View = this.recline.View || {};
 
 (function($, my) {
+  "use strict";
 
 // ## FacetViewer
 //
@@ -41,9 +42,8 @@ my.FacetViewer = Backbone.View.extend({
   },
   initialize: function(model) {
     _.bindAll(this, 'render');
-    this.el = $(this.el);
-    this.model.facets.bind('all', this.render);
-    this.model.fields.bind('all', this.render);
+    this.listenTo(this.model.facets, 'all', this.render);
+    this.listenTo(this.model.fields, 'all', this.render);
     this.render();
   },
   render: function() {
@@ -60,17 +60,17 @@ my.FacetViewer = Backbone.View.extend({
       return facet;
     });
     var templated = Mustache.render(this.template, tmplData);
-    this.el.html(templated);
+    this.$el.html(templated);
     // are there actually any facets to show?
     if (this.model.facets.length > 0) {
-      this.el.show();
+      this.$el.show();
     } else {
-      this.el.hide();
+      this.$el.hide();
     }
   },
   onHide: function(e) {
     e.preventDefault();
-    this.el.hide();
+    this.$el.hide();
   },
   onFacetFilter: function(e) {
     e.preventDefault();

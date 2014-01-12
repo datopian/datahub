@@ -110,10 +110,14 @@ test('GeoJSON geom field', function () {
 test('_getGeometryFromRecord non-GeoJSON', function () {
   var test = [
     [{ lon: 47, lat: 53}, [47,53]],
+    [{ lon: -47, lat: 53}, [-47,53]],
     ["53.3,47.32", [47.32, 53.3]],
     ["53.3, 47.32", [47.32, 53.3]],
     ["(53.3,47.32)", [47.32, 53.3]],
-    [[53.3,47.32], [53.3, 47.32]]
+    [[53.3,47.32], [53.3, 47.32]],
+    ["53.3 N, 113.5 W", [-113.5, 53.3]],
+    ["53° 18' N, 113° 30' W", [-113.5, 53.3 ]],
+    ["22°45′90″S, 43°15′45″W", [-43.2625, -22.775]]
   ];
   var view = new recline.View.Map({
     model: new recline.Model.Dataset({
@@ -130,7 +134,7 @@ test('_getGeometryFromRecord non-GeoJSON', function () {
   });
 });
 
-test('many markers', function () {
+test('many markers and clustering', function () {
   var data = [];
   for (var i = 0; i<1000; i++) {
     data.push({ id: i, lon: 13+3*i, lat: 52+i/10});
@@ -150,7 +154,13 @@ test('many markers', function () {
 
   dataset.query();
 
+  // this whole test looks a bit odd now
+  // we used to turn on clustering automatically at a certain level but we do not any more
+  equal(view.state.get('cluster'), false);
+
+  view.state.set({cluster: true});
   equal(view.state.get('cluster'), true);
+
   view.remove();
 });
 
@@ -162,13 +172,13 @@ test('Popup', function () {
   $('.fixtures').append(view.el);
   view.render();
 
-  var marker = view.el.find('.leaflet-marker-icon').first();
+  var marker = view.$el.find('.leaflet-marker-icon').first();
 
   assertPresent(marker);
 
   _.values(view.features._layers)[0].fire('click');
 
-  var popup = view.el.find('.leaflet-popup-content');
+  var popup = view.$el.find('.leaflet-popup-content');
 
   assertPresent(popup);
 
@@ -183,7 +193,7 @@ test('Popup', function () {
   view.remove();
 });
 
-test('Popup - Custom', function () {
+test('Popup - Custom', function (assert) {
   var dataset = GeoJSONFixture.getDataset();
   var view = new recline.View.Map({
     model: dataset
@@ -195,14 +205,14 @@ test('Popup - Custom', function () {
   };
   view.render();
 
-  var marker = view.el.find('.leaflet-marker-icon').first();
+  var marker = view.$el.find('.leaflet-marker-icon').first();
   _.values(view.features._layers)[0].fire('click');
-  var popup = view.el.find('.leaflet-popup-content');
+  var popup = view.$el.find('.leaflet-popup-content');
 
   assertPresent(popup);
 
   var text = popup.html();
-  ok((text.indexOf('<h3>1</h3>y: 2') != -1))
+  assert.htmlEqual(text, '<h3>1</h3>y: 2');
 
   view.remove();
 });
@@ -213,7 +223,7 @@ test('geoJsonLayerOptions', function () {
     model: dataset
   });
   $('.fixtures').append(view.el);
-  view.geoJsonLayerOptions.point 
+  view.geoJsonLayerOptions.point
   view.geoJsonLayerOptions.pointToLayer = function(feature, latlng) {
     var marker = new L.CircleMarker(latlng, { radius: 8 } );
     marker.bindPopup(feature.properties.popupContent);

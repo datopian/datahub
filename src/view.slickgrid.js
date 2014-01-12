@@ -4,6 +4,7 @@ this.recline = this.recline || {};
 this.recline.View = this.recline.View || {};
 
 (function($, my) {
+  "use strict";
 // ## SlickGrid Dataset View
 //
 // Provides a tabular view on a Dataset, based on SlickGrid.
@@ -22,7 +23,11 @@ this.recline.View = this.recline.View || {};
 //         model: dataset,
 //         el: $el,
 //         state: {
-//          gridOptions: {editable: true},
+//          gridOptions: {
+//            editable: true,
+//            enableAddRows: true 
+//            ...
+//          },
 //          columnsEditor: [
 //            {column: 'date', editor: Slick.Editors.Date },
 //            {column: 'title', editor: Slick.Editors.Text}
@@ -33,13 +38,10 @@ this.recline.View = this.recline.View || {};
 my.SlickGrid = Backbone.View.extend({
   initialize: function(modelEtc) {
     var self = this;
-    this.el = $(this.el);
-    this.el.addClass('recline-slickgrid');
-    _.bindAll(this, 'render');
-    this.model.records.bind('add', this.render);
-    this.model.records.bind('reset', this.render);
-    this.model.records.bind('remove', this.render);
-    this.model.records.bind('change', this.onRecordChanged, this);
+    this.$el.addClass('recline-slickgrid');
+    _.bindAll(this, 'render', 'onRecordChanged');
+    this.listenTo(this.model.records, 'add remove reset', this.render);
+    this.listenTo(this.model.records, 'change', this.onRecordChanged);
 
     var state = _.extend({
         hiddenColumns: [],
@@ -53,6 +55,8 @@ my.SlickGrid = Backbone.View.extend({
 
     );
     this.state = new recline.Model.ObjectState(state);
+
+    this._slickHandler = new Slick.EventHandler();
   },
 
   events: {
@@ -113,12 +117,30 @@ my.SlickGrid = Backbone.View.extend({
       var editInfo = _.find(self.state.get('columnsEditor'),function(c){return c.column === field.id;});
       if (editInfo){
         column.editor = editInfo.editor;
+      } else {
+        // guess editor type
+        var typeToEditorMap = {
+          'string': Slick.Editors.LongText,
+          'integer': Slick.Editors.IntegerEditor,
+          'number': Slick.Editors.Text,
+          // TODO: need a way to ensure we format date in the right way
+          // Plus what if dates are in distant past or future ... (?)
+          // 'date': Slick.Editors.DateEditor,
+          'date': Slick.Editors.Text,
+          'boolean': Slick.Editors.YesNoSelectEditor
+          // TODO: (?) percent ...
+        };
+        if (field.type in typeToEditorMap) {
+          column.editor = typeToEditorMap[field.type]
+        } else {
+          column.editor = Slick.Editors.LongText;
+        }
       }
       columns.push(column);
     });
 
     // Restrict the visible columns
-    var visibleColumns = columns.filter(function(column) {
+    var visibleColumns = _.filter(columns, function(column) {
       return _.indexOf(self.state.get('hiddenColumns'), column.id) === -1;
     });
 
@@ -164,7 +186,7 @@ my.SlickGrid = Backbone.View.extend({
       this.getItem = function(index) {return rows[index];};
       this.getItemMetadata = function(index) {return {};};
       this.getModel = function(index) {return models[index];};
-      this.getModelRow = function(m) {return models.indexOf(m);};
+      this.getModelRow = function(m) {return _.indexOf(models, m);};
       this.updateItem = function(m,i) {
         rows[i] = toRow(m);
         models[i] = m;
@@ -187,7 +209,7 @@ my.SlickGrid = Backbone.View.extend({
       this.grid.setSortColumn(column, sortAsc);
     }
 
-    this.grid.onSort.subscribe(function(e, args){
+    this._slickHandler.subscribe(this.grid.onSort, function(e, args){
       var order = (args.sortAsc) ? 'asc':'desc';
       var sort = [{
         field: args.sortCol.field,
@@ -196,7 +218,7 @@ my.SlickGrid = Backbone.View.extend({
       self.model.query({sort: sort});
     });
 
-    this.grid.onColumnsReordered.subscribe(function(e, args){
+    this._slickHandler.subscribe(this.grid.onColumnsReordered, function(e, args){
       self.state.set({columnsOrder: _.pluck(self.grid.getColumns(),'id')});
     });
 
@@ -212,7 +234,7 @@ my.SlickGrid = Backbone.View.extend({
         self.state.set({columnsWidth:columnsWidth});
     });
 
-    this.grid.onCellChange.subscribe(function (e, args) {
+    this._slickHandler.subscribe(this.grid.onCellChange, function (e, args) {
       // We need to change the model associated value
       //
       var grid = args.grid;
@@ -235,7 +257,12 @@ my.SlickGrid = Backbone.View.extend({
     }
 
     return this;
- },
+  },
+
+  remove: function () {
+    this._slickHandler.unsubscribeAll();
+    Backbone.View.prototype.remove.apply(this, arguments);
+  },
 
   show: function() {
     // If the div is hidden, SlickGrid will calculate wrongly some

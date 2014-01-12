@@ -83,7 +83,7 @@ test('editable', function () {
 
   $('.fixtures .test-datatable').append(view.el);
   view.render();
-  view.grid.init();
+  view.show();
 
   var new_item = {lon: "foo", id: 1, z: 23, date: "12", y: 3, country: 'FR'};
 
@@ -92,13 +92,15 @@ test('editable', function () {
   });
 
   // Be sure a cell change triggers a change of the model
-      e = new Slick.EventData();
-      return view.grid.onCellChange.notify({ 
-                row: 1,
-                cell: 0,
-                item: new_item,
-                grid: view.grid
-              }, e, view.grid);
+  e = new Slick.EventData();
+  view.grid.onCellChange.notify({
+    row: 1,
+    cell: 0,
+    item: new_item,
+    grid: view.grid
+  }, e, view.grid);
+
+  view.remove();
 });
 
 test('update', function() {
@@ -124,9 +126,11 @@ test('update', function() {
   // Change the model at row 1
   dataset.records.at(1).set('z', zbefore + 1);
   equal( zbefore + 1, view.grid.getData().getItem(1)['z']);
+
+  view.remove();
 });
 
-test('renderers', function () {
+test('renderers', function (assert) {
   var dataset = Fixture.getDataset();
 
   dataset.fields.get('country').renderer = function(val, field, doc){
@@ -148,7 +152,7 @@ test('renderers', function () {
   view.grid.init();
 
   equal($(view.grid.getCellNode(0,view.grid.getColumnIndex('country'))).text(),'Country: DE');
-  equal($(view.grid.getCellNode(0,view.grid.getColumnIndex('country'))).html(),'<a href="abc">Country: DE</a>');
+  assert.htmlEqual($(view.grid.getCellNode(0,view.grid.getColumnIndex('country'))).html(),'<a href="abc">Country: DE</a>');
   equal($(view.grid.getCellNode(0,view.grid.getColumnIndex('computed'))).text(),'10');
   view.remove();
 });

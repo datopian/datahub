@@ -130,6 +130,7 @@ library and the Recline Flot Graph view:
 <script language="javascript" type="text/javascript" src="vendor/flot/excanvas.min.js"></script>
 <![endif]-->
 <script type="text/javascript" src="vendor/flot/jquery.flot.js"></script>
+<script type="text/javascript" src="vendor/flot/jquery.flot.time.js"></script>
 <script type="text/javascript" src="src/view.graph.js"></script>
 {% endhighlight %}
 
@@ -247,11 +248,11 @@ First, add the additional dependencies for the timeline view. The timeline is bu
 
 {% highlight html %}
 <!-- css -->
-<link rel="stylesheet" href="vendor/timeline/20120520/css/timeline.css">
+<link rel="stylesheet" href="vendor/timeline/css/timeline.css">
 
 <!-- javascript -->
-<script type="text/javascript" src="vendor/moment/1.6.2/moment.js"></script>
-<script type="text/javascript" src="vendor/timeline/20120520/js/timeline.js"></script>
+<script type="text/javascript" src="vendor/moment/2.0.0/moment.js"></script>
+<script type="text/javascript" src="vendor/timeline/js/timeline.js"></script>
 {% endhighlight %}
 
 Now, create a new div for the map (must have an explicit height for the timeline to render):

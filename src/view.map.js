@@ -4,13 +4,13 @@ this.recline = this.recline || {};
 this.recline.View = this.recline.View || {};
 
 (function($, my) {
-
+  "use strict";
 // ## Map view for a Dataset using Leaflet mapping library.
 //
 // This view allows to plot gereferenced records on a map. The location
 // information can be provided in 2 ways:
 //
-// 1. Via a single field. This field must be either a geo_point or 
+// 1. Via a single field. This field must be either a geo_point or
 // [GeoJSON](http://geojson.org) object
 // 2. Via two fields with latitude and longitude coordinates.
 //
@@ -28,6 +28,8 @@ this.recline.View = this.recline.View || {};
 //     latField: {id of field containing latitude in the dataset}
 //     autoZoom: true,
 //     // use cluster support
+//     // cluster: true = always on
+//     // cluster: false = always off
 //     cluster: false
 //   }
 // </pre>
@@ -51,7 +53,6 @@ my.Map = Backbone.View.extend({
 
   initialize: function(options) {
     var self = this;
-    this.el = $(this.el);
     this.visible = true;
     this.mapReady = false;
     // this will be the Leaflet L.Map object (setup below)
@@ -78,32 +79,32 @@ my.Map = Backbone.View.extend({
     };
 
     // Listen to changes in the fields
-    this.model.fields.bind('change', function() {
+    this.listenTo(this.model.fields, 'change', function() {
       self._setupGeometryField();
       self.render();
     });
 
     // Listen to changes in the records
-    this.model.records.bind('add', function(doc){self.redraw('add',doc);});
-    this.model.records.bind('change', function(doc){
+    this.listenTo(this.model.records, 'add', function(doc){self.redraw('add',doc);});
+    this.listenTo(this.model.records, 'change', function(doc){
         self.redraw('remove',doc);
         self.redraw('add',doc);
     });
-    this.model.records.bind('remove', function(doc){self.redraw('remove',doc);});
-    this.model.records.bind('reset', function(){self.redraw('reset');});
+    this.listenTo(this.model.records, 'remove', function(doc){self.redraw('remove',doc);});
+    this.listenTo(this.model.records, 'reset', function(){self.redraw('reset');});
 
     this.menu = new my.MapMenu({
       model: this.model,
       state: this.state.toJSON()
     });
-    this.menu.state.bind('change', function() {
+    this.listenTo(this.menu.state, 'change', function() {
       self.state.set(self.menu.state.toJSON());
       self.redraw();
     });
-    this.state.bind('change', function() {
+    this.listenTo(this.state, 'change', function() {
       self.redraw();
     });
-    this.elSidebar = this.menu.el;
+    this.elSidebar = this.menu.$el;
   },
 
   // ## Customization Functions
@@ -123,7 +124,7 @@ my.Map = Backbone.View.extend({
   //     }
   infobox: function(record) {
     var html = '';
-    for (key in record.attributes){
+    for (var key in record.attributes){
       if (!(this.state.get('geomField') && key == this.state.get('geomField'))){
         html += '<div><strong>' + key + '</strong>: '+ record.attributes[key] + '</div>';
       }
@@ -172,10 +173,9 @@ my.Map = Backbone.View.extend({
   // Also sets up the editor fields and the map if necessary.
   render: function() {
     var self = this;
-
-    htmls = Mustache.render(this.template, this.model.toTemplateJSON());
-    $(this.el).html(htmls);
-    this.$map = this.el.find('.panel.map');
+    var htmls = Mustache.render(this.template, this.model.toTemplateJSON());
+    this.$el.html(htmls);
+    this.$map = this.$el.find('.panel.map');
     this.redraw();
     return this;
   },
@@ -217,15 +217,6 @@ my.Map = Backbone.View.extend({
         this._add(doc);
       } else if (action == 'remove' && doc){
         this._remove(doc);
-      }
-
-      // enable clustering if there is a large number of markers
-      var countAfter = 0;
-      this.features.eachLayer(function(){countAfter++;});
-      var sizeIncreased = countAfter - countBefore > 0;
-      if (!this.state.get('cluster') && countAfter > 64 && sizeIncreased) {
-        this.state.set({cluster: true});
-        return;
       }
 
       // this must come before zooming!
@@ -326,13 +317,38 @@ my.Map = Backbone.View.extend({
     if (!(docs instanceof Array)) docs = [docs];
 
     _.each(docs,function(doc){
-      for (key in self.features._layers){
+      for (var key in self.features._layers){
         if (self.features._layers[key].feature.properties.cid == doc.cid){
           self.features.removeLayer(self.features._layers[key]);
         }
       }
     });
 
+  },
+
+  // Private: convert DMS coordinates to decimal
+  //
+  // north and east are positive, south and west are negative
+  //
+  _parseCoordinateString: function(coord){
+    if (typeof(coord) != 'string') {
+      return(parseFloat(coord));
+    }
+    var dms = coord.split(/[^\.\d\w]+/);
+    var deg = 0; var m = 0;
+    var toDeg = [1, 60, 3600]; // conversion factors for Deg, min, sec
+    var i; 
+    for (i = 0; i < dms.length; ++i) {
+        if (isNaN(parseFloat(dms[i]))) {
+          continue;
+        }
+        deg += parseFloat(dms[i]) / toDeg[m];
+        m += 1;
+    }
+    if (coord.match(/[SW]/)) {
+          deg = -1*deg;
+    }
+    return(deg);
   },
 
   // Private: Return a GeoJSON geomtry extracted from the record fields
@@ -346,12 +362,12 @@ my.Map = Backbone.View.extend({
           value = $.parseJSON(value);
         } catch(e) {}
       }
-
       if (typeof(value) === 'string') {
         value = value.replace('(', '').replace(')', '');
         var parts = value.split(',');
-        var lat = parseFloat(parts[0]);
-        var lon = parseFloat(parts[1]);
+        var lat = this._parseCoordinateString(parts[0]);
+        var lon = this._parseCoordinateString(parts[1]);
+
         if (!isNaN(lon) && !isNaN(parseFloat(lat))) {
           return {
             "type": "Point",
@@ -379,6 +395,9 @@ my.Map = Backbone.View.extend({
       // We'll create a GeoJSON like point object from the two lat/lon fields
       var lon = doc.get(this.state.get('lonField'));
       var lat = doc.get(this.state.get('latField'));
+      lon = this._parseCoordinateString(lon);
+      lat = this._parseCoordinateString(lat);
+
       if (!isNaN(parseFloat(lon)) && !isNaN(parseFloat(lat))) {
         return {
           type: 'Point',
@@ -442,8 +461,8 @@ my.Map = Backbone.View.extend({
     var self = this;
     this.map = new L.Map(this.$map.get(0));
 
-    var mapUrl = "http://otile{s}.mqcdn.com/tiles/1.0.0/osm/{z}/{x}/{y}.png";
-    var osmAttribution = 'Map data &copy; 2011 OpenStreetMap contributors, Tiles Courtesy of <a href="http://www.mapquest.com/" target="_blank">MapQuest</a> <img src="http://developer.mapquest.com/content/osm/mq_logo.png">';
+    var mapUrl = "//otile{s}-s.mqcdn.com/tiles/1.0.0/osm/{z}/{x}/{y}.png";
+    var osmAttribution = 'Map data &copy; 2011 OpenStreetMap contributors, Tiles Courtesy of <a href="http://www.mapquest.com/" target="_blank">MapQuest</a> <img src="//developer.mapquest.com/content/osm/mq_logo.png">';
     var bg = new L.TileLayer(mapUrl, {maxZoom: 18, attribution: osmAttribution ,subdomains: '1234'});
     this.map.addLayer(bg);
 
@@ -533,7 +552,6 @@ my.MapMenu = Backbone.View.extend({
           Cluster markers</label> \
       </div> \
       <input type="hidden" class="editor-id" value="map-1" /> \
-      </div> \
     </form> \
   ',
 
@@ -547,11 +565,10 @@ my.MapMenu = Backbone.View.extend({
 
   initialize: function(options) {
     var self = this;
-    this.el = $(this.el);
     _.bindAll(this, 'render');
-    this.model.fields.bind('change', this.render);
+    this.listenTo(this.model.fields, 'change', this.render);
     this.state = new recline.Model.ObjectState(options.state);
-    this.state.bind('change', this.render);
+    this.listenTo(this.state, 'change', this.render);
     this.render();
   },
 
@@ -560,28 +577,28 @@ my.MapMenu = Backbone.View.extend({
   // Also sets up the editor fields and the map if necessary.
   render: function() {
     var self = this;
-    htmls = Mustache.render(this.template, this.model.toTemplateJSON());
-    $(this.el).html(htmls);
+    var htmls = Mustache.render(this.template, this.model.toTemplateJSON());
+    this.$el.html(htmls);
 
     if (this._geomReady() && this.model.fields.length){
       if (this.state.get('geomField')){
         this._selectOption('editor-geom-field',this.state.get('geomField'));
-        this.el.find('#editor-field-type-geom').attr('checked','checked').change();
+        this.$el.find('#editor-field-type-geom').attr('checked','checked').change();
       } else{
         this._selectOption('editor-lon-field',this.state.get('lonField'));
         this._selectOption('editor-lat-field',this.state.get('latField'));
-        this.el.find('#editor-field-type-latlon').attr('checked','checked').change();
+        this.$el.find('#editor-field-type-latlon').attr('checked','checked').change();
       }
     }
     if (this.state.get('autoZoom')) {
-      this.el.find('#editor-auto-zoom').attr('checked', 'checked');
+      this.$el.find('#editor-auto-zoom').attr('checked', 'checked');
     } else {
-      this.el.find('#editor-auto-zoom').removeAttr('checked');
+      this.$el.find('#editor-auto-zoom').removeAttr('checked');
     }
     if (this.state.get('cluster')) {
-      this.el.find('#editor-cluster').attr('checked', 'checked');
+      this.$el.find('#editor-cluster').attr('checked', 'checked');
     } else {
-      this.el.find('#editor-cluster').removeAttr('checked');
+      this.$el.find('#editor-cluster').removeAttr('checked');
     }
     return this;
   },
@@ -600,17 +617,17 @@ my.MapMenu = Backbone.View.extend({
   //
   onEditorSubmit: function(e){
     e.preventDefault();
-    if (this.el.find('#editor-field-type-geom').attr('checked')){
+    if (this.$el.find('#editor-field-type-geom').attr('checked')){
       this.state.set({
-        geomField: this.el.find('.editor-geom-field > select > option:selected').val(),
+        geomField: this.$el.find('.editor-geom-field > select > option:selected').val(),
         lonField: null,
         latField: null
       });
     } else {
       this.state.set({
         geomField: null,
-        lonField: this.el.find('.editor-lon-field > select > option:selected').val(),
-        latField: this.el.find('.editor-lat-field > select > option:selected').val()
+        lonField: this.$el.find('.editor-lon-field > select > option:selected').val(),
+        latField: this.$el.find('.editor-lat-field > select > option:selected').val()
       });
     }
     return false;
@@ -621,11 +638,11 @@ my.MapMenu = Backbone.View.extend({
   //
   onFieldTypeChange: function(e){
     if (e.target.value == 'geom'){
-        this.el.find('.editor-field-type-geom').show();
-        this.el.find('.editor-field-type-latlon').hide();
+        this.$el.find('.editor-field-type-geom').show();
+        this.$el.find('.editor-field-type-latlon').hide();
     } else {
-        this.el.find('.editor-field-type-geom').hide();
-        this.el.find('.editor-field-type-latlon').show();
+        this.$el.find('.editor-field-type-geom').hide();
+        this.$el.find('.editor-field-type-latlon').show();
     }
   },
 
@@ -640,7 +657,7 @@ my.MapMenu = Backbone.View.extend({
   // Private: Helper function to select an option from a select list
   //
   _selectOption: function(id,value){
-    var options = this.el.find('.' + id + ' > select > option');
+    var options = this.$el.find('.' + id + ' > select > option');
     if (options){
       options.each(function(opt){
         if (this.value == value) {

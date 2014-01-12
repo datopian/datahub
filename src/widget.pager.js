@@ -4,6 +4,7 @@ this.recline = this.recline || {};
 this.recline.View = this.recline.View || {};
 
 (function($, my) {
+  "use strict";
 
 my.Pager = Backbone.View.extend({
   className: 'recline-pager', 
@@ -24,14 +25,13 @@ my.Pager = Backbone.View.extend({
 
   initialize: function() {
     _.bindAll(this, 'render');
-    this.el = $(this.el);
-    this.model.bind('change', this.render);
+    this.listenTo(this.model, 'change', this.render);
     this.render();
   },
   onFormSubmit: function(e) {
     e.preventDefault();
-    var newFrom = parseInt(this.el.find('input[name="from"]').val());
-    var newSize = parseInt(this.el.find('input[name="to"]').val()) - newFrom;
+    var newFrom = parseInt(this.$el.find('input[name="from"]').val());
+    var newSize = parseInt(this.$el.find('input[name="to"]').val()) - newFrom;
     newFrom = Math.max(newFrom, 0);
     newSize = Math.max(newSize, 1);
     this.model.set({size: newSize, from: newFrom});
@@ -52,7 +52,7 @@ my.Pager = Backbone.View.extend({
     var tmplData = this.model.toJSON();
     tmplData.to = this.model.get('from') + this.model.get('size');
     var templated = Mustache.render(this.template, tmplData);
-    this.el.html(templated);
+    this.$el.html(templated);
   }
 });
 
