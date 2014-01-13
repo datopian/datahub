@@ -99,6 +99,19 @@ my.SlickGrid = Backbone.View.extend({
         return value;
       }
     };
+    
+    // we need to be sure that user is entering a valid  input , for exemple if 
+    // field is date type and field.format ='YY-MM-DD', we sould be sure that 
+    // user enter a correct value 
+    var validator = function(field){
+	return function(value){
+	   if(field.type == "date" && isNaN(Date.parse(value))){
+	      return {valid: false, msg: "This format is required" + field.type};
+	   }else {
+	      return {valid: true, msg :null } 
+	  }
+	}
+    };    
     _.each(this.model.fields.toJSON(),function(field){
       var column = {
         id: field.id,
@@ -106,7 +119,8 @@ my.SlickGrid = Backbone.View.extend({
         field: field.id,
         sortable: true,
         minWidth: 80,
-        formatter: formatter
+        formatter: formatter,
+        validator:validator
       };
 
       var widthInfo = _.find(self.state.get('columnsWidth'),function(c){return c.column === field.id;});
