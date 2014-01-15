@@ -55,13 +55,8 @@ my.SlickGrid = Backbone.View.extend({
 
     );
     this.state = new recline.Model.ObjectState(state);
-
     this._slickHandler = new Slick.EventHandler();
   },
-
-  events: {
-  },
-
   onRecordChanged: function(record) {
     // Ignore if the grid is not yet drawn
     if (!this.grid) {
@@ -74,10 +69,8 @@ my.SlickGrid = Backbone.View.extend({
     this.grid.getData().updateItem(record, row_index);
     this.grid.render();
   },
-
-  render: function() {
+   render: function() {
     var self = this;
-
     var options = _.extend({
       enableCellNavigation: true,
       enableColumnReorder: true,
@@ -87,19 +80,27 @@ my.SlickGrid = Backbone.View.extend({
     }, self.state.get('gridOptions'));
 
     // We need all columns, even the hidden ones, to show on the column picker
-    var columns = [];
+    var columns = []; 
+   
     // custom formatter as default one escapes html
     // plus this way we distinguish between rendering/formatting and computed value (so e.g. sort still works ...)
     // row = row index, cell = cell index, value = value, columnDef = column definition, dataContext = full row values
     var formatter = function(row, cell, value, columnDef, dataContext) {
-      var field = self.model.fields.get(columnDef.id);
+      // If row delete field format , change here if for example insteed
+	// of link we can have bouton or image depending of what you need
+      // RUFFUS! Do you think we should have a variable to set if
+      // ie template_del = '<a href="#" class="recline-column-delete">X</a>'
+      if (columnDef.id == "del"){
+        return '<a href="#" class="recline-column-delete">X</a>'
+	}
+	var field = self.model.fields.get(columnDef.id);
       if (field.renderer) {
-        return field.renderer(value, field, dataContext);
-      } else {
-        return value;
+        return  field.renderer(value, field, dataContext);
+      }else {
+        return  value 
       }
     };
-    
+
     // we need to be sure that user is entering a valid  input , for exemple if 
     // field is date type and field.format ='YY-MM-DD', we should be sure that 
     // user enter a correct value 
@@ -111,7 +112,17 @@ my.SlickGrid = Backbone.View.extend({
 	      return {valid: true, msg :null } 
 	  }
 	}
-    };    
+    };
+    //Add row delete support
+    columns.push({
+        id: 'del',
+        name: 'del',
+        field: 'del',
+        sortable: true,
+        width: 10,
+        formatter: formatter,
+        validator:validator
+    })
     _.each(this.model.fields.toJSON(),function(field){
       var column = {
         id: field.id,
@@ -151,8 +162,8 @@ my.SlickGrid = Backbone.View.extend({
         }
       }
       columns.push(column);
-    });
-
+    });    
+    
     // Restrict the visible columns
     var visibleColumns = _.filter(columns, function(column) {
       return _.indexOf(self.state.get('hiddenColumns'), column.id) === -1;
@@ -205,6 +216,7 @@ my.SlickGrid = Backbone.View.extend({
         rows[i] = toRow(m);
         models[i] = m;
       };
+     
     }
 
     var data = new RowSet();
@@ -247,19 +259,25 @@ my.SlickGrid = Backbone.View.extend({
         });
         self.state.set({columnsWidth:columnsWidth});
     });
-
+    
     this._slickHandler.subscribe(this.grid.onCellChange, function (e, args) {
       // We need to change the model associated value
-      //
       var grid = args.grid;
-      var model = data.getModel(args.row);
+	var model = data.getModel(args.row);
       var field = grid.getColumns()[args.cell].id;
       var v = {};
       v[field] = args.item[field];
       model.set(v);
-    });
-
-    var columnpicker = new Slick.Controls.ColumnPicker(columns, this.grid,
+    });  
+    this._slickHandler.subscribe(this.grid.onClick,function(e, args){
+    	if (args.cell == 0){
+	  // We need to delete the associated model
+	  var model = data.getModel(args.row);
+        model.destroy()
+	 }
+     }) ;
+    
+     var columnpicker = new Slick.Controls.ColumnPicker(columns, this.grid,
                                                        _.extend(options,{state:this.state}));
 
     if (self.visible){
