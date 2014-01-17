@@ -260,7 +260,7 @@ my.MultiView = Backbone.View.extend({
     }, this);
 
     this.pager = new recline.View.Pager({
-      model: this.model.queryState
+      model: this.model
     });
     this.$el.find('.recline-results-info').after(this.pager.el);
 

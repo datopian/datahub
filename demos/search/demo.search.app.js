@@ -143,7 +143,7 @@ var SearchView = Backbone.View.extend({
     this.el.find('.sidebar').append(view.el);
 
     var pager = new recline.View.Pager({
-      model: this.model.queryState
+      model: this.model
     });
     this.el.find('.pager-here').append(pager.el);
 
