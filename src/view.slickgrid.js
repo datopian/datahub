@@ -1,4 +1,3 @@
-
 /*jshint multistr:true */
 
 this.recline = this.recline || {};
@@ -477,4 +476,3 @@ my.SlickGrid = Backbone.View.extend({
   $.extend(true, window, { Slick:{ Controls:{ ColumnPicker:SlickColumnPicker }}});
 })(jQuery);
 
-/*jshint multistr:true */

@@ -103,6 +103,77 @@ test('editable', function () {
   view.remove();
 });
 
+test('delete-row' , function(){
+  var dataset = Fixture.getDataset();
+  var view = new recline.View.SlickGrid({
+    model: dataset,
+    state: {
+      hiddenColumns:['x','lat','title'],
+      columnsOrder:['lon','id','z','date', 'y', 'country'],
+      columnsWidth:[
+        {column:'id',width: 250}
+      ],
+      gridOptions: {editable: true , "enabledDelRow":true},
+      columnsEditor: [{column: 'country', editor: Slick.Editors.Text}]
+    }
+  });
+
+  $('.fixtures .test-datatable').append(view.el);
+  view.render();
+  view.show();
+  old_length = dataset.records.length
+  dataset.records.on('remove', function(record){
+    equal(dataset.records.length, old_length  -1 );
+  });
+
+  // Be sure a cell change triggers a change of the model
+  e = new Slick.EventData();
+  view.grid.onClick.notify({
+    row: 1,
+    cell: 0,
+    grid: view.grid
+  }, e, view.grid);
+
+  view.remove();
+
+
+});
+
+test('add-row' , function(){
+//To test adding row on slickgrid , we add some menu GridControl
+//I am based on the FlotControl in flot wiewer , to add a similary
+//to the sclickgrid , The GridControl add a bouton menu 
+//one the .side-bar place , which will allow to add a row to 
+//the grid on-click
+
+var dataset = Fixture.getDataset();
+  var view = new recline.View.SlickGrid({
+    model: dataset,
+    state: {
+      hiddenColumns:['x','lat','title'],
+      columnsOrder:['lon','id','z','date', 'y', 'country'],
+      columnsWidth:[
+        {column:'id',width: 250}
+      ],
+      gridOptions: {editable: true , "enabledAddRow":true},
+      columnsEditor: [{column: 'country', editor: Slick.Editors.Text}]
+    }
+  });
+
+// view will auto render ...
+assertPresent('.recline-row-add', view.elSidebar);
+// see recline.SlickGrid.GridControl widget
+//view.render()
+old_length = dataset.records.length
+dataset.records.on('add',function(record){
+  equal(dataset.records.length ,old_length + 1 ) 
+});
+
+view.elSidebar.find('.recline-row-add').click();
+
+});
+
+
 test('update', function() {
   var dataset = Fixture.getDataset();
   var view = new recline.View.SlickGrid({
