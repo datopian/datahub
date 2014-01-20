@@ -25,34 +25,43 @@ my.Pager = Backbone.View.extend({
 
   initialize: function() {
     _.bindAll(this, 'render');
-    this.listenTo(this.model, 'change', this.render);
+    this.listenTo(this.model.queryState, 'change', this.render);
     this.render();
   },
   onFormSubmit: function(e) {
     e.preventDefault();
     var newFrom = parseInt(this.$el.find('input[name="from"]').val());
+    newFrom = Math.min(this.model.recordCount, Math.max(newFrom, 1))-1;
     var newSize = parseInt(this.$el.find('input[name="to"]').val()) - newFrom;
-    newFrom = Math.max(newFrom, 0);
-    newSize = Math.max(newSize, 1);
-    this.model.set({size: newSize, from: newFrom});
+    newSize = Math.min(Math.max(newSize, 1), this.model.recordCount);
+    this.model.queryState.set({size: newSize, from: newFrom});
   },
   onPaginationUpdate: function(e) {
     e.preventDefault();
     var $el = $(e.target);
     var newFrom = 0;
+    var currFrom = this.model.queryState.get('from');
+    var size = this.model.queryState.get('size');
+    var updateQuery = false;
     if ($el.parent().hasClass('prev')) {
-      newFrom = this.model.get('from') - Math.max(0, this.model.get('size'));
+      newFrom = Math.max(currFrom - Math.max(0, size), 1)-1;
+      updateQuery = newFrom != currFrom;
     } else {
-      newFrom = this.model.get('from') + this.model.get('size');
+      newFrom = Math.max(currFrom + size, 1);
+      updateQuery = (newFrom < this.model.recordCount);
     }
-    newFrom = Math.max(newFrom, 0);
-    this.model.set({from: newFrom});
+    if (updateQuery) {
+      this.model.queryState.set({from: newFrom});
+    }
   },
   render: function() {
     var tmplData = this.model.toJSON();
-    tmplData.to = this.model.get('from') + this.model.get('size');
+    var from = parseInt(this.model.queryState.get('from'));
+    tmplData.from = from+1;
+    tmplData.to = Math.min(from+this.model.queryState.get('size'), this.model.recordCount);
     var templated = Mustache.render(this.template, tmplData);
     this.$el.html(templated);
+    return this;
   }
 });
 
