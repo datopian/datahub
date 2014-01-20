@@ -1,3 +1,4 @@
+
 /*jshint multistr:true */
 
 this.recline = this.recline || {};
@@ -5,6 +6,8 @@ this.recline.View = this.recline.View || {};
 
 (function($, my) {
   "use strict";
+
+
 
   // Add new grid Control to display a new row add menu bouton
   // It display a simple side-bar menu ,for user to add new 
@@ -33,7 +36,7 @@ this.recline.View = this.recline.View || {};
 
     addNewRow : function(e){
       e.preventDefault()
-      this.state.set({"newrow" : "pending"})
+      this.state.trigger("change")
    }
  }
  );
@@ -76,20 +79,9 @@ my.SlickGrid = Backbone.View.extend({
     this.templates = {
 	 "deleterow" : '<a href="#" class="recline-row-delete btn">X</a>'
      }
-
-    //add menu for new row
-    this.editor    =  new  my.GridControl()
-    this.elSidebar =  this.editor.$el
-
-
     _.bindAll(this, 'render', 'onRecordChanged');
     this.listenTo(this.model.records, 'add remove reset', this.render);
     this.listenTo(this.model.records, 'change', this.onRecordChanged);
-    this.listenTo(this.editor.state, 'change', function(){
-	  this.model.records.add({})
-	  this.editor.state.set({"newrow" : "done"})
-    });
-    
     var state = _.extend({
         hiddenColumns: [],
         columnsOrder: [],
@@ -103,6 +95,18 @@ my.SlickGrid = Backbone.View.extend({
     );
     this.state = new recline.Model.ObjectState(state);
     this._slickHandler = new Slick.EventHandler();
+
+    //add menu for new row , check if enableAddRow is set to true or not set
+    if(this.state.get("gridOptions") 
+	&& this.state.get("gridOptions").enabledAddRow != undefined 
+      && this.state.get("gridOptions").enabledAddRow == true ){
+      this.editor    =  new  my.GridControl()
+      this.elSidebar =  this.editor.$el
+	this.listenTo(this.editor.state, 'change', function(){
+	  this.model.records.add({})
+      });
+    }
+
   },
   onRecordChanged: function(record) {
     // Ignore if the grid is not yet drawn
@@ -153,16 +157,19 @@ my.SlickGrid = Backbone.View.extend({
 	  }
 	}
     };
-    //Add row delete support
+    //Add row delete support , check if enableDelRow is set to true or not set
+    if(this.state.get("gridOptions") 
+	&& this.state.get("gridOptions").enabledDelRow != undefined 
+      && this.state.get("gridOptions").enabledDelRow == true ){
     columns.push({
         id: 'del',
         name: 'del',
         field: 'del',
         sortable: true,
-        width: 10,
+        width: 80,
         formatter: formatter,
         validator:validator
-    })
+    })}
     _.each(this.model.fields.toJSON(),function(field){
       var column = {
         id: field.id,
@@ -470,3 +477,4 @@ my.SlickGrid = Backbone.View.extend({
   $.extend(true, window, { Slick:{ Controls:{ ColumnPicker:SlickColumnPicker }}});
 })(jQuery);
 
+/*jshint multistr:true */
