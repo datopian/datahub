@@ -311,7 +311,7 @@ my.SlickGrid = Backbone.View.extend({
       model.set(v);
     });  
     this._slickHandler.subscribe(this.grid.onClick,function(e, args){
-    	if (args.cell == 0){
+    	if (args.cell == 0 && self.state.get("gridOptions").enabledDelRow == true){
 	  // We need to delete the associated model
 	  var model = data.getModel(args.row);
         model.destroy()
