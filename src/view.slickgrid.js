@@ -5,9 +5,6 @@ this.recline.View = this.recline.View || {};
 
 (function($, my) {
   "use strict";
-
-
-
   // Add new grid Control to display a new row add menu bouton
   // It display a simple side-bar menu ,for user to add new 
   // row to grid 
@@ -101,11 +98,10 @@ my.SlickGrid = Backbone.View.extend({
       && this.state.get("gridOptions").enabledAddRow == true ){
       this.editor    =  new  my.GridControl()
       this.elSidebar =  this.editor.$el
-	this.listenTo(this.editor.state, 'change', function(){
-	  this.model.records.add({})
+	this.listenTo(this.editor.state, 'change', function(){   
+	  this.model.records.add(new recline.Model.Record())
       });
     }
-
   },
   onRecordChanged: function(record) {
     // Ignore if the grid is not yet drawn
@@ -150,9 +146,11 @@ my.SlickGrid = Backbone.View.extend({
     var validator = function(field){
 	return function(value){
 	   if(field.type == "date" && isNaN(Date.parse(value))){
-	      return {valid: false, msg: "A date is required , check field field-date-format"};
+	      return {
+              valid: false,
+              msg: "A date is required, check field field-date-format"};
 	   }else {
-	      return {valid: true, msg :null } 
+	        return {valid: true, msg :null } 
 	  }
 	}
     };
@@ -230,12 +228,16 @@ my.SlickGrid = Backbone.View.extend({
       }
     }
     columns = columns.concat(tempHiddenColumns);
-
     // Transform a model object into a row
     function toRow(m) {
       var row = {};
       self.model.fields.each(function(field){
-        row[field.id] = m.getFieldValueUnrendered(field);
+	  var render = "";
+        //when adding row from slickgrid the field value is undefined
+	  if(!_.isUndefined(m.getFieldValueUnrendered(field))){
+	     render =m.getFieldValueUnrendered(field)
+	  }
+          row[field.id] = render
       });
       return row;
     }
@@ -304,7 +306,7 @@ my.SlickGrid = Backbone.View.extend({
     this._slickHandler.subscribe(this.grid.onCellChange, function (e, args) {
       // We need to change the model associated value
       var grid = args.grid;
-	var model = data.getModel(args.row);
+      var model = data.getModel(args.row);
       var field = grid.getColumns()[args.cell].id;
       var v = {};
       v[field] = args.item[field];
