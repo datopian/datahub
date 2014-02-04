@@ -101,6 +101,7 @@ this.recline.Backend.Memory = this.recline.Backend.Memory || {};
       // register filters
       var filterFunctions = {
         term         : term,
+        terms        : terms,
         range        : range,
         geo_distance : geo_distance
       };
@@ -138,6 +139,14 @@ this.recline.Backend.Memory = this.recline.Backend.Memory || {};
         var term  = parse(filter.term);
 
         return (value === term);
+      }
+
+      function terms(record, filter) {
+        var parse = getDataParser(filter);
+        var value = parse(record[filter.field]);
+        var terms  = parse(filter.terms).split(",");
+
+        return (_.indexOf(terms, value) >= 0);
       }
 
       function range(record, filter) {
