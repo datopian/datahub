@@ -100,6 +100,13 @@ test('filters', function () {
   });
 
   query = new recline.Model.Query();
+  query.addFilter({type: 'terms', field: 'country', terms: ['UK','DE']});
+  data.query(query.toJSON()).then(function(out) {
+    equal(out.total, 5);
+    deepEqual(_.pluck(out.hits, 'country'), ['DE','UK','UK','UK','DE']);
+  });
+
+  query = new recline.Model.Query();
   query.addFilter({type: 'range', field: 'date', from: '2011-01-01', to: '2011-05-01'});
   data.query(query.toJSON()).then(function(out) {
     equal(out.total, 3);
@@ -305,6 +312,13 @@ test('filters', function () {
   dataset.query().then(function() {
     equal(dataset.records.length, 3);
     deepEqual(dataset.records.pluck('country'), ['UK', 'UK', 'UK']);
+  });
+
+  dataset = makeBackendDataset();
+  dataset.queryState.addFilter({type: 'terms', field: 'country', terms: ['UK','DE']});
+  dataset.query().then(function() {
+    equal(dataset.records.length, 5);
+    deepEqual(dataset.records.pluck('country'), ['DE','UK', 'UK', 'UK','DE']);
   });
 
   dataset = makeBackendDataset();

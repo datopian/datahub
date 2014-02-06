@@ -78,6 +78,8 @@ var createExplorer = function(dataset, state) {
           gridOptions: {
             editable: true,
             enabledAddRow: true,
+		enabledDelRow: true,
+            autoEdit: false,
             enableCellNavigation: true
           },
           columnsEditor: [
