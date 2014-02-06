@@ -13,11 +13,39 @@ title: Home
         <div class="inner">
           <p>A simple but powerful library for building data applications in
           pure Javascript and HTML.</p>
+          <p>
+            Recline re-uses best-of-breed presentation libraries like
+            SlickGrid, Leaflet, Flot and D3 to create data 'Views'
+            and allows you to connect them with your data in seconds.
+          </p>
           <p class="links">
             <a href="docs/" class="btn btn-large">Documentation &raquo;</a>
             <a href="docs/tutorials.html" class="btn btn-large">Tutorials &raquo;</a>
             <a href="demos/" class="btn btn-large">Demos &raquo;</a>
           </p>
+
+          <h3 style="color: white; margin-top: 40px;">Get started fast</h3>
+          <pre style="margin-top: 20px;"><code style="font-size: 90%;">// Load some data
+var dataset = recline.Model.Dataset({
+  records: [
+    { value: 1, date: '2012-08-07' },
+    { value: 5, b: '2013-09-07' }
+  ]
+  // Load CSV data instead
+  // (And Recline has support for many more data source types)
+  // url: 'my-local-csv-file.csv',
+  // backend: 'csv'
+});
+
+// get an element from your HTML for the viewer
+var $el = $('#data-viewer');
+
+var allInOneDataViewer = new recline.View.MultiView({
+  model: dataset,
+  el: $el
+});
+// Your new Data Viewer will be live!
+</code></pre>
         </div>
       </div>
     </div>
