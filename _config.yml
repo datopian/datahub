@@ -1,5 +1,6 @@
 pygments: true
 auto: true
+markdown: kramdown
 
 title: Recline Data Explorer and Library
 
