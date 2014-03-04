@@ -3674,14 +3674,16 @@ my.SlickGrid = Backbone.View.extend({
       model.set(v);
     });  
     this._slickHandler.subscribe(this.grid.onClick,function(e, args){
+      //try catch , because this fail in qunit , but no
+      //error on browser.
+    	try{e.preventDefault()}catch(e){}
     	if (args.cell == 0 && self.state.get("gridOptions").enabledDelRow == true){
 	  // We need to delete the associated model
 	  var model = data.getModel(args.row);
         model.destroy()
 	 }
-     }) ;
-    
-     var columnpicker = new Slick.Controls.ColumnPicker(columns, this.grid,
+    }) ;
+    var columnpicker = new Slick.Controls.ColumnPicker(columns, this.grid,
                                                        _.extend(options,{state:this.state}));
 
     if (self.visible){
@@ -4408,11 +4410,16 @@ my.Pager = Backbone.View.extend({
   },
   onFormSubmit: function(e) {
     e.preventDefault();
-    var newFrom = parseInt(this.$el.find('input[name="from"]').val());
-    newFrom = Math.min(this.model.recordCount, Math.max(newFrom, 1))-1;
-    var newSize = parseInt(this.$el.find('input[name="to"]').val()) - newFrom;
-    newSize = Math.min(Math.max(newSize, 1), this.model.recordCount);
-    this.model.queryState.set({size: newSize, from: newFrom});
+    // filter is 0-based; form is 1-based
+    var formFrom = parseInt(this.$el.find('input[name="from"]').val())-1; 
+    var formTo = parseInt(this.$el.find('input[name="to"]').val())-1; 
+    var maxRecord = this.model.recordCount-1;
+    if (this.model.queryState.get('from') != formFrom) { // changed from; update from
+      this.model.queryState.set({from: Math.min(maxRecord, Math.max(formFrom, 0))});
+    } else if (this.model.queryState.get('to') != formTo) { // change to; update size
+      var to = Math.min(maxRecord, Math.max(formTo, 0));
+      this.model.queryState.set({size: Math.min(maxRecord+1, Math.max(to-formFrom+1, 1))});
+    }
   },
   onPaginationUpdate: function(e) {
     e.preventDefault();
@@ -4422,10 +4429,10 @@ my.Pager = Backbone.View.extend({
     var size = this.model.queryState.get('size');
     var updateQuery = false;
     if ($el.parent().hasClass('prev')) {
-      newFrom = Math.max(currFrom - Math.max(0, size), 1)-1;
+      newFrom = Math.max(currFrom - Math.max(0, size), 0);
       updateQuery = newFrom != currFrom;
     } else {
-      newFrom = Math.max(currFrom + size, 1);
+      newFrom = Math.max(currFrom + size, 0);
       updateQuery = (newFrom < this.model.recordCount);
     }
     if (updateQuery) {
