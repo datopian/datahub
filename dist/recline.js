@@ -3434,8 +3434,9 @@ my.SlickGrid = Backbone.View.extend({
 	
     // Template for row delete menu , change it if you don't love 
     this.templates = {
-	 "deleterow" : '<a href="#" class="recline-row-delete btn">X</a>'
-     }
+	    "deleterow" : '<a href="#" class="recline-row-delete btn" title="Delete row">X</a>'
+    };
+
     _.bindAll(this, 'render', 'onRecordChanged');
     this.listenTo(this.model.records, 'add remove reset', this.render);
     this.listenTo(this.model.records, 'change', this.onRecordChanged);
@@ -3521,10 +3522,10 @@ my.SlickGrid = Backbone.View.extend({
       && this.state.get("gridOptions").enabledDelRow == true ){
     columns.push({
         id: 'del',
-        name: 'del',
+        name: '',
         field: 'del',
         sortable: true,
-        width: 80,
+        width: 38,
         formatter: formatter,
         validator:validator
     })}

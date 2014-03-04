@@ -614,6 +614,14 @@ classes should alter those!
   cursor: pointer;
 }
 
+.recline-slickgrid .recline-row-delete {
+  font-size: 12px;
+  padding: 2px;
+  width: 22px;
+  height: 14px;
+  line-height: 13px;
+}
+
 .recline-timeline {
   position: relative;
 }
