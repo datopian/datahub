@@ -42,6 +42,37 @@ test('basics', function () {
   view.remove();
 });
 
+test('change inputs', function () {
+  var dataset = Fixture.getDataset();
+  var size = parseInt(dataset.recordCount/3);
+  dataset.queryState.set({ size : size }, { silent : true });
+  var view = new recline.View.Pager({
+    model: dataset
+  });
+  $('.fixtures').append(view.el);
+  var toSelector = 'input[name=to]';
+  var fromSelector = 'input[name=from]';
+
+  // change from: update to, keep size
+  var fromVal = size;
+  $(fromSelector).val(fromVal).change();
+  equal($(fromSelector).val(), fromVal);
+  // UI is 1-based but model is zero-based
+  equal(dataset.queryState.get('from'), fromVal-1);
+  equal($(toSelector).val(), fromVal+(size-1));
+  
+  // change to: update from, change size
+  var toVal = dataset.recordCount; 
+  $(toSelector).val(toVal).change();
+  equal($(toSelector).val(), toVal);
+  equal($(fromSelector).val(), fromVal);
+  // UI is 1-based but model is zero-based
+  equal(dataset.queryState.get('from'), fromVal-1);
+  notEqual(dataset.queryState.get('size'), size);
+
+  view.remove();
+});
+
 test('bounds checking', function () {
   var dataset = Fixture.getDataset();
   var size = dataset.recordCount/2 + 1;
@@ -62,10 +93,9 @@ test('bounds checking', function () {
 
   // enter size-1 in from: reloads size-1 - size
   var fromVal = size-1;
-  var toVal = parseInt($(toSelector).val());
   $(fromSelector).val(fromVal).change();
   equal($(fromSelector).val(), fromVal);
-  equal($(toSelector).val(), toVal);
+  equal($(toSelector).val(), fromVal+(size-1));
   // UI is 1-based but model is zero-based
   equal(dataset.queryState.get('from'), fromVal-1);
 
@@ -80,17 +110,17 @@ test('bounds checking', function () {
   // click next on end -> nothing happens
   var queryCalls = querySpy.callCount;
   fromVal = parseInt($(fromSelector).val());
-  toVal = parseInt($(toSelector).val());
+  var toVal = parseInt($(toSelector).val());
   view.$el.find('.next a').click();
   equal(querySpy.callCount, queryCalls);
   equal($(fromSelector).val(), fromVal);
   equal($(toSelector).val(), toVal);
 
-  // reset from to 1
-  // type value past the end in to: 1-recordCount
+  // reset from=1
   fromVal = 1;
+  $(fromSelector).val(fromVal).change();
+  // type value past the end in to: 1-recordCount
   toVal = dataset.recordCount + 10;
-  $(fromSelector).val(fromVal);
   $(toSelector).val(toVal).change();
   equal($(fromSelector).val(), 1);
   equal($(toSelector).val(), dataset.recordCount);

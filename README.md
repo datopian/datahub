@@ -46,6 +46,7 @@ Possible breaking changes
 * Require new underscore.deferred vendor library for all use (jQuery no longer required if just using recline.dataset.js)
 * View.el is now the raw DOM element. If you want a jQuery-wrapped version, use view.$el. #350
 * Upgraded timelinejs lib - #316
+* Pager widget now takes Dataset object rather than QueryState object #386
 
 ### v0.5 - July 5th 2012 (first public release)
 
