@@ -4393,7 +4393,7 @@ my.Pager = Backbone.View.extend({
     <div class="pagination"> \
       <ul> \
         <li class="prev action-pagination-update"><a href="">&laquo;</a></li> \
-        <li class="active"><a><input name="from" type="text" value="{{from}}" /> &ndash; <input name="to" type="text" value="{{to}}" /> </a></li> \
+        <li class="active"><label for="from">From</label><a><input id="from" name="from" type="text" value="{{from}}" /> &ndash; <label for="to">To</label><input id="to" name="to" type="text" value="{{to}}" /> </a></li> \
         <li class="next action-pagination-update"><a href="">&raquo;</a></li> \
       </ul> \
     </div> \
@@ -4467,7 +4467,7 @@ my.QueryEditor = Backbone.View.extend({
     <form action="" method="GET" class="form-inline"> \
       <div class="input-prepend text-query"> \
         <span class="add-on"><i class="icon-search"></i></span> \
-        <input type="text" name="q" value="{{q}}" class="span2" placeholder="Search data ..." class="search-query" /> \
+        <label for="search">Search</label><input id="search" type="text" name="q" value="{{q}}" class="span2" placeholder="Search data ..." class="search-query" /> \
       </div> \
       <button type="submit" class="btn">Go &raquo;</button> \
     </form> \
