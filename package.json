@@ -1,36 +1,48 @@
 {
-  "name"          : "reclinejs",
-  "description"   : "A simple but powerful data library for building data-oriented applications in pure Javascript",
-  "version"       : "0.7.0",
-  "homepage"      : "http://reclinejs.com/",
-  "keywords"      : ["data", "explorer", "grid", "table", "library", "app"],
-  "contributors"  : [
+  "name": "reclinejs",
+  "description": "A simple but powerful data library for building data-oriented applications in pure Javascript",
+  "version": "0.7.0",
+  "homepage": "http://reclinejs.com/",
+  "keywords": [
+    "data",
+    "explorer",
+    "grid",
+    "table",
+    "library",
+    "app"
+  ],
+  "contributors": [
+    "Rufus Pollock <rufus.pollock@okfn.org>",
+    "Adrià Mercader <adria.mercader@okfn.org>",
+    "Max Ogden <max@maxogden.com>"
+  ],
+  "dependencies": {
+    "jquery": ">=1.6",
+    "underscore": ">=1.0",
+    "backbone": ">=0.5",
+    "mustache": ">=0.5.2"
+  },
+  "lib": "src",
+  "main": "dist/recline.js",
+  "repositories": [
     {
-      "name": "Rufus Pollock",
-      "email": "rufus.pollock@okfn.org"
-    },
-    {
-      "name": "Adrià Mercader",
-      "email": "adria.mercader@okfn.org"
-    },
-    {
-      "name": "Max Ogden",
-      "email": "max@maxogden.com"
+      "type": "git",
+      "url": "http://github.com/okfn/recline.git",
+      "path": "src"
     }
   ],
-  "dependencies"  : {
-    "jquery"      : ">=1.6",
-    "underscore"  : ">=1.0",
-    "backbone"    : ">=0.5",
-    "mustache"    : ">=0.5.2"
+  "readmeFilename": "README.md",
+  "directories": {
+    "doc": "docs",
+    "test": "test"
   },
-  "lib"           : "src",
-  "main"          : "dist/recline.js",
-  "repositories": [
-     {
-          "type": "git", 
-          "url": "http://github.com/okfn/recline.git",
-          "path": "src"
-     }
-  ]
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Akiracr/recline.git"
+  },
+  "author": "",
+  "license": "BSD"
 }
