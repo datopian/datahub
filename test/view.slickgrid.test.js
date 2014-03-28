@@ -130,7 +130,7 @@ test('delete-row' , function(){
   e = new Slick.EventData();
   view.grid.onClick.notify({
     row: 1,
-    cell: 0,
+    cell: 1,
     grid: view.grid
   }, e, view.grid);
 
