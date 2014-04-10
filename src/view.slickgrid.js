@@ -163,11 +163,11 @@ my.SlickGrid = Backbone.View.extend({
       columns.push({
         id: "#",
         name: "",
-        width: 40,
+        width: 22,
         behavior: "selectAndMove",
         selectable: false,
         resizable: false,
-        cssClass: "cell-reorder dnd"
+        cssClass: "recline-cell-reorder"
        })
       columns.push({
         id: 'del',
