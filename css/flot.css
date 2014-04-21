@@ -19,8 +19,8 @@
 
 #recline-flot-tooltip {
     position: absolute;
-    background-color: #FEE !important;
-    color: #000000 !important;
-    opacity: 0.8 !important;
-    border: 1px solid #fdd !important;
+    background-color: #FEE;
+    color: #000000;
+    opacity: 0.8;
+    border: 1px solid #fdd;
 }
