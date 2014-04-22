@@ -248,6 +248,9 @@ my.MultiView = Backbone.View.extend({
     // the main views
     _.each(this.pageViews, function(view, pageName) {
       view.view.render();
+      if (view.view.redraw) {
+        view.view.redraw();
+      }
       $dataViewContainer.append(view.view.el);
       if (view.view.elSidebar) {
         $dataSidebar.append(view.view.elSidebar);
