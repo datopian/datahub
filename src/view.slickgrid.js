@@ -366,7 +366,7 @@ my.SlickGrid = Backbone.View.extend({
     if(this.state.get("gridOptions") 
 	&& this.state.get("gridOptions").enableReOrderRow != undefined 
       && this.state.get("gridOptions").enableReOrderRow == true ){
-    self.grid.registerPlugin(moveRowsPlugin);
+        self.grid.registerPlugin(moveRowsPlugin);
     }
     /* end row reordering support*/
     
@@ -416,7 +416,7 @@ my.SlickGrid = Backbone.View.extend({
       var cell =0
       if(self.state.get("gridOptions") 
 	&& self.state.get("gridOptions").enableReOrderRow != undefined 
-      && self.state.get("gridOptions").enableReOrderRow == true ){
+        && self.state.get("gridOptions").enableReOrderRow == true ){
         cell =1
       }
       if (args.cell == cell && self.state.get("gridOptions").enabledDelRow == true){

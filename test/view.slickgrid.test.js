@@ -149,7 +149,7 @@ test('delete-row' , function(){
 // else it is The the second cell (1) , because The 0 is now cell
 // that handle row Reoder.
 
-test('delete-row-with-row-reorder-ativated' , function(){
+test('delete-row-with-row-reorder-activated' , function(){
   var dataset = Fixture.getDataset();
   var view = new recline.View.SlickGrid({
     model: dataset,
