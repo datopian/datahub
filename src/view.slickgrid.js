@@ -155,8 +155,32 @@ my.SlickGrid = Backbone.View.extend({
 	  }
 	}
     };
-   
-    //Add row delete support , check if enableDelRow is set to true or not set
+
+    //Add row delete support, check if enableReOrderRow is set to true , by
+    //default it is set to false
+    // state: {
+    //      gridOptions: {
+    //        enableReOrderRow: true,
+    //      },
+    if(this.state.get("gridOptions") 
+	&& this.state.get("gridOptions").enableReOrderRow != undefined 
+      && this.state.get("gridOptions").enableReOrderRow == true ){
+      columns.push({
+        id: 'del',
+        name: '',
+        field: 'del',
+        sortable: true,
+        width: 38,
+        formatter: formatter,
+        validator:validator
+      })
+    }
+    //Add row delete support, check if enabledDelRow is set to true , by
+    //default it is set to false
+    // state: {
+    //      gridOptions: {
+    //        enabledDelRow: true,
+    //      },
     if(this.state.get("gridOptions") 
 	&& this.state.get("gridOptions").enabledDelRow != undefined 
       && this.state.get("gridOptions").enabledDelRow == true ){
@@ -168,15 +192,6 @@ my.SlickGrid = Backbone.View.extend({
         selectable: false,
         resizable: false,
         cssClass: "recline-cell-reorder"
-       })
-      columns.push({
-        id: 'del',
-        name: '',
-        field: 'del',
-        sortable: true,
-        width: 38,
-        formatter: formatter,
-        validator:validator
       })
     }
     _.each(this.model.fields.toJSON(),function(field){
@@ -347,8 +362,12 @@ my.SlickGrid = Backbone.View.extend({
       self.model.records.reset(data)
       
     });
+    //register The plugin to handle row Reorder
+    if(this.state.get("gridOptions") 
+	&& this.state.get("gridOptions").enableReOrderRow != undefined 
+      && this.state.get("gridOptions").enableReOrderRow == true ){
     self.grid.registerPlugin(moveRowsPlugin);
-    
+    }
     /* end row reordering support*/
     
     this._slickHandler.subscribe(this.grid.onSort, function(e, args){
@@ -388,8 +407,19 @@ my.SlickGrid = Backbone.View.extend({
     this._slickHandler.subscribe(this.grid.onClick,function(e, args){
       //try catch , because this fail in qunit , but no
       //error on browser.
-    	try{e.preventDefault()}catch(e){}
-    	if (args.cell == 1 && self.state.get("gridOptions").enabledDelRow == true){
+      try{e.preventDefault()}catch(e){}
+
+      // The cell of grid that handle row delete is The first cell (0) if
+      // The grid ReOrder is not present ie  enableReOrderRow == false
+      // else it is The the second cell (1) , because The 0 is now cell
+      // that handle row Reoder.
+      var cell =0
+      if(self.state.get("gridOptions") 
+	&& self.state.get("gridOptions").enableReOrderRow != undefined 
+      && self.state.get("gridOptions").enableReOrderRow == true ){
+        cell =1
+      }
+      if (args.cell == cell && self.state.get("gridOptions").enabledDelRow == true){
           // We need to delete the associated model
           var model = data.getModel(args.row);
           model.destroy()

@@ -113,7 +113,7 @@ test('delete-row' , function(){
       columnsWidth:[
         {column:'id',width: 250}
       ],
-      gridOptions: {editable: true , "enabledDelRow":true},
+      gridOptions: {editable: true , "enabledDelRow":true },
       columnsEditor: [{column: 'country', editor: Slick.Editors.Text}]
     }
   });
@@ -125,11 +125,57 @@ test('delete-row' , function(){
   dataset.records.on('remove', function(record){
     equal(dataset.records.length, old_length  -1 );
   });
-
   // Be sure a cell change triggers a change of the model
   e = new Slick.EventData();
   view.grid.onClick.notify({
     row: 1,
+    cell: 0,
+    grid: view.grid
+  }, e, view.grid);
+
+  view.remove();
+
+
+});
+
+
+//Test delete row with RowReorder set to True , This is The same
+// test as above (delete-row), the only diference is that here we Enable
+// row ReOrder to true, so The cell That handle delete row of grid is
+// 1 instead of 0.
+
+// The cell of grid that handle row delete is The first cell (0) if
+// The grid ReOrder is not present ie  enableReOrderRow == false
+// else it is The the second cell (1) , because The 0 is now cell
+// that handle row Reoder.
+
+test('delete-row-with-row-reorder-ativated' , function(){
+  var dataset = Fixture.getDataset();
+  var view = new recline.View.SlickGrid({
+    model: dataset,
+    state: {
+      hiddenColumns:['x','lat','title'],
+      columnsOrder:['lon','id','z','date', 'y', 'country'],
+      columnsWidth:[
+        {column:'id',width: 250}
+      ],
+      gridOptions: {editable: true , "enabledDelRow":true , "enableReOrderRow":true},
+      columnsEditor: [{column: 'country', editor: Slick.Editors.Text}]
+    }
+  });
+
+  $('.fixtures .test-datatable').append(view.el);
+  view.render();
+  view.show();
+  old_length = dataset.records.length
+  dataset.records.on('remove', function(record){
+    equal(dataset.records.length, old_length  -1 );
+  });
+  // Be sure a cell change triggers a change of the model
+  e = new Slick.EventData();
+  view.grid.onClick.notify({
+    row: 1,
+    // cell is 1 instead of 0
     cell: 1,
     grid: view.grid
   }, e, view.grid);
@@ -138,6 +184,7 @@ test('delete-row' , function(){
 
 
 });
+
 
 test('add-row' , function(){
 //To test adding row on slickgrid , we add some menu GridControl

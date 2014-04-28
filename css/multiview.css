@@ -67,10 +67,6 @@
   vertical-align: top;
 }
 
-.header .recline-query-editor label {
-  display:none;
-}
-
 /**********************************************************
   * Pager
   *********************************************************/
@@ -80,10 +76,6 @@
   margin: auto;
   display: block;
   margin-left: 20px;
-}
-
-.header .recline-pager .pagination label {
-  display:none;
 }
 
 .header .recline-pager .pagination input {
