@@ -155,15 +155,15 @@ my.SlickGrid = Backbone.View.extend({
 	  }
 	}
     };
-    //Add row delete support, check if enabledDelRow is set to true , by
+    //Add row delete support, check if enableReOrderRow is set to true , by
     //default it is set to false
     // state: {
     //      gridOptions: {
-    //        enabledDelRow: true,
+    //        enableReOrderRow: true,
     //      },
     if(this.state.get("gridOptions") 
-	&& this.state.get("gridOptions").enabledDelRow != undefined 
-      && this.state.get("gridOptions").enabledDelRow == true ){
+	&& this.state.get("gridOptions").enableReOrderRow != undefined 
+      && this.state.get("gridOptions").enableReOrderRow == true ){
       columns.push({
         id: "#",
         name: "",
@@ -174,15 +174,15 @@ my.SlickGrid = Backbone.View.extend({
         cssClass: "recline-cell-reorder"
       })
     }
-    //Add row delete support, check if enableReOrderRow is set to true , by
+    //Add row delete support, check if enabledDelRow is set to true , by
     //default it is set to false
     // state: {
     //      gridOptions: {
-    //        enableReOrderRow: true,
+    //        enabledDelRow: true,
     //      },
     if(this.state.get("gridOptions") 
-	&& this.state.get("gridOptions").enableReOrderRow != undefined 
-      && this.state.get("gridOptions").enableReOrderRow == true ){
+	&& this.state.get("gridOptions").enabledDelRow != undefined 
+      && this.state.get("gridOptions").enabledDelRow == true ){
       columns.push({
         id: 'del',
         name: '',
