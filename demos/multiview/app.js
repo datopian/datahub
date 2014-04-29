@@ -77,8 +77,12 @@ var createExplorer = function(dataset, state) {
         state: {
           gridOptions: {
             editable: true,
+	    // Enable support for row add
             enabledAddRow: true,
-		enabledDelRow: true,
+	    // Enable support for row delete
+	    enabledDelRow: true,
+	    // Enable support for row Reoder 
+	    enableReOrderRow:true,
             autoEdit: false,
             enableCellNavigation: true
           },

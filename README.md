@@ -27,6 +27,8 @@ See CONTRIBUTING.md.
 * [Adrià Mercader](http://amercader.net/)
 * [Dominik Moritz](https://github.com/domoritz)
 * [Friedrich Lindenberg](http://pudo.org/)
+* [Alioune Dia](http://https://github.com/aliounedia)
+* [kielni](https://github.com/kielni)
 * And [many more](https://github.com/okfn/recline/graphs/contributors)
 
 ## Changelog
@@ -36,7 +38,7 @@ See CONTRIBUTING.md.
 [v0.6 milestone](https://github.com/okfn/recline/issues?milestone=5)
 
 Possible breaking changes
-
+* Support for row/add/delete/Reorder for recline slickGrid check `_includes/recline-deps.html` for slcikGrid plugins required #396
 * Many backends moved to their own repositories #314
 * Updated Leaflet to latest version 0.4.4 #220
 * Added marker clustering in map view to handle a large number of markers
