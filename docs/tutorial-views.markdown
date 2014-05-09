@@ -21,7 +21,7 @@ Before writing any code with Recline, you need to do the following preparation s
 2. Include the relevant CSS in the head section of your document:
     {% highlight html %}
 <!-- you do not have to use bootstrap but we use it by default -->
-<link rel="stylesheet" href="vendor/bootstrap/2.0.2/css/bootstrap.css" />
+<link rel="stylesheet" href="vendor/bootstrap/2.3.2/css/bootstrap.css" />
 <!-- CSS for relevant view components - here we just have grid -->
 <link rel="stylesheet" href="css/grid.css" />{% endhighlight %}
 
@@ -31,7 +31,7 @@ Before writing any code with Recline, you need to do the following preparation s
 <script type="text/javascript" src="vendor/underscore/1.1.6/underscore.js"></script>
 <script type="text/javascript" src="vendor/backbone/0.5.1/backbone.js"></script>
 <script type="text/javascript" src="vendor/jquery.mustache.js"></script>
-<script type="text/javascript" src="vendor/bootstrap/2.0.2/bootstrap.js"></script>
+<script type="text/javascript" src="vendor/bootstrap/2.3.2/bootstrap.js"></script>
 <!-- note that we could include individual components rather than whole of recline e.g.
 <script type="text/javascript" src="src/model.js"></script>
 <script type="text/javascript" src="src/backend/memory.js"></script>
