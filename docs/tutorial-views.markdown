@@ -129,6 +129,9 @@ library and the Recline Flot Graph view:
 <!--[if lte IE 8]>
 <script language="javascript" type="text/javascript" src="vendor/flot/excanvas.min.js"></script>
 <![endif]-->
+<!-- you only need moment when you have datetime data -->
+<script type="text/javascript" src="vendor/moment/2.0.0/moment.js"></script>
+
 <script type="text/javascript" src="vendor/flot/jquery.flot.js"></script>
 <script type="text/javascript" src="vendor/flot/jquery.flot.time.js"></script>
 <script type="text/javascript" src="src/view.graph.js"></script>
