@@ -28,10 +28,13 @@ Before writing any code with Recline, you need to do the following preparation s
 3. Include the relevant Javascript files somewhere on the page (preferably before body close tag):
     {% highlight html %}<!-- 3rd party dependencies -->
 <script type="text/javascript" src="vendor/jquery/1.7.1/jquery.js"></script>
-<script type="text/javascript" src="vendor/underscore/1.1.6/underscore.js"></script>
-<script type="text/javascript" src="vendor/backbone/0.5.1/backbone.js"></script>
-<script type="text/javascript" src="vendor/jquery.mustache.js"></script>
+<script type="text/javascript" src="vendor/underscore/1.4.4/underscore.js"></script>
+<script type="text/javascript" src="vendor/backbone/1.0.0/backbone.js"></script>
+<script type="text/javascript" src="vendor/mustache/0.5.0-dev/mustache.js"></script>
 <script type="text/javascript" src="vendor/bootstrap/2.3.2/bootstrap.js"></script>
+<script type="text/javascript" src="vendor/slickgrid/2.0.1/jquery.event.drag-2.2.js"></script>
+<script type="text/javascript" src="vendor/slickgrid/2.0.1/slick.core.js"></script>
+<script type="text/javascript" src="vendor/slickgrid/2.0.1/slick.grid.js"></script>
 <!-- note that we could include individual components rather than whole of recline e.g.
 <script type="text/javascript" src="src/model.js"></script>
 <script type="text/javascript" src="src/backend/memory.js"></script>
