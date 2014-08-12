@@ -11,7 +11,7 @@ this.recline.View = this.recline.View || {};
 // Manage multiple views together along with query editor etc. Usage:
 // 
 // <pre>
-// var myExplorer = new model.recline.MultiView({
+// var myExplorer = new recline.View.MultiView({
 //   model: {{recline.Model.Dataset instance}}
 //   el: {{an existing dom element}}
 //   views: {{dataset views}}
