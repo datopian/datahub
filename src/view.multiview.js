@@ -79,10 +79,10 @@ this.recline.View = this.recline.View || {};
 //  special as it includes config of many of the subviews.
 //
 // <pre>
-// state = {
+// var state = {
 //     query: {dataset query state - see dataset.queryState object}
-//     view-{id1}: {view-state for this view}
-//     view-{id2}: {view-state for }
+//     'view-{id1}': {view-state for this view}
+//     'view-{id2}': {view-state for }
 //     ...
 //     // Explorer
 //     currentView: id of current view (defaults to first view if not specified)
