@@ -61,7 +61,7 @@ this.recline.View = this.recline.View || {};
 //   {
 //     id: 'filterEditor', // used for routing
 //     label: 'Filters', // used for view switcher
-//     view: new recline.View.FielterEditor({
+//     view: new recline.View.FilterEditor({
 //       model: dataset
 //     })
 //   },
