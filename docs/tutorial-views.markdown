@@ -23,7 +23,8 @@ Before writing any code with Recline, you need to do the following preparation s
 <!-- you do not have to use bootstrap but we use it by default -->
 <link rel="stylesheet" href="vendor/bootstrap/2.3.2/css/bootstrap.css" />
 <!-- CSS for relevant view components - here we just have grid -->
-<link rel="stylesheet" href="css/grid.css" />{% endhighlight %}
+<link rel="stylesheet" href="css/grid.css" />
+{% endhighlight %}
 
 3. Include the relevant Javascript files somewhere on the page (preferably before body close tag):
     {% highlight html %}<!-- 3rd party dependencies -->
@@ -72,6 +73,7 @@ Let's create a data grid view to display the dataset we have just created.  We'r
 
 {% highlight html %}
 <link rel="stylesheet" href="css/slickgrid.css">
+<link rel="stylesheet" href="vendor/slickgrid/2.0.1/slick.grid.css">
 
 <!-- vendor -->
 <script type="text/javascript" src="{{page.root}}vendor/slickgrid/2.0.1/jquery-ui-1.8.16.custom.min.js"></script>
