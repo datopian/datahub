@@ -65,15 +65,18 @@ var dataset = new recline.Model.Dataset({
 ### Setting up the Grid
 
 
-Let's create a data grid view to display the dataset we have just created.  We're going to use the SlickGrid-based grid so we need the following:
+Let's create a data grid view to display the dataset we have just created.  We're going to use the SlickGrid-based grid so we need the following CSS and JS dependencies in addition to those above:
 
 {% highlight html %}
 <link rel="stylesheet" href="css/slickgrid.css">
+<link rel="stylesheet" href="vendor/slickgrid/2.0.1/slick.grid.css">
 
 <!-- vendor -->
-<script type="text/javascript" src="{{page.root}}vendor/slickgrid/2.0.1/jquery-ui-1.8.16.custom.min.js"></script>
-<script type="text/javascript" src="{{page.root}}vendor/slickgrid/2.0.1/jquery.event.drag-2.0.min.js"></script>
-<script type="text/javascript" src="{{page.root}}vendor/slickgrid/2.0.1/slick.grid.min.js"></script>
+<script type="text/javascript" src="vendor/slickgrid/2.0.1/jquery-ui-1.8.16.custom.min.js"></script>
+<script type="text/javascript" src="vendor/slickgrid/2.0.1/jquery.event.drag-2.0.min.js"></script>
+<script type="text/javascript" src="vendor/slickgrid/2.0.1/slick.grid.min.js"></script>
+<script type="text/javascript" src="vendor/slickgrid/2.0.1/plugins/slick.rowselectionmodel.js"></script>
+<script type="text/javascript" src="vendor/slickgrid/2.0.1/plugins/slick.rowmovemanager.js"></script>
 
 <!-- Recline -->
 <script type="text/javascript" src="src/view.slickgrid.js"></script>
