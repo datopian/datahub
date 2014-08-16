@@ -42,6 +42,7 @@ Possible breaking changes
 
 * Support for row/add/delete/Reorder for recline slickGrid check `_includes/recline-deps.html` for slcikGrid plugins required #396
 * Upgraded timelinejs lib - #316
+* Removed csv backend (as now in separate repo) #444
 
 ### v0.6 - Summer 2013
 
