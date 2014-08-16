@@ -14,26 +14,25 @@ sources such as Google Docs or the DataHub using Recline</small>
   </h1>
 </div>
 
-
-<div class="alert alert-info">
-<p><strong>Note</strong>: often you are loading data from a given source in
-order to load it into a Recline Dataset and display it in a View. However, you
-can also happily use a Backend to load data on its own without using any other
-part of the Recline library as all the Backends are designed to have no
-dependency on other parts of Recline.</p>
-</div>
-
 ## Overview
 
-Backends connect Dataset and Documents to data from a specific 'Backend' data
-source. They provide methods for loading and saving Datasets and individuals
+Backends connect Recline Datasets to data from a specific 'Backend' data
+source.
+
+They provide methods for loading and saving Datasets and individuals
 Documents as well as for bulk loading via a query API and doing bulk transforms
 on the backend.
 
 Backends come in 2 flavours:
 
-1. Loader backends - only implement fetch method. The data is then cached in a Memory.Store on the Dataset and interacted with there. This is best for sources which just allow you to load data or where you want to load the data once and work with it locally.
-2. Store backends - these support fetch, query and, if write-enabled, save. These are suitable where the backend contains a lot of data (infeasible to load locally - for examples a million rows) or where the backend has capabilities you want to take advantage of.
+* Loader backends - only implement fetch method. The data is then cached in a
+  Memory.Store on the Dataset and interacted with there. This is best for
+  sources which just allow you to load data or where you want to load the data
+  once and work with it locally.
+* Store backends - these support fetch, query and, if write-enabled, save.
+  These are suited to cases where the source datastore contains a lot of data
+  (infeasible to load locally - for examples a million rows) or where the
+  backend has, for example, query capabilities you want to take advantage of.
 
 ### Instantiation and Use
 
@@ -58,13 +57,15 @@ How do you know the backend identifier for a given Backend? It's just the name
 of the 'class' in recline.Backend module (but case-insensitive). E.g.
 recline.Backend.ElasticSearch can be identified as 'ElasticSearch' or
 'elasticsearch'.</p>
-<p><strong>What Backends are available from Recline?</strong>
-{% include backend-list.html %}
-</p>
-<p><strong>Backend you'd like to see not available?</strong> It's easy to write your own &ndash; see the <a href="backends.html">Backend reference docs</a> for details of the required API.
-</p>
 </div>
 
+## What Backends are available from Recline?
+
+{% include backend-list.html %}
+
+**Backend you'd like to see not available?** It's easy to write your own
+&ndash; see the <a href="backends.html">Backend reference docs</a> for details
+of the required API.
 
 ## Preparing your app
 
@@ -76,8 +77,9 @@ much more limited if you are just using a Backend. Specifically:
 <script type="text/javascript" src="vendor/jquery/1.7.1/jquery.js"></script>
 <script type="text/javascript" src="vendor/underscore/1.1.6/underscore.js"></script>
 <script type="text/javascript" src="vendor/backbone/0.5.1/backbone.js"></script>
+
 <!-- include the backend code you need e.g. here for csv -->
-<script type="text/javascript" src="src/backend.csv.js"></script>
+<script type="text/javascript" src="http://okfnlabs.org/csv.js/csv.js"></script>
 
 <!-- Or you can just include all of recline. -->
 <script type="text/javascript" src="dist/recline.js"></script>
@@ -90,13 +92,6 @@ We will be using the [following Google
 Doc](https://docs.google.com/spreadsheet/ccc?key=0Aon3JiuouxLUdGZPaUZsMjBxeGhfOWRlWm85MmV0UUE#gid=0).
 For Recline to be able to access a Google Spreadsheet it **must** have been
 'Published to the Web' (enabled via File -> Publish to the Web menu).
-
-<div class="alert alert-info">
-<strong>Want a real world example?</strong> This <a
-href="http://dashboard.opengovernmentdata.org/census/">Open Data Census micro-app</a> loads
-data from Google Docs and then displays it on a specialist interface combining
-a bespoke chooser and a Kartograph (svg-only) map.
-</div>
 
 {% highlight javascript %}
 // include the Recline backend for Google Docs
@@ -130,6 +125,13 @@ For loading data from CSV files there are 3 cases:
 1. CSV is online but on same domain or supporting CORS (S3 and Google Storage support CORS!) -- we can then load using AJAX (as no problems with same origin policy)
 2. CSV is on local disk -- if your browser supports HTML5 File API we can load the CSV file off disk
 3. CSV is online but not on same domain -- use DataProxy (see below)
+
+In all cases we'll need to have loaded the Recline CSV backend (for your own
+app you'll probably want this locally):
+
+{% highlight html %}
+<script type="text/javascript" src="http://okfnlabs.org/csv.js/csv.js"></script>
+{% endhighlight %}
 
 ### Local online CSV file
 

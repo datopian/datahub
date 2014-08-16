@@ -33,21 +33,32 @@ See CONTRIBUTING.md.
 
 ## Changelog
 
-### v0.6 - Sprint 2013 (tbc)
 
-[v0.6 milestone](https://github.com/okfn/recline/issues?milestone=5)
+### v0.7 - Summer 2014 (tbc)
+
+[v0.7 milestone](https://github.com/okfn/recline/issues?milestone=7)
 
 Possible breaking changes
+
 * Support for row/add/delete/Reorder for recline slickGrid check `_includes/recline-deps.html` for slcikGrid plugins required #396
+* Upgraded timelinejs lib - #316
+* Removed csv backend (as now in separate repo) #444
+
+### v0.6 - Summer 2013
+
+[v0.6 milestone](https://github.com/okfn/recline/issues?milestone=5) (more than 40 issues)
+
+Possible breaking changes
+
 * Many backends moved to their own repositories #314
+* Upgarde to Backbone v1.0 #351
 * Updated Leaflet to latest version 0.4.4 #220
-* Added marker clustering in map view to handle a large number of markers
+* Added marker clustering in map view to handle a large number of markers (and allowed it to disabled)
 * Dataset.restore method removed (not used internally except from Multiview.restore)
 * Views no longer call render in initialize but must be called client code
 * Backend.Memory.Store attribute for holding 'records' renamed to `records` from `data`
-* Require new underscore.deferred vendor library for all use (jQuery no longer required if just using recline.dataset.js)
+* Option to use underscore.deferred vendor library and not use jQuery (jQuery no longer required if just using recline.dataset.js)
 * View.el is now the raw DOM element. If you want a jQuery-wrapped version, use view.$el. #350
-* Upgraded timelinejs lib - #316
 * Pager widget now takes Dataset object rather than QueryState object #386
 
 ### v0.5 - July 5th 2012 (first public release)
