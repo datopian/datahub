@@ -177,6 +177,31 @@ test('Dataset getFieldsSummary', function () {
   });
 });
 
+test('query with Query model', function () {
+  var dataset = new recline.Model.Dataset({
+    records: [{country: 'UK'}, {country: 'DE'}]
+  });
+  var query = new recline.Model.Query();
+  query.addFilter({type: 'term', field: 'country', term: 'DE'});
+
+  dataset.query(query).done(function (results) {
+    deepEqual(results.length, 1);
+    deepEqual(results.models[0].toJSON(), {country: 'DE'});
+  });
+});
+
+test('query with plain object', function () {
+  var dataset = new recline.Model.Dataset({
+    records: [{country: 'UK'}, {country: 'DE'}]
+  });
+  var query = {q: 'DE'};
+
+  dataset.query(query).done(function (results) {
+    deepEqual(results.length, 1);
+    deepEqual(results.models[0].toJSON(), {country: 'DE'});
+  });
+});
+
 test('fetch without and with explicit fields', function () {
   var dataset = new recline.Model.Dataset({
     backend: 'csv',

@@ -19,10 +19,10 @@
 
 #recline-flot-tooltip {
     position: absolute;
-    background-color: #FEE !important;
-    color: #000000 !important;
-    opacity: 0.8 !important;
-    border: 1px solid #fdd !important;
+    background-color: #FEE;
+    color: #000000;
+    opacity: 0.8;
+    border: 1px solid #fdd;
 }
 /**********************************************************
   * (Data) Grid
@@ -316,6 +316,10 @@ div.data-table-cell-content-numeric > a.data-table-cell-edit {
   vertical-align: top;
 }
 
+.header .recline-query-editor label {
+  display:none;
+}
+
 /**********************************************************
   * Pager
   *********************************************************/
@@ -325,6 +329,10 @@ div.data-table-cell-content-numeric > a.data-table-cell-edit {
   margin: auto;
   display: block;
   margin-left: 20px;
+}
+
+.header .recline-pager .pagination label {
+  display:none;
 }
 
 .header .recline-pager .pagination input {
@@ -622,6 +630,15 @@ classes should alter those!
   line-height: 13px;
 }
 
+.recline-cell-reorder {
+  font-size: 12px;
+  padding: 2px;
+  width: 22px;
+  height: 14px;
+  line-height: 13px;
+  cursor: move;
+  background: url("../images/drag-handle.png") no-repeat center center;
+}
 .recline-timeline {
   position: relative;
 }

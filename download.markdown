@@ -105,7 +105,7 @@ Here is an example of the page setup for an app using every Recline component:
   <!--[if lt IE 9]>
     <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
   <![endif]-->
-  <link rel="stylesheet" href="vendor/bootstrap/2.0.2/css/bootstrap.css" />
+  <link rel="stylesheet" href="vendor/bootstrap/2.3.2/css/bootstrap.css" />
 
 {% include recline-deps.html %}
 {% endhighlight %}
