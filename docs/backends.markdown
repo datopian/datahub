@@ -20,17 +20,25 @@ on the backend.
 
 Backends come in 2 flavours:
 
-1. Loader backends - only implement fetch method. The data is then cached in a Memory.Store on the Dataset and interacted with there. This is best for sources which just allow you to load data or where you want to load the data once and work with it locally.
-2. Store backends - these support fetch, query and, if write-enabled, save. These are suitable where the backend contains a lot of data (infeasible to load locally - for examples a million rows) or where the backend has capabilities you want to take advantage of.
+* Loader backends - only implement fetch method. The data is then cached in a
+  Memory.Store on the Dataset and interacted with there. This is best for
+  sources which just allow you to load data or where you want to load the data
+  once and work with it locally.
+* Store backends - these support fetch, query and, if write-enabled, save.
+  These are suitable where the backend contains a lot of data (infeasible to
+  load locally - for examples a million rows) or where the backend has
+  capabilities you want to take advantage of.
 
-# List of Backends Shipped with Recline
+Examples of the 2 types of backends are provided by the Google docs backend (a
+"Loader" backend) and the ElasticSearch backend (a Store backend).
 
-{% include backend-list.html %}
+# Available Backends
 
-NB: examples of the 2 types of backends are provided by the Google docs backend (a "Loader" backend) and the ElasticSearch backend (a Store backend).
+You can find a list of the available Backends along with examples of how to use
+them in the [Backends Tutorial](tutorial-backends.html).
 
-It's easy to write your own backend - you just need to implement the API as described below.
-
+Note that it's easy to write your own backend - you just need to implement the
+Recline Backend API described below.
 
 # Backend API
 

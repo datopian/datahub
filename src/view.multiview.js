@@ -11,7 +11,7 @@ this.recline.View = this.recline.View || {};
 // Manage multiple views together along with query editor etc. Usage:
 // 
 // <pre>
-// var myExplorer = new model.recline.MultiView({
+// var myExplorer = new recline.View.MultiView({
 //   model: {{recline.Model.Dataset instance}}
 //   el: {{an existing dom element}}
 //   views: {{dataset views}}
@@ -61,7 +61,7 @@ this.recline.View = this.recline.View || {};
 //   {
 //     id: 'filterEditor', // used for routing
 //     label: 'Filters', // used for view switcher
-//     view: new recline.View.FielterEditor({
+//     view: new recline.View.FilterEditor({
 //       model: dataset
 //     })
 //   },
@@ -79,10 +79,10 @@ this.recline.View = this.recline.View || {};
 //  special as it includes config of many of the subviews.
 //
 // <pre>
-// state = {
+// var state = {
 //     query: {dataset query state - see dataset.queryState object}
-//     view-{id1}: {view-state for this view}
-//     view-{id2}: {view-state for }
+//     'view-{id1}': {view-state for this view}
+//     'view-{id2}': {view-state for }
 //     ...
 //     // Explorer
 //     currentView: id of current view (defaults to first view if not specified)
