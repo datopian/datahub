@@ -318,7 +318,7 @@ my.Map = Backbone.View.extend({
 
     _.each(docs,function(doc){
       for (var key in self.features._layers){
-        if (self.features._layers[key].feature.properties.cid == doc.cid){
+        if (self.features._layers[key].feature.geometry.properties.cid == doc.cid){
           self.features.removeLayer(self.features._layers[key]);
         }
       }
@@ -337,7 +337,7 @@ my.Map = Backbone.View.extend({
     var dms = coord.split(/[^-?\.\d\w]+/);
     var deg = 0; var m = 0;
     var toDeg = [1, 60, 3600]; // conversion factors for Deg, min, sec
-    var i; 
+    var i;
     for (i = 0; i < dms.length; ++i) {
         if (isNaN(parseFloat(dms[i]))) {
           continue;
@@ -670,4 +670,3 @@ my.MapMenu = Backbone.View.extend({
 });
 
 })(jQuery, recline.View);
-
