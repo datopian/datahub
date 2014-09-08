@@ -26,11 +26,9 @@
   },
   "lib"           : "src",
   "main"          : "dist/recline.js",
-  "repositories": [
-     {
-          "type": "git", 
-          "url": "http://github.com/okfn/recline.git",
-          "path": "src"
-     }
-  ]
+  "repository": {
+    "type": "git",
+    "url": "http://github.com/okfn/recline.git",
+    "path": "src"
+   }
 }
