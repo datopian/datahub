@@ -33,7 +33,11 @@ Note that the demos and documentation utilize the [jekyll templating
 system][jekyll] and to use them *locally* you will need to build them using
 jekyll. Once installed, all you need to do from the command line is run jekyll:
 
-    jekyll
+    jekyll serve
+
+or if you're actively developing and want auto-reloading:
+
+    jekyll serve --watch
 
 [jekyll]: https://github.com/mojombo/jekyll
 
