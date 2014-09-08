@@ -3,3 +3,4 @@ sandbox/*
 .*.swp
 .*.swo
 _site/*
+node_modules/*
