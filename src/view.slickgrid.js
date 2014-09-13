@@ -254,7 +254,6 @@ my.SlickGrid = Backbone.View.extend({
         rows[i] = toRow(m);
         models[i] = m;
       };
-     
     }
 
     var data = new RowSet();
@@ -272,67 +271,9 @@ my.SlickGrid = Backbone.View.extend({
       this.grid.setSortColumn(column, sortAsc);
     }
 
-    /* Row reordering support based on
-    https://github.com/mleibman/SlickGrid/blob/gh-pages/examples/example9-row-reordering.html
-    
-    */
-    self.grid.setSelectionModel(new Slick.RowSelectionModel());
-
-    var moveRowsPlugin = new Slick.RowMoveManager({
-      cancelEditOnDrag: true
-    });
-
-    moveRowsPlugin.onBeforeMoveRows.subscribe(function (e, data) {
-      for (var i = 0; i < data.rows.length; i++) {
-        // no point in moving before or after itself
-        if (data.rows[i] == data.insertBefore || data.rows[i] == data.insertBefore - 1) {
-          e.stopPropagation();
-          return false;
-        }
-      }
-      return true;
-    });
-    
-    moveRowsPlugin.onMoveRows.subscribe(function (e, args) {
-      
-      var extractedRows = [], left, right;
-      var rows = args.rows;
-      var insertBefore = args.insertBefore;
-
-      var data = self.model.records.toJSON()      
-      left = data.slice(0, insertBefore);
-      right= data.slice(insertBefore, data.length);
-      
-      rows.sort(function(a,b) { return a-b; });
-
-      for (var i = 0; i < rows.length; i++) {
-          extractedRows.push(data[rows[i]]);
-      }
-
-      rows.reverse();
-
-      for (var i = 0; i < rows.length; i++) {
-        var row = rows[i];
-        if (row < insertBefore) {
-          left.splice(row, 1);
-        } else {
-          right.splice(row - insertBefore, 1);
-        }
-      }
-
-      data = left.concat(extractedRows.concat(right));
-      var selectedRows = [];
-      for (var i = 0; i < rows.length; i++)
-        selectedRows.push(left.length + i);      
-
-      self.model.records.reset(data)
-      
-    });
-    //register The plugin to handle row Reorder
-    if(this.state.get("gridOptions") && this.state.get("gridOptions").enableReOrderRow) {
-      self.grid.registerPlugin(moveRowsPlugin);
+    if (this.state.get("gridOptions") && this.state.get("gridOptions").enableReOrderRow) {
+      this._setupRowReordering();
     }
-    /* end row reordering support*/
     
     this._slickHandler.subscribe(this.grid.onSort, function(e, args){
       var order = (args.sortAsc) ? 'asc':'desc';
@@ -399,6 +340,67 @@ my.SlickGrid = Backbone.View.extend({
       self.rendered = false;
     }
     return this;
+  },
+
+  // Row reordering support based on
+  // https://github.com/mleibman/SlickGrid/blob/gh-pages/examples/example9-row-reordering.html
+  _setupRowReordering: function() {
+    var self = this;
+    self.grid.setSelectionModel(new Slick.RowSelectionModel());
+
+    var moveRowsPlugin = new Slick.RowMoveManager({
+      cancelEditOnDrag: true
+    });
+
+    moveRowsPlugin.onBeforeMoveRows.subscribe(function (e, data) {
+      for (var i = 0; i < data.rows.length; i++) {
+        // no point in moving before or after itself
+        if (data.rows[i] == data.insertBefore || data.rows[i] == data.insertBefore - 1) {
+          e.stopPropagation();
+          return false;
+        }
+      }
+      return true;
+    });
+    
+    moveRowsPlugin.onMoveRows.subscribe(function (e, args) {
+      var extractedRows = [], left, right;
+      var rows = args.rows;
+      var insertBefore = args.insertBefore;
+
+      var data = self.model.records.toJSON()      
+      left = data.slice(0, insertBefore);
+      right= data.slice(insertBefore, data.length);
+      
+      rows.sort(function(a,b) { return a-b; });
+
+      for (var i = 0; i < rows.length; i++) {
+          extractedRows.push(data[rows[i]]);
+      }
+
+      rows.reverse();
+
+      for (var i = 0; i < rows.length; i++) {
+        var row = rows[i];
+        if (row < insertBefore) {
+          left.splice(row, 1);
+        } else {
+          right.splice(row - insertBefore, 1);
+        }
+      }
+
+      data = left.concat(extractedRows.concat(right));
+      var selectedRows = [];
+      for (var i = 0; i < rows.length; i++)
+        selectedRows.push(left.length + i);      
+
+      self.model.records.reset(data)
+      
+    });
+    //register The plugin to handle row Reorder
+    if(this.state.get("gridOptions") && this.state.get("gridOptions").enableReOrderRow) {
+      self.grid.registerPlugin(moveRowsPlugin);
+    }
   },
 
   remove: function () {
