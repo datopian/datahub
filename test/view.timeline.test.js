@@ -20,6 +20,7 @@ test('extract dates and timelineJSON', function () {
         'date': [
           {
             'startDate': '2012,03,20',
+            'tag': undefined,
             'endDate': null,
             'headline': '1',
             'text': '<div class="recline-record-summary"><div class="Date"><strong>Date</strong>: 2012-03-20</div><div class="title"><strong>title</strong>: 1</div></div>'
@@ -28,6 +29,7 @@ test('extract dates and timelineJSON', function () {
             'startDate': '2012,03,25',
             'endDate': null,
             'headline': '2',
+            'tag': undefined,
             'text': '<div class="recline-record-summary"><div class="Date"><strong>Date</strong>: 2012-03-25</div><div class="title"><strong>title</strong>: 2</div></div>'
           }
         ]
