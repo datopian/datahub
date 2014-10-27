@@ -37,7 +37,7 @@ Before writing any code with Recline, you need to do the following preparation s
 <script type="text/javascript" src="vendor/slickgrid/2.0.1/slick.grid.js"></script>
 <!-- note that we could include individual components rather than whole of recline e.g.
 <script type="text/javascript" src="src/model.js"></script>
-<script type="text/javascript" src="src/backend/memory.js"></script>
+<script type="text/javascript" src="src/backend.memory.js"></script>
 <script type="text/javascript" src="src/view-grid.js"></script>
 -->
 <script type="text/javascript" src="dist/recline.js"></script>{% endhighlight %}
@@ -62,11 +62,16 @@ We can now create a recline Dataset object (and memory backend) from this raw da
 var dataset = new recline.Model.Dataset({
   records: data
 });
-{% endhighlight %}
 
+//Depending on the view, it may be important to set the date type
+dataset.fields.models[1].attributes.type = 'date';
+{% endhighlight %}
 
 ### Setting up the Grid
 
+<div class="alert alert-info">
+The source code along with all dependencies for the grid part of the tutorial can be found at <a href="https://github.com/mattfullerton/recline-view-grid-demo">this GitHub repository</a>. See it in action via <a href="http://mattfullerton.github.io/recline-view-slickgrid-demo/">GitHub Pages</a>.
+</div>
 
 Let's create a data grid view to display the dataset we have just created.  We're going to use the SlickGrid-based grid so we need the following CSS and JS dependencies in addition to those above:
 
@@ -81,7 +86,7 @@ Let's create a data grid view to display the dataset we have just created.  We'r
 <script type="text/javascript" src="vendor/slickgrid/2.0.1/plugins/slick.rowselectionmodel.js"></script>
 <script type="text/javascript" src="vendor/slickgrid/2.0.1/plugins/slick.rowmovemanager.js"></script>
 
-<!-- Recline -->
+<!-- Recline (only needed when NOT including the combined JS file as shown above) -->
 <script type="text/javascript" src="src/view.slickgrid.js"></script>
 {% endhighlight %}
 
@@ -123,6 +128,10 @@ grid.render();
 
 ### Creating a Graph
 
+<div class="alert alert-info">
+The source code along with all dependencies for the graph part of the tutorial can be found at <a href="https://github.com/mattfullerton/recline-view-graph-demo">this GitHub repository</a>. See it in action via <a href="http://mattfullerton.github.io/recline-view-graph-demo/">GitHub Pages</a>.
+</div>
+
 Let's create a graph view to display a line graph for this dataset.
 
 First, add the additional dependencies for this view. These are the Flot
@@ -140,6 +149,8 @@ library and the Recline Flot Graph view:
 
 <script type="text/javascript" src="vendor/flot/jquery.flot.js"></script>
 <script type="text/javascript" src="vendor/flot/jquery.flot.time.js"></script>
+
+<!-- Recline (only needed when NOT including the combined JS file as shown above) -->
 <script type="text/javascript" src="src/view.graph.js"></script>
 {% endhighlight %}
 
@@ -164,8 +175,9 @@ var $el = $('#mygraph');
 var graph = new recline.View.Graph({
   model: dataset,
   state: {
+    graphType: "lines-and-points",
     group: "date",
-    series: ["x", "z"]
+    series: ["y", "z"]
   }
 });
 $el.append(graph.el);
@@ -173,17 +185,18 @@ graph.render();
 graph.redraw();
 {% endhighlight %}
 
-The result is the following graph:
+For the axis date formatting to work, it is crucial that the date type is set for that field as shown in the code concerning the dataset above. The result is the following graph:
 
 <div id="mygraph" style="margin-bottom: 30px;">&nbsp;</div>
 
 <script type="text/javascript">
+dataset.fields.models[1].attributes.type = 'date';
 var $el = $('#mygraph');
 var graph = new recline.View.Graph({
   model: dataset,
   state: {
     graphType: "lines-and-points",
-    group: "x",
+    group: "date",
     series: ["y", "z"]
   }
 });
