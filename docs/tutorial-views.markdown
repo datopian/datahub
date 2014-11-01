@@ -207,6 +207,10 @@ graph.redraw();
 
 ### Creating a Map
 
+<div class="alert alert-info">
+The source code along with all dependencies for the map part of the tutorial can be found at <a href="https://github.com/mattfullerton/recline-view-map-demo">this GitHub repository</a>. See it in action via <a href="http://mattfullerton.github.io/recline-view-map-demo/">GitHub Pages</a>.
+</div>
+
 Now, let's create a map of this dataset using the lon/lat information which is
 present on these data points.
 
@@ -229,6 +233,8 @@ library and the Recline Map view:
 <!-- javascript -->
 <script type="text/javascript" src="vendor/leaflet/0.7.3/leaflet.js"></script>
 <script type="text/javascript" src="vendor/leaflet.markercluster/leaflet.markercluster.js"></script>
+
+<!-- Recline (only needed when NOT including the combined JS file as shown above) -->
 <script type="text/javascript" src="src/view-map.js"></script>
 {% endhighlight %}
 
