@@ -9,9 +9,13 @@ root: ../
   <h1>
     Views Tutorial
     <br />
-    <small>This step-by-step tutorial will quickly get you started with Recline basics, including creating a dataset from local data and setting up a grid, graph and map to display it.</small>
+    <small>This step-by-step tutorial will quickly get you started with Recline basics, including creating a dataset from local data and setting up a grid, graph, map and timeline to display it.</small>
   </h1>
 </div>
+
+### Views
+
+Views display Recline datasets in different ways. This page covers the interesting built-in views. For a full list of views including extensions outside of the Recline.js core, see the [list of currently available views]({{page.root}}docs/views.html#dataset-views-currently-available).
 
 ### Preparing your page
 

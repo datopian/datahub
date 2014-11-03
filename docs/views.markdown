@@ -16,6 +16,9 @@ views they have a pointer to a model (or a collection) and have an associated
 DOM-style element (usually this element will be bound into the page at some
 point).
 
+<div class="alert alert-info">Looking for quickstart tutorial rather than reference documentation? See the <a href="tutorial-views.html">Views Tutorial</a>.</div>
+
+
 Views provided by core Recline are crudely divided into two types:
 
 * Dataset Views: a View intended for displaying a recline.Model.Dataset in some
@@ -24,6 +27,9 @@ Views provided by core Recline are crudely divided into two types:
   of a dataset or the application. Examples are QueryEditor and FilterEditor
   which both provide a way for editing (a part of) a `recline.Model.Query`
   associated to a Dataset.
+
+## Dataset Views currently available
+{% include views-list.html %}
 
 ## Dataset View
 
