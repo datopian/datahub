@@ -269,6 +269,10 @@ map.render();
 
 ### Creating a Timeline
 
+<div class="alert alert-info">
+The source code along with all dependencies for the map part of the tutorial can be found at <a href="https://github.com/mattfullerton/recline-view-timeline-demo">this GitHub repository</a>. See it in action via <a href="http://mattfullerton.github.io/recline-view-timeline-demo/">GitHub Pages</a>.
+</div>
+
 Now, let's create a timeline for this dataset using the date information which is
 present on these data points.
 
@@ -277,6 +281,7 @@ First, add the additional dependencies for the timeline view. The timeline is bu
 {% highlight html %}
 <!-- css -->
 <link rel="stylesheet" href="vendor/timeline/css/timeline.css">
+<link rel="stylesheet" href="css/map.css">
 
 <!-- javascript -->
 <script type="text/javascript" src="vendor/moment/2.0.0/moment.js"></script>
