@@ -66,11 +66,20 @@ a:hover {
 	font-weight:400;
 	letter-spacing:-1px;
   line-height: 32px;
+  text-shadow: none !important;
+  color: #ffffff;
 }
 
 .navbar .nav > li > a {
   padding: 15px 10px;
   font-size: 13px;
+  text-shadow: none !important;
+  color: #999999;
+}
+
+.navbar .nav > li > a:focus,
+.navbar .nav > li > a:hover {
+  color: #ffffff;
 }
 
 .navbar .divider-vertical {
