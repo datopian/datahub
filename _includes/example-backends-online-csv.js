@@ -14,7 +14,8 @@ dataset.fetch();
 
 // show the data for illustrations sake
 var grid = new recline.View.SlickGrid({
-  model: dataset
+  model: dataset,
+  el:  $('#my-online-csv')
 });
-$('#my-online-csv').append(grid.el);
+grid.visible = true;
 

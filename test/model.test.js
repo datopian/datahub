@@ -202,6 +202,8 @@ test('query with plain object', function () {
   });
 });
 
+// TODO: this has a dependency on the external csv backend
+// May want to refactor or remove (?)
 test('fetch without and with explicit fields', function () {
   var dataset = new recline.Model.Dataset({
     backend: 'csv',
