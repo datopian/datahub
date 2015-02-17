@@ -74,7 +74,8 @@ dataset.fields.models[1].attributes.type = 'date';
 ### Setting up the Grid
 
 <div class="alert alert-info">
-The source code along with all dependencies for the grid part of the tutorial can be found at <a href="https://github.com/mattfullerton/recline-view-grid-demo">this GitHub repository</a>. See it in action via <a href="http://mattfullerton.github.io/recline-view-slickgrid-demo/">GitHub Pages</a>.
+The source code along with all dependencies for the grid part of the tutorial can be found at <a href="https://github.com/mattfullerton/recline-view-slickgrid-demo">this GitHub repository</a>. See it in action via <a href="http://mattfullerton.github.io/recline-view-slickgrid-demo/">GitHub Pages</a>.
+Although it's not demonstrated here, you can also use the simpler Grid view without SlickGrid. Source code along with all dependencies for that can be found at <a href="https://github.com/mattfullerton/recline-view-grid-demo">this GitHub repository</a>. Demo on <a href="http://mattfullerton.github.io/recline-view-grid-demo/">GitHub Pages</a>.
 </div>
 
 Let's create a data grid view to display the dataset we have just created.  We're going to use the SlickGrid-based grid so we need the following CSS and JS dependencies in addition to those above:
