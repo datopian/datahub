@@ -15,7 +15,7 @@ my.ValueFilter = Backbone.View.extend({
       <form class="form-stacked js-add" style="display: none;"> \
         <fieldset> \
           <label>Field</label> \
-          <select class="fields"> \
+          <select class="fields form-control"> \
             {{#fields}} \
             <option value="{{id}}">{{label}}</option> \
             {{/fields}} \

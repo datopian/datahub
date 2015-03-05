@@ -47,7 +47,7 @@ my.SlickGrid = Backbone.View.extend({
   
     // Template for row delete menu , change it if you don't love 
     this.templates = {
-      "deleterow" : '<a href="#" class="recline-row-delete btn" title="Delete row">X</a>'
+      "deleterow" : '<button href="#" class="recline-row-delete btn btn-default" title="Delete row">X</button>'
     };
 
     _.bindAll(this, 'render', 'onRecordChanged');
@@ -437,7 +437,7 @@ my.SlickGrid = Backbone.View.extend({
 my.GridControl= Backbone.View.extend({
   className: "recline-row-add",
   // Template for row edit menu , change it if you don't love
-  template: '<h1><a href="#" class="recline-row-add btn">Add row</a></h1>',
+  template: '<h1><button href="#" class="recline-row-add btn btn-default">Add row</button></h1>',
   
   initialize: function(options){
     var self = this;

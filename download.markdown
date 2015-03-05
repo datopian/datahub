@@ -12,22 +12,22 @@ title: Download
 <h2>Latest Code - Master</h2>
 <p>The tutorials on this website will usually be based on the latest (master) codebase. It should also be very stable.</p>
 <div class="row">
-<div class="span4">
-  <a href="dist/recline.js" class="btn">
+<div class="col-md-4">
+  <a href="dist/recline.js" class="btn btn-default">
     <strong>recline.js (master) &raquo;</strong>
     <br />
     Single file containing all of Recline library
   </a>
 </div>
-<div class="span4">
-  <a href="dist/recline.dataset.js" class="btn">
+<div class="col-md-4">
+  <a href="dist/recline.dataset.js" class="btn btn-default">
     <strong>recline.dataset.js (master) &raquo;</strong>
     <br />
     Single file with only the core data objects Dataset, Record etc without any Views or backends
   </a>
 </div>
-<div class="span4">
-  <a href="https://github.com/okfn/recline/zipball/master" class="btn">
+<div class="col-md-4">
+  <a href="https://github.com/okfn/recline/zipball/master" class="btn btn-default">
     <strong>Full package (master) &raquo;</strong>
     <br />
     Everything - library, source code, unit tests, vendor libraries and documentation
@@ -37,22 +37,22 @@ title: Download
 
 <h2>Most Recent Official Release &ndash; v0.5</h2>
 <div class="row">
-<div class="span4">
-  <a href="https://raw.github.com/okfn/recline/v0.5/dist/recline.js" class="btn">
+<div class="col-md-4">
+  <a href="https://raw.github.com/okfn/recline/v0.5/dist/recline.js" class="btn btn-default">
     <strong>recline.js &raquo;</strong>
     <br />
     Single file containing all of Recline library
   </a>
 </div>
-<div class="span4">
-  <a href="https://raw.github.com/okfn/recline/v0.5/dist/recline.dataset.js" class="btn">
+<div class="col-md-4">
+  <a href="https://raw.github.com/okfn/recline/v0.5/dist/recline.dataset.js" class="btn btn-default">
     <strong>recline.dataset.js &raquo;</strong>
     <br />
     Single file with only the core data objects Dataset, Record etc without any Views or backends
   </a>
 </div>
-<div class="span4">
-  <a href="https://github.com/okfn/recline/zipball/v0.5" class="btn">
+<div class="col-md-4">
+  <a href="https://github.com/okfn/recline/zipball/v0.5" class="btn btn-default">
     <strong>Full package (master) &raquo;</strong>
     <br />
     Everything - library, source code, unit tests, vendor libraries and documentation
@@ -89,7 +89,7 @@ Individual views have additional dependencies such as:
 * [Leaflet](http://leaflet.cloudmade.com/) >= 0.4.4 (required for map view)
 * [Leaflet.markercluster](https://github.com/danzel/Leaflet.markercluster)  as of 2012-09-12 (required for marker clustering)
 * [Verite Timeline](https://github.com/VeriteCo/Timeline/) as of 2012-05-02 (required for the timeline view)
-* [Bootstrap](http://twitter.github.com/bootstrap/) &gt;= v2.0 (default option for CSS and UI JS but you can use your own)
+* [Bootstrap](http://twitter.github.com/bootstrap/) &gt;= v3 (default option for CSS and UI JS but you can use your own)
 
 If you grab the full zipball for Recline this will include all of the relevant
 dependencies in the vendor directory and you can also find them at in the
@@ -105,7 +105,7 @@ Here is an example of the page setup for an app using every Recline component:
   <!--[if lt IE 9]>
     <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
   <![endif]-->
-  <link rel="stylesheet" href="vendor/bootstrap/2.3.2/css/bootstrap.css" />
+  <link rel="stylesheet" href="vendor/bootstrap/3.2.0/css/bootstrap.css" />
 
 {% include recline-deps.html %}
 {% endhighlight %}

@@ -511,7 +511,7 @@ my.MapMenu = Backbone.View.extend({
         <div class="editor-field-type-latlon"> \
           <label>Latitude field</label> \
           <div class="input editor-lat-field"> \
-            <select> \
+            <select class="form-control"> \
             <option value=""></option> \
             {{#fields}} \
             <option value="{{id}}">{{label}}</option> \
@@ -520,7 +520,7 @@ my.MapMenu = Backbone.View.extend({
           </div> \
           <label>Longitude field</label> \
           <div class="input editor-lon-field"> \
-            <select> \
+            <select class="form-control"> \
             <option value=""></option> \
             {{#fields}} \
             <option value="{{id}}">{{label}}</option> \
@@ -531,7 +531,7 @@ my.MapMenu = Backbone.View.extend({
         <div class="editor-field-type-geom" style="display:none"> \
           <label>Geometry field (GeoJSON)</label> \
           <div class="input editor-geom-field"> \
-            <select> \
+            <select class="form-control"> \
             <option value=""></option> \
             {{#fields}} \
             <option value="{{id}}">{{label}}</option> \
@@ -541,7 +541,7 @@ my.MapMenu = Backbone.View.extend({
         </div> \
       </div> \
       <div class="editor-buttons"> \
-        <button class="btn editor-update-map">Update</button> \
+        <button class="btn btn-default editor-update-map">Update</button> \
       </div> \
       <div class="editor-options" > \
         <label class="checkbox"> \
