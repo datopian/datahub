@@ -40,6 +40,19 @@
   margin-bottom: 10px;
 }
 
+.recline-data-explorer .radio,
+.recline-data-explorer .checkbox {
+  padding-left: 20px;
+}
+
+.recline-data-explorer .editor-update-map {
+  margin: 30px 0px 20px 0px;
+}
+
+.recline-data-explorer label {
+  font-weight: normal;
+}
+
 /**********************************************************
   * Query Editor
   *********************************************************/
