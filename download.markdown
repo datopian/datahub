@@ -89,7 +89,7 @@ Individual views have additional dependencies such as:
 * [Leaflet](http://leaflet.cloudmade.com/) >= 0.4.4 (required for map view)
 * [Leaflet.markercluster](https://github.com/danzel/Leaflet.markercluster)  as of 2012-09-12 (required for marker clustering)
 * [Verite Timeline](https://github.com/VeriteCo/Timeline/) as of 2012-05-02 (required for the timeline view)
-* [Bootstrap](http://twitter.github.com/bootstrap/) &gt;= v2.0 (default option for CSS and UI JS but you can use your own)
+* [Bootstrap](http://twitter.github.com/bootstrap/) &gt;= v3 (default option for CSS and UI JS but you can use your own)
 
 If you grab the full zipball for Recline this will include all of the relevant
 dependencies in the vendor directory and you can also find them at in the
@@ -105,7 +105,7 @@ Here is an example of the page setup for an app using every Recline component:
   <!--[if lt IE 9]>
     <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
   <![endif]-->
-  <link rel="stylesheet" href="vendor/bootstrap/2.3.2/css/bootstrap.css" />
+  <link rel="stylesheet" href="vendor/bootstrap/3.3.2/css/bootstrap.css" />
 
 {% include recline-deps.html %}
 {% endhighlight %}
