@@ -190,12 +190,12 @@ section {
    Footer
 --------------------------------------------------- */
 
-.footer {
+.recline-footer {
 	background-color:#040404;
 	color:#CCC;
   margin-top: 30px;
 }
-.footer:before {
+.recline-footer:before {
 	content: " ";
 	height:14px;
 	display:block;
@@ -204,18 +204,20 @@ section {
 	background-position: center -100px;
 	margin-top:-34px;
 }
-.footer:after {
+.recline-footer:after {
 	display:none;
 }
-.footer .row {
+.recline-footer .row {
 	margin-top:15px;
 	margin-bottom:15px;
 }
-.footer a {
+.recline-footer a {
 	color:#CCC;
 }
-.footer a.btn {
-	color:#333333;
+.recline-footer a.btn,
+.recline-footer a.btn:hover {
+    padding: 0px;
+    font-weight: bold;
 }
 
 .tutorials .well {
