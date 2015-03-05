@@ -120,6 +120,11 @@ a:hover {
   margin-right: 1px;
 }
 
+a.btn, 
+button.btn {
+  white-space: normal !important;
+}
+
 body {
   padding-top: 60px;
 }

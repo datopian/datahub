@@ -14,7 +14,7 @@ my.QueryEditor = Backbone.View.extend({
         <span class="add-on"><i class="icon-search"></i></span> \
         <label>Search</label><input type="text" name="q" value="{{q}}" class="span2" placeholder="Search data ..." class="search-query" /> \
       </div> \
-      <button type="submit" class="btn">Go &raquo;</button> \
+      <button type="submit" class="btn btn-default">Go &raquo;</button> \
     </form> \
   ',
 

@@ -12,22 +12,22 @@ title: Download
 <h2>Latest Code - Master</h2>
 <p>The tutorials on this website will usually be based on the latest (master) codebase. It should also be very stable.</p>
 <div class="row">
-<div class="span4">
-  <a href="dist/recline.js" class="btn">
+<div class="col-md-4">
+  <a href="dist/recline.js" class="btn btn-default">
     <strong>recline.js (master) &raquo;</strong>
     <br />
     Single file containing all of Recline library
   </a>
 </div>
-<div class="span4">
-  <a href="dist/recline.dataset.js" class="btn">
+<div class="col-md-4">
+  <a href="dist/recline.dataset.js" class="btn btn-default">
     <strong>recline.dataset.js (master) &raquo;</strong>
     <br />
     Single file with only the core data objects Dataset, Record etc without any Views or backends
   </a>
 </div>
-<div class="span4">
-  <a href="https://github.com/okfn/recline/zipball/master" class="btn">
+<div class="col-md-4">
+  <a href="https://github.com/okfn/recline/zipball/master" class="btn btn-default">
     <strong>Full package (master) &raquo;</strong>
     <br />
     Everything - library, source code, unit tests, vendor libraries and documentation
@@ -37,22 +37,22 @@ title: Download
 
 <h2>Most Recent Official Release &ndash; v0.5</h2>
 <div class="row">
-<div class="span4">
-  <a href="https://raw.github.com/okfn/recline/v0.5/dist/recline.js" class="btn">
+<div class="col-md-4">
+  <a href="https://raw.github.com/okfn/recline/v0.5/dist/recline.js" class="btn btn-default">
     <strong>recline.js &raquo;</strong>
     <br />
     Single file containing all of Recline library
   </a>
 </div>
-<div class="span4">
-  <a href="https://raw.github.com/okfn/recline/v0.5/dist/recline.dataset.js" class="btn">
+<div class="col-md-4">
+  <a href="https://raw.github.com/okfn/recline/v0.5/dist/recline.dataset.js" class="btn btn-default">
     <strong>recline.dataset.js &raquo;</strong>
     <br />
     Single file with only the core data objects Dataset, Record etc without any Views or backends
   </a>
 </div>
-<div class="span4">
-  <a href="https://github.com/okfn/recline/zipball/v0.5" class="btn">
+<div class="col-md-4">
+  <a href="https://github.com/okfn/recline/zipball/v0.5" class="btn btn-default">
     <strong>Full package (master) &raquo;</strong>
     <br />
     Everything - library, source code, unit tests, vendor libraries and documentation
