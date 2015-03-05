@@ -35,6 +35,11 @@
   float: left;
 }
 
+.recline-data-explorer .data-view-sidebar > div {
+  margin-top: 5px;
+  margin-bottom: 10px;
+}
+
 /**********************************************************
   * Query Editor
   *********************************************************/
