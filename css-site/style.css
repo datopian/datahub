@@ -53,52 +53,71 @@ a:hover {
    Layout
 --------------------------------------------------- */
 
-.navbar .logo-icon img {
-  margin-top: 6px;
-  margin-right: 8px;
+.navbar-header{
+
+}
+
+.navbar-header .logo-icon {
   height: 34px;
 }
 
-.navbar .brand {
-	font-family:'PT Sans', Helvetica, Arial, sans-serif;
-	font-style:italic;
-	font-size:18px;
-	font-weight:400;
-	letter-spacing:-1px;
-  line-height: 32px;
+.navbar-brand {
+  font-family:'PT Sans', Helvetica, Arial, sans-serif;
+  font-style:italic;
+  font-size:18px;
+  font-weight:400;
+  letter-spacing:-1px;
   text-shadow: none !important;
-  color: #ffffff;
+  color: #FFF !important;
+  margin-top: -6px;
 }
 
-.navbar .nav > li > a {
+.navbar-nav > li > a {
   padding: 15px 10px;
   font-size: 13px;
   text-shadow: none !important;
-  color: #999999;
+  color: #999 !important;
 }
 
-.navbar .nav > li > a:focus,
-.navbar .nav > li > a:hover {
-  color: #ffffff;
+.navbar-nav > li > a:focus,
+.navbar-nav > li > a:hover {
+  color: #FFF !important;
 }
 
 .navbar .divider-vertical {
   height: 50px;
+  margin: 0 9px;
+  border-right: 1px solid #ffffff;
 }
 
-.navbar-inner {
-	height:50px;
-	background: #303030; /* Old browsers */
-	background: -moz-linear-gradient(top, #303030 0%, #2d2d2d 100%); /* FF3.6+ */
-	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#303030), color-stop(100%,#2d2d2d)); /* Chrome,Safari4+ */
-	background: -webkit-linear-gradient(top, #303030 0%,#2d2d2d 100%); /* Chrome10+,Safari5.1+ */
-	background: -o-linear-gradient(top, #303030 0%,#2d2d2d 100%); /* Opera 11.10+ */
-	background: -ms-linear-gradient(top, #303030 0%,#2d2d2d 100%); /* IE10+ */
-	background: linear-gradient(top, #303030 0%,#2d2d2d 100%); /* W3C */
-	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#303030', endColorstr='#2d2d2d',GradientType=0 ); /* IE6-9 */
-	-webkit-box-shadow:none;
+.navbar-inverse .divider-vertical {
+  border-right-color: #222222;
+}
+
+@media (max-width: 767px) {
+  .navbar-collapse .nav > .divider-vertical {
+    display: none;
+  }
+}
+
+.navbar {
+  height:50px;
+  background: #303030; /* Old browsers */
+  background: -moz-linear-gradient(top, #303030 0%, #2d2d2d 100%); /* FF3.6+ */
+  background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#303030), color-stop(100%,#2d2d2d)); /* Chrome,Safari4+ */
+  background: -webkit-linear-gradient(top, #303030 0%,#2d2d2d 100%); /* Chrome10+,Safari5.1+ */
+  background: -o-linear-gradient(top, #303030 0%,#2d2d2d 100%); /* Opera 11.10+ */
+  background: -ms-linear-gradient(top, #303030 0%,#2d2d2d 100%); /* IE10+ */
+  background: linear-gradient(top, #303030 0%,#2d2d2d 100%); /* W3C */
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#303030', endColorstr='#2d2d2d',GradientType=0 ); /* IE6-9 */
+  -webkit-box-shadow:none;
   -moz-box-shadow: none;
   box-shadow: none;
+}
+
+.icon-white{
+  color: #FFF;
+  margin-right: 1px;
 }
 
 body {
