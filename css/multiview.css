@@ -27,11 +27,10 @@
   float: right;
   margin-left: 5px;
   padding-left: 5px;
-  border-left: solid 2px #ddd;
 }
 
-.header .recline-results-info {
-  line-height: 28px;
+.recline-results-info {
+  line-height: 35px;
   margin-left: 20px;
   float: left;
 }
@@ -40,9 +39,12 @@
   * Query Editor
   *********************************************************/
 
-.header .recline-query-editor {
+.recline-query-editor {
   float: right;
-  height: 30px;
+  height: 35px;
+  padding-right: 5px;
+  margin-right: 5px;
+  border-right: solid 2px #ddd;
 }
 
 .header .input-prepend {
@@ -63,11 +65,11 @@
   vertical-align: top;
 }
 
-.header .recline-query-editor form button {
+.recline-query-editor form button {
   vertical-align: top;
 }
 
-.header .recline-query-editor label {
+.recline-query-editor label {
   display:none;
 }
 
@@ -75,28 +77,78 @@
   * Pager
   *********************************************************/
 
-.header .recline-pager {
+.recline-pager {
   float: left;
   margin: auto;
   display: block;
   margin-left: 20px;
 }
 
-.header .recline-pager .pagination label {
+.recline-pager .pagination li {
+  display: inline-block;
+}
+
+.recline-pager .pagination label {
   display:none;
 }
 
-.header .recline-pager .pagination input {
-  width: 30px;
-  height: 18px;
+.recline-pager .pagination input {
+  width: 40px;
+  height: 25px;
   padding: 2px 4px;
   margin: 0;
-  margin-top: -4px;
+  margin-top: -2px;
+  
+  border: 1px solid #cccccc;
+  box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+  transition: border linear 0.2s, box-shadow linear 0.2s;
+  border-radius: 4px;
+  
+  -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+  -webkit-transition: border linear 0.2s, box-shadow linear 0.2s;
+  -webkit-border-radius: 4px;
+  
+  -moz-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+  -moz-transition: border linear 0.2s, box-shadow linear 0.2s;
+  -moz-border-radius: 4px;
+  
+  -o-transition: border linear 0.2s, box-shadow linear 0.2s;  
 }
 
-.header .recline-pager .pagination a {
-  line-height: 26px;
-  padding: 0 6px;
+.recline-pager .pagination a {
+  float: none;
+  margin-left: -5px;
+  color: #555;
+}
+
+.recline-pager .pagination .page-range {
+  height: 34px;
+  padding: 5px 8px;
+  margin-left: -5px;
+  border: 1px solid #ddd;
+}
+
+.recline-pager .pagination .page-range a {
+  padding: 0px 12px;
+  border: none;
+}
+
+.recline-pager .pagination .page-range a:hover {
+  background-color: #ffffff;
+}
+
+.recline-pager .pagination > li:first-child > a {
+  border-bottom-left-radius: 4px;
+  border-top-left-radius: 4px;
+  border-bottom-right-radius: 0px;
+  border-top-right-radius: 0px;  
+}
+
+.recline-pager .pagination > li:last-child > a {
+  border-bottom-right-radius: 4px;
+  border-top-right-radius: 4px;
+  border-bottom-left-radius: 0px;
+  border-top-left-radius: 0px;  
 }
 
 /**********************************************************
