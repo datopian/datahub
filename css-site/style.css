@@ -214,10 +214,8 @@ section {
 .recline-footer a {
 	color:#CCC;
 }
-.recline-footer a.btn,
-.recline-footer a.btn:hover {
-    padding: 0px;
-    font-weight: bold;
+.recline-footer a.btn {
+    color: #333333;
 }
 
 .tutorials .well {

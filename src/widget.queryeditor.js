@@ -34,7 +34,7 @@ my.QueryEditor = Backbone.View.extend({
   },
   onFormSubmit: function(e) {
     e.preventDefault();
-    var query = this.$el.find('.text-query input').val();
+    var query = this.$el.find('.search-query').val();
     this.model.set({q: query});
   },
   render: function() {
