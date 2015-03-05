@@ -200,11 +200,6 @@
   width: 175px;
 }
 
-.recline-filter-editor select {
-  background-color: #ffffff;
-  border: 1px solid #cccccc;
-}
-
 .recline-filter-editor input {
   margin-top: 0.5em;
   margin-bottom: 10px;

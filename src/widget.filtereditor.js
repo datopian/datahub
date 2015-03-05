@@ -15,7 +15,7 @@ my.FilterEditor = Backbone.View.extend({
       <form class="form-stacked js-add" style="display: none;"> \
         <div class="form-group"> \
           <label>Field</label> \
-          <select class="fields"> \
+          <select class="fields form-control"> \
             {{#fields}} \
             <option value="{{id}}">{{label}}</option> \
             {{/fields}} \
@@ -23,7 +23,7 @@ my.FilterEditor = Backbone.View.extend({
         </div> \
         <div class="form-group"> \
           <label>Filter type</label> \
-          <select class="filterType"> \
+          <select class="filterType form-control"> \
             <option value="term">Value</option> \
             <option value="range">Range</option> \
             <option value="geo_distance">Geo distance</option> \
