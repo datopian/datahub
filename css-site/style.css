@@ -28,6 +28,7 @@ body, p {
 
 h1, h2, h3, h4, h5, h6 {
 	font-family:'PT Sans',Helvetica, Arial, sans-serif;
+    font-weight: bold;
 }
 
 h2 {
@@ -53,43 +54,76 @@ a:hover {
    Layout
 --------------------------------------------------- */
 
-.navbar .logo-icon img {
-  margin-top: 6px;
-  margin-right: 8px;
+.navbar-header{
+
+}
+
+.navbar-header .logo-icon {
   height: 34px;
 }
 
-.navbar .brand {
-	font-family:'PT Sans', Helvetica, Arial, sans-serif;
-	font-style:italic;
-	font-size:18px;
-	font-weight:400;
-	letter-spacing:-1px;
-  line-height: 32px;
+.navbar-brand {
+  font-family:'PT Sans', Helvetica, Arial, sans-serif;
+  font-style:italic;
+  font-size:18px;
+  font-weight:400;
+  letter-spacing:-1px;
+  text-shadow: none !important;
+  color: #FFF !important;
+  margin-top: -6px;
 }
 
-.navbar .nav > li > a {
+.navbar-nav > li > a {
   padding: 15px 10px;
   font-size: 13px;
+  text-shadow: none !important;
+  color: #999 !important;
+}
+
+.navbar-nav > li > a:focus,
+.navbar-nav > li > a:hover {
+  color: #FFF !important;
 }
 
 .navbar .divider-vertical {
   height: 50px;
+  margin: 0 9px;
+  border-right: 1px solid #ffffff;
 }
 
-.navbar-inner {
-	height:50px;
-	background: #303030; /* Old browsers */
-	background: -moz-linear-gradient(top, #303030 0%, #2d2d2d 100%); /* FF3.6+ */
-	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#303030), color-stop(100%,#2d2d2d)); /* Chrome,Safari4+ */
-	background: -webkit-linear-gradient(top, #303030 0%,#2d2d2d 100%); /* Chrome10+,Safari5.1+ */
-	background: -o-linear-gradient(top, #303030 0%,#2d2d2d 100%); /* Opera 11.10+ */
-	background: -ms-linear-gradient(top, #303030 0%,#2d2d2d 100%); /* IE10+ */
-	background: linear-gradient(top, #303030 0%,#2d2d2d 100%); /* W3C */
-	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#303030', endColorstr='#2d2d2d',GradientType=0 ); /* IE6-9 */
-	-webkit-box-shadow:none;
+.navbar-inverse .divider-vertical {
+  border-right-color: #222222;
+}
+
+@media (max-width: 767px) {
+  .navbar-collapse .nav > .divider-vertical {
+    display: none;
+  }
+}
+
+.navbar {
+  height:50px;
+  background: #303030; /* Old browsers */
+  background: -moz-linear-gradient(top, #303030 0%, #2d2d2d 100%); /* FF3.6+ */
+  background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#303030), color-stop(100%,#2d2d2d)); /* Chrome,Safari4+ */
+  background: -webkit-linear-gradient(top, #303030 0%,#2d2d2d 100%); /* Chrome10+,Safari5.1+ */
+  background: -o-linear-gradient(top, #303030 0%,#2d2d2d 100%); /* Opera 11.10+ */
+  background: -ms-linear-gradient(top, #303030 0%,#2d2d2d 100%); /* IE10+ */
+  background: linear-gradient(top, #303030 0%,#2d2d2d 100%); /* W3C */
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#303030', endColorstr='#2d2d2d',GradientType=0 ); /* IE6-9 */
+  -webkit-box-shadow:none;
   -moz-box-shadow: none;
   box-shadow: none;
+}
+
+.icon-white{
+  color: #FFF;
+  margin-right: 1px;
+}
+
+a.btn, 
+button.btn {
+  white-space: normal !important;
 }
 
 body {
@@ -156,12 +190,12 @@ section {
    Footer
 --------------------------------------------------- */
 
-.footer {
+.recline-footer {
 	background-color:#040404;
 	color:#CCC;
   margin-top: 30px;
 }
-.footer:before {
+.recline-footer:before {
 	content: " ";
 	height:14px;
 	display:block;
@@ -170,18 +204,18 @@ section {
 	background-position: center -100px;
 	margin-top:-34px;
 }
-.footer:after {
+.recline-footer:after {
 	display:none;
 }
-.footer .row {
+.recline-footer .row {
 	margin-top:15px;
 	margin-bottom:15px;
 }
-.footer a {
+.recline-footer a {
 	color:#CCC;
 }
-.footer a.btn {
-	color:#333333;
+.recline-footer a.btn {
+    color: #333333;
 }
 
 .tutorials .well {
@@ -212,3 +246,6 @@ section {
   margin-bottom: 20px;
 }
 
+#my-online-csv {
+  height: 100px;
+}
