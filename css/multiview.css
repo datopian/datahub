@@ -160,6 +160,31 @@
   display: none;
 }
 
+.recline-filter-editor .filters {
+  margin: 20px 0px;
+}
+
+.recline-filter-editor h3 {
+  margin-top: 4px;
+}
+
+.recline-filter-editor .filter {
+  margin-top: 20px;
+}
+
+.recline-filter-editor .filter .form-group {
+  margin-bottom: 0px;
+}
+
+.recline-filter-editor .filter input,
+.recline-filter-editor .filter label {
+  margin: 0px;
+}
+
+.recline-filter-editor .js-edit button {
+  margin: 25px 0px 0px 0px;
+}
+
 .recline-filter-editor .filter-term a {
   font-size: 18px;
 }
@@ -170,8 +195,27 @@
   width: 175px;
 }
 
+.recline-filter-editor select {
+  background-color: #ffffff;
+  border: 1px solid #cccccc;
+}
+
 .recline-filter-editor input {
   margin-top: 0.5em;
+  margin-bottom: 10px;
+  -webkit-border-radius: 4px;
+  -moz-border-radius: 4px;
+  border-radius: 4px;  
+  border: 1px solid #cccccc;  
+}
+
+.recline-filter-editor label {
+  font-weight: normal;
+  display: block;
+}
+
+.recline-filter-editor legend {
+  margin-bottom: 5px;
 }
 
 .recline-filter-editor .add-filter {
