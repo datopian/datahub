@@ -1,70 +1,223 @@
-<!DOCTYPE html>  <html> <head>   <title>widget.pager.js</title>   <meta http-equiv="content-type" content="text/html; charset=UTF-8">   <link rel="stylesheet" media="all" href="docco.css" /> </head> <body>   <div id="container">     <div id="background"></div>            <div id="jump_to">         Jump To &hellip;         <div id="jump_wrapper">           <div id="jump_page">                                           <a class="source" href="backend.csv.html">                 backend.csv.js               </a>                                           <a class="source" href="backend.dataproxy.html">                 backend.dataproxy.js               </a>                                           <a class="source" href="backend.memory.html">                 backend.memory.js               </a>                                           <a class="source" href="ecma-fixes.html">                 ecma-fixes.js               </a>                                           <a class="source" href="model.html">                 model.js               </a>                                           <a class="source" href="view.flot.html">                 view.flot.js               </a>                                           <a class="source" href="view.graph.html">                 view.graph.js               </a>                                           <a class="source" href="view.grid.html">                 view.grid.js               </a>                                           <a class="source" href="view.map.html">                 view.map.js               </a>                                           <a class="source" href="view.multiview.html">                 view.multiview.js               </a>                                           <a class="source" href="view.slickgrid.html">                 view.slickgrid.js               </a>                                           <a class="source" href="view.timeline.html">                 view.timeline.js               </a>                                           <a class="source" href="widget.facetviewer.html">                 widget.facetviewer.js               </a>                                           <a class="source" href="widget.fields.html">                 widget.fields.js               </a>                                           <a class="source" href="widget.filtereditor.html">                 widget.filtereditor.js               </a>                                           <a class="source" href="widget.pager.html">                 widget.pager.js               </a>                                           <a class="source" href="widget.queryeditor.html">                 widget.queryeditor.js               </a>                                           <a class="source" href="widget.valuefilter.html">                 widget.valuefilter.js               </a>                        </div>         </div>       </div>          <table cellpadding="0" cellspacing="0">       <thead>         <tr>           <th class="docs">             <h1>               widget.pager.js             </h1>           </th>           <th class="code">           </th>         </tr>       </thead>       <tbody>                               <tr id="section-1">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-1">&#182;</a>               </div>                            </td>             <td class="code">               <div class="highlight"><pre><span class="cm">/*jshint multistr:true */</span>
+<!DOCTYPE html>
 
-<span class="k">this</span><span class="p">.</span><span class="nx">recline</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">recline</span> <span class="o">||</span> <span class="p">{};</span>
-<span class="k">this</span><span class="p">.</span><span class="nx">recline</span><span class="p">.</span><span class="nx">View</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">recline</span><span class="p">.</span><span class="nx">View</span> <span class="o">||</span> <span class="p">{};</span>
+<html>
+<head>
+  <title>widget.pager.js</title>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <meta name="viewport" content="width=device-width, target-densitydpi=160dpi, initial-scale=1.0; maximum-scale=1.0; user-scalable=0;">
+  <link rel="stylesheet" media="all" href="docco.css" />
+</head>
+<body>
+  <div id="container">
+    <div id="background"></div>
+    
+      <ul id="jump_to">
+        <li>
+          <a class="large" href="javascript:void(0);">Jump To &hellip;</a>
+          <a class="small" href="javascript:void(0);">+</a>
+          <div id="jump_wrapper">
+          <div id="jump_page_wrapper">
+            <div id="jump_page">
+              
+                
+                <a class="source" href="backend.dataproxy.html">
+                  backend.dataproxy.js
+                </a>
+              
+                
+                <a class="source" href="backend.memory.html">
+                  backend.memory.js
+                </a>
+              
+                
+                <a class="source" href="ecma-fixes.html">
+                  ecma-fixes.js
+                </a>
+              
+                
+                <a class="source" href="model.html">
+                  model.js
+                </a>
+              
+                
+                <a class="source" href="view.flot.html">
+                  view.flot.js
+                </a>
+              
+                
+                <a class="source" href="view.graph.html">
+                  view.graph.js
+                </a>
+              
+                
+                <a class="source" href="view.grid.html">
+                  view.grid.js
+                </a>
+              
+                
+                <a class="source" href="view.map.html">
+                  view.map.js
+                </a>
+              
+                
+                <a class="source" href="view.multiview.html">
+                  view.multiview.js
+                </a>
+              
+                
+                <a class="source" href="view.slickgrid.html">
+                  view.slickgrid.js
+                </a>
+              
+                
+                <a class="source" href="view.timeline.html">
+                  view.timeline.js
+                </a>
+              
+                
+                <a class="source" href="widget.facetviewer.html">
+                  widget.facetviewer.js
+                </a>
+              
+                
+                <a class="source" href="widget.fields.html">
+                  widget.fields.js
+                </a>
+              
+                
+                <a class="source" href="widget.filtereditor.html">
+                  widget.filtereditor.js
+                </a>
+              
+                
+                <a class="source" href="widget.pager.html">
+                  widget.pager.js
+                </a>
+              
+                
+                <a class="source" href="widget.queryeditor.html">
+                  widget.queryeditor.js
+                </a>
+              
+                
+                <a class="source" href="widget.valuefilter.html">
+                  widget.valuefilter.js
+                </a>
+              
+            </div>
+          </div>
+        </li>
+      </ul>
+    
+    <ul class="sections">
+        
+          <li id="title">
+              <div class="annotation">
+                  <h1>widget.pager.js</h1>
+              </div>
+          </li>
+        
+        
+        
+        <li id="section-1">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-1">&#182;</a>
+              </div>
+              
+            </div>
+            
+            <div class="content"><div class='highlight'><pre><span class="hljs-comment">/*jshint multistr:true */</span>
 
-<span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">$</span><span class="p">,</span> <span class="nx">my</span><span class="p">)</span> <span class="p">{</span>
-  <span class="s2">&quot;use strict&quot;</span><span class="p">;</span>
+<span class="hljs-keyword">this</span>.recline = <span class="hljs-keyword">this</span>.recline || {};
+<span class="hljs-keyword">this</span>.recline.View = <span class="hljs-keyword">this</span>.recline.View || {};
 
-<span class="nx">my</span><span class="p">.</span><span class="nx">Pager</span> <span class="o">=</span> <span class="nx">Backbone</span><span class="p">.</span><span class="nx">View</span><span class="p">.</span><span class="nx">extend</span><span class="p">({</span>
-  <span class="nx">className</span><span class="o">:</span> <span class="s1">&#39;recline-pager&#39;</span><span class="p">,</span> 
-  <span class="nx">template</span><span class="o">:</span> <span class="s1">&#39; \</span>
-<span class="s1">    &lt;div class=&quot;pagination&quot;&gt; \</span>
-<span class="s1">      &lt;ul&gt; \</span>
-<span class="s1">        &lt;li class=&quot;prev action-pagination-update&quot;&gt;&lt;a href=&quot;&quot;&gt;&amp;laquo;&lt;/a&gt;&lt;/li&gt; \</span>
-<span class="s1">        &lt;li class=&quot;active&quot;&gt;&lt;a&gt;&lt;input name=&quot;from&quot; type=&quot;text&quot; value=&quot;{{from}}&quot; /&gt; &amp;ndash; &lt;input name=&quot;to&quot; type=&quot;text&quot; value=&quot;{{to}}&quot; /&gt; &lt;/a&gt;&lt;/li&gt; \</span>
-<span class="s1">        &lt;li class=&quot;next action-pagination-update&quot;&gt;&lt;a href=&quot;&quot;&gt;&amp;raquo;&lt;/a&gt;&lt;/li&gt; \</span>
-<span class="s1">      &lt;/ul&gt; \</span>
-<span class="s1">    &lt;/div&gt; \</span>
-<span class="s1">  &#39;</span><span class="p">,</span>
+(<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">($, my)</span> </span>{
+<span class="hljs-pi">  "use strict"</span>;
 
-  <span class="nx">events</span><span class="o">:</span> <span class="p">{</span>
-    <span class="s1">&#39;click .action-pagination-update&#39;</span><span class="o">:</span> <span class="s1">&#39;onPaginationUpdate&#39;</span><span class="p">,</span>
-    <span class="s1">&#39;change input&#39;</span><span class="o">:</span> <span class="s1">&#39;onFormSubmit&#39;</span>
-  <span class="p">},</span>
+my.Pager = Backbone.View.extend({
+  className: <span class="hljs-string">'recline-pager'</span>, 
+  template: <span class="hljs-string">' \
+    &lt;div class="pagination"&gt; \
+      &lt;ul class="pagination"&gt; \
+        &lt;li class="prev action-pagination-update"&gt;&lt;a href="" class="btn btn-default"&gt;&amp;laquo;&lt;/a&gt;&lt;/li&gt; \
+        &lt;li class="page-range"&gt;&lt;a&gt;&lt;label for="from"&gt;From&lt;/label&gt;&lt;input name="from" type="text" value="{{from}}" /&gt; &amp;ndash; &lt;label for="to"&gt;To&lt;/label&gt;&lt;input name="to" type="text" value="{{to}}" /&gt; &lt;/a&gt;&lt;/li&gt; \
+        &lt;li class="next action-pagination-update"&gt;&lt;a href="" class="btn btn-default"&gt;&amp;raquo;&lt;/a&gt;&lt;/li&gt; \
+      &lt;/ul&gt; \
+    &lt;/div&gt; \
+  '</span>,
 
-  <span class="nx">initialize</span><span class="o">:</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
-    <span class="nx">_</span><span class="p">.</span><span class="nx">bindAll</span><span class="p">(</span><span class="k">this</span><span class="p">,</span> <span class="s1">&#39;render&#39;</span><span class="p">);</span>
-    <span class="k">this</span><span class="p">.</span><span class="nx">listenTo</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">model</span><span class="p">.</span><span class="nx">queryState</span><span class="p">,</span> <span class="s1">&#39;change&#39;</span><span class="p">,</span> <span class="k">this</span><span class="p">.</span><span class="nx">render</span><span class="p">);</span>
-    <span class="k">this</span><span class="p">.</span><span class="nx">render</span><span class="p">();</span>
-  <span class="p">},</span>
-  <span class="nx">onFormSubmit</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">e</span><span class="p">)</span> <span class="p">{</span>
-    <span class="nx">e</span><span class="p">.</span><span class="nx">preventDefault</span><span class="p">();</span>
-    <span class="kd">var</span> <span class="nx">newFrom</span> <span class="o">=</span> <span class="nb">parseInt</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">$el</span><span class="p">.</span><span class="nx">find</span><span class="p">(</span><span class="s1">&#39;input[name=&quot;from&quot;]&#39;</span><span class="p">).</span><span class="nx">val</span><span class="p">());</span>
-    <span class="nx">newFrom</span> <span class="o">=</span> <span class="nb">Math</span><span class="p">.</span><span class="nx">min</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">model</span><span class="p">.</span><span class="nx">recordCount</span><span class="p">,</span> <span class="nb">Math</span><span class="p">.</span><span class="nx">max</span><span class="p">(</span><span class="nx">newFrom</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span><span class="o">-</span><span class="mi">1</span><span class="p">;</span>
-    <span class="kd">var</span> <span class="nx">newSize</span> <span class="o">=</span> <span class="nb">parseInt</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">$el</span><span class="p">.</span><span class="nx">find</span><span class="p">(</span><span class="s1">&#39;input[name=&quot;to&quot;]&#39;</span><span class="p">).</span><span class="nx">val</span><span class="p">())</span> <span class="o">-</span> <span class="nx">newFrom</span><span class="p">;</span>
-    <span class="nx">newSize</span> <span class="o">=</span> <span class="nb">Math</span><span class="p">.</span><span class="nx">min</span><span class="p">(</span><span class="nb">Math</span><span class="p">.</span><span class="nx">max</span><span class="p">(</span><span class="nx">newSize</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="k">this</span><span class="p">.</span><span class="nx">model</span><span class="p">.</span><span class="nx">recordCount</span><span class="p">);</span>
-    <span class="k">this</span><span class="p">.</span><span class="nx">model</span><span class="p">.</span><span class="nx">queryState</span><span class="p">.</span><span class="nx">set</span><span class="p">({</span><span class="nx">size</span><span class="o">:</span> <span class="nx">newSize</span><span class="p">,</span> <span class="nx">from</span><span class="o">:</span> <span class="nx">newFrom</span><span class="p">});</span>
-  <span class="p">},</span>
-  <span class="nx">onPaginationUpdate</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">e</span><span class="p">)</span> <span class="p">{</span>
-    <span class="nx">e</span><span class="p">.</span><span class="nx">preventDefault</span><span class="p">();</span>
-    <span class="kd">var</span> <span class="nx">$el</span> <span class="o">=</span> <span class="nx">$</span><span class="p">(</span><span class="nx">e</span><span class="p">.</span><span class="nx">target</span><span class="p">);</span>
-    <span class="kd">var</span> <span class="nx">newFrom</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
-    <span class="kd">var</span> <span class="nx">currFrom</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">model</span><span class="p">.</span><span class="nx">queryState</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s1">&#39;from&#39;</span><span class="p">);</span>
-    <span class="kd">var</span> <span class="nx">size</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">model</span><span class="p">.</span><span class="nx">queryState</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s1">&#39;size&#39;</span><span class="p">);</span>
-    <span class="kd">var</span> <span class="nx">updateQuery</span> <span class="o">=</span> <span class="kc">false</span><span class="p">;</span>
-    <span class="k">if</span> <span class="p">(</span><span class="nx">$el</span><span class="p">.</span><span class="nx">parent</span><span class="p">().</span><span class="nx">hasClass</span><span class="p">(</span><span class="s1">&#39;prev&#39;</span><span class="p">))</span> <span class="p">{</span>
-      <span class="nx">newFrom</span> <span class="o">=</span> <span class="nb">Math</span><span class="p">.</span><span class="nx">max</span><span class="p">(</span><span class="nx">currFrom</span> <span class="o">-</span> <span class="nb">Math</span><span class="p">.</span><span class="nx">max</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nx">size</span><span class="p">),</span> <span class="mi">1</span><span class="p">)</span><span class="o">-</span><span class="mi">1</span><span class="p">;</span>
-      <span class="nx">updateQuery</span> <span class="o">=</span> <span class="nx">newFrom</span> <span class="o">!=</span> <span class="nx">currFrom</span><span class="p">;</span>
-    <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
-      <span class="nx">newFrom</span> <span class="o">=</span> <span class="nb">Math</span><span class="p">.</span><span class="nx">max</span><span class="p">(</span><span class="nx">currFrom</span> <span class="o">+</span> <span class="nx">size</span><span class="p">,</span> <span class="mi">1</span><span class="p">);</span>
-      <span class="nx">updateQuery</span> <span class="o">=</span> <span class="p">(</span><span class="nx">newFrom</span> <span class="o">&lt;</span> <span class="k">this</span><span class="p">.</span><span class="nx">model</span><span class="p">.</span><span class="nx">recordCount</span><span class="p">);</span>
-    <span class="p">}</span>
-    <span class="k">if</span> <span class="p">(</span><span class="nx">updateQuery</span><span class="p">)</span> <span class="p">{</span>
-      <span class="k">this</span><span class="p">.</span><span class="nx">model</span><span class="p">.</span><span class="nx">queryState</span><span class="p">.</span><span class="nx">set</span><span class="p">({</span><span class="nx">from</span><span class="o">:</span> <span class="nx">newFrom</span><span class="p">});</span>
-    <span class="p">}</span>
-  <span class="p">},</span>
-  <span class="nx">render</span><span class="o">:</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
-    <span class="kd">var</span> <span class="nx">tmplData</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">model</span><span class="p">.</span><span class="nx">toJSON</span><span class="p">();</span>
-    <span class="kd">var</span> <span class="nx">from</span> <span class="o">=</span> <span class="nb">parseInt</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">model</span><span class="p">.</span><span class="nx">queryState</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s1">&#39;from&#39;</span><span class="p">));</span>
-    <span class="nx">tmplData</span><span class="p">.</span><span class="nx">from</span> <span class="o">=</span> <span class="nx">from</span><span class="o">+</span><span class="mi">1</span><span class="p">;</span>
-    <span class="nx">tmplData</span><span class="p">.</span><span class="nx">to</span> <span class="o">=</span> <span class="nb">Math</span><span class="p">.</span><span class="nx">min</span><span class="p">(</span><span class="nx">from</span><span class="o">+</span><span class="k">this</span><span class="p">.</span><span class="nx">model</span><span class="p">.</span><span class="nx">queryState</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s1">&#39;size&#39;</span><span class="p">),</span> <span class="k">this</span><span class="p">.</span><span class="nx">model</span><span class="p">.</span><span class="nx">recordCount</span><span class="p">);</span>
-    <span class="kd">var</span> <span class="nx">templated</span> <span class="o">=</span> <span class="nx">Mustache</span><span class="p">.</span><span class="nx">render</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">template</span><span class="p">,</span> <span class="nx">tmplData</span><span class="p">);</span>
-    <span class="k">this</span><span class="p">.</span><span class="nx">$el</span><span class="p">.</span><span class="nx">html</span><span class="p">(</span><span class="nx">templated</span><span class="p">);</span>
-    <span class="k">return</span> <span class="k">this</span><span class="p">;</span>
-  <span class="p">}</span>
-<span class="p">});</span>
+  events: {
+    <span class="hljs-string">'click .action-pagination-update'</span>: <span class="hljs-string">'onPaginationUpdate'</span>,
+    <span class="hljs-string">'change input'</span>: <span class="hljs-string">'onFormSubmit'</span>
+  },
 
-<span class="p">})(</span><span class="nx">jQuery</span><span class="p">,</span> <span class="nx">recline</span><span class="p">.</span><span class="nx">View</span><span class="p">);</span>
+  initialize: <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> </span>{
+    _.bindAll(<span class="hljs-keyword">this</span>, <span class="hljs-string">'render'</span>);
+    <span class="hljs-keyword">this</span>.listenTo(<span class="hljs-keyword">this</span>.model.queryState, <span class="hljs-string">'change'</span>, <span class="hljs-keyword">this</span>.render);
+    <span class="hljs-keyword">this</span>.render();
+  },
+  onFormSubmit: <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(e)</span> </span>{
+    e.preventDefault();</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-2">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-2">&#182;</a>
+              </div>
+              <p>filter is 0-based; form is 1-based</p>
 
-</pre></div>             </td>           </tr>                </tbody>     </table>   </div> </body> </html> 
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    <span class="hljs-keyword">var</span> formFrom = <span class="hljs-built_in">parseInt</span>(<span class="hljs-keyword">this</span>.$el.find(<span class="hljs-string">'input[name="from"]'</span>).val())-<span class="hljs-number">1</span>; 
+    <span class="hljs-keyword">var</span> formTo = <span class="hljs-built_in">parseInt</span>(<span class="hljs-keyword">this</span>.$el.find(<span class="hljs-string">'input[name="to"]'</span>).val())-<span class="hljs-number">1</span>; 
+    <span class="hljs-keyword">var</span> maxRecord = <span class="hljs-keyword">this</span>.model.recordCount-<span class="hljs-number">1</span>;
+    <span class="hljs-keyword">if</span> (<span class="hljs-keyword">this</span>.model.queryState.get(<span class="hljs-string">'from'</span>) != formFrom) { <span class="hljs-comment">// changed from; update from</span>
+      <span class="hljs-keyword">this</span>.model.queryState.set({from: <span class="hljs-built_in">Math</span>.min(maxRecord, <span class="hljs-built_in">Math</span>.max(formFrom, <span class="hljs-number">0</span>))});
+    } <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (<span class="hljs-keyword">this</span>.model.queryState.get(<span class="hljs-string">'to'</span>) != formTo) { <span class="hljs-comment">// change to; update size</span>
+      <span class="hljs-keyword">var</span> to = <span class="hljs-built_in">Math</span>.min(maxRecord, <span class="hljs-built_in">Math</span>.max(formTo, <span class="hljs-number">0</span>));
+      <span class="hljs-keyword">this</span>.model.queryState.set({size: <span class="hljs-built_in">Math</span>.min(maxRecord+<span class="hljs-number">1</span>, <span class="hljs-built_in">Math</span>.max(to-formFrom+<span class="hljs-number">1</span>, <span class="hljs-number">1</span>))});
+    }
+  },
+  onPaginationUpdate: <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(e)</span> </span>{
+    e.preventDefault();
+    <span class="hljs-keyword">var</span> $el = $(e.target);
+    <span class="hljs-keyword">var</span> newFrom = <span class="hljs-number">0</span>;
+    <span class="hljs-keyword">var</span> currFrom = <span class="hljs-keyword">this</span>.model.queryState.get(<span class="hljs-string">'from'</span>);
+    <span class="hljs-keyword">var</span> size = <span class="hljs-keyword">this</span>.model.queryState.get(<span class="hljs-string">'size'</span>);
+    <span class="hljs-keyword">var</span> updateQuery = <span class="hljs-literal">false</span>;
+    <span class="hljs-keyword">if</span> ($el.parent().hasClass(<span class="hljs-string">'prev'</span>)) {
+      newFrom = <span class="hljs-built_in">Math</span>.max(currFrom - <span class="hljs-built_in">Math</span>.max(<span class="hljs-number">0</span>, size), <span class="hljs-number">0</span>);
+      updateQuery = newFrom != currFrom;
+    } <span class="hljs-keyword">else</span> {
+      newFrom = <span class="hljs-built_in">Math</span>.max(currFrom + size, <span class="hljs-number">0</span>);
+      updateQuery = (newFrom &lt; <span class="hljs-keyword">this</span>.model.recordCount);
+    }
+    <span class="hljs-keyword">if</span> (updateQuery) {
+      <span class="hljs-keyword">this</span>.model.queryState.set({from: newFrom});
+    }
+  },
+  render: <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> </span>{
+    <span class="hljs-keyword">var</span> tmplData = <span class="hljs-keyword">this</span>.model.toJSON();
+    <span class="hljs-keyword">var</span> from = <span class="hljs-built_in">parseInt</span>(<span class="hljs-keyword">this</span>.model.queryState.get(<span class="hljs-string">'from'</span>));
+    tmplData.from = from+<span class="hljs-number">1</span>;
+    tmplData.to = <span class="hljs-built_in">Math</span>.min(from+<span class="hljs-keyword">this</span>.model.queryState.get(<span class="hljs-string">'size'</span>), <span class="hljs-keyword">this</span>.model.recordCount);
+    <span class="hljs-keyword">var</span> templated = Mustache.render(<span class="hljs-keyword">this</span>.template, tmplData);
+    <span class="hljs-keyword">this</span>.$el.html(templated);
+    <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>;
+  }
+});
+
+})(jQuery, recline.View);</pre></div></div>
+            
+        </li>
+        
+    </ul>
+  </div>
+</body>
+</html>

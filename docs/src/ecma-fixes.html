@@ -1,66 +1,215 @@
-<!DOCTYPE html>  <html> <head>   <title>ecma-fixes.js</title>   <meta http-equiv="content-type" content="text/html; charset=UTF-8">   <link rel="stylesheet" media="all" href="docco.css" /> </head> <body>   <div id="container">     <div id="background"></div>            <div id="jump_to">         Jump To &hellip;         <div id="jump_wrapper">           <div id="jump_page">                                           <a class="source" href="backend.csv.html">                 backend.csv.js               </a>                                           <a class="source" href="backend.dataproxy.html">                 backend.dataproxy.js               </a>                                           <a class="source" href="backend.memory.html">                 backend.memory.js               </a>                                           <a class="source" href="ecma-fixes.html">                 ecma-fixes.js               </a>                                           <a class="source" href="model.html">                 model.js               </a>                                           <a class="source" href="view.flot.html">                 view.flot.js               </a>                                           <a class="source" href="view.graph.html">                 view.graph.js               </a>                                           <a class="source" href="view.grid.html">                 view.grid.js               </a>                                           <a class="source" href="view.map.html">                 view.map.js               </a>                                           <a class="source" href="view.multiview.html">                 view.multiview.js               </a>                                           <a class="source" href="view.slickgrid.html">                 view.slickgrid.js               </a>                                           <a class="source" href="view.timeline.html">                 view.timeline.js               </a>                                           <a class="source" href="widget.facetviewer.html">                 widget.facetviewer.js               </a>                                           <a class="source" href="widget.fields.html">                 widget.fields.js               </a>                                           <a class="source" href="widget.filtereditor.html">                 widget.filtereditor.js               </a>                                           <a class="source" href="widget.pager.html">                 widget.pager.js               </a>                                           <a class="source" href="widget.queryeditor.html">                 widget.queryeditor.js               </a>                                           <a class="source" href="widget.valuefilter.html">                 widget.valuefilter.js               </a>                        </div>         </div>       </div>          <table cellpadding="0" cellspacing="0">       <thead>         <tr>           <th class="docs">             <h1>               ecma-fixes.js             </h1>           </th>           <th class="code">           </th>         </tr>       </thead>       <tbody>                               <tr id="section-1">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-1">&#182;</a>               </div>               <p>This file adds in full array method support in browsers that don't support it
-see: http://stackoverflow.com/questions/2790001/fixing-javascript-array-functions-in-internet-explorer-indexof-foreach-etc</p>             </td>             <td class="code">               <div class="highlight"><pre></pre></div>             </td>           </tr>                               <tr id="section-2">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-2">&#182;</a>               </div>               <p>Add ECMA262-5 Array methods if not supported natively</p>             </td>             <td class="code">               <div class="highlight"><pre><span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="p">(</span><span class="s1">&#39;indexOf&#39;</span> <span class="k">in</span> <span class="nb">Array</span><span class="p">.</span><span class="nx">prototype</span><span class="p">))</span> <span class="p">{</span>
-    <span class="nb">Array</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">indexOf</span><span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">find</span><span class="p">,</span> <span class="nx">i</span> <span class="cm">/*opt*/</span><span class="p">)</span> <span class="p">{</span>
-        <span class="k">if</span> <span class="p">(</span><span class="nx">i</span><span class="o">===</span><span class="kc">undefined</span><span class="p">)</span> <span class="nx">i</span><span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
-        <span class="k">if</span> <span class="p">(</span><span class="nx">i</span><span class="o">&lt;</span><span class="mi">0</span><span class="p">)</span> <span class="nx">i</span><span class="o">+=</span> <span class="k">this</span><span class="p">.</span><span class="nx">length</span><span class="p">;</span>
-        <span class="k">if</span> <span class="p">(</span><span class="nx">i</span><span class="o">&lt;</span><span class="mi">0</span><span class="p">)</span> <span class="nx">i</span><span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
-        <span class="k">for</span> <span class="p">(</span><span class="kd">var</span> <span class="nx">n</span><span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">length</span><span class="p">;</span> <span class="nx">i</span><span class="o">&lt;</span><span class="nx">n</span><span class="p">;</span> <span class="nx">i</span><span class="o">++</span><span class="p">)</span>
-            <span class="k">if</span> <span class="p">(</span><span class="nx">i</span> <span class="k">in</span> <span class="k">this</span> <span class="o">&amp;&amp;</span> <span class="k">this</span><span class="p">[</span><span class="nx">i</span><span class="p">]</span><span class="o">===</span><span class="nx">find</span><span class="p">)</span>
-                <span class="k">return</span> <span class="nx">i</span><span class="p">;</span>
-        <span class="k">return</span> <span class="o">-</span><span class="mi">1</span><span class="p">;</span>
-    <span class="p">};</span>
-<span class="p">}</span>
-<span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="p">(</span><span class="s1">&#39;lastIndexOf&#39;</span> <span class="k">in</span> <span class="nb">Array</span><span class="p">.</span><span class="nx">prototype</span><span class="p">))</span> <span class="p">{</span>
-    <span class="nb">Array</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">lastIndexOf</span><span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">find</span><span class="p">,</span> <span class="nx">i</span> <span class="cm">/*opt*/</span><span class="p">)</span> <span class="p">{</span>
-        <span class="k">if</span> <span class="p">(</span><span class="nx">i</span><span class="o">===</span><span class="kc">undefined</span><span class="p">)</span> <span class="nx">i</span><span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">length</span><span class="o">-</span><span class="mi">1</span><span class="p">;</span>
-        <span class="k">if</span> <span class="p">(</span><span class="nx">i</span><span class="o">&lt;</span><span class="mi">0</span><span class="p">)</span> <span class="nx">i</span><span class="o">+=</span> <span class="k">this</span><span class="p">.</span><span class="nx">length</span><span class="p">;</span>
-        <span class="k">if</span> <span class="p">(</span><span class="nx">i</span><span class="o">&gt;</span><span class="k">this</span><span class="p">.</span><span class="nx">length</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="nx">i</span><span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">length</span><span class="o">-</span><span class="mi">1</span><span class="p">;</span>
-        <span class="k">for</span> <span class="p">(</span><span class="nx">i</span><span class="o">++</span><span class="p">;</span> <span class="nx">i</span><span class="o">--&gt;</span><span class="mi">0</span><span class="p">;)</span> <span class="cm">/* i++ because from-argument is sadly inclusive */</span>
-            <span class="k">if</span> <span class="p">(</span><span class="nx">i</span> <span class="k">in</span> <span class="k">this</span> <span class="o">&amp;&amp;</span> <span class="k">this</span><span class="p">[</span><span class="nx">i</span><span class="p">]</span><span class="o">===</span><span class="nx">find</span><span class="p">)</span>
-                <span class="k">return</span> <span class="nx">i</span><span class="p">;</span>
-        <span class="k">return</span> <span class="o">-</span><span class="mi">1</span><span class="p">;</span>
-    <span class="p">};</span>
-<span class="p">}</span>
-<span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="p">(</span><span class="s1">&#39;forEach&#39;</span> <span class="k">in</span> <span class="nb">Array</span><span class="p">.</span><span class="nx">prototype</span><span class="p">))</span> <span class="p">{</span>
-    <span class="nb">Array</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">forEach</span><span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">action</span><span class="p">,</span> <span class="nx">that</span> <span class="cm">/*opt*/</span><span class="p">)</span> <span class="p">{</span>
-        <span class="k">for</span> <span class="p">(</span><span class="kd">var</span> <span class="nx">i</span><span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="nx">n</span><span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">length</span><span class="p">;</span> <span class="nx">i</span><span class="o">&lt;</span><span class="nx">n</span><span class="p">;</span> <span class="nx">i</span><span class="o">++</span><span class="p">)</span>
-            <span class="k">if</span> <span class="p">(</span><span class="nx">i</span> <span class="k">in</span> <span class="k">this</span><span class="p">)</span>
-                <span class="nx">action</span><span class="p">.</span><span class="nx">call</span><span class="p">(</span><span class="nx">that</span><span class="p">,</span> <span class="k">this</span><span class="p">[</span><span class="nx">i</span><span class="p">],</span> <span class="nx">i</span><span class="p">,</span> <span class="k">this</span><span class="p">);</span>
-    <span class="p">};</span>
-<span class="p">}</span>
-<span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="p">(</span><span class="s1">&#39;map&#39;</span> <span class="k">in</span> <span class="nb">Array</span><span class="p">.</span><span class="nx">prototype</span><span class="p">))</span> <span class="p">{</span>
-    <span class="nb">Array</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">map</span><span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">mapper</span><span class="p">,</span> <span class="nx">that</span> <span class="cm">/*opt*/</span><span class="p">)</span> <span class="p">{</span>
-        <span class="kd">var</span> <span class="nx">other</span><span class="o">=</span> <span class="k">new</span> <span class="nb">Array</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">length</span><span class="p">);</span>
-        <span class="k">for</span> <span class="p">(</span><span class="kd">var</span> <span class="nx">i</span><span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="nx">n</span><span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">length</span><span class="p">;</span> <span class="nx">i</span><span class="o">&lt;</span><span class="nx">n</span><span class="p">;</span> <span class="nx">i</span><span class="o">++</span><span class="p">)</span>
-            <span class="k">if</span> <span class="p">(</span><span class="nx">i</span> <span class="k">in</span> <span class="k">this</span><span class="p">)</span>
-                <span class="nx">other</span><span class="p">[</span><span class="nx">i</span><span class="p">]</span><span class="o">=</span> <span class="nx">mapper</span><span class="p">.</span><span class="nx">call</span><span class="p">(</span><span class="nx">that</span><span class="p">,</span> <span class="k">this</span><span class="p">[</span><span class="nx">i</span><span class="p">],</span> <span class="nx">i</span><span class="p">,</span> <span class="k">this</span><span class="p">);</span>
-        <span class="k">return</span> <span class="nx">other</span><span class="p">;</span>
-    <span class="p">};</span>
-<span class="p">}</span>
-<span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="p">(</span><span class="s1">&#39;filter&#39;</span> <span class="k">in</span> <span class="nb">Array</span><span class="p">.</span><span class="nx">prototype</span><span class="p">))</span> <span class="p">{</span>
-    <span class="nb">Array</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">filter</span><span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">filter</span><span class="p">,</span> <span class="nx">that</span> <span class="cm">/*opt*/</span><span class="p">)</span> <span class="p">{</span>
-        <span class="kd">var</span> <span class="nx">other</span><span class="o">=</span> <span class="p">[],</span> <span class="nx">v</span><span class="p">;</span>
-        <span class="k">for</span> <span class="p">(</span><span class="kd">var</span> <span class="nx">i</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="nx">n</span><span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">length</span><span class="p">;</span> <span class="nx">i</span><span class="o">&lt;</span><span class="nx">n</span><span class="p">;</span> <span class="nx">i</span><span class="o">++</span><span class="p">)</span>
-            <span class="k">if</span> <span class="p">(</span><span class="nx">i</span> <span class="k">in</span> <span class="k">this</span> <span class="o">&amp;&amp;</span> <span class="nx">filter</span><span class="p">.</span><span class="nx">call</span><span class="p">(</span><span class="nx">that</span><span class="p">,</span> <span class="nx">v</span><span class="o">=</span> <span class="k">this</span><span class="p">[</span><span class="nx">i</span><span class="p">],</span> <span class="nx">i</span><span class="p">,</span> <span class="k">this</span><span class="p">))</span>
-                <span class="nx">other</span><span class="p">.</span><span class="nx">push</span><span class="p">(</span><span class="nx">v</span><span class="p">);</span>
-        <span class="k">return</span> <span class="nx">other</span><span class="p">;</span>
-    <span class="p">};</span>
-<span class="p">}</span>
-<span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="p">(</span><span class="s1">&#39;every&#39;</span> <span class="k">in</span> <span class="nb">Array</span><span class="p">.</span><span class="nx">prototype</span><span class="p">))</span> <span class="p">{</span>
-    <span class="nb">Array</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">every</span><span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">tester</span><span class="p">,</span> <span class="nx">that</span> <span class="cm">/*opt*/</span><span class="p">)</span> <span class="p">{</span>
-        <span class="k">for</span> <span class="p">(</span><span class="kd">var</span> <span class="nx">i</span><span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="nx">n</span><span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">length</span><span class="p">;</span> <span class="nx">i</span><span class="o">&lt;</span><span class="nx">n</span><span class="p">;</span> <span class="nx">i</span><span class="o">++</span><span class="p">)</span>
-            <span class="k">if</span> <span class="p">(</span><span class="nx">i</span> <span class="k">in</span> <span class="k">this</span> <span class="o">&amp;&amp;</span> <span class="o">!</span><span class="nx">tester</span><span class="p">.</span><span class="nx">call</span><span class="p">(</span><span class="nx">that</span><span class="p">,</span> <span class="k">this</span><span class="p">[</span><span class="nx">i</span><span class="p">],</span> <span class="nx">i</span><span class="p">,</span> <span class="k">this</span><span class="p">))</span>
-                <span class="k">return</span> <span class="kc">false</span><span class="p">;</span>
-        <span class="k">return</span> <span class="kc">true</span><span class="p">;</span>
-    <span class="p">};</span>
-<span class="p">}</span>
-<span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="p">(</span><span class="s1">&#39;some&#39;</span> <span class="k">in</span> <span class="nb">Array</span><span class="p">.</span><span class="nx">prototype</span><span class="p">))</span> <span class="p">{</span>
-    <span class="nb">Array</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">some</span><span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">tester</span><span class="p">,</span> <span class="nx">that</span> <span class="cm">/*opt*/</span><span class="p">)</span> <span class="p">{</span>
-        <span class="k">for</span> <span class="p">(</span><span class="kd">var</span> <span class="nx">i</span><span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="nx">n</span><span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">length</span><span class="p">;</span> <span class="nx">i</span><span class="o">&lt;</span><span class="nx">n</span><span class="p">;</span> <span class="nx">i</span><span class="o">++</span><span class="p">)</span>
-            <span class="k">if</span> <span class="p">(</span><span class="nx">i</span> <span class="k">in</span> <span class="k">this</span> <span class="o">&amp;&amp;</span> <span class="nx">tester</span><span class="p">.</span><span class="nx">call</span><span class="p">(</span><span class="nx">that</span><span class="p">,</span> <span class="k">this</span><span class="p">[</span><span class="nx">i</span><span class="p">],</span> <span class="nx">i</span><span class="p">,</span> <span class="k">this</span><span class="p">))</span>
-                <span class="k">return</span> <span class="kc">true</span><span class="p">;</span>
-        <span class="k">return</span> <span class="kc">false</span><span class="p">;</span>
-    <span class="p">};</span>
-<span class="p">}</span>
+<!DOCTYPE html>
 
-</pre></div>             </td>           </tr>                </tbody>     </table>   </div> </body> </html> 
+<html>
+<head>
+  <title>ecma-fixes.js</title>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <meta name="viewport" content="width=device-width, target-densitydpi=160dpi, initial-scale=1.0; maximum-scale=1.0; user-scalable=0;">
+  <link rel="stylesheet" media="all" href="docco.css" />
+</head>
+<body>
+  <div id="container">
+    <div id="background"></div>
+    
+      <ul id="jump_to">
+        <li>
+          <a class="large" href="javascript:void(0);">Jump To &hellip;</a>
+          <a class="small" href="javascript:void(0);">+</a>
+          <div id="jump_wrapper">
+          <div id="jump_page_wrapper">
+            <div id="jump_page">
+              
+                
+                <a class="source" href="backend.dataproxy.html">
+                  backend.dataproxy.js
+                </a>
+              
+                
+                <a class="source" href="backend.memory.html">
+                  backend.memory.js
+                </a>
+              
+                
+                <a class="source" href="ecma-fixes.html">
+                  ecma-fixes.js
+                </a>
+              
+                
+                <a class="source" href="model.html">
+                  model.js
+                </a>
+              
+                
+                <a class="source" href="view.flot.html">
+                  view.flot.js
+                </a>
+              
+                
+                <a class="source" href="view.graph.html">
+                  view.graph.js
+                </a>
+              
+                
+                <a class="source" href="view.grid.html">
+                  view.grid.js
+                </a>
+              
+                
+                <a class="source" href="view.map.html">
+                  view.map.js
+                </a>
+              
+                
+                <a class="source" href="view.multiview.html">
+                  view.multiview.js
+                </a>
+              
+                
+                <a class="source" href="view.slickgrid.html">
+                  view.slickgrid.js
+                </a>
+              
+                
+                <a class="source" href="view.timeline.html">
+                  view.timeline.js
+                </a>
+              
+                
+                <a class="source" href="widget.facetviewer.html">
+                  widget.facetviewer.js
+                </a>
+              
+                
+                <a class="source" href="widget.fields.html">
+                  widget.fields.js
+                </a>
+              
+                
+                <a class="source" href="widget.filtereditor.html">
+                  widget.filtereditor.js
+                </a>
+              
+                
+                <a class="source" href="widget.pager.html">
+                  widget.pager.js
+                </a>
+              
+                
+                <a class="source" href="widget.queryeditor.html">
+                  widget.queryeditor.js
+                </a>
+              
+                
+                <a class="source" href="widget.valuefilter.html">
+                  widget.valuefilter.js
+                </a>
+              
+            </div>
+          </div>
+        </li>
+      </ul>
+    
+    <ul class="sections">
+        
+          <li id="title">
+              <div class="annotation">
+                  <h1>ecma-fixes.js</h1>
+              </div>
+          </li>
+        
+        
+        
+        <li id="section-1">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-1">&#182;</a>
+              </div>
+              <p>This file adds in full array method support in browsers that don’t support it
+see: <a href="http://stackoverflow.com/questions/2790001/fixing-javascript-array-functions-in-internet-explorer-indexof-foreach-etc">http://stackoverflow.com/questions/2790001/fixing-javascript-array-functions-in-internet-explorer-indexof-foreach-etc</a></p>
+
+            </div>
+            
+        </li>
+        
+        
+        <li id="section-2">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-2">&#182;</a>
+              </div>
+              <p>Add ECMA262-5 Array methods if not supported natively</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre><span class="hljs-keyword">if</span> (!(<span class="hljs-string">'indexOf'</span> <span class="hljs-keyword">in</span> <span class="hljs-built_in">Array</span>.prototype)) {
+    <span class="hljs-built_in">Array</span>.prototype.indexOf= <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(find, i <span class="hljs-comment">/*opt*/</span>)</span> </span>{
+        <span class="hljs-keyword">if</span> (i===<span class="hljs-literal">undefined</span>) i= <span class="hljs-number">0</span>;
+        <span class="hljs-keyword">if</span> (i&lt;<span class="hljs-number">0</span>) i+= <span class="hljs-keyword">this</span>.length;
+        <span class="hljs-keyword">if</span> (i&lt;<span class="hljs-number">0</span>) i= <span class="hljs-number">0</span>;
+        <span class="hljs-keyword">for</span> (<span class="hljs-keyword">var</span> n= <span class="hljs-keyword">this</span>.length; i&lt;n; i++)
+            <span class="hljs-keyword">if</span> (i <span class="hljs-keyword">in</span> <span class="hljs-keyword">this</span> &amp;&amp; <span class="hljs-keyword">this</span>[i]===find)
+                <span class="hljs-keyword">return</span> i;
+        <span class="hljs-keyword">return</span> -<span class="hljs-number">1</span>;
+    };
+}
+<span class="hljs-keyword">if</span> (!(<span class="hljs-string">'lastIndexOf'</span> <span class="hljs-keyword">in</span> <span class="hljs-built_in">Array</span>.prototype)) {
+    <span class="hljs-built_in">Array</span>.prototype.lastIndexOf= <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(find, i <span class="hljs-comment">/*opt*/</span>)</span> </span>{
+        <span class="hljs-keyword">if</span> (i===<span class="hljs-literal">undefined</span>) i= <span class="hljs-keyword">this</span>.length-<span class="hljs-number">1</span>;
+        <span class="hljs-keyword">if</span> (i&lt;<span class="hljs-number">0</span>) i+= <span class="hljs-keyword">this</span>.length;
+        <span class="hljs-keyword">if</span> (i&gt;<span class="hljs-keyword">this</span>.length-<span class="hljs-number">1</span>) i= <span class="hljs-keyword">this</span>.length-<span class="hljs-number">1</span>;
+        <span class="hljs-keyword">for</span> (i++; i--&gt;<span class="hljs-number">0</span>;) <span class="hljs-comment">/* i++ because from-argument is sadly inclusive */</span>
+            <span class="hljs-keyword">if</span> (i <span class="hljs-keyword">in</span> <span class="hljs-keyword">this</span> &amp;&amp; <span class="hljs-keyword">this</span>[i]===find)
+                <span class="hljs-keyword">return</span> i;
+        <span class="hljs-keyword">return</span> -<span class="hljs-number">1</span>;
+    };
+}
+<span class="hljs-keyword">if</span> (!(<span class="hljs-string">'forEach'</span> <span class="hljs-keyword">in</span> <span class="hljs-built_in">Array</span>.prototype)) {
+    <span class="hljs-built_in">Array</span>.prototype.forEach= <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(action, that <span class="hljs-comment">/*opt*/</span>)</span> </span>{
+        <span class="hljs-keyword">for</span> (<span class="hljs-keyword">var</span> i= <span class="hljs-number">0</span>, n= <span class="hljs-keyword">this</span>.length; i&lt;n; i++)
+            <span class="hljs-keyword">if</span> (i <span class="hljs-keyword">in</span> <span class="hljs-keyword">this</span>)
+                action.call(that, <span class="hljs-keyword">this</span>[i], i, <span class="hljs-keyword">this</span>);
+    };
+}
+<span class="hljs-keyword">if</span> (!(<span class="hljs-string">'map'</span> <span class="hljs-keyword">in</span> <span class="hljs-built_in">Array</span>.prototype)) {
+    <span class="hljs-built_in">Array</span>.prototype.map= <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(mapper, that <span class="hljs-comment">/*opt*/</span>)</span> </span>{
+        <span class="hljs-keyword">var</span> other= <span class="hljs-keyword">new</span> <span class="hljs-built_in">Array</span>(<span class="hljs-keyword">this</span>.length);
+        <span class="hljs-keyword">for</span> (<span class="hljs-keyword">var</span> i= <span class="hljs-number">0</span>, n= <span class="hljs-keyword">this</span>.length; i&lt;n; i++)
+            <span class="hljs-keyword">if</span> (i <span class="hljs-keyword">in</span> <span class="hljs-keyword">this</span>)
+                other[i]= mapper.call(that, <span class="hljs-keyword">this</span>[i], i, <span class="hljs-keyword">this</span>);
+        <span class="hljs-keyword">return</span> other;
+    };
+}
+<span class="hljs-keyword">if</span> (!(<span class="hljs-string">'filter'</span> <span class="hljs-keyword">in</span> <span class="hljs-built_in">Array</span>.prototype)) {
+    <span class="hljs-built_in">Array</span>.prototype.filter= <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(filter, that <span class="hljs-comment">/*opt*/</span>)</span> </span>{
+        <span class="hljs-keyword">var</span> other= [], v;
+        <span class="hljs-keyword">for</span> (<span class="hljs-keyword">var</span> i=<span class="hljs-number">0</span>, n= <span class="hljs-keyword">this</span>.length; i&lt;n; i++)
+            <span class="hljs-keyword">if</span> (i <span class="hljs-keyword">in</span> <span class="hljs-keyword">this</span> &amp;&amp; filter.call(that, v= <span class="hljs-keyword">this</span>[i], i, <span class="hljs-keyword">this</span>))
+                other.push(v);
+        <span class="hljs-keyword">return</span> other;
+    };
+}
+<span class="hljs-keyword">if</span> (!(<span class="hljs-string">'every'</span> <span class="hljs-keyword">in</span> <span class="hljs-built_in">Array</span>.prototype)) {
+    <span class="hljs-built_in">Array</span>.prototype.every= <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(tester, that <span class="hljs-comment">/*opt*/</span>)</span> </span>{
+        <span class="hljs-keyword">for</span> (<span class="hljs-keyword">var</span> i= <span class="hljs-number">0</span>, n= <span class="hljs-keyword">this</span>.length; i&lt;n; i++)
+            <span class="hljs-keyword">if</span> (i <span class="hljs-keyword">in</span> <span class="hljs-keyword">this</span> &amp;&amp; !tester.call(that, <span class="hljs-keyword">this</span>[i], i, <span class="hljs-keyword">this</span>))
+                <span class="hljs-keyword">return</span> <span class="hljs-literal">false</span>;
+        <span class="hljs-keyword">return</span> <span class="hljs-literal">true</span>;
+    };
+}
+<span class="hljs-keyword">if</span> (!(<span class="hljs-string">'some'</span> <span class="hljs-keyword">in</span> <span class="hljs-built_in">Array</span>.prototype)) {
+    <span class="hljs-built_in">Array</span>.prototype.some= <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(tester, that <span class="hljs-comment">/*opt*/</span>)</span> </span>{
+        <span class="hljs-keyword">for</span> (<span class="hljs-keyword">var</span> i= <span class="hljs-number">0</span>, n= <span class="hljs-keyword">this</span>.length; i&lt;n; i++)
+            <span class="hljs-keyword">if</span> (i <span class="hljs-keyword">in</span> <span class="hljs-keyword">this</span> &amp;&amp; tester.call(that, <span class="hljs-keyword">this</span>[i], i, <span class="hljs-keyword">this</span>))
+                <span class="hljs-keyword">return</span> <span class="hljs-literal">true</span>;
+        <span class="hljs-keyword">return</span> <span class="hljs-literal">false</span>;
+    };
+}</pre></div></div>
+            
+        </li>
+        
+    </ul>
+  </div>
+</body>
+</html>

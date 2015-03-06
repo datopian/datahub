@@ -1,198 +1,631 @@
-<!DOCTYPE html>  <html> <head>   <title>backend.memory.js</title>   <meta http-equiv="content-type" content="text/html; charset=UTF-8">   <link rel="stylesheet" media="all" href="docco.css" /> </head> <body>   <div id="container">     <div id="background"></div>            <div id="jump_to">         Jump To &hellip;         <div id="jump_wrapper">           <div id="jump_page">                                           <a class="source" href="backend.csv.html">                 backend.csv.js               </a>                                           <a class="source" href="backend.dataproxy.html">                 backend.dataproxy.js               </a>                                           <a class="source" href="backend.memory.html">                 backend.memory.js               </a>                                           <a class="source" href="ecma-fixes.html">                 ecma-fixes.js               </a>                                           <a class="source" href="model.html">                 model.js               </a>                                           <a class="source" href="view.flot.html">                 view.flot.js               </a>                                           <a class="source" href="view.graph.html">                 view.graph.js               </a>                                           <a class="source" href="view.grid.html">                 view.grid.js               </a>                                           <a class="source" href="view.map.html">                 view.map.js               </a>                                           <a class="source" href="view.multiview.html">                 view.multiview.js               </a>                                           <a class="source" href="view.slickgrid.html">                 view.slickgrid.js               </a>                                           <a class="source" href="view.timeline.html">                 view.timeline.js               </a>                                           <a class="source" href="widget.facetviewer.html">                 widget.facetviewer.js               </a>                                           <a class="source" href="widget.fields.html">                 widget.fields.js               </a>                                           <a class="source" href="widget.filtereditor.html">                 widget.filtereditor.js               </a>                                           <a class="source" href="widget.pager.html">                 widget.pager.js               </a>                                           <a class="source" href="widget.queryeditor.html">                 widget.queryeditor.js               </a>                                           <a class="source" href="widget.valuefilter.html">                 widget.valuefilter.js               </a>                        </div>         </div>       </div>          <table cellpadding="0" cellspacing="0">       <thead>         <tr>           <th class="docs">             <h1>               backend.memory.js             </h1>           </th>           <th class="code">           </th>         </tr>       </thead>       <tbody>                               <tr id="section-1">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-1">&#182;</a>               </div>                            </td>             <td class="code">               <div class="highlight"><pre><span class="k">this</span><span class="p">.</span><span class="nx">recline</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">recline</span> <span class="o">||</span> <span class="p">{};</span>
-<span class="k">this</span><span class="p">.</span><span class="nx">recline</span><span class="p">.</span><span class="nx">Backend</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">recline</span><span class="p">.</span><span class="nx">Backend</span> <span class="o">||</span> <span class="p">{};</span>
-<span class="k">this</span><span class="p">.</span><span class="nx">recline</span><span class="p">.</span><span class="nx">Backend</span><span class="p">.</span><span class="nx">Memory</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">recline</span><span class="p">.</span><span class="nx">Backend</span><span class="p">.</span><span class="nx">Memory</span> <span class="o">||</span> <span class="p">{};</span>
+<!DOCTYPE html>
 
-<span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">my</span><span class="p">)</span> <span class="p">{</span>
-  <span class="s2">&quot;use strict&quot;</span><span class="p">;</span>
-  <span class="nx">my</span><span class="p">.</span><span class="nx">__type__</span> <span class="o">=</span> <span class="s1">&#39;memory&#39;</span><span class="p">;</span></pre></div>             </td>           </tr>                               <tr id="section-2">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-2">&#182;</a>               </div>               <p>private data - use either jQuery or Underscore Deferred depending on what is available</p>             </td>             <td class="code">               <div class="highlight"><pre>  <span class="kd">var</span> <span class="nx">Deferred</span> <span class="o">=</span> <span class="p">(</span><span class="k">typeof</span> <span class="nx">jQuery</span> <span class="o">!==</span> <span class="s2">&quot;undefined&quot;</span> <span class="o">&amp;&amp;</span> <span class="nx">jQuery</span><span class="p">.</span><span class="nx">Deferred</span><span class="p">)</span> <span class="o">||</span> <span class="nx">_</span><span class="p">.</span><span class="nx">Deferred</span><span class="p">;</span></pre></div>             </td>           </tr>                               <tr id="section-3">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-3">&#182;</a>               </div>               <h2>Data Wrapper</h2>
+<html>
+<head>
+  <title>backend.memory.js</title>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <meta name="viewport" content="width=device-width, target-densitydpi=160dpi, initial-scale=1.0; maximum-scale=1.0; user-scalable=0;">
+  <link rel="stylesheet" media="all" href="docco.css" />
+</head>
+<body>
+  <div id="container">
+    <div id="background"></div>
+    
+      <ul id="jump_to">
+        <li>
+          <a class="large" href="javascript:void(0);">Jump To &hellip;</a>
+          <a class="small" href="javascript:void(0);">+</a>
+          <div id="jump_wrapper">
+          <div id="jump_page_wrapper">
+            <div id="jump_page">
+              
+                
+                <a class="source" href="backend.dataproxy.html">
+                  backend.dataproxy.js
+                </a>
+              
+                
+                <a class="source" href="backend.memory.html">
+                  backend.memory.js
+                </a>
+              
+                
+                <a class="source" href="ecma-fixes.html">
+                  ecma-fixes.js
+                </a>
+              
+                
+                <a class="source" href="model.html">
+                  model.js
+                </a>
+              
+                
+                <a class="source" href="view.flot.html">
+                  view.flot.js
+                </a>
+              
+                
+                <a class="source" href="view.graph.html">
+                  view.graph.js
+                </a>
+              
+                
+                <a class="source" href="view.grid.html">
+                  view.grid.js
+                </a>
+              
+                
+                <a class="source" href="view.map.html">
+                  view.map.js
+                </a>
+              
+                
+                <a class="source" href="view.multiview.html">
+                  view.multiview.js
+                </a>
+              
+                
+                <a class="source" href="view.slickgrid.html">
+                  view.slickgrid.js
+                </a>
+              
+                
+                <a class="source" href="view.timeline.html">
+                  view.timeline.js
+                </a>
+              
+                
+                <a class="source" href="widget.facetviewer.html">
+                  widget.facetviewer.js
+                </a>
+              
+                
+                <a class="source" href="widget.fields.html">
+                  widget.fields.js
+                </a>
+              
+                
+                <a class="source" href="widget.filtereditor.html">
+                  widget.filtereditor.js
+                </a>
+              
+                
+                <a class="source" href="widget.pager.html">
+                  widget.pager.js
+                </a>
+              
+                
+                <a class="source" href="widget.queryeditor.html">
+                  widget.queryeditor.js
+                </a>
+              
+                
+                <a class="source" href="widget.valuefilter.html">
+                  widget.valuefilter.js
+                </a>
+              
+            </div>
+          </div>
+        </li>
+      </ul>
+    
+    <ul class="sections">
+        
+          <li id="title">
+              <div class="annotation">
+                  <h1>backend.memory.js</h1>
+              </div>
+          </li>
+        
+        
+        
+        <li id="section-1">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-1">&#182;</a>
+              </div>
+              
+            </div>
+            
+            <div class="content"><div class='highlight'><pre><span class="hljs-keyword">this</span>.recline = <span class="hljs-keyword">this</span>.recline || {};
+<span class="hljs-keyword">this</span>.recline.Backend = <span class="hljs-keyword">this</span>.recline.Backend || {};
+<span class="hljs-keyword">this</span>.recline.Backend.Memory = <span class="hljs-keyword">this</span>.recline.Backend.Memory || {};
 
+(<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(my)</span> </span>{
+<span class="hljs-pi">  "use strict"</span>;
+  my.__type__ = <span class="hljs-string">'memory'</span>;</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-2">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-2">&#182;</a>
+              </div>
+              <p>private data - use either jQuery or Underscore Deferred depending on what is available</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  <span class="hljs-keyword">var</span> Deferred = (<span class="hljs-keyword">typeof</span> jQuery !== <span class="hljs-string">"undefined"</span> &amp;&amp; jQuery.Deferred) || _.Deferred;</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-3">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-3">&#182;</a>
+              </div>
+              <h2 id="data-wrapper">Data Wrapper</h2>
 <p>Turn a simple array of JS objects into a mini data-store with
 functionality like querying, faceting, updating (by ID) and deleting (by
 ID).</p>
-
 <p>@param records list of hashes for each record/row in the data ({key:
 value, key: value})
 @param fields (optional) list of field hashes (each hash defining a field
 as per recline.Model.Field). If fields not specified they will be taken
-from the data.</p>             </td>             <td class="code">               <div class="highlight"><pre>  <span class="nx">my</span><span class="p">.</span><span class="nx">Store</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">records</span><span class="p">,</span> <span class="nx">fields</span><span class="p">)</span> <span class="p">{</span>
-    <span class="kd">var</span> <span class="nx">self</span> <span class="o">=</span> <span class="k">this</span><span class="p">;</span>
-    <span class="k">this</span><span class="p">.</span><span class="nx">records</span> <span class="o">=</span> <span class="nx">records</span><span class="p">;</span></pre></div>             </td>           </tr>                               <tr id="section-4">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-4">&#182;</a>               </div>               <p>backwards compatability (in v0.5 records was named data)</p>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="k">this</span><span class="p">.</span><span class="nx">data</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">records</span><span class="p">;</span>
-    <span class="k">if</span> <span class="p">(</span><span class="nx">fields</span><span class="p">)</span> <span class="p">{</span>
-      <span class="k">this</span><span class="p">.</span><span class="nx">fields</span> <span class="o">=</span> <span class="nx">fields</span><span class="p">;</span>
-    <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
-      <span class="k">if</span> <span class="p">(</span><span class="nx">records</span><span class="p">)</span> <span class="p">{</span>
-        <span class="k">this</span><span class="p">.</span><span class="nx">fields</span> <span class="o">=</span> <span class="nx">_</span><span class="p">.</span><span class="nx">map</span><span class="p">(</span><span class="nx">records</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="kd">function</span><span class="p">(</span><span class="nx">value</span><span class="p">,</span> <span class="nx">key</span><span class="p">)</span> <span class="p">{</span>
-          <span class="k">return</span> <span class="p">{</span><span class="nx">id</span><span class="o">:</span> <span class="nx">key</span><span class="p">,</span> <span class="nx">type</span><span class="o">:</span> <span class="s1">&#39;string&#39;</span><span class="p">};</span>
-        <span class="p">});</span>
-      <span class="p">}</span>
-    <span class="p">}</span>
+from the data.</p>
 
-    <span class="k">this</span><span class="p">.</span><span class="nx">update</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">doc</span><span class="p">)</span> <span class="p">{</span>
-      <span class="nx">_</span><span class="p">.</span><span class="nx">each</span><span class="p">(</span><span class="nx">self</span><span class="p">.</span><span class="nx">records</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">internalDoc</span><span class="p">,</span> <span class="nx">idx</span><span class="p">)</span> <span class="p">{</span>
-        <span class="k">if</span><span class="p">(</span><span class="nx">doc</span><span class="p">.</span><span class="nx">id</span> <span class="o">===</span> <span class="nx">internalDoc</span><span class="p">.</span><span class="nx">id</span><span class="p">)</span> <span class="p">{</span>
-          <span class="nx">self</span><span class="p">.</span><span class="nx">records</span><span class="p">[</span><span class="nx">idx</span><span class="p">]</span> <span class="o">=</span> <span class="nx">doc</span><span class="p">;</span>
-        <span class="p">}</span>
-      <span class="p">});</span>
-    <span class="p">};</span>
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  my.Store = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(records, fields)</span> </span>{
+    <span class="hljs-keyword">var</span> self = <span class="hljs-keyword">this</span>;
+    <span class="hljs-keyword">this</span>.records = records;</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-4">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-4">&#182;</a>
+              </div>
+              <p>backwards compatability (in v0.5 records was named data)</p>
 
-    <span class="k">this</span><span class="p">.</span><span class="nx">remove</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">doc</span><span class="p">)</span> <span class="p">{</span>
-      <span class="kd">var</span> <span class="nx">newdocs</span> <span class="o">=</span> <span class="nx">_</span><span class="p">.</span><span class="nx">reject</span><span class="p">(</span><span class="nx">self</span><span class="p">.</span><span class="nx">records</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">internalDoc</span><span class="p">)</span> <span class="p">{</span>
-        <span class="k">return</span> <span class="p">(</span><span class="nx">doc</span><span class="p">.</span><span class="nx">id</span> <span class="o">===</span> <span class="nx">internalDoc</span><span class="p">.</span><span class="nx">id</span><span class="p">);</span>
-      <span class="p">});</span>
-      <span class="k">this</span><span class="p">.</span><span class="nx">records</span> <span class="o">=</span> <span class="nx">newdocs</span><span class="p">;</span>
-    <span class="p">};</span>
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    <span class="hljs-keyword">this</span>.data = <span class="hljs-keyword">this</span>.records;
+    <span class="hljs-keyword">if</span> (fields) {
+      <span class="hljs-keyword">this</span>.fields = fields;
+    } <span class="hljs-keyword">else</span> {
+      <span class="hljs-keyword">if</span> (records) {
+        <span class="hljs-keyword">this</span>.fields = _.map(records[<span class="hljs-number">0</span>], <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(value, key)</span> </span>{
+          <span class="hljs-keyword">return</span> {id: key, type: <span class="hljs-string">'string'</span>};
+        });
+      }
+    }
 
-    <span class="k">this</span><span class="p">.</span><span class="nx">save</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">changes</span><span class="p">,</span> <span class="nx">dataset</span><span class="p">)</span> <span class="p">{</span>
-      <span class="kd">var</span> <span class="nx">self</span> <span class="o">=</span> <span class="k">this</span><span class="p">;</span>
-      <span class="kd">var</span> <span class="nx">dfd</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Deferred</span><span class="p">();</span></pre></div>             </td>           </tr>                               <tr id="section-5">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-5">&#182;</a>               </div>               <p>TODO _.each(changes.creates) { ... }</p>             </td>             <td class="code">               <div class="highlight"><pre>      <span class="nx">_</span><span class="p">.</span><span class="nx">each</span><span class="p">(</span><span class="nx">changes</span><span class="p">.</span><span class="nx">updates</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">record</span><span class="p">)</span> <span class="p">{</span>
-        <span class="nx">self</span><span class="p">.</span><span class="nx">update</span><span class="p">(</span><span class="nx">record</span><span class="p">);</span>
-      <span class="p">});</span>
-      <span class="nx">_</span><span class="p">.</span><span class="nx">each</span><span class="p">(</span><span class="nx">changes</span><span class="p">.</span><span class="nx">deletes</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">record</span><span class="p">)</span> <span class="p">{</span>
-        <span class="nx">self</span><span class="p">.</span><span class="nx">remove</span><span class="p">(</span><span class="nx">record</span><span class="p">);</span>
-      <span class="p">});</span>
-      <span class="nx">dfd</span><span class="p">.</span><span class="nx">resolve</span><span class="p">();</span>
-      <span class="k">return</span> <span class="nx">dfd</span><span class="p">.</span><span class="nx">promise</span><span class="p">();</span>
-    <span class="p">},</span>
+    <span class="hljs-keyword">this</span>.update = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(doc)</span> </span>{
+      _.each(self.records, <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(internalDoc, idx)</span> </span>{
+        <span class="hljs-keyword">if</span>(doc.id === internalDoc.id) {
+          self.records[idx] = doc;
+        }
+      });
+    };
 
-    <span class="k">this</span><span class="p">.</span><span class="nx">query</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">queryObj</span><span class="p">)</span> <span class="p">{</span>
-      <span class="kd">var</span> <span class="nx">dfd</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Deferred</span><span class="p">();</span>
-      <span class="kd">var</span> <span class="nx">numRows</span> <span class="o">=</span> <span class="nx">queryObj</span><span class="p">.</span><span class="nx">size</span> <span class="o">||</span> <span class="k">this</span><span class="p">.</span><span class="nx">records</span><span class="p">.</span><span class="nx">length</span><span class="p">;</span>
-      <span class="kd">var</span> <span class="nx">start</span> <span class="o">=</span> <span class="nx">queryObj</span><span class="p">.</span><span class="nx">from</span> <span class="o">||</span> <span class="mi">0</span><span class="p">;</span>
-      <span class="kd">var</span> <span class="nx">results</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">records</span><span class="p">;</span>
+    <span class="hljs-keyword">this</span>.remove = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(doc)</span> </span>{
+      <span class="hljs-keyword">var</span> newdocs = _.reject(self.records, <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(internalDoc)</span> </span>{
+        <span class="hljs-keyword">return</span> (doc.id === internalDoc.id);
+      });
+      <span class="hljs-keyword">this</span>.records = newdocs;
+    };
+
+    <span class="hljs-keyword">this</span>.save = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(changes, dataset)</span> </span>{
+      <span class="hljs-keyword">var</span> self = <span class="hljs-keyword">this</span>;
+      <span class="hljs-keyword">var</span> dfd = <span class="hljs-keyword">new</span> Deferred();</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-5">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-5">&#182;</a>
+              </div>
+              <p>TODO _.each(changes.creates) { … }</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>      _.each(changes.updates, <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(record)</span> </span>{
+        self.update(record);
+      });
+      _.each(changes.deletes, <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(record)</span> </span>{
+        self.remove(record);
+      });
+      dfd.resolve();
+      <span class="hljs-keyword">return</span> dfd.promise();
+    },
+
+    <span class="hljs-keyword">this</span>.query = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(queryObj)</span> </span>{
+      <span class="hljs-keyword">var</span> dfd = <span class="hljs-keyword">new</span> Deferred();
+      <span class="hljs-keyword">var</span> numRows = queryObj.size || <span class="hljs-keyword">this</span>.records.length;
+      <span class="hljs-keyword">var</span> start = queryObj.from || <span class="hljs-number">0</span>;
+      <span class="hljs-keyword">var</span> results = <span class="hljs-keyword">this</span>.records;
       
-      <span class="nx">results</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">_applyFilters</span><span class="p">(</span><span class="nx">results</span><span class="p">,</span> <span class="nx">queryObj</span><span class="p">);</span>
-      <span class="nx">results</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">_applyFreeTextQuery</span><span class="p">(</span><span class="nx">results</span><span class="p">,</span> <span class="nx">queryObj</span><span class="p">);</span></pre></div>             </td>           </tr>                               <tr id="section-6">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-6">&#182;</a>               </div>               <p>TODO: this is not complete sorting!
-What's wrong is we sort on the <em>last</em> entry in the sort list if there are multiple sort criteria</p>             </td>             <td class="code">               <div class="highlight"><pre>      <span class="nx">_</span><span class="p">.</span><span class="nx">each</span><span class="p">(</span><span class="nx">queryObj</span><span class="p">.</span><span class="nx">sort</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">sortObj</span><span class="p">)</span> <span class="p">{</span>
-        <span class="kd">var</span> <span class="nx">fieldName</span> <span class="o">=</span> <span class="nx">sortObj</span><span class="p">.</span><span class="nx">field</span><span class="p">;</span>
-        <span class="nx">results</span> <span class="o">=</span> <span class="nx">_</span><span class="p">.</span><span class="nx">sortBy</span><span class="p">(</span><span class="nx">results</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">doc</span><span class="p">)</span> <span class="p">{</span>
-          <span class="kd">var</span> <span class="nx">_out</span> <span class="o">=</span> <span class="nx">doc</span><span class="p">[</span><span class="nx">fieldName</span><span class="p">];</span>
-          <span class="k">return</span> <span class="nx">_out</span><span class="p">;</span>
-        <span class="p">});</span>
-        <span class="k">if</span> <span class="p">(</span><span class="nx">sortObj</span><span class="p">.</span><span class="nx">order</span> <span class="o">==</span> <span class="s1">&#39;desc&#39;</span><span class="p">)</span> <span class="p">{</span>
-          <span class="nx">results</span><span class="p">.</span><span class="nx">reverse</span><span class="p">();</span>
-        <span class="p">}</span>
-      <span class="p">});</span>
-      <span class="kd">var</span> <span class="nx">facets</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">computeFacets</span><span class="p">(</span><span class="nx">results</span><span class="p">,</span> <span class="nx">queryObj</span><span class="p">);</span>
-      <span class="kd">var</span> <span class="nx">out</span> <span class="o">=</span> <span class="p">{</span>
-        <span class="nx">total</span><span class="o">:</span> <span class="nx">results</span><span class="p">.</span><span class="nx">length</span><span class="p">,</span>
-        <span class="nx">hits</span><span class="o">:</span> <span class="nx">results</span><span class="p">.</span><span class="nx">slice</span><span class="p">(</span><span class="nx">start</span><span class="p">,</span> <span class="nx">start</span><span class="o">+</span><span class="nx">numRows</span><span class="p">),</span>
-        <span class="nx">facets</span><span class="o">:</span> <span class="nx">facets</span>
-      <span class="p">};</span>
-      <span class="nx">dfd</span><span class="p">.</span><span class="nx">resolve</span><span class="p">(</span><span class="nx">out</span><span class="p">);</span>
-      <span class="k">return</span> <span class="nx">dfd</span><span class="p">.</span><span class="nx">promise</span><span class="p">();</span>
-    <span class="p">};</span></pre></div>             </td>           </tr>                               <tr id="section-7">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-7">&#182;</a>               </div>               <p>in place filtering</p>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="k">this</span><span class="p">.</span><span class="nx">_applyFilters</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">results</span><span class="p">,</span> <span class="nx">queryObj</span><span class="p">)</span> <span class="p">{</span>
-      <span class="kd">var</span> <span class="nx">filters</span> <span class="o">=</span> <span class="nx">queryObj</span><span class="p">.</span><span class="nx">filters</span><span class="p">;</span></pre></div>             </td>           </tr>                               <tr id="section-8">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-8">&#182;</a>               </div>               <p>register filters</p>             </td>             <td class="code">               <div class="highlight"><pre>      <span class="kd">var</span> <span class="nx">filterFunctions</span> <span class="o">=</span> <span class="p">{</span>
-        <span class="nx">term</span>         <span class="o">:</span> <span class="nx">term</span><span class="p">,</span>
-        <span class="nx">terms</span>        <span class="o">:</span> <span class="nx">terms</span><span class="p">,</span>
-        <span class="nx">range</span>        <span class="o">:</span> <span class="nx">range</span><span class="p">,</span>
-        <span class="nx">geo_distance</span> <span class="o">:</span> <span class="nx">geo_distance</span>
-      <span class="p">};</span>
-      <span class="kd">var</span> <span class="nx">dataParsers</span> <span class="o">=</span> <span class="p">{</span>
-        <span class="nx">integer</span><span class="o">:</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">e</span><span class="p">)</span> <span class="p">{</span> <span class="k">return</span> <span class="nb">parseFloat</span><span class="p">(</span><span class="nx">e</span><span class="p">,</span> <span class="mi">10</span><span class="p">);</span> <span class="p">},</span>
-        <span class="s1">&#39;float&#39;</span><span class="o">:</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">e</span><span class="p">)</span> <span class="p">{</span> <span class="k">return</span> <span class="nb">parseFloat</span><span class="p">(</span><span class="nx">e</span><span class="p">,</span> <span class="mi">10</span><span class="p">);</span> <span class="p">},</span>
-        <span class="nx">number</span><span class="o">:</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">e</span><span class="p">)</span> <span class="p">{</span> <span class="k">return</span> <span class="nb">parseFloat</span><span class="p">(</span><span class="nx">e</span><span class="p">,</span> <span class="mi">10</span><span class="p">);</span> <span class="p">},</span>
-        <span class="nx">string</span> <span class="o">:</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">e</span><span class="p">)</span> <span class="p">{</span> <span class="k">return</span> <span class="nx">e</span><span class="p">.</span><span class="nx">toString</span><span class="p">();</span> <span class="p">},</span>
-        <span class="nx">date</span>   <span class="o">:</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">e</span><span class="p">)</span> <span class="p">{</span> <span class="k">return</span> <span class="nx">moment</span><span class="p">(</span><span class="nx">e</span><span class="p">).</span><span class="nx">valueOf</span><span class="p">();</span> <span class="p">},</span>
-        <span class="nx">datetime</span>   <span class="o">:</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">e</span><span class="p">)</span> <span class="p">{</span> <span class="k">return</span> <span class="k">new</span> <span class="nb">Date</span><span class="p">(</span><span class="nx">e</span><span class="p">).</span><span class="nx">valueOf</span><span class="p">();</span> <span class="p">}</span>
-      <span class="p">};</span>
-      <span class="kd">var</span> <span class="nx">keyedFields</span> <span class="o">=</span> <span class="p">{};</span>
-      <span class="nx">_</span><span class="p">.</span><span class="nx">each</span><span class="p">(</span><span class="nx">self</span><span class="p">.</span><span class="nx">fields</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">field</span><span class="p">)</span> <span class="p">{</span>
-        <span class="nx">keyedFields</span><span class="p">[</span><span class="nx">field</span><span class="p">.</span><span class="nx">id</span><span class="p">]</span> <span class="o">=</span> <span class="nx">field</span><span class="p">;</span>
-      <span class="p">});</span>
-      <span class="kd">function</span> <span class="nx">getDataParser</span><span class="p">(</span><span class="nx">filter</span><span class="p">)</span> <span class="p">{</span>
-        <span class="kd">var</span> <span class="nx">fieldType</span> <span class="o">=</span> <span class="nx">keyedFields</span><span class="p">[</span><span class="nx">filter</span><span class="p">.</span><span class="nx">field</span><span class="p">].</span><span class="nx">type</span> <span class="o">||</span> <span class="s1">&#39;string&#39;</span><span class="p">;</span>
-        <span class="k">return</span> <span class="nx">dataParsers</span><span class="p">[</span><span class="nx">fieldType</span><span class="p">];</span>
-      <span class="p">}</span></pre></div>             </td>           </tr>                               <tr id="section-9">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-9">&#182;</a>               </div>               <p>filter records</p>             </td>             <td class="code">               <div class="highlight"><pre>      <span class="k">return</span> <span class="nx">_</span><span class="p">.</span><span class="nx">filter</span><span class="p">(</span><span class="nx">results</span><span class="p">,</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">record</span><span class="p">)</span> <span class="p">{</span>
-        <span class="kd">var</span> <span class="nx">passes</span> <span class="o">=</span> <span class="nx">_</span><span class="p">.</span><span class="nx">map</span><span class="p">(</span><span class="nx">filters</span><span class="p">,</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">filter</span><span class="p">)</span> <span class="p">{</span>
-          <span class="k">return</span> <span class="nx">filterFunctions</span><span class="p">[</span><span class="nx">filter</span><span class="p">.</span><span class="nx">type</span><span class="p">](</span><span class="nx">record</span><span class="p">,</span> <span class="nx">filter</span><span class="p">);</span>
-        <span class="p">});</span></pre></div>             </td>           </tr>                               <tr id="section-10">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-10">&#182;</a>               </div>               <p>return only these records that pass all filters</p>             </td>             <td class="code">               <div class="highlight"><pre>        <span class="k">return</span> <span class="nx">_</span><span class="p">.</span><span class="nx">all</span><span class="p">(</span><span class="nx">passes</span><span class="p">,</span> <span class="nx">_</span><span class="p">.</span><span class="nx">identity</span><span class="p">);</span>
-      <span class="p">});</span></pre></div>             </td>           </tr>                               <tr id="section-11">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-11">&#182;</a>               </div>               <p>filters definitions</p>             </td>             <td class="code">               <div class="highlight"><pre>      <span class="kd">function</span> <span class="nx">term</span><span class="p">(</span><span class="nx">record</span><span class="p">,</span> <span class="nx">filter</span><span class="p">)</span> <span class="p">{</span>
-        <span class="kd">var</span> <span class="nx">parse</span> <span class="o">=</span> <span class="nx">getDataParser</span><span class="p">(</span><span class="nx">filter</span><span class="p">);</span>
-        <span class="kd">var</span> <span class="nx">value</span> <span class="o">=</span> <span class="nx">parse</span><span class="p">(</span><span class="nx">record</span><span class="p">[</span><span class="nx">filter</span><span class="p">.</span><span class="nx">field</span><span class="p">]);</span>
-        <span class="kd">var</span> <span class="nx">term</span>  <span class="o">=</span> <span class="nx">parse</span><span class="p">(</span><span class="nx">filter</span><span class="p">.</span><span class="nx">term</span><span class="p">);</span>
+      results = <span class="hljs-keyword">this</span>._applyFilters(results, queryObj);
+      results = <span class="hljs-keyword">this</span>._applyFreeTextQuery(results, queryObj);</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-6">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-6">&#182;</a>
+              </div>
+              <p>TODO: this is not complete sorting!
+What’s wrong is we sort on the <em>last</em> entry in the sort list if there are multiple sort criteria</p>
 
-        <span class="k">return</span> <span class="p">(</span><span class="nx">value</span> <span class="o">===</span> <span class="nx">term</span><span class="p">);</span>
-      <span class="p">}</span>
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>      _.each(queryObj.sort, <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(sortObj)</span> </span>{
+        <span class="hljs-keyword">var</span> fieldName = sortObj.field;
+        results = _.sortBy(results, <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(doc)</span> </span>{
+          <span class="hljs-keyword">var</span> _out = doc[fieldName];
+          <span class="hljs-keyword">return</span> _out;
+        });
+        <span class="hljs-keyword">if</span> (sortObj.order == <span class="hljs-string">'desc'</span>) {
+          results.reverse();
+        }
+      });
+      <span class="hljs-keyword">var</span> facets = <span class="hljs-keyword">this</span>.computeFacets(results, queryObj);
+      <span class="hljs-keyword">var</span> out = {
+        total: results.length,
+        hits: results.slice(start, start+numRows),
+        facets: facets
+      };
+      dfd.resolve(out);
+      <span class="hljs-keyword">return</span> dfd.promise();
+    };</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-7">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-7">&#182;</a>
+              </div>
+              <p>in place filtering</p>
 
-      <span class="kd">function</span> <span class="nx">terms</span><span class="p">(</span><span class="nx">record</span><span class="p">,</span> <span class="nx">filter</span><span class="p">)</span> <span class="p">{</span>
-        <span class="kd">var</span> <span class="nx">parse</span> <span class="o">=</span> <span class="nx">getDataParser</span><span class="p">(</span><span class="nx">filter</span><span class="p">);</span>
-        <span class="kd">var</span> <span class="nx">value</span> <span class="o">=</span> <span class="nx">parse</span><span class="p">(</span><span class="nx">record</span><span class="p">[</span><span class="nx">filter</span><span class="p">.</span><span class="nx">field</span><span class="p">]);</span>
-        <span class="kd">var</span> <span class="nx">terms</span>  <span class="o">=</span> <span class="nx">parse</span><span class="p">(</span><span class="nx">filter</span><span class="p">.</span><span class="nx">terms</span><span class="p">).</span><span class="nx">split</span><span class="p">(</span><span class="s2">&quot;,&quot;</span><span class="p">);</span>
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    <span class="hljs-keyword">this</span>._applyFilters = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(results, queryObj)</span> </span>{
+      <span class="hljs-keyword">var</span> filters = queryObj.filters;</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-8">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-8">&#182;</a>
+              </div>
+              <p>register filters</p>
 
-        <span class="k">return</span> <span class="p">(</span><span class="nx">_</span><span class="p">.</span><span class="nx">indexOf</span><span class="p">(</span><span class="nx">terms</span><span class="p">,</span> <span class="nx">value</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">);</span>
-      <span class="p">}</span>
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>      <span class="hljs-keyword">var</span> filterFunctions = {
+        term         : term,
+        terms        : terms,
+        range        : range,
+        geo_distance : geo_distance
+      };
+      <span class="hljs-keyword">var</span> dataParsers = {
+        integer: <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(e)</span> </span>{ <span class="hljs-keyword">return</span> <span class="hljs-built_in">parseFloat</span>(e, <span class="hljs-number">10</span>); },
+        <span class="hljs-string">'float'</span>: <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(e)</span> </span>{ <span class="hljs-keyword">return</span> <span class="hljs-built_in">parseFloat</span>(e, <span class="hljs-number">10</span>); },
+        number: <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(e)</span> </span>{ <span class="hljs-keyword">return</span> <span class="hljs-built_in">parseFloat</span>(e, <span class="hljs-number">10</span>); },
+        string : <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(e)</span> </span>{ <span class="hljs-keyword">return</span> e.toString(); },
+        date   : <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(e)</span> </span>{ <span class="hljs-keyword">return</span> moment(e).valueOf(); },
+        datetime   : <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(e)</span> </span>{ <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> <span class="hljs-built_in">Date</span>(e).valueOf(); }
+      };
+      <span class="hljs-keyword">var</span> keyedFields = {};
+      _.each(self.fields, <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(field)</span> </span>{
+        keyedFields[field.id] = field;
+      });
+      <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">getDataParser</span><span class="hljs-params">(filter)</span> </span>{
+        <span class="hljs-keyword">var</span> fieldType = keyedFields[filter.field].type || <span class="hljs-string">'string'</span>;
+        <span class="hljs-keyword">return</span> dataParsers[fieldType];
+      }</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-9">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-9">&#182;</a>
+              </div>
+              <p>filter records</p>
 
-      <span class="kd">function</span> <span class="nx">range</span><span class="p">(</span><span class="nx">record</span><span class="p">,</span> <span class="nx">filter</span><span class="p">)</span> <span class="p">{</span>
-        <span class="kd">var</span> <span class="nx">fromnull</span> <span class="o">=</span> <span class="p">(</span><span class="nx">_</span><span class="p">.</span><span class="nx">isUndefined</span><span class="p">(</span><span class="nx">filter</span><span class="p">.</span><span class="nx">from</span><span class="p">)</span> <span class="o">||</span> <span class="nx">filter</span><span class="p">.</span><span class="nx">from</span> <span class="o">===</span> <span class="kc">null</span> <span class="o">||</span> <span class="nx">filter</span><span class="p">.</span><span class="nx">from</span> <span class="o">===</span> <span class="s1">&#39;&#39;</span><span class="p">);</span>
-        <span class="kd">var</span> <span class="nx">tonull</span> <span class="o">=</span> <span class="p">(</span><span class="nx">_</span><span class="p">.</span><span class="nx">isUndefined</span><span class="p">(</span><span class="nx">filter</span><span class="p">.</span><span class="nx">to</span><span class="p">)</span> <span class="o">||</span> <span class="nx">filter</span><span class="p">.</span><span class="nx">to</span> <span class="o">===</span> <span class="kc">null</span> <span class="o">||</span> <span class="nx">filter</span><span class="p">.</span><span class="nx">to</span> <span class="o">===</span> <span class="s1">&#39;&#39;</span><span class="p">);</span>
-        <span class="kd">var</span> <span class="nx">parse</span> <span class="o">=</span> <span class="nx">getDataParser</span><span class="p">(</span><span class="nx">filter</span><span class="p">);</span>
-        <span class="kd">var</span> <span class="nx">value</span> <span class="o">=</span> <span class="nx">parse</span><span class="p">(</span><span class="nx">record</span><span class="p">[</span><span class="nx">filter</span><span class="p">.</span><span class="nx">field</span><span class="p">]);</span>
-        <span class="kd">var</span> <span class="nx">from</span> <span class="o">=</span> <span class="nx">parse</span><span class="p">(</span><span class="nx">fromnull</span> <span class="o">?</span> <span class="s1">&#39;&#39;</span> <span class="o">:</span> <span class="nx">filter</span><span class="p">.</span><span class="nx">from</span><span class="p">);</span>
-        <span class="kd">var</span> <span class="nx">to</span>  <span class="o">=</span> <span class="nx">parse</span><span class="p">(</span><span class="nx">tonull</span> <span class="o">?</span> <span class="s1">&#39;&#39;</span> <span class="o">:</span> <span class="nx">filter</span><span class="p">.</span><span class="nx">to</span><span class="p">);</span></pre></div>             </td>           </tr>                               <tr id="section-12">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-12">&#182;</a>               </div>               <p>if at least one end of range is set do not allow '' to get through
-note that for strings '' &lt;= {any-character} e.g. '' &lt;= 'a'</p>             </td>             <td class="code">               <div class="highlight"><pre>        <span class="k">if</span> <span class="p">((</span><span class="o">!</span><span class="nx">fromnull</span> <span class="o">||</span> <span class="o">!</span><span class="nx">tonull</span><span class="p">)</span> <span class="o">&amp;&amp;</span> <span class="nx">value</span> <span class="o">===</span> <span class="s1">&#39;&#39;</span><span class="p">)</span> <span class="p">{</span>
-          <span class="k">return</span> <span class="kc">false</span><span class="p">;</span>
-        <span class="p">}</span>
-        <span class="k">return</span> <span class="p">((</span><span class="nx">fromnull</span> <span class="o">||</span> <span class="nx">value</span> <span class="o">&gt;=</span> <span class="nx">from</span><span class="p">)</span> <span class="o">&amp;&amp;</span> <span class="p">(</span><span class="nx">tonull</span> <span class="o">||</span> <span class="nx">value</span> <span class="o">&lt;=</span> <span class="nx">to</span><span class="p">));</span>
-      <span class="p">}</span>
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>      <span class="hljs-keyword">return</span> _.filter(results, <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(record)</span> </span>{
+        <span class="hljs-keyword">var</span> passes = _.map(filters, <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(filter)</span> </span>{
+          <span class="hljs-keyword">return</span> filterFunctions[filter.type](record, filter);
+        });</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-10">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-10">&#182;</a>
+              </div>
+              <p>return only these records that pass all filters</p>
 
-      <span class="kd">function</span> <span class="nx">geo_distance</span><span class="p">()</span> <span class="p">{</span></pre></div>             </td>           </tr>                               <tr id="section-13">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-13">&#182;</a>               </div>               <p>TODO code here</p>             </td>             <td class="code">               <div class="highlight"><pre>      <span class="p">}</span>
-    <span class="p">};</span></pre></div>             </td>           </tr>                               <tr id="section-14">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-14">&#182;</a>               </div>               <p>we OR across fields but AND across terms in query string</p>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="k">this</span><span class="p">.</span><span class="nx">_applyFreeTextQuery</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">results</span><span class="p">,</span> <span class="nx">queryObj</span><span class="p">)</span> <span class="p">{</span>
-      <span class="k">if</span> <span class="p">(</span><span class="nx">queryObj</span><span class="p">.</span><span class="nx">q</span><span class="p">)</span> <span class="p">{</span>
-        <span class="kd">var</span> <span class="nx">terms</span> <span class="o">=</span> <span class="nx">queryObj</span><span class="p">.</span><span class="nx">q</span><span class="p">.</span><span class="nx">split</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">);</span>
-        <span class="kd">var</span> <span class="nx">patterns</span><span class="o">=</span><span class="nx">_</span><span class="p">.</span><span class="nx">map</span><span class="p">(</span><span class="nx">terms</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">term</span><span class="p">)</span> <span class="p">{</span>
-          <span class="k">return</span> <span class="k">new</span> <span class="nb">RegExp</span><span class="p">(</span><span class="nx">term</span><span class="p">.</span><span class="nx">toLowerCase</span><span class="p">());</span>
-        <span class="p">});</span>
-        <span class="nx">results</span> <span class="o">=</span> <span class="nx">_</span><span class="p">.</span><span class="nx">filter</span><span class="p">(</span><span class="nx">results</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">rawdoc</span><span class="p">)</span> <span class="p">{</span>
-          <span class="kd">var</span> <span class="nx">matches</span> <span class="o">=</span> <span class="kc">true</span><span class="p">;</span>
-          <span class="nx">_</span><span class="p">.</span><span class="nx">each</span><span class="p">(</span><span class="nx">patterns</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">pattern</span><span class="p">)</span> <span class="p">{</span>
-            <span class="kd">var</span> <span class="nx">foundmatch</span> <span class="o">=</span> <span class="kc">false</span><span class="p">;</span>
-            <span class="nx">_</span><span class="p">.</span><span class="nx">each</span><span class="p">(</span><span class="nx">self</span><span class="p">.</span><span class="nx">fields</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">field</span><span class="p">)</span> <span class="p">{</span>
-              <span class="kd">var</span> <span class="nx">value</span> <span class="o">=</span> <span class="nx">rawdoc</span><span class="p">[</span><span class="nx">field</span><span class="p">.</span><span class="nx">id</span><span class="p">];</span>
-              <span class="k">if</span> <span class="p">((</span><span class="nx">value</span> <span class="o">!==</span> <span class="kc">null</span><span class="p">)</span> <span class="o">&amp;&amp;</span> <span class="p">(</span><span class="nx">value</span> <span class="o">!==</span> <span class="kc">undefined</span><span class="p">))</span> <span class="p">{</span> 
-                <span class="nx">value</span> <span class="o">=</span> <span class="nx">value</span><span class="p">.</span><span class="nx">toString</span><span class="p">();</span>
-              <span class="p">}</span> <span class="k">else</span> <span class="p">{</span></pre></div>             </td>           </tr>                               <tr id="section-15">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-15">&#182;</a>               </div>               <p>value can be null (apparently in some cases)</p>             </td>             <td class="code">               <div class="highlight"><pre>                <span class="nx">value</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="p">;</span>
-              <span class="p">}</span></pre></div>             </td>           </tr>                               <tr id="section-16">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-16">&#182;</a>               </div>               <p>TODO regexes?</p>             </td>             <td class="code">               <div class="highlight"><pre>              <span class="nx">foundmatch</span> <span class="o">=</span> <span class="nx">foundmatch</span> <span class="o">||</span> <span class="p">(</span><span class="nx">pattern</span><span class="p">.</span><span class="nx">test</span><span class="p">(</span><span class="nx">value</span><span class="p">.</span><span class="nx">toLowerCase</span><span class="p">()));</span></pre></div>             </td>           </tr>                               <tr id="section-17">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-17">&#182;</a>               </div>               <p>TODO: early out (once we are true should break to spare unnecessary testing)
-if (foundmatch) return true;</p>             </td>             <td class="code">               <div class="highlight"><pre>            <span class="p">});</span>
-            <span class="nx">matches</span> <span class="o">=</span> <span class="nx">matches</span> <span class="o">&amp;&amp;</span> <span class="nx">foundmatch</span><span class="p">;</span></pre></div>             </td>           </tr>                               <tr id="section-18">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-18">&#182;</a>               </div>               <p>TODO: early out (once false should break to spare unnecessary testing)
-if (!matches) return false;</p>             </td>             <td class="code">               <div class="highlight"><pre>          <span class="p">});</span>
-          <span class="k">return</span> <span class="nx">matches</span><span class="p">;</span>
-        <span class="p">});</span>
-      <span class="p">}</span>
-      <span class="k">return</span> <span class="nx">results</span><span class="p">;</span>
-    <span class="p">};</span>
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>        <span class="hljs-keyword">return</span> _.all(passes, _.identity);
+      });</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-11">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-11">&#182;</a>
+              </div>
+              <p>filters definitions</p>
 
-    <span class="k">this</span><span class="p">.</span><span class="nx">computeFacets</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">records</span><span class="p">,</span> <span class="nx">queryObj</span><span class="p">)</span> <span class="p">{</span>
-      <span class="kd">var</span> <span class="nx">facetResults</span> <span class="o">=</span> <span class="p">{};</span>
-      <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="nx">queryObj</span><span class="p">.</span><span class="nx">facets</span><span class="p">)</span> <span class="p">{</span>
-        <span class="k">return</span> <span class="nx">facetResults</span><span class="p">;</span>
-      <span class="p">}</span>
-      <span class="nx">_</span><span class="p">.</span><span class="nx">each</span><span class="p">(</span><span class="nx">queryObj</span><span class="p">.</span><span class="nx">facets</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">query</span><span class="p">,</span> <span class="nx">facetId</span><span class="p">)</span> <span class="p">{</span></pre></div>             </td>           </tr>                               <tr id="section-19">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-19">&#182;</a>               </div>               <p>TODO: remove dependency on recline.Model</p>             </td>             <td class="code">               <div class="highlight"><pre>        <span class="nx">facetResults</span><span class="p">[</span><span class="nx">facetId</span><span class="p">]</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">recline</span><span class="p">.</span><span class="nx">Model</span><span class="p">.</span><span class="nx">Facet</span><span class="p">({</span><span class="nx">id</span><span class="o">:</span> <span class="nx">facetId</span><span class="p">}).</span><span class="nx">toJSON</span><span class="p">();</span>
-        <span class="nx">facetResults</span><span class="p">[</span><span class="nx">facetId</span><span class="p">].</span><span class="nx">termsall</span> <span class="o">=</span> <span class="p">{};</span>
-      <span class="p">});</span></pre></div>             </td>           </tr>                               <tr id="section-20">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-20">&#182;</a>               </div>               <p>faceting</p>             </td>             <td class="code">               <div class="highlight"><pre>      <span class="nx">_</span><span class="p">.</span><span class="nx">each</span><span class="p">(</span><span class="nx">records</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">doc</span><span class="p">)</span> <span class="p">{</span>
-        <span class="nx">_</span><span class="p">.</span><span class="nx">each</span><span class="p">(</span><span class="nx">queryObj</span><span class="p">.</span><span class="nx">facets</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">query</span><span class="p">,</span> <span class="nx">facetId</span><span class="p">)</span> <span class="p">{</span>
-          <span class="kd">var</span> <span class="nx">fieldId</span> <span class="o">=</span> <span class="nx">query</span><span class="p">.</span><span class="nx">terms</span><span class="p">.</span><span class="nx">field</span><span class="p">;</span>
-          <span class="kd">var</span> <span class="nx">val</span> <span class="o">=</span> <span class="nx">doc</span><span class="p">[</span><span class="nx">fieldId</span><span class="p">];</span>
-          <span class="kd">var</span> <span class="nx">tmp</span> <span class="o">=</span> <span class="nx">facetResults</span><span class="p">[</span><span class="nx">facetId</span><span class="p">];</span>
-          <span class="k">if</span> <span class="p">(</span><span class="nx">val</span><span class="p">)</span> <span class="p">{</span>
-            <span class="nx">tmp</span><span class="p">.</span><span class="nx">termsall</span><span class="p">[</span><span class="nx">val</span><span class="p">]</span> <span class="o">=</span> <span class="nx">tmp</span><span class="p">.</span><span class="nx">termsall</span><span class="p">[</span><span class="nx">val</span><span class="p">]</span> <span class="o">?</span> <span class="nx">tmp</span><span class="p">.</span><span class="nx">termsall</span><span class="p">[</span><span class="nx">val</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span> <span class="o">:</span> <span class="mi">1</span><span class="p">;</span>
-          <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
-            <span class="nx">tmp</span><span class="p">.</span><span class="nx">missing</span> <span class="o">=</span> <span class="nx">tmp</span><span class="p">.</span><span class="nx">missing</span> <span class="o">+</span> <span class="mi">1</span><span class="p">;</span>
-          <span class="p">}</span>
-        <span class="p">});</span>
-      <span class="p">});</span>
-      <span class="nx">_</span><span class="p">.</span><span class="nx">each</span><span class="p">(</span><span class="nx">queryObj</span><span class="p">.</span><span class="nx">facets</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">query</span><span class="p">,</span> <span class="nx">facetId</span><span class="p">)</span> <span class="p">{</span>
-        <span class="kd">var</span> <span class="nx">tmp</span> <span class="o">=</span> <span class="nx">facetResults</span><span class="p">[</span><span class="nx">facetId</span><span class="p">];</span>
-        <span class="kd">var</span> <span class="nx">terms</span> <span class="o">=</span> <span class="nx">_</span><span class="p">.</span><span class="nx">map</span><span class="p">(</span><span class="nx">tmp</span><span class="p">.</span><span class="nx">termsall</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">count</span><span class="p">,</span> <span class="nx">term</span><span class="p">)</span> <span class="p">{</span>
-          <span class="k">return</span> <span class="p">{</span> <span class="nx">term</span><span class="o">:</span> <span class="nx">term</span><span class="p">,</span> <span class="nx">count</span><span class="o">:</span> <span class="nx">count</span> <span class="p">};</span>
-        <span class="p">});</span>
-        <span class="nx">tmp</span><span class="p">.</span><span class="nx">terms</span> <span class="o">=</span> <span class="nx">_</span><span class="p">.</span><span class="nx">sortBy</span><span class="p">(</span><span class="nx">terms</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">item</span><span class="p">)</span> <span class="p">{</span></pre></div>             </td>           </tr>                               <tr id="section-21">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-21">&#182;</a>               </div>               <p>want descending order</p>             </td>             <td class="code">               <div class="highlight"><pre>          <span class="k">return</span> <span class="o">-</span><span class="nx">item</span><span class="p">.</span><span class="nx">count</span><span class="p">;</span>
-        <span class="p">});</span>
-        <span class="nx">tmp</span><span class="p">.</span><span class="nx">terms</span> <span class="o">=</span> <span class="nx">tmp</span><span class="p">.</span><span class="nx">terms</span><span class="p">.</span><span class="nx">slice</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">10</span><span class="p">);</span>
-      <span class="p">});</span>
-      <span class="k">return</span> <span class="nx">facetResults</span><span class="p">;</span>
-    <span class="p">};</span>
-  <span class="p">};</span>
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>      <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">term</span><span class="hljs-params">(record, filter)</span> </span>{
+        <span class="hljs-keyword">var</span> parse = getDataParser(filter);
+        <span class="hljs-keyword">var</span> value = parse(record[filter.field]);
+        <span class="hljs-keyword">var</span> term  = parse(filter.term);
 
-<span class="p">}(</span><span class="k">this</span><span class="p">.</span><span class="nx">recline</span><span class="p">.</span><span class="nx">Backend</span><span class="p">.</span><span class="nx">Memory</span><span class="p">));</span>
+        <span class="hljs-keyword">return</span> (value === term);
+      }
 
-</pre></div>             </td>           </tr>                </tbody>     </table>   </div> </body> </html> 
+      <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">terms</span><span class="hljs-params">(record, filter)</span> </span>{
+        <span class="hljs-keyword">var</span> parse = getDataParser(filter);
+        <span class="hljs-keyword">var</span> value = parse(record[filter.field]);
+        <span class="hljs-keyword">var</span> terms  = parse(filter.terms).split(<span class="hljs-string">","</span>);
+
+        <span class="hljs-keyword">return</span> (_.indexOf(terms, value) &gt;= <span class="hljs-number">0</span>);
+      }
+
+      <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">range</span><span class="hljs-params">(record, filter)</span> </span>{
+        <span class="hljs-keyword">var</span> fromnull = (_.isUndefined(filter.from) || filter.from === <span class="hljs-literal">null</span> || filter.from === <span class="hljs-string">''</span>);
+        <span class="hljs-keyword">var</span> tonull = (_.isUndefined(filter.to) || filter.to === <span class="hljs-literal">null</span> || filter.to === <span class="hljs-string">''</span>);
+        <span class="hljs-keyword">var</span> parse = getDataParser(filter);
+        <span class="hljs-keyword">var</span> value = parse(record[filter.field]);
+        <span class="hljs-keyword">var</span> from = parse(fromnull ? <span class="hljs-string">''</span> : filter.from);
+        <span class="hljs-keyword">var</span> to  = parse(tonull ? <span class="hljs-string">''</span> : filter.to);</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-12">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-12">&#182;</a>
+              </div>
+              <p>if at least one end of range is set do not allow ‘’ to get through
+note that for strings ‘’ &lt;= {any-character} e.g. ‘’ &lt;= ‘a’</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>        <span class="hljs-keyword">if</span> ((!fromnull || !tonull) &amp;&amp; value === <span class="hljs-string">''</span>) {
+          <span class="hljs-keyword">return</span> <span class="hljs-literal">false</span>;
+        }
+        <span class="hljs-keyword">return</span> ((fromnull || value &gt;= from) &amp;&amp; (tonull || value &lt;= to));
+      }
+
+      <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">geo_distance</span><span class="hljs-params">()</span> </span>{</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-13">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-13">&#182;</a>
+              </div>
+              <p>TODO code here</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>      }
+    };</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-14">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-14">&#182;</a>
+              </div>
+              <p>we OR across fields but AND across terms in query string</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    <span class="hljs-keyword">this</span>._applyFreeTextQuery = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(results, queryObj)</span> </span>{
+      <span class="hljs-keyword">if</span> (queryObj.q) {
+        <span class="hljs-keyword">var</span> terms = queryObj.q.split(<span class="hljs-string">' '</span>);
+        <span class="hljs-keyword">var</span> patterns=_.map(terms, <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(term)</span> </span>{
+          <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> <span class="hljs-built_in">RegExp</span>(term.toLowerCase());
+        });
+        results = _.filter(results, <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(rawdoc)</span> </span>{
+          <span class="hljs-keyword">var</span> matches = <span class="hljs-literal">true</span>;
+          _.each(patterns, <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(pattern)</span> </span>{
+            <span class="hljs-keyword">var</span> foundmatch = <span class="hljs-literal">false</span>;
+            _.each(self.fields, <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(field)</span> </span>{
+              <span class="hljs-keyword">var</span> value = rawdoc[field.id];
+              <span class="hljs-keyword">if</span> ((value !== <span class="hljs-literal">null</span>) &amp;&amp; (value !== <span class="hljs-literal">undefined</span>)) { 
+                value = value.toString();
+              } <span class="hljs-keyword">else</span> {</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-15">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-15">&#182;</a>
+              </div>
+              <p>value can be null (apparently in some cases)</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>                value = <span class="hljs-string">''</span>;
+              }</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-16">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-16">&#182;</a>
+              </div>
+              <p>TODO regexes?</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>              foundmatch = foundmatch || (pattern.test(value.toLowerCase()));</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-17">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-17">&#182;</a>
+              </div>
+              <p>TODO: early out (once we are true should break to spare unnecessary testing)
+if (foundmatch) return true;</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>            });
+            matches = matches &amp;&amp; foundmatch;</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-18">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-18">&#182;</a>
+              </div>
+              <p>TODO: early out (once false should break to spare unnecessary testing)
+if (!matches) return false;</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>          });
+          <span class="hljs-keyword">return</span> matches;
+        });
+      }
+      <span class="hljs-keyword">return</span> results;
+    };
+
+    <span class="hljs-keyword">this</span>.computeFacets = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(records, queryObj)</span> </span>{
+      <span class="hljs-keyword">var</span> facetResults = {};
+      <span class="hljs-keyword">if</span> (!queryObj.facets) {
+        <span class="hljs-keyword">return</span> facetResults;
+      }
+      _.each(queryObj.facets, <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(query, facetId)</span> </span>{</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-19">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-19">&#182;</a>
+              </div>
+              <p>TODO: remove dependency on recline.Model</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>        facetResults[facetId] = <span class="hljs-keyword">new</span> recline.Model.Facet({id: facetId}).toJSON();
+        facetResults[facetId].termsall = {};
+      });</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-20">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-20">&#182;</a>
+              </div>
+              <p>faceting</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>      _.each(records, <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(doc)</span> </span>{
+        _.each(queryObj.facets, <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(query, facetId)</span> </span>{
+          <span class="hljs-keyword">var</span> fieldId = query.terms.field;
+          <span class="hljs-keyword">var</span> val = doc[fieldId];
+          <span class="hljs-keyword">var</span> tmp = facetResults[facetId];
+          <span class="hljs-keyword">if</span> (val) {
+            tmp.termsall[val] = tmp.termsall[val] ? tmp.termsall[val] + <span class="hljs-number">1</span> : <span class="hljs-number">1</span>;
+          } <span class="hljs-keyword">else</span> {
+            tmp.missing = tmp.missing + <span class="hljs-number">1</span>;
+          }
+        });
+      });
+      _.each(queryObj.facets, <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(query, facetId)</span> </span>{
+        <span class="hljs-keyword">var</span> tmp = facetResults[facetId];
+        <span class="hljs-keyword">var</span> terms = _.map(tmp.termsall, <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(count, term)</span> </span>{
+          <span class="hljs-keyword">return</span> { term: term, count: count };
+        });
+        tmp.terms = _.sortBy(terms, <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(item)</span> </span>{</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-21">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-21">&#182;</a>
+              </div>
+              <p>want descending order</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>          <span class="hljs-keyword">return</span> -item.count;
+        });
+        tmp.terms = tmp.terms.slice(<span class="hljs-number">0</span>, <span class="hljs-number">10</span>);
+      });
+      <span class="hljs-keyword">return</span> facetResults;
+    };
+  };
+
+}(<span class="hljs-keyword">this</span>.recline.Backend.Memory));</pre></div></div>
+            
+        </li>
+        
+    </ul>
+  </div>
+</body>
+</html>
