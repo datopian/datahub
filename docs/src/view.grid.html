@@ -1,232 +1,606 @@
-<!DOCTYPE html>  <html> <head>   <title>view.grid.js</title>   <meta http-equiv="content-type" content="text/html; charset=UTF-8">   <link rel="stylesheet" media="all" href="docco.css" /> </head> <body>   <div id="container">     <div id="background"></div>            <div id="jump_to">         Jump To &hellip;         <div id="jump_wrapper">           <div id="jump_page">                                           <a class="source" href="backend.csv.html">                 backend.csv.js               </a>                                           <a class="source" href="backend.dataproxy.html">                 backend.dataproxy.js               </a>                                           <a class="source" href="backend.memory.html">                 backend.memory.js               </a>                                           <a class="source" href="ecma-fixes.html">                 ecma-fixes.js               </a>                                           <a class="source" href="model.html">                 model.js               </a>                                           <a class="source" href="view.flot.html">                 view.flot.js               </a>                                           <a class="source" href="view.graph.html">                 view.graph.js               </a>                                           <a class="source" href="view.grid.html">                 view.grid.js               </a>                                           <a class="source" href="view.map.html">                 view.map.js               </a>                                           <a class="source" href="view.multiview.html">                 view.multiview.js               </a>                                           <a class="source" href="view.slickgrid.html">                 view.slickgrid.js               </a>                                           <a class="source" href="view.timeline.html">                 view.timeline.js               </a>                                           <a class="source" href="widget.facetviewer.html">                 widget.facetviewer.js               </a>                                           <a class="source" href="widget.fields.html">                 widget.fields.js               </a>                                           <a class="source" href="widget.filtereditor.html">                 widget.filtereditor.js               </a>                                           <a class="source" href="widget.pager.html">                 widget.pager.js               </a>                                           <a class="source" href="widget.queryeditor.html">                 widget.queryeditor.js               </a>                                           <a class="source" href="widget.valuefilter.html">                 widget.valuefilter.js               </a>                        </div>         </div>       </div>          <table cellpadding="0" cellspacing="0">       <thead>         <tr>           <th class="docs">             <h1>               view.grid.js             </h1>           </th>           <th class="code">           </th>         </tr>       </thead>       <tbody>                               <tr id="section-1">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-1">&#182;</a>               </div>                            </td>             <td class="code">               <div class="highlight"><pre><span class="cm">/*jshint multistr:true */</span>
+<!DOCTYPE html>
 
-<span class="k">this</span><span class="p">.</span><span class="nx">recline</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">recline</span> <span class="o">||</span> <span class="p">{};</span>
-<span class="k">this</span><span class="p">.</span><span class="nx">recline</span><span class="p">.</span><span class="nx">View</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">recline</span><span class="p">.</span><span class="nx">View</span> <span class="o">||</span> <span class="p">{};</span>
+<html>
+<head>
+  <title>view.grid.js</title>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <meta name="viewport" content="width=device-width, target-densitydpi=160dpi, initial-scale=1.0; maximum-scale=1.0; user-scalable=0;">
+  <link rel="stylesheet" media="all" href="docco.css" />
+</head>
+<body>
+  <div id="container">
+    <div id="background"></div>
+    
+      <ul id="jump_to">
+        <li>
+          <a class="large" href="javascript:void(0);">Jump To &hellip;</a>
+          <a class="small" href="javascript:void(0);">+</a>
+          <div id="jump_wrapper">
+          <div id="jump_page_wrapper">
+            <div id="jump_page">
+              
+                
+                <a class="source" href="backend.dataproxy.html">
+                  backend.dataproxy.js
+                </a>
+              
+                
+                <a class="source" href="backend.memory.html">
+                  backend.memory.js
+                </a>
+              
+                
+                <a class="source" href="ecma-fixes.html">
+                  ecma-fixes.js
+                </a>
+              
+                
+                <a class="source" href="model.html">
+                  model.js
+                </a>
+              
+                
+                <a class="source" href="view.flot.html">
+                  view.flot.js
+                </a>
+              
+                
+                <a class="source" href="view.graph.html">
+                  view.graph.js
+                </a>
+              
+                
+                <a class="source" href="view.grid.html">
+                  view.grid.js
+                </a>
+              
+                
+                <a class="source" href="view.map.html">
+                  view.map.js
+                </a>
+              
+                
+                <a class="source" href="view.multiview.html">
+                  view.multiview.js
+                </a>
+              
+                
+                <a class="source" href="view.slickgrid.html">
+                  view.slickgrid.js
+                </a>
+              
+                
+                <a class="source" href="view.timeline.html">
+                  view.timeline.js
+                </a>
+              
+                
+                <a class="source" href="widget.facetviewer.html">
+                  widget.facetviewer.js
+                </a>
+              
+                
+                <a class="source" href="widget.fields.html">
+                  widget.fields.js
+                </a>
+              
+                
+                <a class="source" href="widget.filtereditor.html">
+                  widget.filtereditor.js
+                </a>
+              
+                
+                <a class="source" href="widget.pager.html">
+                  widget.pager.js
+                </a>
+              
+                
+                <a class="source" href="widget.queryeditor.html">
+                  widget.queryeditor.js
+                </a>
+              
+                
+                <a class="source" href="widget.valuefilter.html">
+                  widget.valuefilter.js
+                </a>
+              
+            </div>
+          </div>
+        </li>
+      </ul>
+    
+    <ul class="sections">
+        
+          <li id="title">
+              <div class="annotation">
+                  <h1>view.grid.js</h1>
+              </div>
+          </li>
+        
+        
+        
+        <li id="section-1">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-1">&#182;</a>
+              </div>
+              
+            </div>
+            
+            <div class="content"><div class='highlight'><pre><span class="hljs-comment">/*jshint multistr:true */</span>
 
-<span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">$</span><span class="p">,</span> <span class="nx">my</span><span class="p">)</span> <span class="p">{</span>
-  <span class="s2">&quot;use strict&quot;</span><span class="p">;</span></pre></div>             </td>           </tr>                               <tr id="section-2">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-2">&#182;</a>               </div>               <h2>(Data) Grid Dataset View</h2>
+<span class="hljs-keyword">this</span>.recline = <span class="hljs-keyword">this</span>.recline || {};
+<span class="hljs-keyword">this</span>.recline.View = <span class="hljs-keyword">this</span>.recline.View || {};
 
+(<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">($, my)</span> </span>{
+<span class="hljs-pi">  "use strict"</span>;</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-2">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-2">&#182;</a>
+              </div>
+              <h2 id="-data-grid-dataset-view">(Data) Grid Dataset View</h2>
 <p>Provides a tabular view on a Dataset.</p>
+<p>Initialize it with a <code>recline.Model.Dataset</code>.</p>
 
-<p>Initialize it with a <code>recline.Model.Dataset</code>.</p>             </td>             <td class="code">               <div class="highlight"><pre><span class="nx">my</span><span class="p">.</span><span class="nx">Grid</span> <span class="o">=</span> <span class="nx">Backbone</span><span class="p">.</span><span class="nx">View</span><span class="p">.</span><span class="nx">extend</span><span class="p">({</span>
-  <span class="nx">tagName</span><span class="o">:</span>  <span class="s2">&quot;div&quot;</span><span class="p">,</span>
-  <span class="nx">className</span><span class="o">:</span> <span class="s2">&quot;recline-grid-container&quot;</span><span class="p">,</span>
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>my.Grid = Backbone.View.extend({
+  tagName:  <span class="hljs-string">"div"</span>,
+  className: <span class="hljs-string">"recline-grid-container"</span>,
 
-  <span class="nx">initialize</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">modelEtc</span><span class="p">)</span> <span class="p">{</span>
-    <span class="kd">var</span> <span class="nx">self</span> <span class="o">=</span> <span class="k">this</span><span class="p">;</span>
-    <span class="nx">_</span><span class="p">.</span><span class="nx">bindAll</span><span class="p">(</span><span class="k">this</span><span class="p">,</span> <span class="s1">&#39;render&#39;</span><span class="p">,</span> <span class="s1">&#39;onHorizontalScroll&#39;</span><span class="p">);</span>
-    <span class="k">this</span><span class="p">.</span><span class="nx">listenTo</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">model</span><span class="p">.</span><span class="nx">records</span><span class="p">,</span> <span class="s1">&#39;add reset remove&#39;</span><span class="p">,</span> <span class="k">this</span><span class="p">.</span><span class="nx">render</span><span class="p">);</span>
-    <span class="k">this</span><span class="p">.</span><span class="nx">tempState</span> <span class="o">=</span> <span class="p">{};</span>
-    <span class="kd">var</span> <span class="nx">state</span> <span class="o">=</span> <span class="nx">_</span><span class="p">.</span><span class="nx">extend</span><span class="p">({</span>
-        <span class="nx">hiddenFields</span><span class="o">:</span> <span class="p">[]</span>
-      <span class="p">},</span> <span class="nx">modelEtc</span><span class="p">.</span><span class="nx">state</span>
-    <span class="p">);</span> 
-    <span class="k">this</span><span class="p">.</span><span class="nx">state</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">recline</span><span class="p">.</span><span class="nx">Model</span><span class="p">.</span><span class="nx">ObjectState</span><span class="p">(</span><span class="nx">state</span><span class="p">);</span>
-  <span class="p">},</span>
+  initialize: <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(modelEtc)</span> </span>{
+    <span class="hljs-keyword">var</span> self = <span class="hljs-keyword">this</span>;
+    _.bindAll(<span class="hljs-keyword">this</span>, <span class="hljs-string">'render'</span>, <span class="hljs-string">'onHorizontalScroll'</span>);
+    <span class="hljs-keyword">this</span>.listenTo(<span class="hljs-keyword">this</span>.model.records, <span class="hljs-string">'add reset remove'</span>, <span class="hljs-keyword">this</span>.render);
+    <span class="hljs-keyword">this</span>.tempState = {};
+    <span class="hljs-keyword">var</span> state = _.extend({
+        hiddenFields: []
+      }, modelEtc.state
+    ); 
+    <span class="hljs-keyword">this</span>.state = <span class="hljs-keyword">new</span> recline.Model.ObjectState(state);
+  },
 
-  <span class="nx">events</span><span class="o">:</span> <span class="p">{</span></pre></div>             </td>           </tr>                               <tr id="section-3">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-3">&#182;</a>               </div>               <p>does not work here so done at end of render function
-'scroll .recline-grid tbody': 'onHorizontalScroll'</p>             </td>             <td class="code">               <div class="highlight"><pre>  <span class="p">},</span></pre></div>             </td>           </tr>                               <tr id="section-4">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-4">&#182;</a>               </div>               <p>======================================================
-Column and row menus</p>             </td>             <td class="code">               <div class="highlight"><pre>  <span class="nx">setColumnSort</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">order</span><span class="p">)</span> <span class="p">{</span>
-    <span class="kd">var</span> <span class="nx">sort</span> <span class="o">=</span> <span class="p">[{}];</span>
-    <span class="nx">sort</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="k">this</span><span class="p">.</span><span class="nx">tempState</span><span class="p">.</span><span class="nx">currentColumn</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="nx">order</span><span class="o">:</span> <span class="nx">order</span><span class="p">};</span>
-    <span class="k">this</span><span class="p">.</span><span class="nx">model</span><span class="p">.</span><span class="nx">query</span><span class="p">({</span><span class="nx">sort</span><span class="o">:</span> <span class="nx">sort</span><span class="p">});</span>
-  <span class="p">},</span>
+  events: {</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-3">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-3">&#182;</a>
+              </div>
+              <p>does not work here so done at end of render function
+‘scroll .recline-grid tbody’: ‘onHorizontalScroll’</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  },</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-4">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-4">&#182;</a>
+              </div>
+              <p>======================================================</p>
+
+            </div>
+            
+        </li>
+        
+        
+        <li id="section-5">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-5">&#182;</a>
+              </div>
+              <p>Column and row menus</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>
+  setColumnSort: <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(order)</span> </span>{
+    <span class="hljs-keyword">var</span> sort = [{}];
+    sort[<span class="hljs-number">0</span>][<span class="hljs-keyword">this</span>.tempState.currentColumn] = {order: order};
+    <span class="hljs-keyword">this</span>.model.query({sort: sort});
+  },
   
-  <span class="nx">hideColumn</span><span class="o">:</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
-    <span class="kd">var</span> <span class="nx">hiddenFields</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">state</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s1">&#39;hiddenFields&#39;</span><span class="p">);</span>
-    <span class="nx">hiddenFields</span><span class="p">.</span><span class="nx">push</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">tempState</span><span class="p">.</span><span class="nx">currentColumn</span><span class="p">);</span>
-    <span class="k">this</span><span class="p">.</span><span class="nx">state</span><span class="p">.</span><span class="nx">set</span><span class="p">({</span><span class="nx">hiddenFields</span><span class="o">:</span> <span class="nx">hiddenFields</span><span class="p">});</span></pre></div>             </td>           </tr>                               <tr id="section-5">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-5">&#182;</a>               </div>               <p>change event not being triggered (because it is an array?) so trigger manually</p>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="k">this</span><span class="p">.</span><span class="nx">state</span><span class="p">.</span><span class="nx">trigger</span><span class="p">(</span><span class="s1">&#39;change&#39;</span><span class="p">);</span>
-    <span class="k">this</span><span class="p">.</span><span class="nx">render</span><span class="p">();</span>
-  <span class="p">},</span>
+  hideColumn: <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> </span>{
+    <span class="hljs-keyword">var</span> hiddenFields = <span class="hljs-keyword">this</span>.state.get(<span class="hljs-string">'hiddenFields'</span>);
+    hiddenFields.push(<span class="hljs-keyword">this</span>.tempState.currentColumn);
+    <span class="hljs-keyword">this</span>.state.set({hiddenFields: hiddenFields});</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-6">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-6">&#182;</a>
+              </div>
+              <p>change event not being triggered (because it is an array?) so trigger manually</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    <span class="hljs-keyword">this</span>.state.trigger(<span class="hljs-string">'change'</span>);
+    <span class="hljs-keyword">this</span>.render();
+  },
   
-  <span class="nx">showColumn</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">e</span><span class="p">)</span> <span class="p">{</span>
-    <span class="kd">var</span> <span class="nx">hiddenFields</span> <span class="o">=</span> <span class="nx">_</span><span class="p">.</span><span class="nx">without</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">state</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s1">&#39;hiddenFields&#39;</span><span class="p">),</span> <span class="nx">$</span><span class="p">(</span><span class="nx">e</span><span class="p">.</span><span class="nx">target</span><span class="p">).</span><span class="nx">data</span><span class="p">(</span><span class="s1">&#39;column&#39;</span><span class="p">));</span>
-    <span class="k">this</span><span class="p">.</span><span class="nx">state</span><span class="p">.</span><span class="nx">set</span><span class="p">({</span><span class="nx">hiddenFields</span><span class="o">:</span> <span class="nx">hiddenFields</span><span class="p">});</span>
-    <span class="k">this</span><span class="p">.</span><span class="nx">render</span><span class="p">();</span>
-  <span class="p">},</span>
+  showColumn: <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(e)</span> </span>{
+    <span class="hljs-keyword">var</span> hiddenFields = _.without(<span class="hljs-keyword">this</span>.state.get(<span class="hljs-string">'hiddenFields'</span>), $(e.target).data(<span class="hljs-string">'column'</span>));
+    <span class="hljs-keyword">this</span>.state.set({hiddenFields: hiddenFields});
+    <span class="hljs-keyword">this</span>.render();
+  },
 
-  <span class="nx">onHorizontalScroll</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">e</span><span class="p">)</span> <span class="p">{</span>
-    <span class="kd">var</span> <span class="nx">currentScroll</span> <span class="o">=</span> <span class="nx">$</span><span class="p">(</span><span class="nx">e</span><span class="p">.</span><span class="nx">target</span><span class="p">).</span><span class="nx">scrollLeft</span><span class="p">();</span>
-    <span class="k">this</span><span class="p">.</span><span class="nx">$el</span><span class="p">.</span><span class="nx">find</span><span class="p">(</span><span class="s1">&#39;.recline-grid thead tr&#39;</span><span class="p">).</span><span class="nx">scrollLeft</span><span class="p">(</span><span class="nx">currentScroll</span><span class="p">);</span>
-  <span class="p">},</span></pre></div>             </td>           </tr>                               <tr id="section-6">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-6">&#182;</a>               </div>               <p>======================================================</p>
+  onHorizontalScroll: <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(e)</span> </span>{
+    <span class="hljs-keyword">var</span> currentScroll = $(e.target).scrollLeft();
+    <span class="hljs-keyword">this</span>.$el.find(<span class="hljs-string">'.recline-grid thead tr'</span>).scrollLeft(currentScroll);
+  },</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-7">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-7">&#182;</a>
+              </div>
+              <p>======================================================</p>
 
-<h4>Templating</h4>             </td>             <td class="code">               <div class="highlight"><pre>  <span class="nx">template</span><span class="o">:</span> <span class="s1">&#39; \</span>
-<span class="s1">    &lt;div class=&quot;table-container&quot;&gt; \</span>
-<span class="s1">    &lt;table class=&quot;recline-grid table-striped table-condensed&quot; cellspacing=&quot;0&quot;&gt; \</span>
-<span class="s1">      &lt;thead class=&quot;fixed-header&quot;&gt; \</span>
-<span class="s1">        &lt;tr&gt; \</span>
-<span class="s1">          {{#fields}} \</span>
-<span class="s1">            &lt;th class=&quot;column-header {{#hidden}}hidden{{/hidden}}&quot; data-field=&quot;{{id}}&quot; style=&quot;width: {{width}}px; max-width: {{width}}px; min-width: {{width}}px;&quot; title=&quot;{{label}}&quot;&gt; \</span>
-<span class="s1">              &lt;span class=&quot;column-header-name&quot;&gt;{{label}}&lt;/span&gt; \</span>
-<span class="s1">            &lt;/th&gt; \</span>
-<span class="s1">          {{/fields}} \</span>
-<span class="s1">          &lt;th class=&quot;last-header&quot; style=&quot;width: {{lastHeaderWidth}}px; max-width: {{lastHeaderWidth}}px; min-width: {{lastHeaderWidth}}px; padding: 0; margin: 0;&quot;&gt;&lt;/th&gt; \</span>
-<span class="s1">        &lt;/tr&gt; \</span>
-<span class="s1">      &lt;/thead&gt; \</span>
-<span class="s1">      &lt;tbody class=&quot;scroll-content&quot;&gt;&lt;/tbody&gt; \</span>
-<span class="s1">    &lt;/table&gt; \</span>
-<span class="s1">    &lt;/div&gt; \</span>
-<span class="s1">  &#39;</span><span class="p">,</span>
+            </div>
+            
+        </li>
+        
+        
+        <li id="section-8">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-8">&#182;</a>
+              </div>
+              <h4 id="templating">Templating</h4>
 
-  <span class="nx">toTemplateJSON</span><span class="o">:</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
-    <span class="kd">var</span> <span class="nx">self</span> <span class="o">=</span> <span class="k">this</span><span class="p">;</span> 
-    <span class="kd">var</span> <span class="nx">modelData</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">model</span><span class="p">.</span><span class="nx">toJSON</span><span class="p">();</span>
-    <span class="nx">modelData</span><span class="p">.</span><span class="nx">notEmpty</span> <span class="o">=</span> <span class="p">(</span> <span class="k">this</span><span class="p">.</span><span class="nx">fields</span><span class="p">.</span><span class="nx">length</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="p">);</span></pre></div>             </td>           </tr>                               <tr id="section-7">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-7">&#182;</a>               </div>               <p>TODO: move this sort of thing into a toTemplateJSON method on Dataset?</p>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="nx">modelData</span><span class="p">.</span><span class="nx">fields</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">fields</span><span class="p">.</span><span class="nx">map</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">field</span><span class="p">)</span> <span class="p">{</span>
-      <span class="k">return</span> <span class="nx">field</span><span class="p">.</span><span class="nx">toJSON</span><span class="p">();</span>
-    <span class="p">});</span></pre></div>             </td>           </tr>                               <tr id="section-8">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-8">&#182;</a>               </div>               <p>last header width = scroll bar - border (2px) */</p>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="nx">modelData</span><span class="p">.</span><span class="nx">lastHeaderWidth</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">scrollbarDimensions</span><span class="p">.</span><span class="nx">width</span> <span class="o">-</span> <span class="mi">2</span><span class="p">;</span>
-    <span class="k">return</span> <span class="nx">modelData</span><span class="p">;</span>
-  <span class="p">},</span>
-  <span class="nx">render</span><span class="o">:</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
-    <span class="kd">var</span> <span class="nx">self</span> <span class="o">=</span> <span class="k">this</span><span class="p">;</span>
-    <span class="k">this</span><span class="p">.</span><span class="nx">fields</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">recline</span><span class="p">.</span><span class="nx">Model</span><span class="p">.</span><span class="nx">FieldList</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">model</span><span class="p">.</span><span class="nx">fields</span><span class="p">.</span><span class="nx">filter</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">field</span><span class="p">)</span> <span class="p">{</span>
-      <span class="k">return</span> <span class="nx">_</span><span class="p">.</span><span class="nx">indexOf</span><span class="p">(</span><span class="nx">self</span><span class="p">.</span><span class="nx">state</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s1">&#39;hiddenFields&#39;</span><span class="p">),</span> <span class="nx">field</span><span class="p">.</span><span class="nx">id</span><span class="p">)</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span><span class="p">;</span>
-    <span class="p">}));</span>
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  template: <span class="hljs-string">' \
+    &lt;div class="table-container"&gt; \
+    &lt;table class="recline-grid table-striped table-condensed" cellspacing="0"&gt; \
+      &lt;thead class="fixed-header"&gt; \
+        &lt;tr&gt; \
+          {{#fields}} \
+            &lt;th class="column-header {{#hidden}}hidden{{/hidden}}" data-field="{{id}}" style="width: {{width}}px; max-width: {{width}}px; min-width: {{width}}px;" title="{{label}}"&gt; \
+              &lt;span class="column-header-name"&gt;{{label}}&lt;/span&gt; \
+            &lt;/th&gt; \
+          {{/fields}} \
+          &lt;th class="last-header" style="width: {{lastHeaderWidth}}px; max-width: {{lastHeaderWidth}}px; min-width: {{lastHeaderWidth}}px; padding: 0; margin: 0;"&gt;&lt;/th&gt; \
+        &lt;/tr&gt; \
+      &lt;/thead&gt; \
+      &lt;tbody class="scroll-content"&gt;&lt;/tbody&gt; \
+    &lt;/table&gt; \
+    &lt;/div&gt; \
+  '</span>,
 
-    <span class="k">this</span><span class="p">.</span><span class="nx">scrollbarDimensions</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">scrollbarDimensions</span> <span class="o">||</span> <span class="k">this</span><span class="p">.</span><span class="nx">_scrollbarSize</span><span class="p">();</span> <span class="c1">// skip measurement if already have dimensions</span>
-    <span class="kd">var</span> <span class="nx">numFields</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">fields</span><span class="p">.</span><span class="nx">length</span><span class="p">;</span></pre></div>             </td>           </tr>                               <tr id="section-9">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-9">&#182;</a>               </div>               <p>compute field widths (-20 for first menu col + 10px for padding on each col and finally 16px for the scrollbar)</p>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="kd">var</span> <span class="nx">fullWidth</span> <span class="o">=</span> <span class="nx">self</span><span class="p">.</span><span class="nx">$el</span><span class="p">.</span><span class="nx">width</span><span class="p">()</span> <span class="o">-</span> <span class="mi">20</span> <span class="o">-</span> <span class="mi">10</span> <span class="o">*</span> <span class="nx">numFields</span> <span class="o">-</span> <span class="k">this</span><span class="p">.</span><span class="nx">scrollbarDimensions</span><span class="p">.</span><span class="nx">width</span><span class="p">;</span>
-    <span class="kd">var</span> <span class="nx">width</span> <span class="o">=</span> <span class="nb">parseInt</span><span class="p">(</span><span class="nb">Math</span><span class="p">.</span><span class="nx">max</span><span class="p">(</span><span class="mi">50</span><span class="p">,</span> <span class="nx">fullWidth</span> <span class="o">/</span> <span class="nx">numFields</span><span class="p">),</span> <span class="mi">10</span><span class="p">);</span></pre></div>             </td>           </tr>                               <tr id="section-10">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-10">&#182;</a>               </div>               <p>if columns extend outside viewport then remainder is 0 </p>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="kd">var</span> <span class="nx">remainder</span> <span class="o">=</span> <span class="nb">Math</span><span class="p">.</span><span class="nx">max</span><span class="p">(</span><span class="nx">fullWidth</span> <span class="o">-</span> <span class="nx">numFields</span> <span class="o">*</span> <span class="nx">width</span><span class="p">,</span><span class="mi">0</span><span class="p">);</span>
-    <span class="k">this</span><span class="p">.</span><span class="nx">fields</span><span class="p">.</span><span class="nx">each</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">field</span><span class="p">,</span> <span class="nx">idx</span><span class="p">)</span> <span class="p">{</span></pre></div>             </td>           </tr>                               <tr id="section-11">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-11">&#182;</a>               </div>               <p>add the remainder to the first field width so we make up full col</p>             </td>             <td class="code">               <div class="highlight"><pre>      <span class="k">if</span> <span class="p">(</span><span class="nx">idx</span> <span class="o">===</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
-        <span class="nx">field</span><span class="p">.</span><span class="nx">set</span><span class="p">({</span><span class="nx">width</span><span class="o">:</span> <span class="nx">width</span><span class="o">+</span><span class="nx">remainder</span><span class="p">});</span>
-      <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
-        <span class="nx">field</span><span class="p">.</span><span class="nx">set</span><span class="p">({</span><span class="nx">width</span><span class="o">:</span> <span class="nx">width</span><span class="p">});</span>
-      <span class="p">}</span>
-    <span class="p">});</span>
-    <span class="kd">var</span> <span class="nx">htmls</span> <span class="o">=</span> <span class="nx">Mustache</span><span class="p">.</span><span class="nx">render</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">template</span><span class="p">,</span> <span class="k">this</span><span class="p">.</span><span class="nx">toTemplateJSON</span><span class="p">());</span>
-    <span class="k">this</span><span class="p">.</span><span class="nx">$el</span><span class="p">.</span><span class="nx">html</span><span class="p">(</span><span class="nx">htmls</span><span class="p">);</span>
-    <span class="k">this</span><span class="p">.</span><span class="nx">model</span><span class="p">.</span><span class="nx">records</span><span class="p">.</span><span class="nx">forEach</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">doc</span><span class="p">)</span> <span class="p">{</span>
-      <span class="kd">var</span> <span class="nx">tr</span> <span class="o">=</span> <span class="nx">$</span><span class="p">(</span><span class="s1">&#39;&lt;tr /&gt;&#39;</span><span class="p">);</span>
-      <span class="nx">self</span><span class="p">.</span><span class="nx">$el</span><span class="p">.</span><span class="nx">find</span><span class="p">(</span><span class="s1">&#39;tbody&#39;</span><span class="p">).</span><span class="nx">append</span><span class="p">(</span><span class="nx">tr</span><span class="p">);</span>
-      <span class="kd">var</span> <span class="nx">newView</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">my</span><span class="p">.</span><span class="nx">GridRow</span><span class="p">({</span>
-          <span class="nx">model</span><span class="o">:</span> <span class="nx">doc</span><span class="p">,</span>
-          <span class="nx">el</span><span class="o">:</span> <span class="nx">tr</span><span class="p">,</span>
-          <span class="nx">fields</span><span class="o">:</span> <span class="nx">self</span><span class="p">.</span><span class="nx">fields</span>
-        <span class="p">});</span>
-      <span class="nx">newView</span><span class="p">.</span><span class="nx">render</span><span class="p">();</span>
-    <span class="p">});</span></pre></div>             </td>           </tr>                               <tr id="section-12">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-12">&#182;</a>               </div>               <p>hide extra header col if no scrollbar to avoid unsightly overhang</p>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="kd">var</span> <span class="nx">$tbody</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">$el</span><span class="p">.</span><span class="nx">find</span><span class="p">(</span><span class="s1">&#39;tbody&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">];</span>
-    <span class="k">if</span> <span class="p">(</span><span class="nx">$tbody</span><span class="p">.</span><span class="nx">scrollHeight</span> <span class="o">&lt;=</span> <span class="nx">$tbody</span><span class="p">.</span><span class="nx">offsetHeight</span><span class="p">)</span> <span class="p">{</span>
-      <span class="k">this</span><span class="p">.</span><span class="nx">$el</span><span class="p">.</span><span class="nx">find</span><span class="p">(</span><span class="s1">&#39;th.last-header&#39;</span><span class="p">).</span><span class="nx">hide</span><span class="p">();</span>
-    <span class="p">}</span>
-    <span class="k">this</span><span class="p">.</span><span class="nx">$el</span><span class="p">.</span><span class="nx">find</span><span class="p">(</span><span class="s1">&#39;.recline-grid&#39;</span><span class="p">).</span><span class="nx">toggleClass</span><span class="p">(</span><span class="s1">&#39;no-hidden&#39;</span><span class="p">,</span> <span class="p">(</span><span class="nx">self</span><span class="p">.</span><span class="nx">state</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s1">&#39;hiddenFields&#39;</span><span class="p">).</span><span class="nx">length</span> <span class="o">===</span> <span class="mi">0</span><span class="p">));</span>
-    <span class="k">this</span><span class="p">.</span><span class="nx">$el</span><span class="p">.</span><span class="nx">find</span><span class="p">(</span><span class="s1">&#39;.recline-grid tbody&#39;</span><span class="p">).</span><span class="nx">scroll</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">onHorizontalScroll</span><span class="p">);</span>
-    <span class="k">return</span> <span class="k">this</span><span class="p">;</span>
-  <span class="p">},</span></pre></div>             </td>           </tr>                               <tr id="section-13">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-13">&#182;</a>               </div>               <h3>_scrollbarSize</h3>
+  toTemplateJSON: <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> </span>{
+    <span class="hljs-keyword">var</span> self = <span class="hljs-keyword">this</span>; 
+    <span class="hljs-keyword">var</span> modelData = <span class="hljs-keyword">this</span>.model.toJSON();
+    modelData.notEmpty = ( <span class="hljs-keyword">this</span>.fields.length &gt; <span class="hljs-number">0</span> );</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-9">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-9">&#182;</a>
+              </div>
+              <p>TODO: move this sort of thing into a toTemplateJSON method on Dataset?</p>
 
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    modelData.fields = <span class="hljs-keyword">this</span>.fields.map(<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(field)</span> </span>{
+      <span class="hljs-keyword">return</span> field.toJSON();
+    });</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-10">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-10">&#182;</a>
+              </div>
+              <p>last header width = scroll bar - border (2px) */</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    modelData.lastHeaderWidth = <span class="hljs-keyword">this</span>.scrollbarDimensions.width - <span class="hljs-number">2</span>;
+    <span class="hljs-keyword">return</span> modelData;
+  },
+  render: <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> </span>{
+    <span class="hljs-keyword">var</span> self = <span class="hljs-keyword">this</span>;
+    <span class="hljs-keyword">this</span>.fields = <span class="hljs-keyword">new</span> recline.Model.FieldList(<span class="hljs-keyword">this</span>.model.fields.filter(<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(field)</span> </span>{
+      <span class="hljs-keyword">return</span> _.indexOf(self.state.get(<span class="hljs-string">'hiddenFields'</span>), field.id) == -<span class="hljs-number">1</span>;
+    }));
+
+    <span class="hljs-keyword">this</span>.scrollbarDimensions = <span class="hljs-keyword">this</span>.scrollbarDimensions || <span class="hljs-keyword">this</span>._scrollbarSize(); <span class="hljs-comment">// skip measurement if already have dimensions</span>
+    <span class="hljs-keyword">var</span> numFields = <span class="hljs-keyword">this</span>.fields.length;</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-11">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-11">&#182;</a>
+              </div>
+              <p>compute field widths (-20 for first menu col + 10px for padding on each col and finally 16px for the scrollbar)</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    <span class="hljs-keyword">var</span> fullWidth = self.$el.width() - <span class="hljs-number">20</span> - <span class="hljs-number">10</span> * numFields - <span class="hljs-keyword">this</span>.scrollbarDimensions.width;
+    <span class="hljs-keyword">var</span> width = <span class="hljs-built_in">parseInt</span>(<span class="hljs-built_in">Math</span>.max(<span class="hljs-number">50</span>, fullWidth / numFields), <span class="hljs-number">10</span>);</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-12">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-12">&#182;</a>
+              </div>
+              <p>if columns extend outside viewport then remainder is 0 </p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    <span class="hljs-keyword">var</span> remainder = <span class="hljs-built_in">Math</span>.max(fullWidth - numFields * width,<span class="hljs-number">0</span>);
+    <span class="hljs-keyword">this</span>.fields.each(<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(field, idx)</span> </span>{</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-13">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-13">&#182;</a>
+              </div>
+              <p>add the remainder to the first field width so we make up full col</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>      <span class="hljs-keyword">if</span> (idx === <span class="hljs-number">0</span>) {
+        field.set({width: width+remainder});
+      } <span class="hljs-keyword">else</span> {
+        field.set({width: width});
+      }
+    });
+    <span class="hljs-keyword">var</span> htmls = Mustache.render(<span class="hljs-keyword">this</span>.template, <span class="hljs-keyword">this</span>.toTemplateJSON());
+    <span class="hljs-keyword">this</span>.$el.html(htmls);
+    <span class="hljs-keyword">this</span>.model.records.forEach(<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(doc)</span> </span>{
+      <span class="hljs-keyword">var</span> tr = $(<span class="hljs-string">'&lt;tr /&gt;'</span>);
+      self.$el.find(<span class="hljs-string">'tbody'</span>).append(tr);
+      <span class="hljs-keyword">var</span> newView = <span class="hljs-keyword">new</span> my.GridRow({
+          model: doc,
+          el: tr,
+          fields: self.fields
+        });
+      newView.render();
+    });</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-14">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-14">&#182;</a>
+              </div>
+              <p>hide extra header col if no scrollbar to avoid unsightly overhang</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    <span class="hljs-keyword">var</span> $tbody = <span class="hljs-keyword">this</span>.$el.find(<span class="hljs-string">'tbody'</span>)[<span class="hljs-number">0</span>];
+    <span class="hljs-keyword">if</span> ($tbody.scrollHeight &lt;= $tbody.offsetHeight) {
+      <span class="hljs-keyword">this</span>.$el.find(<span class="hljs-string">'th.last-header'</span>).hide();
+    }
+    <span class="hljs-keyword">this</span>.$el.find(<span class="hljs-string">'.recline-grid'</span>).toggleClass(<span class="hljs-string">'no-hidden'</span>, (self.state.get(<span class="hljs-string">'hiddenFields'</span>).length === <span class="hljs-number">0</span>));
+    <span class="hljs-keyword">this</span>.$el.find(<span class="hljs-string">'.recline-grid tbody'</span>).scroll(<span class="hljs-keyword">this</span>.onHorizontalScroll);
+    <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>;
+  },</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-15">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-15">&#182;</a>
+              </div>
+              <h3 id="_scrollbarsize">_scrollbarSize</h3>
 <p>Measure width of a vertical scrollbar and height of a horizontal scrollbar.</p>
+<p>@return: { width: pixelWidth, height: pixelHeight }</p>
 
-<p>@return: { width: pixelWidth, height: pixelHeight }</p>             </td>             <td class="code">               <div class="highlight"><pre>  <span class="nx">_scrollbarSize</span><span class="o">:</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
-    <span class="kd">var</span> <span class="nx">$c</span> <span class="o">=</span> <span class="nx">$</span><span class="p">(</span><span class="s2">&quot;&lt;div style=&#39;position:absolute; top:-10000px; left:-10000px; width:100px; height:100px; overflow:scroll;&#39;&gt;&lt;/div&gt;&quot;</span><span class="p">).</span><span class="nx">appendTo</span><span class="p">(</span><span class="s2">&quot;body&quot;</span><span class="p">);</span>
-    <span class="kd">var</span> <span class="nx">dim</span> <span class="o">=</span> <span class="p">{</span> <span class="nx">width</span><span class="o">:</span> <span class="nx">$c</span><span class="p">.</span><span class="nx">width</span><span class="p">()</span> <span class="o">-</span> <span class="nx">$c</span><span class="p">[</span><span class="mi">0</span><span class="p">].</span><span class="nx">clientWidth</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="nx">height</span><span class="o">:</span> <span class="nx">$c</span><span class="p">.</span><span class="nx">height</span><span class="p">()</span> <span class="o">-</span> <span class="nx">$c</span><span class="p">[</span><span class="mi">0</span><span class="p">].</span><span class="nx">clientHeight</span> <span class="p">};</span>
-    <span class="nx">$c</span><span class="p">.</span><span class="nx">remove</span><span class="p">();</span>
-    <span class="k">return</span> <span class="nx">dim</span><span class="p">;</span>
-  <span class="p">}</span>
-<span class="p">});</span></pre></div>             </td>           </tr>                               <tr id="section-14">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-14">&#182;</a>               </div>               <h2>GridRow View for rendering an individual record.</h2>
-
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  _scrollbarSize: <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> </span>{
+    <span class="hljs-keyword">var</span> $c = $(<span class="hljs-string">"&lt;div style='position:absolute; top:-10000px; left:-10000px; width:100px; height:100px; overflow:scroll;'&gt;&lt;/div&gt;"</span>).appendTo(<span class="hljs-string">"body"</span>);
+    <span class="hljs-keyword">var</span> dim = { width: $c.width() - $c[<span class="hljs-number">0</span>].clientWidth + <span class="hljs-number">1</span>, height: $c.height() - $c[<span class="hljs-number">0</span>].clientHeight };
+    $c.remove();
+    <span class="hljs-keyword">return</span> dim;
+  }
+});</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-16">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-16">&#182;</a>
+              </div>
+              <h2 id="gridrow-view-for-rendering-an-individual-record-">GridRow View for rendering an individual record.</h2>
 <p>Since we want this to update in place it is up to creator to provider the element to attach to.</p>
-
 <p>In addition you <em>must</em> pass in a FieldList in the constructor options. This should be list of fields for the Grid.</p>
-
 <p>Example:</p>
-
 <pre>
 var row = new GridRow({
   model: dataset-record,
     el: dom-element,
     fields: mydatasets.fields // a FieldList object
   });
-</pre>             </td>             <td class="code">               <div class="highlight"><pre><span class="nx">my</span><span class="p">.</span><span class="nx">GridRow</span> <span class="o">=</span> <span class="nx">Backbone</span><span class="p">.</span><span class="nx">View</span><span class="p">.</span><span class="nx">extend</span><span class="p">({</span>
-  <span class="nx">initialize</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">initData</span><span class="p">)</span> <span class="p">{</span>
-    <span class="nx">_</span><span class="p">.</span><span class="nx">bindAll</span><span class="p">(</span><span class="k">this</span><span class="p">,</span> <span class="s1">&#39;render&#39;</span><span class="p">);</span>
-    <span class="k">this</span><span class="p">.</span><span class="nx">_fields</span> <span class="o">=</span> <span class="nx">initData</span><span class="p">.</span><span class="nx">fields</span><span class="p">;</span>
-    <span class="k">this</span><span class="p">.</span><span class="nx">listenTo</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">model</span><span class="p">,</span> <span class="s1">&#39;change&#39;</span><span class="p">,</span> <span class="k">this</span><span class="p">.</span><span class="nx">render</span><span class="p">);</span>
-  <span class="p">},</span>
+</pre>
 
-  <span class="nx">template</span><span class="o">:</span> <span class="s1">&#39; \</span>
-<span class="s1">      {{#cells}} \</span>
-<span class="s1">      &lt;td data-field=&quot;{{field}}&quot; style=&quot;width: {{width}}px; max-width: {{width}}px; min-width: {{width}}px;&quot;&gt; \</span>
-<span class="s1">        &lt;div class=&quot;data-table-cell-content&quot;&gt; \</span>
-<span class="s1">          &lt;a href=&quot;javascript:{}&quot; class=&quot;data-table-cell-edit&quot; title=&quot;Edit this cell&quot;&gt;&amp;nbsp;&lt;/a&gt; \</span>
-<span class="s1">          &lt;div class=&quot;data-table-cell-value&quot;&gt;{{{value}}}&lt;/div&gt; \</span>
-<span class="s1">        &lt;/div&gt; \</span>
-<span class="s1">      &lt;/td&gt; \</span>
-<span class="s1">      {{/cells}} \</span>
-<span class="s1">    &#39;</span><span class="p">,</span>
-  <span class="nx">events</span><span class="o">:</span> <span class="p">{</span>
-    <span class="s1">&#39;click .data-table-cell-edit&#39;</span><span class="o">:</span> <span class="s1">&#39;onEditClick&#39;</span><span class="p">,</span>
-    <span class="s1">&#39;click .data-table-cell-editor .okButton&#39;</span><span class="o">:</span> <span class="s1">&#39;onEditorOK&#39;</span><span class="p">,</span>
-    <span class="s1">&#39;click .data-table-cell-editor .cancelButton&#39;</span><span class="o">:</span> <span class="s1">&#39;onEditorCancel&#39;</span>
-  <span class="p">},</span>
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>my.GridRow = Backbone.View.extend({
+  initialize: <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(initData)</span> </span>{
+    _.bindAll(<span class="hljs-keyword">this</span>, <span class="hljs-string">'render'</span>);
+    <span class="hljs-keyword">this</span>._fields = initData.fields;
+    <span class="hljs-keyword">this</span>.listenTo(<span class="hljs-keyword">this</span>.model, <span class="hljs-string">'change'</span>, <span class="hljs-keyword">this</span>.render);
+  },
+
+  template: <span class="hljs-string">' \
+      {{#cells}} \
+      &lt;td data-field="{{field}}" style="width: {{width}}px; max-width: {{width}}px; min-width: {{width}}px;"&gt; \
+        &lt;div class="data-table-cell-content"&gt; \
+          &lt;a href="javascript:{}" class="data-table-cell-edit" title="Edit this cell"&gt;&amp;nbsp;&lt;/a&gt; \
+          &lt;div class="data-table-cell-value"&gt;{{{value}}}&lt;/div&gt; \
+        &lt;/div&gt; \
+      &lt;/td&gt; \
+      {{/cells}} \
+    '</span>,
+  events: {
+    <span class="hljs-string">'click .data-table-cell-edit'</span>: <span class="hljs-string">'onEditClick'</span>,
+    <span class="hljs-string">'click .data-table-cell-editor .okButton'</span>: <span class="hljs-string">'onEditorOK'</span>,
+    <span class="hljs-string">'click .data-table-cell-editor .cancelButton'</span>: <span class="hljs-string">'onEditorCancel'</span>
+  },
   
-  <span class="nx">toTemplateJSON</span><span class="o">:</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
-    <span class="kd">var</span> <span class="nx">self</span> <span class="o">=</span> <span class="k">this</span><span class="p">;</span>
-    <span class="kd">var</span> <span class="nx">doc</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">model</span><span class="p">;</span>
-    <span class="kd">var</span> <span class="nx">cellData</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">_fields</span><span class="p">.</span><span class="nx">map</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">field</span><span class="p">)</span> <span class="p">{</span>
-      <span class="k">return</span> <span class="p">{</span>
-        <span class="nx">field</span><span class="o">:</span> <span class="nx">field</span><span class="p">.</span><span class="nx">id</span><span class="p">,</span>
-        <span class="nx">width</span><span class="o">:</span> <span class="nx">field</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s1">&#39;width&#39;</span><span class="p">),</span>
-        <span class="nx">value</span><span class="o">:</span> <span class="nx">doc</span><span class="p">.</span><span class="nx">getFieldValue</span><span class="p">(</span><span class="nx">field</span><span class="p">)</span>
-      <span class="p">};</span>
-    <span class="p">});</span>
-    <span class="k">return</span> <span class="p">{</span> <span class="nx">id</span><span class="o">:</span> <span class="k">this</span><span class="p">.</span><span class="nx">id</span><span class="p">,</span> <span class="nx">cells</span><span class="o">:</span> <span class="nx">cellData</span> <span class="p">};</span>
-  <span class="p">},</span>
+  toTemplateJSON: <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> </span>{
+    <span class="hljs-keyword">var</span> self = <span class="hljs-keyword">this</span>;
+    <span class="hljs-keyword">var</span> doc = <span class="hljs-keyword">this</span>.model;
+    <span class="hljs-keyword">var</span> cellData = <span class="hljs-keyword">this</span>._fields.map(<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(field)</span> </span>{
+      <span class="hljs-keyword">return</span> {
+        field: field.id,
+        width: field.get(<span class="hljs-string">'width'</span>),
+        value: doc.getFieldValue(field)
+      };
+    });
+    <span class="hljs-keyword">return</span> { id: <span class="hljs-keyword">this</span>.id, cells: cellData };
+  },
 
-  <span class="nx">render</span><span class="o">:</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
-    <span class="k">this</span><span class="p">.</span><span class="nx">$el</span><span class="p">.</span><span class="nx">attr</span><span class="p">(</span><span class="s1">&#39;data-id&#39;</span><span class="p">,</span> <span class="k">this</span><span class="p">.</span><span class="nx">model</span><span class="p">.</span><span class="nx">id</span><span class="p">);</span>
-    <span class="kd">var</span> <span class="nx">html</span> <span class="o">=</span> <span class="nx">Mustache</span><span class="p">.</span><span class="nx">render</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">template</span><span class="p">,</span> <span class="k">this</span><span class="p">.</span><span class="nx">toTemplateJSON</span><span class="p">());</span>
-    <span class="k">this</span><span class="p">.</span><span class="nx">$el</span><span class="p">.</span><span class="nx">html</span><span class="p">(</span><span class="nx">html</span><span class="p">);</span>
-    <span class="k">return</span> <span class="k">this</span><span class="p">;</span>
-  <span class="p">},</span></pre></div>             </td>           </tr>                               <tr id="section-15">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-15">&#182;</a>               </div>               <p>===================
-Cell Editor methods</p>             </td>             <td class="code">               <div class="highlight"><pre>  <span class="nx">cellEditorTemplate</span><span class="o">:</span> <span class="s1">&#39; \</span>
-<span class="s1">    &lt;div class=&quot;menu-container data-table-cell-editor&quot;&gt; \</span>
-<span class="s1">      &lt;textarea class=&quot;data-table-cell-editor-editor&quot; bind=&quot;textarea&quot;&gt;{{value}}&lt;/textarea&gt; \</span>
-<span class="s1">      &lt;div id=&quot;data-table-cell-editor-actions&quot;&gt; \</span>
-<span class="s1">        &lt;div class=&quot;data-table-cell-editor-action&quot;&gt; \</span>
-<span class="s1">          &lt;button class=&quot;okButton btn primary&quot;&gt;Update&lt;/button&gt; \</span>
-<span class="s1">          &lt;button class=&quot;cancelButton btn danger&quot;&gt;Cancel&lt;/button&gt; \</span>
-<span class="s1">        &lt;/div&gt; \</span>
-<span class="s1">      &lt;/div&gt; \</span>
-<span class="s1">    &lt;/div&gt; \</span>
-<span class="s1">  &#39;</span><span class="p">,</span>
+  render: <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> </span>{
+    <span class="hljs-keyword">this</span>.$el.attr(<span class="hljs-string">'data-id'</span>, <span class="hljs-keyword">this</span>.model.id);
+    <span class="hljs-keyword">var</span> html = Mustache.render(<span class="hljs-keyword">this</span>.template, <span class="hljs-keyword">this</span>.toTemplateJSON());
+    <span class="hljs-keyword">this</span>.$el.html(html);
+    <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>;
+  },</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-17">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-17">&#182;</a>
+              </div>
+              <p>===================</p>
 
-  <span class="nx">onEditClick</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">e</span><span class="p">)</span> <span class="p">{</span>
-    <span class="kd">var</span> <span class="nx">editing</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">$el</span><span class="p">.</span><span class="nx">find</span><span class="p">(</span><span class="s1">&#39;.data-table-cell-editor-editor&#39;</span><span class="p">);</span>
-    <span class="k">if</span> <span class="p">(</span><span class="nx">editing</span><span class="p">.</span><span class="nx">length</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
-      <span class="nx">editing</span><span class="p">.</span><span class="nx">parents</span><span class="p">(</span><span class="s1">&#39;.data-table-cell-value&#39;</span><span class="p">).</span><span class="nx">html</span><span class="p">(</span><span class="nx">editing</span><span class="p">.</span><span class="nx">text</span><span class="p">()).</span><span class="nx">siblings</span><span class="p">(</span><span class="s1">&#39;.data-table-cell-edit&#39;</span><span class="p">).</span><span class="nx">removeClass</span><span class="p">(</span><span class="s2">&quot;hidden&quot;</span><span class="p">);</span>
-    <span class="p">}</span>
-    <span class="nx">$</span><span class="p">(</span><span class="nx">e</span><span class="p">.</span><span class="nx">target</span><span class="p">).</span><span class="nx">addClass</span><span class="p">(</span><span class="s2">&quot;hidden&quot;</span><span class="p">);</span>
-    <span class="kd">var</span> <span class="nx">cell</span> <span class="o">=</span> <span class="nx">$</span><span class="p">(</span><span class="nx">e</span><span class="p">.</span><span class="nx">target</span><span class="p">).</span><span class="nx">siblings</span><span class="p">(</span><span class="s1">&#39;.data-table-cell-value&#39;</span><span class="p">);</span>
-    <span class="nx">cell</span><span class="p">.</span><span class="nx">data</span><span class="p">(</span><span class="s2">&quot;previousContents&quot;</span><span class="p">,</span> <span class="nx">cell</span><span class="p">.</span><span class="nx">text</span><span class="p">());</span>
-    <span class="kd">var</span> <span class="nx">templated</span> <span class="o">=</span> <span class="nx">Mustache</span><span class="p">.</span><span class="nx">render</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">cellEditorTemplate</span><span class="p">,</span> <span class="p">{</span><span class="nx">value</span><span class="o">:</span> <span class="nx">cell</span><span class="p">.</span><span class="nx">text</span><span class="p">()});</span>
-    <span class="nx">cell</span><span class="p">.</span><span class="nx">html</span><span class="p">(</span><span class="nx">templated</span><span class="p">);</span>
-  <span class="p">},</span>
+            </div>
+            
+        </li>
+        
+        
+        <li id="section-18">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-18">&#182;</a>
+              </div>
+              <p>Cell Editor methods</p>
 
-  <span class="nx">onEditorOK</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">e</span><span class="p">)</span> <span class="p">{</span>
-    <span class="kd">var</span> <span class="nx">self</span> <span class="o">=</span> <span class="k">this</span><span class="p">;</span>
-    <span class="kd">var</span> <span class="nx">cell</span> <span class="o">=</span> <span class="nx">$</span><span class="p">(</span><span class="nx">e</span><span class="p">.</span><span class="nx">target</span><span class="p">);</span>
-    <span class="kd">var</span> <span class="nx">rowId</span> <span class="o">=</span> <span class="nx">cell</span><span class="p">.</span><span class="nx">parents</span><span class="p">(</span><span class="s1">&#39;tr&#39;</span><span class="p">).</span><span class="nx">attr</span><span class="p">(</span><span class="s1">&#39;data-id&#39;</span><span class="p">);</span>
-    <span class="kd">var</span> <span class="nx">field</span> <span class="o">=</span> <span class="nx">cell</span><span class="p">.</span><span class="nx">parents</span><span class="p">(</span><span class="s1">&#39;td&#39;</span><span class="p">).</span><span class="nx">attr</span><span class="p">(</span><span class="s1">&#39;data-field&#39;</span><span class="p">);</span>
-    <span class="kd">var</span> <span class="nx">newValue</span> <span class="o">=</span> <span class="nx">cell</span><span class="p">.</span><span class="nx">parents</span><span class="p">(</span><span class="s1">&#39;.data-table-cell-editor&#39;</span><span class="p">).</span><span class="nx">find</span><span class="p">(</span><span class="s1">&#39;.data-table-cell-editor-editor&#39;</span><span class="p">).</span><span class="nx">val</span><span class="p">();</span>
-    <span class="kd">var</span> <span class="nx">newData</span> <span class="o">=</span> <span class="p">{};</span>
-    <span class="nx">newData</span><span class="p">[</span><span class="nx">field</span><span class="p">]</span> <span class="o">=</span> <span class="nx">newValue</span><span class="p">;</span>
-    <span class="k">this</span><span class="p">.</span><span class="nx">model</span><span class="p">.</span><span class="nx">set</span><span class="p">(</span><span class="nx">newData</span><span class="p">);</span>
-    <span class="k">this</span><span class="p">.</span><span class="nx">trigger</span><span class="p">(</span><span class="s1">&#39;recline:flash&#39;</span><span class="p">,</span> <span class="p">{</span><span class="nx">message</span><span class="o">:</span> <span class="s2">&quot;Updating row...&quot;</span><span class="p">,</span> <span class="nx">loader</span><span class="o">:</span> <span class="kc">true</span><span class="p">});</span>
-    <span class="k">this</span><span class="p">.</span><span class="nx">model</span><span class="p">.</span><span class="nx">save</span><span class="p">().</span><span class="nx">then</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">response</span><span class="p">)</span> <span class="p">{</span>
-        <span class="k">this</span><span class="p">.</span><span class="nx">trigger</span><span class="p">(</span><span class="s1">&#39;recline:flash&#39;</span><span class="p">,</span> <span class="p">{</span><span class="nx">message</span><span class="o">:</span> <span class="s2">&quot;Row updated successfully&quot;</span><span class="p">,</span> <span class="nx">category</span><span class="o">:</span> <span class="s1">&#39;success&#39;</span><span class="p">});</span>
-      <span class="p">})</span>
-      <span class="p">.</span><span class="nx">fail</span><span class="p">(</span><span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
-        <span class="k">this</span><span class="p">.</span><span class="nx">trigger</span><span class="p">(</span><span class="s1">&#39;recline:flash&#39;</span><span class="p">,</span> <span class="p">{</span>
-          <span class="nx">message</span><span class="o">:</span> <span class="s1">&#39;Error saving row&#39;</span><span class="p">,</span>
-          <span class="nx">category</span><span class="o">:</span> <span class="s1">&#39;error&#39;</span><span class="p">,</span>
-          <span class="nx">persist</span><span class="o">:</span> <span class="kc">true</span>
-        <span class="p">});</span>
-      <span class="p">});</span>
-  <span class="p">},</span>
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>
+  cellEditorTemplate: <span class="hljs-string">' \
+    &lt;div class="menu-container data-table-cell-editor"&gt; \
+      &lt;textarea class="data-table-cell-editor-editor" bind="textarea"&gt;{{value}}&lt;/textarea&gt; \
+      &lt;div id="data-table-cell-editor-actions"&gt; \
+        &lt;div class="data-table-cell-editor-action"&gt; \
+          &lt;button class="okButton btn primary"&gt;Update&lt;/button&gt; \
+          &lt;button class="cancelButton btn danger"&gt;Cancel&lt;/button&gt; \
+        &lt;/div&gt; \
+      &lt;/div&gt; \
+    &lt;/div&gt; \
+  '</span>,
 
-  <span class="nx">onEditorCancel</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">e</span><span class="p">)</span> <span class="p">{</span>
-    <span class="kd">var</span> <span class="nx">cell</span> <span class="o">=</span> <span class="nx">$</span><span class="p">(</span><span class="nx">e</span><span class="p">.</span><span class="nx">target</span><span class="p">).</span><span class="nx">parents</span><span class="p">(</span><span class="s1">&#39;.data-table-cell-value&#39;</span><span class="p">);</span>
-    <span class="nx">cell</span><span class="p">.</span><span class="nx">html</span><span class="p">(</span><span class="nx">cell</span><span class="p">.</span><span class="nx">data</span><span class="p">(</span><span class="s1">&#39;previousContents&#39;</span><span class="p">)).</span><span class="nx">siblings</span><span class="p">(</span><span class="s1">&#39;.data-table-cell-edit&#39;</span><span class="p">).</span><span class="nx">removeClass</span><span class="p">(</span><span class="s2">&quot;hidden&quot;</span><span class="p">);</span>
-  <span class="p">}</span>
-<span class="p">});</span>
+  onEditClick: <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(e)</span> </span>{
+    <span class="hljs-keyword">var</span> editing = <span class="hljs-keyword">this</span>.$el.find(<span class="hljs-string">'.data-table-cell-editor-editor'</span>);
+    <span class="hljs-keyword">if</span> (editing.length &gt; <span class="hljs-number">0</span>) {
+      editing.parents(<span class="hljs-string">'.data-table-cell-value'</span>).html(editing.text()).siblings(<span class="hljs-string">'.data-table-cell-edit'</span>).removeClass(<span class="hljs-string">"hidden"</span>);
+    }
+    $(e.target).addClass(<span class="hljs-string">"hidden"</span>);
+    <span class="hljs-keyword">var</span> cell = $(e.target).siblings(<span class="hljs-string">'.data-table-cell-value'</span>);
+    cell.data(<span class="hljs-string">"previousContents"</span>, cell.text());
+    <span class="hljs-keyword">var</span> templated = Mustache.render(<span class="hljs-keyword">this</span>.cellEditorTemplate, {value: cell.text()});
+    cell.html(templated);
+  },
 
-<span class="p">})(</span><span class="nx">jQuery</span><span class="p">,</span> <span class="nx">recline</span><span class="p">.</span><span class="nx">View</span><span class="p">);</span>
+  onEditorOK: <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(e)</span> </span>{
+    <span class="hljs-keyword">var</span> self = <span class="hljs-keyword">this</span>;
+    <span class="hljs-keyword">var</span> cell = $(e.target);
+    <span class="hljs-keyword">var</span> rowId = cell.parents(<span class="hljs-string">'tr'</span>).attr(<span class="hljs-string">'data-id'</span>);
+    <span class="hljs-keyword">var</span> field = cell.parents(<span class="hljs-string">'td'</span>).attr(<span class="hljs-string">'data-field'</span>);
+    <span class="hljs-keyword">var</span> newValue = cell.parents(<span class="hljs-string">'.data-table-cell-editor'</span>).find(<span class="hljs-string">'.data-table-cell-editor-editor'</span>).val();
+    <span class="hljs-keyword">var</span> newData = {};
+    newData[field] = newValue;
+    <span class="hljs-keyword">this</span>.model.set(newData);
+    <span class="hljs-keyword">this</span>.trigger(<span class="hljs-string">'recline:flash'</span>, {message: <span class="hljs-string">"Updating row..."</span>, loader: <span class="hljs-literal">true</span>});
+    <span class="hljs-keyword">this</span>.model.save().then(<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(response)</span> </span>{
+        <span class="hljs-keyword">this</span>.trigger(<span class="hljs-string">'recline:flash'</span>, {message: <span class="hljs-string">"Row updated successfully"</span>, category: <span class="hljs-string">'success'</span>});
+      })
+      .fail(<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> </span>{
+        <span class="hljs-keyword">this</span>.trigger(<span class="hljs-string">'recline:flash'</span>, {
+          message: <span class="hljs-string">'Error saving row'</span>,
+          category: <span class="hljs-string">'error'</span>,
+          persist: <span class="hljs-literal">true</span>
+        });
+      });
+  },
 
-</pre></div>             </td>           </tr>                </tbody>     </table>   </div> </body> </html> 
+  onEditorCancel: <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(e)</span> </span>{
+    <span class="hljs-keyword">var</span> cell = $(e.target).parents(<span class="hljs-string">'.data-table-cell-value'</span>);
+    cell.html(cell.data(<span class="hljs-string">'previousContents'</span>)).siblings(<span class="hljs-string">'.data-table-cell-edit'</span>).removeClass(<span class="hljs-string">"hidden"</span>);
+  }
+});
+
+})(jQuery, recline.View);</pre></div></div>
+            
+        </li>
+        
+    </ul>
+  </div>
+</body>
+</html>

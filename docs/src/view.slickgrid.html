@@ -1,48 +1,160 @@
-<!DOCTYPE html>  <html> <head>   <title>view.slickgrid.js</title>   <meta http-equiv="content-type" content="text/html; charset=UTF-8">   <link rel="stylesheet" media="all" href="docco.css" /> </head> <body>   <div id="container">     <div id="background"></div>            <div id="jump_to">         Jump To &hellip;         <div id="jump_wrapper">           <div id="jump_page">                                           <a class="source" href="backend.csv.html">                 backend.csv.js               </a>                                           <a class="source" href="backend.dataproxy.html">                 backend.dataproxy.js               </a>                                           <a class="source" href="backend.memory.html">                 backend.memory.js               </a>                                           <a class="source" href="ecma-fixes.html">                 ecma-fixes.js               </a>                                           <a class="source" href="model.html">                 model.js               </a>                                           <a class="source" href="view.flot.html">                 view.flot.js               </a>                                           <a class="source" href="view.graph.html">                 view.graph.js               </a>                                           <a class="source" href="view.grid.html">                 view.grid.js               </a>                                           <a class="source" href="view.map.html">                 view.map.js               </a>                                           <a class="source" href="view.multiview.html">                 view.multiview.js               </a>                                           <a class="source" href="view.slickgrid.html">                 view.slickgrid.js               </a>                                           <a class="source" href="view.timeline.html">                 view.timeline.js               </a>                                           <a class="source" href="widget.facetviewer.html">                 widget.facetviewer.js               </a>                                           <a class="source" href="widget.fields.html">                 widget.fields.js               </a>                                           <a class="source" href="widget.filtereditor.html">                 widget.filtereditor.js               </a>                                           <a class="source" href="widget.pager.html">                 widget.pager.js               </a>                                           <a class="source" href="widget.queryeditor.html">                 widget.queryeditor.js               </a>                                           <a class="source" href="widget.valuefilter.html">                 widget.valuefilter.js               </a>                        </div>         </div>       </div>          <table cellpadding="0" cellspacing="0">       <thead>         <tr>           <th class="docs">             <h1>               view.slickgrid.js             </h1>           </th>           <th class="code">           </th>         </tr>       </thead>       <tbody>                               <tr id="section-1">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-1">&#182;</a>               </div>                            </td>             <td class="code">               <div class="highlight"><pre><span class="cm">/*jshint multistr:true */</span>
+<!DOCTYPE html>
 
-<span class="k">this</span><span class="p">.</span><span class="nx">recline</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">recline</span> <span class="o">||</span> <span class="p">{};</span>
-<span class="k">this</span><span class="p">.</span><span class="nx">recline</span><span class="p">.</span><span class="nx">View</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">recline</span><span class="p">.</span><span class="nx">View</span> <span class="o">||</span> <span class="p">{};</span>
-
-<span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">$</span><span class="p">,</span> <span class="nx">my</span><span class="p">)</span> <span class="p">{</span>
-  <span class="s2">&quot;use strict&quot;</span><span class="p">;</span></pre></div>             </td>           </tr>                               <tr id="section-2">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-2">&#182;</a>               </div>               <p>Add new grid Control to display a new row add menu bouton
-It display a simple side-bar menu ,for user to add new 
-row to grid </p>             </td>             <td class="code">               <div class="highlight"><pre>  <span class="nx">my</span><span class="p">.</span><span class="nx">GridControl</span><span class="o">=</span> <span class="nx">Backbone</span><span class="p">.</span><span class="nx">View</span><span class="p">.</span><span class="nx">extend</span><span class="p">({</span>
-    <span class="nx">className</span><span class="o">:</span> <span class="s2">&quot;recline-row-add&quot;</span><span class="p">,</span></pre></div>             </td>           </tr>                               <tr id="section-3">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-3">&#182;</a>               </div>               <p>Template for row edit menu , change it if you don't love</p>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="nx">template</span><span class="o">:</span> <span class="s1">&#39;&lt;h1&gt;&lt;a href=&quot;#&quot; class=&quot;recline-row-add btn&quot;&gt;Add row&lt;/a&gt;&lt;/h1&gt;&#39;</span><span class="p">,</span>
+<html>
+<head>
+  <title>view.slickgrid.js</title>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <meta name="viewport" content="width=device-width, target-densitydpi=160dpi, initial-scale=1.0; maximum-scale=1.0; user-scalable=0;">
+  <link rel="stylesheet" media="all" href="docco.css" />
+</head>
+<body>
+  <div id="container">
+    <div id="background"></div>
     
-    <span class="nx">initialize</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">options</span><span class="p">){</span>
-      <span class="kd">var</span> <span class="nx">self</span> <span class="o">=</span> <span class="k">this</span><span class="p">;</span>
-      <span class="nx">_</span><span class="p">.</span><span class="nx">bindAll</span><span class="p">(</span><span class="k">this</span><span class="p">,</span> <span class="s1">&#39;render&#39;</span><span class="p">);</span>
-      <span class="k">this</span><span class="p">.</span><span class="nx">state</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">recline</span><span class="p">.</span><span class="nx">Model</span><span class="p">.</span><span class="nx">ObjectState</span><span class="p">();</span>
-      <span class="k">this</span><span class="p">.</span><span class="nx">render</span><span class="p">();</span>
-    <span class="p">},</span>
+      <ul id="jump_to">
+        <li>
+          <a class="large" href="javascript:void(0);">Jump To &hellip;</a>
+          <a class="small" href="javascript:void(0);">+</a>
+          <div id="jump_wrapper">
+          <div id="jump_page_wrapper">
+            <div id="jump_page">
+              
+                
+                <a class="source" href="backend.dataproxy.html">
+                  backend.dataproxy.js
+                </a>
+              
+                
+                <a class="source" href="backend.memory.html">
+                  backend.memory.js
+                </a>
+              
+                
+                <a class="source" href="ecma-fixes.html">
+                  ecma-fixes.js
+                </a>
+              
+                
+                <a class="source" href="model.html">
+                  model.js
+                </a>
+              
+                
+                <a class="source" href="view.flot.html">
+                  view.flot.js
+                </a>
+              
+                
+                <a class="source" href="view.graph.html">
+                  view.graph.js
+                </a>
+              
+                
+                <a class="source" href="view.grid.html">
+                  view.grid.js
+                </a>
+              
+                
+                <a class="source" href="view.map.html">
+                  view.map.js
+                </a>
+              
+                
+                <a class="source" href="view.multiview.html">
+                  view.multiview.js
+                </a>
+              
+                
+                <a class="source" href="view.slickgrid.html">
+                  view.slickgrid.js
+                </a>
+              
+                
+                <a class="source" href="view.timeline.html">
+                  view.timeline.js
+                </a>
+              
+                
+                <a class="source" href="widget.facetviewer.html">
+                  widget.facetviewer.js
+                </a>
+              
+                
+                <a class="source" href="widget.fields.html">
+                  widget.fields.js
+                </a>
+              
+                
+                <a class="source" href="widget.filtereditor.html">
+                  widget.filtereditor.js
+                </a>
+              
+                
+                <a class="source" href="widget.pager.html">
+                  widget.pager.js
+                </a>
+              
+                
+                <a class="source" href="widget.queryeditor.html">
+                  widget.queryeditor.js
+                </a>
+              
+                
+                <a class="source" href="widget.valuefilter.html">
+                  widget.valuefilter.js
+                </a>
+              
+            </div>
+          </div>
+        </li>
+      </ul>
+    
+    <ul class="sections">
+        
+          <li id="title">
+              <div class="annotation">
+                  <h1>view.slickgrid.js</h1>
+              </div>
+          </li>
+        
+        
+        
+        <li id="section-1">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-1">&#182;</a>
+              </div>
+              
+            </div>
+            
+            <div class="content"><div class='highlight'><pre><span class="hljs-comment">/*jshint multistr:true */</span>
 
-    <span class="nx">render</span><span class="o">:</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
-      <span class="kd">var</span> <span class="nx">self</span> <span class="o">=</span> <span class="k">this</span><span class="p">;</span>
-      <span class="k">this</span><span class="p">.</span><span class="nx">$el</span><span class="p">.</span><span class="nx">html</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">template</span><span class="p">)</span>
-    <span class="p">},</span>
+<span class="hljs-keyword">this</span>.recline = <span class="hljs-keyword">this</span>.recline || {};
+<span class="hljs-keyword">this</span>.recline.View = <span class="hljs-keyword">this</span>.recline.View || {};
 
-    <span class="nx">events</span> <span class="o">:</span> <span class="p">{</span>
-      <span class="s2">&quot;click .recline-row-add&quot;</span> <span class="o">:</span> <span class="s2">&quot;addNewRow&quot;</span>
-    <span class="p">},</span>
-
-    <span class="nx">addNewRow</span> <span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">e</span><span class="p">){</span>
-      <span class="nx">e</span><span class="p">.</span><span class="nx">preventDefault</span><span class="p">()</span>
-      <span class="k">this</span><span class="p">.</span><span class="nx">state</span><span class="p">.</span><span class="nx">trigger</span><span class="p">(</span><span class="s2">&quot;change&quot;</span><span class="p">)</span>
-   <span class="p">}</span>
- <span class="p">}</span>
- <span class="p">);</span></pre></div>             </td>           </tr>                               <tr id="section-4">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-4">&#182;</a>               </div>               <h2>SlickGrid Dataset View</h2>
-
+(<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">($, my)</span> </span>{
+<span class="hljs-pi">  "use strict"</span>;</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-2">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-2">&#182;</a>
+              </div>
+              <h2 id="slickgrid-dataset-view">SlickGrid Dataset View</h2>
 <p>Provides a tabular view on a Dataset, based on SlickGrid.</p>
-
-<p>https://github.com/mleibman/SlickGrid</p>
-
+<p><a href="https://github.com/mleibman/SlickGrid">https://github.com/mleibman/SlickGrid</a></p>
 <p>Initialize it with a <code>recline.Model.Dataset</code>.</p>
-
 <p>Additional options to drive SlickGrid grid can be given through state.
-The following keys allow for customization:
-* gridOptions: to add options at grid level
-* columnsEditor: to add editor for editable columns</p>
-
+The following keys allow for customization:</p>
+<ul>
+<li>gridOptions: to add options at grid level</li>
+<li>columnsEditor: to add editor for editable columns</li>
+</ul>
 <p>For example:
    var grid = new recline.View.SlickGrid({
         model: dataset,
@@ -50,377 +162,953 @@ The following keys allow for customization:
         state: {
          gridOptions: {
            editable: true,
-           enableAddRows: true 
-           ...
+           enableAddRow: true 
+           // Enable support for row delete
+           enabledDelRow: true,
+           // Enable support for row Reorder 
+           enableReOrderRow:true,
+           …
          },
          columnsEditor: [
-           {column: 'date', editor: Slick.Editors.Date },
-           {column: 'title', editor: Slick.Editors.Text}
+           {column: ‘date’, editor: Slick.Editors.Date },
+           {column: ‘title’, editor: Slick.Editors.Text}
          ]
        }
      });
-// NB: you need an explicit height on the element for slickgrid to work</p>             </td>             <td class="code">               <div class="highlight"><pre><span class="nx">my</span><span class="p">.</span><span class="nx">SlickGrid</span> <span class="o">=</span> <span class="nx">Backbone</span><span class="p">.</span><span class="nx">View</span><span class="p">.</span><span class="nx">extend</span><span class="p">({</span>
-  <span class="nx">initialize</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">modelEtc</span><span class="p">)</span> <span class="p">{</span>
-    <span class="kd">var</span> <span class="nx">self</span> <span class="o">=</span> <span class="k">this</span><span class="p">;</span>
-    <span class="k">this</span><span class="p">.</span><span class="nx">$el</span><span class="p">.</span><span class="nx">addClass</span><span class="p">(</span><span class="s1">&#39;recline-slickgrid&#39;</span><span class="p">);</span>
-  </pre></div>             </td>           </tr>                               <tr id="section-5">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-5">&#182;</a>               </div>               <p>Template for row delete menu , change it if you don't love </p>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="k">this</span><span class="p">.</span><span class="nx">templates</span> <span class="o">=</span> <span class="p">{</span>
-   <span class="s2">&quot;deleterow&quot;</span> <span class="o">:</span> <span class="s1">&#39;&lt;a href=&quot;#&quot; class=&quot;recline-row-delete btn&quot;&gt;X&lt;/a&gt;&#39;</span>
-     <span class="p">}</span>
-    <span class="nx">_</span><span class="p">.</span><span class="nx">bindAll</span><span class="p">(</span><span class="k">this</span><span class="p">,</span> <span class="s1">&#39;render&#39;</span><span class="p">,</span> <span class="s1">&#39;onRecordChanged&#39;</span><span class="p">);</span>
-    <span class="k">this</span><span class="p">.</span><span class="nx">listenTo</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">model</span><span class="p">.</span><span class="nx">records</span><span class="p">,</span> <span class="s1">&#39;add remove reset&#39;</span><span class="p">,</span> <span class="k">this</span><span class="p">.</span><span class="nx">render</span><span class="p">);</span>
-    <span class="k">this</span><span class="p">.</span><span class="nx">listenTo</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">model</span><span class="p">.</span><span class="nx">records</span><span class="p">,</span> <span class="s1">&#39;change&#39;</span><span class="p">,</span> <span class="k">this</span><span class="p">.</span><span class="nx">onRecordChanged</span><span class="p">);</span>
-    <span class="kd">var</span> <span class="nx">state</span> <span class="o">=</span> <span class="nx">_</span><span class="p">.</span><span class="nx">extend</span><span class="p">({</span>
-        <span class="nx">hiddenColumns</span><span class="o">:</span> <span class="p">[],</span>
-        <span class="nx">columnsOrder</span><span class="o">:</span> <span class="p">[],</span>
-        <span class="nx">columnsSort</span><span class="o">:</span> <span class="p">{},</span>
-        <span class="nx">columnsWidth</span><span class="o">:</span> <span class="p">[],</span>
-        <span class="nx">columnsEditor</span><span class="o">:</span> <span class="p">[],</span>
-        <span class="nx">options</span><span class="o">:</span> <span class="p">{},</span>
-        <span class="nx">fitColumns</span><span class="o">:</span> <span class="kc">false</span>
-      <span class="p">},</span> <span class="nx">modelEtc</span><span class="p">.</span><span class="nx">state</span>
+// NB: you need an explicit height on the element for slickgrid to work</p>
 
-    <span class="p">);</span>
-    <span class="k">this</span><span class="p">.</span><span class="nx">state</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">recline</span><span class="p">.</span><span class="nx">Model</span><span class="p">.</span><span class="nx">ObjectState</span><span class="p">(</span><span class="nx">state</span><span class="p">);</span>
-    <span class="k">this</span><span class="p">.</span><span class="nx">_slickHandler</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Slick</span><span class="p">.</span><span class="nx">EventHandler</span><span class="p">();</span></pre></div>             </td>           </tr>                               <tr id="section-6">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-6">&#182;</a>               </div>               <p>add menu for new row , check if enableAddRow is set to true or not set</p>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="k">if</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">state</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s2">&quot;gridOptions&quot;</span><span class="p">)</span> 
-  <span class="o">&amp;&amp;</span> <span class="k">this</span><span class="p">.</span><span class="nx">state</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s2">&quot;gridOptions&quot;</span><span class="p">).</span><span class="nx">enabledAddRow</span> <span class="o">!=</span> <span class="kc">undefined</span> 
-      <span class="o">&amp;&amp;</span> <span class="k">this</span><span class="p">.</span><span class="nx">state</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s2">&quot;gridOptions&quot;</span><span class="p">).</span><span class="nx">enabledAddRow</span> <span class="o">==</span> <span class="kc">true</span> <span class="p">){</span>
-      <span class="k">this</span><span class="p">.</span><span class="nx">editor</span>    <span class="o">=</span>  <span class="k">new</span>  <span class="nx">my</span><span class="p">.</span><span class="nx">GridControl</span><span class="p">()</span>
-      <span class="k">this</span><span class="p">.</span><span class="nx">elSidebar</span> <span class="o">=</span>  <span class="k">this</span><span class="p">.</span><span class="nx">editor</span><span class="p">.</span><span class="nx">$el</span>
-  <span class="k">this</span><span class="p">.</span><span class="nx">listenTo</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">editor</span><span class="p">.</span><span class="nx">state</span><span class="p">,</span> <span class="s1">&#39;change&#39;</span><span class="p">,</span> <span class="kd">function</span><span class="p">(){</span>   
-    <span class="k">this</span><span class="p">.</span><span class="nx">model</span><span class="p">.</span><span class="nx">records</span><span class="p">.</span><span class="nx">add</span><span class="p">(</span><span class="k">new</span> <span class="nx">recline</span><span class="p">.</span><span class="nx">Model</span><span class="p">.</span><span class="nx">Record</span><span class="p">())</span>
-      <span class="p">});</span>
-    <span class="p">}</span>
-  <span class="p">},</span>
-  <span class="nx">onRecordChanged</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">record</span><span class="p">)</span> <span class="p">{</span></pre></div>             </td>           </tr>                               <tr id="section-7">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-7">&#182;</a>               </div>               <p>Ignore if the grid is not yet drawn</p>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="k">this</span><span class="p">.</span><span class="nx">grid</span><span class="p">)</span> <span class="p">{</span>
-      <span class="k">return</span><span class="p">;</span>
-    <span class="p">}</span></pre></div>             </td>           </tr>                               <tr id="section-8">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-8">&#182;</a>               </div>               <p>Let's find the row corresponding to the index</p>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="kd">var</span> <span class="nx">row_index</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">grid</span><span class="p">.</span><span class="nx">getData</span><span class="p">().</span><span class="nx">getModelRow</span><span class="p">(</span> <span class="nx">record</span> <span class="p">);</span>
-    <span class="k">this</span><span class="p">.</span><span class="nx">grid</span><span class="p">.</span><span class="nx">invalidateRow</span><span class="p">(</span><span class="nx">row_index</span><span class="p">);</span>
-    <span class="k">this</span><span class="p">.</span><span class="nx">grid</span><span class="p">.</span><span class="nx">getData</span><span class="p">().</span><span class="nx">updateItem</span><span class="p">(</span><span class="nx">record</span><span class="p">,</span> <span class="nx">row_index</span><span class="p">);</span>
-    <span class="k">this</span><span class="p">.</span><span class="nx">grid</span><span class="p">.</span><span class="nx">render</span><span class="p">();</span>
-  <span class="p">},</span>
-   <span class="nx">render</span><span class="o">:</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
-    <span class="kd">var</span> <span class="nx">self</span> <span class="o">=</span> <span class="k">this</span><span class="p">;</span>
-    <span class="kd">var</span> <span class="nx">options</span> <span class="o">=</span> <span class="nx">_</span><span class="p">.</span><span class="nx">extend</span><span class="p">({</span>
-      <span class="nx">enableCellNavigation</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span>
-      <span class="nx">enableColumnReorder</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span>
-      <span class="nx">explicitInitialization</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span>
-      <span class="nx">syncColumnCellResize</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span>
-      <span class="nx">forceFitColumns</span><span class="o">:</span> <span class="k">this</span><span class="p">.</span><span class="nx">state</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s1">&#39;fitColumns&#39;</span><span class="p">)</span>
-    <span class="p">},</span> <span class="nx">self</span><span class="p">.</span><span class="nx">state</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s1">&#39;gridOptions&#39;</span><span class="p">));</span></pre></div>             </td>           </tr>                               <tr id="section-9">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-9">&#182;</a>               </div>               <p>We need all columns, even the hidden ones, to show on the column picker</p>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="kd">var</span> <span class="nx">columns</span> <span class="o">=</span> <span class="p">[];</span> </pre></div>             </td>           </tr>                               <tr id="section-10">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-10">&#182;</a>               </div>               <p>custom formatter as default one escapes html
-plus this way we distinguish between rendering/formatting and computed value (so e.g. sort still works ...)
-row = row index, cell = cell index, value = value, columnDef = column definition, dataContext = full row values</p>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="kd">var</span> <span class="nx">formatter</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">row</span><span class="p">,</span> <span class="nx">cell</span><span class="p">,</span> <span class="nx">value</span><span class="p">,</span> <span class="nx">columnDef</span><span class="p">,</span> <span class="nx">dataContext</span><span class="p">)</span> <span class="p">{</span>
-      <span class="k">if</span><span class="p">(</span><span class="nx">columnDef</span><span class="p">.</span><span class="nx">id</span> <span class="o">==</span> <span class="s2">&quot;del&quot;</span><span class="p">){</span>
-        <span class="k">return</span> <span class="nx">self</span><span class="p">.</span><span class="nx">templates</span><span class="p">.</span><span class="nx">deleterow</span> 
-  <span class="p">}</span>
-  <span class="kd">var</span> <span class="nx">field</span> <span class="o">=</span> <span class="nx">self</span><span class="p">.</span><span class="nx">model</span><span class="p">.</span><span class="nx">fields</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="nx">columnDef</span><span class="p">.</span><span class="nx">id</span><span class="p">);</span>
-      <span class="k">if</span> <span class="p">(</span><span class="nx">field</span><span class="p">.</span><span class="nx">renderer</span><span class="p">)</span> <span class="p">{</span>
-        <span class="k">return</span>  <span class="nx">field</span><span class="p">.</span><span class="nx">renderer</span><span class="p">(</span><span class="nx">value</span><span class="p">,</span> <span class="nx">field</span><span class="p">,</span> <span class="nx">dataContext</span><span class="p">);</span>
-      <span class="p">}</span><span class="k">else</span> <span class="p">{</span>
-        <span class="k">return</span>  <span class="nx">value</span> 
-      <span class="p">}</span>
-    <span class="p">};</span></pre></div>             </td>           </tr>                               <tr id="section-11">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-11">&#182;</a>               </div>               <p>we need to be sure that user is entering a valid  input , for exemple if 
-field is date type and field.format ='YY-MM-DD', we should be sure that 
-user enter a correct value </p>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="kd">var</span> <span class="nx">validator</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">field</span><span class="p">){</span>
-  <span class="k">return</span> <span class="kd">function</span><span class="p">(</span><span class="nx">value</span><span class="p">){</span>
-     <span class="k">if</span><span class="p">(</span><span class="nx">field</span><span class="p">.</span><span class="nx">type</span> <span class="o">==</span> <span class="s2">&quot;date&quot;</span> <span class="o">&amp;&amp;</span> <span class="nb">isNaN</span><span class="p">(</span><span class="nb">Date</span><span class="p">.</span><span class="nx">parse</span><span class="p">(</span><span class="nx">value</span><span class="p">))){</span>
-        <span class="k">return</span> <span class="p">{</span>
-              <span class="nx">valid</span><span class="o">:</span> <span class="kc">false</span><span class="p">,</span>
-              <span class="nx">msg</span><span class="o">:</span> <span class="s2">&quot;A date is required, check field field-date-format&quot;</span><span class="p">};</span>
-     <span class="p">}</span><span class="k">else</span> <span class="p">{</span>
-          <span class="k">return</span> <span class="p">{</span><span class="nx">valid</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span> <span class="nx">msg</span> <span class="o">:</span><span class="kc">null</span> <span class="p">}</span> 
-    <span class="p">}</span>
-  <span class="p">}</span>
-    <span class="p">};</span></pre></div>             </td>           </tr>                               <tr id="section-12">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-12">&#182;</a>               </div>               <p>Add row delete support , check if enableDelRow is set to true or not set</p>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="k">if</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">state</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s2">&quot;gridOptions&quot;</span><span class="p">)</span> 
-  <span class="o">&amp;&amp;</span> <span class="k">this</span><span class="p">.</span><span class="nx">state</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s2">&quot;gridOptions&quot;</span><span class="p">).</span><span class="nx">enabledDelRow</span> <span class="o">!=</span> <span class="kc">undefined</span> 
-      <span class="o">&amp;&amp;</span> <span class="k">this</span><span class="p">.</span><span class="nx">state</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s2">&quot;gridOptions&quot;</span><span class="p">).</span><span class="nx">enabledDelRow</span> <span class="o">==</span> <span class="kc">true</span> <span class="p">){</span>
-    <span class="nx">columns</span><span class="p">.</span><span class="nx">push</span><span class="p">({</span>
-        <span class="nx">id</span><span class="o">:</span> <span class="s1">&#39;del&#39;</span><span class="p">,</span>
-        <span class="nx">name</span><span class="o">:</span> <span class="s1">&#39;del&#39;</span><span class="p">,</span>
-        <span class="nx">field</span><span class="o">:</span> <span class="s1">&#39;del&#39;</span><span class="p">,</span>
-        <span class="nx">sortable</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span>
-        <span class="nx">width</span><span class="o">:</span> <span class="mi">80</span><span class="p">,</span>
-        <span class="nx">formatter</span><span class="o">:</span> <span class="nx">formatter</span><span class="p">,</span>
-        <span class="nx">validator</span><span class="o">:</span><span class="nx">validator</span>
-    <span class="p">})}</span>
-    <span class="nx">_</span><span class="p">.</span><span class="nx">each</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">model</span><span class="p">.</span><span class="nx">fields</span><span class="p">.</span><span class="nx">toJSON</span><span class="p">(),</span><span class="kd">function</span><span class="p">(</span><span class="nx">field</span><span class="p">){</span>
-      <span class="kd">var</span> <span class="nx">column</span> <span class="o">=</span> <span class="p">{</span>
-        <span class="nx">id</span><span class="o">:</span> <span class="nx">field</span><span class="p">.</span><span class="nx">id</span><span class="p">,</span>
-        <span class="nx">name</span><span class="o">:</span> <span class="nx">field</span><span class="p">.</span><span class="nx">label</span><span class="p">,</span>
-        <span class="nx">field</span><span class="o">:</span> <span class="nx">field</span><span class="p">.</span><span class="nx">id</span><span class="p">,</span>
-        <span class="nx">sortable</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span>
-        <span class="nx">minWidth</span><span class="o">:</span> <span class="mi">80</span><span class="p">,</span>
-        <span class="nx">formatter</span><span class="o">:</span> <span class="nx">formatter</span><span class="p">,</span>
-        <span class="nx">validator</span><span class="o">:</span><span class="nx">validator</span><span class="p">(</span><span class="nx">field</span><span class="p">)</span>
-      <span class="p">};</span>
-      <span class="kd">var</span> <span class="nx">widthInfo</span> <span class="o">=</span> <span class="nx">_</span><span class="p">.</span><span class="nx">find</span><span class="p">(</span><span class="nx">self</span><span class="p">.</span><span class="nx">state</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s1">&#39;columnsWidth&#39;</span><span class="p">),</span><span class="kd">function</span><span class="p">(</span><span class="nx">c</span><span class="p">){</span><span class="k">return</span> <span class="nx">c</span><span class="p">.</span><span class="nx">column</span> <span class="o">===</span> <span class="nx">field</span><span class="p">.</span><span class="nx">id</span><span class="p">;});</span>
-      <span class="k">if</span> <span class="p">(</span><span class="nx">widthInfo</span><span class="p">){</span>
-        <span class="nx">column</span><span class="p">.</span><span class="nx">width</span> <span class="o">=</span> <span class="nx">widthInfo</span><span class="p">.</span><span class="nx">width</span><span class="p">;</span>
-      <span class="p">}</span>
-      <span class="kd">var</span> <span class="nx">editInfo</span> <span class="o">=</span> <span class="nx">_</span><span class="p">.</span><span class="nx">find</span><span class="p">(</span><span class="nx">self</span><span class="p">.</span><span class="nx">state</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s1">&#39;columnsEditor&#39;</span><span class="p">),</span><span class="kd">function</span><span class="p">(</span><span class="nx">c</span><span class="p">){</span><span class="k">return</span> <span class="nx">c</span><span class="p">.</span><span class="nx">column</span> <span class="o">===</span> <span class="nx">field</span><span class="p">.</span><span class="nx">id</span><span class="p">;});</span>
-      <span class="k">if</span> <span class="p">(</span><span class="nx">editInfo</span><span class="p">){</span>
-        <span class="nx">column</span><span class="p">.</span><span class="nx">editor</span> <span class="o">=</span> <span class="nx">editInfo</span><span class="p">.</span><span class="nx">editor</span><span class="p">;</span>
-      <span class="p">}</span> <span class="k">else</span> <span class="p">{</span></pre></div>             </td>           </tr>                               <tr id="section-13">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-13">&#182;</a>               </div>               <p>guess editor type</p>             </td>             <td class="code">               <div class="highlight"><pre>        <span class="kd">var</span> <span class="nx">typeToEditorMap</span> <span class="o">=</span> <span class="p">{</span>
-          <span class="s1">&#39;string&#39;</span><span class="o">:</span> <span class="nx">Slick</span><span class="p">.</span><span class="nx">Editors</span><span class="p">.</span><span class="nx">LongText</span><span class="p">,</span>
-          <span class="s1">&#39;integer&#39;</span><span class="o">:</span> <span class="nx">Slick</span><span class="p">.</span><span class="nx">Editors</span><span class="p">.</span><span class="nx">IntegerEditor</span><span class="p">,</span>
-          <span class="s1">&#39;number&#39;</span><span class="o">:</span> <span class="nx">Slick</span><span class="p">.</span><span class="nx">Editors</span><span class="p">.</span><span class="nx">Text</span><span class="p">,</span></pre></div>             </td>           </tr>                               <tr id="section-14">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-14">&#182;</a>               </div>               <p>TODO: need a way to ensure we format date in the right way
-Plus what if dates are in distant past or future ... (?)
-'date': Slick.Editors.DateEditor,</p>             </td>             <td class="code">               <div class="highlight"><pre>          <span class="s1">&#39;date&#39;</span><span class="o">:</span> <span class="nx">Slick</span><span class="p">.</span><span class="nx">Editors</span><span class="p">.</span><span class="nx">Text</span><span class="p">,</span>
-          <span class="s1">&#39;boolean&#39;</span><span class="o">:</span> <span class="nx">Slick</span><span class="p">.</span><span class="nx">Editors</span><span class="p">.</span><span class="nx">YesNoSelectEditor</span></pre></div>             </td>           </tr>                               <tr id="section-15">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-15">&#182;</a>               </div>               <p>TODO: (?) percent ...</p>             </td>             <td class="code">               <div class="highlight"><pre>        <span class="p">};</span>
-        <span class="k">if</span> <span class="p">(</span><span class="nx">field</span><span class="p">.</span><span class="nx">type</span> <span class="k">in</span> <span class="nx">typeToEditorMap</span><span class="p">)</span> <span class="p">{</span>
-          <span class="nx">column</span><span class="p">.</span><span class="nx">editor</span> <span class="o">=</span> <span class="nx">typeToEditorMap</span><span class="p">[</span><span class="nx">field</span><span class="p">.</span><span class="nx">type</span><span class="p">]</span>
-        <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
-          <span class="nx">column</span><span class="p">.</span><span class="nx">editor</span> <span class="o">=</span> <span class="nx">Slick</span><span class="p">.</span><span class="nx">Editors</span><span class="p">.</span><span class="nx">LongText</span><span class="p">;</span>
-        <span class="p">}</span>
-      <span class="p">}</span>
-      <span class="nx">columns</span><span class="p">.</span><span class="nx">push</span><span class="p">(</span><span class="nx">column</span><span class="p">);</span>
-    <span class="p">});</span>    </pre></div>             </td>           </tr>                               <tr id="section-16">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-16">&#182;</a>               </div>               <p>Restrict the visible columns</p>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="kd">var</span> <span class="nx">visibleColumns</span> <span class="o">=</span> <span class="nx">_</span><span class="p">.</span><span class="nx">filter</span><span class="p">(</span><span class="nx">columns</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">column</span><span class="p">)</span> <span class="p">{</span>
-      <span class="k">return</span> <span class="nx">_</span><span class="p">.</span><span class="nx">indexOf</span><span class="p">(</span><span class="nx">self</span><span class="p">.</span><span class="nx">state</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s1">&#39;hiddenColumns&#39;</span><span class="p">),</span> <span class="nx">column</span><span class="p">.</span><span class="nx">id</span><span class="p">)</span> <span class="o">===</span> <span class="o">-</span><span class="mi">1</span><span class="p">;</span>
-    <span class="p">});</span></pre></div>             </td>           </tr>                               <tr id="section-17">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-17">&#182;</a>               </div>               <p>Order them if there is ordering info on the state</p>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="k">if</span> <span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">state</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s1">&#39;columnsOrder&#39;</span><span class="p">)</span> <span class="o">&amp;&amp;</span> <span class="k">this</span><span class="p">.</span><span class="nx">state</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s1">&#39;columnsOrder&#39;</span><span class="p">).</span><span class="nx">length</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
-      <span class="nx">visibleColumns</span> <span class="o">=</span> <span class="nx">visibleColumns</span><span class="p">.</span><span class="nx">sort</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">a</span><span class="p">,</span><span class="nx">b</span><span class="p">){</span>
-        <span class="k">return</span> <span class="nx">_</span><span class="p">.</span><span class="nx">indexOf</span><span class="p">(</span><span class="nx">self</span><span class="p">.</span><span class="nx">state</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s1">&#39;columnsOrder&#39;</span><span class="p">),</span><span class="nx">a</span><span class="p">.</span><span class="nx">id</span><span class="p">)</span> <span class="o">&gt;</span> <span class="nx">_</span><span class="p">.</span><span class="nx">indexOf</span><span class="p">(</span><span class="nx">self</span><span class="p">.</span><span class="nx">state</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s1">&#39;columnsOrder&#39;</span><span class="p">),</span><span class="nx">b</span><span class="p">.</span><span class="nx">id</span><span class="p">)</span> <span class="o">?</span> <span class="mi">1</span> <span class="o">:</span> <span class="o">-</span><span class="mi">1</span><span class="p">;</span>
-      <span class="p">});</span>
-      <span class="nx">columns</span> <span class="o">=</span> <span class="nx">columns</span><span class="p">.</span><span class="nx">sort</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">a</span><span class="p">,</span><span class="nx">b</span><span class="p">){</span>
-        <span class="k">return</span> <span class="nx">_</span><span class="p">.</span><span class="nx">indexOf</span><span class="p">(</span><span class="nx">self</span><span class="p">.</span><span class="nx">state</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s1">&#39;columnsOrder&#39;</span><span class="p">),</span><span class="nx">a</span><span class="p">.</span><span class="nx">id</span><span class="p">)</span> <span class="o">&gt;</span> <span class="nx">_</span><span class="p">.</span><span class="nx">indexOf</span><span class="p">(</span><span class="nx">self</span><span class="p">.</span><span class="nx">state</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s1">&#39;columnsOrder&#39;</span><span class="p">),</span><span class="nx">b</span><span class="p">.</span><span class="nx">id</span><span class="p">)</span> <span class="o">?</span> <span class="mi">1</span> <span class="o">:</span> <span class="o">-</span><span class="mi">1</span><span class="p">;</span>
-      <span class="p">});</span>
-    <span class="p">}</span></pre></div>             </td>           </tr>                               <tr id="section-18">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-18">&#182;</a>               </div>               <p>Move hidden columns to the end, so they appear at the bottom of the
-column picker</p>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="kd">var</span> <span class="nx">tempHiddenColumns</span> <span class="o">=</span> <span class="p">[];</span>
-    <span class="k">for</span> <span class="p">(</span><span class="kd">var</span> <span class="nx">i</span> <span class="o">=</span> <span class="nx">columns</span><span class="p">.</span><span class="nx">length</span> <span class="o">-</span><span class="mi">1</span><span class="p">;</span> <span class="nx">i</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">;</span> <span class="nx">i</span><span class="o">--</span><span class="p">){</span>
-      <span class="k">if</span> <span class="p">(</span><span class="nx">_</span><span class="p">.</span><span class="nx">indexOf</span><span class="p">(</span><span class="nx">_</span><span class="p">.</span><span class="nx">pluck</span><span class="p">(</span><span class="nx">visibleColumns</span><span class="p">,</span><span class="s1">&#39;id&#39;</span><span class="p">),</span><span class="nx">columns</span><span class="p">[</span><span class="nx">i</span><span class="p">].</span><span class="nx">id</span><span class="p">)</span> <span class="o">===</span> <span class="o">-</span><span class="mi">1</span><span class="p">){</span>
-        <span class="nx">tempHiddenColumns</span><span class="p">.</span><span class="nx">push</span><span class="p">(</span><span class="nx">columns</span><span class="p">.</span><span class="nx">splice</span><span class="p">(</span><span class="nx">i</span><span class="p">,</span><span class="mi">1</span><span class="p">)[</span><span class="mi">0</span><span class="p">]);</span>
-      <span class="p">}</span>
-    <span class="p">}</span>
-    <span class="nx">columns</span> <span class="o">=</span> <span class="nx">columns</span><span class="p">.</span><span class="nx">concat</span><span class="p">(</span><span class="nx">tempHiddenColumns</span><span class="p">);</span></pre></div>             </td>           </tr>                               <tr id="section-19">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-19">&#182;</a>               </div>               <p>Transform a model object into a row</p>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="kd">function</span> <span class="nx">toRow</span><span class="p">(</span><span class="nx">m</span><span class="p">)</span> <span class="p">{</span>
-      <span class="kd">var</span> <span class="nx">row</span> <span class="o">=</span> <span class="p">{};</span>
-      <span class="nx">self</span><span class="p">.</span><span class="nx">model</span><span class="p">.</span><span class="nx">fields</span><span class="p">.</span><span class="nx">each</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">field</span><span class="p">){</span>
-    <span class="kd">var</span> <span class="nx">render</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">;</span></pre></div>             </td>           </tr>                               <tr id="section-20">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-20">&#182;</a>               </div>               <p>when adding row from slickgrid the field value is undefined</p>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="k">if</span><span class="p">(</span><span class="o">!</span><span class="nx">_</span><span class="p">.</span><span class="nx">isUndefined</span><span class="p">(</span><span class="nx">m</span><span class="p">.</span><span class="nx">getFieldValueUnrendered</span><span class="p">(</span><span class="nx">field</span><span class="p">))){</span>
-       <span class="nx">render</span> <span class="o">=</span><span class="nx">m</span><span class="p">.</span><span class="nx">getFieldValueUnrendered</span><span class="p">(</span><span class="nx">field</span><span class="p">)</span>
-    <span class="p">}</span>
-          <span class="nx">row</span><span class="p">[</span><span class="nx">field</span><span class="p">.</span><span class="nx">id</span><span class="p">]</span> <span class="o">=</span> <span class="nx">render</span>
-      <span class="p">});</span>
-      <span class="k">return</span> <span class="nx">row</span><span class="p">;</span>
-    <span class="p">}</span>
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>my.SlickGrid = Backbone.View.extend({
+  initialize: <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(modelEtc)</span> </span>{
+    <span class="hljs-keyword">var</span> self = <span class="hljs-keyword">this</span>;
+    <span class="hljs-keyword">this</span>.$el.addClass(<span class="hljs-string">'recline-slickgrid'</span>);</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-3">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-3">&#182;</a>
+              </div>
+              <p>Template for row delete menu , change it if you don’t love </p>
 
-    <span class="kd">function</span> <span class="nx">RowSet</span><span class="p">()</span> <span class="p">{</span>
-      <span class="kd">var</span> <span class="nx">models</span> <span class="o">=</span> <span class="p">[];</span>
-      <span class="kd">var</span> <span class="nx">rows</span> <span class="o">=</span> <span class="p">[];</span>
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    <span class="hljs-keyword">this</span>.templates = {
+      <span class="hljs-string">"deleterow"</span> : <span class="hljs-string">'&lt;button href="#" class="recline-row-delete btn btn-default" title="Delete row"&gt;X&lt;/button&gt;'</span>
+    };
 
-      <span class="k">this</span><span class="p">.</span><span class="nx">push</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">model</span><span class="p">,</span> <span class="nx">row</span><span class="p">)</span> <span class="p">{</span>
-        <span class="nx">models</span><span class="p">.</span><span class="nx">push</span><span class="p">(</span><span class="nx">model</span><span class="p">);</span>
-        <span class="nx">rows</span><span class="p">.</span><span class="nx">push</span><span class="p">(</span><span class="nx">row</span><span class="p">);</span>
-      <span class="p">};</span>
+    _.bindAll(<span class="hljs-keyword">this</span>, <span class="hljs-string">'render'</span>, <span class="hljs-string">'onRecordChanged'</span>);
+    <span class="hljs-keyword">this</span>.listenTo(<span class="hljs-keyword">this</span>.model.records, <span class="hljs-string">'add remove reset'</span>, <span class="hljs-keyword">this</span>.render);
+    <span class="hljs-keyword">this</span>.listenTo(<span class="hljs-keyword">this</span>.model.records, <span class="hljs-string">'change'</span>, <span class="hljs-keyword">this</span>.onRecordChanged);
+    <span class="hljs-keyword">var</span> state = _.extend({
+        hiddenColumns: [],
+        columnsOrder: [],
+        columnsSort: {},
+        columnsWidth: [],
+        columnsEditor: [],
+        options: {},
+        fitColumns: <span class="hljs-literal">false</span>
+      }, modelEtc.state
 
-      <span class="k">this</span><span class="p">.</span><span class="nx">getLength</span> <span class="o">=</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span><span class="k">return</span> <span class="nx">rows</span><span class="p">.</span><span class="nx">length</span><span class="p">;</span> <span class="p">};</span>
-      <span class="k">this</span><span class="p">.</span><span class="nx">getItem</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">index</span><span class="p">)</span> <span class="p">{</span><span class="k">return</span> <span class="nx">rows</span><span class="p">[</span><span class="nx">index</span><span class="p">];};</span>
-      <span class="k">this</span><span class="p">.</span><span class="nx">getItemMetadata</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">index</span><span class="p">)</span> <span class="p">{</span><span class="k">return</span> <span class="p">{};};</span>
-      <span class="k">this</span><span class="p">.</span><span class="nx">getModel</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">index</span><span class="p">)</span> <span class="p">{</span><span class="k">return</span> <span class="nx">models</span><span class="p">[</span><span class="nx">index</span><span class="p">];};</span>
-      <span class="k">this</span><span class="p">.</span><span class="nx">getModelRow</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">m</span><span class="p">)</span> <span class="p">{</span><span class="k">return</span> <span class="nx">_</span><span class="p">.</span><span class="nx">indexOf</span><span class="p">(</span><span class="nx">models</span><span class="p">,</span> <span class="nx">m</span><span class="p">);};</span>
-      <span class="k">this</span><span class="p">.</span><span class="nx">updateItem</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">m</span><span class="p">,</span><span class="nx">i</span><span class="p">)</span> <span class="p">{</span>
-        <span class="nx">rows</span><span class="p">[</span><span class="nx">i</span><span class="p">]</span> <span class="o">=</span> <span class="nx">toRow</span><span class="p">(</span><span class="nx">m</span><span class="p">);</span>
-        <span class="nx">models</span><span class="p">[</span><span class="nx">i</span><span class="p">]</span> <span class="o">=</span> <span class="nx">m</span><span class="p">;</span>
-      <span class="p">};</span>
-     
-    <span class="p">}</span>
+    );
+    <span class="hljs-keyword">this</span>.state = <span class="hljs-keyword">new</span> recline.Model.ObjectState(state);
+    <span class="hljs-keyword">this</span>._slickHandler = <span class="hljs-keyword">new</span> Slick.EventHandler();</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-4">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-4">&#182;</a>
+              </div>
+              <p>add menu for new row , check if enableAddRow is set to true or not set</p>
 
-    <span class="kd">var</span> <span class="nx">data</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">RowSet</span><span class="p">();</span>
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    <span class="hljs-keyword">if</span>(<span class="hljs-keyword">this</span>.state.get(<span class="hljs-string">"gridOptions"</span>) 
+  &amp;&amp; <span class="hljs-keyword">this</span>.state.get(<span class="hljs-string">"gridOptions"</span>).enabledAddRow != <span class="hljs-literal">undefined</span> 
+      &amp;&amp; <span class="hljs-keyword">this</span>.state.get(<span class="hljs-string">"gridOptions"</span>).enabledAddRow == <span class="hljs-literal">true</span> ){
+      <span class="hljs-keyword">this</span>.editor    =  <span class="hljs-keyword">new</span>  my.GridControl()
+      <span class="hljs-keyword">this</span>.elSidebar =  <span class="hljs-keyword">this</span>.editor.$el
+  <span class="hljs-keyword">this</span>.listenTo(<span class="hljs-keyword">this</span>.editor.state, <span class="hljs-string">'change'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span></span>{   
+    <span class="hljs-keyword">this</span>.model.records.add(<span class="hljs-keyword">new</span> recline.Model.Record())
+      });
+    }
+  },
 
-    <span class="k">this</span><span class="p">.</span><span class="nx">model</span><span class="p">.</span><span class="nx">records</span><span class="p">.</span><span class="nx">each</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">doc</span><span class="p">){</span>
-      <span class="nx">data</span><span class="p">.</span><span class="nx">push</span><span class="p">(</span><span class="nx">doc</span><span class="p">,</span> <span class="nx">toRow</span><span class="p">(</span><span class="nx">doc</span><span class="p">));</span>
-    <span class="p">});</span>
+  onRecordChanged: <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(record)</span> </span>{</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-5">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-5">&#182;</a>
+              </div>
+              <p>Ignore if the grid is not yet drawn</p>
 
-    <span class="k">this</span><span class="p">.</span><span class="nx">grid</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Slick</span><span class="p">.</span><span class="nx">Grid</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">el</span><span class="p">,</span> <span class="nx">data</span><span class="p">,</span> <span class="nx">visibleColumns</span><span class="p">,</span> <span class="nx">options</span><span class="p">);</span></pre></div>             </td>           </tr>                               <tr id="section-21">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-21">&#182;</a>               </div>               <p>Column sorting</p>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="kd">var</span> <span class="nx">sortInfo</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">model</span><span class="p">.</span><span class="nx">queryState</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s1">&#39;sort&#39;</span><span class="p">);</span>
-    <span class="k">if</span> <span class="p">(</span><span class="nx">sortInfo</span><span class="p">){</span>
-      <span class="kd">var</span> <span class="nx">column</span> <span class="o">=</span> <span class="nx">sortInfo</span><span class="p">[</span><span class="mi">0</span><span class="p">].</span><span class="nx">field</span><span class="p">;</span>
-      <span class="kd">var</span> <span class="nx">sortAsc</span> <span class="o">=</span> <span class="nx">sortInfo</span><span class="p">[</span><span class="mi">0</span><span class="p">].</span><span class="nx">order</span> <span class="o">!==</span> <span class="s1">&#39;desc&#39;</span><span class="p">;</span>
-      <span class="k">this</span><span class="p">.</span><span class="nx">grid</span><span class="p">.</span><span class="nx">setSortColumn</span><span class="p">(</span><span class="nx">column</span><span class="p">,</span> <span class="nx">sortAsc</span><span class="p">);</span>
-    <span class="p">}</span>
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    <span class="hljs-keyword">if</span> (!<span class="hljs-keyword">this</span>.grid) {
+      <span class="hljs-keyword">return</span>;
+    }</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-6">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-6">&#182;</a>
+              </div>
+              <p>Let’s find the row corresponding to the index</p>
 
-    <span class="k">this</span><span class="p">.</span><span class="nx">_slickHandler</span><span class="p">.</span><span class="nx">subscribe</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">grid</span><span class="p">.</span><span class="nx">onSort</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">e</span><span class="p">,</span> <span class="nx">args</span><span class="p">){</span>
-      <span class="kd">var</span> <span class="nx">order</span> <span class="o">=</span> <span class="p">(</span><span class="nx">args</span><span class="p">.</span><span class="nx">sortAsc</span><span class="p">)</span> <span class="o">?</span> <span class="s1">&#39;asc&#39;</span><span class="o">:</span><span class="s1">&#39;desc&#39;</span><span class="p">;</span>
-      <span class="kd">var</span> <span class="nx">sort</span> <span class="o">=</span> <span class="p">[{</span>
-        <span class="nx">field</span><span class="o">:</span> <span class="nx">args</span><span class="p">.</span><span class="nx">sortCol</span><span class="p">.</span><span class="nx">field</span><span class="p">,</span>
-        <span class="nx">order</span><span class="o">:</span> <span class="nx">order</span>
-      <span class="p">}];</span>
-      <span class="nx">self</span><span class="p">.</span><span class="nx">model</span><span class="p">.</span><span class="nx">query</span><span class="p">({</span><span class="nx">sort</span><span class="o">:</span> <span class="nx">sort</span><span class="p">});</span>
-    <span class="p">});</span>
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    <span class="hljs-keyword">var</span> row_index = <span class="hljs-keyword">this</span>.grid.getData().getModelRow( record );
+    <span class="hljs-keyword">this</span>.grid.invalidateRow(row_index);
+    <span class="hljs-keyword">this</span>.grid.getData().updateItem(record, row_index);
+    <span class="hljs-keyword">this</span>.grid.render();
+  },
 
-    <span class="k">this</span><span class="p">.</span><span class="nx">_slickHandler</span><span class="p">.</span><span class="nx">subscribe</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">grid</span><span class="p">.</span><span class="nx">onColumnsReordered</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">e</span><span class="p">,</span> <span class="nx">args</span><span class="p">){</span>
-      <span class="nx">self</span><span class="p">.</span><span class="nx">state</span><span class="p">.</span><span class="nx">set</span><span class="p">({</span><span class="nx">columnsOrder</span><span class="o">:</span> <span class="nx">_</span><span class="p">.</span><span class="nx">pluck</span><span class="p">(</span><span class="nx">self</span><span class="p">.</span><span class="nx">grid</span><span class="p">.</span><span class="nx">getColumns</span><span class="p">(),</span><span class="s1">&#39;id&#39;</span><span class="p">)});</span>
-    <span class="p">});</span>
+  render: <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> </span>{
+    <span class="hljs-keyword">var</span> self = <span class="hljs-keyword">this</span>;
+    <span class="hljs-keyword">var</span> options = _.extend({
+      enableCellNavigation: <span class="hljs-literal">true</span>,
+      enableColumnReorder: <span class="hljs-literal">true</span>,
+      explicitInitialization: <span class="hljs-literal">true</span>,
+      syncColumnCellResize: <span class="hljs-literal">true</span>,
+      forceFitColumns: <span class="hljs-keyword">this</span>.state.get(<span class="hljs-string">'fitColumns'</span>)
+    }, self.state.get(<span class="hljs-string">'gridOptions'</span>));</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-7">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-7">&#182;</a>
+              </div>
+              <p>We need all columns, even the hidden ones, to show on the column picker</p>
 
-    <span class="k">this</span><span class="p">.</span><span class="nx">grid</span><span class="p">.</span><span class="nx">onColumnsResized</span><span class="p">.</span><span class="nx">subscribe</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">e</span><span class="p">,</span> <span class="nx">args</span><span class="p">){</span>
-        <span class="kd">var</span> <span class="nx">columns</span> <span class="o">=</span> <span class="nx">args</span><span class="p">.</span><span class="nx">grid</span><span class="p">.</span><span class="nx">getColumns</span><span class="p">();</span>
-        <span class="kd">var</span> <span class="nx">defaultColumnWidth</span> <span class="o">=</span> <span class="nx">args</span><span class="p">.</span><span class="nx">grid</span><span class="p">.</span><span class="nx">getOptions</span><span class="p">().</span><span class="nx">defaultColumnWidth</span><span class="p">;</span>
-        <span class="kd">var</span> <span class="nx">columnsWidth</span> <span class="o">=</span> <span class="p">[];</span>
-        <span class="nx">_</span><span class="p">.</span><span class="nx">each</span><span class="p">(</span><span class="nx">columns</span><span class="p">,</span><span class="kd">function</span><span class="p">(</span><span class="nx">column</span><span class="p">){</span>
-          <span class="k">if</span> <span class="p">(</span><span class="nx">column</span><span class="p">.</span><span class="nx">width</span> <span class="o">!=</span> <span class="nx">defaultColumnWidth</span><span class="p">){</span>
-            <span class="nx">columnsWidth</span><span class="p">.</span><span class="nx">push</span><span class="p">({</span><span class="nx">column</span><span class="o">:</span><span class="nx">column</span><span class="p">.</span><span class="nx">id</span><span class="p">,</span><span class="nx">width</span><span class="o">:</span><span class="nx">column</span><span class="p">.</span><span class="nx">width</span><span class="p">});</span>
-          <span class="p">}</span>
-        <span class="p">});</span>
-        <span class="nx">self</span><span class="p">.</span><span class="nx">state</span><span class="p">.</span><span class="nx">set</span><span class="p">({</span><span class="nx">columnsWidth</span><span class="o">:</span><span class="nx">columnsWidth</span><span class="p">});</span>
-    <span class="p">});</span>
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    <span class="hljs-keyword">var</span> columns = [];</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-8">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-8">&#182;</a>
+              </div>
+              <p>custom formatter as default one escapes html
+plus this way we distinguish between rendering/formatting and computed value (so e.g. sort still works …)
+row = row index, cell = cell index, value = value, columnDef = column definition, dataContext = full row values</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    <span class="hljs-keyword">var</span> formatter = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(row, cell, value, columnDef, dataContext)</span> </span>{
+      <span class="hljs-keyword">if</span>(columnDef.id == <span class="hljs-string">"del"</span>){
+        <span class="hljs-keyword">return</span> self.templates.deleterow 
+      }
+      <span class="hljs-keyword">var</span> field = self.model.fields.get(columnDef.id);
+      <span class="hljs-keyword">if</span> (field.renderer) {
+        <span class="hljs-keyword">return</span>  field.renderer(value, field, dataContext);
+      } <span class="hljs-keyword">else</span> {
+        <span class="hljs-keyword">return</span>  value 
+      }
+    };</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-9">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-9">&#182;</a>
+              </div>
+              <p>we need to be sure that user is entering a valid  input , for exemple if 
+field is date type and field.format =’YY-MM-DD’, we should be sure that 
+user enter a correct value </p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    <span class="hljs-keyword">var</span> validator = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(field)</span> </span>{
+      <span class="hljs-keyword">return</span> <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(value)</span></span>{
+        <span class="hljs-keyword">if</span> (field.type == <span class="hljs-string">"date"</span> &amp;&amp; <span class="hljs-built_in">isNaN</span>(<span class="hljs-built_in">Date</span>.parse(value))){
+          <span class="hljs-keyword">return</span> {
+            valid: <span class="hljs-literal">false</span>,
+            msg: <span class="hljs-string">"A date is required, check field field-date-format"</span>
+          };
+        } <span class="hljs-keyword">else</span> {
+          <span class="hljs-keyword">return</span> {valid: <span class="hljs-literal">true</span>, msg :<span class="hljs-literal">null</span> } 
+        }
+      }
+    };</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-10">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-10">&#182;</a>
+              </div>
+              <p>Add column for row reorder support</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    <span class="hljs-keyword">if</span> (<span class="hljs-keyword">this</span>.state.get(<span class="hljs-string">"gridOptions"</span>) &amp;&amp; <span class="hljs-keyword">this</span>.state.get(<span class="hljs-string">"gridOptions"</span>).enableReOrderRow == <span class="hljs-literal">true</span>) {
+      columns.push({
+        id: <span class="hljs-string">"#"</span>,
+        name: <span class="hljs-string">""</span>,
+        width: <span class="hljs-number">22</span>,
+        behavior: <span class="hljs-string">"selectAndMove"</span>,
+        selectable: <span class="hljs-literal">false</span>,
+        resizable: <span class="hljs-literal">false</span>,
+        cssClass: <span class="hljs-string">"recline-cell-reorder"</span>
+      })
+    }</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-11">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-11">&#182;</a>
+              </div>
+              <p>Add column for row delete support</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    <span class="hljs-keyword">if</span> (<span class="hljs-keyword">this</span>.state.get(<span class="hljs-string">"gridOptions"</span>) &amp;&amp; <span class="hljs-keyword">this</span>.state.get(<span class="hljs-string">"gridOptions"</span>).enabledDelRow == <span class="hljs-literal">true</span>) {
+      columns.push({
+        id: <span class="hljs-string">'del'</span>,
+        name: <span class="hljs-string">''</span>,
+        field: <span class="hljs-string">'del'</span>,
+        sortable: <span class="hljs-literal">true</span>,
+        width: <span class="hljs-number">38</span>,
+        formatter: formatter,
+        validator:validator
+      })
+    }
+
+    <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">sanitizeFieldName</span><span class="hljs-params">(name)</span> </span>{
+      <span class="hljs-keyword">var</span> sanitized = $(name).text();
+      <span class="hljs-keyword">return</span> (name !== sanitized &amp;&amp; sanitized !== <span class="hljs-string">''</span>) ? sanitized : name;
+    }
+
+    _.each(<span class="hljs-keyword">this</span>.model.fields.toJSON(),<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(field)</span></span>{
+      <span class="hljs-keyword">var</span> column = {
+        id: field.id,
+        name: sanitizeFieldName(field.label),
+        field: field.id,
+        sortable: <span class="hljs-literal">true</span>,
+        minWidth: <span class="hljs-number">80</span>,
+        formatter: formatter,
+        validator:validator(field)
+      };
+      <span class="hljs-keyword">var</span> widthInfo = _.find(self.state.get(<span class="hljs-string">'columnsWidth'</span>),<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(c)</span></span>{<span class="hljs-keyword">return</span> c.column === field.id;});
+      <span class="hljs-keyword">if</span> (widthInfo){
+        column.width = widthInfo.width;
+      }
+      <span class="hljs-keyword">var</span> editInfo = _.find(self.state.get(<span class="hljs-string">'columnsEditor'</span>),<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(c)</span></span>{<span class="hljs-keyword">return</span> c.column === field.id;});
+      <span class="hljs-keyword">if</span> (editInfo){
+        column.editor = editInfo.editor;
+      } <span class="hljs-keyword">else</span> {</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-12">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-12">&#182;</a>
+              </div>
+              <p>guess editor type</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>        <span class="hljs-keyword">var</span> typeToEditorMap = {
+          <span class="hljs-string">'string'</span>: Slick.Editors.LongText,
+          <span class="hljs-string">'integer'</span>: Slick.Editors.IntegerEditor,
+          <span class="hljs-string">'number'</span>: Slick.Editors.Text,</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-13">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-13">&#182;</a>
+              </div>
+              <p>TODO: need a way to ensure we format date in the right way
+Plus what if dates are in distant past or future … (?)
+‘date’: Slick.Editors.DateEditor,</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>          <span class="hljs-string">'date'</span>: Slick.Editors.Text,
+          <span class="hljs-string">'boolean'</span>: Slick.Editors.YesNoSelectEditor</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-14">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-14">&#182;</a>
+              </div>
+              <p>TODO: (?) percent …</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>        };
+        <span class="hljs-keyword">if</span> (field.type <span class="hljs-keyword">in</span> typeToEditorMap) {
+          column.editor = typeToEditorMap[field.type]
+        } <span class="hljs-keyword">else</span> {
+          column.editor = Slick.Editors.LongText;
+        }
+      }
+      columns.push(column);
+    });</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-15">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-15">&#182;</a>
+              </div>
+              <p>Restrict the visible columns</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    <span class="hljs-keyword">var</span> visibleColumns = _.filter(columns, <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(column)</span> </span>{
+      <span class="hljs-keyword">return</span> _.indexOf(self.state.get(<span class="hljs-string">'hiddenColumns'</span>), column.id) === -<span class="hljs-number">1</span>;
+    });</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-16">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-16">&#182;</a>
+              </div>
+              <p>Order them if there is ordering info on the state</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    <span class="hljs-keyword">if</span> (<span class="hljs-keyword">this</span>.state.get(<span class="hljs-string">'columnsOrder'</span>) &amp;&amp; <span class="hljs-keyword">this</span>.state.get(<span class="hljs-string">'columnsOrder'</span>).length &gt; <span class="hljs-number">0</span>) {
+      visibleColumns = visibleColumns.sort(<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(a,b)</span></span>{
+        <span class="hljs-keyword">return</span> _.indexOf(self.state.get(<span class="hljs-string">'columnsOrder'</span>),a.id) &gt; _.indexOf(self.state.get(<span class="hljs-string">'columnsOrder'</span>),b.id) ? <span class="hljs-number">1</span> : -<span class="hljs-number">1</span>;
+      });
+      columns = columns.sort(<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(a,b)</span></span>{
+        <span class="hljs-keyword">return</span> _.indexOf(self.state.get(<span class="hljs-string">'columnsOrder'</span>),a.id) &gt; _.indexOf(self.state.get(<span class="hljs-string">'columnsOrder'</span>),b.id) ? <span class="hljs-number">1</span> : -<span class="hljs-number">1</span>;
+      });
+    }</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-17">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-17">&#182;</a>
+              </div>
+              <p>Move hidden columns to the end, so they appear at the bottom of the
+column picker</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    <span class="hljs-keyword">var</span> tempHiddenColumns = [];
+    <span class="hljs-keyword">for</span> (<span class="hljs-keyword">var</span> i = columns.length -<span class="hljs-number">1</span>; i &gt;= <span class="hljs-number">0</span>; i--){
+      <span class="hljs-keyword">if</span> (_.indexOf(_.pluck(visibleColumns,<span class="hljs-string">'id'</span>),columns[i].id) === -<span class="hljs-number">1</span>){
+        tempHiddenColumns.push(columns.splice(i,<span class="hljs-number">1</span>)[<span class="hljs-number">0</span>]);
+      }
+    }
+    columns = columns.concat(tempHiddenColumns);</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-18">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-18">&#182;</a>
+              </div>
+              <p>Transform a model object into a row</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">toRow</span><span class="hljs-params">(m)</span> </span>{
+      <span class="hljs-keyword">var</span> row = {};
+      self.model.fields.each(<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(field)</span> </span>{
+        <span class="hljs-keyword">var</span> render = <span class="hljs-string">""</span>;</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-19">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-19">&#182;</a>
+              </div>
+              <p>when adding row from slickgrid the field value is undefined</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>        <span class="hljs-keyword">if</span>(!_.isUndefined(m.getFieldValueUnrendered(field))){
+           render =m.getFieldValueUnrendered(field)
+        }
+        row[field.id] = render
+      });
+      <span class="hljs-keyword">return</span> row;
+    }
+
+    <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">RowSet</span><span class="hljs-params">()</span> </span>{
+      <span class="hljs-keyword">var</span> models = [];
+      <span class="hljs-keyword">var</span> rows = [];
+
+      <span class="hljs-keyword">this</span>.push = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(model, row)</span> </span>{
+        models.push(model);
+        rows.push(row);
+      };
+
+      <span class="hljs-keyword">this</span>.getLength = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> </span>{<span class="hljs-keyword">return</span> rows.length; };
+      <span class="hljs-keyword">this</span>.getItem = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(index)</span> </span>{<span class="hljs-keyword">return</span> rows[index];};
+      <span class="hljs-keyword">this</span>.getItemMetadata = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(index)</span> </span>{<span class="hljs-keyword">return</span> {};};
+      <span class="hljs-keyword">this</span>.getModel = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(index)</span> </span>{<span class="hljs-keyword">return</span> models[index];};
+      <span class="hljs-keyword">this</span>.getModelRow = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(m)</span> </span>{<span class="hljs-keyword">return</span> _.indexOf(models, m);};
+      <span class="hljs-keyword">this</span>.updateItem = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(m,i)</span> </span>{
+        rows[i] = toRow(m);
+        models[i] = m;
+      };
+    }
+
+    <span class="hljs-keyword">var</span> data = <span class="hljs-keyword">new</span> RowSet();
+
+    <span class="hljs-keyword">this</span>.model.records.each(<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(doc)</span></span>{
+      data.push(doc, toRow(doc));
+    });
+
+    <span class="hljs-keyword">this</span>.grid = <span class="hljs-keyword">new</span> Slick.Grid(<span class="hljs-keyword">this</span>.el, data, visibleColumns, options);</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-20">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-20">&#182;</a>
+              </div>
+              <p>Column sorting</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    <span class="hljs-keyword">var</span> sortInfo = <span class="hljs-keyword">this</span>.model.queryState.get(<span class="hljs-string">'sort'</span>);
+    <span class="hljs-keyword">if</span> (sortInfo){
+      <span class="hljs-keyword">var</span> column = sortInfo[<span class="hljs-number">0</span>].field;
+      <span class="hljs-keyword">var</span> sortAsc = sortInfo[<span class="hljs-number">0</span>].order !== <span class="hljs-string">'desc'</span>;
+      <span class="hljs-keyword">this</span>.grid.setSortColumn(column, sortAsc);
+    }
+
+    <span class="hljs-keyword">if</span> (<span class="hljs-keyword">this</span>.state.get(<span class="hljs-string">"gridOptions"</span>) &amp;&amp; <span class="hljs-keyword">this</span>.state.get(<span class="hljs-string">"gridOptions"</span>).enableReOrderRow) {
+      <span class="hljs-keyword">this</span>._setupRowReordering();
+    }
     
-    <span class="k">this</span><span class="p">.</span><span class="nx">_slickHandler</span><span class="p">.</span><span class="nx">subscribe</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">grid</span><span class="p">.</span><span class="nx">onCellChange</span><span class="p">,</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">e</span><span class="p">,</span> <span class="nx">args</span><span class="p">)</span> <span class="p">{</span></pre></div>             </td>           </tr>                               <tr id="section-22">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-22">&#182;</a>               </div>               <p>We need to change the model associated value</p>             </td>             <td class="code">               <div class="highlight"><pre>      <span class="kd">var</span> <span class="nx">grid</span> <span class="o">=</span> <span class="nx">args</span><span class="p">.</span><span class="nx">grid</span><span class="p">;</span>
-      <span class="kd">var</span> <span class="nx">model</span> <span class="o">=</span> <span class="nx">data</span><span class="p">.</span><span class="nx">getModel</span><span class="p">(</span><span class="nx">args</span><span class="p">.</span><span class="nx">row</span><span class="p">);</span>
-      <span class="kd">var</span> <span class="nx">field</span> <span class="o">=</span> <span class="nx">grid</span><span class="p">.</span><span class="nx">getColumns</span><span class="p">()[</span><span class="nx">args</span><span class="p">.</span><span class="nx">cell</span><span class="p">].</span><span class="nx">id</span><span class="p">;</span>
-      <span class="kd">var</span> <span class="nx">v</span> <span class="o">=</span> <span class="p">{};</span>
-      <span class="nx">v</span><span class="p">[</span><span class="nx">field</span><span class="p">]</span> <span class="o">=</span> <span class="nx">args</span><span class="p">.</span><span class="nx">item</span><span class="p">[</span><span class="nx">field</span><span class="p">];</span>
-      <span class="nx">model</span><span class="p">.</span><span class="nx">set</span><span class="p">(</span><span class="nx">v</span><span class="p">);</span>
-    <span class="p">});</span>  
-    <span class="k">this</span><span class="p">.</span><span class="nx">_slickHandler</span><span class="p">.</span><span class="nx">subscribe</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">grid</span><span class="p">.</span><span class="nx">onClick</span><span class="p">,</span><span class="kd">function</span><span class="p">(</span><span class="nx">e</span><span class="p">,</span> <span class="nx">args</span><span class="p">){</span>
-      <span class="k">if</span> <span class="p">(</span><span class="nx">args</span><span class="p">.</span><span class="nx">cell</span> <span class="o">==</span> <span class="mi">0</span> <span class="o">&amp;&amp;</span> <span class="nx">self</span><span class="p">.</span><span class="nx">state</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s2">&quot;gridOptions&quot;</span><span class="p">).</span><span class="nx">enabledDelRow</span> <span class="o">==</span> <span class="kc">true</span><span class="p">){</span></pre></div>             </td>           </tr>                               <tr id="section-23">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-23">&#182;</a>               </div>               <p>We need to delete the associated model</p>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="kd">var</span> <span class="nx">model</span> <span class="o">=</span> <span class="nx">data</span><span class="p">.</span><span class="nx">getModel</span><span class="p">(</span><span class="nx">args</span><span class="p">.</span><span class="nx">row</span><span class="p">);</span>
-        <span class="nx">model</span><span class="p">.</span><span class="nx">destroy</span><span class="p">()</span>
-   <span class="p">}</span>
-     <span class="p">})</span> <span class="p">;</span>
+    <span class="hljs-keyword">this</span>._slickHandler.subscribe(<span class="hljs-keyword">this</span>.grid.onSort, <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(e, args)</span></span>{
+      <span class="hljs-keyword">var</span> order = (args.sortAsc) ? <span class="hljs-string">'asc'</span>:<span class="hljs-string">'desc'</span>;
+      <span class="hljs-keyword">var</span> sort = [{
+        field: args.sortCol.field,
+        order: order
+      }];
+      self.model.query({sort: sort});
+    });
     
-     <span class="kd">var</span> <span class="nx">columnpicker</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Slick</span><span class="p">.</span><span class="nx">Controls</span><span class="p">.</span><span class="nx">ColumnPicker</span><span class="p">(</span><span class="nx">columns</span><span class="p">,</span> <span class="k">this</span><span class="p">.</span><span class="nx">grid</span><span class="p">,</span>
-                                                       <span class="nx">_</span><span class="p">.</span><span class="nx">extend</span><span class="p">(</span><span class="nx">options</span><span class="p">,{</span><span class="nx">state</span><span class="o">:</span><span class="k">this</span><span class="p">.</span><span class="nx">state</span><span class="p">}));</span>
+    <span class="hljs-keyword">this</span>._slickHandler.subscribe(<span class="hljs-keyword">this</span>.grid.onColumnsReordered, <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(e, args)</span></span>{
+      self.state.set({columnsOrder: _.pluck(self.grid.getColumns(),<span class="hljs-string">'id'</span>)});
+    });
+    
+    <span class="hljs-keyword">this</span>.grid.onColumnsResized.subscribe(<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(e, args)</span></span>{
+        <span class="hljs-keyword">var</span> columns = args.grid.getColumns();
+        <span class="hljs-keyword">var</span> defaultColumnWidth = args.grid.getOptions().defaultColumnWidth;
+        <span class="hljs-keyword">var</span> columnsWidth = [];
+        _.each(columns,<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(column)</span></span>{
+          <span class="hljs-keyword">if</span> (column.width != defaultColumnWidth){
+            columnsWidth.push({column:column.id,width:column.width});
+          }
+        });
+        self.state.set({columnsWidth:columnsWidth});
+    });
+    
+    <span class="hljs-keyword">this</span>._slickHandler.subscribe(<span class="hljs-keyword">this</span>.grid.onCellChange, <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(e, args)</span> </span>{</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-21">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-21">&#182;</a>
+              </div>
+              <p>We need to change the model associated value</p>
 
-    <span class="k">if</span> <span class="p">(</span><span class="nx">self</span><span class="p">.</span><span class="nx">visible</span><span class="p">){</span>
-      <span class="nx">self</span><span class="p">.</span><span class="nx">grid</span><span class="p">.</span><span class="nx">init</span><span class="p">();</span>
-      <span class="nx">self</span><span class="p">.</span><span class="nx">rendered</span> <span class="o">=</span> <span class="kc">true</span><span class="p">;</span>
-    <span class="p">}</span> <span class="k">else</span> <span class="p">{</span></pre></div>             </td>           </tr>                               <tr id="section-24">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-24">&#182;</a>               </div>               <p>Defer rendering until the view is visible</p>             </td>             <td class="code">               <div class="highlight"><pre>      <span class="nx">self</span><span class="p">.</span><span class="nx">rendered</span> <span class="o">=</span> <span class="kc">false</span><span class="p">;</span>
-    <span class="p">}</span>
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>      <span class="hljs-keyword">var</span> grid = args.grid;
+      <span class="hljs-keyword">var</span> model = data.getModel(args.row);
+      <span class="hljs-keyword">var</span> field = grid.getColumns()[args.cell].id;
+      <span class="hljs-keyword">var</span> v = {};
+      v[field] = args.item[field];
+      model.set(v);
+    });  
+    <span class="hljs-keyword">this</span>._slickHandler.subscribe(<span class="hljs-keyword">this</span>.grid.onClick,<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(e, args)</span></span>{</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-22">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-22">&#182;</a>
+              </div>
+              <p>try catch , because this fail in qunit , but no
+error on browser.</p>
 
-    <span class="k">return</span> <span class="k">this</span><span class="p">;</span>
-  <span class="p">},</span>
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>      <span class="hljs-keyword">try</span>{e.preventDefault()}<span class="hljs-keyword">catch</span>(e){}</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-23">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-23">&#182;</a>
+              </div>
+              <p>The cell of grid that handle row delete is The first cell (0) if
+The grid ReOrder is not present ie  enableReOrderRow == false
+else it is The the second cell (1) , because The 0 is now cell
+that handle row Reoder.</p>
 
-  <span class="nx">remove</span><span class="o">:</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
-    <span class="k">this</span><span class="p">.</span><span class="nx">_slickHandler</span><span class="p">.</span><span class="nx">unsubscribeAll</span><span class="p">();</span>
-    <span class="nx">Backbone</span><span class="p">.</span><span class="nx">View</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">remove</span><span class="p">.</span><span class="nx">apply</span><span class="p">(</span><span class="k">this</span><span class="p">,</span> <span class="nx">arguments</span><span class="p">);</span>
-  <span class="p">},</span>
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>      <span class="hljs-keyword">var</span> cell =<span class="hljs-number">0</span>
+      <span class="hljs-keyword">if</span>(self.state.get(<span class="hljs-string">"gridOptions"</span>) 
+  &amp;&amp; self.state.get(<span class="hljs-string">"gridOptions"</span>).enableReOrderRow != <span class="hljs-literal">undefined</span> 
+        &amp;&amp; self.state.get(<span class="hljs-string">"gridOptions"</span>).enableReOrderRow == <span class="hljs-literal">true</span> ){
+        cell =<span class="hljs-number">1</span>
+      }
+      <span class="hljs-keyword">if</span> (args.cell == cell &amp;&amp; self.state.get(<span class="hljs-string">"gridOptions"</span>).enabledDelRow == <span class="hljs-literal">true</span>){</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-24">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-24">&#182;</a>
+              </div>
+              <p>We need to delete the associated model</p>
 
-  <span class="nx">show</span><span class="o">:</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span></pre></div>             </td>           </tr>                               <tr id="section-25">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-25">&#182;</a>               </div>               <p>If the div is hidden, SlickGrid will calculate wrongly some
-sizes so we must render it explicitly when the view is visible</p>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="k">this</span><span class="p">.</span><span class="nx">rendered</span><span class="p">){</span>
-      <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="k">this</span><span class="p">.</span><span class="nx">grid</span><span class="p">){</span>
-        <span class="k">this</span><span class="p">.</span><span class="nx">render</span><span class="p">();</span>
-      <span class="p">}</span>
-      <span class="k">this</span><span class="p">.</span><span class="nx">grid</span><span class="p">.</span><span class="nx">init</span><span class="p">();</span>
-      <span class="k">this</span><span class="p">.</span><span class="nx">rendered</span> <span class="o">=</span> <span class="kc">true</span><span class="p">;</span>
-    <span class="p">}</span>
-    <span class="k">this</span><span class="p">.</span><span class="nx">visible</span> <span class="o">=</span> <span class="kc">true</span><span class="p">;</span>
-  <span class="p">},</span>
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>          <span class="hljs-keyword">var</span> model = data.getModel(args.row);
+          model.destroy()
+        }
+    }) ;
+    <span class="hljs-keyword">var</span> columnpicker = <span class="hljs-keyword">new</span> Slick.Controls.ColumnPicker(columns, <span class="hljs-keyword">this</span>.grid,
+                                                       _.extend(options,{state:<span class="hljs-keyword">this</span>.state}));
+    <span class="hljs-keyword">if</span> (self.visible){
+      self.grid.init();
+      self.rendered = <span class="hljs-literal">true</span>;
+    } <span class="hljs-keyword">else</span> {</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-25">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-25">&#182;</a>
+              </div>
+              <p>Defer rendering until the view is visible</p>
 
-  <span class="nx">hide</span><span class="o">:</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
-    <span class="k">this</span><span class="p">.</span><span class="nx">visible</span> <span class="o">=</span> <span class="kc">false</span><span class="p">;</span>
-  <span class="p">}</span>
-<span class="p">});</span>
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>      self.rendered = <span class="hljs-literal">false</span>;
+    }
+    <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>;
+  },</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-26">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-26">&#182;</a>
+              </div>
+              <p>Row reordering support based on
+<a href="https://github.com/mleibman/SlickGrid/blob/gh-pages/examples/example9-row-reordering.html">https://github.com/mleibman/SlickGrid/blob/gh-pages/examples/example9-row-reordering.html</a></p>
 
-<span class="p">})(</span><span class="nx">jQuery</span><span class="p">,</span> <span class="nx">recline</span><span class="p">.</span><span class="nx">View</span><span class="p">);</span>
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  _setupRowReordering: <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> </span>{
+    <span class="hljs-keyword">var</span> self = <span class="hljs-keyword">this</span>;
+    self.grid.setSelectionModel(<span class="hljs-keyword">new</span> Slick.RowSelectionModel());
 
-<span class="cm">/*</span>
-<span class="cm">* Context menu for the column picker, adapted from</span>
-<span class="cm">* http://mleibman.github.com/SlickGrid/examples/example-grouping</span>
-<span class="cm">*</span>
-<span class="cm">*/</span>
-<span class="p">(</span><span class="kd">function</span> <span class="p">(</span><span class="nx">$</span><span class="p">)</span> <span class="p">{</span>
-  <span class="kd">function</span> <span class="nx">SlickColumnPicker</span><span class="p">(</span><span class="nx">columns</span><span class="p">,</span> <span class="nx">grid</span><span class="p">,</span> <span class="nx">options</span><span class="p">)</span> <span class="p">{</span>
-    <span class="kd">var</span> <span class="nx">$menu</span><span class="p">;</span>
-    <span class="kd">var</span> <span class="nx">columnCheckboxes</span><span class="p">;</span>
+    <span class="hljs-keyword">var</span> moveRowsPlugin = <span class="hljs-keyword">new</span> Slick.RowMoveManager({
+      cancelEditOnDrag: <span class="hljs-literal">true</span>
+    });
 
-    <span class="kd">var</span> <span class="nx">defaults</span> <span class="o">=</span> <span class="p">{</span>
-      <span class="nx">fadeSpeed</span><span class="o">:</span><span class="mi">250</span>
-    <span class="p">};</span>
+    moveRowsPlugin.onBeforeMoveRows.subscribe(<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(e, data)</span> </span>{
+      <span class="hljs-keyword">for</span> (<span class="hljs-keyword">var</span> i = <span class="hljs-number">0</span>; i &lt; data.rows.length; i++) {</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-27">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-27">&#182;</a>
+              </div>
+              <p>no point in moving before or after itself</p>
 
-    <span class="kd">function</span> <span class="nx">init</span><span class="p">()</span> <span class="p">{</span>
-      <span class="nx">grid</span><span class="p">.</span><span class="nx">onHeaderContextMenu</span><span class="p">.</span><span class="nx">subscribe</span><span class="p">(</span><span class="nx">handleHeaderContextMenu</span><span class="p">);</span>
-      <span class="nx">options</span> <span class="o">=</span> <span class="nx">$</span><span class="p">.</span><span class="nx">extend</span><span class="p">({},</span> <span class="nx">defaults</span><span class="p">,</span> <span class="nx">options</span><span class="p">);</span>
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>        <span class="hljs-keyword">if</span> (data.rows[i] == data.insertBefore || data.rows[i] == data.insertBefore - <span class="hljs-number">1</span>) {
+          e.stopPropagation();
+          <span class="hljs-keyword">return</span> <span class="hljs-literal">false</span>;
+        }
+      }
+      <span class="hljs-keyword">return</span> <span class="hljs-literal">true</span>;
+    });
+    
+    moveRowsPlugin.onMoveRows.subscribe(<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(e, args)</span> </span>{
+      <span class="hljs-keyword">var</span> extractedRows = [], left, right;
+      <span class="hljs-keyword">var</span> rows = args.rows;
+      <span class="hljs-keyword">var</span> insertBefore = args.insertBefore;
 
-      <span class="nx">$menu</span> <span class="o">=</span> <span class="nx">$</span><span class="p">(</span><span class="s1">&#39;&lt;ul class=&quot;dropdown-menu slick-contextmenu&quot; style=&quot;display:none;position:absolute;z-index:20;&quot; /&gt;&#39;</span><span class="p">).</span><span class="nx">appendTo</span><span class="p">(</span><span class="nb">document</span><span class="p">.</span><span class="nx">body</span><span class="p">);</span>
+      <span class="hljs-keyword">var</span> data = self.model.records.toJSON()      
+      left = data.slice(<span class="hljs-number">0</span>, insertBefore);
+      right= data.slice(insertBefore, data.length);
+      
+      rows.sort(<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(a,b)</span> </span>{ <span class="hljs-keyword">return</span> a-b; });
 
-      <span class="nx">$menu</span><span class="p">.</span><span class="nx">bind</span><span class="p">(</span><span class="s1">&#39;mouseleave&#39;</span><span class="p">,</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">e</span><span class="p">)</span> <span class="p">{</span>
-        <span class="nx">$</span><span class="p">(</span><span class="k">this</span><span class="p">).</span><span class="nx">fadeOut</span><span class="p">(</span><span class="nx">options</span><span class="p">.</span><span class="nx">fadeSpeed</span><span class="p">);</span>
-      <span class="p">});</span>
-      <span class="nx">$menu</span><span class="p">.</span><span class="nx">bind</span><span class="p">(</span><span class="s1">&#39;click&#39;</span><span class="p">,</span> <span class="nx">updateColumn</span><span class="p">);</span>
+      <span class="hljs-keyword">for</span> (<span class="hljs-keyword">var</span> i = <span class="hljs-number">0</span>; i &lt; rows.length; i++) {
+          extractedRows.push(data[rows[i]]);
+      }
 
-    <span class="p">}</span>
+      rows.reverse();
 
-    <span class="kd">function</span> <span class="nx">handleHeaderContextMenu</span><span class="p">(</span><span class="nx">e</span><span class="p">,</span> <span class="nx">args</span><span class="p">)</span> <span class="p">{</span>
-      <span class="nx">e</span><span class="p">.</span><span class="nx">preventDefault</span><span class="p">();</span>
-      <span class="nx">$menu</span><span class="p">.</span><span class="nx">empty</span><span class="p">();</span>
-      <span class="nx">columnCheckboxes</span> <span class="o">=</span> <span class="p">[];</span>
+      <span class="hljs-keyword">for</span> (<span class="hljs-keyword">var</span> i = <span class="hljs-number">0</span>; i &lt; rows.length; i++) {
+        <span class="hljs-keyword">var</span> row = rows[i];
+        <span class="hljs-keyword">if</span> (row &lt; insertBefore) {
+          left.splice(row, <span class="hljs-number">1</span>);
+        } <span class="hljs-keyword">else</span> {
+          right.splice(row - insertBefore, <span class="hljs-number">1</span>);
+        }
+      }
 
-      <span class="kd">var</span> <span class="nx">$li</span><span class="p">,</span> <span class="nx">$input</span><span class="p">;</span>
-      <span class="k">for</span> <span class="p">(</span><span class="kd">var</span> <span class="nx">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="nx">i</span> <span class="o">&lt;</span> <span class="nx">columns</span><span class="p">.</span><span class="nx">length</span><span class="p">;</span> <span class="nx">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
-        <span class="nx">$li</span> <span class="o">=</span> <span class="nx">$</span><span class="p">(</span><span class="s1">&#39;&lt;li /&gt;&#39;</span><span class="p">).</span><span class="nx">appendTo</span><span class="p">(</span><span class="nx">$menu</span><span class="p">);</span>
-        <span class="nx">$input</span> <span class="o">=</span> <span class="nx">$</span><span class="p">(</span><span class="s1">&#39;&lt;input type=&quot;checkbox&quot; /&gt;&#39;</span><span class="p">).</span><span class="nx">data</span><span class="p">(</span><span class="s1">&#39;column-id&#39;</span><span class="p">,</span> <span class="nx">columns</span><span class="p">[</span><span class="nx">i</span><span class="p">].</span><span class="nx">id</span><span class="p">).</span><span class="nx">attr</span><span class="p">(</span><span class="s1">&#39;id&#39;</span><span class="p">,</span><span class="s1">&#39;slick-column-vis-&#39;</span><span class="o">+</span><span class="nx">columns</span><span class="p">[</span><span class="nx">i</span><span class="p">].</span><span class="nx">id</span><span class="p">);</span>
-        <span class="nx">columnCheckboxes</span><span class="p">.</span><span class="nx">push</span><span class="p">(</span><span class="nx">$input</span><span class="p">);</span>
+      data = left.concat(extractedRows.concat(right));
+      <span class="hljs-keyword">var</span> selectedRows = [];
+      <span class="hljs-keyword">for</span> (<span class="hljs-keyword">var</span> i = <span class="hljs-number">0</span>; i &lt; rows.length; i++)
+        selectedRows.push(left.length + i);      
 
-        <span class="k">if</span> <span class="p">(</span><span class="nx">grid</span><span class="p">.</span><span class="nx">getColumnIndex</span><span class="p">(</span><span class="nx">columns</span><span class="p">[</span><span class="nx">i</span><span class="p">].</span><span class="nx">id</span><span class="p">)</span> <span class="o">!==</span> <span class="kc">null</span><span class="p">)</span> <span class="p">{</span>
-          <span class="nx">$input</span><span class="p">.</span><span class="nx">attr</span><span class="p">(</span><span class="s1">&#39;checked&#39;</span><span class="p">,</span> <span class="s1">&#39;checked&#39;</span><span class="p">);</span>
-        <span class="p">}</span>
-        <span class="nx">$input</span><span class="p">.</span><span class="nx">appendTo</span><span class="p">(</span><span class="nx">$li</span><span class="p">);</span>
-        <span class="nx">$</span><span class="p">(</span><span class="s1">&#39;&lt;label /&gt;&#39;</span><span class="p">)</span>
-            <span class="p">.</span><span class="nx">text</span><span class="p">(</span><span class="nx">columns</span><span class="p">[</span><span class="nx">i</span><span class="p">].</span><span class="nx">name</span><span class="p">)</span>
-            <span class="p">.</span><span class="nx">attr</span><span class="p">(</span><span class="s1">&#39;for&#39;</span><span class="p">,</span><span class="s1">&#39;slick-column-vis-&#39;</span><span class="o">+</span><span class="nx">columns</span><span class="p">[</span><span class="nx">i</span><span class="p">].</span><span class="nx">id</span><span class="p">)</span>
-            <span class="p">.</span><span class="nx">appendTo</span><span class="p">(</span><span class="nx">$li</span><span class="p">);</span>
-      <span class="p">}</span>
-      <span class="nx">$</span><span class="p">(</span><span class="s1">&#39;&lt;li/&gt;&#39;</span><span class="p">).</span><span class="nx">addClass</span><span class="p">(</span><span class="s1">&#39;divider&#39;</span><span class="p">).</span><span class="nx">appendTo</span><span class="p">(</span><span class="nx">$menu</span><span class="p">);</span>
-      <span class="nx">$li</span> <span class="o">=</span> <span class="nx">$</span><span class="p">(</span><span class="s1">&#39;&lt;li /&gt;&#39;</span><span class="p">).</span><span class="nx">data</span><span class="p">(</span><span class="s1">&#39;option&#39;</span><span class="p">,</span> <span class="s1">&#39;autoresize&#39;</span><span class="p">).</span><span class="nx">appendTo</span><span class="p">(</span><span class="nx">$menu</span><span class="p">);</span>
-      <span class="nx">$input</span> <span class="o">=</span> <span class="nx">$</span><span class="p">(</span><span class="s1">&#39;&lt;input type=&quot;checkbox&quot; /&gt;&#39;</span><span class="p">).</span><span class="nx">data</span><span class="p">(</span><span class="s1">&#39;option&#39;</span><span class="p">,</span> <span class="s1">&#39;autoresize&#39;</span><span class="p">).</span><span class="nx">attr</span><span class="p">(</span><span class="s1">&#39;id&#39;</span><span class="p">,</span><span class="s1">&#39;slick-option-autoresize&#39;</span><span class="p">);</span>
-      <span class="nx">$input</span><span class="p">.</span><span class="nx">appendTo</span><span class="p">(</span><span class="nx">$li</span><span class="p">);</span>
-      <span class="nx">$</span><span class="p">(</span><span class="s1">&#39;&lt;label /&gt;&#39;</span><span class="p">)</span>
-          <span class="p">.</span><span class="nx">text</span><span class="p">(</span><span class="s1">&#39;Force fit columns&#39;</span><span class="p">)</span>
-          <span class="p">.</span><span class="nx">attr</span><span class="p">(</span><span class="s1">&#39;for&#39;</span><span class="p">,</span><span class="s1">&#39;slick-option-autoresize&#39;</span><span class="p">)</span>
-          <span class="p">.</span><span class="nx">appendTo</span><span class="p">(</span><span class="nx">$li</span><span class="p">);</span>
-      <span class="k">if</span> <span class="p">(</span><span class="nx">grid</span><span class="p">.</span><span class="nx">getOptions</span><span class="p">().</span><span class="nx">forceFitColumns</span><span class="p">)</span> <span class="p">{</span>
-        <span class="nx">$input</span><span class="p">.</span><span class="nx">attr</span><span class="p">(</span><span class="s1">&#39;checked&#39;</span><span class="p">,</span> <span class="s1">&#39;checked&#39;</span><span class="p">);</span>
-      <span class="p">}</span>
+      self.model.records.reset(data)
+      
+    });</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-28">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-28">&#182;</a>
+              </div>
+              <p>register The plugin to handle row Reorder</p>
 
-      <span class="nx">$menu</span><span class="p">.</span><span class="nx">css</span><span class="p">(</span><span class="s1">&#39;top&#39;</span><span class="p">,</span> <span class="nx">e</span><span class="p">.</span><span class="nx">pageY</span> <span class="o">-</span> <span class="mi">10</span><span class="p">)</span>
-          <span class="p">.</span><span class="nx">css</span><span class="p">(</span><span class="s1">&#39;left&#39;</span><span class="p">,</span> <span class="nx">e</span><span class="p">.</span><span class="nx">pageX</span> <span class="o">-</span> <span class="mi">10</span><span class="p">)</span>
-          <span class="p">.</span><span class="nx">fadeIn</span><span class="p">(</span><span class="nx">options</span><span class="p">.</span><span class="nx">fadeSpeed</span><span class="p">);</span>
-    <span class="p">}</span>
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    <span class="hljs-keyword">if</span>(<span class="hljs-keyword">this</span>.state.get(<span class="hljs-string">"gridOptions"</span>) &amp;&amp; <span class="hljs-keyword">this</span>.state.get(<span class="hljs-string">"gridOptions"</span>).enableReOrderRow) {
+      self.grid.registerPlugin(moveRowsPlugin);
+    }
+  },
 
-    <span class="kd">function</span> <span class="nx">updateColumn</span><span class="p">(</span><span class="nx">e</span><span class="p">)</span> <span class="p">{</span>
-      <span class="kd">var</span> <span class="nx">checkbox</span><span class="p">;</span>
+  remove: <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">()</span> </span>{
+    <span class="hljs-keyword">this</span>._slickHandler.unsubscribeAll();
+    Backbone.View.prototype.remove.apply(<span class="hljs-keyword">this</span>, <span class="hljs-built_in">arguments</span>);
+  },
 
-      <span class="k">if</span> <span class="p">(</span><span class="nx">$</span><span class="p">(</span><span class="nx">e</span><span class="p">.</span><span class="nx">target</span><span class="p">).</span><span class="nx">data</span><span class="p">(</span><span class="s1">&#39;option&#39;</span><span class="p">)</span> <span class="o">===</span> <span class="s1">&#39;autoresize&#39;</span><span class="p">)</span> <span class="p">{</span>
-        <span class="kd">var</span> <span class="nx">checked</span><span class="p">;</span>
-        <span class="k">if</span> <span class="p">(</span><span class="nx">$</span><span class="p">(</span><span class="nx">e</span><span class="p">.</span><span class="nx">target</span><span class="p">).</span><span class="nx">is</span><span class="p">(</span><span class="s1">&#39;li&#39;</span><span class="p">)){</span>
-            <span class="nx">checkbox</span> <span class="o">=</span> <span class="nx">$</span><span class="p">(</span><span class="nx">e</span><span class="p">.</span><span class="nx">target</span><span class="p">).</span><span class="nx">find</span><span class="p">(</span><span class="s1">&#39;input&#39;</span><span class="p">).</span><span class="nx">first</span><span class="p">();</span>
-            <span class="nx">checked</span> <span class="o">=</span> <span class="o">!</span><span class="nx">checkbox</span><span class="p">.</span><span class="nx">is</span><span class="p">(</span><span class="s1">&#39;:checked&#39;</span><span class="p">);</span>
-            <span class="nx">checkbox</span><span class="p">.</span><span class="nx">attr</span><span class="p">(</span><span class="s1">&#39;checked&#39;</span><span class="p">,</span><span class="nx">checked</span><span class="p">);</span>
-        <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
-          <span class="nx">checked</span> <span class="o">=</span> <span class="nx">e</span><span class="p">.</span><span class="nx">target</span><span class="p">.</span><span class="nx">checked</span><span class="p">;</span>
-        <span class="p">}</span>
+  show: <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> </span>{</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-29">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-29">&#182;</a>
+              </div>
+              <p>If the div is hidden, SlickGrid will calculate wrongly some
+sizes so we must render it explicitly when the view is visible</p>
 
-        <span class="k">if</span> <span class="p">(</span><span class="nx">checked</span><span class="p">)</span> <span class="p">{</span>
-          <span class="nx">grid</span><span class="p">.</span><span class="nx">setOptions</span><span class="p">({</span><span class="nx">forceFitColumns</span><span class="o">:</span><span class="kc">true</span><span class="p">});</span>
-          <span class="nx">grid</span><span class="p">.</span><span class="nx">autosizeColumns</span><span class="p">();</span>
-        <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
-          <span class="nx">grid</span><span class="p">.</span><span class="nx">setOptions</span><span class="p">({</span><span class="nx">forceFitColumns</span><span class="o">:</span><span class="kc">false</span><span class="p">});</span>
-        <span class="p">}</span>
-        <span class="nx">options</span><span class="p">.</span><span class="nx">state</span><span class="p">.</span><span class="nx">set</span><span class="p">({</span><span class="nx">fitColumns</span><span class="o">:</span><span class="nx">checked</span><span class="p">});</span>
-        <span class="k">return</span><span class="p">;</span>
-      <span class="p">}</span>
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    <span class="hljs-keyword">if</span> (!<span class="hljs-keyword">this</span>.rendered){
+      <span class="hljs-keyword">if</span> (!<span class="hljs-keyword">this</span>.grid){
+        <span class="hljs-keyword">this</span>.render();
+      }
+      <span class="hljs-keyword">this</span>.grid.init();
+      <span class="hljs-keyword">this</span>.rendered = <span class="hljs-literal">true</span>;
+    }
+    <span class="hljs-keyword">this</span>.visible = <span class="hljs-literal">true</span>;
+  },
 
-      <span class="k">if</span> <span class="p">((</span><span class="nx">$</span><span class="p">(</span><span class="nx">e</span><span class="p">.</span><span class="nx">target</span><span class="p">).</span><span class="nx">is</span><span class="p">(</span><span class="s1">&#39;li&#39;</span><span class="p">)</span> <span class="o">&amp;&amp;</span> <span class="o">!</span><span class="nx">$</span><span class="p">(</span><span class="nx">e</span><span class="p">.</span><span class="nx">target</span><span class="p">).</span><span class="nx">hasClass</span><span class="p">(</span><span class="s1">&#39;divider&#39;</span><span class="p">))</span> <span class="o">||</span>
-            <span class="nx">$</span><span class="p">(</span><span class="nx">e</span><span class="p">.</span><span class="nx">target</span><span class="p">).</span><span class="nx">is</span><span class="p">(</span><span class="s1">&#39;input&#39;</span><span class="p">))</span> <span class="p">{</span>
-        <span class="k">if</span> <span class="p">(</span><span class="nx">$</span><span class="p">(</span><span class="nx">e</span><span class="p">.</span><span class="nx">target</span><span class="p">).</span><span class="nx">is</span><span class="p">(</span><span class="s1">&#39;li&#39;</span><span class="p">)){</span>
-            <span class="nx">checkbox</span> <span class="o">=</span> <span class="nx">$</span><span class="p">(</span><span class="nx">e</span><span class="p">.</span><span class="nx">target</span><span class="p">).</span><span class="nx">find</span><span class="p">(</span><span class="s1">&#39;input&#39;</span><span class="p">).</span><span class="nx">first</span><span class="p">();</span>
-            <span class="nx">checkbox</span><span class="p">.</span><span class="nx">attr</span><span class="p">(</span><span class="s1">&#39;checked&#39;</span><span class="p">,</span><span class="o">!</span><span class="nx">checkbox</span><span class="p">.</span><span class="nx">is</span><span class="p">(</span><span class="s1">&#39;:checked&#39;</span><span class="p">));</span>
-        <span class="p">}</span>
-        <span class="kd">var</span> <span class="nx">visibleColumns</span> <span class="o">=</span> <span class="p">[];</span>
-        <span class="kd">var</span> <span class="nx">hiddenColumnsIds</span> <span class="o">=</span> <span class="p">[];</span>
-        <span class="nx">$</span><span class="p">.</span><span class="nx">each</span><span class="p">(</span><span class="nx">columnCheckboxes</span><span class="p">,</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">i</span><span class="p">,</span> <span class="nx">e</span><span class="p">)</span> <span class="p">{</span>
-          <span class="k">if</span> <span class="p">(</span><span class="nx">$</span><span class="p">(</span><span class="k">this</span><span class="p">).</span><span class="nx">is</span><span class="p">(</span><span class="s1">&#39;:checked&#39;</span><span class="p">))</span> <span class="p">{</span>
-            <span class="nx">visibleColumns</span><span class="p">.</span><span class="nx">push</span><span class="p">(</span><span class="nx">columns</span><span class="p">[</span><span class="nx">i</span><span class="p">]);</span>
-          <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
-            <span class="nx">hiddenColumnsIds</span><span class="p">.</span><span class="nx">push</span><span class="p">(</span><span class="nx">columns</span><span class="p">[</span><span class="nx">i</span><span class="p">].</span><span class="nx">id</span><span class="p">);</span>
-          <span class="p">}</span>
-        <span class="p">});</span>
+  hide: <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> </span>{
+    <span class="hljs-keyword">this</span>.visible = <span class="hljs-literal">false</span>;
+  }
+});</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-30">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-30">&#182;</a>
+              </div>
+              <p>Add new grid Control to display a new row add menu bouton
+It display a simple side-bar menu ,for user to add new 
+row to grid </p>
 
-        <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="nx">visibleColumns</span><span class="p">.</span><span class="nx">length</span><span class="p">)</span> <span class="p">{</span>
-          <span class="nx">$</span><span class="p">(</span><span class="nx">e</span><span class="p">.</span><span class="nx">target</span><span class="p">).</span><span class="nx">attr</span><span class="p">(</span><span class="s1">&#39;checked&#39;</span><span class="p">,</span> <span class="s1">&#39;checked&#39;</span><span class="p">);</span>
-          <span class="k">return</span><span class="p">;</span>
-        <span class="p">}</span>
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>my.GridControl= Backbone.View.extend({
+  className: <span class="hljs-string">"recline-row-add"</span>,</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-31">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-31">&#182;</a>
+              </div>
+              <p>Template for row edit menu , change it if you don’t love</p>
 
-        <span class="nx">grid</span><span class="p">.</span><span class="nx">setColumns</span><span class="p">(</span><span class="nx">visibleColumns</span><span class="p">);</span>
-        <span class="nx">options</span><span class="p">.</span><span class="nx">state</span><span class="p">.</span><span class="nx">set</span><span class="p">({</span><span class="nx">hiddenColumns</span><span class="o">:</span><span class="nx">hiddenColumnsIds</span><span class="p">});</span>
-      <span class="p">}</span>
-    <span class="p">}</span>
-    <span class="nx">init</span><span class="p">();</span>
-  <span class="p">}</span></pre></div>             </td>           </tr>                               <tr id="section-26">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-26">&#182;</a>               </div>               <p>Slick.Controls.ColumnPicker</p>             </td>             <td class="code">               <div class="highlight"><pre>  <span class="nx">$</span><span class="p">.</span><span class="nx">extend</span><span class="p">(</span><span class="kc">true</span><span class="p">,</span> <span class="nb">window</span><span class="p">,</span> <span class="p">{</span> <span class="nx">Slick</span><span class="o">:</span><span class="p">{</span> <span class="nx">Controls</span><span class="o">:</span><span class="p">{</span> <span class="nx">ColumnPicker</span><span class="o">:</span><span class="nx">SlickColumnPicker</span> <span class="p">}}});</span>
-<span class="p">})(</span><span class="nx">jQuery</span><span class="p">);</span>
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  template: <span class="hljs-string">'&lt;h1&gt;&lt;button href="#" class="recline-row-add btn btn-default"&gt;Add row&lt;/button&gt;&lt;/h1&gt;'</span>,
+  
+  initialize: <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(options)</span></span>{
+    <span class="hljs-keyword">var</span> self = <span class="hljs-keyword">this</span>;
+    _.bindAll(<span class="hljs-keyword">this</span>, <span class="hljs-string">'render'</span>);
+    <span class="hljs-keyword">this</span>.state = <span class="hljs-keyword">new</span> recline.Model.ObjectState();
+    <span class="hljs-keyword">this</span>.render();
+  },
 
-</pre></div>             </td>           </tr>                </tbody>     </table>   </div> </body> </html> 
+  render: <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> </span>{
+    <span class="hljs-keyword">var</span> self = <span class="hljs-keyword">this</span>;
+    <span class="hljs-keyword">this</span>.$el.html(<span class="hljs-keyword">this</span>.template)
+  },
+
+  events : {
+    <span class="hljs-string">"click .recline-row-add"</span> : <span class="hljs-string">"addNewRow"</span>
+  },
+
+  addNewRow : <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(e)</span></span>{
+    e.preventDefault()
+    <span class="hljs-keyword">this</span>.state.trigger(<span class="hljs-string">"change"</span>)
+ }
+});
+
+})(jQuery, recline.View);
+
+<span class="hljs-comment">/*
+* Context menu for the column picker, adapted from
+* http://mleibman.github.com/SlickGrid/examples/example-grouping
+*
+*/</span>
+(<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">($)</span> </span>{
+  <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">SlickColumnPicker</span><span class="hljs-params">(columns, grid, options)</span> </span>{
+    <span class="hljs-keyword">var</span> $menu;
+    <span class="hljs-keyword">var</span> columnCheckboxes;
+
+    <span class="hljs-keyword">var</span> defaults = {
+      fadeSpeed:<span class="hljs-number">250</span>
+    };
+
+    <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">init</span><span class="hljs-params">()</span> </span>{
+      grid.onHeaderContextMenu.subscribe(handleHeaderContextMenu);
+      options = $.extend({}, defaults, options);
+
+      $menu = $(<span class="hljs-string">'&lt;ul class="dropdown-menu slick-contextmenu" style="display:none;position:absolute;z-index:20;" /&gt;'</span>).appendTo(<span class="hljs-built_in">document</span>.body);
+
+      $menu.bind(<span class="hljs-string">'mouseleave'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(e)</span> </span>{
+        $(<span class="hljs-keyword">this</span>).fadeOut(options.fadeSpeed);
+      });
+      $menu.bind(<span class="hljs-string">'click'</span>, updateColumn);
+
+    }
+
+    <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">handleHeaderContextMenu</span><span class="hljs-params">(e, args)</span> </span>{
+      e.preventDefault();
+      $menu.empty();
+      columnCheckboxes = [];
+
+      <span class="hljs-keyword">var</span> $li, $input;
+      <span class="hljs-keyword">for</span> (<span class="hljs-keyword">var</span> i = <span class="hljs-number">0</span>; i &lt; columns.length; i++) {
+        $li = $(<span class="hljs-string">'&lt;li /&gt;'</span>).appendTo($menu);
+        $input = $(<span class="hljs-string">'&lt;input type="checkbox" /&gt;'</span>).data(<span class="hljs-string">'column-id'</span>, columns[i].id).attr(<span class="hljs-string">'id'</span>,<span class="hljs-string">'slick-column-vis-'</span>+columns[i].id);
+        columnCheckboxes.push($input);
+
+        <span class="hljs-keyword">if</span> (grid.getColumnIndex(columns[i].id) !== <span class="hljs-literal">null</span>) {
+          $input.attr(<span class="hljs-string">'checked'</span>, <span class="hljs-string">'checked'</span>);
+        }
+        $input.appendTo($li);
+        $(<span class="hljs-string">'&lt;label /&gt;'</span>)
+            .text(columns[i].name)
+            .attr(<span class="hljs-string">'for'</span>,<span class="hljs-string">'slick-column-vis-'</span>+columns[i].id)
+            .appendTo($li);
+      }
+      $(<span class="hljs-string">'&lt;li/&gt;'</span>).addClass(<span class="hljs-string">'divider'</span>).appendTo($menu);
+      $li = $(<span class="hljs-string">'&lt;li /&gt;'</span>).data(<span class="hljs-string">'option'</span>, <span class="hljs-string">'autoresize'</span>).appendTo($menu);
+      $input = $(<span class="hljs-string">'&lt;input type="checkbox" /&gt;'</span>).data(<span class="hljs-string">'option'</span>, <span class="hljs-string">'autoresize'</span>).attr(<span class="hljs-string">'id'</span>,<span class="hljs-string">'slick-option-autoresize'</span>);
+      $input.appendTo($li);
+      $(<span class="hljs-string">'&lt;label /&gt;'</span>)
+          .text(<span class="hljs-string">'Force fit columns'</span>)
+          .attr(<span class="hljs-string">'for'</span>,<span class="hljs-string">'slick-option-autoresize'</span>)
+          .appendTo($li);
+      <span class="hljs-keyword">if</span> (grid.getOptions().forceFitColumns) {
+        $input.attr(<span class="hljs-string">'checked'</span>, <span class="hljs-string">'checked'</span>);
+      }
+
+      $menu.css(<span class="hljs-string">'top'</span>, e.pageY - <span class="hljs-number">10</span>)
+          .css(<span class="hljs-string">'left'</span>, e.pageX - <span class="hljs-number">10</span>)
+          .fadeIn(options.fadeSpeed);
+    }
+
+    <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">updateColumn</span><span class="hljs-params">(e)</span> </span>{
+      <span class="hljs-keyword">var</span> checkbox;
+
+      <span class="hljs-keyword">if</span> ($(e.target).data(<span class="hljs-string">'option'</span>) === <span class="hljs-string">'autoresize'</span>) {
+        <span class="hljs-keyword">var</span> checked;
+        <span class="hljs-keyword">if</span> ($(e.target).is(<span class="hljs-string">'li'</span>)){
+            checkbox = $(e.target).find(<span class="hljs-string">'input'</span>).first();
+            checked = !checkbox.is(<span class="hljs-string">':checked'</span>);
+            checkbox.attr(<span class="hljs-string">'checked'</span>,checked);
+        } <span class="hljs-keyword">else</span> {
+          checked = e.target.checked;
+        }
+
+        <span class="hljs-keyword">if</span> (checked) {
+          grid.setOptions({forceFitColumns:<span class="hljs-literal">true</span>});
+          grid.autosizeColumns();
+        } <span class="hljs-keyword">else</span> {
+          grid.setOptions({forceFitColumns:<span class="hljs-literal">false</span>});
+        }
+        options.state.set({fitColumns:checked});
+        <span class="hljs-keyword">return</span>;
+      }
+
+      <span class="hljs-keyword">if</span> (($(e.target).is(<span class="hljs-string">'li'</span>) &amp;&amp; !$(e.target).hasClass(<span class="hljs-string">'divider'</span>)) ||
+            $(e.target).is(<span class="hljs-string">'input'</span>)) {
+        <span class="hljs-keyword">if</span> ($(e.target).is(<span class="hljs-string">'li'</span>)){
+            checkbox = $(e.target).find(<span class="hljs-string">'input'</span>).first();
+            checkbox.attr(<span class="hljs-string">'checked'</span>,!checkbox.is(<span class="hljs-string">':checked'</span>));
+        }
+        <span class="hljs-keyword">var</span> visibleColumns = [];
+        <span class="hljs-keyword">var</span> hiddenColumnsIds = [];
+        $.each(columnCheckboxes, <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(i, e)</span> </span>{
+          <span class="hljs-keyword">if</span> ($(<span class="hljs-keyword">this</span>).is(<span class="hljs-string">':checked'</span>)) {
+            visibleColumns.push(columns[i]);
+          } <span class="hljs-keyword">else</span> {
+            hiddenColumnsIds.push(columns[i].id);
+          }
+        });
+
+        <span class="hljs-keyword">if</span> (!visibleColumns.length) {
+          $(e.target).attr(<span class="hljs-string">'checked'</span>, <span class="hljs-string">'checked'</span>);
+          <span class="hljs-keyword">return</span>;
+        }
+
+        grid.setColumns(visibleColumns);
+        options.state.set({hiddenColumns:hiddenColumnsIds});
+      }
+    }
+    init();
+  }</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-32">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-32">&#182;</a>
+              </div>
+              <p>Slick.Controls.ColumnPicker</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  $.extend(<span class="hljs-literal">true</span>, <span class="hljs-built_in">window</span>, {
+    Slick: {
+      Controls: {
+        ColumnPicker: SlickColumnPicker
+      }
+    }
+  });
+
+})(jQuery);</pre></div></div>
+            
+        </li>
+        
+    </ul>
+  </div>
+</body>
+</html>
