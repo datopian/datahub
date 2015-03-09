@@ -1,476 +1,865 @@
-<!DOCTYPE html>  <html> <head>   <title>view.flot.js</title>   <meta http-equiv="content-type" content="text/html; charset=UTF-8">   <link rel="stylesheet" media="all" href="docco.css" /> </head> <body>   <div id="container">     <div id="background"></div>            <div id="jump_to">         Jump To &hellip;         <div id="jump_wrapper">           <div id="jump_page">                                           <a class="source" href="backend.csv.html">                 backend.csv.js               </a>                                           <a class="source" href="backend.dataproxy.html">                 backend.dataproxy.js               </a>                                           <a class="source" href="backend.memory.html">                 backend.memory.js               </a>                                           <a class="source" href="ecma-fixes.html">                 ecma-fixes.js               </a>                                           <a class="source" href="model.html">                 model.js               </a>                                           <a class="source" href="view.flot.html">                 view.flot.js               </a>                                           <a class="source" href="view.graph.html">                 view.graph.js               </a>                                           <a class="source" href="view.grid.html">                 view.grid.js               </a>                                           <a class="source" href="view.map.html">                 view.map.js               </a>                                           <a class="source" href="view.multiview.html">                 view.multiview.js               </a>                                           <a class="source" href="view.slickgrid.html">                 view.slickgrid.js               </a>                                           <a class="source" href="view.timeline.html">                 view.timeline.js               </a>                                           <a class="source" href="widget.facetviewer.html">                 widget.facetviewer.js               </a>                                           <a class="source" href="widget.fields.html">                 widget.fields.js               </a>                                           <a class="source" href="widget.filtereditor.html">                 widget.filtereditor.js               </a>                                           <a class="source" href="widget.pager.html">                 widget.pager.js               </a>                                           <a class="source" href="widget.queryeditor.html">                 widget.queryeditor.js               </a>                                           <a class="source" href="widget.valuefilter.html">                 widget.valuefilter.js               </a>                        </div>         </div>       </div>          <table cellpadding="0" cellspacing="0">       <thead>         <tr>           <th class="docs">             <h1>               view.flot.js             </h1>           </th>           <th class="code">           </th>         </tr>       </thead>       <tbody>                               <tr id="section-1">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-1">&#182;</a>               </div>                            </td>             <td class="code">               <div class="highlight"><pre><span class="cm">/*jshint multistr:true */</span>
+<!DOCTYPE html>
 
-<span class="k">this</span><span class="p">.</span><span class="nx">recline</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">recline</span> <span class="o">||</span> <span class="p">{};</span>
-<span class="k">this</span><span class="p">.</span><span class="nx">recline</span><span class="p">.</span><span class="nx">View</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">recline</span><span class="p">.</span><span class="nx">View</span> <span class="o">||</span> <span class="p">{};</span>
+<html>
+<head>
+  <title>view.flot.js</title>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <meta name="viewport" content="width=device-width, target-densitydpi=160dpi, initial-scale=1.0; maximum-scale=1.0; user-scalable=0;">
+  <link rel="stylesheet" media="all" href="docco.css" />
+</head>
+<body>
+  <div id="container">
+    <div id="background"></div>
+    
+      <ul id="jump_to">
+        <li>
+          <a class="large" href="javascript:void(0);">Jump To &hellip;</a>
+          <a class="small" href="javascript:void(0);">+</a>
+          <div id="jump_wrapper">
+          <div id="jump_page_wrapper">
+            <div id="jump_page">
+              
+                
+                <a class="source" href="backend.dataproxy.html">
+                  backend.dataproxy.js
+                </a>
+              
+                
+                <a class="source" href="backend.memory.html">
+                  backend.memory.js
+                </a>
+              
+                
+                <a class="source" href="ecma-fixes.html">
+                  ecma-fixes.js
+                </a>
+              
+                
+                <a class="source" href="model.html">
+                  model.js
+                </a>
+              
+                
+                <a class="source" href="view.flot.html">
+                  view.flot.js
+                </a>
+              
+                
+                <a class="source" href="view.graph.html">
+                  view.graph.js
+                </a>
+              
+                
+                <a class="source" href="view.grid.html">
+                  view.grid.js
+                </a>
+              
+                
+                <a class="source" href="view.map.html">
+                  view.map.js
+                </a>
+              
+                
+                <a class="source" href="view.multiview.html">
+                  view.multiview.js
+                </a>
+              
+                
+                <a class="source" href="view.slickgrid.html">
+                  view.slickgrid.js
+                </a>
+              
+                
+                <a class="source" href="view.timeline.html">
+                  view.timeline.js
+                </a>
+              
+                
+                <a class="source" href="widget.facetviewer.html">
+                  widget.facetviewer.js
+                </a>
+              
+                
+                <a class="source" href="widget.fields.html">
+                  widget.fields.js
+                </a>
+              
+                
+                <a class="source" href="widget.filtereditor.html">
+                  widget.filtereditor.js
+                </a>
+              
+                
+                <a class="source" href="widget.pager.html">
+                  widget.pager.js
+                </a>
+              
+                
+                <a class="source" href="widget.queryeditor.html">
+                  widget.queryeditor.js
+                </a>
+              
+                
+                <a class="source" href="widget.valuefilter.html">
+                  widget.valuefilter.js
+                </a>
+              
+            </div>
+          </div>
+        </li>
+      </ul>
+    
+    <ul class="sections">
+        
+          <li id="title">
+              <div class="annotation">
+                  <h1>view.flot.js</h1>
+              </div>
+          </li>
+        
+        
+        
+        <li id="section-1">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-1">&#182;</a>
+              </div>
+              
+            </div>
+            
+            <div class="content"><div class='highlight'><pre><span class="hljs-comment">/*jshint multistr:true */</span>
 
-<span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">$</span><span class="p">,</span> <span class="nx">my</span><span class="p">)</span> <span class="p">{</span>
-  <span class="s2">&quot;use strict&quot;</span><span class="p">;</span></pre></div>             </td>           </tr>                               <tr id="section-2">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-2">&#182;</a>               </div>               <h2>Graph view for a Dataset using Flot graphing library.</h2>
+<span class="hljs-keyword">this</span>.recline = <span class="hljs-keyword">this</span>.recline || {};
+<span class="hljs-keyword">this</span>.recline.View = <span class="hljs-keyword">this</span>.recline.View || {};
 
+(<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">($, my)</span> </span>{
+<span class="hljs-pi">  "use strict"</span>;</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-2">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-2">&#182;</a>
+              </div>
+              <h2 id="graph-view-for-a-dataset-using-flot-graphing-library-">Graph view for a Dataset using Flot graphing library.</h2>
 <p>Initialization arguments (in a hash in first parameter):</p>
-
 <ul>
 <li>model: recline.Model.Dataset</li>
 <li><p>state: (optional) configuration hash of form:</p>
+<pre><code> {
+   group: {column name <span class="hljs-keyword">for</span> x-axis},
+   series: [{column name <span class="hljs-keyword">for</span> series A}, {column name series B}, ... ],
+   <span class="hljs-comment">// options are: lines, points, lines-and-points, bars, columns</span>
+   graphType: <span class="hljs-string">'lines'</span>,
+   graphOptions: {custom [flot options]}
+ }
+</code></pre></li>
+</ul>
+<p>NB: should <em>not</em> provide an el argument to the view but must let the view
+generate the element itself (you can then append view.el to the DOM.</p>
 
-<p>{
-     group: {column name for x-axis},
-     series: [{column name for series A}, {column name series B}, ... ],
-     // options are: lines, points, lines-and-points, bars, columns
-     graphType: 'lines',
-     graphOptions: {custom [flot options]}
-   }</p></li>
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>my.Flot = Backbone.View.extend({
+  template: <span class="hljs-string">' \
+    &lt;div class="recline-flot"&gt; \
+      &lt;div class="panel graph" style="display: block;"&gt; \
+        &lt;div class="js-temp-notice alert alert-warning alert-block"&gt; \
+          &lt;h3 class="alert-heading"&gt;Hey there!&lt;/h3&gt; \
+          &lt;p&gt;There\'s no graph here yet because we don\'t know what fields you\'d like to see plotted.&lt;/p&gt; \
+          &lt;p&gt;Please tell us by &lt;strong&gt;using the menu on the right&lt;/strong&gt; and a graph will automatically appear.&lt;/p&gt; \
+        &lt;/div&gt; \
+      &lt;/div&gt; \
+    &lt;/div&gt; \
+'</span>,
+
+  initialize: <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(options)</span> </span>{
+    <span class="hljs-keyword">var</span> self = <span class="hljs-keyword">this</span>;
+    <span class="hljs-keyword">this</span>.graphColors = [<span class="hljs-string">"#edc240"</span>, <span class="hljs-string">"#afd8f8"</span>, <span class="hljs-string">"#cb4b4b"</span>, <span class="hljs-string">"#4da74d"</span>, <span class="hljs-string">"#9440ed"</span>];
+
+    _.bindAll(<span class="hljs-keyword">this</span>, <span class="hljs-string">'render'</span>, <span class="hljs-string">'redraw'</span>, <span class="hljs-string">'_toolTip'</span>, <span class="hljs-string">'_xaxisLabel'</span>);
+    <span class="hljs-keyword">this</span>.needToRedraw = <span class="hljs-literal">false</span>;
+    <span class="hljs-keyword">this</span>.listenTo(<span class="hljs-keyword">this</span>.model, <span class="hljs-string">'change'</span>, <span class="hljs-keyword">this</span>.render);
+    <span class="hljs-keyword">this</span>.listenTo(<span class="hljs-keyword">this</span>.model.fields, <span class="hljs-string">'reset add'</span>, <span class="hljs-keyword">this</span>.render);
+    <span class="hljs-keyword">this</span>.listenTo(<span class="hljs-keyword">this</span>.model.records, <span class="hljs-string">'reset add'</span>, <span class="hljs-keyword">this</span>.redraw);
+    <span class="hljs-keyword">var</span> stateData = _.extend({
+        group: <span class="hljs-literal">null</span>,</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-3">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-3">&#182;</a>
+              </div>
+              <p>so that at least one series chooser box shows up</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>        series: [],
+        graphType: <span class="hljs-string">'lines-and-points'</span>
+      },
+      options.state
+    );
+    <span class="hljs-keyword">this</span>.state = <span class="hljs-keyword">new</span> recline.Model.ObjectState(stateData);
+    <span class="hljs-keyword">this</span>.previousTooltipPoint = {x: <span class="hljs-literal">null</span>, y: <span class="hljs-literal">null</span>};
+    <span class="hljs-keyword">this</span>.editor = <span class="hljs-keyword">new</span> my.FlotControls({
+      model: <span class="hljs-keyword">this</span>.model,
+      state: <span class="hljs-keyword">this</span>.state.toJSON()
+    });
+    <span class="hljs-keyword">this</span>.listenTo(<span class="hljs-keyword">this</span>.editor.state, <span class="hljs-string">'change'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> </span>{
+      self.state.set(self.editor.state.toJSON());
+      self.redraw();
+    });
+    <span class="hljs-keyword">this</span>.elSidebar = <span class="hljs-keyword">this</span>.editor.$el;
+  },
+
+  render: <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> </span>{
+    <span class="hljs-keyword">var</span> self = <span class="hljs-keyword">this</span>;
+    <span class="hljs-keyword">var</span> tmplData = <span class="hljs-keyword">this</span>.model.toTemplateJSON();
+    <span class="hljs-keyword">var</span> htmls = Mustache.render(<span class="hljs-keyword">this</span>.template, tmplData);
+    <span class="hljs-keyword">this</span>.$el.html(htmls);
+    <span class="hljs-keyword">this</span>.$graph = <span class="hljs-keyword">this</span>.$el.find(<span class="hljs-string">'.panel.graph'</span>);
+    <span class="hljs-keyword">this</span>.$graph.on(<span class="hljs-string">"plothover"</span>, <span class="hljs-keyword">this</span>._toolTip);
+    <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>;
+  },
+
+  remove: <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">()</span> </span>{
+    <span class="hljs-keyword">this</span>.editor.remove();
+    Backbone.View.prototype.remove.apply(<span class="hljs-keyword">this</span>, <span class="hljs-built_in">arguments</span>);
+  },
+
+  redraw: <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> </span>{</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-4">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-4">&#182;</a>
+              </div>
+              <p>There are issues generating a Flot graph if either:</p>
+<ul>
+<li>The relevant div that graph attaches to his hidden at the moment of creating the plot — Flot will complain with
+Uncaught Invalid dimensions for plot, width = 0, height = 0</li>
+<li>There is no data for the plot — either same error or may have issues later with errors like ‘non-existent node-value’</li>
 </ul>
 
-<p>NB: should <em>not</em> provide an el argument to the view but must let the view
-generate the element itself (you can then append view.el to the DOM.</p>             </td>             <td class="code">               <div class="highlight"><pre><span class="nx">my</span><span class="p">.</span><span class="nx">Flot</span> <span class="o">=</span> <span class="nx">Backbone</span><span class="p">.</span><span class="nx">View</span><span class="p">.</span><span class="nx">extend</span><span class="p">({</span>
-  <span class="nx">template</span><span class="o">:</span> <span class="s1">&#39; \</span>
-<span class="s1">    &lt;div class=&quot;recline-flot&quot;&gt; \</span>
-<span class="s1">      &lt;div class=&quot;panel graph&quot; style=&quot;display: block;&quot;&gt; \</span>
-<span class="s1">        &lt;div class=&quot;js-temp-notice alert alert-block&quot;&gt; \</span>
-<span class="s1">          &lt;h3 class=&quot;alert-heading&quot;&gt;Hey there!&lt;/h3&gt; \</span>
-<span class="s1">          &lt;p&gt;There\&#39;s no graph here yet because we don\&#39;t know what fields you\&#39;d like to see plotted.&lt;/p&gt; \</span>
-<span class="s1">          &lt;p&gt;Please tell us by &lt;strong&gt;using the menu on the right&lt;/strong&gt; and a graph will automatically appear.&lt;/p&gt; \</span>
-<span class="s1">        &lt;/div&gt; \</span>
-<span class="s1">      &lt;/div&gt; \</span>
-<span class="s1">    &lt;/div&gt; \</span>
-<span class="s1">&#39;</span><span class="p">,</span>
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    <span class="hljs-keyword">var</span> areWeVisible = !jQuery.expr.filters.hidden(<span class="hljs-keyword">this</span>.el);
+    <span class="hljs-keyword">if</span> ((!areWeVisible || <span class="hljs-keyword">this</span>.model.records.length === <span class="hljs-number">0</span>)) {
+      <span class="hljs-keyword">this</span>.needToRedraw = <span class="hljs-literal">true</span>;
+      <span class="hljs-keyword">return</span>;
+    }</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-5">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-5">&#182;</a>
+              </div>
+              <p>check we have something to plot</p>
 
-  <span class="nx">initialize</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">options</span><span class="p">)</span> <span class="p">{</span>
-    <span class="kd">var</span> <span class="nx">self</span> <span class="o">=</span> <span class="k">this</span><span class="p">;</span>
-    <span class="k">this</span><span class="p">.</span><span class="nx">graphColors</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;#edc240&quot;</span><span class="p">,</span> <span class="s2">&quot;#afd8f8&quot;</span><span class="p">,</span> <span class="s2">&quot;#cb4b4b&quot;</span><span class="p">,</span> <span class="s2">&quot;#4da74d&quot;</span><span class="p">,</span> <span class="s2">&quot;#9440ed&quot;</span><span class="p">];</span>
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    <span class="hljs-keyword">if</span> (<span class="hljs-keyword">this</span>.state.get(<span class="hljs-string">'group'</span>) &amp;&amp; <span class="hljs-keyword">this</span>.state.get(<span class="hljs-string">'series'</span>)) {
+      <span class="hljs-keyword">var</span> series = <span class="hljs-keyword">this</span>.createSeries();
+      <span class="hljs-keyword">var</span> options = <span class="hljs-keyword">this</span>.getGraphOptions(<span class="hljs-keyword">this</span>.state.attributes.graphType, series[<span class="hljs-number">0</span>].data.length);
+      <span class="hljs-keyword">this</span>.plot = $.plot(<span class="hljs-keyword">this</span>.$graph, series, options);
+    }
+  },
 
-    <span class="nx">_</span><span class="p">.</span><span class="nx">bindAll</span><span class="p">(</span><span class="k">this</span><span class="p">,</span> <span class="s1">&#39;render&#39;</span><span class="p">,</span> <span class="s1">&#39;redraw&#39;</span><span class="p">,</span> <span class="s1">&#39;_toolTip&#39;</span><span class="p">,</span> <span class="s1">&#39;_xaxisLabel&#39;</span><span class="p">);</span>
-    <span class="k">this</span><span class="p">.</span><span class="nx">needToRedraw</span> <span class="o">=</span> <span class="kc">false</span><span class="p">;</span>
-    <span class="k">this</span><span class="p">.</span><span class="nx">listenTo</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">model</span><span class="p">,</span> <span class="s1">&#39;change&#39;</span><span class="p">,</span> <span class="k">this</span><span class="p">.</span><span class="nx">render</span><span class="p">);</span>
-    <span class="k">this</span><span class="p">.</span><span class="nx">listenTo</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">model</span><span class="p">.</span><span class="nx">fields</span><span class="p">,</span> <span class="s1">&#39;reset add&#39;</span><span class="p">,</span> <span class="k">this</span><span class="p">.</span><span class="nx">render</span><span class="p">);</span>
-    <span class="k">this</span><span class="p">.</span><span class="nx">listenTo</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">model</span><span class="p">.</span><span class="nx">records</span><span class="p">,</span> <span class="s1">&#39;reset add&#39;</span><span class="p">,</span> <span class="k">this</span><span class="p">.</span><span class="nx">redraw</span><span class="p">);</span>
-    <span class="kd">var</span> <span class="nx">stateData</span> <span class="o">=</span> <span class="nx">_</span><span class="p">.</span><span class="nx">extend</span><span class="p">({</span>
-        <span class="nx">group</span><span class="o">:</span> <span class="kc">null</span><span class="p">,</span></pre></div>             </td>           </tr>                               <tr id="section-3">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-3">&#182;</a>               </div>               <p>so that at least one series chooser box shows up</p>             </td>             <td class="code">               <div class="highlight"><pre>        <span class="nx">series</span><span class="o">:</span> <span class="p">[],</span>
-        <span class="nx">graphType</span><span class="o">:</span> <span class="s1">&#39;lines-and-points&#39;</span>
-      <span class="p">},</span>
-      <span class="nx">options</span><span class="p">.</span><span class="nx">state</span>
-    <span class="p">);</span>
-    <span class="k">this</span><span class="p">.</span><span class="nx">state</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">recline</span><span class="p">.</span><span class="nx">Model</span><span class="p">.</span><span class="nx">ObjectState</span><span class="p">(</span><span class="nx">stateData</span><span class="p">);</span>
-    <span class="k">this</span><span class="p">.</span><span class="nx">previousTooltipPoint</span> <span class="o">=</span> <span class="p">{</span><span class="nx">x</span><span class="o">:</span> <span class="kc">null</span><span class="p">,</span> <span class="nx">y</span><span class="o">:</span> <span class="kc">null</span><span class="p">};</span>
-    <span class="k">this</span><span class="p">.</span><span class="nx">editor</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">my</span><span class="p">.</span><span class="nx">FlotControls</span><span class="p">({</span>
-      <span class="nx">model</span><span class="o">:</span> <span class="k">this</span><span class="p">.</span><span class="nx">model</span><span class="p">,</span>
-      <span class="nx">state</span><span class="o">:</span> <span class="k">this</span><span class="p">.</span><span class="nx">state</span><span class="p">.</span><span class="nx">toJSON</span><span class="p">()</span>
-    <span class="p">});</span>
-    <span class="k">this</span><span class="p">.</span><span class="nx">listenTo</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">editor</span><span class="p">.</span><span class="nx">state</span><span class="p">,</span> <span class="s1">&#39;change&#39;</span><span class="p">,</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
-      <span class="nx">self</span><span class="p">.</span><span class="nx">state</span><span class="p">.</span><span class="nx">set</span><span class="p">(</span><span class="nx">self</span><span class="p">.</span><span class="nx">editor</span><span class="p">.</span><span class="nx">state</span><span class="p">.</span><span class="nx">toJSON</span><span class="p">());</span>
-      <span class="nx">self</span><span class="p">.</span><span class="nx">redraw</span><span class="p">();</span>
-    <span class="p">});</span>
-    <span class="k">this</span><span class="p">.</span><span class="nx">elSidebar</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">editor</span><span class="p">.</span><span class="nx">$el</span><span class="p">;</span>
-  <span class="p">},</span>
+  show: <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> </span>{</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-6">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-6">&#182;</a>
+              </div>
+              <p>because we cannot redraw when hidden we may need to when becoming visible</p>
 
-  <span class="nx">render</span><span class="o">:</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
-    <span class="kd">var</span> <span class="nx">self</span> <span class="o">=</span> <span class="k">this</span><span class="p">;</span>
-    <span class="kd">var</span> <span class="nx">tmplData</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">model</span><span class="p">.</span><span class="nx">toTemplateJSON</span><span class="p">();</span>
-    <span class="kd">var</span> <span class="nx">htmls</span> <span class="o">=</span> <span class="nx">Mustache</span><span class="p">.</span><span class="nx">render</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">template</span><span class="p">,</span> <span class="nx">tmplData</span><span class="p">);</span>
-    <span class="k">this</span><span class="p">.</span><span class="nx">$el</span><span class="p">.</span><span class="nx">html</span><span class="p">(</span><span class="nx">htmls</span><span class="p">);</span>
-    <span class="k">this</span><span class="p">.</span><span class="nx">$graph</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">$el</span><span class="p">.</span><span class="nx">find</span><span class="p">(</span><span class="s1">&#39;.panel.graph&#39;</span><span class="p">);</span>
-    <span class="k">this</span><span class="p">.</span><span class="nx">$graph</span><span class="p">.</span><span class="nx">on</span><span class="p">(</span><span class="s2">&quot;plothover&quot;</span><span class="p">,</span> <span class="k">this</span><span class="p">.</span><span class="nx">_toolTip</span><span class="p">);</span>
-    <span class="k">return</span> <span class="k">this</span><span class="p">;</span>
-  <span class="p">},</span>
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    <span class="hljs-keyword">if</span> (<span class="hljs-keyword">this</span>.needToRedraw) {
+      <span class="hljs-keyword">this</span>.redraw();
+    }
+  },</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-7">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-7">&#182;</a>
+              </div>
+              <p>infoboxes on mouse hover on points/bars etc</p>
 
-  <span class="nx">remove</span><span class="o">:</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
-    <span class="k">this</span><span class="p">.</span><span class="nx">editor</span><span class="p">.</span><span class="nx">remove</span><span class="p">();</span>
-    <span class="nx">Backbone</span><span class="p">.</span><span class="nx">View</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">remove</span><span class="p">.</span><span class="nx">apply</span><span class="p">(</span><span class="k">this</span><span class="p">,</span> <span class="nx">arguments</span><span class="p">);</span>
-  <span class="p">},</span>
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  _toolTip: <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(event, pos, item)</span> </span>{
+    <span class="hljs-keyword">if</span> (item) {
+      <span class="hljs-keyword">if</span> (<span class="hljs-keyword">this</span>.previousTooltipPoint.x !== item.dataIndex ||
+          <span class="hljs-keyword">this</span>.previousTooltipPoint.y !== item.seriesIndex) {
+        <span class="hljs-keyword">this</span>.previousTooltipPoint.x = item.dataIndex;
+        <span class="hljs-keyword">this</span>.previousTooltipPoint.y = item.seriesIndex;
+        $(<span class="hljs-string">"#recline-flot-tooltip"</span>).remove();
 
-  <span class="nx">redraw</span><span class="o">:</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span></pre></div>             </td>           </tr>                               <tr id="section-4">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-4">&#182;</a>               </div>               <p>There are issues generating a Flot graph if either:
-* The relevant div that graph attaches to his hidden at the moment of creating the plot -- Flot will complain with
-  Uncaught Invalid dimensions for plot, width = 0, height = 0
-* There is no data for the plot -- either same error or may have issues later with errors like 'non-existent node-value'</p>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="kd">var</span> <span class="nx">areWeVisible</span> <span class="o">=</span> <span class="o">!</span><span class="nx">jQuery</span><span class="p">.</span><span class="nx">expr</span><span class="p">.</span><span class="nx">filters</span><span class="p">.</span><span class="nx">hidden</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">el</span><span class="p">);</span>
-    <span class="k">if</span> <span class="p">((</span><span class="o">!</span><span class="nx">areWeVisible</span> <span class="o">||</span> <span class="k">this</span><span class="p">.</span><span class="nx">model</span><span class="p">.</span><span class="nx">records</span><span class="p">.</span><span class="nx">length</span> <span class="o">===</span> <span class="mi">0</span><span class="p">))</span> <span class="p">{</span>
-      <span class="k">this</span><span class="p">.</span><span class="nx">needToRedraw</span> <span class="o">=</span> <span class="kc">true</span><span class="p">;</span>
-      <span class="k">return</span><span class="p">;</span>
-    <span class="p">}</span></pre></div>             </td>           </tr>                               <tr id="section-5">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-5">&#182;</a>               </div>               <p>check we have something to plot</p>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="k">if</span> <span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">state</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s1">&#39;group&#39;</span><span class="p">)</span> <span class="o">&amp;&amp;</span> <span class="k">this</span><span class="p">.</span><span class="nx">state</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s1">&#39;series&#39;</span><span class="p">))</span> <span class="p">{</span>
-      <span class="kd">var</span> <span class="nx">series</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">createSeries</span><span class="p">();</span>
-      <span class="kd">var</span> <span class="nx">options</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">getGraphOptions</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">state</span><span class="p">.</span><span class="nx">attributes</span><span class="p">.</span><span class="nx">graphType</span><span class="p">,</span> <span class="nx">series</span><span class="p">[</span><span class="mi">0</span><span class="p">].</span><span class="nx">data</span><span class="p">.</span><span class="nx">length</span><span class="p">);</span>
-      <span class="k">this</span><span class="p">.</span><span class="nx">plot</span> <span class="o">=</span> <span class="nx">$</span><span class="p">.</span><span class="nx">plot</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">$graph</span><span class="p">,</span> <span class="nx">series</span><span class="p">,</span> <span class="nx">options</span><span class="p">);</span>
-    <span class="p">}</span>
-  <span class="p">},</span>
+        <span class="hljs-keyword">var</span> x = item.datapoint[<span class="hljs-number">0</span>].toFixed(<span class="hljs-number">2</span>),
+            y = item.datapoint[<span class="hljs-number">1</span>].toFixed(<span class="hljs-number">2</span>);
 
-  <span class="nx">show</span><span class="o">:</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span></pre></div>             </td>           </tr>                               <tr id="section-6">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-6">&#182;</a>               </div>               <p>because we cannot redraw when hidden we may need to when becoming visible</p>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="k">if</span> <span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">needToRedraw</span><span class="p">)</span> <span class="p">{</span>
-      <span class="k">this</span><span class="p">.</span><span class="nx">redraw</span><span class="p">();</span>
-    <span class="p">}</span>
-  <span class="p">},</span></pre></div>             </td>           </tr>                               <tr id="section-7">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-7">&#182;</a>               </div>               <p>infoboxes on mouse hover on points/bars etc</p>             </td>             <td class="code">               <div class="highlight"><pre>  <span class="nx">_toolTip</span><span class="o">:</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">event</span><span class="p">,</span> <span class="nx">pos</span><span class="p">,</span> <span class="nx">item</span><span class="p">)</span> <span class="p">{</span>
-    <span class="k">if</span> <span class="p">(</span><span class="nx">item</span><span class="p">)</span> <span class="p">{</span>
-      <span class="k">if</span> <span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">previousTooltipPoint</span><span class="p">.</span><span class="nx">x</span> <span class="o">!==</span> <span class="nx">item</span><span class="p">.</span><span class="nx">dataIndex</span> <span class="o">||</span>
-          <span class="k">this</span><span class="p">.</span><span class="nx">previousTooltipPoint</span><span class="p">.</span><span class="nx">y</span> <span class="o">!==</span> <span class="nx">item</span><span class="p">.</span><span class="nx">seriesIndex</span><span class="p">)</span> <span class="p">{</span>
-        <span class="k">this</span><span class="p">.</span><span class="nx">previousTooltipPoint</span><span class="p">.</span><span class="nx">x</span> <span class="o">=</span> <span class="nx">item</span><span class="p">.</span><span class="nx">dataIndex</span><span class="p">;</span>
-        <span class="k">this</span><span class="p">.</span><span class="nx">previousTooltipPoint</span><span class="p">.</span><span class="nx">y</span> <span class="o">=</span> <span class="nx">item</span><span class="p">.</span><span class="nx">seriesIndex</span><span class="p">;</span>
-        <span class="nx">$</span><span class="p">(</span><span class="s2">&quot;#recline-flot-tooltip&quot;</span><span class="p">).</span><span class="nx">remove</span><span class="p">();</span>
+        <span class="hljs-keyword">if</span> (<span class="hljs-keyword">this</span>.state.attributes.graphType === <span class="hljs-string">'bars'</span>) {
+          x = item.datapoint[<span class="hljs-number">1</span>].toFixed(<span class="hljs-number">2</span>),
+          y = item.datapoint[<span class="hljs-number">0</span>].toFixed(<span class="hljs-number">2</span>);
+        }
 
-        <span class="kd">var</span> <span class="nx">x</span> <span class="o">=</span> <span class="nx">item</span><span class="p">.</span><span class="nx">datapoint</span><span class="p">[</span><span class="mi">0</span><span class="p">].</span><span class="nx">toFixed</span><span class="p">(</span><span class="mi">2</span><span class="p">),</span>
-            <span class="nx">y</span> <span class="o">=</span> <span class="nx">item</span><span class="p">.</span><span class="nx">datapoint</span><span class="p">[</span><span class="mi">1</span><span class="p">].</span><span class="nx">toFixed</span><span class="p">(</span><span class="mi">2</span><span class="p">);</span>
+        <span class="hljs-keyword">var</span> content = _.template(<span class="hljs-string">'&lt;%= group %&gt; = &lt;%= x %&gt;, &lt;%= series %&gt; = &lt;%= y %&gt;'</span>, {
+          group: <span class="hljs-keyword">this</span>.state.attributes.group,
+          x: <span class="hljs-keyword">this</span>._xaxisLabel(x),
+          series: item.series.label,
+          y: y
+        });</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-8">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-8">&#182;</a>
+              </div>
+              <p>use a different tooltip location offset for bar charts</p>
 
-        <span class="k">if</span> <span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">state</span><span class="p">.</span><span class="nx">attributes</span><span class="p">.</span><span class="nx">graphType</span> <span class="o">===</span> <span class="s1">&#39;bars&#39;</span><span class="p">)</span> <span class="p">{</span>
-          <span class="nx">x</span> <span class="o">=</span> <span class="nx">item</span><span class="p">.</span><span class="nx">datapoint</span><span class="p">[</span><span class="mi">1</span><span class="p">].</span><span class="nx">toFixed</span><span class="p">(</span><span class="mi">2</span><span class="p">),</span>
-          <span class="nx">y</span> <span class="o">=</span> <span class="nx">item</span><span class="p">.</span><span class="nx">datapoint</span><span class="p">[</span><span class="mi">0</span><span class="p">].</span><span class="nx">toFixed</span><span class="p">(</span><span class="mi">2</span><span class="p">);</span>
-        <span class="p">}</span>
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>        <span class="hljs-keyword">var</span> xLocation, yLocation;
+        <span class="hljs-keyword">if</span> (<span class="hljs-keyword">this</span>.state.attributes.graphType === <span class="hljs-string">'bars'</span>) {
+          xLocation = item.pageX + <span class="hljs-number">15</span>;
+          yLocation = item.pageY - <span class="hljs-number">10</span>;
+        } <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (<span class="hljs-keyword">this</span>.state.attributes.graphType === <span class="hljs-string">'columns'</span>) {
+          xLocation = item.pageX + <span class="hljs-number">15</span>;
+          yLocation = item.pageY;
+        } <span class="hljs-keyword">else</span> {
+          xLocation = item.pageX + <span class="hljs-number">10</span>;
+          yLocation = item.pageY - <span class="hljs-number">20</span>;
+        }
 
-        <span class="kd">var</span> <span class="nx">content</span> <span class="o">=</span> <span class="nx">_</span><span class="p">.</span><span class="nx">template</span><span class="p">(</span><span class="s1">&#39;&lt;%= group %&gt; = &lt;%= x %&gt;, &lt;%= series %&gt; = &lt;%= y %&gt;&#39;</span><span class="p">,</span> <span class="p">{</span>
-          <span class="nx">group</span><span class="o">:</span> <span class="k">this</span><span class="p">.</span><span class="nx">state</span><span class="p">.</span><span class="nx">attributes</span><span class="p">.</span><span class="nx">group</span><span class="p">,</span>
-          <span class="nx">x</span><span class="o">:</span> <span class="k">this</span><span class="p">.</span><span class="nx">_xaxisLabel</span><span class="p">(</span><span class="nx">x</span><span class="p">),</span>
-          <span class="nx">series</span><span class="o">:</span> <span class="nx">item</span><span class="p">.</span><span class="nx">series</span><span class="p">.</span><span class="nx">label</span><span class="p">,</span>
-          <span class="nx">y</span><span class="o">:</span> <span class="nx">y</span>
-        <span class="p">});</span></pre></div>             </td>           </tr>                               <tr id="section-8">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-8">&#182;</a>               </div>               <p>use a different tooltip location offset for bar charts</p>             </td>             <td class="code">               <div class="highlight"><pre>        <span class="kd">var</span> <span class="nx">xLocation</span><span class="p">,</span> <span class="nx">yLocation</span><span class="p">;</span>
-        <span class="k">if</span> <span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">state</span><span class="p">.</span><span class="nx">attributes</span><span class="p">.</span><span class="nx">graphType</span> <span class="o">===</span> <span class="s1">&#39;bars&#39;</span><span class="p">)</span> <span class="p">{</span>
-          <span class="nx">xLocation</span> <span class="o">=</span> <span class="nx">item</span><span class="p">.</span><span class="nx">pageX</span> <span class="o">+</span> <span class="mi">15</span><span class="p">;</span>
-          <span class="nx">yLocation</span> <span class="o">=</span> <span class="nx">item</span><span class="p">.</span><span class="nx">pageY</span> <span class="o">-</span> <span class="mi">10</span><span class="p">;</span>
-        <span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">state</span><span class="p">.</span><span class="nx">attributes</span><span class="p">.</span><span class="nx">graphType</span> <span class="o">===</span> <span class="s1">&#39;columns&#39;</span><span class="p">)</span> <span class="p">{</span>
-          <span class="nx">xLocation</span> <span class="o">=</span> <span class="nx">item</span><span class="p">.</span><span class="nx">pageX</span> <span class="o">+</span> <span class="mi">15</span><span class="p">;</span>
-          <span class="nx">yLocation</span> <span class="o">=</span> <span class="nx">item</span><span class="p">.</span><span class="nx">pageY</span><span class="p">;</span>
-        <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
-          <span class="nx">xLocation</span> <span class="o">=</span> <span class="nx">item</span><span class="p">.</span><span class="nx">pageX</span> <span class="o">+</span> <span class="mi">10</span><span class="p">;</span>
-          <span class="nx">yLocation</span> <span class="o">=</span> <span class="nx">item</span><span class="p">.</span><span class="nx">pageY</span> <span class="o">-</span> <span class="mi">20</span><span class="p">;</span>
-        <span class="p">}</span>
+        $(<span class="hljs-string">'&lt;div id="recline-flot-tooltip"&gt;'</span> + content + <span class="hljs-string">'&lt;/div&gt;'</span>).css({
+            top: yLocation,
+            left: xLocation
+        }).appendTo(<span class="hljs-string">"body"</span>).fadeIn(<span class="hljs-number">200</span>);
+      }
+    } <span class="hljs-keyword">else</span> {
+      $(<span class="hljs-string">"#recline-flot-tooltip"</span>).remove();
+      <span class="hljs-keyword">this</span>.previousTooltipPoint.x = <span class="hljs-literal">null</span>;
+      <span class="hljs-keyword">this</span>.previousTooltipPoint.y = <span class="hljs-literal">null</span>;
+    }
+  },
 
-        <span class="nx">$</span><span class="p">(</span><span class="s1">&#39;&lt;div id=&quot;recline-flot-tooltip&quot;&gt;&#39;</span> <span class="o">+</span> <span class="nx">content</span> <span class="o">+</span> <span class="s1">&#39;&lt;/div&gt;&#39;</span><span class="p">).</span><span class="nx">css</span><span class="p">({</span>
-            <span class="nx">top</span><span class="o">:</span> <span class="nx">yLocation</span><span class="p">,</span>
-            <span class="nx">left</span><span class="o">:</span> <span class="nx">xLocation</span>
-        <span class="p">}).</span><span class="nx">appendTo</span><span class="p">(</span><span class="s2">&quot;body&quot;</span><span class="p">).</span><span class="nx">fadeIn</span><span class="p">(</span><span class="mi">200</span><span class="p">);</span>
-      <span class="p">}</span>
-    <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
-      <span class="nx">$</span><span class="p">(</span><span class="s2">&quot;#recline-flot-tooltip&quot;</span><span class="p">).</span><span class="nx">remove</span><span class="p">();</span>
-      <span class="k">this</span><span class="p">.</span><span class="nx">previousTooltipPoint</span><span class="p">.</span><span class="nx">x</span> <span class="o">=</span> <span class="kc">null</span><span class="p">;</span>
-      <span class="k">this</span><span class="p">.</span><span class="nx">previousTooltipPoint</span><span class="p">.</span><span class="nx">y</span> <span class="o">=</span> <span class="kc">null</span><span class="p">;</span>
-    <span class="p">}</span>
-  <span class="p">},</span>
+  _xaxisLabel: <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(x)</span> </span>{
+    <span class="hljs-keyword">if</span> (<span class="hljs-keyword">this</span>._groupFieldIsDateTime()) {</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-9">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-9">&#182;</a>
+              </div>
+              <p>oddly x comes through as milliseconds <em>string</em> (rather than int
+or float) so we have to reparse</p>
 
-  <span class="nx">_xaxisLabel</span><span class="o">:</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">x</span><span class="p">)</span> <span class="p">{</span>
-    <span class="k">if</span> <span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">_groupFieldIsDateTime</span><span class="p">())</span> <span class="p">{</span></pre></div>             </td>           </tr>                               <tr id="section-9">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-9">&#182;</a>               </div>               <p>oddly x comes through as milliseconds <em>string</em> (rather than int
-or float) so we have to reparse</p>             </td>             <td class="code">               <div class="highlight"><pre>      <span class="nx">x</span> <span class="o">=</span> <span class="k">new</span> <span class="nb">Date</span><span class="p">(</span><span class="nb">parseFloat</span><span class="p">(</span><span class="nx">x</span><span class="p">)).</span><span class="nx">toLocaleDateString</span><span class="p">();</span>
-    <span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">xvaluesAreIndex</span><span class="p">)</span> <span class="p">{</span>
-      <span class="nx">x</span> <span class="o">=</span> <span class="nb">parseInt</span><span class="p">(</span><span class="nx">x</span><span class="p">,</span> <span class="mi">10</span><span class="p">);</span></pre></div>             </td>           </tr>                               <tr id="section-10">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-10">&#182;</a>               </div>               <p>HACK: deal with bar graph style cases where x-axis items were strings
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>      x = <span class="hljs-keyword">new</span> <span class="hljs-built_in">Date</span>(<span class="hljs-built_in">parseFloat</span>(x)).toLocaleDateString();
+    } <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (<span class="hljs-keyword">this</span>.xvaluesAreIndex) {
+      x = <span class="hljs-built_in">parseInt</span>(x, <span class="hljs-number">10</span>);</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-10">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-10">&#182;</a>
+              </div>
+              <p>HACK: deal with bar graph style cases where x-axis items were strings
 In this case x at this point is the index of the item in the list of
-records not its actual x-axis value</p>             </td>             <td class="code">               <div class="highlight"><pre>      <span class="nx">x</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">model</span><span class="p">.</span><span class="nx">records</span><span class="p">.</span><span class="nx">models</span><span class="p">[</span><span class="nx">x</span><span class="p">].</span><span class="nx">get</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">state</span><span class="p">.</span><span class="nx">attributes</span><span class="p">.</span><span class="nx">group</span><span class="p">);</span>
-    <span class="p">}</span>
+records not its actual x-axis value</p>
 
-    <span class="k">return</span> <span class="nx">x</span><span class="p">;</span>
-  <span class="p">},</span></pre></div>             </td>           </tr>                               <tr id="section-11">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-11">&#182;</a>               </div>               <h3>getGraphOptions</h3>
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>      x = <span class="hljs-keyword">this</span>.model.records.models[x].get(<span class="hljs-keyword">this</span>.state.attributes.group);
+    }
 
+    <span class="hljs-keyword">return</span> x;
+  },</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-11">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-11">&#182;</a>
+              </div>
+              <h3 id="getgraphoptions">getGraphOptions</h3>
 <p>Get options for Flot Graph</p>
-
 <p>needs to be function as can depend on state</p>
-
 <p>@param typeId graphType id (lines, lines-and-points etc)
-@param numPoints the number of points that will be plotted</p>             </td>             <td class="code">               <div class="highlight"><pre>  <span class="nx">getGraphOptions</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">typeId</span><span class="p">,</span> <span class="nx">numPoints</span><span class="p">)</span> <span class="p">{</span>
-    <span class="kd">var</span> <span class="nx">self</span> <span class="o">=</span> <span class="k">this</span><span class="p">;</span>
-    <span class="kd">var</span> <span class="nx">groupFieldIsDateTime</span> <span class="o">=</span> <span class="nx">self</span><span class="p">.</span><span class="nx">_groupFieldIsDateTime</span><span class="p">();</span>
-    <span class="kd">var</span> <span class="nx">xaxis</span> <span class="o">=</span> <span class="p">{};</span>
+@param numPoints the number of points that will be plotted</p>
 
-    <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="nx">groupFieldIsDateTime</span><span class="p">)</span> <span class="p">{</span>
-      <span class="nx">xaxis</span><span class="p">.</span><span class="nx">tickFormatter</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">x</span><span class="p">)</span> <span class="p">{</span></pre></div>             </td>           </tr>                               <tr id="section-12">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-12">&#182;</a>               </div>               <p>convert x to a string and make sure that it is not too long or the
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  getGraphOptions: <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(typeId, numPoints)</span> </span>{
+    <span class="hljs-keyword">var</span> self = <span class="hljs-keyword">this</span>;
+    <span class="hljs-keyword">var</span> groupFieldIsDateTime = self._groupFieldIsDateTime();
+    <span class="hljs-keyword">var</span> xaxis = {};
+
+    <span class="hljs-keyword">if</span> (!groupFieldIsDateTime) {
+      xaxis.tickFormatter = <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(x)</span> </span>{</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-12">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-12">&#182;</a>
+              </div>
+              <p>convert x to a string and make sure that it is not too long or the
 tick labels will overlap
-TODO: find a more accurate way of calculating the size of tick labels</p>             </td>             <td class="code">               <div class="highlight"><pre>        <span class="kd">var</span> <span class="nx">label</span> <span class="o">=</span> <span class="nx">self</span><span class="p">.</span><span class="nx">_xaxisLabel</span><span class="p">(</span><span class="nx">x</span><span class="p">)</span> <span class="o">||</span> <span class="s2">&quot;&quot;</span><span class="p">;</span>
+TODO: find a more accurate way of calculating the size of tick labels</p>
 
-        <span class="k">if</span> <span class="p">(</span><span class="k">typeof</span> <span class="nx">label</span> <span class="o">!==</span> <span class="s1">&#39;string&#39;</span><span class="p">)</span> <span class="p">{</span>
-          <span class="nx">label</span> <span class="o">=</span> <span class="nx">label</span><span class="p">.</span><span class="nx">toString</span><span class="p">();</span>
-        <span class="p">}</span>
-        <span class="k">if</span> <span class="p">(</span><span class="nx">self</span><span class="p">.</span><span class="nx">state</span><span class="p">.</span><span class="nx">attributes</span><span class="p">.</span><span class="nx">graphType</span> <span class="o">!==</span> <span class="s1">&#39;bars&#39;</span> <span class="o">&amp;&amp;</span> <span class="nx">label</span><span class="p">.</span><span class="nx">length</span> <span class="o">&gt;</span> <span class="mi">10</span><span class="p">)</span> <span class="p">{</span>
-          <span class="nx">label</span> <span class="o">=</span> <span class="nx">label</span><span class="p">.</span><span class="nx">slice</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;...&quot;</span><span class="p">;</span>
-        <span class="p">}</span>
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>        <span class="hljs-keyword">var</span> label = self._xaxisLabel(x) || <span class="hljs-string">""</span>;
 
-        <span class="k">return</span> <span class="nx">label</span><span class="p">;</span>
-      <span class="p">};</span>
-    <span class="p">}</span></pre></div>             </td>           </tr>                               <tr id="section-13">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-13">&#182;</a>               </div>               <p>for labels case we only want ticks at the label intervals
+        <span class="hljs-keyword">if</span> (<span class="hljs-keyword">typeof</span> label !== <span class="hljs-string">'string'</span>) {
+          label = label.toString();
+        }
+        <span class="hljs-keyword">if</span> (self.state.attributes.graphType !== <span class="hljs-string">'bars'</span> &amp;&amp; label.length &gt; <span class="hljs-number">10</span>) {
+          label = label.slice(<span class="hljs-number">0</span>, <span class="hljs-number">10</span>) + <span class="hljs-string">"..."</span>;
+        }
+
+        <span class="hljs-keyword">return</span> label;
+      };
+    }</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-13">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-13">&#182;</a>
+              </div>
+              <p>for labels case we only want ticks at the label intervals
 HACK: however we also get this case with Date fields. In that case we
-could have a lot of values and so we limit to max 15 (we assume)</p>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="k">if</span> <span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">xvaluesAreIndex</span><span class="p">)</span> <span class="p">{</span>
-      <span class="kd">var</span> <span class="nx">numTicks</span> <span class="o">=</span> <span class="nb">Math</span><span class="p">.</span><span class="nx">min</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">model</span><span class="p">.</span><span class="nx">records</span><span class="p">.</span><span class="nx">length</span><span class="p">,</span> <span class="mi">15</span><span class="p">);</span>
-      <span class="kd">var</span> <span class="nx">increment</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">model</span><span class="p">.</span><span class="nx">records</span><span class="p">.</span><span class="nx">length</span> <span class="o">/</span> <span class="nx">numTicks</span><span class="p">;</span>
-      <span class="kd">var</span> <span class="nx">ticks</span> <span class="o">=</span> <span class="p">[];</span>
-      <span class="k">for</span> <span class="p">(</span><span class="kd">var</span> <span class="nx">i</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span> <span class="nx">i</span><span class="o">&lt;</span><span class="nx">numTicks</span><span class="p">;</span> <span class="nx">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
-        <span class="nx">ticks</span><span class="p">.</span><span class="nx">push</span><span class="p">(</span><span class="nb">parseInt</span><span class="p">(</span><span class="nx">i</span><span class="o">*</span><span class="nx">increment</span><span class="p">,</span> <span class="mi">10</span><span class="p">));</span>
-      <span class="p">}</span>
-      <span class="nx">xaxis</span><span class="p">.</span><span class="nx">ticks</span> <span class="o">=</span> <span class="nx">ticks</span><span class="p">;</span>
-    <span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="nx">groupFieldIsDateTime</span><span class="p">)</span> <span class="p">{</span>
-      <span class="nx">xaxis</span><span class="p">.</span><span class="nx">mode</span> <span class="o">=</span> <span class="s1">&#39;time&#39;</span><span class="p">;</span>
-    <span class="p">}</span>
+could have a lot of values and so we limit to max 15 (we assume)</p>
 
-    <span class="kd">var</span> <span class="nx">yaxis</span> <span class="o">=</span> <span class="p">{};</span>
-    <span class="nx">yaxis</span><span class="p">.</span><span class="nx">autoscale</span> <span class="o">=</span> <span class="kc">true</span><span class="p">;</span>
-    <span class="nx">yaxis</span><span class="p">.</span><span class="nx">autoscaleMargin</span> <span class="o">=</span> <span class="mf">0.02</span><span class="p">;</span>
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    <span class="hljs-keyword">if</span> (<span class="hljs-keyword">this</span>.xvaluesAreIndex) {
+      <span class="hljs-keyword">var</span> numTicks = <span class="hljs-built_in">Math</span>.min(<span class="hljs-keyword">this</span>.model.records.length, <span class="hljs-number">15</span>);
+      <span class="hljs-keyword">var</span> increment = <span class="hljs-keyword">this</span>.model.records.length / numTicks;
+      <span class="hljs-keyword">var</span> ticks = [];
+      <span class="hljs-keyword">for</span> (<span class="hljs-keyword">var</span> i=<span class="hljs-number">0</span>; i&lt;numTicks; i++) {
+        ticks.push(<span class="hljs-built_in">parseInt</span>(i*increment, <span class="hljs-number">10</span>));
+      }
+      xaxis.ticks = ticks;
+    } <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (groupFieldIsDateTime) {
+      xaxis.mode = <span class="hljs-string">'time'</span>;
+    }
 
-    <span class="kd">var</span> <span class="nx">legend</span> <span class="o">=</span> <span class="p">{};</span>
-    <span class="nx">legend</span><span class="p">.</span><span class="nx">position</span> <span class="o">=</span> <span class="s1">&#39;ne&#39;</span><span class="p">;</span>
+    <span class="hljs-keyword">var</span> yaxis = {};
+    yaxis.autoscale = <span class="hljs-literal">true</span>;
+    yaxis.autoscaleMargin = <span class="hljs-number">0.02</span>;
 
-    <span class="kd">var</span> <span class="nx">grid</span> <span class="o">=</span> <span class="p">{};</span>
-    <span class="nx">grid</span><span class="p">.</span><span class="nx">hoverable</span> <span class="o">=</span> <span class="kc">true</span><span class="p">;</span>
-    <span class="nx">grid</span><span class="p">.</span><span class="nx">clickable</span> <span class="o">=</span> <span class="kc">true</span><span class="p">;</span>
-    <span class="nx">grid</span><span class="p">.</span><span class="nx">borderColor</span> <span class="o">=</span> <span class="s2">&quot;#aaaaaa&quot;</span><span class="p">;</span>
-    <span class="nx">grid</span><span class="p">.</span><span class="nx">borderWidth</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
+    <span class="hljs-keyword">var</span> legend = {};
+    legend.position = <span class="hljs-string">'ne'</span>;
 
-    <span class="kd">var</span> <span class="nx">optionsPerGraphType</span> <span class="o">=</span> <span class="p">{</span>
-      <span class="nx">lines</span><span class="o">:</span> <span class="p">{</span>
-        <span class="nx">legend</span><span class="o">:</span> <span class="nx">legend</span><span class="p">,</span>
-        <span class="nx">colors</span><span class="o">:</span> <span class="k">this</span><span class="p">.</span><span class="nx">graphColors</span><span class="p">,</span>
-        <span class="nx">lines</span><span class="o">:</span> <span class="p">{</span> <span class="nx">show</span><span class="o">:</span> <span class="kc">true</span> <span class="p">},</span>
-        <span class="nx">xaxis</span><span class="o">:</span> <span class="nx">xaxis</span><span class="p">,</span>
-        <span class="nx">yaxis</span><span class="o">:</span> <span class="nx">yaxis</span><span class="p">,</span>
-        <span class="nx">grid</span><span class="o">:</span> <span class="nx">grid</span>
-      <span class="p">},</span>
-      <span class="nx">points</span><span class="o">:</span> <span class="p">{</span>
-        <span class="nx">legend</span><span class="o">:</span> <span class="nx">legend</span><span class="p">,</span>
-        <span class="nx">colors</span><span class="o">:</span> <span class="k">this</span><span class="p">.</span><span class="nx">graphColors</span><span class="p">,</span>
-        <span class="nx">points</span><span class="o">:</span> <span class="p">{</span> <span class="nx">show</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span> <span class="nx">hitRadius</span><span class="o">:</span> <span class="mi">5</span> <span class="p">},</span>
-        <span class="nx">xaxis</span><span class="o">:</span> <span class="nx">xaxis</span><span class="p">,</span>
-        <span class="nx">yaxis</span><span class="o">:</span> <span class="nx">yaxis</span><span class="p">,</span>
-        <span class="nx">grid</span><span class="o">:</span> <span class="nx">grid</span>
-      <span class="p">},</span>
-      <span class="s1">&#39;lines-and-points&#39;</span><span class="o">:</span> <span class="p">{</span>
-        <span class="nx">legend</span><span class="o">:</span> <span class="nx">legend</span><span class="p">,</span>
-        <span class="nx">colors</span><span class="o">:</span> <span class="k">this</span><span class="p">.</span><span class="nx">graphColors</span><span class="p">,</span>
-        <span class="nx">points</span><span class="o">:</span> <span class="p">{</span> <span class="nx">show</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span> <span class="nx">hitRadius</span><span class="o">:</span> <span class="mi">5</span> <span class="p">},</span>
-        <span class="nx">lines</span><span class="o">:</span> <span class="p">{</span> <span class="nx">show</span><span class="o">:</span> <span class="kc">true</span> <span class="p">},</span>
-        <span class="nx">xaxis</span><span class="o">:</span> <span class="nx">xaxis</span><span class="p">,</span>
-        <span class="nx">yaxis</span><span class="o">:</span> <span class="nx">yaxis</span><span class="p">,</span>
-        <span class="nx">grid</span><span class="o">:</span> <span class="nx">grid</span>
-      <span class="p">},</span>
-      <span class="nx">bars</span><span class="o">:</span> <span class="p">{</span>
-        <span class="nx">legend</span><span class="o">:</span> <span class="nx">legend</span><span class="p">,</span>
-        <span class="nx">colors</span><span class="o">:</span> <span class="k">this</span><span class="p">.</span><span class="nx">graphColors</span><span class="p">,</span>
-        <span class="nx">lines</span><span class="o">:</span> <span class="p">{</span> <span class="nx">show</span><span class="o">:</span> <span class="kc">false</span> <span class="p">},</span>
-        <span class="nx">xaxis</span><span class="o">:</span> <span class="nx">yaxis</span><span class="p">,</span>
-        <span class="nx">yaxis</span><span class="o">:</span> <span class="nx">xaxis</span><span class="p">,</span>
-        <span class="nx">grid</span><span class="o">:</span> <span class="nx">grid</span><span class="p">,</span>
-        <span class="nx">bars</span><span class="o">:</span> <span class="p">{</span>
-          <span class="nx">show</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span>
-          <span class="nx">horizontal</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span>
-          <span class="nx">shadowSize</span><span class="o">:</span> <span class="mi">0</span><span class="p">,</span>
-          <span class="nx">align</span><span class="o">:</span> <span class="s1">&#39;center&#39;</span><span class="p">,</span>
-          <span class="nx">barWidth</span><span class="o">:</span> <span class="mf">0.8</span>
-        <span class="p">}</span>
-      <span class="p">},</span>
-      <span class="nx">columns</span><span class="o">:</span> <span class="p">{</span>
-        <span class="nx">legend</span><span class="o">:</span> <span class="nx">legend</span><span class="p">,</span>
-        <span class="nx">colors</span><span class="o">:</span> <span class="k">this</span><span class="p">.</span><span class="nx">graphColors</span><span class="p">,</span>
-        <span class="nx">lines</span><span class="o">:</span> <span class="p">{</span> <span class="nx">show</span><span class="o">:</span> <span class="kc">false</span> <span class="p">},</span>
-        <span class="nx">xaxis</span><span class="o">:</span> <span class="nx">xaxis</span><span class="p">,</span>
-        <span class="nx">yaxis</span><span class="o">:</span> <span class="nx">yaxis</span><span class="p">,</span>
-        <span class="nx">grid</span><span class="o">:</span> <span class="nx">grid</span><span class="p">,</span>
-        <span class="nx">bars</span><span class="o">:</span> <span class="p">{</span>
-          <span class="nx">show</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span>
-          <span class="nx">horizontal</span><span class="o">:</span> <span class="kc">false</span><span class="p">,</span>
-          <span class="nx">shadowSize</span><span class="o">:</span> <span class="mi">0</span><span class="p">,</span>
-          <span class="nx">align</span><span class="o">:</span> <span class="s1">&#39;center&#39;</span><span class="p">,</span>
-          <span class="nx">barWidth</span><span class="o">:</span> <span class="mf">0.8</span>
-        <span class="p">}</span>
-      <span class="p">}</span>
-    <span class="p">};</span>
+    <span class="hljs-keyword">var</span> grid = {};
+    grid.hoverable = <span class="hljs-literal">true</span>;
+    grid.clickable = <span class="hljs-literal">true</span>;
+    grid.borderColor = <span class="hljs-string">"#aaaaaa"</span>;
+    grid.borderWidth = <span class="hljs-number">1</span>;
 
-    <span class="k">if</span> <span class="p">(</span><span class="nx">self</span><span class="p">.</span><span class="nx">state</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s1">&#39;graphOptions&#39;</span><span class="p">))</span> <span class="p">{</span>
-      <span class="k">return</span> <span class="nx">_</span><span class="p">.</span><span class="nx">extend</span><span class="p">(</span><span class="nx">optionsPerGraphType</span><span class="p">[</span><span class="nx">typeId</span><span class="p">],</span>
-                      <span class="nx">self</span><span class="p">.</span><span class="nx">state</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s1">&#39;graphOptions&#39;</span><span class="p">));</span>
-    <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
-      <span class="k">return</span> <span class="nx">optionsPerGraphType</span><span class="p">[</span><span class="nx">typeId</span><span class="p">];</span>
-    <span class="p">}</span>
-  <span class="p">},</span>
+    <span class="hljs-keyword">var</span> optionsPerGraphType = {
+      lines: {
+        legend: legend,
+        colors: <span class="hljs-keyword">this</span>.graphColors,
+        lines: { show: <span class="hljs-literal">true</span> },
+        xaxis: xaxis,
+        yaxis: yaxis,
+        grid: grid
+      },
+      points: {
+        legend: legend,
+        colors: <span class="hljs-keyword">this</span>.graphColors,
+        points: { show: <span class="hljs-literal">true</span>, hitRadius: <span class="hljs-number">5</span> },
+        xaxis: xaxis,
+        yaxis: yaxis,
+        grid: grid
+      },
+      <span class="hljs-string">'lines-and-points'</span>: {
+        legend: legend,
+        colors: <span class="hljs-keyword">this</span>.graphColors,
+        points: { show: <span class="hljs-literal">true</span>, hitRadius: <span class="hljs-number">5</span> },
+        lines: { show: <span class="hljs-literal">true</span> },
+        xaxis: xaxis,
+        yaxis: yaxis,
+        grid: grid
+      },
+      bars: {
+        legend: legend,
+        colors: <span class="hljs-keyword">this</span>.graphColors,
+        lines: { show: <span class="hljs-literal">false</span> },
+        xaxis: yaxis,
+        yaxis: xaxis,
+        grid: grid,
+        bars: {
+          show: <span class="hljs-literal">true</span>,
+          horizontal: <span class="hljs-literal">true</span>,
+          shadowSize: <span class="hljs-number">0</span>,
+          align: <span class="hljs-string">'center'</span>,
+          barWidth: <span class="hljs-number">0.8</span>
+        }
+      },
+      columns: {
+        legend: legend,
+        colors: <span class="hljs-keyword">this</span>.graphColors,
+        lines: { show: <span class="hljs-literal">false</span> },
+        xaxis: xaxis,
+        yaxis: yaxis,
+        grid: grid,
+        bars: {
+          show: <span class="hljs-literal">true</span>,
+          horizontal: <span class="hljs-literal">false</span>,
+          shadowSize: <span class="hljs-number">0</span>,
+          align: <span class="hljs-string">'center'</span>,
+          barWidth: <span class="hljs-number">0.8</span>
+        }
+      }
+    };
 
-  <span class="nx">_groupFieldIsDateTime</span><span class="o">:</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
-    <span class="kd">var</span> <span class="nx">xfield</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">model</span><span class="p">.</span><span class="nx">fields</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">state</span><span class="p">.</span><span class="nx">attributes</span><span class="p">.</span><span class="nx">group</span><span class="p">);</span>
-    <span class="kd">var</span> <span class="nx">xtype</span> <span class="o">=</span> <span class="nx">xfield</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s1">&#39;type&#39;</span><span class="p">);</span>
-    <span class="kd">var</span> <span class="nx">isDateTime</span> <span class="o">=</span> <span class="p">(</span><span class="nx">xtype</span> <span class="o">===</span> <span class="s1">&#39;date&#39;</span> <span class="o">||</span> <span class="nx">xtype</span> <span class="o">===</span> <span class="s1">&#39;date-time&#39;</span> <span class="o">||</span> <span class="nx">xtype</span>  <span class="o">===</span> <span class="s1">&#39;time&#39;</span><span class="p">);</span>
-    <span class="k">return</span> <span class="nx">isDateTime</span><span class="p">;</span>
-  <span class="p">},</span>
+    <span class="hljs-keyword">if</span> (self.state.get(<span class="hljs-string">'graphOptions'</span>)) {
+      <span class="hljs-keyword">return</span> _.extend(optionsPerGraphType[typeId],
+                      self.state.get(<span class="hljs-string">'graphOptions'</span>));
+    } <span class="hljs-keyword">else</span> {
+      <span class="hljs-keyword">return</span> optionsPerGraphType[typeId];
+    }
+  },
 
-  <span class="nx">createSeries</span><span class="o">:</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
-    <span class="kd">var</span> <span class="nx">self</span> <span class="o">=</span> <span class="k">this</span><span class="p">;</span>
-    <span class="nx">self</span><span class="p">.</span><span class="nx">xvaluesAreIndex</span> <span class="o">=</span> <span class="kc">false</span><span class="p">;</span>
-    <span class="kd">var</span> <span class="nx">series</span> <span class="o">=</span> <span class="p">[];</span>
-    <span class="kd">var</span> <span class="nx">xfield</span> <span class="o">=</span> <span class="nx">self</span><span class="p">.</span><span class="nx">model</span><span class="p">.</span><span class="nx">fields</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="nx">self</span><span class="p">.</span><span class="nx">state</span><span class="p">.</span><span class="nx">attributes</span><span class="p">.</span><span class="nx">group</span><span class="p">);</span>
-    <span class="kd">var</span> <span class="nx">isDateTime</span> <span class="o">=</span> <span class="nx">self</span><span class="p">.</span><span class="nx">_groupFieldIsDateTime</span><span class="p">();</span>
+  _groupFieldIsDateTime: <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> </span>{
+    <span class="hljs-keyword">var</span> xfield = <span class="hljs-keyword">this</span>.model.fields.get(<span class="hljs-keyword">this</span>.state.attributes.group);
+    <span class="hljs-keyword">var</span> xtype = xfield.get(<span class="hljs-string">'type'</span>);
+    <span class="hljs-keyword">var</span> isDateTime = (xtype === <span class="hljs-string">'date'</span> || xtype === <span class="hljs-string">'date-time'</span> || xtype  === <span class="hljs-string">'time'</span>);
+    <span class="hljs-keyword">return</span> isDateTime;
+  },
 
-    <span class="nx">_</span><span class="p">.</span><span class="nx">each</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">state</span><span class="p">.</span><span class="nx">attributes</span><span class="p">.</span><span class="nx">series</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">field</span><span class="p">)</span> <span class="p">{</span>
-      <span class="kd">var</span> <span class="nx">points</span> <span class="o">=</span> <span class="p">[];</span>
-      <span class="kd">var</span> <span class="nx">fieldLabel</span> <span class="o">=</span> <span class="nx">self</span><span class="p">.</span><span class="nx">model</span><span class="p">.</span><span class="nx">fields</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="nx">field</span><span class="p">).</span><span class="nx">get</span><span class="p">(</span><span class="s1">&#39;label&#39;</span><span class="p">);</span>
+  createSeries: <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> </span>{
+    <span class="hljs-keyword">var</span> self = <span class="hljs-keyword">this</span>;
+    self.xvaluesAreIndex = <span class="hljs-literal">false</span>;
+    <span class="hljs-keyword">var</span> series = [];
+    <span class="hljs-keyword">var</span> xfield = self.model.fields.get(self.state.attributes.group);
+    <span class="hljs-keyword">var</span> isDateTime = self._groupFieldIsDateTime();
 
-        <span class="k">if</span> <span class="p">(</span><span class="nx">isDateTime</span><span class="p">){</span>
-            <span class="kd">var</span> <span class="nx">cast</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">x</span><span class="p">){</span>
-                <span class="kd">var</span> <span class="nx">_date</span> <span class="o">=</span> <span class="nx">moment</span><span class="p">(</span><span class="nb">String</span><span class="p">(</span><span class="nx">x</span><span class="p">));</span>
-                <span class="k">if</span> <span class="p">(</span><span class="nx">_date</span><span class="p">.</span><span class="nx">isValid</span><span class="p">())</span> <span class="p">{</span>
-                    <span class="nx">x</span> <span class="o">=</span> <span class="nx">_date</span><span class="p">.</span><span class="nx">toDate</span><span class="p">().</span><span class="nx">getTime</span><span class="p">();</span>
-                <span class="p">}</span>
-                <span class="k">return</span> <span class="nx">x</span>
-            <span class="p">}</span>
-        <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
-            <span class="kd">var</span> <span class="nx">raw</span> <span class="o">=</span> <span class="nx">_</span><span class="p">.</span><span class="nx">map</span><span class="p">(</span><span class="nx">self</span><span class="p">.</span><span class="nx">model</span><span class="p">.</span><span class="nx">records</span><span class="p">.</span><span class="nx">models</span><span class="p">,</span>
-                            <span class="kd">function</span><span class="p">(</span><span class="nx">doc</span><span class="p">,</span> <span class="nx">index</span><span class="p">){</span>
-                                <span class="k">return</span> <span class="nx">doc</span><span class="p">.</span><span class="nx">getFieldValueUnrendered</span><span class="p">(</span><span class="nx">xfield</span><span class="p">)</span>
-                            <span class="p">});</span>
+    _.each(<span class="hljs-keyword">this</span>.state.attributes.series, <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(field)</span> </span>{
+      <span class="hljs-keyword">var</span> points = [];
+      <span class="hljs-keyword">var</span> fieldLabel = self.model.fields.get(field).get(<span class="hljs-string">'label'</span>);
 
-            <span class="k">if</span> <span class="p">(</span><span class="nx">_</span><span class="p">.</span><span class="nx">all</span><span class="p">(</span><span class="nx">raw</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">x</span><span class="p">){</span> <span class="k">return</span> <span class="o">!</span><span class="nb">isNaN</span><span class="p">(</span><span class="nb">parseFloat</span><span class="p">(</span><span class="nx">x</span><span class="p">))</span> <span class="p">})){</span>
-                <span class="kd">var</span> <span class="nx">cast</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">x</span><span class="p">){</span> <span class="k">return</span> <span class="nb">parseFloat</span><span class="p">(</span><span class="nx">x</span><span class="p">)</span> <span class="p">}</span>
-            <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
-                <span class="nx">self</span><span class="p">.</span><span class="nx">xvaluesAreIndex</span> <span class="o">=</span> <span class="kc">true</span>
-            <span class="p">}</span>
-        <span class="p">}</span>
+        <span class="hljs-keyword">if</span> (isDateTime){
+            <span class="hljs-keyword">var</span> cast = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(x)</span></span>{
+                <span class="hljs-keyword">var</span> _date = moment(<span class="hljs-built_in">String</span>(x));
+                <span class="hljs-keyword">if</span> (_date.isValid()) {
+                    x = _date.toDate().getTime();
+                }
+                <span class="hljs-keyword">return</span> x
+            }
+        } <span class="hljs-keyword">else</span> {
+            <span class="hljs-keyword">var</span> raw = _.map(self.model.records.models,
+                            <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(doc, index)</span></span>{
+                                <span class="hljs-keyword">return</span> doc.getFieldValueUnrendered(xfield)
+                            });
 
-      <span class="nx">_</span><span class="p">.</span><span class="nx">each</span><span class="p">(</span><span class="nx">self</span><span class="p">.</span><span class="nx">model</span><span class="p">.</span><span class="nx">records</span><span class="p">.</span><span class="nx">models</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">doc</span><span class="p">,</span> <span class="nx">index</span><span class="p">)</span> <span class="p">{</span>
-        <span class="k">if</span><span class="p">(</span><span class="nx">self</span><span class="p">.</span><span class="nx">xvaluesAreIndex</span><span class="p">){</span>
-            <span class="kd">var</span> <span class="nx">x</span> <span class="o">=</span> <span class="nx">index</span><span class="p">;</span>
-        <span class="p">}</span><span class="k">else</span><span class="p">{</span>
-            <span class="kd">var</span> <span class="nx">x</span> <span class="o">=</span> <span class="nx">cast</span><span class="p">(</span><span class="nx">doc</span><span class="p">.</span><span class="nx">getFieldValueUnrendered</span><span class="p">(</span><span class="nx">xfield</span><span class="p">));</span>
-        <span class="p">}</span>
+            <span class="hljs-keyword">if</span> (_.all(raw, <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(x)</span></span>{ <span class="hljs-keyword">return</span> !<span class="hljs-built_in">isNaN</span>(<span class="hljs-built_in">parseFloat</span>(x)) })){
+                <span class="hljs-keyword">var</span> cast = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(x)</span></span>{ <span class="hljs-keyword">return</span> <span class="hljs-built_in">parseFloat</span>(x) }
+            } <span class="hljs-keyword">else</span> {
+                self.xvaluesAreIndex = <span class="hljs-literal">true</span>
+            }
+        }
 
-        <span class="kd">var</span> <span class="nx">yfield</span> <span class="o">=</span> <span class="nx">self</span><span class="p">.</span><span class="nx">model</span><span class="p">.</span><span class="nx">fields</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="nx">field</span><span class="p">);</span>
-        <span class="kd">var</span> <span class="nx">y</span> <span class="o">=</span> <span class="nx">doc</span><span class="p">.</span><span class="nx">getFieldValueUnrendered</span><span class="p">(</span><span class="nx">yfield</span><span class="p">);</span>
+      _.each(self.model.records.models, <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(doc, index)</span> </span>{
+        <span class="hljs-keyword">if</span>(self.xvaluesAreIndex){
+            <span class="hljs-keyword">var</span> x = index;
+        }<span class="hljs-keyword">else</span>{
+            <span class="hljs-keyword">var</span> x = cast(doc.getFieldValueUnrendered(xfield));
+        }
 
-        <span class="k">if</span> <span class="p">(</span><span class="nx">self</span><span class="p">.</span><span class="nx">state</span><span class="p">.</span><span class="nx">attributes</span><span class="p">.</span><span class="nx">graphType</span> <span class="o">==</span> <span class="s1">&#39;bars&#39;</span><span class="p">)</span> <span class="p">{</span>
-          <span class="nx">points</span><span class="p">.</span><span class="nx">push</span><span class="p">([</span><span class="nx">y</span><span class="p">,</span> <span class="nx">x</span><span class="p">]);</span>
-        <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
-          <span class="nx">points</span><span class="p">.</span><span class="nx">push</span><span class="p">([</span><span class="nx">x</span><span class="p">,</span> <span class="nx">y</span><span class="p">]);</span>
-        <span class="p">}</span>
-      <span class="p">});</span>
-      <span class="nx">series</span><span class="p">.</span><span class="nx">push</span><span class="p">({</span>
-        <span class="nx">data</span><span class="o">:</span> <span class="nx">points</span><span class="p">,</span>
-        <span class="nx">label</span><span class="o">:</span> <span class="nx">fieldLabel</span><span class="p">,</span>
-        <span class="nx">hoverable</span><span class="o">:</span> <span class="kc">true</span>
-      <span class="p">});</span>
-    <span class="p">});</span>
-    <span class="k">return</span> <span class="nx">series</span><span class="p">;</span>
-  <span class="p">}</span>
-<span class="p">});</span>
+        <span class="hljs-keyword">var</span> yfield = self.model.fields.get(field);
+        <span class="hljs-keyword">var</span> y = doc.getFieldValueUnrendered(yfield);
 
-<span class="nx">my</span><span class="p">.</span><span class="nx">FlotControls</span> <span class="o">=</span> <span class="nx">Backbone</span><span class="p">.</span><span class="nx">View</span><span class="p">.</span><span class="nx">extend</span><span class="p">({</span>
-  <span class="nx">className</span><span class="o">:</span> <span class="s2">&quot;editor&quot;</span><span class="p">,</span>
-  <span class="nx">template</span><span class="o">:</span> <span class="s1">&#39; \</span>
-<span class="s1">  &lt;div class=&quot;editor&quot;&gt; \</span>
-<span class="s1">    &lt;form class=&quot;form-stacked&quot;&gt; \</span>
-<span class="s1">      &lt;div class=&quot;clearfix&quot;&gt; \</span>
-<span class="s1">        &lt;label&gt;Graph Type&lt;/label&gt; \</span>
-<span class="s1">        &lt;div class=&quot;input editor-type&quot;&gt; \</span>
-<span class="s1">          &lt;select&gt; \</span>
-<span class="s1">          &lt;option value=&quot;lines-and-points&quot;&gt;Lines and Points&lt;/option&gt; \</span>
-<span class="s1">          &lt;option value=&quot;lines&quot;&gt;Lines&lt;/option&gt; \</span>
-<span class="s1">          &lt;option value=&quot;points&quot;&gt;Points&lt;/option&gt; \</span>
-<span class="s1">          &lt;option value=&quot;bars&quot;&gt;Bars&lt;/option&gt; \</span>
-<span class="s1">          &lt;option value=&quot;columns&quot;&gt;Columns&lt;/option&gt; \</span>
-<span class="s1">          &lt;/select&gt; \</span>
-<span class="s1">        &lt;/div&gt; \</span>
-<span class="s1">        &lt;label&gt;Group Column (Axis 1)&lt;/label&gt; \</span>
-<span class="s1">        &lt;div class=&quot;input editor-group&quot;&gt; \</span>
-<span class="s1">          &lt;select&gt; \</span>
-<span class="s1">          &lt;option value=&quot;&quot;&gt;Please choose ...&lt;/option&gt; \</span>
-<span class="s1">          {{#fields}} \</span>
-<span class="s1">          &lt;option value=&quot;{{id}}&quot;&gt;{{label}}&lt;/option&gt; \</span>
-<span class="s1">          {{/fields}} \</span>
-<span class="s1">          &lt;/select&gt; \</span>
-<span class="s1">        &lt;/div&gt; \</span>
-<span class="s1">        &lt;div class=&quot;editor-series-group&quot;&gt; \</span>
-<span class="s1">        &lt;/div&gt; \</span>
-<span class="s1">      &lt;/div&gt; \</span>
-<span class="s1">      &lt;div class=&quot;editor-buttons&quot;&gt; \</span>
-<span class="s1">        &lt;button class=&quot;btn editor-add&quot;&gt;Add Series&lt;/button&gt; \</span>
-<span class="s1">      &lt;/div&gt; \</span>
-<span class="s1">      &lt;div class=&quot;editor-buttons editor-submit&quot; comment=&quot;hidden temporarily&quot; style=&quot;display: none;&quot;&gt; \</span>
-<span class="s1">        &lt;button class=&quot;editor-save&quot;&gt;Save&lt;/button&gt; \</span>
-<span class="s1">        &lt;input type=&quot;hidden&quot; class=&quot;editor-id&quot; value=&quot;chart-1&quot; /&gt; \</span>
-<span class="s1">      &lt;/div&gt; \</span>
-<span class="s1">    &lt;/form&gt; \</span>
-<span class="s1">  &lt;/div&gt; \</span>
-<span class="s1">&#39;</span><span class="p">,</span>
-  <span class="nx">templateSeriesEditor</span><span class="o">:</span> <span class="s1">&#39; \</span>
-<span class="s1">    &lt;div class=&quot;editor-series js-series-{{seriesIndex}}&quot;&gt; \</span>
-<span class="s1">      &lt;label&gt;Series &lt;span&gt;{{seriesName}} (Axis 2)&lt;/span&gt; \</span>
-<span class="s1">        [&lt;a href=&quot;#remove&quot; class=&quot;action-remove-series&quot;&gt;Remove&lt;/a&gt;] \</span>
-<span class="s1">      &lt;/label&gt; \</span>
-<span class="s1">      &lt;div class=&quot;input&quot;&gt; \</span>
-<span class="s1">        &lt;select&gt; \</span>
-<span class="s1">        {{#fields}} \</span>
-<span class="s1">        &lt;option value=&quot;{{id}}&quot;&gt;{{label}}&lt;/option&gt; \</span>
-<span class="s1">        {{/fields}} \</span>
-<span class="s1">        &lt;/select&gt; \</span>
-<span class="s1">      &lt;/div&gt; \</span>
-<span class="s1">    &lt;/div&gt; \</span>
-<span class="s1">  &#39;</span><span class="p">,</span>
-  <span class="nx">events</span><span class="o">:</span> <span class="p">{</span>
-    <span class="s1">&#39;change form select&#39;</span><span class="o">:</span> <span class="s1">&#39;onEditorSubmit&#39;</span><span class="p">,</span>
-    <span class="s1">&#39;click .editor-add&#39;</span><span class="o">:</span> <span class="s1">&#39;_onAddSeries&#39;</span><span class="p">,</span>
-    <span class="s1">&#39;click .action-remove-series&#39;</span><span class="o">:</span> <span class="s1">&#39;removeSeries&#39;</span>
-  <span class="p">},</span>
+        <span class="hljs-keyword">if</span> (self.state.attributes.graphType == <span class="hljs-string">'bars'</span>) {
+          points.push([y, x]);
+        } <span class="hljs-keyword">else</span> {
+          points.push([x, y]);
+        }
+      });
+      series.push({
+        data: points,
+        label: fieldLabel,
+        hoverable: <span class="hljs-literal">true</span>
+      });
+    });
+    <span class="hljs-keyword">return</span> series;
+  }
+});
 
-  <span class="nx">initialize</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">options</span><span class="p">)</span> <span class="p">{</span>
-    <span class="kd">var</span> <span class="nx">self</span> <span class="o">=</span> <span class="k">this</span><span class="p">;</span>
-    <span class="nx">_</span><span class="p">.</span><span class="nx">bindAll</span><span class="p">(</span><span class="k">this</span><span class="p">,</span> <span class="s1">&#39;render&#39;</span><span class="p">);</span>
-    <span class="k">this</span><span class="p">.</span><span class="nx">listenTo</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">model</span><span class="p">.</span><span class="nx">fields</span><span class="p">,</span> <span class="s1">&#39;reset add&#39;</span><span class="p">,</span> <span class="k">this</span><span class="p">.</span><span class="nx">render</span><span class="p">);</span>
-    <span class="k">this</span><span class="p">.</span><span class="nx">state</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">recline</span><span class="p">.</span><span class="nx">Model</span><span class="p">.</span><span class="nx">ObjectState</span><span class="p">(</span><span class="nx">options</span><span class="p">.</span><span class="nx">state</span><span class="p">);</span>
-    <span class="k">this</span><span class="p">.</span><span class="nx">render</span><span class="p">();</span>
-  <span class="p">},</span>
+my.FlotControls = Backbone.View.extend({
+  className: <span class="hljs-string">"editor"</span>,
+  template: <span class="hljs-string">' \
+  &lt;div class="editor"&gt; \
+    &lt;form class="form-stacked"&gt; \
+      &lt;div class="clearfix"&gt; \
+        &lt;div class="form-group"&gt; \
+          &lt;label&gt;Graph Type&lt;/label&gt; \
+          &lt;div class="input editor-type"&gt; \
+            &lt;select class="form-control"&gt; \
+              &lt;option value="lines-and-points"&gt;Lines and Points&lt;/option&gt; \
+              &lt;option value="lines"&gt;Lines&lt;/option&gt; \
+              &lt;option value="points"&gt;Points&lt;/option&gt; \
+              &lt;option value="bars"&gt;Bars&lt;/option&gt; \
+              &lt;option value="columns"&gt;Columns&lt;/option&gt; \
+            &lt;/select&gt; \
+          &lt;/div&gt; \
+        &lt;/div&gt; \
+        &lt;div class="form-group"&gt; \
+          &lt;label&gt;Group Column (Axis 1)&lt;/label&gt; \
+          &lt;div class="input editor-group"&gt; \
+            &lt;select class="form-control"&gt; \
+              &lt;option value=""&gt;Please choose ...&lt;/option&gt; \
+                {{#fields}} \
+              &lt;option value="{{id}}"&gt;{{label}}&lt;/option&gt; \
+                {{/fields}} \
+            &lt;/select&gt; \
+          &lt;/div&gt; \
+        &lt;/div&gt; \
+        &lt;div class="editor-series-group"&gt; \
+        &lt;/div&gt; \
+      &lt;/div&gt; \
+      &lt;div class="editor-buttons"&gt; \
+        &lt;button class="btn btn-default editor-add"&gt;Add Series&lt;/button&gt; \
+      &lt;/div&gt; \
+      &lt;div class="editor-buttons editor-submit" comment="hidden temporarily" style="display: none;"&gt; \
+        &lt;button class="editor-save"&gt;Save&lt;/button&gt; \
+        &lt;input type="hidden" class="editor-id" value="chart-1" /&gt; \
+      &lt;/div&gt; \
+    &lt;/form&gt; \
+  &lt;/div&gt; \
+'</span>,
+  templateSeriesEditor: <span class="hljs-string">' \
+    &lt;div class="editor-series js-series-{{seriesIndex}}"&gt; \
+      &lt;div class="form-group"&gt; \
+        &lt;label&gt;Series &lt;span&gt;{{seriesName}} (Axis 2)&lt;/span&gt; \
+          [&lt;a href="#remove" class="action-remove-series"&gt;Remove&lt;/a&gt;] \
+        &lt;/label&gt; \
+        &lt;div class="input"&gt; \
+          &lt;select class="form-control"&gt; \
+          {{#fields}} \
+          &lt;option value="{{id}}"&gt;{{label}}&lt;/option&gt; \
+          {{/fields}} \
+          &lt;/select&gt; \
+        &lt;/div&gt; \
+      &lt;/div&gt; \
+    &lt;/div&gt; \
+  '</span>,
+  events: {
+    <span class="hljs-string">'change form select'</span>: <span class="hljs-string">'onEditorSubmit'</span>,
+    <span class="hljs-string">'click .editor-add'</span>: <span class="hljs-string">'_onAddSeries'</span>,
+    <span class="hljs-string">'click .action-remove-series'</span>: <span class="hljs-string">'removeSeries'</span>
+  },
 
-  <span class="nx">render</span><span class="o">:</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
-    <span class="kd">var</span> <span class="nx">self</span> <span class="o">=</span> <span class="k">this</span><span class="p">;</span>
-    <span class="kd">var</span> <span class="nx">tmplData</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">model</span><span class="p">.</span><span class="nx">toTemplateJSON</span><span class="p">();</span>
-    <span class="kd">var</span> <span class="nx">htmls</span> <span class="o">=</span> <span class="nx">Mustache</span><span class="p">.</span><span class="nx">render</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">template</span><span class="p">,</span> <span class="nx">tmplData</span><span class="p">);</span>
-    <span class="k">this</span><span class="p">.</span><span class="nx">$el</span><span class="p">.</span><span class="nx">html</span><span class="p">(</span><span class="nx">htmls</span><span class="p">);</span></pre></div>             </td>           </tr>                               <tr id="section-14">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-14">&#182;</a>               </div>               <p>set up editor from state</p>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="k">if</span> <span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">state</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s1">&#39;graphType&#39;</span><span class="p">))</span> <span class="p">{</span>
-      <span class="k">this</span><span class="p">.</span><span class="nx">_selectOption</span><span class="p">(</span><span class="s1">&#39;.editor-type&#39;</span><span class="p">,</span> <span class="k">this</span><span class="p">.</span><span class="nx">state</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s1">&#39;graphType&#39;</span><span class="p">));</span>
-    <span class="p">}</span>
-    <span class="k">if</span> <span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">state</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s1">&#39;group&#39;</span><span class="p">))</span> <span class="p">{</span>
-      <span class="k">this</span><span class="p">.</span><span class="nx">_selectOption</span><span class="p">(</span><span class="s1">&#39;.editor-group&#39;</span><span class="p">,</span> <span class="k">this</span><span class="p">.</span><span class="nx">state</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s1">&#39;group&#39;</span><span class="p">));</span>
-    <span class="p">}</span></pre></div>             </td>           </tr>                               <tr id="section-15">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-15">&#182;</a>               </div>               <p>ensure at least one series box shows up</p>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="kd">var</span> <span class="nx">tmpSeries</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;&quot;</span><span class="p">];</span>
-    <span class="k">if</span> <span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">state</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s1">&#39;series&#39;</span><span class="p">).</span><span class="nx">length</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
-      <span class="nx">tmpSeries</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">state</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s1">&#39;series&#39;</span><span class="p">);</span>
-    <span class="p">}</span>
-    <span class="nx">_</span><span class="p">.</span><span class="nx">each</span><span class="p">(</span><span class="nx">tmpSeries</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">series</span><span class="p">,</span> <span class="nx">idx</span><span class="p">)</span> <span class="p">{</span>
-      <span class="nx">self</span><span class="p">.</span><span class="nx">addSeries</span><span class="p">(</span><span class="nx">idx</span><span class="p">);</span>
-      <span class="nx">self</span><span class="p">.</span><span class="nx">_selectOption</span><span class="p">(</span><span class="s1">&#39;.editor-series.js-series-&#39;</span> <span class="o">+</span> <span class="nx">idx</span><span class="p">,</span> <span class="nx">series</span><span class="p">);</span>
-    <span class="p">});</span>
-    <span class="k">return</span> <span class="k">this</span><span class="p">;</span>
-  <span class="p">},</span></pre></div>             </td>           </tr>                               <tr id="section-16">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-16">&#182;</a>               </div>               <p>Private: Helper function to select an option from a select list</p>             </td>             <td class="code">               <div class="highlight"><pre>  <span class="nx">_selectOption</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">id</span><span class="p">,</span><span class="nx">value</span><span class="p">){</span>
-    <span class="kd">var</span> <span class="nx">options</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">$el</span><span class="p">.</span><span class="nx">find</span><span class="p">(</span><span class="nx">id</span> <span class="o">+</span> <span class="s1">&#39; select &gt; option&#39;</span><span class="p">);</span>
-    <span class="k">if</span> <span class="p">(</span><span class="nx">options</span><span class="p">)</span> <span class="p">{</span>
-      <span class="nx">options</span><span class="p">.</span><span class="nx">each</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">opt</span><span class="p">){</span>
-        <span class="k">if</span> <span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">value</span> <span class="o">==</span> <span class="nx">value</span><span class="p">)</span> <span class="p">{</span>
-          <span class="nx">$</span><span class="p">(</span><span class="k">this</span><span class="p">).</span><span class="nx">attr</span><span class="p">(</span><span class="s1">&#39;selected&#39;</span><span class="p">,</span><span class="s1">&#39;selected&#39;</span><span class="p">);</span>
-          <span class="k">return</span> <span class="kc">false</span><span class="p">;</span>
-        <span class="p">}</span>
-      <span class="p">});</span>
-    <span class="p">}</span>
-  <span class="p">},</span>
+  initialize: <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(options)</span> </span>{
+    <span class="hljs-keyword">var</span> self = <span class="hljs-keyword">this</span>;
+    _.bindAll(<span class="hljs-keyword">this</span>, <span class="hljs-string">'render'</span>);
+    <span class="hljs-keyword">this</span>.listenTo(<span class="hljs-keyword">this</span>.model.fields, <span class="hljs-string">'reset add'</span>, <span class="hljs-keyword">this</span>.render);
+    <span class="hljs-keyword">this</span>.state = <span class="hljs-keyword">new</span> recline.Model.ObjectState(options.state);
+    <span class="hljs-keyword">this</span>.render();
+  },
 
-  <span class="nx">onEditorSubmit</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">e</span><span class="p">)</span> <span class="p">{</span>
-    <span class="kd">var</span> <span class="nx">select</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">$el</span><span class="p">.</span><span class="nx">find</span><span class="p">(</span><span class="s1">&#39;.editor-group select&#39;</span><span class="p">);</span>
-    <span class="kd">var</span> <span class="nx">$editor</span> <span class="o">=</span> <span class="k">this</span><span class="p">;</span>
-    <span class="kd">var</span> <span class="nx">$series</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">$el</span><span class="p">.</span><span class="nx">find</span><span class="p">(</span><span class="s1">&#39;.editor-series select&#39;</span><span class="p">);</span>
-    <span class="kd">var</span> <span class="nx">series</span> <span class="o">=</span> <span class="nx">$series</span><span class="p">.</span><span class="nx">map</span><span class="p">(</span><span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
-      <span class="k">return</span> <span class="nx">$</span><span class="p">(</span><span class="k">this</span><span class="p">).</span><span class="nx">val</span><span class="p">();</span>
-    <span class="p">});</span>
-    <span class="kd">var</span> <span class="nx">updatedState</span> <span class="o">=</span> <span class="p">{</span>
-      <span class="nx">series</span><span class="o">:</span> <span class="nx">$</span><span class="p">.</span><span class="nx">makeArray</span><span class="p">(</span><span class="nx">series</span><span class="p">),</span>
-      <span class="nx">group</span><span class="o">:</span> <span class="k">this</span><span class="p">.</span><span class="nx">$el</span><span class="p">.</span><span class="nx">find</span><span class="p">(</span><span class="s1">&#39;.editor-group select&#39;</span><span class="p">).</span><span class="nx">val</span><span class="p">(),</span>
-      <span class="nx">graphType</span><span class="o">:</span> <span class="k">this</span><span class="p">.</span><span class="nx">$el</span><span class="p">.</span><span class="nx">find</span><span class="p">(</span><span class="s1">&#39;.editor-type select&#39;</span><span class="p">).</span><span class="nx">val</span><span class="p">()</span>
-    <span class="p">};</span>
-    <span class="k">this</span><span class="p">.</span><span class="nx">state</span><span class="p">.</span><span class="nx">set</span><span class="p">(</span><span class="nx">updatedState</span><span class="p">);</span>
-  <span class="p">},</span></pre></div>             </td>           </tr>                               <tr id="section-17">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-17">&#182;</a>               </div>               <p>Public: Adds a new empty series select box to the editor.</p>
+  render: <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> </span>{
+    <span class="hljs-keyword">var</span> self = <span class="hljs-keyword">this</span>;
+    <span class="hljs-keyword">var</span> tmplData = <span class="hljs-keyword">this</span>.model.toTemplateJSON();
+    <span class="hljs-keyword">var</span> htmls = Mustache.render(<span class="hljs-keyword">this</span>.template, tmplData);
+    <span class="hljs-keyword">this</span>.$el.html(htmls);</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-14">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-14">&#182;</a>
+              </div>
+              <p>set up editor from state</p>
 
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    <span class="hljs-keyword">if</span> (<span class="hljs-keyword">this</span>.state.get(<span class="hljs-string">'graphType'</span>)) {
+      <span class="hljs-keyword">this</span>._selectOption(<span class="hljs-string">'.editor-type'</span>, <span class="hljs-keyword">this</span>.state.get(<span class="hljs-string">'graphType'</span>));
+    }
+    <span class="hljs-keyword">if</span> (<span class="hljs-keyword">this</span>.state.get(<span class="hljs-string">'group'</span>)) {
+      <span class="hljs-keyword">this</span>._selectOption(<span class="hljs-string">'.editor-group'</span>, <span class="hljs-keyword">this</span>.state.get(<span class="hljs-string">'group'</span>));
+    }</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-15">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-15">&#182;</a>
+              </div>
+              <p>ensure at least one series box shows up</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    <span class="hljs-keyword">var</span> tmpSeries = [<span class="hljs-string">""</span>];
+    <span class="hljs-keyword">if</span> (<span class="hljs-keyword">this</span>.state.get(<span class="hljs-string">'series'</span>).length &gt; <span class="hljs-number">0</span>) {
+      tmpSeries = <span class="hljs-keyword">this</span>.state.get(<span class="hljs-string">'series'</span>);
+    }
+    _.each(tmpSeries, <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(series, idx)</span> </span>{
+      self.addSeries(idx);
+      self._selectOption(<span class="hljs-string">'.editor-series.js-series-'</span> + idx, series);
+    });
+    <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>;
+  },</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-16">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-16">&#182;</a>
+              </div>
+              <p>Private: Helper function to select an option from a select list</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  _selectOption: <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(id,value)</span></span>{
+    <span class="hljs-keyword">var</span> options = <span class="hljs-keyword">this</span>.$el.find(id + <span class="hljs-string">' select &gt; option'</span>);
+    <span class="hljs-keyword">if</span> (options) {
+      options.each(<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(opt)</span></span>{
+        <span class="hljs-keyword">if</span> (<span class="hljs-keyword">this</span>.value == value) {
+          $(<span class="hljs-keyword">this</span>).attr(<span class="hljs-string">'selected'</span>,<span class="hljs-string">'selected'</span>);
+          <span class="hljs-keyword">return</span> <span class="hljs-literal">false</span>;
+        }
+      });
+    }
+  },
+
+  onEditorSubmit: <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(e)</span> </span>{
+    <span class="hljs-keyword">var</span> select = <span class="hljs-keyword">this</span>.$el.find(<span class="hljs-string">'.editor-group select'</span>);
+    <span class="hljs-keyword">var</span> $editor = <span class="hljs-keyword">this</span>;
+    <span class="hljs-keyword">var</span> $series = <span class="hljs-keyword">this</span>.$el.find(<span class="hljs-string">'.editor-series select'</span>);
+    <span class="hljs-keyword">var</span> series = $series.map(<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">()</span> </span>{
+      <span class="hljs-keyword">return</span> $(<span class="hljs-keyword">this</span>).val();
+    });
+    <span class="hljs-keyword">var</span> updatedState = {
+      series: $.makeArray(series),
+      group: <span class="hljs-keyword">this</span>.$el.find(<span class="hljs-string">'.editor-group select'</span>).val(),
+      graphType: <span class="hljs-keyword">this</span>.$el.find(<span class="hljs-string">'.editor-type select'</span>).val()
+    };
+    <span class="hljs-keyword">this</span>.state.set(updatedState);
+  },</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-17">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-17">&#182;</a>
+              </div>
+              <p>Public: Adds a new empty series select box to the editor.</p>
 <p>@param [int] idx index of this series in the list of series</p>
+<p>Returns itself.</p>
 
-<p>Returns itself.</p>             </td>             <td class="code">               <div class="highlight"><pre>  <span class="nx">addSeries</span><span class="o">:</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">idx</span><span class="p">)</span> <span class="p">{</span>
-    <span class="kd">var</span> <span class="nx">data</span> <span class="o">=</span> <span class="nx">_</span><span class="p">.</span><span class="nx">extend</span><span class="p">({</span>
-      <span class="nx">seriesIndex</span><span class="o">:</span> <span class="nx">idx</span><span class="p">,</span>
-      <span class="nx">seriesName</span><span class="o">:</span> <span class="nb">String</span><span class="p">.</span><span class="nx">fromCharCode</span><span class="p">(</span><span class="nx">idx</span> <span class="o">+</span> <span class="mi">64</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
-    <span class="p">},</span> <span class="k">this</span><span class="p">.</span><span class="nx">model</span><span class="p">.</span><span class="nx">toTemplateJSON</span><span class="p">());</span>
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  addSeries: <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(idx)</span> </span>{
+    <span class="hljs-keyword">var</span> data = _.extend({
+      seriesIndex: idx,
+      seriesName: <span class="hljs-built_in">String</span>.fromCharCode(idx + <span class="hljs-number">64</span> + <span class="hljs-number">1</span>)
+    }, <span class="hljs-keyword">this</span>.model.toTemplateJSON());
 
-    <span class="kd">var</span> <span class="nx">htmls</span> <span class="o">=</span> <span class="nx">Mustache</span><span class="p">.</span><span class="nx">render</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">templateSeriesEditor</span><span class="p">,</span> <span class="nx">data</span><span class="p">);</span>
-    <span class="k">this</span><span class="p">.</span><span class="nx">$el</span><span class="p">.</span><span class="nx">find</span><span class="p">(</span><span class="s1">&#39;.editor-series-group&#39;</span><span class="p">).</span><span class="nx">append</span><span class="p">(</span><span class="nx">htmls</span><span class="p">);</span>
-    <span class="k">return</span> <span class="k">this</span><span class="p">;</span>
-  <span class="p">},</span>
+    <span class="hljs-keyword">var</span> htmls = Mustache.render(<span class="hljs-keyword">this</span>.templateSeriesEditor, data);
+    <span class="hljs-keyword">this</span>.$el.find(<span class="hljs-string">'.editor-series-group'</span>).append(htmls);
+    <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>;
+  },
 
-  <span class="nx">_onAddSeries</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">e</span><span class="p">)</span> <span class="p">{</span>
-    <span class="nx">e</span><span class="p">.</span><span class="nx">preventDefault</span><span class="p">();</span>
-    <span class="k">this</span><span class="p">.</span><span class="nx">addSeries</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">state</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s1">&#39;series&#39;</span><span class="p">).</span><span class="nx">length</span><span class="p">);</span>
-  <span class="p">},</span></pre></div>             </td>           </tr>                               <tr id="section-18">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-18">&#182;</a>               </div>               <p>Public: Removes a series list item from the editor.</p>
+  _onAddSeries: <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(e)</span> </span>{
+    e.preventDefault();
+    <span class="hljs-keyword">this</span>.addSeries(<span class="hljs-keyword">this</span>.state.get(<span class="hljs-string">'series'</span>).length);
+  },</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-18">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-18">&#182;</a>
+              </div>
+              <p>Public: Removes a series list item from the editor.</p>
+<p>Also updates the labels of the remaining series elements.</p>
 
-<p>Also updates the labels of the remaining series elements.</p>             </td>             <td class="code">               <div class="highlight"><pre>  <span class="nx">removeSeries</span><span class="o">:</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">e</span><span class="p">)</span> <span class="p">{</span>
-    <span class="nx">e</span><span class="p">.</span><span class="nx">preventDefault</span><span class="p">();</span>
-    <span class="kd">var</span> <span class="nx">$el</span> <span class="o">=</span> <span class="nx">$</span><span class="p">(</span><span class="nx">e</span><span class="p">.</span><span class="nx">target</span><span class="p">);</span>
-    <span class="nx">$el</span><span class="p">.</span><span class="nx">parent</span><span class="p">().</span><span class="nx">parent</span><span class="p">().</span><span class="nx">remove</span><span class="p">();</span>
-    <span class="k">this</span><span class="p">.</span><span class="nx">onEditorSubmit</span><span class="p">();</span>
-  <span class="p">}</span>
-<span class="p">});</span>
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  removeSeries: <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(e)</span> </span>{
+    e.preventDefault();
+    <span class="hljs-keyword">var</span> $el = $(e.target);
+    $el.parent().parent().remove();
+    <span class="hljs-keyword">this</span>.onEditorSubmit();
+  }
+});
 
-<span class="p">})(</span><span class="nx">jQuery</span><span class="p">,</span> <span class="nx">recline</span><span class="p">.</span><span class="nx">View</span><span class="p">);</span>
-
-</pre></div>             </td>           </tr>                </tbody>     </table>   </div> </body> </html> 
+})(jQuery, recline.View);</pre></div></div>
+            
+        </li>
+        
+    </ul>
+  </div>
+</body>
+</html>

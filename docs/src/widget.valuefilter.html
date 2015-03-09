@@ -2,7 +2,7 @@
 
 <html>
 <head>
-  <title>widget.filtereditor.js</title>
+  <title>widget.valuefilter.js</title>
   <meta http-equiv="content-type" content="text/html; charset=UTF-8">
   <meta name="viewport" content="width=device-width, target-densitydpi=160dpi, initial-scale=1.0; maximum-scale=1.0; user-scalable=0;">
   <link rel="stylesheet" media="all" href="docco.css" />
@@ -113,7 +113,7 @@
         
           <li id="title">
               <div class="annotation">
-                  <h1>widget.filtereditor.js</h1>
+                  <h1>widget.valuefilter.js</h1>
               </div>
           </li>
         
@@ -136,37 +136,29 @@
 (<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">($, my)</span> </span>{
 <span class="hljs-pi">  "use strict"</span>;
 
-my.FilterEditor = Backbone.View.extend({
+my.ValueFilter = Backbone.View.extend({
   className: <span class="hljs-string">'recline-filter-editor well'</span>, 
   template: <span class="hljs-string">' \
     &lt;div class="filters"&gt; \
       &lt;h3&gt;Filters&lt;/h3&gt; \
-      &lt;a href="#" class="js-add-filter"&gt;Add filter&lt;/a&gt; \
+      &lt;button class="btn js-add-filter add-filter"&gt;Add filter&lt;/button&gt; \
       &lt;form class="form-stacked js-add" style="display: none;"&gt; \
-        &lt;div class="form-group"&gt; \
+        &lt;fieldset&gt; \
           &lt;label&gt;Field&lt;/label&gt; \
           &lt;select class="fields form-control"&gt; \
             {{#fields}} \
             &lt;option value="{{id}}"&gt;{{label}}&lt;/option&gt; \
             {{/fields}} \
           &lt;/select&gt; \
-        &lt;/div&gt; \
-        &lt;div class="form-group"&gt; \
-          &lt;label&gt;Filter type&lt;/label&gt; \
-          &lt;select class="filterType form-control"&gt; \
-            &lt;option value="term"&gt;Value&lt;/option&gt; \
-            &lt;option value="range"&gt;Range&lt;/option&gt; \
-            &lt;option value="geo_distance"&gt;Geo distance&lt;/option&gt; \
-          &lt;/select&gt; \
-        &lt;/div&gt; \
-        &lt;button type="submit" class="btn btn-default"&gt;Add&lt;/button&gt; \
+          &lt;button type="submit" class="btn"&gt;Add&lt;/button&gt; \
+        &lt;/fieldset&gt; \
       &lt;/form&gt; \
       &lt;form class="form-stacked js-edit"&gt; \
         {{#filters}} \
           {{{filterRender}}} \
         {{/filters}} \
         {{#filters.length}} \
-        &lt;button type="submit" class="btn btn-default"&gt;Update&lt;/button&gt; \
+        &lt;button type="submit" class="btn update-filter"&gt;Update&lt;/button&gt; \
         {{/filters.length}} \
       &lt;/form&gt; \
     &lt;/div&gt; \
@@ -175,51 +167,9 @@ my.FilterEditor = Backbone.View.extend({
     term: <span class="hljs-string">' \
       &lt;div class="filter-{{type}} filter"&gt; \
         &lt;fieldset&gt; \
-          &lt;legend&gt; \
-            {{field}} &lt;small&gt;{{type}}&lt;/small&gt; \
-            &lt;a class="js-remove-filter" href="#" title="Remove this filter" data-filter-id="{{id}}"&gt;&amp;times;&lt;/a&gt; \
-          &lt;/legend&gt; \
-          &lt;input class="input-sm" type="text" value="{{term}}" name="term" data-filter-field="{{field}}" data-filter-id="{{id}}" data-filter-type="{{type}}" /&gt; \
-        &lt;/fieldset&gt; \
-      &lt;/div&gt; \
-    '</span>,
-    range: <span class="hljs-string">' \
-      &lt;div class="filter-{{type}} filter"&gt; \
-        &lt;fieldset&gt; \
-          &lt;legend&gt; \
-            {{field}} &lt;small&gt;{{type}}&lt;/small&gt; \
-            &lt;a class="js-remove-filter" href="#" title="Remove this filter" data-filter-id="{{id}}"&gt;&amp;times;&lt;/a&gt; \
-          &lt;/legend&gt; \
-          &lt;div class="form-group"&gt; \
-            &lt;label class="control-label" for=""&gt;From&lt;/label&gt; \
-            &lt;input class="input-sm" type="text" value="{{from}}" name="from" data-filter-field="{{field}}" data-filter-id="{{id}}" data-filter-type="{{type}}" /&gt; \
-          &lt;/div&gt; \
-          &lt;div class="form-group"&gt; \
-            &lt;label class="control-label" for=""&gt;To&lt;/label&gt; \
-            &lt;input class="input-sm" type="text" value="{{to}}" name="to" data-filter-field="{{field}}" data-filter-id="{{id}}" data-filter-type="{{type}}" /&gt; \
-          &lt;/div&gt; \
-        &lt;/fieldset&gt; \
-      &lt;/div&gt; \
-    '</span>,
-    geo_distance: <span class="hljs-string">' \
-      &lt;div class="filter-{{type}} filter"&gt; \
-        &lt;fieldset&gt; \
-          &lt;legend&gt; \
-            {{field}} &lt;small&gt;{{type}}&lt;/small&gt; \
-            &lt;a class="js-remove-filter" href="#" title="Remove this filter" data-filter-id="{{id}}"&gt;&amp;times;&lt;/a&gt; \
-          &lt;/legend&gt; \
-          &lt;div class="form-group"&gt; \
-            &lt;label class="control-label" for=""&gt;Longitude&lt;/label&gt; \
-            &lt;input class="input-sm" type="text" value="{{point.lon}}" name="lon" data-filter-field="{{field}}" data-filter-id="{{id}}" data-filter-type="{{type}}" /&gt; \
-          &lt;/div&gt; \
-          &lt;div class="form-group"&gt; \
-            &lt;label class="control-label" for=""&gt;Latitude&lt;/label&gt; \
-            &lt;input class="input-sm" type="text" value="{{point.lat}}" name="lat" data-filter-field="{{field}}" data-filter-id="{{id}}" data-filter-type="{{type}}" /&gt; \
-          &lt;/div&gt; \
-          &lt;div class="form-group"&gt; \
-            &lt;label class="control-label" for=""&gt;Distance (km)&lt;/label&gt; \
-            &lt;input class="input-sm" type="text" value="{{distance}}" name="distance" data-filter-field="{{field}}" data-filter-id="{{id}}" data-filter-type="{{type}}" /&gt; \
-          &lt;/div&gt; \
+          {{field}} \
+          &lt;a class="js-remove-filter" href="#" title="Remove this filter" data-filter-id="{{id}}"&gt;&amp;times;&lt;/a&gt; \
+          &lt;input type="text" value="{{term}}" name="term" data-filter-field="{{field}}" data-filter-id="{{id}}" data-filter-type="{{type}}" /&gt; \
         &lt;/fieldset&gt; \
       &lt;/div&gt; \
     '</span>
@@ -249,7 +199,7 @@ my.FilterEditor = Backbone.View.extend({
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-2">&#182;</a>
               </div>
-              <p>we will use idx in list as there id …</p>
+              <p>we will use idx in list as the id …</p>
 
             </div>
             
@@ -259,10 +209,18 @@ my.FilterEditor = Backbone.View.extend({
     });
     tmplData.fields = <span class="hljs-keyword">this</span>.model.fields.toJSON();
     tmplData.filterRender = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> </span>{
-      <span class="hljs-keyword">return</span> Mustache.render(self.filterTemplates[<span class="hljs-keyword">this</span>.type], <span class="hljs-keyword">this</span>);
+      <span class="hljs-keyword">return</span> Mustache.render(self.filterTemplates.term, <span class="hljs-keyword">this</span>);
     };
     <span class="hljs-keyword">var</span> out = Mustache.render(<span class="hljs-keyword">this</span>.template, tmplData);
     <span class="hljs-keyword">this</span>.$el.html(out);
+  },
+  updateFilter: <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(input)</span> </span>{
+    <span class="hljs-keyword">var</span> self = <span class="hljs-keyword">this</span>;
+    <span class="hljs-keyword">var</span> filters = self.model.queryState.get(<span class="hljs-string">'filters'</span>);
+    <span class="hljs-keyword">var</span> $input = $(input);
+    <span class="hljs-keyword">var</span> filterIndex = <span class="hljs-built_in">parseInt</span>($input.attr(<span class="hljs-string">'data-filter-id'</span>), <span class="hljs-number">10</span>);
+    <span class="hljs-keyword">var</span> value = $input.val();
+    filters[filterIndex].term = value;
   },
   onAddFilterShow: <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(e)</span> </span>{
     e.preventDefault();
@@ -274,9 +232,8 @@ my.FilterEditor = Backbone.View.extend({
     e.preventDefault();
     <span class="hljs-keyword">var</span> $target = $(e.target);
     $target.hide();
-    <span class="hljs-keyword">var</span> filterType = $target.find(<span class="hljs-string">'select.filterType'</span>).val();
-    <span class="hljs-keyword">var</span> field      = $target.find(<span class="hljs-string">'select.fields'</span>).val();
-    <span class="hljs-keyword">this</span>.model.queryState.addFilter({type: filterType, field: field});
+    <span class="hljs-keyword">var</span> field = $target.find(<span class="hljs-string">'select.fields'</span>).val();
+    <span class="hljs-keyword">this</span>.model.queryState.addFilter({type: <span class="hljs-string">'term'</span>, field: field});
   },
   onRemoveFilter: <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(e)</span> </span>{
     e.preventDefault();
@@ -285,40 +242,17 @@ my.FilterEditor = Backbone.View.extend({
     <span class="hljs-keyword">this</span>.model.queryState.removeFilter(filterId);
   },
   onTermFiltersUpdate: <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(e)</span> </span>{
-   <span class="hljs-keyword">var</span> self = <span class="hljs-keyword">this</span>;
+    <span class="hljs-keyword">var</span> self = <span class="hljs-keyword">this</span>;
     e.preventDefault();
     <span class="hljs-keyword">var</span> filters = self.model.queryState.get(<span class="hljs-string">'filters'</span>);
     <span class="hljs-keyword">var</span> $form = $(e.target);
     _.each($form.find(<span class="hljs-string">'input'</span>), <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(input)</span> </span>{
-      <span class="hljs-keyword">var</span> $input = $(input);
-      <span class="hljs-keyword">var</span> filterType  = $input.attr(<span class="hljs-string">'data-filter-type'</span>);
-      <span class="hljs-keyword">var</span> fieldId     = $input.attr(<span class="hljs-string">'data-filter-field'</span>);
-      <span class="hljs-keyword">var</span> filterIndex = <span class="hljs-built_in">parseInt</span>($input.attr(<span class="hljs-string">'data-filter-id'</span>), <span class="hljs-number">10</span>);
-      <span class="hljs-keyword">var</span> name        = $input.attr(<span class="hljs-string">'name'</span>);
-      <span class="hljs-keyword">var</span> value       = $input.val();
-
-      <span class="hljs-keyword">switch</span> (filterType) {
-        <span class="hljs-keyword">case</span> <span class="hljs-string">'term'</span>:
-          filters[filterIndex].term = value;
-          <span class="hljs-keyword">break</span>;
-        <span class="hljs-keyword">case</span> <span class="hljs-string">'range'</span>:
-          filters[filterIndex][name] = value;
-          <span class="hljs-keyword">break</span>;
-        <span class="hljs-keyword">case</span> <span class="hljs-string">'geo_distance'</span>:
-          <span class="hljs-keyword">if</span>(name === <span class="hljs-string">'distance'</span>) {
-            filters[filterIndex].distance = <span class="hljs-built_in">parseFloat</span>(value);
-          }
-          <span class="hljs-keyword">else</span> {
-            filters[filterIndex].point[name] = <span class="hljs-built_in">parseFloat</span>(value);
-          }
-          <span class="hljs-keyword">break</span>;
-      }
+      self.updateFilter(input);
     });
     self.model.queryState.set({filters: filters, from: <span class="hljs-number">0</span>});
     self.model.queryState.trigger(<span class="hljs-string">'change'</span>);
   }
 });
-
 
 })(jQuery, recline.View);</pre></div></div>
             

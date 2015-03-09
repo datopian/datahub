@@ -1,26 +1,162 @@
-<!DOCTYPE html>  <html> <head>   <title>view.map.js</title>   <meta http-equiv="content-type" content="text/html; charset=UTF-8">   <link rel="stylesheet" media="all" href="docco.css" /> </head> <body>   <div id="container">     <div id="background"></div>            <div id="jump_to">         Jump To &hellip;         <div id="jump_wrapper">           <div id="jump_page">                                           <a class="source" href="backend.csv.html">                 backend.csv.js               </a>                                           <a class="source" href="backend.dataproxy.html">                 backend.dataproxy.js               </a>                                           <a class="source" href="backend.memory.html">                 backend.memory.js               </a>                                           <a class="source" href="ecma-fixes.html">                 ecma-fixes.js               </a>                                           <a class="source" href="model.html">                 model.js               </a>                                           <a class="source" href="view.flot.html">                 view.flot.js               </a>                                           <a class="source" href="view.graph.html">                 view.graph.js               </a>                                           <a class="source" href="view.grid.html">                 view.grid.js               </a>                                           <a class="source" href="view.map.html">                 view.map.js               </a>                                           <a class="source" href="view.multiview.html">                 view.multiview.js               </a>                                           <a class="source" href="view.slickgrid.html">                 view.slickgrid.js               </a>                                           <a class="source" href="view.timeline.html">                 view.timeline.js               </a>                                           <a class="source" href="widget.facetviewer.html">                 widget.facetviewer.js               </a>                                           <a class="source" href="widget.fields.html">                 widget.fields.js               </a>                                           <a class="source" href="widget.filtereditor.html">                 widget.filtereditor.js               </a>                                           <a class="source" href="widget.pager.html">                 widget.pager.js               </a>                                           <a class="source" href="widget.queryeditor.html">                 widget.queryeditor.js               </a>                                           <a class="source" href="widget.valuefilter.html">                 widget.valuefilter.js               </a>                        </div>         </div>       </div>          <table cellpadding="0" cellspacing="0">       <thead>         <tr>           <th class="docs">             <h1>               view.map.js             </h1>           </th>           <th class="code">           </th>         </tr>       </thead>       <tbody>                               <tr id="section-1">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-1">&#182;</a>               </div>                            </td>             <td class="code">               <div class="highlight"><pre><span class="cm">/*jshint multistr:true */</span>
+<!DOCTYPE html>
 
-<span class="k">this</span><span class="p">.</span><span class="nx">recline</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">recline</span> <span class="o">||</span> <span class="p">{};</span>
-<span class="k">this</span><span class="p">.</span><span class="nx">recline</span><span class="p">.</span><span class="nx">View</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">recline</span><span class="p">.</span><span class="nx">View</span> <span class="o">||</span> <span class="p">{};</span>
+<html>
+<head>
+  <title>view.map.js</title>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <meta name="viewport" content="width=device-width, target-densitydpi=160dpi, initial-scale=1.0; maximum-scale=1.0; user-scalable=0;">
+  <link rel="stylesheet" media="all" href="docco.css" />
+</head>
+<body>
+  <div id="container">
+    <div id="background"></div>
+    
+      <ul id="jump_to">
+        <li>
+          <a class="large" href="javascript:void(0);">Jump To &hellip;</a>
+          <a class="small" href="javascript:void(0);">+</a>
+          <div id="jump_wrapper">
+          <div id="jump_page_wrapper">
+            <div id="jump_page">
+              
+                
+                <a class="source" href="backend.dataproxy.html">
+                  backend.dataproxy.js
+                </a>
+              
+                
+                <a class="source" href="backend.memory.html">
+                  backend.memory.js
+                </a>
+              
+                
+                <a class="source" href="ecma-fixes.html">
+                  ecma-fixes.js
+                </a>
+              
+                
+                <a class="source" href="model.html">
+                  model.js
+                </a>
+              
+                
+                <a class="source" href="view.flot.html">
+                  view.flot.js
+                </a>
+              
+                
+                <a class="source" href="view.graph.html">
+                  view.graph.js
+                </a>
+              
+                
+                <a class="source" href="view.grid.html">
+                  view.grid.js
+                </a>
+              
+                
+                <a class="source" href="view.map.html">
+                  view.map.js
+                </a>
+              
+                
+                <a class="source" href="view.multiview.html">
+                  view.multiview.js
+                </a>
+              
+                
+                <a class="source" href="view.slickgrid.html">
+                  view.slickgrid.js
+                </a>
+              
+                
+                <a class="source" href="view.timeline.html">
+                  view.timeline.js
+                </a>
+              
+                
+                <a class="source" href="widget.facetviewer.html">
+                  widget.facetviewer.js
+                </a>
+              
+                
+                <a class="source" href="widget.fields.html">
+                  widget.fields.js
+                </a>
+              
+                
+                <a class="source" href="widget.filtereditor.html">
+                  widget.filtereditor.js
+                </a>
+              
+                
+                <a class="source" href="widget.pager.html">
+                  widget.pager.js
+                </a>
+              
+                
+                <a class="source" href="widget.queryeditor.html">
+                  widget.queryeditor.js
+                </a>
+              
+                
+                <a class="source" href="widget.valuefilter.html">
+                  widget.valuefilter.js
+                </a>
+              
+            </div>
+          </div>
+        </li>
+      </ul>
+    
+    <ul class="sections">
+        
+          <li id="title">
+              <div class="annotation">
+                  <h1>view.map.js</h1>
+              </div>
+          </li>
+        
+        
+        
+        <li id="section-1">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-1">&#182;</a>
+              </div>
+              
+            </div>
+            
+            <div class="content"><div class='highlight'><pre><span class="hljs-comment">/*jshint multistr:true */</span>
 
-<span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">$</span><span class="p">,</span> <span class="nx">my</span><span class="p">)</span> <span class="p">{</span>
-  <span class="s2">&quot;use strict&quot;</span><span class="p">;</span></pre></div>             </td>           </tr>                               <tr id="section-2">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-2">&#182;</a>               </div>               <h2>Map view for a Dataset using Leaflet mapping library.</h2>
+<span class="hljs-keyword">this</span>.recline = <span class="hljs-keyword">this</span>.recline || {};
+<span class="hljs-keyword">this</span>.recline.View = <span class="hljs-keyword">this</span>.recline.View || {};
 
+(<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">($, my)</span> </span>{
+<span class="hljs-pi">  "use strict"</span>;</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-2">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-2">&#182;</a>
+              </div>
+              <h2 id="map-view-for-a-dataset-using-leaflet-mapping-library-">Map view for a Dataset using Leaflet mapping library.</h2>
 <p>This view allows to plot gereferenced records on a map. The location
 information can be provided in 2 ways:</p>
-
 <ol>
 <li>Via a single field. This field must be either a geo_point or
 <a href="http://geojson.org">GeoJSON</a> object</li>
 <li>Via two fields with latitude and longitude coordinates.</li>
 </ol>
-
 <p>Which fields in the data these correspond to can be configured via the state
 (and are guessed if no info is provided).</p>
-
 <p>Initialization arguments are as standard for Dataset Views. State object may
 have the following (optional) configuration options:</p>
-
 <pre>
   {
     // geomField if specified will be used in preference to lat/lon
@@ -36,522 +172,1160 @@ have the following (optional) configuration options:</p>
 </pre>
 
 <p>Useful attributes to know about (if e.g. customizing)</p>
-
 <ul>
 <li>map: the Leaflet map (L.Map)</li>
 <li>features: Leaflet GeoJSON layer containing all the features (L.GeoJSON)</li>
-</ul>             </td>             <td class="code">               <div class="highlight"><pre><span class="nx">my</span><span class="p">.</span><span class="nx">Map</span> <span class="o">=</span> <span class="nx">Backbone</span><span class="p">.</span><span class="nx">View</span><span class="p">.</span><span class="nx">extend</span><span class="p">({</span>
-  <span class="nx">template</span><span class="o">:</span> <span class="s1">&#39; \</span>
-<span class="s1">    &lt;div class=&quot;recline-map&quot;&gt; \</span>
-<span class="s1">      &lt;div class=&quot;panel map&quot;&gt;&lt;/div&gt; \</span>
-<span class="s1">    &lt;/div&gt; \</span>
-<span class="s1">&#39;</span><span class="p">,</span></pre></div>             </td>           </tr>                               <tr id="section-3">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-3">&#182;</a>               </div>               <p>These are the default (case-insensitive) names of field that are used if found.
-If not found, the user will need to define the fields via the editor.</p>             </td>             <td class="code">               <div class="highlight"><pre>  <span class="nx">latitudeFieldNames</span><span class="o">:</span> <span class="p">[</span><span class="s1">&#39;lat&#39;</span><span class="p">,</span><span class="s1">&#39;latitude&#39;</span><span class="p">],</span>
-  <span class="nx">longitudeFieldNames</span><span class="o">:</span> <span class="p">[</span><span class="s1">&#39;lon&#39;</span><span class="p">,</span><span class="s1">&#39;longitude&#39;</span><span class="p">],</span>
-  <span class="nx">geometryFieldNames</span><span class="o">:</span> <span class="p">[</span><span class="s1">&#39;geojson&#39;</span><span class="p">,</span> <span class="s1">&#39;geom&#39;</span><span class="p">,</span><span class="s1">&#39;the_geom&#39;</span><span class="p">,</span><span class="s1">&#39;geometry&#39;</span><span class="p">,</span><span class="s1">&#39;spatial&#39;</span><span class="p">,</span><span class="s1">&#39;location&#39;</span><span class="p">,</span> <span class="s1">&#39;geo&#39;</span><span class="p">,</span> <span class="s1">&#39;lonlat&#39;</span><span class="p">],</span>
+</ul>
 
-  <span class="nx">initialize</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">options</span><span class="p">)</span> <span class="p">{</span>
-    <span class="kd">var</span> <span class="nx">self</span> <span class="o">=</span> <span class="k">this</span><span class="p">;</span>
-    <span class="k">this</span><span class="p">.</span><span class="nx">visible</span> <span class="o">=</span> <span class="kc">true</span><span class="p">;</span>
-    <span class="k">this</span><span class="p">.</span><span class="nx">mapReady</span> <span class="o">=</span> <span class="kc">false</span><span class="p">;</span></pre></div>             </td>           </tr>                               <tr id="section-4">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-4">&#182;</a>               </div>               <p>this will be the Leaflet L.Map object (setup below)</p>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="k">this</span><span class="p">.</span><span class="nx">map</span> <span class="o">=</span> <span class="kc">null</span><span class="p">;</span>
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>my.Map = Backbone.View.extend({
+  template: <span class="hljs-string">' \
+    &lt;div class="recline-map"&gt; \
+      &lt;div class="panel map"&gt;&lt;/div&gt; \
+    &lt;/div&gt; \
+'</span>,</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-3">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-3">&#182;</a>
+              </div>
+              <p>These are the default (case-insensitive) names of field that are used if found.
+If not found, the user will need to define the fields via the editor.</p>
 
-    <span class="kd">var</span> <span class="nx">stateData</span> <span class="o">=</span> <span class="nx">_</span><span class="p">.</span><span class="nx">extend</span><span class="p">({</span>
-        <span class="nx">geomField</span><span class="o">:</span> <span class="kc">null</span><span class="p">,</span>
-        <span class="nx">lonField</span><span class="o">:</span> <span class="kc">null</span><span class="p">,</span>
-        <span class="nx">latField</span><span class="o">:</span> <span class="kc">null</span><span class="p">,</span>
-        <span class="nx">autoZoom</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span>
-        <span class="nx">cluster</span><span class="o">:</span> <span class="kc">false</span>
-      <span class="p">},</span>
-      <span class="nx">options</span><span class="p">.</span><span class="nx">state</span>
-    <span class="p">);</span>
-    <span class="k">this</span><span class="p">.</span><span class="nx">state</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">recline</span><span class="p">.</span><span class="nx">Model</span><span class="p">.</span><span class="nx">ObjectState</span><span class="p">(</span><span class="nx">stateData</span><span class="p">);</span>
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  latitudeFieldNames: [<span class="hljs-string">'lat'</span>,<span class="hljs-string">'latitude'</span>],
+  longitudeFieldNames: [<span class="hljs-string">'lon'</span>,<span class="hljs-string">'longitude'</span>],
+  geometryFieldNames: [<span class="hljs-string">'geojson'</span>, <span class="hljs-string">'geom'</span>,<span class="hljs-string">'the_geom'</span>,<span class="hljs-string">'geometry'</span>,<span class="hljs-string">'spatial'</span>,<span class="hljs-string">'location'</span>, <span class="hljs-string">'geo'</span>, <span class="hljs-string">'lonlat'</span>],
 
-    <span class="k">this</span><span class="p">.</span><span class="nx">_clusterOptions</span> <span class="o">=</span> <span class="p">{</span>
-      <span class="nx">zoomToBoundsOnClick</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span></pre></div>             </td>           </tr>                               <tr id="section-5">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-5">&#182;</a>               </div>               <p>disableClusteringAtZoom: 10,</p>             </td>             <td class="code">               <div class="highlight"><pre>      <span class="nx">maxClusterRadius</span><span class="o">:</span> <span class="mi">80</span><span class="p">,</span>
-      <span class="nx">singleMarkerMode</span><span class="o">:</span> <span class="kc">false</span><span class="p">,</span>
-      <span class="nx">skipDuplicateAddTesting</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span>
-      <span class="nx">animateAddingMarkers</span><span class="o">:</span> <span class="kc">false</span>
-    <span class="p">};</span></pre></div>             </td>           </tr>                               <tr id="section-6">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-6">&#182;</a>               </div>               <p>Listen to changes in the fields</p>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="k">this</span><span class="p">.</span><span class="nx">listenTo</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">model</span><span class="p">.</span><span class="nx">fields</span><span class="p">,</span> <span class="s1">&#39;change&#39;</span><span class="p">,</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
-      <span class="nx">self</span><span class="p">.</span><span class="nx">_setupGeometryField</span><span class="p">();</span>
-      <span class="nx">self</span><span class="p">.</span><span class="nx">render</span><span class="p">();</span>
-    <span class="p">});</span></pre></div>             </td>           </tr>                               <tr id="section-7">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-7">&#182;</a>               </div>               <p>Listen to changes in the records</p>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="k">this</span><span class="p">.</span><span class="nx">listenTo</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">model</span><span class="p">.</span><span class="nx">records</span><span class="p">,</span> <span class="s1">&#39;add&#39;</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">doc</span><span class="p">){</span><span class="nx">self</span><span class="p">.</span><span class="nx">redraw</span><span class="p">(</span><span class="s1">&#39;add&#39;</span><span class="p">,</span><span class="nx">doc</span><span class="p">);});</span>
-    <span class="k">this</span><span class="p">.</span><span class="nx">listenTo</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">model</span><span class="p">.</span><span class="nx">records</span><span class="p">,</span> <span class="s1">&#39;change&#39;</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">doc</span><span class="p">){</span>
-        <span class="nx">self</span><span class="p">.</span><span class="nx">redraw</span><span class="p">(</span><span class="s1">&#39;remove&#39;</span><span class="p">,</span><span class="nx">doc</span><span class="p">);</span>
-        <span class="nx">self</span><span class="p">.</span><span class="nx">redraw</span><span class="p">(</span><span class="s1">&#39;add&#39;</span><span class="p">,</span><span class="nx">doc</span><span class="p">);</span>
-    <span class="p">});</span>
-    <span class="k">this</span><span class="p">.</span><span class="nx">listenTo</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">model</span><span class="p">.</span><span class="nx">records</span><span class="p">,</span> <span class="s1">&#39;remove&#39;</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">doc</span><span class="p">){</span><span class="nx">self</span><span class="p">.</span><span class="nx">redraw</span><span class="p">(</span><span class="s1">&#39;remove&#39;</span><span class="p">,</span><span class="nx">doc</span><span class="p">);});</span>
-    <span class="k">this</span><span class="p">.</span><span class="nx">listenTo</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">model</span><span class="p">.</span><span class="nx">records</span><span class="p">,</span> <span class="s1">&#39;reset&#39;</span><span class="p">,</span> <span class="kd">function</span><span class="p">(){</span><span class="nx">self</span><span class="p">.</span><span class="nx">redraw</span><span class="p">(</span><span class="s1">&#39;reset&#39;</span><span class="p">);});</span>
+  initialize: <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(options)</span> </span>{
+    <span class="hljs-keyword">var</span> self = <span class="hljs-keyword">this</span>;
+    <span class="hljs-keyword">this</span>.visible = <span class="hljs-keyword">this</span>.$el.is(<span class="hljs-string">':visible'</span>);
+    <span class="hljs-keyword">this</span>.mapReady = <span class="hljs-literal">false</span>;</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-4">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-4">&#182;</a>
+              </div>
+              <p>this will be the Leaflet L.Map object (setup below)</p>
 
-    <span class="k">this</span><span class="p">.</span><span class="nx">menu</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">my</span><span class="p">.</span><span class="nx">MapMenu</span><span class="p">({</span>
-      <span class="nx">model</span><span class="o">:</span> <span class="k">this</span><span class="p">.</span><span class="nx">model</span><span class="p">,</span>
-      <span class="nx">state</span><span class="o">:</span> <span class="k">this</span><span class="p">.</span><span class="nx">state</span><span class="p">.</span><span class="nx">toJSON</span><span class="p">()</span>
-    <span class="p">});</span>
-    <span class="k">this</span><span class="p">.</span><span class="nx">listenTo</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">menu</span><span class="p">.</span><span class="nx">state</span><span class="p">,</span> <span class="s1">&#39;change&#39;</span><span class="p">,</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
-      <span class="nx">self</span><span class="p">.</span><span class="nx">state</span><span class="p">.</span><span class="nx">set</span><span class="p">(</span><span class="nx">self</span><span class="p">.</span><span class="nx">menu</span><span class="p">.</span><span class="nx">state</span><span class="p">.</span><span class="nx">toJSON</span><span class="p">());</span>
-      <span class="nx">self</span><span class="p">.</span><span class="nx">redraw</span><span class="p">();</span>
-    <span class="p">});</span>
-    <span class="k">this</span><span class="p">.</span><span class="nx">listenTo</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">state</span><span class="p">,</span> <span class="s1">&#39;change&#39;</span><span class="p">,</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
-      <span class="nx">self</span><span class="p">.</span><span class="nx">redraw</span><span class="p">();</span>
-    <span class="p">});</span>
-    <span class="k">this</span><span class="p">.</span><span class="nx">elSidebar</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">menu</span><span class="p">.</span><span class="nx">$el</span><span class="p">;</span>
-  <span class="p">},</span></pre></div>             </td>           </tr>                               <tr id="section-8">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-8">&#182;</a>               </div>               <h2>Customization Functions</h2>
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    <span class="hljs-keyword">this</span>.map = <span class="hljs-literal">null</span>;
 
+    <span class="hljs-keyword">var</span> stateData = _.extend({
+        geomField: <span class="hljs-literal">null</span>,
+        lonField: <span class="hljs-literal">null</span>,
+        latField: <span class="hljs-literal">null</span>,
+        autoZoom: <span class="hljs-literal">true</span>,
+        cluster: <span class="hljs-literal">false</span>
+      },
+      options.state
+    );
+    <span class="hljs-keyword">this</span>.state = <span class="hljs-keyword">new</span> recline.Model.ObjectState(stateData);
+
+    <span class="hljs-keyword">this</span>._clusterOptions = {
+      zoomToBoundsOnClick: <span class="hljs-literal">true</span>,</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-5">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-5">&#182;</a>
+              </div>
+              <p>disableClusteringAtZoom: 10,</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>      maxClusterRadius: <span class="hljs-number">80</span>,
+      singleMarkerMode: <span class="hljs-literal">false</span>,
+      skipDuplicateAddTesting: <span class="hljs-literal">true</span>,
+      animateAddingMarkers: <span class="hljs-literal">false</span>
+    };</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-6">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-6">&#182;</a>
+              </div>
+              <p>Listen to changes in the fields</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    <span class="hljs-keyword">this</span>.listenTo(<span class="hljs-keyword">this</span>.model.fields, <span class="hljs-string">'change'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> </span>{
+      self._setupGeometryField();
+      self.render();
+    });</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-7">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-7">&#182;</a>
+              </div>
+              <p>Listen to changes in the records</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    <span class="hljs-keyword">this</span>.listenTo(<span class="hljs-keyword">this</span>.model.records, <span class="hljs-string">'add'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(doc)</span></span>{self.redraw(<span class="hljs-string">'add'</span>,doc);});
+    <span class="hljs-keyword">this</span>.listenTo(<span class="hljs-keyword">this</span>.model.records, <span class="hljs-string">'change'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(doc)</span></span>{
+        self.redraw(<span class="hljs-string">'remove'</span>,doc);
+        self.redraw(<span class="hljs-string">'add'</span>,doc);
+    });
+    <span class="hljs-keyword">this</span>.listenTo(<span class="hljs-keyword">this</span>.model.records, <span class="hljs-string">'remove'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(doc)</span></span>{self.redraw(<span class="hljs-string">'remove'</span>,doc);});
+    <span class="hljs-keyword">this</span>.listenTo(<span class="hljs-keyword">this</span>.model.records, <span class="hljs-string">'reset'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span></span>{self.redraw(<span class="hljs-string">'reset'</span>);});
+
+    <span class="hljs-keyword">this</span>.menu = <span class="hljs-keyword">new</span> my.MapMenu({
+      model: <span class="hljs-keyword">this</span>.model,
+      state: <span class="hljs-keyword">this</span>.state.toJSON()
+    });
+    <span class="hljs-keyword">this</span>.listenTo(<span class="hljs-keyword">this</span>.menu.state, <span class="hljs-string">'change'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> </span>{
+      self.state.set(self.menu.state.toJSON());
+      self.redraw();
+    });
+    <span class="hljs-keyword">this</span>.listenTo(<span class="hljs-keyword">this</span>.state, <span class="hljs-string">'change'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> </span>{
+      self.redraw();
+    });
+    <span class="hljs-keyword">this</span>.elSidebar = <span class="hljs-keyword">this</span>.menu.$el;
+  },</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-8">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-8">&#182;</a>
+              </div>
+              <h2 id="customization-functions">Customization Functions</h2>
 <p>The following methods are designed for overriding in order to customize
-behaviour</p>             </td>             <td class="code">               <div class="highlight"><pre></pre></div>             </td>           </tr>                               <tr id="section-9">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-9">&#182;</a>               </div>               <h3>infobox</h3>
+behaviour</p>
 
+            </div>
+            
+        </li>
+        
+        
+        <li id="section-9">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-9">&#182;</a>
+              </div>
+              <h3 id="infobox">infobox</h3>
 <p>Function to create infoboxes used in popups. The default behaviour is very simple and just lists all attributes.</p>
-
 <p>Users should override this function to customize behaviour i.e.</p>
-
-<pre><code>view = new View({...});
-view.infobox = function(record) {
+<pre><code>view = <span class="hljs-keyword">new</span> View({...});
+view.infobox = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(record)</span> </span>{
   ...
 }
-</code></pre>             </td>             <td class="code">               <div class="highlight"><pre>  <span class="nx">infobox</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">record</span><span class="p">)</span> <span class="p">{</span>
-    <span class="kd">var</span> <span class="nx">html</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="p">;</span>
-    <span class="k">for</span> <span class="p">(</span><span class="kd">var</span> <span class="nx">key</span> <span class="k">in</span> <span class="nx">record</span><span class="p">.</span><span class="nx">attributes</span><span class="p">){</span>
-      <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">state</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s1">&#39;geomField&#39;</span><span class="p">)</span> <span class="o">&amp;&amp;</span> <span class="nx">key</span> <span class="o">==</span> <span class="k">this</span><span class="p">.</span><span class="nx">state</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s1">&#39;geomField&#39;</span><span class="p">))){</span>
-        <span class="nx">html</span> <span class="o">+=</span> <span class="s1">&#39;&lt;div&gt;&lt;strong&gt;&#39;</span> <span class="o">+</span> <span class="nx">key</span> <span class="o">+</span> <span class="s1">&#39;&lt;/strong&gt;: &#39;</span><span class="o">+</span> <span class="nx">record</span><span class="p">.</span><span class="nx">attributes</span><span class="p">[</span><span class="nx">key</span><span class="p">]</span> <span class="o">+</span> <span class="s1">&#39;&lt;/div&gt;&#39;</span><span class="p">;</span>
-      <span class="p">}</span>
-    <span class="p">}</span>
-    <span class="k">return</span> <span class="nx">html</span><span class="p">;</span>
-  <span class="p">},</span></pre></div>             </td>           </tr>                               <tr id="section-10">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-10">&#182;</a>               </div>               <p>Options to use for the <a href="http://leaflet.cloudmade.com/reference.html#geojson">Leaflet GeoJSON layer</a>
-See also <a href="http://leaflet.cloudmade.com/examples/geojson.html">http://leaflet.cloudmade.com/examples/geojson.html</a></p>
-
-<p>e.g.</p>
-
-<pre><code>pointToLayer: function(feature, latLng)
-onEachFeature: function(feature, layer)
 </code></pre>
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  infobox: <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(record)</span> </span>{
+    <span class="hljs-keyword">var</span> html = <span class="hljs-string">''</span>;
+    <span class="hljs-keyword">for</span> (<span class="hljs-keyword">var</span> key <span class="hljs-keyword">in</span> record.attributes){
+      <span class="hljs-keyword">if</span> (!(<span class="hljs-keyword">this</span>.state.get(<span class="hljs-string">'geomField'</span>) &amp;&amp; key == <span class="hljs-keyword">this</span>.state.get(<span class="hljs-string">'geomField'</span>))){
+        html += <span class="hljs-string">'&lt;div&gt;&lt;strong&gt;'</span> + key + <span class="hljs-string">'&lt;/strong&gt;: '</span>+ record.attributes[key] + <span class="hljs-string">'&lt;/div&gt;'</span>;
+      }
+    }
+    <span class="hljs-keyword">return</span> html;
+  },</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-10">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-10">&#182;</a>
+              </div>
+              <p>Options to use for the <a href="http://leaflet.cloudmade.com/reference.html#geojson">Leaflet GeoJSON layer</a>
+See also <a href="http://leaflet.cloudmade.com/examples/geojson.html">http://leaflet.cloudmade.com/examples/geojson.html</a></p>
+<p>e.g.</p>
+<pre><code>pointToLayer: <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(feature, latLng)</span>
+<span class="hljs-title">onEachFeature</span>: <span class="hljs-title">function</span><span class="hljs-params">(feature, layer)</span></span>
+</code></pre><p>See defaults for examples</p>
 
-<p>See defaults for examples</p>             </td>             <td class="code">               <div class="highlight"><pre>  <span class="nx">geoJsonLayerOptions</span><span class="o">:</span> <span class="p">{</span></pre></div>             </td>           </tr>                               <tr id="section-11">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-11">&#182;</a>               </div>               <p>pointToLayer function to use when creating points</p>
-
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  geoJsonLayerOptions: {</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-11">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-11">&#182;</a>
+              </div>
+              <p>pointToLayer function to use when creating points</p>
 <p>Default behaviour shown here is to create a marker using the
 popupContent set on the feature properties (created via infobox function
 during feature generation)</p>
-
 <p>NB: inside pointToLayer <code>this</code> will be set to point to this map view
-instance (which allows e.g. this.markers to work in this default case)</p>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="nx">pointToLayer</span><span class="o">:</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">feature</span><span class="p">,</span> <span class="nx">latlng</span><span class="p">)</span> <span class="p">{</span>
-      <span class="kd">var</span> <span class="nx">marker</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">L</span><span class="p">.</span><span class="nx">Marker</span><span class="p">(</span><span class="nx">latlng</span><span class="p">);</span>
-      <span class="nx">marker</span><span class="p">.</span><span class="nx">bindPopup</span><span class="p">(</span><span class="nx">feature</span><span class="p">.</span><span class="nx">properties</span><span class="p">.</span><span class="nx">popupContent</span><span class="p">);</span></pre></div>             </td>           </tr>                               <tr id="section-12">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-12">&#182;</a>               </div>               <p>this is for cluster case</p>             </td>             <td class="code">               <div class="highlight"><pre>      <span class="k">this</span><span class="p">.</span><span class="nx">markers</span><span class="p">.</span><span class="nx">addLayer</span><span class="p">(</span><span class="nx">marker</span><span class="p">);</span>
-      <span class="k">return</span> <span class="nx">marker</span><span class="p">;</span>
-    <span class="p">},</span></pre></div>             </td>           </tr>                               <tr id="section-13">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-13">&#182;</a>               </div>               <p>onEachFeature default which adds popup in</p>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="nx">onEachFeature</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">feature</span><span class="p">,</span> <span class="nx">layer</span><span class="p">)</span> <span class="p">{</span>
-      <span class="k">if</span> <span class="p">(</span><span class="nx">feature</span><span class="p">.</span><span class="nx">properties</span> <span class="o">&amp;&amp;</span> <span class="nx">feature</span><span class="p">.</span><span class="nx">properties</span><span class="p">.</span><span class="nx">popupContent</span><span class="p">)</span> <span class="p">{</span>
-        <span class="nx">layer</span><span class="p">.</span><span class="nx">bindPopup</span><span class="p">(</span><span class="nx">feature</span><span class="p">.</span><span class="nx">properties</span><span class="p">.</span><span class="nx">popupContent</span><span class="p">);</span>
-      <span class="p">}</span>
-    <span class="p">}</span>
-  <span class="p">},</span></pre></div>             </td>           </tr>                               <tr id="section-14">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-14">&#182;</a>               </div>               <h2>END: Customization section</h2>             </td>             <td class="code">               <div class="highlight"><pre></pre></div>             </td>           </tr>                               <tr id="section-15">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-15">&#182;</a>               </div>               <h3>Public: Adds the necessary elements to the page.</h3>
+instance (which allows e.g. this.markers to work in this default case)</p>
 
-<p>Also sets up the editor fields and the map if necessary.</p>             </td>             <td class="code">               <div class="highlight"><pre>  <span class="nx">render</span><span class="o">:</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
-    <span class="kd">var</span> <span class="nx">self</span> <span class="o">=</span> <span class="k">this</span><span class="p">;</span>
-    <span class="kd">var</span> <span class="nx">htmls</span> <span class="o">=</span> <span class="nx">Mustache</span><span class="p">.</span><span class="nx">render</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">template</span><span class="p">,</span> <span class="k">this</span><span class="p">.</span><span class="nx">model</span><span class="p">.</span><span class="nx">toTemplateJSON</span><span class="p">());</span>
-    <span class="k">this</span><span class="p">.</span><span class="nx">$el</span><span class="p">.</span><span class="nx">html</span><span class="p">(</span><span class="nx">htmls</span><span class="p">);</span>
-    <span class="k">this</span><span class="p">.</span><span class="nx">$map</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">$el</span><span class="p">.</span><span class="nx">find</span><span class="p">(</span><span class="s1">&#39;.panel.map&#39;</span><span class="p">);</span>
-    <span class="k">this</span><span class="p">.</span><span class="nx">redraw</span><span class="p">();</span>
-    <span class="k">return</span> <span class="k">this</span><span class="p">;</span>
-  <span class="p">},</span></pre></div>             </td>           </tr>                               <tr id="section-16">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-16">&#182;</a>               </div>               <h3>Public: Redraws the features on the map according to the action provided</h3>
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    pointToLayer: <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(feature, latlng)</span> </span>{
+      <span class="hljs-keyword">var</span> marker = <span class="hljs-keyword">new</span> L.Marker(latlng);
+      marker.bindPopup(feature.properties.popupContent);</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-12">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-12">&#182;</a>
+              </div>
+              <p>this is for cluster case</p>
 
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>      <span class="hljs-keyword">this</span>.markers.addLayer(marker);
+      <span class="hljs-keyword">return</span> marker;
+    },</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-13">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-13">&#182;</a>
+              </div>
+              <p>onEachFeature default which adds popup in</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    onEachFeature: <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(feature, layer)</span> </span>{
+      <span class="hljs-keyword">if</span> (feature.properties &amp;&amp; feature.properties.popupContent) {
+        layer.bindPopup(feature.properties.popupContent);
+      }
+    }
+  },</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-14">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-14">&#182;</a>
+              </div>
+              <h2 id="end-customization-section">END: Customization section</h2>
+
+            </div>
+            
+        </li>
+        
+        
+        <li id="section-15">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-15">&#182;</a>
+              </div>
+              
+            </div>
+            
+        </li>
+        
+        
+        <li id="section-16">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-16">&#182;</a>
+              </div>
+              <h3 id="public-adds-the-necessary-elements-to-the-page-">Public: Adds the necessary elements to the page.</h3>
+<p>Also sets up the editor fields and the map if necessary.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  render: <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> </span>{
+    <span class="hljs-keyword">var</span> self = <span class="hljs-keyword">this</span>;
+    <span class="hljs-keyword">var</span> htmls = Mustache.render(<span class="hljs-keyword">this</span>.template, <span class="hljs-keyword">this</span>.model.toTemplateJSON());
+    <span class="hljs-keyword">this</span>.$el.html(htmls);
+    <span class="hljs-keyword">this</span>.$map = <span class="hljs-keyword">this</span>.$el.find(<span class="hljs-string">'.panel.map'</span>);
+    <span class="hljs-keyword">this</span>.redraw();
+    <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>;
+  },</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-17">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-17">&#182;</a>
+              </div>
+              <h3 id="public-redraws-the-features-on-the-map-according-to-the-action-provided">Public: Redraws the features on the map according to the action provided</h3>
 <p>Actions can be:</p>
-
 <ul>
 <li>reset: Clear all features</li>
 <li>add: Add one or n features (records)</li>
 <li>remove: Remove one or n features (records)</li>
 <li>refresh: Clear existing features and add all current records</li>
-</ul>             </td>             <td class="code">               <div class="highlight"><pre>  <span class="nx">redraw</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">action</span><span class="p">,</span> <span class="nx">doc</span><span class="p">){</span>
-    <span class="kd">var</span> <span class="nx">self</span> <span class="o">=</span> <span class="k">this</span><span class="p">;</span>
-    <span class="nx">action</span> <span class="o">=</span> <span class="nx">action</span> <span class="o">||</span> <span class="s1">&#39;refresh&#39;</span><span class="p">;</span></pre></div>             </td>           </tr>                               <tr id="section-17">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-17">&#182;</a>               </div>               <p>try to set things up if not already</p>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="nx">self</span><span class="p">.</span><span class="nx">_geomReady</span><span class="p">()){</span>
-      <span class="nx">self</span><span class="p">.</span><span class="nx">_setupGeometryField</span><span class="p">();</span>
-    <span class="p">}</span>
-    <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="nx">self</span><span class="p">.</span><span class="nx">mapReady</span><span class="p">){</span>
-      <span class="nx">self</span><span class="p">.</span><span class="nx">_setupMap</span><span class="p">();</span>
-    <span class="p">}</span>
+</ul>
 
-    <span class="k">if</span> <span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">_geomReady</span><span class="p">()</span> <span class="o">&amp;&amp;</span> <span class="k">this</span><span class="p">.</span><span class="nx">mapReady</span><span class="p">){</span></pre></div>             </td>           </tr>                               <tr id="section-18">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-18">&#182;</a>               </div>               <p>removing ad re-adding the layer enables faster bulk loading</p>             </td>             <td class="code">               <div class="highlight"><pre>      <span class="k">this</span><span class="p">.</span><span class="nx">map</span><span class="p">.</span><span class="nx">removeLayer</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">features</span><span class="p">);</span>
-      <span class="k">this</span><span class="p">.</span><span class="nx">map</span><span class="p">.</span><span class="nx">removeLayer</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">markers</span><span class="p">);</span>
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  redraw: <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(action, doc)</span></span>{
+    <span class="hljs-keyword">var</span> self = <span class="hljs-keyword">this</span>;
+    action = action || <span class="hljs-string">'refresh'</span>;</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-18">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-18">&#182;</a>
+              </div>
+              <p>try to set things up if not already</p>
 
-      <span class="kd">var</span> <span class="nx">countBefore</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
-      <span class="k">this</span><span class="p">.</span><span class="nx">features</span><span class="p">.</span><span class="nx">eachLayer</span><span class="p">(</span><span class="kd">function</span><span class="p">(){</span><span class="nx">countBefore</span><span class="o">++</span><span class="p">;});</span>
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    <span class="hljs-keyword">if</span> (!self._geomReady()){
+      self._setupGeometryField();
+    }
+    <span class="hljs-keyword">if</span> (!self.mapReady){
+      self._setupMap();
+    }
 
-      <span class="k">if</span> <span class="p">(</span><span class="nx">action</span> <span class="o">==</span> <span class="s1">&#39;refresh&#39;</span> <span class="o">||</span> <span class="nx">action</span> <span class="o">==</span> <span class="s1">&#39;reset&#39;</span><span class="p">)</span> <span class="p">{</span>
-        <span class="k">this</span><span class="p">.</span><span class="nx">features</span><span class="p">.</span><span class="nx">clearLayers</span><span class="p">();</span></pre></div>             </td>           </tr>                               <tr id="section-19">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-19">&#182;</a>               </div>               <p>recreate cluster group because of issues with clearLayer</p>             </td>             <td class="code">               <div class="highlight"><pre>        <span class="k">this</span><span class="p">.</span><span class="nx">map</span><span class="p">.</span><span class="nx">removeLayer</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">markers</span><span class="p">);</span>
-        <span class="k">this</span><span class="p">.</span><span class="nx">markers</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">L</span><span class="p">.</span><span class="nx">MarkerClusterGroup</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">_clusterOptions</span><span class="p">);</span>
-        <span class="k">this</span><span class="p">.</span><span class="nx">_add</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">model</span><span class="p">.</span><span class="nx">records</span><span class="p">.</span><span class="nx">models</span><span class="p">);</span>
-      <span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="nx">action</span> <span class="o">==</span> <span class="s1">&#39;add&#39;</span> <span class="o">&amp;&amp;</span> <span class="nx">doc</span><span class="p">){</span>
-        <span class="k">this</span><span class="p">.</span><span class="nx">_add</span><span class="p">(</span><span class="nx">doc</span><span class="p">);</span>
-      <span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="nx">action</span> <span class="o">==</span> <span class="s1">&#39;remove&#39;</span> <span class="o">&amp;&amp;</span> <span class="nx">doc</span><span class="p">){</span>
-        <span class="k">this</span><span class="p">.</span><span class="nx">_remove</span><span class="p">(</span><span class="nx">doc</span><span class="p">);</span>
-      <span class="p">}</span></pre></div>             </td>           </tr>                               <tr id="section-20">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-20">&#182;</a>               </div>               <p>this must come before zooming!
+    <span class="hljs-keyword">if</span> (<span class="hljs-keyword">this</span>._geomReady() &amp;&amp; <span class="hljs-keyword">this</span>.mapReady){</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-19">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-19">&#182;</a>
+              </div>
+              <p>removing ad re-adding the layer enables faster bulk loading</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>      <span class="hljs-keyword">this</span>.map.removeLayer(<span class="hljs-keyword">this</span>.features);
+      <span class="hljs-keyword">this</span>.map.removeLayer(<span class="hljs-keyword">this</span>.markers);
+
+      <span class="hljs-keyword">var</span> countBefore = <span class="hljs-number">0</span>;
+      <span class="hljs-keyword">this</span>.features.eachLayer(<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span></span>{countBefore++;});
+
+      <span class="hljs-keyword">if</span> (action == <span class="hljs-string">'refresh'</span> || action == <span class="hljs-string">'reset'</span>) {
+        <span class="hljs-keyword">this</span>.features.clearLayers();</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-20">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-20">&#182;</a>
+              </div>
+              <p>recreate cluster group because of issues with clearLayer</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>        <span class="hljs-keyword">this</span>.map.removeLayer(<span class="hljs-keyword">this</span>.markers);
+        <span class="hljs-keyword">this</span>.markers = <span class="hljs-keyword">new</span> L.MarkerClusterGroup(<span class="hljs-keyword">this</span>._clusterOptions);
+        <span class="hljs-keyword">this</span>._add(<span class="hljs-keyword">this</span>.model.records.models);
+      } <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (action == <span class="hljs-string">'add'</span> &amp;&amp; doc){
+        <span class="hljs-keyword">this</span>._add(doc);
+      } <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (action == <span class="hljs-string">'remove'</span> &amp;&amp; doc){
+        <span class="hljs-keyword">this</span>._remove(doc);
+      }</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-21">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-21">&#182;</a>
+              </div>
+              <p>this must come before zooming!
 if not: errors when using e.g. circle markers like
-"Cannot call method 'project' of undefined"</p>             </td>             <td class="code">               <div class="highlight"><pre>      <span class="k">if</span> <span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">state</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s1">&#39;cluster&#39;</span><span class="p">))</span> <span class="p">{</span>
-        <span class="k">this</span><span class="p">.</span><span class="nx">map</span><span class="p">.</span><span class="nx">addLayer</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">markers</span><span class="p">);</span>
-      <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
-        <span class="k">this</span><span class="p">.</span><span class="nx">map</span><span class="p">.</span><span class="nx">addLayer</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">features</span><span class="p">);</span>
-      <span class="p">}</span>
+“Cannot call method ‘project’ of undefined”</p>
 
-      <span class="k">if</span> <span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">state</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s1">&#39;autoZoom&#39;</span><span class="p">)){</span>
-        <span class="k">if</span> <span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">visible</span><span class="p">){</span>
-          <span class="k">this</span><span class="p">.</span><span class="nx">_zoomToFeatures</span><span class="p">();</span>
-        <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
-          <span class="k">this</span><span class="p">.</span><span class="nx">_zoomPending</span> <span class="o">=</span> <span class="kc">true</span><span class="p">;</span>
-        <span class="p">}</span>
-      <span class="p">}</span>
-    <span class="p">}</span>
-  <span class="p">},</span>
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>      <span class="hljs-keyword">if</span> (<span class="hljs-keyword">this</span>.state.get(<span class="hljs-string">'cluster'</span>)) {
+        <span class="hljs-keyword">this</span>.map.addLayer(<span class="hljs-keyword">this</span>.markers);
+      } <span class="hljs-keyword">else</span> {
+        <span class="hljs-keyword">this</span>.map.addLayer(<span class="hljs-keyword">this</span>.features);
+      }
 
-  <span class="nx">show</span><span class="o">:</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span></pre></div>             </td>           </tr>                               <tr id="section-21">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-21">&#182;</a>               </div>               <p>If the div was hidden, Leaflet needs to recalculate some sizes
-to display properly</p>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="k">if</span> <span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">map</span><span class="p">){</span>
-      <span class="k">this</span><span class="p">.</span><span class="nx">map</span><span class="p">.</span><span class="nx">invalidateSize</span><span class="p">();</span>
-      <span class="k">if</span> <span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">_zoomPending</span> <span class="o">&amp;&amp;</span> <span class="k">this</span><span class="p">.</span><span class="nx">state</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s1">&#39;autoZoom&#39;</span><span class="p">))</span> <span class="p">{</span>
-        <span class="k">this</span><span class="p">.</span><span class="nx">_zoomToFeatures</span><span class="p">();</span>
-        <span class="k">this</span><span class="p">.</span><span class="nx">_zoomPending</span> <span class="o">=</span> <span class="kc">false</span><span class="p">;</span>
-      <span class="p">}</span>
-    <span class="p">}</span>
-    <span class="k">this</span><span class="p">.</span><span class="nx">visible</span> <span class="o">=</span> <span class="kc">true</span><span class="p">;</span>
-  <span class="p">},</span>
+      <span class="hljs-keyword">if</span> (<span class="hljs-keyword">this</span>.state.get(<span class="hljs-string">'autoZoom'</span>)){
+        <span class="hljs-keyword">if</span> (<span class="hljs-keyword">this</span>.visible){
+          <span class="hljs-keyword">this</span>._zoomToFeatures();
+        } <span class="hljs-keyword">else</span> {
+          <span class="hljs-keyword">this</span>._zoomPending = <span class="hljs-literal">true</span>;
+        }
+      }
+    }
+  },
 
-  <span class="nx">hide</span><span class="o">:</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
-    <span class="k">this</span><span class="p">.</span><span class="nx">visible</span> <span class="o">=</span> <span class="kc">false</span><span class="p">;</span>
-  <span class="p">},</span>
+  show: <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> </span>{</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-22">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-22">&#182;</a>
+              </div>
+              <p>If the div was hidden, Leaflet needs to recalculate some sizes
+to display properly</p>
 
-  <span class="nx">_geomReady</span><span class="o">:</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
-    <span class="k">return</span> <span class="nb">Boolean</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">state</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s1">&#39;geomField&#39;</span><span class="p">)</span> <span class="o">||</span> <span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">state</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s1">&#39;latField&#39;</span><span class="p">)</span> <span class="o">&amp;&amp;</span> <span class="k">this</span><span class="p">.</span><span class="nx">state</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s1">&#39;lonField&#39;</span><span class="p">)));</span>
-  <span class="p">},</span></pre></div>             </td>           </tr>                               <tr id="section-22">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-22">&#182;</a>               </div>               <p>Private: Add one or n features to the map</p>
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    <span class="hljs-keyword">if</span> (<span class="hljs-keyword">this</span>.map){
+      <span class="hljs-keyword">this</span>.map.invalidateSize();
+      <span class="hljs-keyword">if</span> (<span class="hljs-keyword">this</span>._zoomPending &amp;&amp; <span class="hljs-keyword">this</span>.state.get(<span class="hljs-string">'autoZoom'</span>)) {
+        <span class="hljs-keyword">this</span>._zoomToFeatures();
+        <span class="hljs-keyword">this</span>._zoomPending = <span class="hljs-literal">false</span>;
+      }
+    }
+    <span class="hljs-keyword">this</span>.visible = <span class="hljs-literal">true</span>;
+  },
 
+  hide: <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> </span>{
+    <span class="hljs-keyword">this</span>.visible = <span class="hljs-literal">false</span>;
+  },
+
+  _geomReady: <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> </span>{
+    <span class="hljs-keyword">return</span> <span class="hljs-built_in">Boolean</span>(<span class="hljs-keyword">this</span>.state.get(<span class="hljs-string">'geomField'</span>) || (<span class="hljs-keyword">this</span>.state.get(<span class="hljs-string">'latField'</span>) &amp;&amp; <span class="hljs-keyword">this</span>.state.get(<span class="hljs-string">'lonField'</span>)));
+  },</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-23">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-23">&#182;</a>
+              </div>
+              <p>Private: Add one or n features to the map</p>
 <p>For each record passed, a GeoJSON geometry will be extracted and added
 to the features layer. If an exception is thrown, the process will be
 stopped and an error notification shown.</p>
+<p>Each feature will have a popup associated with all the record fields.</p>
 
-<p>Each feature will have a popup associated with all the record fields.</p>             </td>             <td class="code">               <div class="highlight"><pre>  <span class="nx">_add</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">docs</span><span class="p">){</span>
-    <span class="kd">var</span> <span class="nx">self</span> <span class="o">=</span> <span class="k">this</span><span class="p">;</span>
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  _add: <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(docs)</span></span>{
+    <span class="hljs-keyword">var</span> self = <span class="hljs-keyword">this</span>;
 
-    <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="p">(</span><span class="nx">docs</span> <span class="k">instanceof</span> <span class="nb">Array</span><span class="p">))</span> <span class="nx">docs</span> <span class="o">=</span> <span class="p">[</span><span class="nx">docs</span><span class="p">];</span>
+    <span class="hljs-keyword">if</span> (!(docs <span class="hljs-keyword">instanceof</span> <span class="hljs-built_in">Array</span>)) docs = [docs];
 
-    <span class="kd">var</span> <span class="nx">count</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
-    <span class="kd">var</span> <span class="nx">wrongSoFar</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
-    <span class="nx">_</span><span class="p">.</span><span class="nx">every</span><span class="p">(</span><span class="nx">docs</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">doc</span><span class="p">){</span>
-      <span class="nx">count</span> <span class="o">+=</span> <span class="mi">1</span><span class="p">;</span>
-      <span class="kd">var</span> <span class="nx">feature</span> <span class="o">=</span> <span class="nx">self</span><span class="p">.</span><span class="nx">_getGeometryFromRecord</span><span class="p">(</span><span class="nx">doc</span><span class="p">);</span>
-      <span class="k">if</span> <span class="p">(</span><span class="k">typeof</span> <span class="nx">feature</span> <span class="o">===</span> <span class="s1">&#39;undefined&#39;</span> <span class="o">||</span> <span class="nx">feature</span> <span class="o">===</span> <span class="kc">null</span><span class="p">){</span></pre></div>             </td>           </tr>                               <tr id="section-23">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-23">&#182;</a>               </div>               <p>Empty field</p>             </td>             <td class="code">               <div class="highlight"><pre>        <span class="k">return</span> <span class="kc">true</span><span class="p">;</span>
-      <span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="nx">feature</span> <span class="k">instanceof</span> <span class="nb">Object</span><span class="p">){</span>
-        <span class="nx">feature</span><span class="p">.</span><span class="nx">properties</span> <span class="o">=</span> <span class="p">{</span>
-          <span class="nx">popupContent</span><span class="o">:</span> <span class="nx">self</span><span class="p">.</span><span class="nx">infobox</span><span class="p">(</span><span class="nx">doc</span><span class="p">),</span></pre></div>             </td>           </tr>                               <tr id="section-24">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-24">&#182;</a>               </div>               <p>Add a reference to the model id, which will allow us to
-link this Leaflet layer to a Recline doc</p>             </td>             <td class="code">               <div class="highlight"><pre>          <span class="nx">cid</span><span class="o">:</span> <span class="nx">doc</span><span class="p">.</span><span class="nx">cid</span>
-        <span class="p">};</span>
+    <span class="hljs-keyword">var</span> count = <span class="hljs-number">0</span>;
+    <span class="hljs-keyword">var</span> wrongSoFar = <span class="hljs-number">0</span>;
+    _.every(docs, <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(doc)</span></span>{
+      count += <span class="hljs-number">1</span>;
+      <span class="hljs-keyword">var</span> feature = self._getGeometryFromRecord(doc);
+      <span class="hljs-keyword">if</span> (<span class="hljs-keyword">typeof</span> feature === <span class="hljs-string">'undefined'</span> || feature === <span class="hljs-literal">null</span>){</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-24">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-24">&#182;</a>
+              </div>
+              <p>Empty field</p>
 
-        <span class="k">try</span> <span class="p">{</span>
-          <span class="nx">self</span><span class="p">.</span><span class="nx">features</span><span class="p">.</span><span class="nx">addData</span><span class="p">(</span><span class="nx">feature</span><span class="p">);</span>
-        <span class="p">}</span> <span class="k">catch</span> <span class="p">(</span><span class="nx">except</span><span class="p">)</span> <span class="p">{</span>
-          <span class="nx">wrongSoFar</span> <span class="o">+=</span> <span class="mi">1</span><span class="p">;</span>
-          <span class="kd">var</span> <span class="nx">msg</span> <span class="o">=</span> <span class="s1">&#39;Wrong geometry value&#39;</span><span class="p">;</span>
-          <span class="k">if</span> <span class="p">(</span><span class="nx">except</span><span class="p">.</span><span class="nx">message</span><span class="p">)</span> <span class="nx">msg</span> <span class="o">+=</span> <span class="s1">&#39; (&#39;</span> <span class="o">+</span> <span class="nx">except</span><span class="p">.</span><span class="nx">message</span> <span class="o">+</span> <span class="s1">&#39;)&#39;</span><span class="p">;</span>
-          <span class="k">if</span> <span class="p">(</span><span class="nx">wrongSoFar</span> <span class="o">&lt;=</span> <span class="mi">10</span><span class="p">)</span> <span class="p">{</span>
-            <span class="nx">self</span><span class="p">.</span><span class="nx">trigger</span><span class="p">(</span><span class="s1">&#39;recline:flash&#39;</span><span class="p">,</span> <span class="p">{</span><span class="nx">message</span><span class="o">:</span> <span class="nx">msg</span><span class="p">,</span> <span class="nx">category</span><span class="o">:</span><span class="s1">&#39;error&#39;</span><span class="p">});</span>
-          <span class="p">}</span>
-        <span class="p">}</span>
-      <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
-        <span class="nx">wrongSoFar</span> <span class="o">+=</span> <span class="mi">1</span><span class="p">;</span>
-        <span class="k">if</span> <span class="p">(</span><span class="nx">wrongSoFar</span> <span class="o">&lt;=</span> <span class="mi">10</span><span class="p">)</span> <span class="p">{</span>
-          <span class="nx">self</span><span class="p">.</span><span class="nx">trigger</span><span class="p">(</span><span class="s1">&#39;recline:flash&#39;</span><span class="p">,</span> <span class="p">{</span><span class="nx">message</span><span class="o">:</span> <span class="s1">&#39;Wrong geometry value&#39;</span><span class="p">,</span> <span class="nx">category</span><span class="o">:</span><span class="s1">&#39;error&#39;</span><span class="p">});</span>
-        <span class="p">}</span>
-      <span class="p">}</span>
-      <span class="k">return</span> <span class="kc">true</span><span class="p">;</span>
-    <span class="p">});</span>
-  <span class="p">},</span></pre></div>             </td>           </tr>                               <tr id="section-25">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-25">&#182;</a>               </div>               <p>Private: Remove one or n features from the map</p>             </td>             <td class="code">               <div class="highlight"><pre>  <span class="nx">_remove</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">docs</span><span class="p">){</span>
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>        <span class="hljs-keyword">return</span> <span class="hljs-literal">true</span>;
+      } <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (feature <span class="hljs-keyword">instanceof</span> <span class="hljs-built_in">Object</span>){
+        feature.properties = {
+          popupContent: self.infobox(doc),</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-25">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-25">&#182;</a>
+              </div>
+              <p>Add a reference to the model id, which will allow us to
+link this Leaflet layer to a Recline doc</p>
 
-    <span class="kd">var</span> <span class="nx">self</span> <span class="o">=</span> <span class="k">this</span><span class="p">;</span>
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>          cid: doc.cid
+        };
 
-    <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="p">(</span><span class="nx">docs</span> <span class="k">instanceof</span> <span class="nb">Array</span><span class="p">))</span> <span class="nx">docs</span> <span class="o">=</span> <span class="p">[</span><span class="nx">docs</span><span class="p">];</span>
+        <span class="hljs-keyword">try</span> {
+          self.features.addData(feature);
+        } <span class="hljs-keyword">catch</span> (except) {
+          wrongSoFar += <span class="hljs-number">1</span>;
+          <span class="hljs-keyword">var</span> msg = <span class="hljs-string">'Wrong geometry value'</span>;
+          <span class="hljs-keyword">if</span> (except.message) msg += <span class="hljs-string">' ('</span> + except.message + <span class="hljs-string">')'</span>;
+          <span class="hljs-keyword">if</span> (wrongSoFar &lt;= <span class="hljs-number">10</span>) {
+            self.trigger(<span class="hljs-string">'recline:flash'</span>, {message: msg, category:<span class="hljs-string">'error'</span>});
+          }
+        }
+      } <span class="hljs-keyword">else</span> {
+        wrongSoFar += <span class="hljs-number">1</span>;
+        <span class="hljs-keyword">if</span> (wrongSoFar &lt;= <span class="hljs-number">10</span>) {
+          self.trigger(<span class="hljs-string">'recline:flash'</span>, {message: <span class="hljs-string">'Wrong geometry value'</span>, category:<span class="hljs-string">'error'</span>});
+        }
+      }
+      <span class="hljs-keyword">return</span> <span class="hljs-literal">true</span>;
+    });
+  },</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-26">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-26">&#182;</a>
+              </div>
+              <p>Private: Remove one or n features from the map</p>
 
-    <span class="nx">_</span><span class="p">.</span><span class="nx">each</span><span class="p">(</span><span class="nx">docs</span><span class="p">,</span><span class="kd">function</span><span class="p">(</span><span class="nx">doc</span><span class="p">){</span>
-      <span class="k">for</span> <span class="p">(</span><span class="kd">var</span> <span class="nx">key</span> <span class="k">in</span> <span class="nx">self</span><span class="p">.</span><span class="nx">features</span><span class="p">.</span><span class="nx">_layers</span><span class="p">){</span>
-        <span class="k">if</span> <span class="p">(</span><span class="nx">self</span><span class="p">.</span><span class="nx">features</span><span class="p">.</span><span class="nx">_layers</span><span class="p">[</span><span class="nx">key</span><span class="p">].</span><span class="nx">feature</span><span class="p">.</span><span class="nx">properties</span><span class="p">.</span><span class="nx">cid</span> <span class="o">==</span> <span class="nx">doc</span><span class="p">.</span><span class="nx">cid</span><span class="p">){</span>
-          <span class="nx">self</span><span class="p">.</span><span class="nx">features</span><span class="p">.</span><span class="nx">removeLayer</span><span class="p">(</span><span class="nx">self</span><span class="p">.</span><span class="nx">features</span><span class="p">.</span><span class="nx">_layers</span><span class="p">[</span><span class="nx">key</span><span class="p">]);</span>
-        <span class="p">}</span>
-      <span class="p">}</span>
-    <span class="p">});</span>
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  _remove: <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(docs)</span></span>{
 
-  <span class="p">},</span></pre></div>             </td>           </tr>                               <tr id="section-26">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-26">&#182;</a>               </div>               <p>Private: convert DMS coordinates to decimal</p>
+    <span class="hljs-keyword">var</span> self = <span class="hljs-keyword">this</span>;
 
-<p>north and east are positive, south and west are negative</p>             </td>             <td class="code">               <div class="highlight"><pre>  <span class="nx">_parseCoordinateString</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">coord</span><span class="p">){</span>
-    <span class="k">if</span> <span class="p">(</span><span class="k">typeof</span><span class="p">(</span><span class="nx">coord</span><span class="p">)</span> <span class="o">!=</span> <span class="s1">&#39;string&#39;</span><span class="p">)</span> <span class="p">{</span>
-      <span class="k">return</span><span class="p">(</span><span class="nb">parseFloat</span><span class="p">(</span><span class="nx">coord</span><span class="p">));</span>
-    <span class="p">}</span>
-    <span class="kd">var</span> <span class="nx">dms</span> <span class="o">=</span> <span class="nx">coord</span><span class="p">.</span><span class="nx">split</span><span class="p">(</span><span class="sr">/[^\.\d\w]+/</span><span class="p">);</span>
-    <span class="kd">var</span> <span class="nx">deg</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="kd">var</span> <span class="nx">m</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
-    <span class="kd">var</span> <span class="nx">toDeg</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">60</span><span class="p">,</span> <span class="mi">3600</span><span class="p">];</span> <span class="c1">// conversion factors for Deg, min, sec</span>
-    <span class="kd">var</span> <span class="nx">i</span><span class="p">;</span> 
-    <span class="k">for</span> <span class="p">(</span><span class="nx">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="nx">i</span> <span class="o">&lt;</span> <span class="nx">dms</span><span class="p">.</span><span class="nx">length</span><span class="p">;</span> <span class="o">++</span><span class="nx">i</span><span class="p">)</span> <span class="p">{</span>
-        <span class="k">if</span> <span class="p">(</span><span class="nb">isNaN</span><span class="p">(</span><span class="nb">parseFloat</span><span class="p">(</span><span class="nx">dms</span><span class="p">[</span><span class="nx">i</span><span class="p">])))</span> <span class="p">{</span>
-          <span class="k">continue</span><span class="p">;</span>
-        <span class="p">}</span>
-        <span class="nx">deg</span> <span class="o">+=</span> <span class="nb">parseFloat</span><span class="p">(</span><span class="nx">dms</span><span class="p">[</span><span class="nx">i</span><span class="p">])</span> <span class="o">/</span> <span class="nx">toDeg</span><span class="p">[</span><span class="nx">m</span><span class="p">];</span>
-        <span class="nx">m</span> <span class="o">+=</span> <span class="mi">1</span><span class="p">;</span>
-    <span class="p">}</span>
-    <span class="k">if</span> <span class="p">(</span><span class="nx">coord</span><span class="p">.</span><span class="nx">match</span><span class="p">(</span><span class="sr">/[SW]/</span><span class="p">))</span> <span class="p">{</span>
-          <span class="nx">deg</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span><span class="o">*</span><span class="nx">deg</span><span class="p">;</span>
-    <span class="p">}</span>
-    <span class="k">return</span><span class="p">(</span><span class="nx">deg</span><span class="p">);</span>
-  <span class="p">},</span></pre></div>             </td>           </tr>                               <tr id="section-27">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-27">&#182;</a>               </div>               <p>Private: Return a GeoJSON geomtry extracted from the record fields</p>             </td>             <td class="code">               <div class="highlight"><pre>  <span class="nx">_getGeometryFromRecord</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">doc</span><span class="p">){</span>
-    <span class="k">if</span> <span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">state</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s1">&#39;geomField&#39;</span><span class="p">)){</span>
-      <span class="kd">var</span> <span class="nx">value</span> <span class="o">=</span> <span class="nx">doc</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">state</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s1">&#39;geomField&#39;</span><span class="p">));</span>
-      <span class="k">if</span> <span class="p">(</span><span class="k">typeof</span><span class="p">(</span><span class="nx">value</span><span class="p">)</span> <span class="o">===</span> <span class="s1">&#39;string&#39;</span><span class="p">){</span></pre></div>             </td>           </tr>                               <tr id="section-28">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-28">&#182;</a>               </div>               <p>We <em>may</em> have a GeoJSON string representation</p>             </td>             <td class="code">               <div class="highlight"><pre>        <span class="k">try</span> <span class="p">{</span>
-          <span class="nx">value</span> <span class="o">=</span> <span class="nx">$</span><span class="p">.</span><span class="nx">parseJSON</span><span class="p">(</span><span class="nx">value</span><span class="p">);</span>
-        <span class="p">}</span> <span class="k">catch</span><span class="p">(</span><span class="nx">e</span><span class="p">)</span> <span class="p">{}</span>
-      <span class="p">}</span>
-      <span class="k">if</span> <span class="p">(</span><span class="k">typeof</span><span class="p">(</span><span class="nx">value</span><span class="p">)</span> <span class="o">===</span> <span class="s1">&#39;string&#39;</span><span class="p">)</span> <span class="p">{</span>
-        <span class="nx">value</span> <span class="o">=</span> <span class="nx">value</span><span class="p">.</span><span class="nx">replace</span><span class="p">(</span><span class="s1">&#39;(&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">).</span><span class="nx">replace</span><span class="p">(</span><span class="s1">&#39;)&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">);</span>
-        <span class="kd">var</span> <span class="nx">parts</span> <span class="o">=</span> <span class="nx">value</span><span class="p">.</span><span class="nx">split</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">);</span>
-        <span class="kd">var</span> <span class="nx">lat</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">_parseCoordinateString</span><span class="p">(</span><span class="nx">parts</span><span class="p">[</span><span class="mi">0</span><span class="p">]);</span>
-        <span class="kd">var</span> <span class="nx">lon</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">_parseCoordinateString</span><span class="p">(</span><span class="nx">parts</span><span class="p">[</span><span class="mi">1</span><span class="p">]);</span>
+    <span class="hljs-keyword">if</span> (!(docs <span class="hljs-keyword">instanceof</span> <span class="hljs-built_in">Array</span>)) docs = [docs];
 
-        <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="nb">isNaN</span><span class="p">(</span><span class="nx">lon</span><span class="p">)</span> <span class="o">&amp;&amp;</span> <span class="o">!</span><span class="nb">isNaN</span><span class="p">(</span><span class="nb">parseFloat</span><span class="p">(</span><span class="nx">lat</span><span class="p">)))</span> <span class="p">{</span>
-          <span class="k">return</span> <span class="p">{</span>
-            <span class="s2">&quot;type&quot;</span><span class="o">:</span> <span class="s2">&quot;Point&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;coordinates&quot;</span><span class="o">:</span> <span class="p">[</span><span class="nx">lon</span><span class="p">,</span> <span class="nx">lat</span><span class="p">]</span>
-          <span class="p">};</span>
-        <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
-          <span class="k">return</span> <span class="kc">null</span><span class="p">;</span>
-        <span class="p">}</span>
-      <span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="nx">value</span> <span class="o">&amp;&amp;</span> <span class="nx">_</span><span class="p">.</span><span class="nx">isArray</span><span class="p">(</span><span class="nx">value</span><span class="p">))</span> <span class="p">{</span></pre></div>             </td>           </tr>                               <tr id="section-29">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-29">&#182;</a>               </div>               <p>[ lon, lat ]</p>             </td>             <td class="code">               <div class="highlight"><pre>        <span class="k">return</span> <span class="p">{</span>
-          <span class="s2">&quot;type&quot;</span><span class="o">:</span> <span class="s2">&quot;Point&quot;</span><span class="p">,</span>
-          <span class="s2">&quot;coordinates&quot;</span><span class="o">:</span> <span class="p">[</span><span class="nx">value</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="nx">value</span><span class="p">[</span><span class="mi">1</span><span class="p">]]</span>
-        <span class="p">};</span>
-      <span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="nx">value</span> <span class="o">&amp;&amp;</span> <span class="nx">value</span><span class="p">.</span><span class="nx">lat</span><span class="p">)</span> <span class="p">{</span></pre></div>             </td>           </tr>                               <tr id="section-30">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-30">&#182;</a>               </div>               <p>of form { lat: ..., lon: ...}</p>             </td>             <td class="code">               <div class="highlight"><pre>        <span class="k">return</span> <span class="p">{</span>
-          <span class="s2">&quot;type&quot;</span><span class="o">:</span> <span class="s2">&quot;Point&quot;</span><span class="p">,</span>
-          <span class="s2">&quot;coordinates&quot;</span><span class="o">:</span> <span class="p">[</span><span class="nx">value</span><span class="p">.</span><span class="nx">lon</span> <span class="o">||</span> <span class="nx">value</span><span class="p">.</span><span class="nx">lng</span><span class="p">,</span> <span class="nx">value</span><span class="p">.</span><span class="nx">lat</span><span class="p">]</span>
-        <span class="p">};</span>
-      <span class="p">}</span></pre></div>             </td>           </tr>                               <tr id="section-31">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-31">&#182;</a>               </div>               <p>We o/w assume that contents of the field are a valid GeoJSON object</p>             </td>             <td class="code">               <div class="highlight"><pre>      <span class="k">return</span> <span class="nx">value</span><span class="p">;</span>
-    <span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">state</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s1">&#39;lonField&#39;</span><span class="p">)</span> <span class="o">&amp;&amp;</span> <span class="k">this</span><span class="p">.</span><span class="nx">state</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s1">&#39;latField&#39;</span><span class="p">)){</span></pre></div>             </td>           </tr>                               <tr id="section-32">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-32">&#182;</a>               </div>               <p>We'll create a GeoJSON like point object from the two lat/lon fields</p>             </td>             <td class="code">               <div class="highlight"><pre>      <span class="kd">var</span> <span class="nx">lon</span> <span class="o">=</span> <span class="nx">doc</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">state</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s1">&#39;lonField&#39;</span><span class="p">));</span>
-      <span class="kd">var</span> <span class="nx">lat</span> <span class="o">=</span> <span class="nx">doc</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">state</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s1">&#39;latField&#39;</span><span class="p">));</span>
-      <span class="nx">lon</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">_parseCoordinateString</span><span class="p">(</span><span class="nx">lon</span><span class="p">);</span>
-      <span class="nx">lat</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">_parseCoordinateString</span><span class="p">(</span><span class="nx">lat</span><span class="p">);</span>
+    _.each(docs,<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(doc)</span></span>{
+      <span class="hljs-keyword">for</span> (<span class="hljs-keyword">var</span> key <span class="hljs-keyword">in</span> self.features._layers){
+        <span class="hljs-keyword">if</span> (self.features._layers[key].feature.geometry.properties.cid == doc.cid){
+          self.features.removeLayer(self.features._layers[key]);
+        }
+      }
+    });
 
-      <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="nb">isNaN</span><span class="p">(</span><span class="nb">parseFloat</span><span class="p">(</span><span class="nx">lon</span><span class="p">))</span> <span class="o">&amp;&amp;</span> <span class="o">!</span><span class="nb">isNaN</span><span class="p">(</span><span class="nb">parseFloat</span><span class="p">(</span><span class="nx">lat</span><span class="p">)))</span> <span class="p">{</span>
-        <span class="k">return</span> <span class="p">{</span>
-          <span class="nx">type</span><span class="o">:</span> <span class="s1">&#39;Point&#39;</span><span class="p">,</span>
-          <span class="nx">coordinates</span><span class="o">:</span> <span class="p">[</span><span class="nx">lon</span><span class="p">,</span><span class="nx">lat</span><span class="p">]</span>
-        <span class="p">};</span>
-      <span class="p">}</span>
-    <span class="p">}</span>
-    <span class="k">return</span> <span class="kc">null</span><span class="p">;</span>
-  <span class="p">},</span></pre></div>             </td>           </tr>                               <tr id="section-33">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-33">&#182;</a>               </div>               <p>Private: Check if there is a field with GeoJSON geometries or alternatively,
+  },</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-27">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-27">&#182;</a>
+              </div>
+              <p>Private: convert DMS coordinates to decimal</p>
+<p>north and east are positive, south and west are negative</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  _parseCoordinateString: <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(coord)</span></span>{
+    <span class="hljs-keyword">if</span> (<span class="hljs-keyword">typeof</span>(coord) != <span class="hljs-string">'string'</span>) {
+      <span class="hljs-keyword">return</span>(<span class="hljs-built_in">parseFloat</span>(coord));
+    }
+    <span class="hljs-keyword">var</span> dms = coord.split(<span class="hljs-regexp">/[^-?\.\d\w]+/</span>);
+    <span class="hljs-keyword">var</span> deg = <span class="hljs-number">0</span>; <span class="hljs-keyword">var</span> m = <span class="hljs-number">0</span>;
+    <span class="hljs-keyword">var</span> toDeg = [<span class="hljs-number">1</span>, <span class="hljs-number">60</span>, <span class="hljs-number">3600</span>]; <span class="hljs-comment">// conversion factors for Deg, min, sec</span>
+    <span class="hljs-keyword">var</span> i;
+    <span class="hljs-keyword">for</span> (i = <span class="hljs-number">0</span>; i &lt; dms.length; ++i) {
+        <span class="hljs-keyword">if</span> (<span class="hljs-built_in">isNaN</span>(<span class="hljs-built_in">parseFloat</span>(dms[i]))) {
+          <span class="hljs-keyword">continue</span>;
+        }
+        deg += <span class="hljs-built_in">parseFloat</span>(dms[i]) / toDeg[m];
+        m += <span class="hljs-number">1</span>;
+    }
+    <span class="hljs-keyword">if</span> (coord.match(<span class="hljs-regexp">/[SW]/</span>)) {
+          deg = -<span class="hljs-number">1</span>*deg;
+    }
+    <span class="hljs-keyword">return</span>(deg);
+  },</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-28">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-28">&#182;</a>
+              </div>
+              <p>Private: Return a GeoJSON geomtry extracted from the record fields</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  _getGeometryFromRecord: <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(doc)</span></span>{
+    <span class="hljs-keyword">if</span> (<span class="hljs-keyword">this</span>.state.get(<span class="hljs-string">'geomField'</span>)){
+      <span class="hljs-keyword">var</span> value = doc.get(<span class="hljs-keyword">this</span>.state.get(<span class="hljs-string">'geomField'</span>));
+      <span class="hljs-keyword">if</span> (<span class="hljs-keyword">typeof</span>(value) === <span class="hljs-string">'string'</span>){</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-29">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-29">&#182;</a>
+              </div>
+              <p>We <em>may</em> have a GeoJSON string representation</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>        <span class="hljs-keyword">try</span> {
+          value = $.parseJSON(value);
+        } <span class="hljs-keyword">catch</span>(e) {}
+      }
+      <span class="hljs-keyword">if</span> (<span class="hljs-keyword">typeof</span>(value) === <span class="hljs-string">'string'</span>) {
+        value = value.replace(<span class="hljs-string">'('</span>, <span class="hljs-string">''</span>).replace(<span class="hljs-string">')'</span>, <span class="hljs-string">''</span>);
+        <span class="hljs-keyword">var</span> parts = value.split(<span class="hljs-string">','</span>);
+        <span class="hljs-keyword">var</span> lat = <span class="hljs-keyword">this</span>._parseCoordinateString(parts[<span class="hljs-number">0</span>]);
+        <span class="hljs-keyword">var</span> lon = <span class="hljs-keyword">this</span>._parseCoordinateString(parts[<span class="hljs-number">1</span>]);
+
+        <span class="hljs-keyword">if</span> (!<span class="hljs-built_in">isNaN</span>(lon) &amp;&amp; !<span class="hljs-built_in">isNaN</span>(<span class="hljs-built_in">parseFloat</span>(lat))) {
+          <span class="hljs-keyword">return</span> {
+            <span class="hljs-string">"type"</span>: <span class="hljs-string">"Point"</span>,
+            <span class="hljs-string">"coordinates"</span>: [lon, lat]
+          };
+        } <span class="hljs-keyword">else</span> {
+          <span class="hljs-keyword">return</span> <span class="hljs-literal">null</span>;
+        }
+      } <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (value &amp;&amp; _.isArray(value)) {</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-30">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-30">&#182;</a>
+              </div>
+              <p>[ lon, lat ]</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>        <span class="hljs-keyword">return</span> {
+          <span class="hljs-string">"type"</span>: <span class="hljs-string">"Point"</span>,
+          <span class="hljs-string">"coordinates"</span>: [value[<span class="hljs-number">0</span>], value[<span class="hljs-number">1</span>]]
+        };
+      } <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (value &amp;&amp; value.lat) {</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-31">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-31">&#182;</a>
+              </div>
+              <p>of form { lat: …, lon: …}</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>        <span class="hljs-keyword">return</span> {
+          <span class="hljs-string">"type"</span>: <span class="hljs-string">"Point"</span>,
+          <span class="hljs-string">"coordinates"</span>: [value.lon || value.lng, value.lat]
+        };
+      }</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-32">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-32">&#182;</a>
+              </div>
+              <p>We o/w assume that contents of the field are a valid GeoJSON object</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>      <span class="hljs-keyword">return</span> value;
+    } <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (<span class="hljs-keyword">this</span>.state.get(<span class="hljs-string">'lonField'</span>) &amp;&amp; <span class="hljs-keyword">this</span>.state.get(<span class="hljs-string">'latField'</span>)){</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-33">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-33">&#182;</a>
+              </div>
+              <p>We’ll create a GeoJSON like point object from the two lat/lon fields</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>      <span class="hljs-keyword">var</span> lon = doc.get(<span class="hljs-keyword">this</span>.state.get(<span class="hljs-string">'lonField'</span>));
+      <span class="hljs-keyword">var</span> lat = doc.get(<span class="hljs-keyword">this</span>.state.get(<span class="hljs-string">'latField'</span>));
+      lon = <span class="hljs-keyword">this</span>._parseCoordinateString(lon);
+      lat = <span class="hljs-keyword">this</span>._parseCoordinateString(lat);
+
+      <span class="hljs-keyword">if</span> (!<span class="hljs-built_in">isNaN</span>(<span class="hljs-built_in">parseFloat</span>(lon)) &amp;&amp; !<span class="hljs-built_in">isNaN</span>(<span class="hljs-built_in">parseFloat</span>(lat))) {
+        <span class="hljs-keyword">return</span> {
+          type: <span class="hljs-string">'Point'</span>,
+          coordinates: [lon,lat]
+        };
+      }
+    }
+    <span class="hljs-keyword">return</span> <span class="hljs-literal">null</span>;
+  },</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-34">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-34">&#182;</a>
+              </div>
+              <p>Private: Check if there is a field with GeoJSON geometries or alternatively,
 two fields with lat/lon values.</p>
+<p>If not found, the user can define them via the UI form.</p>
 
-<p>If not found, the user can define them via the UI form.</p>             </td>             <td class="code">               <div class="highlight"><pre>  <span class="nx">_setupGeometryField</span><span class="o">:</span> <span class="kd">function</span><span class="p">(){</span></pre></div>             </td>           </tr>                               <tr id="section-34">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-34">&#182;</a>               </div>               <p>should not overwrite if we have already set this (e.g. explicitly via state)</p>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="k">this</span><span class="p">.</span><span class="nx">_geomReady</span><span class="p">())</span> <span class="p">{</span>
-      <span class="k">this</span><span class="p">.</span><span class="nx">state</span><span class="p">.</span><span class="nx">set</span><span class="p">({</span>
-        <span class="nx">geomField</span><span class="o">:</span> <span class="k">this</span><span class="p">.</span><span class="nx">_checkField</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">geometryFieldNames</span><span class="p">),</span>
-        <span class="nx">latField</span><span class="o">:</span> <span class="k">this</span><span class="p">.</span><span class="nx">_checkField</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">latitudeFieldNames</span><span class="p">),</span>
-        <span class="nx">lonField</span><span class="o">:</span> <span class="k">this</span><span class="p">.</span><span class="nx">_checkField</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">longitudeFieldNames</span><span class="p">)</span>
-      <span class="p">});</span>
-      <span class="k">this</span><span class="p">.</span><span class="nx">menu</span><span class="p">.</span><span class="nx">state</span><span class="p">.</span><span class="nx">set</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">state</span><span class="p">.</span><span class="nx">toJSON</span><span class="p">());</span>
-    <span class="p">}</span>
-  <span class="p">},</span></pre></div>             </td>           </tr>                               <tr id="section-35">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-35">&#182;</a>               </div>               <p>Private: Check if a field in the current model exists in the provided
-list of names.</p>             </td>             <td class="code">               <div class="highlight"><pre>  <span class="nx">_checkField</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">fieldNames</span><span class="p">){</span>
-    <span class="kd">var</span> <span class="nx">field</span><span class="p">;</span>
-    <span class="kd">var</span> <span class="nx">modelFieldNames</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">model</span><span class="p">.</span><span class="nx">fields</span><span class="p">.</span><span class="nx">pluck</span><span class="p">(</span><span class="s1">&#39;id&#39;</span><span class="p">);</span>
-    <span class="k">for</span> <span class="p">(</span><span class="kd">var</span> <span class="nx">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="nx">i</span> <span class="o">&lt;</span> <span class="nx">fieldNames</span><span class="p">.</span><span class="nx">length</span><span class="p">;</span> <span class="nx">i</span><span class="o">++</span><span class="p">){</span>
-      <span class="k">for</span> <span class="p">(</span><span class="kd">var</span> <span class="nx">j</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="nx">j</span> <span class="o">&lt;</span> <span class="nx">modelFieldNames</span><span class="p">.</span><span class="nx">length</span><span class="p">;</span> <span class="nx">j</span><span class="o">++</span><span class="p">){</span>
-        <span class="k">if</span> <span class="p">(</span><span class="nx">modelFieldNames</span><span class="p">[</span><span class="nx">j</span><span class="p">].</span><span class="nx">toLowerCase</span><span class="p">()</span> <span class="o">==</span> <span class="nx">fieldNames</span><span class="p">[</span><span class="nx">i</span><span class="p">].</span><span class="nx">toLowerCase</span><span class="p">())</span>
-          <span class="k">return</span> <span class="nx">modelFieldNames</span><span class="p">[</span><span class="nx">j</span><span class="p">];</span>
-      <span class="p">}</span>
-    <span class="p">}</span>
-    <span class="k">return</span> <span class="kc">null</span><span class="p">;</span>
-  <span class="p">},</span></pre></div>             </td>           </tr>                               <tr id="section-36">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-36">&#182;</a>               </div>               <p>Private: Zoom to map to current features extent if any, or to the full
-extent if none.</p>             </td>             <td class="code">               <div class="highlight"><pre>  <span class="nx">_zoomToFeatures</span><span class="o">:</span> <span class="kd">function</span><span class="p">(){</span>
-    <span class="kd">var</span> <span class="nx">bounds</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">features</span><span class="p">.</span><span class="nx">getBounds</span><span class="p">();</span>
-    <span class="k">if</span> <span class="p">(</span><span class="nx">bounds</span> <span class="o">&amp;&amp;</span> <span class="nx">bounds</span><span class="p">.</span><span class="nx">getNorthEast</span><span class="p">()</span> <span class="o">&amp;&amp;</span> <span class="nx">bounds</span><span class="p">.</span><span class="nx">getSouthWest</span><span class="p">()){</span>
-      <span class="k">this</span><span class="p">.</span><span class="nx">map</span><span class="p">.</span><span class="nx">fitBounds</span><span class="p">(</span><span class="nx">bounds</span><span class="p">);</span>
-    <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
-      <span class="k">this</span><span class="p">.</span><span class="nx">map</span><span class="p">.</span><span class="nx">setView</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="mi">2</span><span class="p">);</span>
-    <span class="p">}</span>
-  <span class="p">},</span></pre></div>             </td>           </tr>                               <tr id="section-37">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-37">&#182;</a>               </div>               <p>Private: Sets up the Leaflet map control and the features layer.</p>
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  _setupGeometryField: <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span></span>{</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-35">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-35">&#182;</a>
+              </div>
+              <p>should not overwrite if we have already set this (e.g. explicitly via state)</p>
 
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    <span class="hljs-keyword">if</span> (!<span class="hljs-keyword">this</span>._geomReady()) {
+      <span class="hljs-keyword">this</span>.state.set({
+        geomField: <span class="hljs-keyword">this</span>._checkField(<span class="hljs-keyword">this</span>.geometryFieldNames),
+        latField: <span class="hljs-keyword">this</span>._checkField(<span class="hljs-keyword">this</span>.latitudeFieldNames),
+        lonField: <span class="hljs-keyword">this</span>._checkField(<span class="hljs-keyword">this</span>.longitudeFieldNames)
+      });
+      <span class="hljs-keyword">this</span>.menu.state.set(<span class="hljs-keyword">this</span>.state.toJSON());
+    }
+  },</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-36">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-36">&#182;</a>
+              </div>
+              <p>Private: Check if a field in the current model exists in the provided
+list of names.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  _checkField: <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(fieldNames)</span></span>{
+    <span class="hljs-keyword">var</span> field;
+    <span class="hljs-keyword">var</span> modelFieldNames = <span class="hljs-keyword">this</span>.model.fields.pluck(<span class="hljs-string">'id'</span>);
+    <span class="hljs-keyword">for</span> (<span class="hljs-keyword">var</span> i = <span class="hljs-number">0</span>; i &lt; fieldNames.length; i++){
+      <span class="hljs-keyword">for</span> (<span class="hljs-keyword">var</span> j = <span class="hljs-number">0</span>; j &lt; modelFieldNames.length; j++){
+        <span class="hljs-keyword">if</span> (modelFieldNames[j].toLowerCase() == fieldNames[i].toLowerCase())
+          <span class="hljs-keyword">return</span> modelFieldNames[j];
+      }
+    }
+    <span class="hljs-keyword">return</span> <span class="hljs-literal">null</span>;
+  },</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-37">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-37">&#182;</a>
+              </div>
+              <p>Private: Zoom to map to current features extent if any, or to the full
+extent if none.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  _zoomToFeatures: <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span></span>{
+    <span class="hljs-keyword">var</span> bounds = <span class="hljs-keyword">this</span>.features.getBounds();
+    <span class="hljs-keyword">if</span> (bounds &amp;&amp; bounds.getNorthEast() &amp;&amp; bounds.getSouthWest()){
+      <span class="hljs-keyword">this</span>.map.fitBounds(bounds);
+    } <span class="hljs-keyword">else</span> {
+      <span class="hljs-keyword">this</span>.map.setView([<span class="hljs-number">0</span>, <span class="hljs-number">0</span>], <span class="hljs-number">2</span>);
+    }
+  },</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-38">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-38">&#182;</a>
+              </div>
+              <p>Private: Sets up the Leaflet map control and the features layer.</p>
 <p>The map uses a base layer from <a href="http://www.mapquest.com">MapQuest</a> based
-on <a href="http://openstreetmap.org">OpenStreetMap</a>.</p>             </td>             <td class="code">               <div class="highlight"><pre>  <span class="nx">_setupMap</span><span class="o">:</span> <span class="kd">function</span><span class="p">(){</span>
-    <span class="kd">var</span> <span class="nx">self</span> <span class="o">=</span> <span class="k">this</span><span class="p">;</span>
-    <span class="k">this</span><span class="p">.</span><span class="nx">map</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">L</span><span class="p">.</span><span class="nx">Map</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">$map</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="mi">0</span><span class="p">));</span>
+on <a href="http://openstreetmap.org">OpenStreetMap</a>.</p>
 
-    <span class="kd">var</span> <span class="nx">mapUrl</span> <span class="o">=</span> <span class="s2">&quot;//otile{s}-s.mqcdn.com/tiles/1.0.0/osm/{z}/{x}/{y}.png&quot;</span><span class="p">;</span>
-    <span class="kd">var</span> <span class="nx">osmAttribution</span> <span class="o">=</span> <span class="s1">&#39;Map data &amp;copy; 2011 OpenStreetMap contributors, Tiles Courtesy of &lt;a href=&quot;http://www.mapquest.com/&quot; target=&quot;_blank&quot;&gt;MapQuest&lt;/a&gt; &lt;img src=&quot;//developer.mapquest.com/content/osm/mq_logo.png&quot;&gt;&#39;</span><span class="p">;</span>
-    <span class="kd">var</span> <span class="nx">bg</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">L</span><span class="p">.</span><span class="nx">TileLayer</span><span class="p">(</span><span class="nx">mapUrl</span><span class="p">,</span> <span class="p">{</span><span class="nx">maxZoom</span><span class="o">:</span> <span class="mi">18</span><span class="p">,</span> <span class="nx">attribution</span><span class="o">:</span> <span class="nx">osmAttribution</span> <span class="p">,</span><span class="nx">subdomains</span><span class="o">:</span> <span class="s1">&#39;1234&#39;</span><span class="p">});</span>
-    <span class="k">this</span><span class="p">.</span><span class="nx">map</span><span class="p">.</span><span class="nx">addLayer</span><span class="p">(</span><span class="nx">bg</span><span class="p">);</span>
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  _setupMap: <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span></span>{
+    <span class="hljs-keyword">var</span> self = <span class="hljs-keyword">this</span>;
+    <span class="hljs-keyword">this</span>.map = <span class="hljs-keyword">new</span> L.Map(<span class="hljs-keyword">this</span>.$map.get(<span class="hljs-number">0</span>));
 
-    <span class="k">this</span><span class="p">.</span><span class="nx">markers</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">L</span><span class="p">.</span><span class="nx">MarkerClusterGroup</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">_clusterOptions</span><span class="p">);</span></pre></div>             </td>           </tr>                               <tr id="section-38">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-38">&#182;</a>               </div>               <p>rebind this (as needed in e.g. default case above)</p>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="k">this</span><span class="p">.</span><span class="nx">geoJsonLayerOptions</span><span class="p">.</span><span class="nx">pointToLayer</span> <span class="o">=</span>  <span class="nx">_</span><span class="p">.</span><span class="nx">bind</span><span class="p">(</span>
-        <span class="k">this</span><span class="p">.</span><span class="nx">geoJsonLayerOptions</span><span class="p">.</span><span class="nx">pointToLayer</span><span class="p">,</span>
-        <span class="k">this</span><span class="p">);</span>
-    <span class="k">this</span><span class="p">.</span><span class="nx">features</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">L</span><span class="p">.</span><span class="nx">GeoJSON</span><span class="p">(</span><span class="kc">null</span><span class="p">,</span> <span class="k">this</span><span class="p">.</span><span class="nx">geoJsonLayerOptions</span><span class="p">);</span>
+    <span class="hljs-keyword">var</span> mapUrl = <span class="hljs-string">"http://otile{s}-s.mqcdn.com/tiles/1.0.0/osm/{z}/{x}/{y}.png"</span>;
+    <span class="hljs-keyword">var</span> osmAttribution = <span class="hljs-string">'Map data &amp;copy; 2011 OpenStreetMap contributors, Tiles Courtesy of &lt;a href="http://www.mapquest.com/" target="_blank"&gt;MapQuest&lt;/a&gt; &lt;img src="http://developer.mapquest.com/content/osm/mq_logo.png"&gt;'</span>;
+    <span class="hljs-keyword">var</span> bg = <span class="hljs-keyword">new</span> L.TileLayer(mapUrl, {maxZoom: <span class="hljs-number">18</span>, attribution: osmAttribution ,subdomains: <span class="hljs-string">'1234'</span>});
+    <span class="hljs-keyword">this</span>.map.addLayer(bg);
 
-    <span class="k">this</span><span class="p">.</span><span class="nx">map</span><span class="p">.</span><span class="nx">setView</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="mi">2</span><span class="p">);</span>
+    <span class="hljs-keyword">this</span>.markers = <span class="hljs-keyword">new</span> L.MarkerClusterGroup(<span class="hljs-keyword">this</span>._clusterOptions);</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-39">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-39">&#182;</a>
+              </div>
+              <p>rebind this (as needed in e.g. default case above)</p>
 
-    <span class="k">this</span><span class="p">.</span><span class="nx">mapReady</span> <span class="o">=</span> <span class="kc">true</span><span class="p">;</span>
-  <span class="p">},</span></pre></div>             </td>           </tr>                               <tr id="section-39">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-39">&#182;</a>               </div>               <p>Private: Helper function to select an option from a select list</p>             </td>             <td class="code">               <div class="highlight"><pre>  <span class="nx">_selectOption</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">id</span><span class="p">,</span><span class="nx">value</span><span class="p">){</span>
-    <span class="kd">var</span> <span class="nx">options</span> <span class="o">=</span> <span class="nx">$</span><span class="p">(</span><span class="s1">&#39;.&#39;</span> <span class="o">+</span> <span class="nx">id</span> <span class="o">+</span> <span class="s1">&#39; &gt; select &gt; option&#39;</span><span class="p">);</span>
-    <span class="k">if</span> <span class="p">(</span><span class="nx">options</span><span class="p">){</span>
-      <span class="nx">options</span><span class="p">.</span><span class="nx">each</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">opt</span><span class="p">){</span>
-        <span class="k">if</span> <span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">value</span> <span class="o">==</span> <span class="nx">value</span><span class="p">)</span> <span class="p">{</span>
-          <span class="nx">$</span><span class="p">(</span><span class="k">this</span><span class="p">).</span><span class="nx">attr</span><span class="p">(</span><span class="s1">&#39;selected&#39;</span><span class="p">,</span><span class="s1">&#39;selected&#39;</span><span class="p">);</span>
-          <span class="k">return</span> <span class="kc">false</span><span class="p">;</span>
-        <span class="p">}</span>
-      <span class="p">});</span>
-    <span class="p">}</span>
-  <span class="p">}</span>
-<span class="p">});</span>
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    <span class="hljs-keyword">this</span>.geoJsonLayerOptions.pointToLayer =  _.bind(
+        <span class="hljs-keyword">this</span>.geoJsonLayerOptions.pointToLayer,
+        <span class="hljs-keyword">this</span>);
+    <span class="hljs-keyword">this</span>.features = <span class="hljs-keyword">new</span> L.GeoJSON(<span class="hljs-literal">null</span>, <span class="hljs-keyword">this</span>.geoJsonLayerOptions);
 
-<span class="nx">my</span><span class="p">.</span><span class="nx">MapMenu</span> <span class="o">=</span> <span class="nx">Backbone</span><span class="p">.</span><span class="nx">View</span><span class="p">.</span><span class="nx">extend</span><span class="p">({</span>
-  <span class="nx">className</span><span class="o">:</span> <span class="s1">&#39;editor&#39;</span><span class="p">,</span>
+    <span class="hljs-keyword">this</span>.map.setView([<span class="hljs-number">0</span>, <span class="hljs-number">0</span>], <span class="hljs-number">2</span>);
 
-  <span class="nx">template</span><span class="o">:</span> <span class="s1">&#39; \</span>
-<span class="s1">    &lt;form class=&quot;form-stacked&quot;&gt; \</span>
-<span class="s1">      &lt;div class=&quot;clearfix&quot;&gt; \</span>
-<span class="s1">        &lt;div class=&quot;editor-field-type&quot;&gt; \</span>
-<span class="s1">            &lt;label class=&quot;radio&quot;&gt; \</span>
-<span class="s1">              &lt;input type=&quot;radio&quot; id=&quot;editor-field-type-latlon&quot; name=&quot;editor-field-type&quot; value=&quot;latlon&quot; checked=&quot;checked&quot;/&gt; \</span>
-<span class="s1">              Latitude / Longitude fields&lt;/label&gt; \</span>
-<span class="s1">            &lt;label class=&quot;radio&quot;&gt; \</span>
-<span class="s1">              &lt;input type=&quot;radio&quot; id=&quot;editor-field-type-geom&quot; name=&quot;editor-field-type&quot; value=&quot;geom&quot; /&gt; \</span>
-<span class="s1">              GeoJSON field&lt;/label&gt; \</span>
-<span class="s1">        &lt;/div&gt; \</span>
-<span class="s1">        &lt;div class=&quot;editor-field-type-latlon&quot;&gt; \</span>
-<span class="s1">          &lt;label&gt;Latitude field&lt;/label&gt; \</span>
-<span class="s1">          &lt;div class=&quot;input editor-lat-field&quot;&gt; \</span>
-<span class="s1">            &lt;select&gt; \</span>
-<span class="s1">            &lt;option value=&quot;&quot;&gt;&lt;/option&gt; \</span>
-<span class="s1">            {{#fields}} \</span>
-<span class="s1">            &lt;option value=&quot;{{id}}&quot;&gt;{{label}}&lt;/option&gt; \</span>
-<span class="s1">            {{/fields}} \</span>
-<span class="s1">            &lt;/select&gt; \</span>
-<span class="s1">          &lt;/div&gt; \</span>
-<span class="s1">          &lt;label&gt;Longitude field&lt;/label&gt; \</span>
-<span class="s1">          &lt;div class=&quot;input editor-lon-field&quot;&gt; \</span>
-<span class="s1">            &lt;select&gt; \</span>
-<span class="s1">            &lt;option value=&quot;&quot;&gt;&lt;/option&gt; \</span>
-<span class="s1">            {{#fields}} \</span>
-<span class="s1">            &lt;option value=&quot;{{id}}&quot;&gt;{{label}}&lt;/option&gt; \</span>
-<span class="s1">            {{/fields}} \</span>
-<span class="s1">            &lt;/select&gt; \</span>
-<span class="s1">          &lt;/div&gt; \</span>
-<span class="s1">        &lt;/div&gt; \</span>
-<span class="s1">        &lt;div class=&quot;editor-field-type-geom&quot; style=&quot;display:none&quot;&gt; \</span>
-<span class="s1">          &lt;label&gt;Geometry field (GeoJSON)&lt;/label&gt; \</span>
-<span class="s1">          &lt;div class=&quot;input editor-geom-field&quot;&gt; \</span>
-<span class="s1">            &lt;select&gt; \</span>
-<span class="s1">            &lt;option value=&quot;&quot;&gt;&lt;/option&gt; \</span>
-<span class="s1">            {{#fields}} \</span>
-<span class="s1">            &lt;option value=&quot;{{id}}&quot;&gt;{{label}}&lt;/option&gt; \</span>
-<span class="s1">            {{/fields}} \</span>
-<span class="s1">            &lt;/select&gt; \</span>
-<span class="s1">          &lt;/div&gt; \</span>
-<span class="s1">        &lt;/div&gt; \</span>
-<span class="s1">      &lt;/div&gt; \</span>
-<span class="s1">      &lt;div class=&quot;editor-buttons&quot;&gt; \</span>
-<span class="s1">        &lt;button class=&quot;btn editor-update-map&quot;&gt;Update&lt;/button&gt; \</span>
-<span class="s1">      &lt;/div&gt; \</span>
-<span class="s1">      &lt;div class=&quot;editor-options&quot; &gt; \</span>
-<span class="s1">        &lt;label class=&quot;checkbox&quot;&gt; \</span>
-<span class="s1">          &lt;input type=&quot;checkbox&quot; id=&quot;editor-auto-zoom&quot; value=&quot;autozoom&quot; checked=&quot;checked&quot; /&gt; \</span>
-<span class="s1">          Auto zoom to features&lt;/label&gt; \</span>
-<span class="s1">        &lt;label class=&quot;checkbox&quot;&gt; \</span>
-<span class="s1">          &lt;input type=&quot;checkbox&quot; id=&quot;editor-cluster&quot; value=&quot;cluster&quot;/&gt; \</span>
-<span class="s1">          Cluster markers&lt;/label&gt; \</span>
-<span class="s1">      &lt;/div&gt; \</span>
-<span class="s1">      &lt;input type=&quot;hidden&quot; class=&quot;editor-id&quot; value=&quot;map-1&quot; /&gt; \</span>
-<span class="s1">    &lt;/form&gt; \</span>
-<span class="s1">  &#39;</span><span class="p">,</span></pre></div>             </td>           </tr>                               <tr id="section-40">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-40">&#182;</a>               </div>               <p>Define here events for UI elements</p>             </td>             <td class="code">               <div class="highlight"><pre>  <span class="nx">events</span><span class="o">:</span> <span class="p">{</span>
-    <span class="s1">&#39;click .editor-update-map&#39;</span><span class="o">:</span> <span class="s1">&#39;onEditorSubmit&#39;</span><span class="p">,</span>
-    <span class="s1">&#39;change .editor-field-type&#39;</span><span class="o">:</span> <span class="s1">&#39;onFieldTypeChange&#39;</span><span class="p">,</span>
-    <span class="s1">&#39;click #editor-auto-zoom&#39;</span><span class="o">:</span> <span class="s1">&#39;onAutoZoomChange&#39;</span><span class="p">,</span>
-    <span class="s1">&#39;click #editor-cluster&#39;</span><span class="o">:</span> <span class="s1">&#39;onClusteringChange&#39;</span>
-  <span class="p">},</span>
+    <span class="hljs-keyword">this</span>.mapReady = <span class="hljs-literal">true</span>;
+  },</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-40">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-40">&#182;</a>
+              </div>
+              <p>Private: Helper function to select an option from a select list</p>
 
-  <span class="nx">initialize</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">options</span><span class="p">)</span> <span class="p">{</span>
-    <span class="kd">var</span> <span class="nx">self</span> <span class="o">=</span> <span class="k">this</span><span class="p">;</span>
-    <span class="nx">_</span><span class="p">.</span><span class="nx">bindAll</span><span class="p">(</span><span class="k">this</span><span class="p">,</span> <span class="s1">&#39;render&#39;</span><span class="p">);</span>
-    <span class="k">this</span><span class="p">.</span><span class="nx">listenTo</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">model</span><span class="p">.</span><span class="nx">fields</span><span class="p">,</span> <span class="s1">&#39;change&#39;</span><span class="p">,</span> <span class="k">this</span><span class="p">.</span><span class="nx">render</span><span class="p">);</span>
-    <span class="k">this</span><span class="p">.</span><span class="nx">state</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">recline</span><span class="p">.</span><span class="nx">Model</span><span class="p">.</span><span class="nx">ObjectState</span><span class="p">(</span><span class="nx">options</span><span class="p">.</span><span class="nx">state</span><span class="p">);</span>
-    <span class="k">this</span><span class="p">.</span><span class="nx">listenTo</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">state</span><span class="p">,</span> <span class="s1">&#39;change&#39;</span><span class="p">,</span> <span class="k">this</span><span class="p">.</span><span class="nx">render</span><span class="p">);</span>
-    <span class="k">this</span><span class="p">.</span><span class="nx">render</span><span class="p">();</span>
-  <span class="p">},</span></pre></div>             </td>           </tr>                               <tr id="section-41">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-41">&#182;</a>               </div>               <h3>Public: Adds the necessary elements to the page.</h3>
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  _selectOption: <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(id,value)</span></span>{
+    <span class="hljs-keyword">var</span> options = $(<span class="hljs-string">'.'</span> + id + <span class="hljs-string">' &gt; select &gt; option'</span>);
+    <span class="hljs-keyword">if</span> (options){
+      options.each(<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(opt)</span></span>{
+        <span class="hljs-keyword">if</span> (<span class="hljs-keyword">this</span>.value == value) {
+          $(<span class="hljs-keyword">this</span>).attr(<span class="hljs-string">'selected'</span>,<span class="hljs-string">'selected'</span>);
+          <span class="hljs-keyword">return</span> <span class="hljs-literal">false</span>;
+        }
+      });
+    }
+  }
+});
 
-<p>Also sets up the editor fields and the map if necessary.</p>             </td>             <td class="code">               <div class="highlight"><pre>  <span class="nx">render</span><span class="o">:</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
-    <span class="kd">var</span> <span class="nx">self</span> <span class="o">=</span> <span class="k">this</span><span class="p">;</span>
-    <span class="kd">var</span> <span class="nx">htmls</span> <span class="o">=</span> <span class="nx">Mustache</span><span class="p">.</span><span class="nx">render</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">template</span><span class="p">,</span> <span class="k">this</span><span class="p">.</span><span class="nx">model</span><span class="p">.</span><span class="nx">toTemplateJSON</span><span class="p">());</span>
-    <span class="k">this</span><span class="p">.</span><span class="nx">$el</span><span class="p">.</span><span class="nx">html</span><span class="p">(</span><span class="nx">htmls</span><span class="p">);</span>
+my.MapMenu = Backbone.View.extend({
+  className: <span class="hljs-string">'editor'</span>,
 
-    <span class="k">if</span> <span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">_geomReady</span><span class="p">()</span> <span class="o">&amp;&amp;</span> <span class="k">this</span><span class="p">.</span><span class="nx">model</span><span class="p">.</span><span class="nx">fields</span><span class="p">.</span><span class="nx">length</span><span class="p">){</span>
-      <span class="k">if</span> <span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">state</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s1">&#39;geomField&#39;</span><span class="p">)){</span>
-        <span class="k">this</span><span class="p">.</span><span class="nx">_selectOption</span><span class="p">(</span><span class="s1">&#39;editor-geom-field&#39;</span><span class="p">,</span><span class="k">this</span><span class="p">.</span><span class="nx">state</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s1">&#39;geomField&#39;</span><span class="p">));</span>
-        <span class="k">this</span><span class="p">.</span><span class="nx">$el</span><span class="p">.</span><span class="nx">find</span><span class="p">(</span><span class="s1">&#39;#editor-field-type-geom&#39;</span><span class="p">).</span><span class="nx">attr</span><span class="p">(</span><span class="s1">&#39;checked&#39;</span><span class="p">,</span><span class="s1">&#39;checked&#39;</span><span class="p">).</span><span class="nx">change</span><span class="p">();</span>
-      <span class="p">}</span> <span class="k">else</span><span class="p">{</span>
-        <span class="k">this</span><span class="p">.</span><span class="nx">_selectOption</span><span class="p">(</span><span class="s1">&#39;editor-lon-field&#39;</span><span class="p">,</span><span class="k">this</span><span class="p">.</span><span class="nx">state</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s1">&#39;lonField&#39;</span><span class="p">));</span>
-        <span class="k">this</span><span class="p">.</span><span class="nx">_selectOption</span><span class="p">(</span><span class="s1">&#39;editor-lat-field&#39;</span><span class="p">,</span><span class="k">this</span><span class="p">.</span><span class="nx">state</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s1">&#39;latField&#39;</span><span class="p">));</span>
-        <span class="k">this</span><span class="p">.</span><span class="nx">$el</span><span class="p">.</span><span class="nx">find</span><span class="p">(</span><span class="s1">&#39;#editor-field-type-latlon&#39;</span><span class="p">).</span><span class="nx">attr</span><span class="p">(</span><span class="s1">&#39;checked&#39;</span><span class="p">,</span><span class="s1">&#39;checked&#39;</span><span class="p">).</span><span class="nx">change</span><span class="p">();</span>
-      <span class="p">}</span>
-    <span class="p">}</span>
-    <span class="k">if</span> <span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">state</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s1">&#39;autoZoom&#39;</span><span class="p">))</span> <span class="p">{</span>
-      <span class="k">this</span><span class="p">.</span><span class="nx">$el</span><span class="p">.</span><span class="nx">find</span><span class="p">(</span><span class="s1">&#39;#editor-auto-zoom&#39;</span><span class="p">).</span><span class="nx">attr</span><span class="p">(</span><span class="s1">&#39;checked&#39;</span><span class="p">,</span> <span class="s1">&#39;checked&#39;</span><span class="p">);</span>
-    <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
-      <span class="k">this</span><span class="p">.</span><span class="nx">$el</span><span class="p">.</span><span class="nx">find</span><span class="p">(</span><span class="s1">&#39;#editor-auto-zoom&#39;</span><span class="p">).</span><span class="nx">removeAttr</span><span class="p">(</span><span class="s1">&#39;checked&#39;</span><span class="p">);</span>
-    <span class="p">}</span>
-    <span class="k">if</span> <span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">state</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s1">&#39;cluster&#39;</span><span class="p">))</span> <span class="p">{</span>
-      <span class="k">this</span><span class="p">.</span><span class="nx">$el</span><span class="p">.</span><span class="nx">find</span><span class="p">(</span><span class="s1">&#39;#editor-cluster&#39;</span><span class="p">).</span><span class="nx">attr</span><span class="p">(</span><span class="s1">&#39;checked&#39;</span><span class="p">,</span> <span class="s1">&#39;checked&#39;</span><span class="p">);</span>
-    <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
-      <span class="k">this</span><span class="p">.</span><span class="nx">$el</span><span class="p">.</span><span class="nx">find</span><span class="p">(</span><span class="s1">&#39;#editor-cluster&#39;</span><span class="p">).</span><span class="nx">removeAttr</span><span class="p">(</span><span class="s1">&#39;checked&#39;</span><span class="p">);</span>
-    <span class="p">}</span>
-    <span class="k">return</span> <span class="k">this</span><span class="p">;</span>
-  <span class="p">},</span>
+  template: <span class="hljs-string">' \
+    &lt;form class="form-stacked"&gt; \
+      &lt;div class="clearfix"&gt; \
+        &lt;div class="editor-field-type"&gt; \
+            &lt;label class="radio"&gt; \
+              &lt;input type="radio" id="editor-field-type-latlon" name="editor-field-type" value="latlon" checked="checked"/&gt; \
+              Latitude / Longitude fields&lt;/label&gt; \
+            &lt;label class="radio"&gt; \
+              &lt;input type="radio" id="editor-field-type-geom" name="editor-field-type" value="geom" /&gt; \
+              GeoJSON field&lt;/label&gt; \
+        &lt;/div&gt; \
+        &lt;div class="editor-field-type-latlon"&gt; \
+          &lt;label&gt;Latitude field&lt;/label&gt; \
+          &lt;div class="input editor-lat-field"&gt; \
+            &lt;select class="form-control"&gt; \
+            &lt;option value=""&gt;&lt;/option&gt; \
+            {{#fields}} \
+            &lt;option value="{{id}}"&gt;{{label}}&lt;/option&gt; \
+            {{/fields}} \
+            &lt;/select&gt; \
+          &lt;/div&gt; \
+          &lt;label&gt;Longitude field&lt;/label&gt; \
+          &lt;div class="input editor-lon-field"&gt; \
+            &lt;select class="form-control"&gt; \
+            &lt;option value=""&gt;&lt;/option&gt; \
+            {{#fields}} \
+            &lt;option value="{{id}}"&gt;{{label}}&lt;/option&gt; \
+            {{/fields}} \
+            &lt;/select&gt; \
+          &lt;/div&gt; \
+        &lt;/div&gt; \
+        &lt;div class="editor-field-type-geom" style="display:none"&gt; \
+          &lt;label&gt;Geometry field (GeoJSON)&lt;/label&gt; \
+          &lt;div class="input editor-geom-field"&gt; \
+            &lt;select class="form-control"&gt; \
+            &lt;option value=""&gt;&lt;/option&gt; \
+            {{#fields}} \
+            &lt;option value="{{id}}"&gt;{{label}}&lt;/option&gt; \
+            {{/fields}} \
+            &lt;/select&gt; \
+          &lt;/div&gt; \
+        &lt;/div&gt; \
+      &lt;/div&gt; \
+      &lt;div class="editor-buttons"&gt; \
+        &lt;button class="btn btn-default editor-update-map"&gt;Update&lt;/button&gt; \
+      &lt;/div&gt; \
+      &lt;div class="editor-options" &gt; \
+        &lt;label class="checkbox"&gt; \
+          &lt;input type="checkbox" id="editor-auto-zoom" value="autozoom" checked="checked" /&gt; \
+          Auto zoom to features&lt;/label&gt; \
+        &lt;label class="checkbox"&gt; \
+          &lt;input type="checkbox" id="editor-cluster" value="cluster"/&gt; \
+          Cluster markers&lt;/label&gt; \
+      &lt;/div&gt; \
+      &lt;input type="hidden" class="editor-id" value="map-1" /&gt; \
+    &lt;/form&gt; \
+  '</span>,</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-41">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-41">&#182;</a>
+              </div>
+              <p>Define here events for UI elements</p>
 
-  <span class="nx">_geomReady</span><span class="o">:</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
-    <span class="k">return</span> <span class="nb">Boolean</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">state</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s1">&#39;geomField&#39;</span><span class="p">)</span> <span class="o">||</span> <span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">state</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s1">&#39;latField&#39;</span><span class="p">)</span> <span class="o">&amp;&amp;</span> <span class="k">this</span><span class="p">.</span><span class="nx">state</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s1">&#39;lonField&#39;</span><span class="p">)));</span>
-  <span class="p">},</span></pre></div>             </td>           </tr>                               <tr id="section-42">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-42">&#182;</a>               </div>               <h2>UI Event handlers</h2>             </td>             <td class="code">               <div class="highlight"><pre></pre></div>             </td>           </tr>                               <tr id="section-43">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-43">&#182;</a>               </div>               <p>Public: Update map with user options</p>
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  events: {
+    <span class="hljs-string">'click .editor-update-map'</span>: <span class="hljs-string">'onEditorSubmit'</span>,
+    <span class="hljs-string">'change .editor-field-type'</span>: <span class="hljs-string">'onFieldTypeChange'</span>,
+    <span class="hljs-string">'click #editor-auto-zoom'</span>: <span class="hljs-string">'onAutoZoomChange'</span>,
+    <span class="hljs-string">'click #editor-cluster'</span>: <span class="hljs-string">'onClusteringChange'</span>
+  },
 
+  initialize: <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(options)</span> </span>{
+    <span class="hljs-keyword">var</span> self = <span class="hljs-keyword">this</span>;
+    _.bindAll(<span class="hljs-keyword">this</span>, <span class="hljs-string">'render'</span>);
+    <span class="hljs-keyword">this</span>.listenTo(<span class="hljs-keyword">this</span>.model.fields, <span class="hljs-string">'change'</span>, <span class="hljs-keyword">this</span>.render);
+    <span class="hljs-keyword">this</span>.state = <span class="hljs-keyword">new</span> recline.Model.ObjectState(options.state);
+    <span class="hljs-keyword">this</span>.listenTo(<span class="hljs-keyword">this</span>.state, <span class="hljs-string">'change'</span>, <span class="hljs-keyword">this</span>.render);
+    <span class="hljs-keyword">this</span>.render();
+  },</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-42">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-42">&#182;</a>
+              </div>
+              <h3 id="public-adds-the-necessary-elements-to-the-page-">Public: Adds the necessary elements to the page.</h3>
+<p>Also sets up the editor fields and the map if necessary.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  render: <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> </span>{
+    <span class="hljs-keyword">var</span> self = <span class="hljs-keyword">this</span>;
+    <span class="hljs-keyword">var</span> htmls = Mustache.render(<span class="hljs-keyword">this</span>.template, <span class="hljs-keyword">this</span>.model.toTemplateJSON());
+    <span class="hljs-keyword">this</span>.$el.html(htmls);
+
+    <span class="hljs-keyword">if</span> (<span class="hljs-keyword">this</span>._geomReady() &amp;&amp; <span class="hljs-keyword">this</span>.model.fields.length){
+      <span class="hljs-keyword">if</span> (<span class="hljs-keyword">this</span>.state.get(<span class="hljs-string">'geomField'</span>)){
+        <span class="hljs-keyword">this</span>._selectOption(<span class="hljs-string">'editor-geom-field'</span>,<span class="hljs-keyword">this</span>.state.get(<span class="hljs-string">'geomField'</span>));
+        <span class="hljs-keyword">this</span>.$el.find(<span class="hljs-string">'#editor-field-type-geom'</span>).attr(<span class="hljs-string">'checked'</span>,<span class="hljs-string">'checked'</span>).change();
+      } <span class="hljs-keyword">else</span>{
+        <span class="hljs-keyword">this</span>._selectOption(<span class="hljs-string">'editor-lon-field'</span>,<span class="hljs-keyword">this</span>.state.get(<span class="hljs-string">'lonField'</span>));
+        <span class="hljs-keyword">this</span>._selectOption(<span class="hljs-string">'editor-lat-field'</span>,<span class="hljs-keyword">this</span>.state.get(<span class="hljs-string">'latField'</span>));
+        <span class="hljs-keyword">this</span>.$el.find(<span class="hljs-string">'#editor-field-type-latlon'</span>).attr(<span class="hljs-string">'checked'</span>,<span class="hljs-string">'checked'</span>).change();
+      }
+    }
+    <span class="hljs-keyword">if</span> (<span class="hljs-keyword">this</span>.state.get(<span class="hljs-string">'autoZoom'</span>)) {
+      <span class="hljs-keyword">this</span>.$el.find(<span class="hljs-string">'#editor-auto-zoom'</span>).attr(<span class="hljs-string">'checked'</span>, <span class="hljs-string">'checked'</span>);
+    } <span class="hljs-keyword">else</span> {
+      <span class="hljs-keyword">this</span>.$el.find(<span class="hljs-string">'#editor-auto-zoom'</span>).removeAttr(<span class="hljs-string">'checked'</span>);
+    }
+    <span class="hljs-keyword">if</span> (<span class="hljs-keyword">this</span>.state.get(<span class="hljs-string">'cluster'</span>)) {
+      <span class="hljs-keyword">this</span>.$el.find(<span class="hljs-string">'#editor-cluster'</span>).attr(<span class="hljs-string">'checked'</span>, <span class="hljs-string">'checked'</span>);
+    } <span class="hljs-keyword">else</span> {
+      <span class="hljs-keyword">this</span>.$el.find(<span class="hljs-string">'#editor-cluster'</span>).removeAttr(<span class="hljs-string">'checked'</span>);
+    }
+    <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>;
+  },
+
+  _geomReady: <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> </span>{
+    <span class="hljs-keyword">return</span> <span class="hljs-built_in">Boolean</span>(<span class="hljs-keyword">this</span>.state.get(<span class="hljs-string">'geomField'</span>) || (<span class="hljs-keyword">this</span>.state.get(<span class="hljs-string">'latField'</span>) &amp;&amp; <span class="hljs-keyword">this</span>.state.get(<span class="hljs-string">'lonField'</span>)));
+  },</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-43">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-43">&#182;</a>
+              </div>
+              <h2 id="ui-event-handlers">UI Event handlers</h2>
+
+            </div>
+            
+        </li>
+        
+        
+        <li id="section-44">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-44">&#182;</a>
+              </div>
+              <p>Public: Update map with user options</p>
 <p>Right now the only configurable option is what field(s) contains the
-location information.</p>             </td>             <td class="code">               <div class="highlight"><pre>  <span class="nx">onEditorSubmit</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">e</span><span class="p">){</span>
-    <span class="nx">e</span><span class="p">.</span><span class="nx">preventDefault</span><span class="p">();</span>
-    <span class="k">if</span> <span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">$el</span><span class="p">.</span><span class="nx">find</span><span class="p">(</span><span class="s1">&#39;#editor-field-type-geom&#39;</span><span class="p">).</span><span class="nx">attr</span><span class="p">(</span><span class="s1">&#39;checked&#39;</span><span class="p">)){</span>
-      <span class="k">this</span><span class="p">.</span><span class="nx">state</span><span class="p">.</span><span class="nx">set</span><span class="p">({</span>
-        <span class="nx">geomField</span><span class="o">:</span> <span class="k">this</span><span class="p">.</span><span class="nx">$el</span><span class="p">.</span><span class="nx">find</span><span class="p">(</span><span class="s1">&#39;.editor-geom-field &gt; select &gt; option:selected&#39;</span><span class="p">).</span><span class="nx">val</span><span class="p">(),</span>
-        <span class="nx">lonField</span><span class="o">:</span> <span class="kc">null</span><span class="p">,</span>
-        <span class="nx">latField</span><span class="o">:</span> <span class="kc">null</span>
-      <span class="p">});</span>
-    <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
-      <span class="k">this</span><span class="p">.</span><span class="nx">state</span><span class="p">.</span><span class="nx">set</span><span class="p">({</span>
-        <span class="nx">geomField</span><span class="o">:</span> <span class="kc">null</span><span class="p">,</span>
-        <span class="nx">lonField</span><span class="o">:</span> <span class="k">this</span><span class="p">.</span><span class="nx">$el</span><span class="p">.</span><span class="nx">find</span><span class="p">(</span><span class="s1">&#39;.editor-lon-field &gt; select &gt; option:selected&#39;</span><span class="p">).</span><span class="nx">val</span><span class="p">(),</span>
-        <span class="nx">latField</span><span class="o">:</span> <span class="k">this</span><span class="p">.</span><span class="nx">$el</span><span class="p">.</span><span class="nx">find</span><span class="p">(</span><span class="s1">&#39;.editor-lat-field &gt; select &gt; option:selected&#39;</span><span class="p">).</span><span class="nx">val</span><span class="p">()</span>
-      <span class="p">});</span>
-    <span class="p">}</span>
-    <span class="k">return</span> <span class="kc">false</span><span class="p">;</span>
-  <span class="p">},</span></pre></div>             </td>           </tr>                               <tr id="section-44">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-44">&#182;</a>               </div>               <p>Public: Shows the relevant select lists depending on the location field
-type selected.</p>             </td>             <td class="code">               <div class="highlight"><pre>  <span class="nx">onFieldTypeChange</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">e</span><span class="p">){</span>
-    <span class="k">if</span> <span class="p">(</span><span class="nx">e</span><span class="p">.</span><span class="nx">target</span><span class="p">.</span><span class="nx">value</span> <span class="o">==</span> <span class="s1">&#39;geom&#39;</span><span class="p">){</span>
-        <span class="k">this</span><span class="p">.</span><span class="nx">$el</span><span class="p">.</span><span class="nx">find</span><span class="p">(</span><span class="s1">&#39;.editor-field-type-geom&#39;</span><span class="p">).</span><span class="nx">show</span><span class="p">();</span>
-        <span class="k">this</span><span class="p">.</span><span class="nx">$el</span><span class="p">.</span><span class="nx">find</span><span class="p">(</span><span class="s1">&#39;.editor-field-type-latlon&#39;</span><span class="p">).</span><span class="nx">hide</span><span class="p">();</span>
-    <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
-        <span class="k">this</span><span class="p">.</span><span class="nx">$el</span><span class="p">.</span><span class="nx">find</span><span class="p">(</span><span class="s1">&#39;.editor-field-type-geom&#39;</span><span class="p">).</span><span class="nx">hide</span><span class="p">();</span>
-        <span class="k">this</span><span class="p">.</span><span class="nx">$el</span><span class="p">.</span><span class="nx">find</span><span class="p">(</span><span class="s1">&#39;.editor-field-type-latlon&#39;</span><span class="p">).</span><span class="nx">show</span><span class="p">();</span>
-    <span class="p">}</span>
-  <span class="p">},</span>
+location information.</p>
 
-  <span class="nx">onAutoZoomChange</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">e</span><span class="p">){</span>
-    <span class="k">this</span><span class="p">.</span><span class="nx">state</span><span class="p">.</span><span class="nx">set</span><span class="p">({</span><span class="nx">autoZoom</span><span class="o">:</span> <span class="o">!</span><span class="k">this</span><span class="p">.</span><span class="nx">state</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s1">&#39;autoZoom&#39;</span><span class="p">)});</span>
-  <span class="p">},</span>
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  onEditorSubmit: <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(e)</span></span>{
+    e.preventDefault();
+    <span class="hljs-keyword">if</span> (<span class="hljs-keyword">this</span>.$el.find(<span class="hljs-string">'#editor-field-type-geom'</span>).attr(<span class="hljs-string">'checked'</span>)){
+      <span class="hljs-keyword">this</span>.state.set({
+        geomField: <span class="hljs-keyword">this</span>.$el.find(<span class="hljs-string">'.editor-geom-field &gt; select &gt; option:selected'</span>).val(),
+        lonField: <span class="hljs-literal">null</span>,
+        latField: <span class="hljs-literal">null</span>
+      });
+    } <span class="hljs-keyword">else</span> {
+      <span class="hljs-keyword">this</span>.state.set({
+        geomField: <span class="hljs-literal">null</span>,
+        lonField: <span class="hljs-keyword">this</span>.$el.find(<span class="hljs-string">'.editor-lon-field &gt; select &gt; option:selected'</span>).val(),
+        latField: <span class="hljs-keyword">this</span>.$el.find(<span class="hljs-string">'.editor-lat-field &gt; select &gt; option:selected'</span>).val()
+      });
+    }
+    <span class="hljs-keyword">return</span> <span class="hljs-literal">false</span>;
+  },</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-45">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-45">&#182;</a>
+              </div>
+              <p>Public: Shows the relevant select lists depending on the location field
+type selected.</p>
 
-  <span class="nx">onClusteringChange</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">e</span><span class="p">){</span>
-    <span class="k">this</span><span class="p">.</span><span class="nx">state</span><span class="p">.</span><span class="nx">set</span><span class="p">({</span><span class="nx">cluster</span><span class="o">:</span> <span class="o">!</span><span class="k">this</span><span class="p">.</span><span class="nx">state</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s1">&#39;cluster&#39;</span><span class="p">)});</span>
-  <span class="p">},</span></pre></div>             </td>           </tr>                               <tr id="section-45">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-45">&#182;</a>               </div>               <p>Private: Helper function to select an option from a select list</p>             </td>             <td class="code">               <div class="highlight"><pre>  <span class="nx">_selectOption</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">id</span><span class="p">,</span><span class="nx">value</span><span class="p">){</span>
-    <span class="kd">var</span> <span class="nx">options</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">$el</span><span class="p">.</span><span class="nx">find</span><span class="p">(</span><span class="s1">&#39;.&#39;</span> <span class="o">+</span> <span class="nx">id</span> <span class="o">+</span> <span class="s1">&#39; &gt; select &gt; option&#39;</span><span class="p">);</span>
-    <span class="k">if</span> <span class="p">(</span><span class="nx">options</span><span class="p">){</span>
-      <span class="nx">options</span><span class="p">.</span><span class="nx">each</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">opt</span><span class="p">){</span>
-        <span class="k">if</span> <span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">value</span> <span class="o">==</span> <span class="nx">value</span><span class="p">)</span> <span class="p">{</span>
-          <span class="nx">$</span><span class="p">(</span><span class="k">this</span><span class="p">).</span><span class="nx">attr</span><span class="p">(</span><span class="s1">&#39;selected&#39;</span><span class="p">,</span><span class="s1">&#39;selected&#39;</span><span class="p">);</span>
-          <span class="k">return</span> <span class="kc">false</span><span class="p">;</span>
-        <span class="p">}</span>
-      <span class="p">});</span>
-    <span class="p">}</span>
-  <span class="p">}</span>
-<span class="p">});</span>
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  onFieldTypeChange: <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(e)</span></span>{
+    <span class="hljs-keyword">if</span> (e.target.value == <span class="hljs-string">'geom'</span>){
+        <span class="hljs-keyword">this</span>.$el.find(<span class="hljs-string">'.editor-field-type-geom'</span>).show();
+        <span class="hljs-keyword">this</span>.$el.find(<span class="hljs-string">'.editor-field-type-latlon'</span>).hide();
+    } <span class="hljs-keyword">else</span> {
+        <span class="hljs-keyword">this</span>.$el.find(<span class="hljs-string">'.editor-field-type-geom'</span>).hide();
+        <span class="hljs-keyword">this</span>.$el.find(<span class="hljs-string">'.editor-field-type-latlon'</span>).show();
+    }
+  },
 
-<span class="p">})(</span><span class="nx">jQuery</span><span class="p">,</span> <span class="nx">recline</span><span class="p">.</span><span class="nx">View</span><span class="p">);</span>
+  onAutoZoomChange: <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(e)</span></span>{
+    <span class="hljs-keyword">this</span>.state.set({autoZoom: !<span class="hljs-keyword">this</span>.state.get(<span class="hljs-string">'autoZoom'</span>)});
+  },
 
-</pre></div>             </td>           </tr>                </tbody>     </table>   </div> </body> </html> 
+  onClusteringChange: <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(e)</span></span>{
+    <span class="hljs-keyword">this</span>.state.set({cluster: !<span class="hljs-keyword">this</span>.state.get(<span class="hljs-string">'cluster'</span>)});
+  },</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-46">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-46">&#182;</a>
+              </div>
+              <p>Private: Helper function to select an option from a select list</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  _selectOption: <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(id,value)</span></span>{
+    <span class="hljs-keyword">var</span> options = <span class="hljs-keyword">this</span>.$el.find(<span class="hljs-string">'.'</span> + id + <span class="hljs-string">' &gt; select &gt; option'</span>);
+    <span class="hljs-keyword">if</span> (options){
+      options.each(<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(opt)</span></span>{
+        <span class="hljs-keyword">if</span> (<span class="hljs-keyword">this</span>.value == value) {
+          $(<span class="hljs-keyword">this</span>).attr(<span class="hljs-string">'selected'</span>,<span class="hljs-string">'selected'</span>);
+          <span class="hljs-keyword">return</span> <span class="hljs-literal">false</span>;
+        }
+      });
+    }
+  }
+});
+
+})(jQuery, recline.View);</pre></div></div>
+            
+        </li>
+        
+    </ul>
+  </div>
+</body>
+</html>
