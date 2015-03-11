@@ -336,8 +336,11 @@ div.data-table-cell-content-numeric > a.data-table-cell-edit {
   vertical-align: top;
 }
 
-.recline-query-editor label {
-  display:none;
+/* label for screen reader */
+.recline-query-editor .form-inline label {
+  position: absolute; 
+  top:0; 
+  left:-9999px
 }
 
 /**********************************************************
@@ -408,7 +411,8 @@ div.data-table-cell-content-numeric > a.data-table-cell-edit {
   border-bottom-left-radius: 4px;
   border-top-left-radius: 4px;
   border-bottom-right-radius: 0px;
-  border-top-right-radius: 0px;  
+  border-top-right-radius: 0px;
+  height: 34px; 
 }
 
 .recline-pager .pagination > li:last-child > a {
@@ -416,6 +420,7 @@ div.data-table-cell-content-numeric > a.data-table-cell-edit {
   border-top-right-radius: 4px;
   border-bottom-left-radius: 0px;
   border-top-left-radius: 0px;  
+  height: 34px;
 }
 
 /**********************************************************
