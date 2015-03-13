@@ -15,8 +15,8 @@ my.QueryEditor = Backbone.View.extend({
           <div class="input-group-addon"> \
             <i class="glyphicon glyphicon-search"></i> \
           </div> \
-          <label>Search</label> \
-          <input class="form-control search-query" type="text" name="q" value="{{q}}" placeholder="Search data ..."> \
+          <label for="q">Search</label> \
+          <input class="form-control search-query" type="text" id="q" name="q" value="{{q}}" placeholder="Search data ..."> \
         </div> \
       </div> \
       <button type="submit" class="btn btn-default">Go &raquo;</button> \
