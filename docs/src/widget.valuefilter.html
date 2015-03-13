@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+  <title>widget.valuefilter.js</title>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <meta name="viewport" content="width=device-width, target-densitydpi=160dpi, initial-scale=1.0; maximum-scale=1.0; user-scalable=0;">
+  <link rel="stylesheet" media="all" href="docco.css" />
+</head>
+<body>
+  <div id="container">
+    <div id="background"></div>
+    
+      <ul id="jump_to">
+        <li>
+          <a class="large" href="javascript:void(0);">Jump To &hellip;</a>
+          <a class="small" href="javascript:void(0);">+</a>
+          <div id="jump_wrapper">
+          <div id="jump_page_wrapper">
+            <div id="jump_page">
+              
+                
+                <a class="source" href="backend.dataproxy.html">
+                  backend.dataproxy.js
+                </a>
+              
+                
+                <a class="source" href="backend.memory.html">
+                  backend.memory.js
+                </a>
+              
+                
+                <a class="source" href="ecma-fixes.html">
+                  ecma-fixes.js
+                </a>
+              
+                
+                <a class="source" href="model.html">
+                  model.js
+                </a>
+              
+                
+                <a class="source" href="view.flot.html">
+                  view.flot.js
+                </a>
+              
+                
+                <a class="source" href="view.graph.html">
+                  view.graph.js
+                </a>
+              
+                
+                <a class="source" href="view.grid.html">
+                  view.grid.js
+                </a>
+              
+                
+                <a class="source" href="view.map.html">
+                  view.map.js
+                </a>
+              
+                
+                <a class="source" href="view.multiview.html">
+                  view.multiview.js
+                </a>
+              
+                
+                <a class="source" href="view.slickgrid.html">
+                  view.slickgrid.js
+                </a>
+              
+                
+                <a class="source" href="view.timeline.html">
+                  view.timeline.js
+                </a>
+              
+                
+                <a class="source" href="widget.facetviewer.html">
+                  widget.facetviewer.js
+                </a>
+              
+                
+                <a class="source" href="widget.fields.html">
+                  widget.fields.js
+                </a>
+              
+                
+                <a class="source" href="widget.filtereditor.html">
+                  widget.filtereditor.js
+                </a>
+              
+                
+                <a class="source" href="widget.pager.html">
+                  widget.pager.js
+                </a>
+              
+                
+                <a class="source" href="widget.queryeditor.html">
+                  widget.queryeditor.js
+                </a>
+              
+                
+                <a class="source" href="widget.valuefilter.html">
+                  widget.valuefilter.js
+                </a>
+              
+            </div>
+          </div>
+        </li>
+      </ul>
+    
+    <ul class="sections">
+        
+          <li id="title">
+              <div class="annotation">
+                  <h1>widget.valuefilter.js</h1>
+              </div>
+          </li>
+        
+        
+        
+        <li id="section-1">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-1">&#182;</a>
+              </div>
+              
+            </div>
+            
+            <div class="content"><div class='highlight'><pre><span class="hljs-comment">/*jshint multistr:true */</span>
+
+<span class="hljs-keyword">this</span>.recline = <span class="hljs-keyword">this</span>.recline || {};
+<span class="hljs-keyword">this</span>.recline.View = <span class="hljs-keyword">this</span>.recline.View || {};
+
+(<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">($, my)</span> </span>{
+<span class="hljs-pi">  "use strict"</span>;
+
+my.ValueFilter = Backbone.View.extend({
+  className: <span class="hljs-string">'recline-filter-editor well'</span>, 
+  template: <span class="hljs-string">' \
+    &lt;div class="filters"&gt; \
+      &lt;h3&gt;Filters&lt;/h3&gt; \
+      &lt;button class="btn js-add-filter add-filter"&gt;Add filter&lt;/button&gt; \
+      &lt;form class="form-stacked js-add" style="display: none;"&gt; \
+        &lt;fieldset&gt; \
+          &lt;label&gt;Field&lt;/label&gt; \
+          &lt;select class="fields form-control"&gt; \
+            {{#fields}} \
+            &lt;option value="{{id}}"&gt;{{label}}&lt;/option&gt; \
+            {{/fields}} \
+          &lt;/select&gt; \
+          &lt;button type="submit" class="btn"&gt;Add&lt;/button&gt; \
+        &lt;/fieldset&gt; \
+      &lt;/form&gt; \
+      &lt;form class="form-stacked js-edit"&gt; \
+        {{#filters}} \
+          {{{filterRender}}} \
+        {{/filters}} \
+        {{#filters.length}} \
+        &lt;button type="submit" class="btn update-filter"&gt;Update&lt;/button&gt; \
+        {{/filters.length}} \
+      &lt;/form&gt; \
+    &lt;/div&gt; \
+  '</span>,
+  filterTemplates: {
+    term: <span class="hljs-string">' \
+      &lt;div class="filter-{{type}} filter"&gt; \
+        &lt;fieldset&gt; \
+          {{field}} \
+          &lt;a class="js-remove-filter" href="#" title="Remove this filter" data-filter-id="{{id}}"&gt;&amp;times;&lt;/a&gt; \
+          &lt;input type="text" value="{{term}}" name="term" data-filter-field="{{field}}" data-filter-id="{{id}}" data-filter-type="{{type}}" /&gt; \
+        &lt;/fieldset&gt; \
+      &lt;/div&gt; \
+    '</span>
+  },
+  events: {
+    <span class="hljs-string">'click .js-remove-filter'</span>: <span class="hljs-string">'onRemoveFilter'</span>,
+    <span class="hljs-string">'click .js-add-filter'</span>: <span class="hljs-string">'onAddFilterShow'</span>,
+    <span class="hljs-string">'submit form.js-edit'</span>: <span class="hljs-string">'onTermFiltersUpdate'</span>,
+    <span class="hljs-string">'submit form.js-add'</span>: <span class="hljs-string">'onAddFilter'</span>
+  },
+  initialize: <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> </span>{
+    _.bindAll(<span class="hljs-keyword">this</span>, <span class="hljs-string">'render'</span>);
+    <span class="hljs-keyword">this</span>.listenTo(<span class="hljs-keyword">this</span>.model.fields, <span class="hljs-string">'all'</span>, <span class="hljs-keyword">this</span>.render);
+    <span class="hljs-keyword">this</span>.listenTo(<span class="hljs-keyword">this</span>.model.queryState, <span class="hljs-string">'change change:filters:new-blank'</span>, <span class="hljs-keyword">this</span>.render);
+    <span class="hljs-keyword">this</span>.render();
+  },
+  render: <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> </span>{
+    <span class="hljs-keyword">var</span> self = <span class="hljs-keyword">this</span>;
+    <span class="hljs-keyword">var</span> tmplData = $.extend(<span class="hljs-literal">true</span>, {}, <span class="hljs-keyword">this</span>.model.queryState.toJSON());</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-2">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-2">&#182;</a>
+              </div>
+              <p>we will use idx in list as the id …</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    tmplData.filters = _.map(tmplData.filters, <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(filter, idx)</span> </span>{
+      filter.id = idx;
+      <span class="hljs-keyword">return</span> filter;
+    });
+    tmplData.fields = <span class="hljs-keyword">this</span>.model.fields.toJSON();
+    tmplData.filterRender = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> </span>{
+      <span class="hljs-keyword">return</span> Mustache.render(self.filterTemplates.term, <span class="hljs-keyword">this</span>);
+    };
+    <span class="hljs-keyword">var</span> out = Mustache.render(<span class="hljs-keyword">this</span>.template, tmplData);
+    <span class="hljs-keyword">this</span>.$el.html(out);
+  },
+  updateFilter: <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(input)</span> </span>{
+    <span class="hljs-keyword">var</span> self = <span class="hljs-keyword">this</span>;
+    <span class="hljs-keyword">var</span> filters = self.model.queryState.get(<span class="hljs-string">'filters'</span>);
+    <span class="hljs-keyword">var</span> $input = $(input);
+    <span class="hljs-keyword">var</span> filterIndex = <span class="hljs-built_in">parseInt</span>($input.attr(<span class="hljs-string">'data-filter-id'</span>), <span class="hljs-number">10</span>);
+    <span class="hljs-keyword">var</span> value = $input.val();
+    filters[filterIndex].term = value;
+  },
+  onAddFilterShow: <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(e)</span> </span>{
+    e.preventDefault();
+    <span class="hljs-keyword">var</span> $target = $(e.target);
+    $target.hide();
+    <span class="hljs-keyword">this</span>.$el.find(<span class="hljs-string">'form.js-add'</span>).show();
+  },
+  onAddFilter: <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(e)</span> </span>{
+    e.preventDefault();
+    <span class="hljs-keyword">var</span> $target = $(e.target);
+    $target.hide();
+    <span class="hljs-keyword">var</span> field = $target.find(<span class="hljs-string">'select.fields'</span>).val();
+    <span class="hljs-keyword">this</span>.model.queryState.addFilter({type: <span class="hljs-string">'term'</span>, field: field});
+  },
+  onRemoveFilter: <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(e)</span> </span>{
+    e.preventDefault();
+    <span class="hljs-keyword">var</span> $target = $(e.target);
+    <span class="hljs-keyword">var</span> filterId = $target.attr(<span class="hljs-string">'data-filter-id'</span>);
+    <span class="hljs-keyword">this</span>.model.queryState.removeFilter(filterId);
+  },
+  onTermFiltersUpdate: <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(e)</span> </span>{
+    <span class="hljs-keyword">var</span> self = <span class="hljs-keyword">this</span>;
+    e.preventDefault();
+    <span class="hljs-keyword">var</span> filters = self.model.queryState.get(<span class="hljs-string">'filters'</span>);
+    <span class="hljs-keyword">var</span> $form = $(e.target);
+    _.each($form.find(<span class="hljs-string">'input'</span>), <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(input)</span> </span>{
+      self.updateFilter(input);
+    });
+    self.model.queryState.set({filters: filters, from: <span class="hljs-number">0</span>});
+    self.model.queryState.trigger(<span class="hljs-string">'change'</span>);
+  }
+});
+
+})(jQuery, recline.View);</pre></div></div>
+            
+        </li>
+        
+    </ul>
+  </div>
+</body>
+</html>

@@ -27,22 +27,42 @@
   float: right;
   margin-left: 5px;
   padding-left: 5px;
-  border-left: solid 2px #ddd;
 }
 
-.header .recline-results-info {
-  line-height: 28px;
+.recline-results-info {
+  line-height: 35px;
   margin-left: 20px;
   float: left;
+}
+
+.recline-data-explorer .data-view-sidebar > div {
+  margin-top: 5px;
+  margin-bottom: 10px;
+}
+
+.recline-data-explorer .radio,
+.recline-data-explorer .checkbox {
+  padding-left: 20px;
+}
+
+.recline-data-explorer .editor-update-map {
+  margin: 30px 0px 20px 0px;
+}
+
+.recline-data-explorer label {
+  font-weight: normal;
 }
 
 /**********************************************************
   * Query Editor
   *********************************************************/
 
-.header .recline-query-editor {
+.recline-query-editor {
   float: right;
-  height: 30px;
+  height: 35px;
+  padding-right: 5px;
+  margin-right: 5px;
+  border-right: solid 2px #ddd;
 }
 
 .header .input-prepend {
@@ -63,40 +83,95 @@
   vertical-align: top;
 }
 
-.header .recline-query-editor form button {
+.recline-query-editor form button {
   vertical-align: top;
 }
 
-.header .recline-query-editor label {
-  display:none;
+/* label for screen reader */
+.recline-query-editor .form-inline label {
+  position: absolute; 
+  top:0; 
+  left:-9999px
 }
 
 /**********************************************************
   * Pager
   *********************************************************/
 
-.header .recline-pager {
+.recline-pager {
   float: left;
   margin: auto;
   display: block;
   margin-left: 20px;
 }
 
-.header .recline-pager .pagination label {
+.recline-pager .pagination li {
+  display: inline-block;
+}
+
+.recline-pager .pagination label {
   display:none;
 }
 
-.header .recline-pager .pagination input {
-  width: 30px;
-  height: 18px;
+.recline-pager .pagination input {
+  width: 40px;
+  height: 25px;
   padding: 2px 4px;
   margin: 0;
-  margin-top: -4px;
+  margin-top: -2px;
+  
+  border: 1px solid #cccccc;
+  box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+  transition: border linear 0.2s, box-shadow linear 0.2s;
+  border-radius: 4px;
+  
+  -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+  -webkit-transition: border linear 0.2s, box-shadow linear 0.2s;
+  -webkit-border-radius: 4px;
+  
+  -moz-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+  -moz-transition: border linear 0.2s, box-shadow linear 0.2s;
+  -moz-border-radius: 4px;
+  
+  -o-transition: border linear 0.2s, box-shadow linear 0.2s;  
 }
 
-.header .recline-pager .pagination a {
-  line-height: 26px;
-  padding: 0 6px;
+.recline-pager .pagination a {
+  float: none;
+  margin-left: -5px;
+  color: #555;
+}
+
+.recline-pager .pagination .page-range {
+  height: 34px;
+  padding: 5px 8px;
+  margin-left: -5px;
+  border: 1px solid #ddd;
+}
+
+.recline-pager .pagination .page-range a {
+  padding: 0px 12px;
+  border: none;
+}
+
+.recline-pager .pagination .page-range a:hover {
+  background-color: #ffffff;
+}
+
+.recline-pager .pagination > li:first-child > a {
+  border-bottom-left-radius: 4px;
+  border-top-left-radius: 4px;
+  border-bottom-right-radius: 0px;
+  border-top-right-radius: 0px;
+  height: 34px; 
+}
+
+.recline-pager .pagination > li:last-child > a {
+  border-bottom-right-radius: 4px;
+  border-top-right-radius: 4px;
+  border-bottom-left-radius: 0px;
+  border-top-left-radius: 0px;  
+  height: 34px;
 }
 
 /**********************************************************
@@ -106,6 +181,31 @@
 .recline-filter-editor {
   padding: 8px;
   display: none;
+}
+
+.recline-filter-editor .filters {
+  margin: 20px 0px;
+}
+
+.recline-filter-editor h3 {
+  margin-top: 4px;
+}
+
+.recline-filter-editor .filter {
+  margin-top: 20px;
+}
+
+.recline-filter-editor .filter .form-group {
+  margin-bottom: 0px;
+}
+
+.recline-filter-editor .filter input,
+.recline-filter-editor .filter label {
+  margin: 0px;
+}
+
+.recline-filter-editor .js-edit button {
+  margin: 25px 0px 0px 0px;
 }
 
 .recline-filter-editor .filter-term a {
@@ -120,6 +220,20 @@
 
 .recline-filter-editor input {
   margin-top: 0.5em;
+  margin-bottom: 10px;
+  -webkit-border-radius: 4px;
+  -moz-border-radius: 4px;
+  border-radius: 4px;  
+  border: 1px solid #cccccc;  
+}
+
+.recline-filter-editor label {
+  font-weight: normal;
+  display: block;
+}
+
+.recline-filter-editor legend {
+  margin-bottom: 5px;
 }
 
 .recline-filter-editor .add-filter {
@@ -143,22 +257,30 @@
   padding: 0;
 }
 
-.recline-fields-view .fields-list .accordion-heading,
-.recline-fields-view .fields-list h3
-{
-  margin: 3px 0 3px 5px;
+.recline-fields-view .panel {
+  background-color: #f5f5f5;
+  border: 1px solid #e5e5e5;
 }
 
-.recline-fields-view .fields-list .accordion-heading a,
-.recline-fields-view .fields-list .accordion-heading h4 {
+.recline-fields-view .panel-group h3 {
+  padding-left: 10px;
+}
+
+.recline-fields-view .fields-list .panel-heading {
+  padding: 2px 5px;
+  margin: 1px 0px 1px 5px;
+}
+
+.recline-fields-view .panel a,
+.recline-fields-view .panel h4 {
   display: inline;
 }
 
-.recline-fields-view .fields-list .accordion-heading a {
+.recline-fields-view .panel a {
   padding: 0;
 }
 
-.recline-fields-view .fields-list .accordion-heading h4 {
+.recline-fields-view .panel h4 {
   word-wrap: break-word
 }
 

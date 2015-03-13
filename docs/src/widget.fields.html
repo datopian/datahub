@@ -1,82 +1,299 @@
-<!DOCTYPE html>  <html> <head>   <title>widget.fields.js</title>   <meta http-equiv="content-type" content="text/html; charset=UTF-8">   <link rel="stylesheet" media="all" href="docco.css" /> </head> <body>   <div id="container">     <div id="background"></div>            <div id="jump_to">         Jump To &hellip;         <div id="jump_wrapper">           <div id="jump_page">                                           <a class="source" href="backend.csv.html">                 backend.csv.js               </a>                                           <a class="source" href="backend.dataproxy.html">                 backend.dataproxy.js               </a>                                           <a class="source" href="backend.memory.html">                 backend.memory.js               </a>                                           <a class="source" href="ecma-fixes.html">                 ecma-fixes.js               </a>                                           <a class="source" href="model.html">                 model.js               </a>                                           <a class="source" href="view.flot.html">                 view.flot.js               </a>                                           <a class="source" href="view.graph.html">                 view.graph.js               </a>                                           <a class="source" href="view.grid.html">                 view.grid.js               </a>                                           <a class="source" href="view.map.html">                 view.map.js               </a>                                           <a class="source" href="view.multiview.html">                 view.multiview.js               </a>                                           <a class="source" href="view.slickgrid.html">                 view.slickgrid.js               </a>                                           <a class="source" href="view.timeline.html">                 view.timeline.js               </a>                                           <a class="source" href="widget.facetviewer.html">                 widget.facetviewer.js               </a>                                           <a class="source" href="widget.fields.html">                 widget.fields.js               </a>                                           <a class="source" href="widget.filtereditor.html">                 widget.filtereditor.js               </a>                                           <a class="source" href="widget.pager.html">                 widget.pager.js               </a>                                           <a class="source" href="widget.queryeditor.html">                 widget.queryeditor.js               </a>                                           <a class="source" href="widget.valuefilter.html">                 widget.valuefilter.js               </a>                        </div>         </div>       </div>          <table cellpadding="0" cellspacing="0">       <thead>         <tr>           <th class="docs">             <h1>               widget.fields.js             </h1>           </th>           <th class="code">           </th>         </tr>       </thead>       <tbody>                               <tr id="section-1">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-1">&#182;</a>               </div>                            </td>             <td class="code">               <div class="highlight"><pre><span class="cm">/*jshint multistr:true */</span></pre></div>             </td>           </tr>                               <tr id="section-2">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-2">&#182;</a>               </div>               <p>Field Info</p>
+<!DOCTYPE html>
 
+<html>
+<head>
+  <title>widget.fields.js</title>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <meta name="viewport" content="width=device-width, target-densitydpi=160dpi, initial-scale=1.0; maximum-scale=1.0; user-scalable=0;">
+  <link rel="stylesheet" media="all" href="docco.css" />
+</head>
+<body>
+  <div id="container">
+    <div id="background"></div>
+    
+      <ul id="jump_to">
+        <li>
+          <a class="large" href="javascript:void(0);">Jump To &hellip;</a>
+          <a class="small" href="javascript:void(0);">+</a>
+          <div id="jump_wrapper">
+          <div id="jump_page_wrapper">
+            <div id="jump_page">
+              
+                
+                <a class="source" href="backend.dataproxy.html">
+                  backend.dataproxy.js
+                </a>
+              
+                
+                <a class="source" href="backend.memory.html">
+                  backend.memory.js
+                </a>
+              
+                
+                <a class="source" href="ecma-fixes.html">
+                  ecma-fixes.js
+                </a>
+              
+                
+                <a class="source" href="model.html">
+                  model.js
+                </a>
+              
+                
+                <a class="source" href="view.flot.html">
+                  view.flot.js
+                </a>
+              
+                
+                <a class="source" href="view.graph.html">
+                  view.graph.js
+                </a>
+              
+                
+                <a class="source" href="view.grid.html">
+                  view.grid.js
+                </a>
+              
+                
+                <a class="source" href="view.map.html">
+                  view.map.js
+                </a>
+              
+                
+                <a class="source" href="view.multiview.html">
+                  view.multiview.js
+                </a>
+              
+                
+                <a class="source" href="view.slickgrid.html">
+                  view.slickgrid.js
+                </a>
+              
+                
+                <a class="source" href="view.timeline.html">
+                  view.timeline.js
+                </a>
+              
+                
+                <a class="source" href="widget.facetviewer.html">
+                  widget.facetviewer.js
+                </a>
+              
+                
+                <a class="source" href="widget.fields.html">
+                  widget.fields.js
+                </a>
+              
+                
+                <a class="source" href="widget.filtereditor.html">
+                  widget.filtereditor.js
+                </a>
+              
+                
+                <a class="source" href="widget.pager.html">
+                  widget.pager.js
+                </a>
+              
+                
+                <a class="source" href="widget.queryeditor.html">
+                  widget.queryeditor.js
+                </a>
+              
+                
+                <a class="source" href="widget.valuefilter.html">
+                  widget.valuefilter.js
+                </a>
+              
+            </div>
+          </div>
+        </li>
+      </ul>
+    
+    <ul class="sections">
+        
+          <li id="title">
+              <div class="annotation">
+                  <h1>widget.fields.js</h1>
+              </div>
+          </li>
+        
+        
+        
+        <li id="section-1">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-1">&#182;</a>
+              </div>
+              
+            </div>
+            
+            <div class="content"><div class='highlight'><pre><span class="hljs-comment">/*jshint multistr:true */</span></pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-2">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-2">&#182;</a>
+              </div>
+              <p>Field Info</p>
 <p>For each field</p>
+<p>Id / Label / type / format</p>
 
-<p>Id / Label / type / format</p>             </td>             <td class="code">               <div class="highlight"><pre></pre></div>             </td>           </tr>                               <tr id="section-3">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-3">&#182;</a>               </div>               <p>Editor -- to change type (and possibly format)
-Editor for show/hide ...</p>             </td>             <td class="code">               <div class="highlight"><pre></pre></div>             </td>           </tr>                               <tr id="section-4">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-4">&#182;</a>               </div>               <p>Summaries of fields</p>
+            </div>
+            
+        </li>
+        
+        
+        <li id="section-3">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-3">&#182;</a>
+              </div>
+              <p>Editor — to change type (and possibly format)
+Editor for show/hide …</p>
 
+            </div>
+            
+        </li>
+        
+        
+        <li id="section-4">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-4">&#182;</a>
+              </div>
+              <p>Summaries of fields</p>
 <p>Top values / number empty
-If number: max, min average ...</p>             </td>             <td class="code">               <div class="highlight"><pre></pre></div>             </td>           </tr>                               <tr id="section-5">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-5">&#182;</a>               </div>               <p>Box to boot transform editor ...</p>             </td>             <td class="code">               <div class="highlight"><pre><span class="k">this</span><span class="p">.</span><span class="nx">recline</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">recline</span> <span class="o">||</span> <span class="p">{};</span>
-<span class="k">this</span><span class="p">.</span><span class="nx">recline</span><span class="p">.</span><span class="nx">View</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">recline</span><span class="p">.</span><span class="nx">View</span> <span class="o">||</span> <span class="p">{};</span>
+If number: max, min average …</p>
 
-<span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">$</span><span class="p">,</span> <span class="nx">my</span><span class="p">)</span> <span class="p">{</span>
-  <span class="s2">&quot;use strict&quot;</span><span class="p">;</span>
+            </div>
+            
+        </li>
+        
+        
+        <li id="section-5">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-5">&#182;</a>
+              </div>
+              <p>Box to boot transform editor …</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>
+<span class="hljs-keyword">this</span>.recline = <span class="hljs-keyword">this</span>.recline || {};
+<span class="hljs-keyword">this</span>.recline.View = <span class="hljs-keyword">this</span>.recline.View || {};
+
+(<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">($, my)</span> </span>{
+<span class="hljs-pi">  "use strict"</span>;
   
-<span class="nx">my</span><span class="p">.</span><span class="nx">Fields</span> <span class="o">=</span> <span class="nx">Backbone</span><span class="p">.</span><span class="nx">View</span><span class="p">.</span><span class="nx">extend</span><span class="p">({</span>
-  <span class="nx">className</span><span class="o">:</span> <span class="s1">&#39;recline-fields-view&#39;</span><span class="p">,</span> 
-  <span class="nx">template</span><span class="o">:</span> <span class="s1">&#39; \</span>
-<span class="s1">    &lt;div class=&quot;accordion fields-list well&quot;&gt; \</span>
-<span class="s1">    &lt;h3&gt;Fields &lt;a href=&quot;#&quot; class=&quot;js-show-hide&quot;&gt;+&lt;/a&gt;&lt;/h3&gt; \</span>
-<span class="s1">    {{#fields}} \</span>
-<span class="s1">      &lt;div class=&quot;accordion-group field&quot;&gt; \</span>
-<span class="s1">        &lt;div class=&quot;accordion-heading&quot;&gt; \</span>
-<span class="s1">          &lt;i class=&quot;icon-file&quot;&gt;&lt;/i&gt; \</span>
-<span class="s1">          &lt;h4&gt; \</span>
-<span class="s1">            {{label}} \</span>
-<span class="s1">            &lt;small&gt; \</span>
-<span class="s1">              {{type}} \</span>
-<span class="s1">              &lt;a class=&quot;accordion-toggle&quot; data-toggle=&quot;collapse&quot; href=&quot;#collapse{{id}}&quot;&gt; &amp;raquo; &lt;/a&gt; \</span>
-<span class="s1">            &lt;/small&gt; \</span>
-<span class="s1">          &lt;/h4&gt; \</span>
-<span class="s1">        &lt;/div&gt; \</span>
-<span class="s1">        &lt;div id=&quot;collapse{{id}}&quot; class=&quot;accordion-body collapse&quot;&gt; \</span>
-<span class="s1">          &lt;div class=&quot;accordion-inner&quot;&gt; \</span>
-<span class="s1">            {{#facets}} \</span>
-<span class="s1">            &lt;div class=&quot;facet-summary&quot; data-facet=&quot;{{id}}&quot;&gt; \</span>
-<span class="s1">              &lt;ul class=&quot;facet-items&quot;&gt; \</span>
-<span class="s1">              {{#terms}} \</span>
-<span class="s1">                &lt;li class=&quot;facet-item&quot;&gt;&lt;span class=&quot;term&quot;&gt;{{term}}&lt;/span&gt; &lt;span class=&quot;count&quot;&gt;[{{count}}]&lt;/span&gt;&lt;/li&gt; \</span>
-<span class="s1">              {{/terms}} \</span>
-<span class="s1">              &lt;/ul&gt; \</span>
-<span class="s1">            &lt;/div&gt; \</span>
-<span class="s1">            {{/facets}} \</span>
-<span class="s1">            &lt;div class=&quot;clear&quot;&gt;&lt;/div&gt; \</span>
-<span class="s1">          &lt;/div&gt; \</span>
-<span class="s1">        &lt;/div&gt; \</span>
-<span class="s1">      &lt;/div&gt; \</span>
-<span class="s1">    {{/fields}} \</span>
-<span class="s1">    &lt;/div&gt; \</span>
-<span class="s1">  &#39;</span><span class="p">,</span>
+my.Fields = Backbone.View.extend({
+  className: <span class="hljs-string">'recline-fields-view'</span>, 
+  template: <span class="hljs-string">' \
+    &lt;div class="panel-group fields-list well"&gt; \
+    &lt;h3&gt;Fields &lt;a href="#" class="js-show-hide"&gt;+&lt;/a&gt;&lt;/h3&gt; \
+    {{#fields}} \
+      &lt;div class="panel panel-default field"&gt; \
+        &lt;div class="panel-heading"&gt; \
+          &lt;i class="glyphicon glyphicon-file"&gt;&lt;/i&gt; \
+          &lt;h4&gt; \
+            {{label}} \
+            &lt;small&gt; \
+              {{type}} \
+              &lt;a class="accordion-toggle" data-toggle="collapse" href="#collapse{{id}}"&gt; &amp;raquo; &lt;/a&gt; \
+            &lt;/small&gt; \
+          &lt;/h4&gt; \
+        &lt;/div&gt; \
+        &lt;div id="collapse{{id}}" class="panel-collapse collapse"&gt; \
+          &lt;div class="panel-body"&gt; \
+            {{#facets}} \
+            &lt;div class="facet-summary" data-facet="{{id}}"&gt; \
+              &lt;ul class="facet-items"&gt; \
+              {{#terms}} \
+                &lt;li class="facet-item"&gt;&lt;span class="term"&gt;{{term}}&lt;/span&gt; &lt;span class="count"&gt;[{{count}}]&lt;/span&gt;&lt;/li&gt; \
+              {{/terms}} \
+              &lt;/ul&gt; \
+            &lt;/div&gt; \
+            {{/facets}} \
+            &lt;div class="clear"&gt;&lt;/div&gt; \
+          &lt;/div&gt; \
+        &lt;/div&gt; \
+      &lt;/div&gt; \
+    {{/fields}} \
+    &lt;/div&gt; \
+  '</span>,
 
-  <span class="nx">initialize</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">model</span><span class="p">)</span> <span class="p">{</span>
-    <span class="kd">var</span> <span class="nx">self</span> <span class="o">=</span> <span class="k">this</span><span class="p">;</span>
-    <span class="nx">_</span><span class="p">.</span><span class="nx">bindAll</span><span class="p">(</span><span class="k">this</span><span class="p">,</span> <span class="s1">&#39;render&#39;</span><span class="p">);</span></pre></div>             </td>           </tr>                               <tr id="section-6">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-6">&#182;</a>               </div>               <p>TODO: this is quite restrictive in terms of when it is re-run
+  initialize: <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(model)</span> </span>{
+    <span class="hljs-keyword">var</span> self = <span class="hljs-keyword">this</span>;
+    _.bindAll(<span class="hljs-keyword">this</span>, <span class="hljs-string">'render'</span>);</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-6">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-6">&#182;</a>
+              </div>
+              <p>TODO: this is quite restrictive in terms of when it is re-run
 e.g. a change in type will not trigger a re-run atm.
-being more liberal (e.g. binding to all) can lead to being called a lot (e.g. for change:width)</p>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="k">this</span><span class="p">.</span><span class="nx">listenTo</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">model</span><span class="p">.</span><span class="nx">fields</span><span class="p">,</span> <span class="s1">&#39;reset&#39;</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">action</span><span class="p">)</span> <span class="p">{</span>
-      <span class="nx">self</span><span class="p">.</span><span class="nx">model</span><span class="p">.</span><span class="nx">fields</span><span class="p">.</span><span class="nx">each</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">field</span><span class="p">)</span> <span class="p">{</span>
-        <span class="nx">field</span><span class="p">.</span><span class="nx">facets</span><span class="p">.</span><span class="nx">unbind</span><span class="p">(</span><span class="s1">&#39;all&#39;</span><span class="p">,</span> <span class="nx">self</span><span class="p">.</span><span class="nx">render</span><span class="p">);</span>
-        <span class="nx">field</span><span class="p">.</span><span class="nx">facets</span><span class="p">.</span><span class="nx">bind</span><span class="p">(</span><span class="s1">&#39;all&#39;</span><span class="p">,</span> <span class="nx">self</span><span class="p">.</span><span class="nx">render</span><span class="p">);</span>
-      <span class="p">});</span></pre></div>             </td>           </tr>                               <tr id="section-7">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-7">&#182;</a>               </div>               <p>fields can get reset or changed in which case we need to recalculate</p>             </td>             <td class="code">               <div class="highlight"><pre>      <span class="nx">self</span><span class="p">.</span><span class="nx">model</span><span class="p">.</span><span class="nx">getFieldsSummary</span><span class="p">();</span>
-      <span class="nx">self</span><span class="p">.</span><span class="nx">render</span><span class="p">();</span>
-    <span class="p">});</span>
-    <span class="k">this</span><span class="p">.</span><span class="nx">$el</span><span class="p">.</span><span class="nx">find</span><span class="p">(</span><span class="s1">&#39;.collapse&#39;</span><span class="p">).</span><span class="nx">collapse</span><span class="p">();</span>
-    <span class="k">this</span><span class="p">.</span><span class="nx">render</span><span class="p">();</span>
-  <span class="p">},</span>
-  <span class="nx">render</span><span class="o">:</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
-    <span class="kd">var</span> <span class="nx">self</span> <span class="o">=</span> <span class="k">this</span><span class="p">;</span>
-    <span class="kd">var</span> <span class="nx">tmplData</span> <span class="o">=</span> <span class="p">{</span>
-      <span class="nx">fields</span><span class="o">:</span> <span class="p">[]</span>
-    <span class="p">};</span>
-    <span class="k">this</span><span class="p">.</span><span class="nx">model</span><span class="p">.</span><span class="nx">fields</span><span class="p">.</span><span class="nx">each</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">field</span><span class="p">)</span> <span class="p">{</span>
-      <span class="kd">var</span> <span class="nx">out</span> <span class="o">=</span> <span class="nx">field</span><span class="p">.</span><span class="nx">toJSON</span><span class="p">();</span>
-      <span class="nx">out</span><span class="p">.</span><span class="nx">facets</span> <span class="o">=</span> <span class="nx">field</span><span class="p">.</span><span class="nx">facets</span><span class="p">.</span><span class="nx">toJSON</span><span class="p">();</span>
-      <span class="nx">tmplData</span><span class="p">.</span><span class="nx">fields</span><span class="p">.</span><span class="nx">push</span><span class="p">(</span><span class="nx">out</span><span class="p">);</span>
-    <span class="p">});</span>
-    <span class="kd">var</span> <span class="nx">templated</span> <span class="o">=</span> <span class="nx">Mustache</span><span class="p">.</span><span class="nx">render</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">template</span><span class="p">,</span> <span class="nx">tmplData</span><span class="p">);</span>
-    <span class="k">this</span><span class="p">.</span><span class="nx">$el</span><span class="p">.</span><span class="nx">html</span><span class="p">(</span><span class="nx">templated</span><span class="p">);</span>
-  <span class="p">}</span>
-<span class="p">});</span>
+being more liberal (e.g. binding to all) can lead to being called a lot (e.g. for change:width)</p>
 
-<span class="p">})(</span><span class="nx">jQuery</span><span class="p">,</span> <span class="nx">recline</span><span class="p">.</span><span class="nx">View</span><span class="p">);</span>
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    <span class="hljs-keyword">this</span>.listenTo(<span class="hljs-keyword">this</span>.model.fields, <span class="hljs-string">'reset'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(action)</span> </span>{
+      self.model.fields.each(<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(field)</span> </span>{
+        field.facets.unbind(<span class="hljs-string">'all'</span>, self.render);
+        field.facets.bind(<span class="hljs-string">'all'</span>, self.render);
+      });</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-7">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-7">&#182;</a>
+              </div>
+              <p>fields can get reset or changed in which case we need to recalculate</p>
 
-</pre></div>             </td>           </tr>                </tbody>     </table>   </div> </body> </html> 
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>      self.model.getFieldsSummary();
+      self.render();
+    });
+    <span class="hljs-keyword">this</span>.$el.find(<span class="hljs-string">'.collapse'</span>).collapse();
+    <span class="hljs-keyword">this</span>.render();
+  },
+  render: <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> </span>{
+    <span class="hljs-keyword">var</span> self = <span class="hljs-keyword">this</span>;
+    <span class="hljs-keyword">var</span> tmplData = {
+      fields: []
+    };
+    <span class="hljs-keyword">this</span>.model.fields.each(<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(field)</span> </span>{
+      <span class="hljs-keyword">var</span> out = field.toJSON();
+      out.facets = field.facets.toJSON();
+      tmplData.fields.push(out);
+    });
+    <span class="hljs-keyword">var</span> templated = Mustache.render(<span class="hljs-keyword">this</span>.template, tmplData);
+    <span class="hljs-keyword">this</span>.$el.html(templated);
+  }
+});
+
+})(jQuery, recline.View);</pre></div></div>
+            
+        </li>
+        
+    </ul>
+  </div>
+</body>
+</html>

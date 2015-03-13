@@ -29,6 +29,10 @@ classes should alter those!
 .recline-slickgrid .slick-header-column:hover, .slick-header-column-active {
 }
 
+.recline-slickgrid .slick-header-column.ui-state-default {
+  height: 26px;
+}
+
 .recline-slickgrid .slick-headerrow {
   background: #fafafa;
 }
@@ -167,16 +171,16 @@ classes should alter those!
 
 .recline-slickgrid .recline-row-delete {
   font-size: 12px;
-  padding: 2px;
-  width: 22px;
-  height: 14px;
+  padding: 3px;
+  width: 29px;
+  height: 18px;
   line-height: 13px;
 }
 
 .recline-cell-reorder {
   font-size: 12px;
-  padding: 2px;
-  width: 22px;
+  padding: 1px;
+  width: 31px;
   height: 14px;
   line-height: 13px;
   cursor: move;

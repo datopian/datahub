@@ -1,517 +1,1375 @@
-<!DOCTYPE html>  <html> <head>   <title>model.js</title>   <meta http-equiv="content-type" content="text/html; charset=UTF-8">   <link rel="stylesheet" media="all" href="docco.css" /> </head> <body>   <div id="container">     <div id="background"></div>            <div id="jump_to">         Jump To &hellip;         <div id="jump_wrapper">           <div id="jump_page">                                           <a class="source" href="backend.csv.html">                 backend.csv.js               </a>                                           <a class="source" href="backend.dataproxy.html">                 backend.dataproxy.js               </a>                                           <a class="source" href="backend.memory.html">                 backend.memory.js               </a>                                           <a class="source" href="ecma-fixes.html">                 ecma-fixes.js               </a>                                           <a class="source" href="model.html">                 model.js               </a>                                           <a class="source" href="view.flot.html">                 view.flot.js               </a>                                           <a class="source" href="view.graph.html">                 view.graph.js               </a>                                           <a class="source" href="view.grid.html">                 view.grid.js               </a>                                           <a class="source" href="view.map.html">                 view.map.js               </a>                                           <a class="source" href="view.multiview.html">                 view.multiview.js               </a>                                           <a class="source" href="view.slickgrid.html">                 view.slickgrid.js               </a>                                           <a class="source" href="view.timeline.html">                 view.timeline.js               </a>                                           <a class="source" href="widget.facetviewer.html">                 widget.facetviewer.js               </a>                                           <a class="source" href="widget.fields.html">                 widget.fields.js               </a>                                           <a class="source" href="widget.filtereditor.html">                 widget.filtereditor.js               </a>                                           <a class="source" href="widget.pager.html">                 widget.pager.js               </a>                                           <a class="source" href="widget.queryeditor.html">                 widget.queryeditor.js               </a>                                           <a class="source" href="widget.valuefilter.html">                 widget.valuefilter.js               </a>                        </div>         </div>       </div>          <table cellpadding="0" cellspacing="0">       <thead>         <tr>           <th class="docs">             <h1>               model.js             </h1>           </th>           <th class="code">           </th>         </tr>       </thead>       <tbody>                               <tr id="section-1">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-1">&#182;</a>               </div>               <h1>Recline Backbone Models</h1>             </td>             <td class="code">               <div class="highlight"><pre><span class="k">this</span><span class="p">.</span><span class="nx">recline</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">recline</span> <span class="o">||</span> <span class="p">{};</span>
-<span class="k">this</span><span class="p">.</span><span class="nx">recline</span><span class="p">.</span><span class="nx">Model</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">recline</span><span class="p">.</span><span class="nx">Model</span> <span class="o">||</span> <span class="p">{};</span>
+<!DOCTYPE html>
 
-<span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">my</span><span class="p">)</span> <span class="p">{</span>
-  <span class="s2">&quot;use strict&quot;</span><span class="p">;</span></pre></div>             </td>           </tr>                               <tr id="section-2">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-2">&#182;</a>               </div>               <p>use either jQuery or Underscore Deferred depending on what is available</p>             </td>             <td class="code">               <div class="highlight"><pre><span class="kd">var</span> <span class="nx">Deferred</span> <span class="o">=</span> <span class="p">(</span><span class="k">typeof</span> <span class="nx">jQuery</span> <span class="o">!==</span> <span class="s2">&quot;undefined&quot;</span> <span class="o">&amp;&amp;</span> <span class="nx">jQuery</span><span class="p">.</span><span class="nx">Deferred</span><span class="p">)</span> <span class="o">||</span> <span class="nx">_</span><span class="p">.</span><span class="nx">Deferred</span><span class="p">;</span></pre></div>             </td>           </tr>                               <tr id="section-3">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-3">&#182;</a>               </div>               <h2><a id="dataset">Dataset</a></h2>             </td>             <td class="code">               <div class="highlight"><pre><span class="nx">my</span><span class="p">.</span><span class="nx">Dataset</span> <span class="o">=</span> <span class="nx">Backbone</span><span class="p">.</span><span class="nx">Model</span><span class="p">.</span><span class="nx">extend</span><span class="p">({</span>
-  <span class="nx">constructor</span><span class="o">:</span> <span class="kd">function</span> <span class="nx">Dataset</span><span class="p">()</span> <span class="p">{</span>
-    <span class="nx">Backbone</span><span class="p">.</span><span class="nx">Model</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">constructor</span><span class="p">.</span><span class="nx">apply</span><span class="p">(</span><span class="k">this</span><span class="p">,</span> <span class="nx">arguments</span><span class="p">);</span>
-  <span class="p">},</span></pre></div>             </td>           </tr>                               <tr id="section-4">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-4">&#182;</a>               </div>               <h3>initialize</h3>             </td>             <td class="code">               <div class="highlight"><pre>  <span class="nx">initialize</span><span class="o">:</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
-    <span class="kd">var</span> <span class="nx">self</span> <span class="o">=</span> <span class="k">this</span><span class="p">;</span>
-    <span class="nx">_</span><span class="p">.</span><span class="nx">bindAll</span><span class="p">(</span><span class="k">this</span><span class="p">,</span> <span class="s1">&#39;query&#39;</span><span class="p">);</span>
-    <span class="k">this</span><span class="p">.</span><span class="nx">backend</span> <span class="o">=</span> <span class="kc">null</span><span class="p">;</span>
-    <span class="k">if</span> <span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s1">&#39;backend&#39;</span><span class="p">))</span> <span class="p">{</span>
-      <span class="k">this</span><span class="p">.</span><span class="nx">backend</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">_backendFromString</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s1">&#39;backend&#39;</span><span class="p">));</span>
-    <span class="p">}</span> <span class="k">else</span> <span class="p">{</span> <span class="c1">// try to guess backend ...</span>
-      <span class="k">if</span> <span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s1">&#39;records&#39;</span><span class="p">))</span> <span class="p">{</span>
-        <span class="k">this</span><span class="p">.</span><span class="nx">backend</span> <span class="o">=</span> <span class="nx">recline</span><span class="p">.</span><span class="nx">Backend</span><span class="p">.</span><span class="nx">Memory</span><span class="p">;</span>
-      <span class="p">}</span>
-    <span class="p">}</span>
-    <span class="k">this</span><span class="p">.</span><span class="nx">fields</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">my</span><span class="p">.</span><span class="nx">FieldList</span><span class="p">();</span>
-    <span class="k">this</span><span class="p">.</span><span class="nx">records</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">my</span><span class="p">.</span><span class="nx">RecordList</span><span class="p">();</span>
-    <span class="k">this</span><span class="p">.</span><span class="nx">_changes</span> <span class="o">=</span> <span class="p">{</span>
-      <span class="nx">deletes</span><span class="o">:</span> <span class="p">[],</span>
-      <span class="nx">updates</span><span class="o">:</span> <span class="p">[],</span>
-      <span class="nx">creates</span><span class="o">:</span> <span class="p">[]</span>
-    <span class="p">};</span>
-    <span class="k">this</span><span class="p">.</span><span class="nx">facets</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">my</span><span class="p">.</span><span class="nx">FacetList</span><span class="p">();</span>
-    <span class="k">this</span><span class="p">.</span><span class="nx">recordCount</span> <span class="o">=</span> <span class="kc">null</span><span class="p">;</span>
-    <span class="k">this</span><span class="p">.</span><span class="nx">queryState</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">my</span><span class="p">.</span><span class="nx">Query</span><span class="p">();</span>
-    <span class="k">this</span><span class="p">.</span><span class="nx">queryState</span><span class="p">.</span><span class="nx">bind</span><span class="p">(</span><span class="s1">&#39;change facet:add&#39;</span><span class="p">,</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
-      <span class="nx">self</span><span class="p">.</span><span class="nx">query</span><span class="p">();</span> <span class="c1">// We want to call query() without any arguments.</span>
-    <span class="p">});</span></pre></div>             </td>           </tr>                               <tr id="section-5">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-5">&#182;</a>               </div>               <p>store is what we query and save against
+<html>
+<head>
+  <title>Recline Backbone Models</title>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <meta name="viewport" content="width=device-width, target-densitydpi=160dpi, initial-scale=1.0; maximum-scale=1.0; user-scalable=0;">
+  <link rel="stylesheet" media="all" href="docco.css" />
+</head>
+<body>
+  <div id="container">
+    <div id="background"></div>
+    
+      <ul id="jump_to">
+        <li>
+          <a class="large" href="javascript:void(0);">Jump To &hellip;</a>
+          <a class="small" href="javascript:void(0);">+</a>
+          <div id="jump_wrapper">
+          <div id="jump_page_wrapper">
+            <div id="jump_page">
+              
+                
+                <a class="source" href="backend.dataproxy.html">
+                  backend.dataproxy.js
+                </a>
+              
+                
+                <a class="source" href="backend.memory.html">
+                  backend.memory.js
+                </a>
+              
+                
+                <a class="source" href="ecma-fixes.html">
+                  ecma-fixes.js
+                </a>
+              
+                
+                <a class="source" href="model.html">
+                  model.js
+                </a>
+              
+                
+                <a class="source" href="view.flot.html">
+                  view.flot.js
+                </a>
+              
+                
+                <a class="source" href="view.graph.html">
+                  view.graph.js
+                </a>
+              
+                
+                <a class="source" href="view.grid.html">
+                  view.grid.js
+                </a>
+              
+                
+                <a class="source" href="view.map.html">
+                  view.map.js
+                </a>
+              
+                
+                <a class="source" href="view.multiview.html">
+                  view.multiview.js
+                </a>
+              
+                
+                <a class="source" href="view.slickgrid.html">
+                  view.slickgrid.js
+                </a>
+              
+                
+                <a class="source" href="view.timeline.html">
+                  view.timeline.js
+                </a>
+              
+                
+                <a class="source" href="widget.facetviewer.html">
+                  widget.facetviewer.js
+                </a>
+              
+                
+                <a class="source" href="widget.fields.html">
+                  widget.fields.js
+                </a>
+              
+                
+                <a class="source" href="widget.filtereditor.html">
+                  widget.filtereditor.js
+                </a>
+              
+                
+                <a class="source" href="widget.pager.html">
+                  widget.pager.js
+                </a>
+              
+                
+                <a class="source" href="widget.queryeditor.html">
+                  widget.queryeditor.js
+                </a>
+              
+                
+                <a class="source" href="widget.valuefilter.html">
+                  widget.valuefilter.js
+                </a>
+              
+            </div>
+          </div>
+        </li>
+      </ul>
+    
+    <ul class="sections">
+        
+        
+        
+        <li id="section-1">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-1">&#182;</a>
+              </div>
+              <h1 id="recline-backbone-models">Recline Backbone Models</h1>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre><span class="hljs-keyword">this</span>.recline = <span class="hljs-keyword">this</span>.recline || {};
+<span class="hljs-keyword">this</span>.recline.Model = <span class="hljs-keyword">this</span>.recline.Model || {};
+
+(<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(my)</span> </span>{
+<span class="hljs-pi">  "use strict"</span>;</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-2">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-2">&#182;</a>
+              </div>
+              <p>use either jQuery or Underscore Deferred depending on what is available</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre><span class="hljs-keyword">var</span> Deferred = (<span class="hljs-keyword">typeof</span> jQuery !== <span class="hljs-string">"undefined"</span> &amp;&amp; jQuery.Deferred) || _.Deferred;</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-3">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-3">&#182;</a>
+              </div>
+              <h2 id="-a-id-dataset-dataset-a-"><a id="dataset">Dataset</a></h2>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>my.Dataset = Backbone.Model.extend({
+  constructor: <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">Dataset</span><span class="hljs-params">()</span> </span>{
+    Backbone.Model.prototype.constructor.apply(<span class="hljs-keyword">this</span>, <span class="hljs-built_in">arguments</span>);
+  },</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-4">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-4">&#182;</a>
+              </div>
+              <h3 id="initialize">initialize</h3>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  initialize: <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> </span>{
+    <span class="hljs-keyword">var</span> self = <span class="hljs-keyword">this</span>;
+    _.bindAll(<span class="hljs-keyword">this</span>, <span class="hljs-string">'query'</span>);
+    <span class="hljs-keyword">this</span>.backend = <span class="hljs-literal">null</span>;
+    <span class="hljs-keyword">if</span> (<span class="hljs-keyword">this</span>.get(<span class="hljs-string">'backend'</span>)) {
+      <span class="hljs-keyword">this</span>.backend = <span class="hljs-keyword">this</span>._backendFromString(<span class="hljs-keyword">this</span>.get(<span class="hljs-string">'backend'</span>));
+    } <span class="hljs-keyword">else</span> { <span class="hljs-comment">// try to guess backend ...</span>
+      <span class="hljs-keyword">if</span> (<span class="hljs-keyword">this</span>.get(<span class="hljs-string">'records'</span>)) {
+        <span class="hljs-keyword">this</span>.backend = recline.Backend.Memory;
+      }
+    }
+    <span class="hljs-keyword">this</span>.fields = <span class="hljs-keyword">new</span> my.FieldList();
+    <span class="hljs-keyword">this</span>.records = <span class="hljs-keyword">new</span> my.RecordList();
+    <span class="hljs-keyword">this</span>._changes = {
+      deletes: [],
+      updates: [],
+      creates: []
+    };
+    <span class="hljs-keyword">this</span>.facets = <span class="hljs-keyword">new</span> my.FacetList();
+    <span class="hljs-keyword">this</span>.recordCount = <span class="hljs-literal">null</span>;
+    <span class="hljs-keyword">this</span>.queryState = <span class="hljs-keyword">new</span> my.Query();
+    <span class="hljs-keyword">this</span>.queryState.bind(<span class="hljs-string">'change facet:add'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">()</span> </span>{
+      self.query(); <span class="hljs-comment">// We want to call query() without any arguments.</span>
+    });</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-5">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-5">&#182;</a>
+              </div>
+              <p>store is what we query and save against
 store will either be the backend or be a memory store if Backend fetch
-tells us to use memory store</p>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="k">this</span><span class="p">.</span><span class="nx">_store</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">backend</span><span class="p">;</span></pre></div>             </td>           </tr>                               <tr id="section-6">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-6">&#182;</a>               </div>               <p>if backend has a handleQueryResultFunction, use that</p>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="k">this</span><span class="p">.</span><span class="nx">_handleResult</span> <span class="o">=</span> <span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">backend</span> <span class="o">!=</span> <span class="kc">null</span> <span class="o">&amp;&amp;</span> <span class="nx">_</span><span class="p">.</span><span class="nx">has</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">backend</span><span class="p">,</span> <span class="s1">&#39;handleQueryResult&#39;</span><span class="p">))</span> <span class="o">?</span> 
-      <span class="k">this</span><span class="p">.</span><span class="nx">backend</span><span class="p">.</span><span class="nx">handleQueryResult</span> <span class="o">:</span> <span class="k">this</span><span class="p">.</span><span class="nx">_handleQueryResult</span><span class="p">;</span>
-    <span class="k">if</span> <span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">backend</span> <span class="o">==</span> <span class="nx">recline</span><span class="p">.</span><span class="nx">Backend</span><span class="p">.</span><span class="nx">Memory</span><span class="p">)</span> <span class="p">{</span>
-      <span class="k">this</span><span class="p">.</span><span class="nx">fetch</span><span class="p">();</span>
-    <span class="p">}</span>
-  <span class="p">},</span>
+tells us to use memory store</p>
 
-  <span class="nx">sync</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">method</span><span class="p">,</span> <span class="nx">model</span><span class="p">,</span> <span class="nx">options</span><span class="p">)</span> <span class="p">{</span>
-    <span class="k">return</span> <span class="k">this</span><span class="p">.</span><span class="nx">backend</span><span class="p">.</span><span class="nx">sync</span><span class="p">(</span><span class="nx">method</span><span class="p">,</span> <span class="nx">model</span><span class="p">,</span> <span class="nx">options</span><span class="p">);</span>
-  <span class="p">},</span></pre></div>             </td>           </tr>                               <tr id="section-7">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-7">&#182;</a>               </div>               <h3>fetch</h3>
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    <span class="hljs-keyword">this</span>._store = <span class="hljs-keyword">this</span>.backend;</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-6">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-6">&#182;</a>
+              </div>
+              <p>if backend has a handleQueryResultFunction, use that</p>
 
-<p>Retrieve dataset and (some) records from the backend.</p>             </td>             <td class="code">               <div class="highlight"><pre>  <span class="nx">fetch</span><span class="o">:</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
-    <span class="kd">var</span> <span class="nx">self</span> <span class="o">=</span> <span class="k">this</span><span class="p">;</span>
-    <span class="kd">var</span> <span class="nx">dfd</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Deferred</span><span class="p">();</span>
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    <span class="hljs-keyword">this</span>._handleResult = (<span class="hljs-keyword">this</span>.backend != <span class="hljs-literal">null</span> &amp;&amp; _.has(<span class="hljs-keyword">this</span>.backend, <span class="hljs-string">'handleQueryResult'</span>)) ? 
+      <span class="hljs-keyword">this</span>.backend.handleQueryResult : <span class="hljs-keyword">this</span>._handleQueryResult;
+    <span class="hljs-keyword">if</span> (<span class="hljs-keyword">this</span>.backend == recline.Backend.Memory) {
+      <span class="hljs-keyword">this</span>.fetch();
+    }
+  },
 
-    <span class="k">if</span> <span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">backend</span> <span class="o">!==</span> <span class="nx">recline</span><span class="p">.</span><span class="nx">Backend</span><span class="p">.</span><span class="nx">Memory</span><span class="p">)</span> <span class="p">{</span>
-      <span class="k">this</span><span class="p">.</span><span class="nx">backend</span><span class="p">.</span><span class="nx">fetch</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">toJSON</span><span class="p">())</span>
-        <span class="p">.</span><span class="nx">done</span><span class="p">(</span><span class="nx">handleResults</span><span class="p">)</span>
-        <span class="p">.</span><span class="nx">fail</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">args</span><span class="p">)</span> <span class="p">{</span>
-          <span class="nx">dfd</span><span class="p">.</span><span class="nx">reject</span><span class="p">(</span><span class="nx">args</span><span class="p">);</span>
-        <span class="p">});</span>
-    <span class="p">}</span> <span class="k">else</span> <span class="p">{</span></pre></div>             </td>           </tr>                               <tr id="section-8">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-8">&#182;</a>               </div>               <p>special case where we have been given data directly</p>             </td>             <td class="code">               <div class="highlight"><pre>      <span class="nx">handleResults</span><span class="p">({</span>
-        <span class="nx">records</span><span class="o">:</span> <span class="k">this</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s1">&#39;records&#39;</span><span class="p">),</span>
-        <span class="nx">fields</span><span class="o">:</span> <span class="k">this</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s1">&#39;fields&#39;</span><span class="p">),</span>
-        <span class="nx">useMemoryStore</span><span class="o">:</span> <span class="kc">true</span>
-      <span class="p">});</span>
-    <span class="p">}</span>
+  sync: <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(method, model, options)</span> </span>{
+    <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>.backend.sync(method, model, options);
+  },</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-7">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-7">&#182;</a>
+              </div>
+              <h3 id="fetch">fetch</h3>
+<p>Retrieve dataset and (some) records from the backend.</p>
 
-    <span class="kd">function</span> <span class="nx">handleResults</span><span class="p">(</span><span class="nx">results</span><span class="p">)</span> <span class="p">{</span></pre></div>             </td>           </tr>                               <tr id="section-9">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-9">&#182;</a>               </div>               <p>if explicitly given the fields
-(e.g. var dataset = new Dataset({fields: fields, ...})
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  fetch: <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> </span>{
+    <span class="hljs-keyword">var</span> self = <span class="hljs-keyword">this</span>;
+    <span class="hljs-keyword">var</span> dfd = <span class="hljs-keyword">new</span> Deferred();
+
+    <span class="hljs-keyword">if</span> (<span class="hljs-keyword">this</span>.backend !== recline.Backend.Memory) {
+      <span class="hljs-keyword">this</span>.backend.fetch(<span class="hljs-keyword">this</span>.toJSON())
+        .done(handleResults)
+        .fail(<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(args)</span> </span>{
+          dfd.reject(args);
+        });
+    } <span class="hljs-keyword">else</span> {</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-8">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-8">&#182;</a>
+              </div>
+              <p>special case where we have been given data directly</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>      handleResults({
+        records: <span class="hljs-keyword">this</span>.get(<span class="hljs-string">'records'</span>),
+        fields: <span class="hljs-keyword">this</span>.get(<span class="hljs-string">'fields'</span>),
+        useMemoryStore: <span class="hljs-literal">true</span>
+      });
+    }
+
+    <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">handleResults</span><span class="hljs-params">(results)</span> </span>{</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-9">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-9">&#182;</a>
+              </div>
+              <p>if explicitly given the fields
+(e.g. var dataset = new Dataset({fields: fields, …})
 use that field info over anything we get back by parsing the data
-(results.fields)</p>             </td>             <td class="code">               <div class="highlight"><pre>      <span class="kd">var</span> <span class="nx">fields</span> <span class="o">=</span> <span class="nx">self</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s1">&#39;fields&#39;</span><span class="p">)</span> <span class="o">||</span> <span class="nx">results</span><span class="p">.</span><span class="nx">fields</span><span class="p">;</span>
+(results.fields)</p>
 
-      <span class="kd">var</span> <span class="nx">out</span> <span class="o">=</span> <span class="nx">self</span><span class="p">.</span><span class="nx">_normalizeRecordsAndFields</span><span class="p">(</span><span class="nx">results</span><span class="p">.</span><span class="nx">records</span><span class="p">,</span> <span class="nx">fields</span><span class="p">);</span>
-      <span class="k">if</span> <span class="p">(</span><span class="nx">results</span><span class="p">.</span><span class="nx">useMemoryStore</span><span class="p">)</span> <span class="p">{</span>
-        <span class="nx">self</span><span class="p">.</span><span class="nx">_store</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">recline</span><span class="p">.</span><span class="nx">Backend</span><span class="p">.</span><span class="nx">Memory</span><span class="p">.</span><span class="nx">Store</span><span class="p">(</span><span class="nx">out</span><span class="p">.</span><span class="nx">records</span><span class="p">,</span> <span class="nx">out</span><span class="p">.</span><span class="nx">fields</span><span class="p">);</span>
-      <span class="p">}</span>
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>      <span class="hljs-keyword">var</span> fields = self.get(<span class="hljs-string">'fields'</span>) || results.fields;
 
-      <span class="nx">self</span><span class="p">.</span><span class="nx">set</span><span class="p">(</span><span class="nx">results</span><span class="p">.</span><span class="nx">metadata</span><span class="p">);</span>
-      <span class="nx">self</span><span class="p">.</span><span class="nx">fields</span><span class="p">.</span><span class="nx">reset</span><span class="p">(</span><span class="nx">out</span><span class="p">.</span><span class="nx">fields</span><span class="p">);</span>
-      <span class="nx">self</span><span class="p">.</span><span class="nx">query</span><span class="p">()</span>
-        <span class="p">.</span><span class="nx">done</span><span class="p">(</span><span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
-          <span class="nx">dfd</span><span class="p">.</span><span class="nx">resolve</span><span class="p">(</span><span class="nx">self</span><span class="p">);</span>
-        <span class="p">})</span>
-        <span class="p">.</span><span class="nx">fail</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">args</span><span class="p">)</span> <span class="p">{</span>
-          <span class="nx">dfd</span><span class="p">.</span><span class="nx">reject</span><span class="p">(</span><span class="nx">args</span><span class="p">);</span>
-        <span class="p">});</span>
-    <span class="p">}</span>
+      <span class="hljs-keyword">var</span> out = self._normalizeRecordsAndFields(results.records, fields);
+      <span class="hljs-keyword">if</span> (results.useMemoryStore) {
+        self._store = <span class="hljs-keyword">new</span> recline.Backend.Memory.Store(out.records, out.fields);
+      }
 
-    <span class="k">return</span> <span class="nx">dfd</span><span class="p">.</span><span class="nx">promise</span><span class="p">();</span>
-  <span class="p">},</span></pre></div>             </td>           </tr>                               <tr id="section-10">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-10">&#182;</a>               </div>               <h3>_normalizeRecordsAndFields</h3>
+      self.set(results.metadata);
+      self.fields.reset(out.fields);
+      self.query()
+        .done(<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> </span>{
+          dfd.resolve(self);
+        })
+        .fail(<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(args)</span> </span>{
+          dfd.reject(args);
+        });
+    }
 
+    <span class="hljs-keyword">return</span> dfd.promise();
+  },</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-10">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-10">&#182;</a>
+              </div>
+              <h3 id="_normalizerecordsandfields">_normalizeRecordsAndFields</h3>
 <p>Get a proper set of fields and records from incoming set of fields and records either of which may be null or arrays or objects</p>
+<p>e.g. fields = [‘a’, ‘b’, ‘c’] and records = [ [1,2,3] ] =&gt;
+fields = [ {id: a}, {id: b}, {id: c}], records = [ {a: 1}, {b: 2}, {c: 3}]</p>
 
-<p>e.g. fields = ['a', 'b', 'c'] and records = [ [1,2,3] ] =>
-fields = [ {id: a}, {id: b}, {id: c}], records = [ {a: 1}, {b: 2}, {c: 3}]</p>             </td>             <td class="code">               <div class="highlight"><pre>  <span class="nx">_normalizeRecordsAndFields</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">records</span><span class="p">,</span> <span class="nx">fields</span><span class="p">)</span> <span class="p">{</span></pre></div>             </td>           </tr>                               <tr id="section-11">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-11">&#182;</a>               </div>               <p>if no fields get them from records</p>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="nx">fields</span> <span class="o">&amp;&amp;</span> <span class="nx">records</span> <span class="o">&amp;&amp;</span> <span class="nx">records</span><span class="p">.</span><span class="nx">length</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span></pre></div>             </td>           </tr>                               <tr id="section-12">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-12">&#182;</a>               </div>               <p>records is array then fields is first row of records ...</p>             </td>             <td class="code">               <div class="highlight"><pre>      <span class="k">if</span> <span class="p">(</span><span class="nx">records</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">instanceof</span> <span class="nb">Array</span><span class="p">)</span> <span class="p">{</span>
-        <span class="nx">fields</span> <span class="o">=</span> <span class="nx">records</span><span class="p">[</span><span class="mi">0</span><span class="p">];</span>
-        <span class="nx">records</span> <span class="o">=</span> <span class="nx">records</span><span class="p">.</span><span class="nx">slice</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span>
-      <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
-        <span class="nx">fields</span> <span class="o">=</span> <span class="nx">_</span><span class="p">.</span><span class="nx">map</span><span class="p">(</span><span class="nx">_</span><span class="p">.</span><span class="nx">keys</span><span class="p">(</span><span class="nx">records</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span> <span class="kd">function</span><span class="p">(</span><span class="nx">key</span><span class="p">)</span> <span class="p">{</span>
-          <span class="k">return</span> <span class="p">{</span><span class="nx">id</span><span class="o">:</span> <span class="nx">key</span><span class="p">};</span>
-        <span class="p">});</span>
-      <span class="p">}</span>
-    <span class="p">}</span> </pre></div>             </td>           </tr>                               <tr id="section-13">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-13">&#182;</a>               </div>               <p>fields is an array of strings (i.e. list of field headings/ids)</p>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="k">if</span> <span class="p">(</span><span class="nx">fields</span> <span class="o">&amp;&amp;</span> <span class="nx">fields</span><span class="p">.</span><span class="nx">length</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="o">&amp;&amp;</span> <span class="p">(</span><span class="nx">fields</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">===</span> <span class="kc">null</span> <span class="o">||</span> <span class="k">typeof</span><span class="p">(</span><span class="nx">fields</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">!=</span> <span class="s1">&#39;object&#39;</span><span class="p">))</span> <span class="p">{</span></pre></div>             </td>           </tr>                               <tr id="section-14">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-14">&#182;</a>               </div>               <p>Rename duplicate fieldIds as each field name needs to be
-unique.</p>             </td>             <td class="code">               <div class="highlight"><pre>      <span class="kd">var</span> <span class="nx">seen</span> <span class="o">=</span> <span class="p">{};</span>
-      <span class="nx">fields</span> <span class="o">=</span> <span class="nx">_</span><span class="p">.</span><span class="nx">map</span><span class="p">(</span><span class="nx">fields</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">field</span><span class="p">,</span> <span class="nx">index</span><span class="p">)</span> <span class="p">{</span>
-        <span class="k">if</span> <span class="p">(</span><span class="nx">field</span> <span class="o">===</span> <span class="kc">null</span><span class="p">)</span> <span class="p">{</span>
-          <span class="nx">field</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="p">;</span>
-        <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
-          <span class="nx">field</span> <span class="o">=</span> <span class="nx">field</span><span class="p">.</span><span class="nx">toString</span><span class="p">();</span>
-        <span class="p">}</span></pre></div>             </td>           </tr>                               <tr id="section-15">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-15">&#182;</a>               </div>               <p>cannot use trim as not supported by IE7</p>             </td>             <td class="code">               <div class="highlight"><pre>        <span class="kd">var</span> <span class="nx">fieldId</span> <span class="o">=</span> <span class="nx">field</span><span class="p">.</span><span class="nx">replace</span><span class="p">(</span><span class="sr">/^\s+|\s+$/g</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">);</span>
-        <span class="k">if</span> <span class="p">(</span><span class="nx">fieldId</span> <span class="o">===</span> <span class="s1">&#39;&#39;</span><span class="p">)</span> <span class="p">{</span>
-          <span class="nx">fieldId</span> <span class="o">=</span> <span class="s1">&#39;_noname_&#39;</span><span class="p">;</span>
-          <span class="nx">field</span> <span class="o">=</span> <span class="nx">fieldId</span><span class="p">;</span>
-        <span class="p">}</span>
-        <span class="k">while</span> <span class="p">(</span><span class="nx">fieldId</span> <span class="k">in</span> <span class="nx">seen</span><span class="p">)</span> <span class="p">{</span>
-          <span class="nx">seen</span><span class="p">[</span><span class="nx">field</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span><span class="p">;</span>
-          <span class="nx">fieldId</span> <span class="o">=</span> <span class="nx">field</span> <span class="o">+</span> <span class="nx">seen</span><span class="p">[</span><span class="nx">field</span><span class="p">];</span>
-        <span class="p">}</span>
-        <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="p">(</span><span class="nx">field</span> <span class="k">in</span> <span class="nx">seen</span><span class="p">))</span> <span class="p">{</span>
-          <span class="nx">seen</span><span class="p">[</span><span class="nx">field</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
-        <span class="p">}</span></pre></div>             </td>           </tr>                               <tr id="section-16">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-16">&#182;</a>               </div>               <p>TODO: decide whether to keep original name as label ...
-return { id: fieldId, label: field || fieldId }</p>             </td>             <td class="code">               <div class="highlight"><pre>        <span class="k">return</span> <span class="p">{</span> <span class="nx">id</span><span class="o">:</span> <span class="nx">fieldId</span> <span class="p">};</span>
-      <span class="p">});</span>
-    <span class="p">}</span></pre></div>             </td>           </tr>                               <tr id="section-17">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-17">&#182;</a>               </div>               <p>records is provided as arrays so need to zip together with fields
-NB: this requires you to have fields to match arrays</p>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="k">if</span> <span class="p">(</span><span class="nx">records</span> <span class="o">&amp;&amp;</span> <span class="nx">records</span><span class="p">.</span><span class="nx">length</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="o">&amp;&amp;</span> <span class="nx">records</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">instanceof</span> <span class="nb">Array</span><span class="p">)</span> <span class="p">{</span>
-      <span class="nx">records</span> <span class="o">=</span> <span class="nx">_</span><span class="p">.</span><span class="nx">map</span><span class="p">(</span><span class="nx">records</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">doc</span><span class="p">)</span> <span class="p">{</span>
-        <span class="kd">var</span> <span class="nx">tmp</span> <span class="o">=</span> <span class="p">{};</span>
-        <span class="nx">_</span><span class="p">.</span><span class="nx">each</span><span class="p">(</span><span class="nx">fields</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">field</span><span class="p">,</span> <span class="nx">idx</span><span class="p">)</span> <span class="p">{</span>
-          <span class="nx">tmp</span><span class="p">[</span><span class="nx">field</span><span class="p">.</span><span class="nx">id</span><span class="p">]</span> <span class="o">=</span> <span class="nx">doc</span><span class="p">[</span><span class="nx">idx</span><span class="p">];</span>
-        <span class="p">});</span>
-        <span class="k">return</span> <span class="nx">tmp</span><span class="p">;</span>
-      <span class="p">});</span>
-    <span class="p">}</span>
-    <span class="k">return</span> <span class="p">{</span>
-      <span class="nx">fields</span><span class="o">:</span> <span class="nx">fields</span><span class="p">,</span>
-      <span class="nx">records</span><span class="o">:</span> <span class="nx">records</span>
-    <span class="p">};</span>
-  <span class="p">},</span>
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  _normalizeRecordsAndFields: <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(records, fields)</span> </span>{</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-11">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-11">&#182;</a>
+              </div>
+              <p>if no fields get them from records</p>
 
-  <span class="nx">save</span><span class="o">:</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
-    <span class="kd">var</span> <span class="nx">self</span> <span class="o">=</span> <span class="k">this</span><span class="p">;</span></pre></div>             </td>           </tr>                               <tr id="section-18">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-18">&#182;</a>               </div>               <p>TODO: need to reset the changes ...</p>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="k">return</span> <span class="k">this</span><span class="p">.</span><span class="nx">_store</span><span class="p">.</span><span class="nx">save</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">_changes</span><span class="p">,</span> <span class="k">this</span><span class="p">.</span><span class="nx">toJSON</span><span class="p">());</span>
-  <span class="p">},</span></pre></div>             </td>           </tr>                               <tr id="section-19">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-19">&#182;</a>               </div>               <h3>query</h3>
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    <span class="hljs-keyword">if</span> (!fields &amp;&amp; records &amp;&amp; records.length &gt; <span class="hljs-number">0</span>) {</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-12">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-12">&#182;</a>
+              </div>
+              <p>records is array then fields is first row of records …</p>
 
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>      <span class="hljs-keyword">if</span> (records[<span class="hljs-number">0</span>] <span class="hljs-keyword">instanceof</span> <span class="hljs-built_in">Array</span>) {
+        fields = records[<span class="hljs-number">0</span>];
+        records = records.slice(<span class="hljs-number">1</span>);
+      } <span class="hljs-keyword">else</span> {
+        fields = _.map(_.keys(records[<span class="hljs-number">0</span>]), <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(key)</span> </span>{
+          <span class="hljs-keyword">return</span> {id: key};
+        });
+      }
+    }</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-13">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-13">&#182;</a>
+              </div>
+              <p>fields is an array of strings (i.e. list of field headings/ids)</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    <span class="hljs-keyword">if</span> (fields &amp;&amp; fields.length &gt; <span class="hljs-number">0</span> &amp;&amp; (fields[<span class="hljs-number">0</span>] === <span class="hljs-literal">null</span> || <span class="hljs-keyword">typeof</span>(fields[<span class="hljs-number">0</span>]) != <span class="hljs-string">'object'</span>)) {</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-14">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-14">&#182;</a>
+              </div>
+              <p>Rename duplicate fieldIds as each field name needs to be
+unique.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>      <span class="hljs-keyword">var</span> seen = {};
+      fields = _.map(fields, <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(field, index)</span> </span>{
+        <span class="hljs-keyword">if</span> (field === <span class="hljs-literal">null</span>) {
+          field = <span class="hljs-string">''</span>;
+        } <span class="hljs-keyword">else</span> {
+          field = field.toString();
+        }</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-15">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-15">&#182;</a>
+              </div>
+              <p>cannot use trim as not supported by IE7</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>        <span class="hljs-keyword">var</span> fieldId = field.replace(<span class="hljs-regexp">/^\s+|\s+$/g</span>, <span class="hljs-string">''</span>);
+        <span class="hljs-keyword">if</span> (fieldId === <span class="hljs-string">''</span>) {
+          fieldId = <span class="hljs-string">'_noname_'</span>;
+          field = fieldId;
+        }
+        <span class="hljs-keyword">while</span> (fieldId <span class="hljs-keyword">in</span> seen) {
+          seen[field] += <span class="hljs-number">1</span>;
+          fieldId = field + seen[field];
+        }
+        <span class="hljs-keyword">if</span> (!(field <span class="hljs-keyword">in</span> seen)) {
+          seen[field] = <span class="hljs-number">0</span>;
+        }</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-16">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-16">&#182;</a>
+              </div>
+              <p>TODO: decide whether to keep original name as label …
+return { id: fieldId, label: field || fieldId }</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>        <span class="hljs-keyword">return</span> { id: fieldId };
+      });
+    }</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-17">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-17">&#182;</a>
+              </div>
+              <p>records is provided as arrays so need to zip together with fields
+NB: this requires you to have fields to match arrays</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    <span class="hljs-keyword">if</span> (records &amp;&amp; records.length &gt; <span class="hljs-number">0</span> &amp;&amp; records[<span class="hljs-number">0</span>] <span class="hljs-keyword">instanceof</span> <span class="hljs-built_in">Array</span>) {
+      records = _.map(records, <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(doc)</span> </span>{
+        <span class="hljs-keyword">var</span> tmp = {};
+        _.each(fields, <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(field, idx)</span> </span>{
+          tmp[field.id] = doc[idx];
+        });
+        <span class="hljs-keyword">return</span> tmp;
+      });
+    }
+    <span class="hljs-keyword">return</span> {
+      fields: fields,
+      records: records
+    };
+  },
+
+  save: <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> </span>{
+    <span class="hljs-keyword">var</span> self = <span class="hljs-keyword">this</span>;</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-18">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-18">&#182;</a>
+              </div>
+              <p>TODO: need to reset the changes …</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>._store.save(<span class="hljs-keyword">this</span>._changes, <span class="hljs-keyword">this</span>.toJSON());
+  },</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-19">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-19">&#182;</a>
+              </div>
+              <h3 id="query">query</h3>
 <p>AJAX method with promise API to get records from the backend.</p>
-
 <p>It will query based on current query state (given by this.queryState)
 updated by queryObj (if provided).</p>
-
 <p>Resulting RecordList are used to reset this.records and are
-also returned.</p>             </td>             <td class="code">               <div class="highlight"><pre>  <span class="nx">query</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">queryObj</span><span class="p">)</span> <span class="p">{</span>
-    <span class="kd">var</span> <span class="nx">self</span> <span class="o">=</span> <span class="k">this</span><span class="p">;</span>
-    <span class="kd">var</span> <span class="nx">dfd</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Deferred</span><span class="p">();</span>
-    <span class="k">this</span><span class="p">.</span><span class="nx">trigger</span><span class="p">(</span><span class="s1">&#39;query:start&#39;</span><span class="p">);</span>
+also returned.</p>
 
-    <span class="k">if</span> <span class="p">(</span><span class="nx">queryObj</span><span class="p">)</span> <span class="p">{</span>
-      <span class="k">this</span><span class="p">.</span><span class="nx">queryState</span><span class="p">.</span><span class="nx">set</span><span class="p">(</span><span class="nx">queryObj</span><span class="p">,</span> <span class="p">{</span><span class="nx">silent</span><span class="o">:</span> <span class="kc">true</span><span class="p">});</span>
-    <span class="p">}</span>
-    <span class="kd">var</span> <span class="nx">actualQuery</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">queryState</span><span class="p">.</span><span class="nx">toJSON</span><span class="p">();</span>
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  query: <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(queryObj)</span> </span>{
+    <span class="hljs-keyword">var</span> self = <span class="hljs-keyword">this</span>;
+    <span class="hljs-keyword">var</span> dfd = <span class="hljs-keyword">new</span> Deferred();
+    <span class="hljs-keyword">this</span>.trigger(<span class="hljs-string">'query:start'</span>);
 
-    <span class="k">this</span><span class="p">.</span><span class="nx">_store</span><span class="p">.</span><span class="nx">query</span><span class="p">(</span><span class="nx">actualQuery</span><span class="p">,</span> <span class="k">this</span><span class="p">.</span><span class="nx">toJSON</span><span class="p">())</span>
-      <span class="p">.</span><span class="nx">done</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">queryResult</span><span class="p">)</span> <span class="p">{</span>
-        <span class="nx">self</span><span class="p">.</span><span class="nx">_handleResult</span><span class="p">(</span><span class="nx">queryResult</span><span class="p">);</span>
-        <span class="nx">self</span><span class="p">.</span><span class="nx">trigger</span><span class="p">(</span><span class="s1">&#39;query:done&#39;</span><span class="p">);</span>
-        <span class="nx">dfd</span><span class="p">.</span><span class="nx">resolve</span><span class="p">(</span><span class="nx">self</span><span class="p">.</span><span class="nx">records</span><span class="p">);</span>
-      <span class="p">})</span>
-      <span class="p">.</span><span class="nx">fail</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">args</span><span class="p">)</span> <span class="p">{</span>
-        <span class="nx">self</span><span class="p">.</span><span class="nx">trigger</span><span class="p">(</span><span class="s1">&#39;query:fail&#39;</span><span class="p">,</span> <span class="nx">args</span><span class="p">);</span>
-        <span class="nx">dfd</span><span class="p">.</span><span class="nx">reject</span><span class="p">(</span><span class="nx">args</span><span class="p">);</span>
-      <span class="p">});</span>
-    <span class="k">return</span> <span class="nx">dfd</span><span class="p">.</span><span class="nx">promise</span><span class="p">();</span>
-  <span class="p">},</span>
+    <span class="hljs-keyword">if</span> (queryObj) {
+      <span class="hljs-keyword">var</span> attributes = queryObj;
+      <span class="hljs-keyword">if</span> (queryObj <span class="hljs-keyword">instanceof</span> my.Query) {
+        attributes = queryObj.toJSON();
+      }
+      <span class="hljs-keyword">this</span>.queryState.set(attributes, {silent: <span class="hljs-literal">true</span>});
+    }
+    <span class="hljs-keyword">var</span> actualQuery = <span class="hljs-keyword">this</span>.queryState.toJSON();
 
-  <span class="nx">_handleQueryResult</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">queryResult</span><span class="p">)</span> <span class="p">{</span>
-    <span class="kd">var</span> <span class="nx">self</span> <span class="o">=</span> <span class="k">this</span><span class="p">;</span>
-    <span class="nx">self</span><span class="p">.</span><span class="nx">recordCount</span> <span class="o">=</span> <span class="nx">queryResult</span><span class="p">.</span><span class="nx">total</span><span class="p">;</span>
-    <span class="kd">var</span> <span class="nx">docs</span> <span class="o">=</span> <span class="nx">_</span><span class="p">.</span><span class="nx">map</span><span class="p">(</span><span class="nx">queryResult</span><span class="p">.</span><span class="nx">hits</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">hit</span><span class="p">)</span> <span class="p">{</span>
-      <span class="kd">var</span> <span class="nx">_doc</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">my</span><span class="p">.</span><span class="nx">Record</span><span class="p">(</span><span class="nx">hit</span><span class="p">);</span>
-      <span class="nx">_doc</span><span class="p">.</span><span class="nx">fields</span> <span class="o">=</span> <span class="nx">self</span><span class="p">.</span><span class="nx">fields</span><span class="p">;</span>
-      <span class="nx">_doc</span><span class="p">.</span><span class="nx">bind</span><span class="p">(</span><span class="s1">&#39;change&#39;</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">doc</span><span class="p">)</span> <span class="p">{</span>
-        <span class="nx">self</span><span class="p">.</span><span class="nx">_changes</span><span class="p">.</span><span class="nx">updates</span><span class="p">.</span><span class="nx">push</span><span class="p">(</span><span class="nx">doc</span><span class="p">.</span><span class="nx">toJSON</span><span class="p">());</span>
-      <span class="p">});</span>
-      <span class="nx">_doc</span><span class="p">.</span><span class="nx">bind</span><span class="p">(</span><span class="s1">&#39;destroy&#39;</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">doc</span><span class="p">)</span> <span class="p">{</span>
-        <span class="nx">self</span><span class="p">.</span><span class="nx">_changes</span><span class="p">.</span><span class="nx">deletes</span><span class="p">.</span><span class="nx">push</span><span class="p">(</span><span class="nx">doc</span><span class="p">.</span><span class="nx">toJSON</span><span class="p">());</span>
-      <span class="p">});</span>
-      <span class="k">return</span> <span class="nx">_doc</span><span class="p">;</span>
-    <span class="p">});</span>
-    <span class="nx">self</span><span class="p">.</span><span class="nx">records</span><span class="p">.</span><span class="nx">reset</span><span class="p">(</span><span class="nx">docs</span><span class="p">);</span>
-    <span class="k">if</span> <span class="p">(</span><span class="nx">queryResult</span><span class="p">.</span><span class="nx">facets</span><span class="p">)</span> <span class="p">{</span>
-      <span class="kd">var</span> <span class="nx">facets</span> <span class="o">=</span> <span class="nx">_</span><span class="p">.</span><span class="nx">map</span><span class="p">(</span><span class="nx">queryResult</span><span class="p">.</span><span class="nx">facets</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">facetResult</span><span class="p">,</span> <span class="nx">facetId</span><span class="p">)</span> <span class="p">{</span>
-        <span class="nx">facetResult</span><span class="p">.</span><span class="nx">id</span> <span class="o">=</span> <span class="nx">facetId</span><span class="p">;</span>
-        <span class="k">return</span> <span class="k">new</span> <span class="nx">my</span><span class="p">.</span><span class="nx">Facet</span><span class="p">(</span><span class="nx">facetResult</span><span class="p">);</span>
-      <span class="p">});</span>
-      <span class="nx">self</span><span class="p">.</span><span class="nx">facets</span><span class="p">.</span><span class="nx">reset</span><span class="p">(</span><span class="nx">facets</span><span class="p">);</span>
-    <span class="p">}</span>
-  <span class="p">},</span>
+    <span class="hljs-keyword">this</span>._store.query(actualQuery, <span class="hljs-keyword">this</span>.toJSON())
+      .done(<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(queryResult)</span> </span>{
+        self._handleResult(queryResult);
+        self.trigger(<span class="hljs-string">'query:done'</span>);
+        dfd.resolve(self.records);
+      })
+      .fail(<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(args)</span> </span>{
+        self.trigger(<span class="hljs-string">'query:fail'</span>, args);
+        dfd.reject(args);
+      });
+    <span class="hljs-keyword">return</span> dfd.promise();
+  },
 
-  <span class="nx">toTemplateJSON</span><span class="o">:</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
-    <span class="kd">var</span> <span class="nx">data</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">toJSON</span><span class="p">();</span>
-    <span class="nx">data</span><span class="p">.</span><span class="nx">recordCount</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">recordCount</span><span class="p">;</span>
-    <span class="nx">data</span><span class="p">.</span><span class="nx">fields</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">fields</span><span class="p">.</span><span class="nx">toJSON</span><span class="p">();</span>
-    <span class="k">return</span> <span class="nx">data</span><span class="p">;</span>
-  <span class="p">},</span></pre></div>             </td>           </tr>                               <tr id="section-20">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-20">&#182;</a>               </div>               <h3>getFieldsSummary</h3>
+  _handleQueryResult: <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(queryResult)</span> </span>{
+    <span class="hljs-keyword">var</span> self = <span class="hljs-keyword">this</span>;
+    self.recordCount = queryResult.total;
+    <span class="hljs-keyword">var</span> docs = _.map(queryResult.hits, <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(hit)</span> </span>{
+      <span class="hljs-keyword">var</span> _doc = <span class="hljs-keyword">new</span> my.Record(hit);
+      _doc.fields = self.fields;
+      _doc.bind(<span class="hljs-string">'change'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(doc)</span> </span>{
+        self._changes.updates.push(doc.toJSON());
+      });
+      _doc.bind(<span class="hljs-string">'destroy'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(doc)</span> </span>{
+        self._changes.deletes.push(doc.toJSON());
+      });
+      <span class="hljs-keyword">return</span> _doc;
+    });
+    self.records.reset(docs);
+    <span class="hljs-keyword">if</span> (queryResult.facets) {
+      <span class="hljs-keyword">var</span> facets = _.map(queryResult.facets, <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(facetResult, facetId)</span> </span>{
+        facetResult.id = facetId;
+        <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> my.Facet(facetResult);
+      });
+      self.facets.reset(facets);
+    }
+  },
 
+  toTemplateJSON: <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> </span>{
+    <span class="hljs-keyword">var</span> data = <span class="hljs-keyword">this</span>.toJSON();
+    data.recordCount = <span class="hljs-keyword">this</span>.recordCount;
+    data.fields = <span class="hljs-keyword">this</span>.fields.toJSON();
+    <span class="hljs-keyword">return</span> data;
+  },</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-20">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-20">&#182;</a>
+              </div>
+              <h3 id="getfieldssummary">getFieldsSummary</h3>
 <p>Get a summary for each field in the form of a <code>Facet</code>.</p>
+<p>@return null as this is async function. Provides deferred/promise interface.</p>
 
-<p>@return null as this is async function. Provides deferred/promise interface.</p>             </td>             <td class="code">               <div class="highlight"><pre>  <span class="nx">getFieldsSummary</span><span class="o">:</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
-    <span class="kd">var</span> <span class="nx">self</span> <span class="o">=</span> <span class="k">this</span><span class="p">;</span>
-    <span class="kd">var</span> <span class="nx">query</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">my</span><span class="p">.</span><span class="nx">Query</span><span class="p">();</span>
-    <span class="nx">query</span><span class="p">.</span><span class="nx">set</span><span class="p">({</span><span class="nx">size</span><span class="o">:</span> <span class="mi">0</span><span class="p">});</span>
-    <span class="k">this</span><span class="p">.</span><span class="nx">fields</span><span class="p">.</span><span class="nx">each</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">field</span><span class="p">)</span> <span class="p">{</span>
-      <span class="nx">query</span><span class="p">.</span><span class="nx">addFacet</span><span class="p">(</span><span class="nx">field</span><span class="p">.</span><span class="nx">id</span><span class="p">);</span>
-    <span class="p">});</span>
-    <span class="kd">var</span> <span class="nx">dfd</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Deferred</span><span class="p">();</span>
-    <span class="k">this</span><span class="p">.</span><span class="nx">_store</span><span class="p">.</span><span class="nx">query</span><span class="p">(</span><span class="nx">query</span><span class="p">.</span><span class="nx">toJSON</span><span class="p">(),</span> <span class="k">this</span><span class="p">.</span><span class="nx">toJSON</span><span class="p">()).</span><span class="nx">done</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">queryResult</span><span class="p">)</span> <span class="p">{</span>
-      <span class="k">if</span> <span class="p">(</span><span class="nx">queryResult</span><span class="p">.</span><span class="nx">facets</span><span class="p">)</span> <span class="p">{</span>
-        <span class="nx">_</span><span class="p">.</span><span class="nx">each</span><span class="p">(</span><span class="nx">queryResult</span><span class="p">.</span><span class="nx">facets</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">facetResult</span><span class="p">,</span> <span class="nx">facetId</span><span class="p">)</span> <span class="p">{</span>
-          <span class="nx">facetResult</span><span class="p">.</span><span class="nx">id</span> <span class="o">=</span> <span class="nx">facetId</span><span class="p">;</span>
-          <span class="kd">var</span> <span class="nx">facet</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">my</span><span class="p">.</span><span class="nx">Facet</span><span class="p">(</span><span class="nx">facetResult</span><span class="p">);</span></pre></div>             </td>           </tr>                               <tr id="section-21">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-21">&#182;</a>               </div>               <p>TODO: probably want replace rather than reset (i.e. just replace the facet with this id)</p>             </td>             <td class="code">               <div class="highlight"><pre>          <span class="nx">self</span><span class="p">.</span><span class="nx">fields</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="nx">facetId</span><span class="p">).</span><span class="nx">facets</span><span class="p">.</span><span class="nx">reset</span><span class="p">(</span><span class="nx">facet</span><span class="p">);</span>
-        <span class="p">});</span>
-      <span class="p">}</span>
-      <span class="nx">dfd</span><span class="p">.</span><span class="nx">resolve</span><span class="p">(</span><span class="nx">queryResult</span><span class="p">);</span>
-    <span class="p">});</span>
-    <span class="k">return</span> <span class="nx">dfd</span><span class="p">.</span><span class="nx">promise</span><span class="p">();</span>
-  <span class="p">},</span></pre></div>             </td>           </tr>                               <tr id="section-22">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-22">&#182;</a>               </div>               <p>Deprecated (as of v0.5) - use record.summary()</p>             </td>             <td class="code">               <div class="highlight"><pre>  <span class="nx">recordSummary</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">record</span><span class="p">)</span> <span class="p">{</span>
-    <span class="k">return</span> <span class="nx">record</span><span class="p">.</span><span class="nx">summary</span><span class="p">();</span>
-  <span class="p">},</span></pre></div>             </td>           </tr>                               <tr id="section-23">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-23">&#182;</a>               </div>               <h3>_backendFromString(backendString)</h3>
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  getFieldsSummary: <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> </span>{
+    <span class="hljs-keyword">var</span> self = <span class="hljs-keyword">this</span>;
+    <span class="hljs-keyword">var</span> query = <span class="hljs-keyword">new</span> my.Query();
+    query.set({size: <span class="hljs-number">0</span>});
+    <span class="hljs-keyword">this</span>.fields.each(<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(field)</span> </span>{
+      query.addFacet(field.id);
+    });
+    <span class="hljs-keyword">var</span> dfd = <span class="hljs-keyword">new</span> Deferred();
+    <span class="hljs-keyword">this</span>._store.query(query.toJSON(), <span class="hljs-keyword">this</span>.toJSON()).done(<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(queryResult)</span> </span>{
+      <span class="hljs-keyword">if</span> (queryResult.facets) {
+        _.each(queryResult.facets, <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(facetResult, facetId)</span> </span>{
+          facetResult.id = facetId;
+          <span class="hljs-keyword">var</span> facet = <span class="hljs-keyword">new</span> my.Facet(facetResult);</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-21">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-21">&#182;</a>
+              </div>
+              <p>TODO: probably want replace rather than reset (i.e. just replace the facet with this id)</p>
 
-<p>Look up a backend module from a backend string (look in recline.Backend)</p>             </td>             <td class="code">               <div class="highlight"><pre>  <span class="nx">_backendFromString</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">backendString</span><span class="p">)</span> <span class="p">{</span>
-    <span class="kd">var</span> <span class="nx">backend</span> <span class="o">=</span> <span class="kc">null</span><span class="p">;</span>
-    <span class="k">if</span> <span class="p">(</span><span class="nx">recline</span> <span class="o">&amp;&amp;</span> <span class="nx">recline</span><span class="p">.</span><span class="nx">Backend</span><span class="p">)</span> <span class="p">{</span>
-      <span class="nx">_</span><span class="p">.</span><span class="nx">each</span><span class="p">(</span><span class="nx">_</span><span class="p">.</span><span class="nx">keys</span><span class="p">(</span><span class="nx">recline</span><span class="p">.</span><span class="nx">Backend</span><span class="p">),</span> <span class="kd">function</span><span class="p">(</span><span class="nx">name</span><span class="p">)</span> <span class="p">{</span>
-        <span class="k">if</span> <span class="p">(</span><span class="nx">name</span><span class="p">.</span><span class="nx">toLowerCase</span><span class="p">()</span> <span class="o">===</span> <span class="nx">backendString</span><span class="p">.</span><span class="nx">toLowerCase</span><span class="p">())</span> <span class="p">{</span>
-          <span class="nx">backend</span> <span class="o">=</span> <span class="nx">recline</span><span class="p">.</span><span class="nx">Backend</span><span class="p">[</span><span class="nx">name</span><span class="p">];</span>
-        <span class="p">}</span>
-      <span class="p">});</span>
-    <span class="p">}</span>
-    <span class="k">return</span> <span class="nx">backend</span><span class="p">;</span>
-  <span class="p">}</span>
-<span class="p">});</span></pre></div>             </td>           </tr>                               <tr id="section-24">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-24">&#182;</a>               </div>               <h2><a id="record">A Record</a></h2>
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>          self.fields.get(facetId).facets.reset(facet);
+        });
+      }
+      dfd.resolve(queryResult);
+    });
+    <span class="hljs-keyword">return</span> dfd.promise();
+  },</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-22">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-22">&#182;</a>
+              </div>
+              <p>Deprecated (as of v0.5) - use record.summary()</p>
 
-<p>A single record (or row) in the dataset</p>             </td>             <td class="code">               <div class="highlight"><pre><span class="nx">my</span><span class="p">.</span><span class="nx">Record</span> <span class="o">=</span> <span class="nx">Backbone</span><span class="p">.</span><span class="nx">Model</span><span class="p">.</span><span class="nx">extend</span><span class="p">({</span>
-  <span class="nx">constructor</span><span class="o">:</span> <span class="kd">function</span> <span class="nx">Record</span><span class="p">()</span> <span class="p">{</span>
-    <span class="nx">Backbone</span><span class="p">.</span><span class="nx">Model</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">constructor</span><span class="p">.</span><span class="nx">apply</span><span class="p">(</span><span class="k">this</span><span class="p">,</span> <span class="nx">arguments</span><span class="p">);</span>
-  <span class="p">},</span></pre></div>             </td>           </tr>                               <tr id="section-25">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-25">&#182;</a>               </div>               <h3>initialize</h3>
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  recordSummary: <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(record)</span> </span>{
+    <span class="hljs-keyword">return</span> record.summary();
+  },</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-23">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-23">&#182;</a>
+              </div>
+              <h3 id="_backendfromstring-backendstring-">_backendFromString(backendString)</h3>
+<p>Look up a backend module from a backend string (look in recline.Backend)</p>
 
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  _backendFromString: <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(backendString)</span> </span>{
+    <span class="hljs-keyword">var</span> backend = <span class="hljs-literal">null</span>;
+    <span class="hljs-keyword">if</span> (recline &amp;&amp; recline.Backend) {
+      _.each(_.keys(recline.Backend), <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(name)</span> </span>{
+        <span class="hljs-keyword">if</span> (name.toLowerCase() === backendString.toLowerCase()) {
+          backend = recline.Backend[name];
+        }
+      });
+    }
+    <span class="hljs-keyword">return</span> backend;
+  }
+});</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-24">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-24">&#182;</a>
+              </div>
+              <h2 id="-a-id-record-a-record-a-"><a id="record">A Record</a></h2>
+<p>A single record (or row) in the dataset</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>my.Record = Backbone.Model.extend({
+  constructor: <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">Record</span><span class="hljs-params">()</span> </span>{
+    Backbone.Model.prototype.constructor.apply(<span class="hljs-keyword">this</span>, <span class="hljs-built_in">arguments</span>);
+  },</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-25">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-25">&#182;</a>
+              </div>
+              <h3 id="initialize">initialize</h3>
 <p>Create a Record</p>
-
 <p>You usually will not do this directly but will have records created by
 Dataset e.g. in query method</p>
+<p>Certain methods require presence of a fields attribute (identical to that on Dataset)</p>
 
-<p>Certain methods require presence of a fields attribute (identical to that on Dataset)</p>             </td>             <td class="code">               <div class="highlight"><pre>  <span class="nx">initialize</span><span class="o">:</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
-    <span class="nx">_</span><span class="p">.</span><span class="nx">bindAll</span><span class="p">(</span><span class="k">this</span><span class="p">,</span> <span class="s1">&#39;getFieldValue&#39;</span><span class="p">);</span>
-  <span class="p">},</span></pre></div>             </td>           </tr>                               <tr id="section-26">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-26">&#182;</a>               </div>               <h3>getFieldValue</h3>
-
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  initialize: <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> </span>{
+    _.bindAll(<span class="hljs-keyword">this</span>, <span class="hljs-string">'getFieldValue'</span>);
+  },</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-26">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-26">&#182;</a>
+              </div>
+              <h3 id="getfieldvalue">getFieldValue</h3>
 <p>For the provided Field get the corresponding rendered computed data value
 for this record.</p>
+<p>NB: if field is undefined a default ‘’ value will be returned</p>
 
-<p>NB: if field is undefined a default '' value will be returned</p>             </td>             <td class="code">               <div class="highlight"><pre>  <span class="nx">getFieldValue</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">field</span><span class="p">)</span> <span class="p">{</span>
-    <span class="kd">var</span> <span class="nx">val</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">getFieldValueUnrendered</span><span class="p">(</span><span class="nx">field</span><span class="p">);</span>
-    <span class="k">if</span> <span class="p">(</span><span class="nx">field</span> <span class="o">&amp;&amp;</span> <span class="o">!</span><span class="nx">_</span><span class="p">.</span><span class="nx">isUndefined</span><span class="p">(</span><span class="nx">field</span><span class="p">.</span><span class="nx">renderer</span><span class="p">))</span> <span class="p">{</span>
-      <span class="nx">val</span> <span class="o">=</span> <span class="nx">field</span><span class="p">.</span><span class="nx">renderer</span><span class="p">(</span><span class="nx">val</span><span class="p">,</span> <span class="nx">field</span><span class="p">,</span> <span class="k">this</span><span class="p">.</span><span class="nx">toJSON</span><span class="p">());</span>
-    <span class="p">}</span>
-    <span class="k">return</span> <span class="nx">val</span><span class="p">;</span>
-  <span class="p">},</span></pre></div>             </td>           </tr>                               <tr id="section-27">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-27">&#182;</a>               </div>               <h3>getFieldValueUnrendered</h3>
-
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  getFieldValue: <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(field)</span> </span>{
+    <span class="hljs-keyword">var</span> val = <span class="hljs-keyword">this</span>.getFieldValueUnrendered(field);
+    <span class="hljs-keyword">if</span> (field &amp;&amp; !_.isUndefined(field.renderer)) {
+      val = field.renderer(val, field, <span class="hljs-keyword">this</span>.toJSON());
+    }
+    <span class="hljs-keyword">return</span> val;
+  },</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-27">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-27">&#182;</a>
+              </div>
+              <h3 id="getfieldvalueunrendered">getFieldValueUnrendered</h3>
 <p>For the provided Field get the corresponding computed data value
 for this record.</p>
+<p>NB: if field is undefined a default ‘’ value will be returned</p>
 
-<p>NB: if field is undefined a default '' value will be returned</p>             </td>             <td class="code">               <div class="highlight"><pre>  <span class="nx">getFieldValueUnrendered</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">field</span><span class="p">)</span> <span class="p">{</span>
-    <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="nx">field</span><span class="p">)</span> <span class="p">{</span>
-      <span class="k">return</span> <span class="s1">&#39;&#39;</span><span class="p">;</span>
-    <span class="p">}</span>
-    <span class="kd">var</span> <span class="nx">val</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="nx">field</span><span class="p">.</span><span class="nx">id</span><span class="p">);</span>
-    <span class="k">if</span> <span class="p">(</span><span class="nx">field</span><span class="p">.</span><span class="nx">deriver</span><span class="p">)</span> <span class="p">{</span>
-      <span class="nx">val</span> <span class="o">=</span> <span class="nx">field</span><span class="p">.</span><span class="nx">deriver</span><span class="p">(</span><span class="nx">val</span><span class="p">,</span> <span class="nx">field</span><span class="p">,</span> <span class="k">this</span><span class="p">);</span>
-    <span class="p">}</span>
-    <span class="k">return</span> <span class="nx">val</span><span class="p">;</span>
-  <span class="p">},</span></pre></div>             </td>           </tr>                               <tr id="section-28">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-28">&#182;</a>               </div>               <h3>summary</h3>
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  getFieldValueUnrendered: <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(field)</span> </span>{
+    <span class="hljs-keyword">if</span> (!field) {
+      <span class="hljs-keyword">return</span> <span class="hljs-string">''</span>;
+    }
+    <span class="hljs-keyword">var</span> val = <span class="hljs-keyword">this</span>.get(field.id);
+    <span class="hljs-keyword">if</span> (field.deriver) {
+      val = field.deriver(val, field, <span class="hljs-keyword">this</span>);
+    }
+    <span class="hljs-keyword">return</span> val;
+  },</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-28">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-28">&#182;</a>
+              </div>
+              <h3 id="summary">summary</h3>
+<p>Get a simple html summary of this record in form of key/value list</p>
 
-<p>Get a simple html summary of this record in form of key/value list</p>             </td>             <td class="code">               <div class="highlight"><pre>  <span class="nx">summary</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">record</span><span class="p">)</span> <span class="p">{</span>
-    <span class="kd">var</span> <span class="nx">self</span> <span class="o">=</span> <span class="k">this</span><span class="p">;</span>
-    <span class="kd">var</span> <span class="nx">html</span> <span class="o">=</span> <span class="s1">&#39;&lt;div class=&quot;recline-record-summary&quot;&gt;&#39;</span><span class="p">;</span>
-    <span class="k">this</span><span class="p">.</span><span class="nx">fields</span><span class="p">.</span><span class="nx">each</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">field</span><span class="p">)</span> <span class="p">{</span> 
-      <span class="k">if</span> <span class="p">(</span><span class="nx">field</span><span class="p">.</span><span class="nx">id</span> <span class="o">!=</span> <span class="s1">&#39;id&#39;</span><span class="p">)</span> <span class="p">{</span>
-        <span class="nx">html</span> <span class="o">+=</span> <span class="s1">&#39;&lt;div class=&quot;&#39;</span> <span class="o">+</span> <span class="nx">field</span><span class="p">.</span><span class="nx">id</span> <span class="o">+</span> <span class="s1">&#39;&quot;&gt;&lt;strong&gt;&#39;</span> <span class="o">+</span> <span class="nx">field</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s1">&#39;label&#39;</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;&lt;/strong&gt;: &#39;</span> <span class="o">+</span> <span class="nx">self</span><span class="p">.</span><span class="nx">getFieldValue</span><span class="p">(</span><span class="nx">field</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;&lt;/div&gt;&#39;</span><span class="p">;</span>
-      <span class="p">}</span>
-    <span class="p">});</span>
-    <span class="nx">html</span> <span class="o">+=</span> <span class="s1">&#39;&lt;/div&gt;&#39;</span><span class="p">;</span>
-    <span class="k">return</span> <span class="nx">html</span><span class="p">;</span>
-  <span class="p">},</span></pre></div>             </td>           </tr>                               <tr id="section-29">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-29">&#182;</a>               </div>               <p>Override Backbone save, fetch and destroy so they do nothing
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  summary: <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(record)</span> </span>{
+    <span class="hljs-keyword">var</span> self = <span class="hljs-keyword">this</span>;
+    <span class="hljs-keyword">var</span> html = <span class="hljs-string">'&lt;div class="recline-record-summary"&gt;'</span>;
+    <span class="hljs-keyword">this</span>.fields.each(<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(field)</span> </span>{ 
+      <span class="hljs-keyword">if</span> (field.id != <span class="hljs-string">'id'</span>) {
+        html += <span class="hljs-string">'&lt;div class="'</span> + field.id + <span class="hljs-string">'"&gt;&lt;strong&gt;'</span> + field.get(<span class="hljs-string">'label'</span>) + <span class="hljs-string">'&lt;/strong&gt;: '</span> + self.getFieldValue(field) + <span class="hljs-string">'&lt;/div&gt;'</span>;
+      }
+    });
+    html += <span class="hljs-string">'&lt;/div&gt;'</span>;
+    <span class="hljs-keyword">return</span> html;
+  },</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-29">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-29">&#182;</a>
+              </div>
+              <p>Override Backbone save, fetch and destroy so they do nothing
 Instead, Dataset object that created this Record should take care of
 handling these changes (discovery will occur via event notifications)
-WARNING: these will not persist <em>unless</em> you call save on Dataset</p>             </td>             <td class="code">               <div class="highlight"><pre>  <span class="nx">fetch</span><span class="o">:</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{},</span>
-  <span class="nx">save</span><span class="o">:</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{},</span>
-  <span class="nx">destroy</span><span class="o">:</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span> <span class="k">this</span><span class="p">.</span><span class="nx">trigger</span><span class="p">(</span><span class="s1">&#39;destroy&#39;</span><span class="p">,</span> <span class="k">this</span><span class="p">);</span> <span class="p">}</span>
-<span class="p">});</span></pre></div>             </td>           </tr>                               <tr id="section-30">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-30">&#182;</a>               </div>               <h2>A Backbone collection of Records</h2>             </td>             <td class="code">               <div class="highlight"><pre><span class="nx">my</span><span class="p">.</span><span class="nx">RecordList</span> <span class="o">=</span> <span class="nx">Backbone</span><span class="p">.</span><span class="nx">Collection</span><span class="p">.</span><span class="nx">extend</span><span class="p">({</span>
-  <span class="nx">constructor</span><span class="o">:</span> <span class="kd">function</span> <span class="nx">RecordList</span><span class="p">()</span> <span class="p">{</span>
-    <span class="nx">Backbone</span><span class="p">.</span><span class="nx">Collection</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">constructor</span><span class="p">.</span><span class="nx">apply</span><span class="p">(</span><span class="k">this</span><span class="p">,</span> <span class="nx">arguments</span><span class="p">);</span>
-  <span class="p">},</span>
-  <span class="nx">model</span><span class="o">:</span> <span class="nx">my</span><span class="p">.</span><span class="nx">Record</span>
-<span class="p">});</span></pre></div>             </td>           </tr>                               <tr id="section-31">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-31">&#182;</a>               </div>               <h2><a id="field">A Field (aka Column) on a Dataset</a></h2>             </td>             <td class="code">               <div class="highlight"><pre><span class="nx">my</span><span class="p">.</span><span class="nx">Field</span> <span class="o">=</span> <span class="nx">Backbone</span><span class="p">.</span><span class="nx">Model</span><span class="p">.</span><span class="nx">extend</span><span class="p">({</span>
-  <span class="nx">constructor</span><span class="o">:</span> <span class="kd">function</span> <span class="nx">Field</span><span class="p">()</span> <span class="p">{</span>
-    <span class="nx">Backbone</span><span class="p">.</span><span class="nx">Model</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">constructor</span><span class="p">.</span><span class="nx">apply</span><span class="p">(</span><span class="k">this</span><span class="p">,</span> <span class="nx">arguments</span><span class="p">);</span>
-  <span class="p">},</span></pre></div>             </td>           </tr>                               <tr id="section-32">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-32">&#182;</a>               </div>               <h3>defaults - define default values</h3>             </td>             <td class="code">               <div class="highlight"><pre>  <span class="nx">defaults</span><span class="o">:</span> <span class="p">{</span>
-    <span class="nx">label</span><span class="o">:</span> <span class="kc">null</span><span class="p">,</span>
-    <span class="nx">type</span><span class="o">:</span> <span class="s1">&#39;string&#39;</span><span class="p">,</span>
-    <span class="nx">format</span><span class="o">:</span> <span class="kc">null</span><span class="p">,</span>
-    <span class="nx">is_derived</span><span class="o">:</span> <span class="kc">false</span>
-  <span class="p">},</span></pre></div>             </td>           </tr>                               <tr id="section-33">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-33">&#182;</a>               </div>               <h3>initialize</h3>
+WARNING: these will not persist <em>unless</em> you call save on Dataset</p>
 
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  fetch: <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> </span>{},
+  save: <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> </span>{},
+  destroy: <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> </span>{ <span class="hljs-keyword">this</span>.trigger(<span class="hljs-string">'destroy'</span>, <span class="hljs-keyword">this</span>); }
+});</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-30">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-30">&#182;</a>
+              </div>
+              <h2 id="a-backbone-collection-of-records">A Backbone collection of Records</h2>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>my.RecordList = Backbone.Collection.extend({
+  constructor: <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">RecordList</span><span class="hljs-params">()</span> </span>{
+    Backbone.Collection.prototype.constructor.apply(<span class="hljs-keyword">this</span>, <span class="hljs-built_in">arguments</span>);
+  },
+  model: my.Record
+});</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-31">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-31">&#182;</a>
+              </div>
+              <h2 id="-a-id-field-a-field-aka-column-on-a-dataset-a-"><a id="field">A Field (aka Column) on a Dataset</a></h2>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>my.Field = Backbone.Model.extend({
+  constructor: <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">Field</span><span class="hljs-params">()</span> </span>{
+    Backbone.Model.prototype.constructor.apply(<span class="hljs-keyword">this</span>, <span class="hljs-built_in">arguments</span>);
+  },</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-32">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-32">&#182;</a>
+              </div>
+              <h3 id="defaults-define-default-values">defaults - define default values</h3>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  defaults: {
+    label: <span class="hljs-literal">null</span>,
+    type: <span class="hljs-string">'string'</span>,
+    format: <span class="hljs-literal">null</span>,
+    is_derived: <span class="hljs-literal">false</span>
+  },</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-33">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-33">&#182;</a>
+              </div>
+              <h3 id="initialize">initialize</h3>
 <p>@param {Object} data: standard Backbone model attributes</p>
+<p>@param {Object} options: renderer and/or deriver functions.</p>
 
-<p>@param {Object} options: renderer and/or deriver functions.</p>             </td>             <td class="code">               <div class="highlight"><pre>  <span class="nx">initialize</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">data</span><span class="p">,</span> <span class="nx">options</span><span class="p">)</span> <span class="p">{</span></pre></div>             </td>           </tr>                               <tr id="section-34">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-34">&#182;</a>               </div>               <p>if a hash not passed in the first argument throw error</p>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="k">if</span> <span class="p">(</span><span class="s1">&#39;0&#39;</span> <span class="k">in</span> <span class="nx">data</span><span class="p">)</span> <span class="p">{</span>
-      <span class="k">throw</span> <span class="k">new</span> <span class="nb">Error</span><span class="p">(</span><span class="s1">&#39;Looks like you did not pass a proper hash with id to Field constructor&#39;</span><span class="p">);</span>
-    <span class="p">}</span>
-    <span class="k">if</span> <span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">attributes</span><span class="p">.</span><span class="nx">label</span> <span class="o">===</span> <span class="kc">null</span><span class="p">)</span> <span class="p">{</span>
-      <span class="k">this</span><span class="p">.</span><span class="nx">set</span><span class="p">({</span><span class="nx">label</span><span class="o">:</span> <span class="k">this</span><span class="p">.</span><span class="nx">id</span><span class="p">});</span>
-    <span class="p">}</span>
-    <span class="k">if</span> <span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">attributes</span><span class="p">.</span><span class="nx">type</span><span class="p">.</span><span class="nx">toLowerCase</span><span class="p">()</span> <span class="k">in</span> <span class="k">this</span><span class="p">.</span><span class="nx">_typeMap</span><span class="p">)</span> <span class="p">{</span>
-      <span class="k">this</span><span class="p">.</span><span class="nx">attributes</span><span class="p">.</span><span class="nx">type</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">_typeMap</span><span class="p">[</span><span class="k">this</span><span class="p">.</span><span class="nx">attributes</span><span class="p">.</span><span class="nx">type</span><span class="p">.</span><span class="nx">toLowerCase</span><span class="p">()];</span>
-    <span class="p">}</span>
-    <span class="k">if</span> <span class="p">(</span><span class="nx">options</span><span class="p">)</span> <span class="p">{</span>
-      <span class="k">this</span><span class="p">.</span><span class="nx">renderer</span> <span class="o">=</span> <span class="nx">options</span><span class="p">.</span><span class="nx">renderer</span><span class="p">;</span>
-      <span class="k">this</span><span class="p">.</span><span class="nx">deriver</span> <span class="o">=</span> <span class="nx">options</span><span class="p">.</span><span class="nx">deriver</span><span class="p">;</span>
-    <span class="p">}</span>
-    <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="k">this</span><span class="p">.</span><span class="nx">renderer</span><span class="p">)</span> <span class="p">{</span>
-      <span class="k">this</span><span class="p">.</span><span class="nx">renderer</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">defaultRenderers</span><span class="p">[</span><span class="k">this</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s1">&#39;type&#39;</span><span class="p">)];</span>
-    <span class="p">}</span>
-    <span class="k">this</span><span class="p">.</span><span class="nx">facets</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">my</span><span class="p">.</span><span class="nx">FacetList</span><span class="p">();</span>
-  <span class="p">},</span>
-  <span class="nx">_typeMap</span><span class="o">:</span> <span class="p">{</span>
-    <span class="s1">&#39;text&#39;</span><span class="o">:</span> <span class="s1">&#39;string&#39;</span><span class="p">,</span>
-    <span class="s1">&#39;double&#39;</span><span class="o">:</span> <span class="s1">&#39;number&#39;</span><span class="p">,</span>
-    <span class="s1">&#39;float&#39;</span><span class="o">:</span> <span class="s1">&#39;number&#39;</span><span class="p">,</span>
-    <span class="s1">&#39;numeric&#39;</span><span class="o">:</span> <span class="s1">&#39;number&#39;</span><span class="p">,</span>
-    <span class="s1">&#39;int&#39;</span><span class="o">:</span> <span class="s1">&#39;integer&#39;</span><span class="p">,</span>
-    <span class="s1">&#39;datetime&#39;</span><span class="o">:</span> <span class="s1">&#39;date-time&#39;</span><span class="p">,</span>
-    <span class="s1">&#39;bool&#39;</span><span class="o">:</span> <span class="s1">&#39;boolean&#39;</span><span class="p">,</span>
-    <span class="s1">&#39;timestamp&#39;</span><span class="o">:</span> <span class="s1">&#39;date-time&#39;</span><span class="p">,</span>
-    <span class="s1">&#39;json&#39;</span><span class="o">:</span> <span class="s1">&#39;object&#39;</span>
-  <span class="p">},</span>
-  <span class="nx">defaultRenderers</span><span class="o">:</span> <span class="p">{</span>
-    <span class="nx">object</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">val</span><span class="p">,</span> <span class="nx">field</span><span class="p">,</span> <span class="nx">doc</span><span class="p">)</span> <span class="p">{</span>
-      <span class="k">return</span> <span class="nx">JSON</span><span class="p">.</span><span class="nx">stringify</span><span class="p">(</span><span class="nx">val</span><span class="p">);</span>
-    <span class="p">},</span>
-    <span class="nx">geo_point</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">val</span><span class="p">,</span> <span class="nx">field</span><span class="p">,</span> <span class="nx">doc</span><span class="p">)</span> <span class="p">{</span>
-      <span class="k">return</span> <span class="nx">JSON</span><span class="p">.</span><span class="nx">stringify</span><span class="p">(</span><span class="nx">val</span><span class="p">);</span>
-    <span class="p">},</span>
-    <span class="s1">&#39;number&#39;</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">val</span><span class="p">,</span> <span class="nx">field</span><span class="p">,</span> <span class="nx">doc</span><span class="p">)</span> <span class="p">{</span>
-      <span class="kd">var</span> <span class="nx">format</span> <span class="o">=</span> <span class="nx">field</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s1">&#39;format&#39;</span><span class="p">);</span> 
-      <span class="k">if</span> <span class="p">(</span><span class="nx">format</span> <span class="o">===</span> <span class="s1">&#39;percentage&#39;</span><span class="p">)</span> <span class="p">{</span>
-        <span class="k">return</span> <span class="nx">val</span> <span class="o">+</span> <span class="s1">&#39;%&#39;</span><span class="p">;</span>
-      <span class="p">}</span>
-      <span class="k">return</span> <span class="nx">val</span><span class="p">;</span>
-    <span class="p">},</span>
-    <span class="s1">&#39;string&#39;</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">val</span><span class="p">,</span> <span class="nx">field</span><span class="p">,</span> <span class="nx">doc</span><span class="p">)</span> <span class="p">{</span>
-      <span class="kd">var</span> <span class="nx">format</span> <span class="o">=</span> <span class="nx">field</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s1">&#39;format&#39;</span><span class="p">);</span>
-      <span class="k">if</span> <span class="p">(</span><span class="nx">format</span> <span class="o">===</span> <span class="s1">&#39;markdown&#39;</span><span class="p">)</span> <span class="p">{</span>
-        <span class="k">if</span> <span class="p">(</span><span class="k">typeof</span> <span class="nx">Showdown</span> <span class="o">!==</span> <span class="s1">&#39;undefined&#39;</span><span class="p">)</span> <span class="p">{</span>
-          <span class="kd">var</span> <span class="nx">showdown</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Showdown</span><span class="p">.</span><span class="nx">converter</span><span class="p">();</span>
-          <span class="nx">out</span> <span class="o">=</span> <span class="nx">showdown</span><span class="p">.</span><span class="nx">makeHtml</span><span class="p">(</span><span class="nx">val</span><span class="p">);</span>
-          <span class="k">return</span> <span class="nx">out</span><span class="p">;</span>
-        <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
-          <span class="k">return</span> <span class="nx">val</span><span class="p">;</span>
-        <span class="p">}</span>
-      <span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="nx">format</span> <span class="o">==</span> <span class="s1">&#39;plain&#39;</span><span class="p">)</span> <span class="p">{</span>
-        <span class="k">return</span> <span class="nx">val</span><span class="p">;</span>
-      <span class="p">}</span> <span class="k">else</span> <span class="p">{</span></pre></div>             </td>           </tr>                               <tr id="section-35">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-35">&#182;</a>               </div>               <p>as this is the default and default type is string may get things
-here that are not actually strings</p>             </td>             <td class="code">               <div class="highlight"><pre>        <span class="k">if</span> <span class="p">(</span><span class="nx">val</span> <span class="o">&amp;&amp;</span> <span class="k">typeof</span> <span class="nx">val</span> <span class="o">===</span> <span class="s1">&#39;string&#39;</span><span class="p">)</span> <span class="p">{</span>
-          <span class="nx">val</span> <span class="o">=</span> <span class="nx">val</span><span class="p">.</span><span class="nx">replace</span><span class="p">(</span><span class="sr">/(https?:\/\/[^ ]+)/g</span><span class="p">,</span> <span class="s1">&#39;&lt;a href=&quot;$1&quot;&gt;$1&lt;/a&gt;&#39;</span><span class="p">);</span>
-        <span class="p">}</span>
-        <span class="k">return</span> <span class="nx">val</span><span class="p">;</span>
-      <span class="p">}</span>
-    <span class="p">}</span>
-  <span class="p">}</span>
-<span class="p">});</span>
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  initialize: <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(data, options)</span> </span>{</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-34">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-34">&#182;</a>
+              </div>
+              <p>if a hash not passed in the first argument throw error</p>
 
-<span class="nx">my</span><span class="p">.</span><span class="nx">FieldList</span> <span class="o">=</span> <span class="nx">Backbone</span><span class="p">.</span><span class="nx">Collection</span><span class="p">.</span><span class="nx">extend</span><span class="p">({</span>
-  <span class="nx">constructor</span><span class="o">:</span> <span class="kd">function</span> <span class="nx">FieldList</span><span class="p">()</span> <span class="p">{</span>
-    <span class="nx">Backbone</span><span class="p">.</span><span class="nx">Collection</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">constructor</span><span class="p">.</span><span class="nx">apply</span><span class="p">(</span><span class="k">this</span><span class="p">,</span> <span class="nx">arguments</span><span class="p">);</span>
-  <span class="p">},</span>
-  <span class="nx">model</span><span class="o">:</span> <span class="nx">my</span><span class="p">.</span><span class="nx">Field</span>
-<span class="p">});</span></pre></div>             </td>           </tr>                               <tr id="section-36">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-36">&#182;</a>               </div>               <h2><a id="query">Query</a></h2>             </td>             <td class="code">               <div class="highlight"><pre><span class="nx">my</span><span class="p">.</span><span class="nx">Query</span> <span class="o">=</span> <span class="nx">Backbone</span><span class="p">.</span><span class="nx">Model</span><span class="p">.</span><span class="nx">extend</span><span class="p">({</span>
-  <span class="nx">constructor</span><span class="o">:</span> <span class="kd">function</span> <span class="nx">Query</span><span class="p">()</span> <span class="p">{</span>
-    <span class="nx">Backbone</span><span class="p">.</span><span class="nx">Model</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">constructor</span><span class="p">.</span><span class="nx">apply</span><span class="p">(</span><span class="k">this</span><span class="p">,</span> <span class="nx">arguments</span><span class="p">);</span>
-  <span class="p">},</span>
-  <span class="nx">defaults</span><span class="o">:</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
-    <span class="k">return</span> <span class="p">{</span>
-      <span class="nx">size</span><span class="o">:</span> <span class="mi">100</span><span class="p">,</span>
-      <span class="nx">from</span><span class="o">:</span> <span class="mi">0</span><span class="p">,</span>
-      <span class="nx">q</span><span class="o">:</span> <span class="s1">&#39;&#39;</span><span class="p">,</span>
-      <span class="nx">facets</span><span class="o">:</span> <span class="p">{},</span>
-      <span class="nx">filters</span><span class="o">:</span> <span class="p">[]</span>
-    <span class="p">};</span>
-  <span class="p">},</span>
-  <span class="nx">_filterTemplates</span><span class="o">:</span> <span class="p">{</span>
-    <span class="nx">term</span><span class="o">:</span> <span class="p">{</span>
-      <span class="nx">type</span><span class="o">:</span> <span class="s1">&#39;term&#39;</span><span class="p">,</span></pre></div>             </td>           </tr>                               <tr id="section-37">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-37">&#182;</a>               </div>               <p>TODO do we need this attribute here?</p>             </td>             <td class="code">               <div class="highlight"><pre>      <span class="nx">field</span><span class="o">:</span> <span class="s1">&#39;&#39;</span><span class="p">,</span>
-      <span class="nx">term</span><span class="o">:</span> <span class="s1">&#39;&#39;</span>
-    <span class="p">},</span>
-    <span class="nx">range</span><span class="o">:</span> <span class="p">{</span>
-      <span class="nx">type</span><span class="o">:</span> <span class="s1">&#39;range&#39;</span><span class="p">,</span>
-      <span class="nx">from</span><span class="o">:</span> <span class="s1">&#39;&#39;</span><span class="p">,</span>
-      <span class="nx">to</span><span class="o">:</span> <span class="s1">&#39;&#39;</span>
-    <span class="p">},</span>
-    <span class="nx">geo_distance</span><span class="o">:</span> <span class="p">{</span>
-      <span class="nx">type</span><span class="o">:</span> <span class="s1">&#39;geo_distance&#39;</span><span class="p">,</span>
-      <span class="nx">distance</span><span class="o">:</span> <span class="mi">10</span><span class="p">,</span>
-      <span class="nx">unit</span><span class="o">:</span> <span class="s1">&#39;km&#39;</span><span class="p">,</span>
-      <span class="nx">point</span><span class="o">:</span> <span class="p">{</span>
-        <span class="nx">lon</span><span class="o">:</span> <span class="mi">0</span><span class="p">,</span>
-        <span class="nx">lat</span><span class="o">:</span> <span class="mi">0</span>
-      <span class="p">}</span>
-    <span class="p">}</span>
-  <span class="p">},</span>  </pre></div>             </td>           </tr>                               <tr id="section-38">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-38">&#182;</a>               </div>               <h3>addFilter(filter)</h3>
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    <span class="hljs-keyword">if</span> (<span class="hljs-string">'0'</span> <span class="hljs-keyword">in</span> data) {
+      <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> <span class="hljs-built_in">Error</span>(<span class="hljs-string">'Looks like you did not pass a proper hash with id to Field constructor'</span>);
+    }
+    <span class="hljs-keyword">if</span> (<span class="hljs-keyword">this</span>.attributes.label === <span class="hljs-literal">null</span>) {
+      <span class="hljs-keyword">this</span>.set({label: <span class="hljs-keyword">this</span>.id});
+    }
+    <span class="hljs-keyword">if</span> (<span class="hljs-keyword">this</span>.attributes.type.toLowerCase() <span class="hljs-keyword">in</span> <span class="hljs-keyword">this</span>._typeMap) {
+      <span class="hljs-keyword">this</span>.attributes.type = <span class="hljs-keyword">this</span>._typeMap[<span class="hljs-keyword">this</span>.attributes.type.toLowerCase()];
+    }
+    <span class="hljs-keyword">if</span> (options) {
+      <span class="hljs-keyword">this</span>.renderer = options.renderer;
+      <span class="hljs-keyword">this</span>.deriver = options.deriver;
+    }
+    <span class="hljs-keyword">if</span> (!<span class="hljs-keyword">this</span>.renderer) {
+      <span class="hljs-keyword">this</span>.renderer = <span class="hljs-keyword">this</span>.defaultRenderers[<span class="hljs-keyword">this</span>.get(<span class="hljs-string">'type'</span>)];
+    }
+    <span class="hljs-keyword">this</span>.facets = <span class="hljs-keyword">new</span> my.FacetList();
+  },
+  _typeMap: {
+    <span class="hljs-string">'text'</span>: <span class="hljs-string">'string'</span>,
+    <span class="hljs-string">'double'</span>: <span class="hljs-string">'number'</span>,
+    <span class="hljs-string">'float'</span>: <span class="hljs-string">'number'</span>,
+    <span class="hljs-string">'numeric'</span>: <span class="hljs-string">'number'</span>,
+    <span class="hljs-string">'int'</span>: <span class="hljs-string">'integer'</span>,
+    <span class="hljs-string">'datetime'</span>: <span class="hljs-string">'date-time'</span>,
+    <span class="hljs-string">'bool'</span>: <span class="hljs-string">'boolean'</span>,
+    <span class="hljs-string">'timestamp'</span>: <span class="hljs-string">'date-time'</span>,
+    <span class="hljs-string">'json'</span>: <span class="hljs-string">'object'</span>
+  },
+  defaultRenderers: {
+    object: <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(val, field, doc)</span> </span>{
+      <span class="hljs-keyword">return</span> <span class="hljs-built_in">JSON</span>.stringify(val);
+    },
+    geo_point: <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(val, field, doc)</span> </span>{
+      <span class="hljs-keyword">return</span> <span class="hljs-built_in">JSON</span>.stringify(val);
+    },
+    <span class="hljs-string">'number'</span>: <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(val, field, doc)</span> </span>{
+      <span class="hljs-keyword">var</span> format = field.get(<span class="hljs-string">'format'</span>); 
+      <span class="hljs-keyword">if</span> (format === <span class="hljs-string">'percentage'</span>) {
+        <span class="hljs-keyword">return</span> val + <span class="hljs-string">'%'</span>;
+      }
+      <span class="hljs-keyword">return</span> val;
+    },
+    <span class="hljs-string">'string'</span>: <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(val, field, doc)</span> </span>{
+      <span class="hljs-keyword">var</span> format = field.get(<span class="hljs-string">'format'</span>);
+      <span class="hljs-keyword">if</span> (format === <span class="hljs-string">'markdown'</span>) {
+        <span class="hljs-keyword">if</span> (<span class="hljs-keyword">typeof</span> Showdown !== <span class="hljs-string">'undefined'</span>) {
+          <span class="hljs-keyword">var</span> showdown = <span class="hljs-keyword">new</span> Showdown.converter();
+          out = showdown.makeHtml(val);
+          <span class="hljs-keyword">return</span> out;
+        } <span class="hljs-keyword">else</span> {
+          <span class="hljs-keyword">return</span> val;
+        }
+      } <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (format == <span class="hljs-string">'plain'</span>) {
+        <span class="hljs-keyword">return</span> val;
+      } <span class="hljs-keyword">else</span> {</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-35">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-35">&#182;</a>
+              </div>
+              <p>as this is the default and default type is string may get things
+here that are not actually strings</p>
 
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>        <span class="hljs-keyword">if</span> (val &amp;&amp; <span class="hljs-keyword">typeof</span> val === <span class="hljs-string">'string'</span>) {
+          val = val.replace(<span class="hljs-regexp">/(https?:\/\/[^ ]+)/g</span>, <span class="hljs-string">'&lt;a href="$1"&gt;$1&lt;/a&gt;'</span>);
+        }
+        <span class="hljs-keyword">return</span> val;
+      }
+    }
+  }
+});
+
+my.FieldList = Backbone.Collection.extend({
+  constructor: <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">FieldList</span><span class="hljs-params">()</span> </span>{
+    Backbone.Collection.prototype.constructor.apply(<span class="hljs-keyword">this</span>, <span class="hljs-built_in">arguments</span>);
+  },
+  model: my.Field
+});</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-36">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-36">&#182;</a>
+              </div>
+              <h2 id="-a-id-query-query-a-"><a id="query">Query</a></h2>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>my.Query = Backbone.Model.extend({
+  constructor: <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">Query</span><span class="hljs-params">()</span> </span>{
+    Backbone.Model.prototype.constructor.apply(<span class="hljs-keyword">this</span>, <span class="hljs-built_in">arguments</span>);
+  },
+  defaults: <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> </span>{
+    <span class="hljs-keyword">return</span> {
+      size: <span class="hljs-number">100</span>,
+      from: <span class="hljs-number">0</span>,
+      q: <span class="hljs-string">''</span>,
+      facets: {},
+      filters: []
+    };
+  },
+  _filterTemplates: {
+    term: {
+      type: <span class="hljs-string">'term'</span>,</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-37">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-37">&#182;</a>
+              </div>
+              <p>TODO do we need this attribute here?</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>      field: <span class="hljs-string">''</span>,
+      term: <span class="hljs-string">''</span>
+    },
+    range: {
+      type: <span class="hljs-string">'range'</span>,
+      from: <span class="hljs-string">''</span>,
+      to: <span class="hljs-string">''</span>
+    },
+    geo_distance: {
+      type: <span class="hljs-string">'geo_distance'</span>,
+      distance: <span class="hljs-number">10</span>,
+      unit: <span class="hljs-string">'km'</span>,
+      point: {
+        lon: <span class="hljs-number">0</span>,
+        lat: <span class="hljs-number">0</span>
+      }
+    }
+  },</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-38">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-38">&#182;</a>
+              </div>
+              <h3 id="addfilter-filter-">addFilter(filter)</h3>
 <p>Add a new filter specified by the filter hash and append to the list of filters</p>
+<p>@param filter an object specifying the filter - see _filterTemplates for examples. If only type is provided will generate a filter by cloning _filterTemplates</p>
 
-<p>@param filter an object specifying the filter - see _filterTemplates for examples. If only type is provided will generate a filter by cloning _filterTemplates</p>             </td>             <td class="code">               <div class="highlight"><pre>  <span class="nx">addFilter</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">filter</span><span class="p">)</span> <span class="p">{</span></pre></div>             </td>           </tr>                               <tr id="section-39">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-39">&#182;</a>               </div>               <p>crude deep copy</p>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="kd">var</span> <span class="nx">ourfilter</span> <span class="o">=</span> <span class="nx">JSON</span><span class="p">.</span><span class="nx">parse</span><span class="p">(</span><span class="nx">JSON</span><span class="p">.</span><span class="nx">stringify</span><span class="p">(</span><span class="nx">filter</span><span class="p">));</span></pre></div>             </td>           </tr>                               <tr id="section-40">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-40">&#182;</a>               </div>               <p>not fully specified so use template and over-write</p>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="k">if</span> <span class="p">(</span><span class="nx">_</span><span class="p">.</span><span class="nx">keys</span><span class="p">(</span><span class="nx">filter</span><span class="p">).</span><span class="nx">length</span> <span class="o">&lt;=</span> <span class="mi">3</span><span class="p">)</span> <span class="p">{</span>
-      <span class="nx">ourfilter</span> <span class="o">=</span> <span class="nx">_</span><span class="p">.</span><span class="nx">defaults</span><span class="p">(</span><span class="nx">ourfilter</span><span class="p">,</span> <span class="k">this</span><span class="p">.</span><span class="nx">_filterTemplates</span><span class="p">[</span><span class="nx">filter</span><span class="p">.</span><span class="nx">type</span><span class="p">]);</span>
-    <span class="p">}</span>
-    <span class="kd">var</span> <span class="nx">filters</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s1">&#39;filters&#39;</span><span class="p">);</span>
-    <span class="nx">filters</span><span class="p">.</span><span class="nx">push</span><span class="p">(</span><span class="nx">ourfilter</span><span class="p">);</span>
-    <span class="k">this</span><span class="p">.</span><span class="nx">trigger</span><span class="p">(</span><span class="s1">&#39;change:filters:new-blank&#39;</span><span class="p">);</span>
-  <span class="p">},</span>
-  <span class="nx">replaceFilter</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">filter</span><span class="p">)</span> <span class="p">{</span></pre></div>             </td>           </tr>                               <tr id="section-41">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-41">&#182;</a>               </div>               <p>delete filter on the same field, then add</p>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="kd">var</span> <span class="nx">filters</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s1">&#39;filters&#39;</span><span class="p">);</span>
-    <span class="kd">var</span> <span class="nx">idx</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span><span class="p">;</span>
-    <span class="nx">_</span><span class="p">.</span><span class="nx">each</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s1">&#39;filters&#39;</span><span class="p">),</span> <span class="kd">function</span><span class="p">(</span><span class="nx">f</span><span class="p">,</span> <span class="nx">key</span><span class="p">,</span> <span class="nx">list</span><span class="p">)</span> <span class="p">{</span>
-      <span class="k">if</span> <span class="p">(</span><span class="nx">filter</span><span class="p">.</span><span class="nx">field</span> <span class="o">==</span> <span class="nx">f</span><span class="p">.</span><span class="nx">field</span><span class="p">)</span> <span class="p">{</span>
-        <span class="nx">idx</span> <span class="o">=</span> <span class="nx">key</span><span class="p">;</span>
-      <span class="p">}</span>
-    <span class="p">});</span></pre></div>             </td>           </tr>                               <tr id="section-42">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-42">&#182;</a>               </div>               <p>trigger just one event (change:filters:new-blank) instead of one for remove and 
-one for add</p>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="k">if</span> <span class="p">(</span><span class="nx">idx</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
-      <span class="nx">filters</span><span class="p">.</span><span class="nx">splice</span><span class="p">(</span><span class="nx">idx</span><span class="p">,</span> <span class="mi">1</span><span class="p">);</span>
-      <span class="k">this</span><span class="p">.</span><span class="nx">set</span><span class="p">({</span><span class="nx">filters</span><span class="o">:</span> <span class="nx">filters</span><span class="p">});</span>
-    <span class="p">}</span>
-    <span class="k">this</span><span class="p">.</span><span class="nx">addFilter</span><span class="p">(</span><span class="nx">filter</span><span class="p">);</span>
-  <span class="p">},</span>
-  <span class="nx">updateFilter</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">index</span><span class="p">,</span> <span class="nx">value</span><span class="p">)</span> <span class="p">{</span>
-  <span class="p">},</span></pre></div>             </td>           </tr>                               <tr id="section-43">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-43">&#182;</a>               </div>               <h3>removeFilter</h3>
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  addFilter: <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(filter)</span> </span>{</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-39">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-39">&#182;</a>
+              </div>
+              <p>crude deep copy</p>
 
-<p>Remove a filter from filters at index filterIndex</p>             </td>             <td class="code">               <div class="highlight"><pre>  <span class="nx">removeFilter</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">filterIndex</span><span class="p">)</span> <span class="p">{</span>
-    <span class="kd">var</span> <span class="nx">filters</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s1">&#39;filters&#39;</span><span class="p">);</span>
-    <span class="nx">filters</span><span class="p">.</span><span class="nx">splice</span><span class="p">(</span><span class="nx">filterIndex</span><span class="p">,</span> <span class="mi">1</span><span class="p">);</span>
-    <span class="k">this</span><span class="p">.</span><span class="nx">set</span><span class="p">({</span><span class="nx">filters</span><span class="o">:</span> <span class="nx">filters</span><span class="p">});</span>
-    <span class="k">this</span><span class="p">.</span><span class="nx">trigger</span><span class="p">(</span><span class="s1">&#39;change&#39;</span><span class="p">);</span>
-  <span class="p">},</span></pre></div>             </td>           </tr>                               <tr id="section-44">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-44">&#182;</a>               </div>               <h3>addFacet</h3>
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    <span class="hljs-keyword">var</span> ourfilter = <span class="hljs-built_in">JSON</span>.parse(<span class="hljs-built_in">JSON</span>.stringify(filter));</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-40">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-40">&#182;</a>
+              </div>
+              <p>not fully specified so use template and over-write</p>
 
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    <span class="hljs-keyword">if</span> (_.keys(filter).length &lt;= <span class="hljs-number">3</span>) {
+      ourfilter = _.defaults(ourfilter, <span class="hljs-keyword">this</span>._filterTemplates[filter.type]);
+    }
+    <span class="hljs-keyword">var</span> filters = <span class="hljs-keyword">this</span>.get(<span class="hljs-string">'filters'</span>);
+    filters.push(ourfilter);
+    <span class="hljs-keyword">this</span>.trigger(<span class="hljs-string">'change:filters:new-blank'</span>);
+  },
+  replaceFilter: <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(filter)</span> </span>{</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-41">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-41">&#182;</a>
+              </div>
+              <p>delete filter on the same field, then add</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    <span class="hljs-keyword">var</span> filters = <span class="hljs-keyword">this</span>.get(<span class="hljs-string">'filters'</span>);
+    <span class="hljs-keyword">var</span> idx = -<span class="hljs-number">1</span>;
+    _.each(<span class="hljs-keyword">this</span>.get(<span class="hljs-string">'filters'</span>), <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(f, key, list)</span> </span>{
+      <span class="hljs-keyword">if</span> (filter.field == f.field) {
+        idx = key;
+      }
+    });</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-42">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-42">&#182;</a>
+              </div>
+              <p>trigger just one event (change:filters:new-blank) instead of one for remove and 
+one for add</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    <span class="hljs-keyword">if</span> (idx &gt;= <span class="hljs-number">0</span>) {
+      filters.splice(idx, <span class="hljs-number">1</span>);
+      <span class="hljs-keyword">this</span>.set({filters: filters});
+    }
+    <span class="hljs-keyword">this</span>.addFilter(filter);
+  },
+  updateFilter: <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(index, value)</span> </span>{
+  },</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-43">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-43">&#182;</a>
+              </div>
+              <h3 id="removefilter">removeFilter</h3>
+<p>Remove a filter from filters at index filterIndex</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  removeFilter: <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(filterIndex)</span> </span>{
+    <span class="hljs-keyword">var</span> filters = <span class="hljs-keyword">this</span>.get(<span class="hljs-string">'filters'</span>);
+    filters.splice(filterIndex, <span class="hljs-number">1</span>);
+    <span class="hljs-keyword">this</span>.set({filters: filters});
+    <span class="hljs-keyword">this</span>.trigger(<span class="hljs-string">'change'</span>);
+  },</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-44">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-44">&#182;</a>
+              </div>
+              <h3 id="addfacet">addFacet</h3>
 <p>Add a Facet to this query</p>
+<p>See <a href="http://www.elasticsearch.org/guide/reference/api/search/facets/">http://www.elasticsearch.org/guide/reference/api/search/facets/</a></p>
 
-<p>See <a href="http://www.elasticsearch.org/guide/reference/api/search/facets/">http://www.elasticsearch.org/guide/reference/api/search/facets/</a></p>             </td>             <td class="code">               <div class="highlight"><pre>  <span class="nx">addFacet</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">fieldId</span><span class="p">,</span> <span class="nx">size</span><span class="p">,</span> <span class="nx">silent</span><span class="p">)</span> <span class="p">{</span>
-    <span class="kd">var</span> <span class="nx">facets</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s1">&#39;facets&#39;</span><span class="p">);</span></pre></div>             </td>           </tr>                               <tr id="section-45">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-45">&#182;</a>               </div>               <p>Assume id and fieldId should be the same (TODO: this need not be true if we want to add two different type of facets on same field)</p>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="k">if</span> <span class="p">(</span><span class="nx">_</span><span class="p">.</span><span class="nx">contains</span><span class="p">(</span><span class="nx">_</span><span class="p">.</span><span class="nx">keys</span><span class="p">(</span><span class="nx">facets</span><span class="p">),</span> <span class="nx">fieldId</span><span class="p">))</span> <span class="p">{</span>
-      <span class="k">return</span><span class="p">;</span>
-    <span class="p">}</span>
-    <span class="nx">facets</span><span class="p">[</span><span class="nx">fieldId</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
-      <span class="nx">terms</span><span class="o">:</span> <span class="p">{</span> <span class="nx">field</span><span class="o">:</span> <span class="nx">fieldId</span> <span class="p">}</span>
-    <span class="p">};</span>
-    <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="nx">_</span><span class="p">.</span><span class="nx">isUndefined</span><span class="p">(</span><span class="nx">size</span><span class="p">))</span> <span class="p">{</span>
-      <span class="nx">facets</span><span class="p">[</span><span class="nx">fieldId</span><span class="p">].</span><span class="nx">terms</span><span class="p">.</span><span class="nx">size</span> <span class="o">=</span> <span class="nx">size</span><span class="p">;</span>
-    <span class="p">}</span>
-    <span class="k">this</span><span class="p">.</span><span class="nx">set</span><span class="p">({</span><span class="nx">facets</span><span class="o">:</span> <span class="nx">facets</span><span class="p">},</span> <span class="p">{</span><span class="nx">silent</span><span class="o">:</span> <span class="kc">true</span><span class="p">});</span>
-    <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="nx">silent</span><span class="p">)</span> <span class="p">{</span>
-      <span class="k">this</span><span class="p">.</span><span class="nx">trigger</span><span class="p">(</span><span class="s1">&#39;facet:add&#39;</span><span class="p">,</span> <span class="k">this</span><span class="p">);</span>
-    <span class="p">}</span>
-  <span class="p">},</span>
-  <span class="nx">addHistogramFacet</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">fieldId</span><span class="p">)</span> <span class="p">{</span>
-    <span class="kd">var</span> <span class="nx">facets</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s1">&#39;facets&#39;</span><span class="p">);</span>
-    <span class="nx">facets</span><span class="p">[</span><span class="nx">fieldId</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
-      <span class="nx">date_histogram</span><span class="o">:</span> <span class="p">{</span>
-        <span class="nx">field</span><span class="o">:</span> <span class="nx">fieldId</span><span class="p">,</span>
-        <span class="nx">interval</span><span class="o">:</span> <span class="s1">&#39;day&#39;</span>
-      <span class="p">}</span>
-    <span class="p">};</span>
-    <span class="k">this</span><span class="p">.</span><span class="nx">set</span><span class="p">({</span><span class="nx">facets</span><span class="o">:</span> <span class="nx">facets</span><span class="p">},</span> <span class="p">{</span><span class="nx">silent</span><span class="o">:</span> <span class="kc">true</span><span class="p">});</span>
-    <span class="k">this</span><span class="p">.</span><span class="nx">trigger</span><span class="p">(</span><span class="s1">&#39;facet:add&#39;</span><span class="p">,</span> <span class="k">this</span><span class="p">);</span>
-  <span class="p">},</span>
-  <span class="nx">removeFacet</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">fieldId</span><span class="p">)</span> <span class="p">{</span>
-    <span class="kd">var</span> <span class="nx">facets</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s1">&#39;facets&#39;</span><span class="p">);</span></pre></div>             </td>           </tr>                               <tr id="section-46">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-46">&#182;</a>               </div>               <p>Assume id and fieldId should be the same (TODO: this need not be true if we want to add two different type of facets on same field)</p>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="nx">_</span><span class="p">.</span><span class="nx">contains</span><span class="p">(</span><span class="nx">_</span><span class="p">.</span><span class="nx">keys</span><span class="p">(</span><span class="nx">facets</span><span class="p">),</span> <span class="nx">fieldId</span><span class="p">))</span> <span class="p">{</span>
-      <span class="k">return</span><span class="p">;</span>
-    <span class="p">}</span>
-    <span class="k">delete</span> <span class="nx">facets</span><span class="p">[</span><span class="nx">fieldId</span><span class="p">];</span>
-    <span class="k">this</span><span class="p">.</span><span class="nx">set</span><span class="p">({</span><span class="nx">facets</span><span class="o">:</span> <span class="nx">facets</span><span class="p">},</span> <span class="p">{</span><span class="nx">silent</span><span class="o">:</span> <span class="kc">true</span><span class="p">});</span>
-    <span class="k">this</span><span class="p">.</span><span class="nx">trigger</span><span class="p">(</span><span class="s1">&#39;facet:remove&#39;</span><span class="p">,</span> <span class="k">this</span><span class="p">);</span>
-  <span class="p">},</span>
-  <span class="nx">clearFacets</span><span class="o">:</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
-    <span class="kd">var</span> <span class="nx">facets</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s1">&#39;facets&#39;</span><span class="p">);</span>
-    <span class="nx">_</span><span class="p">.</span><span class="nx">each</span><span class="p">(</span><span class="nx">_</span><span class="p">.</span><span class="nx">keys</span><span class="p">(</span><span class="nx">facets</span><span class="p">),</span> <span class="kd">function</span><span class="p">(</span><span class="nx">fieldId</span><span class="p">)</span> <span class="p">{</span>
-      <span class="k">delete</span> <span class="nx">facets</span><span class="p">[</span><span class="nx">fieldId</span><span class="p">];</span>
-    <span class="p">});</span>
-    <span class="k">this</span><span class="p">.</span><span class="nx">trigger</span><span class="p">(</span><span class="s1">&#39;facet:remove&#39;</span><span class="p">,</span> <span class="k">this</span><span class="p">);</span>
-  <span class="p">},</span></pre></div>             </td>           </tr>                               <tr id="section-47">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-47">&#182;</a>               </div>               <p>trigger a facet add; use this to trigger a single event after adding
-multiple facets</p>             </td>             <td class="code">               <div class="highlight"><pre>  <span class="nx">refreshFacets</span><span class="o">:</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
-    <span class="k">this</span><span class="p">.</span><span class="nx">trigger</span><span class="p">(</span><span class="s1">&#39;facet:add&#39;</span><span class="p">,</span> <span class="k">this</span><span class="p">);</span>
-  <span class="p">}</span>
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  addFacet: <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(fieldId, size, silent)</span> </span>{
+    <span class="hljs-keyword">var</span> facets = <span class="hljs-keyword">this</span>.get(<span class="hljs-string">'facets'</span>);</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-45">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-45">&#182;</a>
+              </div>
+              <p>Assume id and fieldId should be the same (TODO: this need not be true if we want to add two different type of facets on same field)</p>
 
-<span class="p">});</span></pre></div>             </td>           </tr>                               <tr id="section-48">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-48">&#182;</a>               </div>               <h2><a id="facet">A Facet (Result)</a></h2>             </td>             <td class="code">               <div class="highlight"><pre><span class="nx">my</span><span class="p">.</span><span class="nx">Facet</span> <span class="o">=</span> <span class="nx">Backbone</span><span class="p">.</span><span class="nx">Model</span><span class="p">.</span><span class="nx">extend</span><span class="p">({</span>
-  <span class="nx">constructor</span><span class="o">:</span> <span class="kd">function</span> <span class="nx">Facet</span><span class="p">()</span> <span class="p">{</span>
-    <span class="nx">Backbone</span><span class="p">.</span><span class="nx">Model</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">constructor</span><span class="p">.</span><span class="nx">apply</span><span class="p">(</span><span class="k">this</span><span class="p">,</span> <span class="nx">arguments</span><span class="p">);</span>
-  <span class="p">},</span>
-  <span class="nx">defaults</span><span class="o">:</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
-    <span class="k">return</span> <span class="p">{</span>
-      <span class="nx">_type</span><span class="o">:</span> <span class="s1">&#39;terms&#39;</span><span class="p">,</span>
-      <span class="nx">total</span><span class="o">:</span> <span class="mi">0</span><span class="p">,</span>
-      <span class="nx">other</span><span class="o">:</span> <span class="mi">0</span><span class="p">,</span>
-      <span class="nx">missing</span><span class="o">:</span> <span class="mi">0</span><span class="p">,</span>
-      <span class="nx">terms</span><span class="o">:</span> <span class="p">[]</span>
-    <span class="p">};</span>
-  <span class="p">}</span>
-<span class="p">});</span></pre></div>             </td>           </tr>                               <tr id="section-49">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-49">&#182;</a>               </div>               <h2>A Collection/List of Facets</h2>             </td>             <td class="code">               <div class="highlight"><pre><span class="nx">my</span><span class="p">.</span><span class="nx">FacetList</span> <span class="o">=</span> <span class="nx">Backbone</span><span class="p">.</span><span class="nx">Collection</span><span class="p">.</span><span class="nx">extend</span><span class="p">({</span>
-  <span class="nx">constructor</span><span class="o">:</span> <span class="kd">function</span> <span class="nx">FacetList</span><span class="p">()</span> <span class="p">{</span>
-    <span class="nx">Backbone</span><span class="p">.</span><span class="nx">Collection</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">constructor</span><span class="p">.</span><span class="nx">apply</span><span class="p">(</span><span class="k">this</span><span class="p">,</span> <span class="nx">arguments</span><span class="p">);</span>
-  <span class="p">},</span>
-  <span class="nx">model</span><span class="o">:</span> <span class="nx">my</span><span class="p">.</span><span class="nx">Facet</span>
-<span class="p">});</span></pre></div>             </td>           </tr>                               <tr id="section-50">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-50">&#182;</a>               </div>               <h2>Object State</h2>
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    <span class="hljs-keyword">if</span> (_.contains(_.keys(facets), fieldId)) {
+      <span class="hljs-keyword">return</span>;
+    }
+    facets[fieldId] = {
+      terms: { field: fieldId }
+    };
+    <span class="hljs-keyword">if</span> (!_.isUndefined(size)) {
+      facets[fieldId].terms.size = size;
+    }
+    <span class="hljs-keyword">this</span>.set({facets: facets}, {silent: <span class="hljs-literal">true</span>});
+    <span class="hljs-keyword">if</span> (!silent) {
+      <span class="hljs-keyword">this</span>.trigger(<span class="hljs-string">'facet:add'</span>, <span class="hljs-keyword">this</span>);
+    }
+  },
+  addHistogramFacet: <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(fieldId)</span> </span>{
+    <span class="hljs-keyword">var</span> facets = <span class="hljs-keyword">this</span>.get(<span class="hljs-string">'facets'</span>);
+    facets[fieldId] = {
+      date_histogram: {
+        field: fieldId,
+        interval: <span class="hljs-string">'day'</span>
+      }
+    };
+    <span class="hljs-keyword">this</span>.set({facets: facets}, {silent: <span class="hljs-literal">true</span>});
+    <span class="hljs-keyword">this</span>.trigger(<span class="hljs-string">'facet:add'</span>, <span class="hljs-keyword">this</span>);
+  },
+  removeFacet: <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(fieldId)</span> </span>{
+    <span class="hljs-keyword">var</span> facets = <span class="hljs-keyword">this</span>.get(<span class="hljs-string">'facets'</span>);</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-46">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-46">&#182;</a>
+              </div>
+              <p>Assume id and fieldId should be the same (TODO: this need not be true if we want to add two different type of facets on same field)</p>
 
-<p>Convenience Backbone model for storing (configuration) state of objects like Views.</p>             </td>             <td class="code">               <div class="highlight"><pre><span class="nx">my</span><span class="p">.</span><span class="nx">ObjectState</span> <span class="o">=</span> <span class="nx">Backbone</span><span class="p">.</span><span class="nx">Model</span><span class="p">.</span><span class="nx">extend</span><span class="p">({</span>
-<span class="p">});</span></pre></div>             </td>           </tr>                               <tr id="section-51">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-51">&#182;</a>               </div>               <h2>Backbone.sync</h2>
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    <span class="hljs-keyword">if</span> (!_.contains(_.keys(facets), fieldId)) {
+      <span class="hljs-keyword">return</span>;
+    }
+    <span class="hljs-keyword">delete</span> facets[fieldId];
+    <span class="hljs-keyword">this</span>.set({facets: facets}, {silent: <span class="hljs-literal">true</span>});
+    <span class="hljs-keyword">this</span>.trigger(<span class="hljs-string">'facet:remove'</span>, <span class="hljs-keyword">this</span>);
+  },
+  clearFacets: <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> </span>{
+    <span class="hljs-keyword">var</span> facets = <span class="hljs-keyword">this</span>.get(<span class="hljs-string">'facets'</span>);
+    _.each(_.keys(facets), <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(fieldId)</span> </span>{
+      <span class="hljs-keyword">delete</span> facets[fieldId];
+    });
+    <span class="hljs-keyword">this</span>.trigger(<span class="hljs-string">'facet:remove'</span>, <span class="hljs-keyword">this</span>);
+  },</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-47">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-47">&#182;</a>
+              </div>
+              <p>trigger a facet add; use this to trigger a single event after adding
+multiple facets</p>
 
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  refreshFacets: <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> </span>{
+    <span class="hljs-keyword">this</span>.trigger(<span class="hljs-string">'facet:add'</span>, <span class="hljs-keyword">this</span>);
+  }
+
+});</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-48">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-48">&#182;</a>
+              </div>
+              <h2 id="-a-id-facet-a-facet-result-a-"><a id="facet">A Facet (Result)</a></h2>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>my.Facet = Backbone.Model.extend({
+  constructor: <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">Facet</span><span class="hljs-params">()</span> </span>{
+    Backbone.Model.prototype.constructor.apply(<span class="hljs-keyword">this</span>, <span class="hljs-built_in">arguments</span>);
+  },
+  defaults: <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> </span>{
+    <span class="hljs-keyword">return</span> {
+      _type: <span class="hljs-string">'terms'</span>,
+      total: <span class="hljs-number">0</span>,
+      other: <span class="hljs-number">0</span>,
+      missing: <span class="hljs-number">0</span>,
+      terms: []
+    };
+  }
+});</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-49">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-49">&#182;</a>
+              </div>
+              <h2 id="a-collection-list-of-facets">A Collection/List of Facets</h2>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>my.FacetList = Backbone.Collection.extend({
+  constructor: <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">FacetList</span><span class="hljs-params">()</span> </span>{
+    Backbone.Collection.prototype.constructor.apply(<span class="hljs-keyword">this</span>, <span class="hljs-built_in">arguments</span>);
+  },
+  model: my.Facet
+});</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-50">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-50">&#182;</a>
+              </div>
+              <h2 id="object-state">Object State</h2>
+<p>Convenience Backbone model for storing (configuration) state of objects like Views.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>my.ObjectState = Backbone.Model.extend({
+});</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-51">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-51">&#182;</a>
+              </div>
+              <h2 id="backbone-sync">Backbone.sync</h2>
 <p>Override Backbone.sync to hand off to sync function in relevant backend
 Backbone.sync = function(method, model, options) {
   return model.backend.sync(method, model, options);
-};</p>             </td>             <td class="code">               <div class="highlight"><pre><span class="p">}(</span><span class="k">this</span><span class="p">.</span><span class="nx">recline</span><span class="p">.</span><span class="nx">Model</span><span class="p">));</span>
+};</p>
 
-</pre></div>             </td>           </tr>                </tbody>     </table>   </div> </body> </html> 
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>
+}(<span class="hljs-keyword">this</span>.recline.Model));</pre></div></div>
+            
+        </li>
+        
+    </ul>
+  </div>
+</body>
+</html>

@@ -60,9 +60,9 @@ test('initialize state', function () {
   ok(explorer.state.get('currentView'), 'graph');
 
   // check the correct view is visible
-  var css = explorer.$el.find('.navigation a[data-view="graph"]').attr('class').split(' ');
+  var css = explorer.$el.find('.navigation button[data-view="graph"]').attr('class').split(' ');
   ok(_.contains(css, 'active'), css);
-  var css = explorer.$el.find('.navigation a[data-view="grid"]').attr('class').split(' ');
+  var css = explorer.$el.find('.navigation button[data-view="grid"]').attr('class').split(' ');
   ok(!(_.contains(css, 'active')), css);
 
   // check pass through of view config

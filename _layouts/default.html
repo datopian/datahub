@@ -9,114 +9,123 @@
     <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
   <![endif]-->
 
-  <link rel="stylesheet" href="{{ page.root }}vendor/bootstrap/2.3.2/css/bootstrap.css" />
+  <link rel="stylesheet" href="{{ page.root }}vendor/bootstrap/3.2.0/css/bootstrap.css" />
 
   {% if page.recline-deps %}
     {% include recline-deps.html %}
   {% endif %}
 
-  <!-- link rel="stylesheet" href="vendor/bootstrap/2.3.2/css/bootstrap-responsive.css" -->
+  <!-- link rel="stylesheet" href="vendor/bootstrap/3.2.0/css/bootstrap-responsive.css" -->
 
   <link href="{{ page.root }}css-site/pygments.css" rel="stylesheet" type="text/css" />
   <link href="{{ page.root }}css-site/style.css" rel="stylesheet" type="text/css" />
 </head>
 <body>
-<div class="navbar navbar-fixed-top">
-  <div class="navbar-inner">
+  <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
     <div class="container">
-      <a class="logo-icon pull-left" href="/">
-        <img src="http://assets.okfn.org/p/recline/img/chair.png" />
-      </a>
-      <a class="brand" href="{{page.root}}"><strong>Recline.js</strong> &ndash; relax with your data</a>
-      <ul class="nav">
-        <li>
-          <a href="{{page.root}}docs/">
-            <i class="icon-book icon-white"></i>
-            Documentation
-          </a>
-        </li>
-        <li class="divider-vertical"></li>
-        <li>
-          <a href="{{page.root}}docs/tutorials.html">
-            <i class="icon-road icon-white"></i>
-            Tutorials
-          </a>
-        </li>
-        <li class="divider-vertical"></li>
-        <li>
-          <a href="{{page.root}}demos/">
-            <i class="icon-pencil icon-white"></i>
-            Demos
-          </a>
-        </li>
-        <li class="divider-vertical"></li>
-        <li>
-          <a href="{{page.root}}download.html">
-            <i class="icon-download-alt icon-white"></i>
-            Download
-          </a>
-        </li>
-      </ul>
-      <ul class="nav pull-right">
-        <li>
-          <a href="http://github.com/okfn/recline/" title="Recline on Github">
-            <iframe src="http://ghbtns.com/github-btn.html?user=okfn&repo=recline&type=watch&count=true"
-                allowtransparency="true" frameborder="0" scrolling="0" width="90" height="20"></iframe>
-          </a>
-        </li>
-      </ul>
-    </div>
-  </div>
-</div>
-
-{{content}}
-
-<section class="footer">
-	<div class="container">
-    <div class="row">
-      <div class="span4">
-        <p class="getit-btn"><a href="{{page.root}}docs/" class="btn">Use the Library &raquo;</a></p>
-        <p>Recline.js is freely redistributable under the terms of the MIT license.</p>
-      </div>
-      <div class="span3">
-        <p><a href="http://www.shuttleworthfoundation.org/"><img src="http://farm8.staticflickr.com/7019/6467412887_18f72f5066_n.jpg" style="width: 140px;" alt="Supported by funding from the Shuttleworth Foundation" /></a></p>
-        <ul>
-          <li><a href="http://datahub.io/">The DataHub</a></li>
-          <li><a href="http://OpenSpending.org/">OpenSpending.org</a></li>
-          <li><a href="http://datacouch.com/">DataCouch.com</a></li>
-        </ul>
-      </div>
-      <div class="span3">
-        <ul>
-          <li><a href="http://okfnlabs.org/">Open Knowledge Foundation Labs</a></li>
-          <li><a href="http://opendefinition.org/">Open Definition</a></li>
-          <li><a href="http://okfn.org/">Open Knowledge Foundation</a></li>
-        </ul>
-      </div>
-      <div class="span2">
-        <h5>Contacts</h5>
-        <ul style="list-style-type: none; margin-left: 0;">
-          <li><a href="http://twitter.com/okfnlabs">@OKFNLabs</a></li>
-          <li><a href="http://twitter.com/maxogden">@maxogden</a></li>
-          <li><a href="http://twitter.com/rufuspollock">@rufuspollock</a></li>
-        </ul>
-        <a class="nav-logo" href="http://okfn.org/" title="An Open Knowledge Foundation Project">
-          <img src="http://assets.okfn.org/p/okfn/img/logo_28x30.png" alt="Open Knowledge Foundation logo" />
+      <div class="navbar-header">
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+          <span class="sr-only">Toggle navigation</span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="{{page.root}}">
+          <img class="logo-icon" src="http://assets.okfn.org/p/recline/img/chair.png" />
+          <strong>Recline.js</strong> &ndash; relax with your data
         </a>
       </div>
+      <div class="collapse navbar-collapse">
+        <ul class="nav navbar-nav">
+          <li>
+            <a href="{{page.root}}docs/">
+              <i class="glyphicon glyphicon-book icon-white"></i>
+              Documentation
+            </a>
+          </li>
+          <li class="divider-vertical"></li>
+          <li>
+            <a href="{{page.root}}docs/tutorials.html">
+              <i class="glyphicon glyphicon-road icon-white"></i>
+              Tutorials
+            </a>
+          </li>
+          <li class="divider-vertical"></li>
+          <li>
+            <a href="{{page.root}}demos/">
+              <i class="glyphicon glyphicon-pencil icon-white"></i>
+              Demos
+            </a>
+          </li>
+          <li class="divider-vertical"></li>
+          <li>
+            <a href="{{page.root}}download.html">
+              <i class="glyphicon glyphicon-download-alt icon-white"></i>
+              Download
+            </a>
+          </li>
+        </ul>
+        <ul class="nav navbar-nav navbar-right">
+          <li>
+            <a href="http://github.com/okfn/recline/" title="Recline on Github">
+              <iframe src="http://ghbtns.com/github-btn.html?user=okfn&repo=recline&type=watch&count=true"
+                      allowtransparency="true" frameborder="0" scrolling="0" width="90" height="20"></iframe>
+            </a>
+          </li>
+        </ul>
+      </div><!--/.nav-collapse -->
     </div>
   </div>
-</section>
 
-<script type="text/javascript">
-  var _gaq = _gaq || [];
-  _gaq.push(['_setAccount', 'UA-8271754-44']);
-  _gaq.push(['_trackPageview']);
-  (function() {
-    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
-    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
-    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
-  })();
-</script>
+  {{content}}
+
+  <section class="recline-footer">
+    <div class="container">
+      <div class="row">
+        <div class="col-md-3">
+          <p class="getit-btn"><a href="{{page.root}}docs/" class="btn btn-default">Use the Library &raquo;</a></p>
+          <p>Recline.js is freely redistributable under the terms of the MIT license.</p>
+        </div>
+        <div class="col-md-2">
+          <p><a href="http://www.shuttleworthfoundation.org/"><img src="http://farm8.staticflickr.com/7019/6467412887_18f72f5066_n.jpg" style="width: 140px;" alt="Supported by funding from the Shuttleworth Foundation" /></a></p>
+          <ul>
+            <li><a href="http://datahub.io/">The DataHub</a></li>
+            <li><a href="http://OpenSpending.org/">OpenSpending.org</a></li>
+            <li><a href="http://datacouch.com/">DataCouch.com</a></li>
+          </ul>
+        </div>
+        <div class="col-md-4">
+          <ul>
+            <li><a href="http://okfnlabs.org/">Open Knowledge Foundation Labs</a></li>
+            <li><a href="http://opendefinition.org/">Open Definition</a></li>
+            <li><a href="http://okfn.org/">Open Knowledge Foundation</a></li>
+          </ul>
+        </div>
+        <div class="col-md-3">
+          <h4>Contacts</h4>
+          <ul style="list-style-type: none; margin-left: 0; padding: 0px;">
+            <li><a href="http://twitter.com/okfnlabs">@OKFNLabs</a></li>
+            <li><a href="http://twitter.com/maxogden">@maxogden</a></li>
+            <li><a href="http://twitter.com/rufuspollock">@rufuspollock</a></li>
+          </ul>
+          <a class="nav-logo" href="http://okfn.org/" title="An Open Knowledge Foundation Project">
+            <img src="http://assets.okfn.org/p/okfn/img/logo_28x30.png" alt="Open Knowledge Foundation logo" />
+          </a>
+        </div>
+      </div>
+          
+  </section>
+  </div><!-- /.container -->
+    
+  <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-8271754-44']);
+    _gaq.push(['_trackPageview']);
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+  </script>
 </body>
 </html>
