@@ -21,15 +21,15 @@ Views display Recline datasets in different ways. This page covers the interesti
 
 Before writing any code with Recline, you need to do the following preparation steps on your page:
 
-1. [Download ReclineJS]({{page.root}}download.html) and relevant dependencies.
-2. Include the relevant CSS in the head section of your document:
+* [Download ReclineJS]({{page.root}}download.html) and relevant dependencies.
+* Include the relevant CSS in the head section of your document:
     {% highlight html %}
 <!-- you do not have to use bootstrap but we use it by default -->
 <link rel="stylesheet" href="vendor/bootstrap/3.2.0/css/bootstrap.css" />
 <!-- CSS for relevant view components - here we just have grid -->
 <link rel="stylesheet" href="css/grid.css" />{% endhighlight %}
 
-3. Include the relevant Javascript files somewhere on the page (preferably before body close tag):
+* Include the relevant Javascript files somewhere on the page (preferably before body close tag):
     {% highlight html %}<!-- 3rd party dependencies -->
 <script type="text/javascript" src="vendor/jquery/1.7.1/jquery.js"></script>
 <script type="text/javascript" src="vendor/underscore/1.4.4/underscore.js"></script>
@@ -50,7 +50,7 @@ You're now ready to start working with Recline.
 
 ### Creating a Dataset
 
-Here's some example data We are going to work with:
+Here's some example data we are going to work with:
 
 {% highlight javascript %}
 {% include data.js %}
