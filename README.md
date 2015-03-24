@@ -27,7 +27,7 @@ See CONTRIBUTING.md.
 * [Adrià Mercader](http://amercader.net/)
 * [Dominik Moritz](https://github.com/domoritz)
 * [Friedrich Lindenberg](http://pudo.org/)
-* [Alioune Dia](http://https://github.com/aliounedia)
+* [Alioune Dia](https://github.com/aliounedia)
 * [kielni](https://github.com/kielni)
 * And [many more](https://github.com/okfn/recline/graphs/contributors)
 
