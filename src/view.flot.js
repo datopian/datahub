@@ -343,7 +343,7 @@ my.Flot = Backbone.View.extend({
         }
 
         var yfield = self.model.fields.get(field);
-        var y = doc.getFieldValueUnrendered(yfield);
+        var y = parseFloat(doc.getFieldValueUnrendered(yfield));
 
         if (self.state.attributes.graphType == 'bars') {
           points.push([y, x]);
