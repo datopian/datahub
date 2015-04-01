@@ -27,7 +27,7 @@ test('state', function () {
   var view = new recline.View.SlickGrid({
     model: dataset,
     state: {
-      hiddenColumns:['x','lat','title'],
+      hiddenColumns:['x','lat','title','p'],
       columnsOrder:['lon','id','z','date', 'y', 'country'],
       columnsWidth:[
         {column:'id',width: 250}
@@ -71,7 +71,7 @@ test('editable', function () {
   var view = new recline.View.SlickGrid({
     model: dataset,
     state: {
-      hiddenColumns:['x','lat','title'],
+      hiddenColumns:['x','lat','title','p'],
       columnsOrder:['lon','id','z','date', 'y', 'country'],
       columnsWidth:[
         {column:'id',width: 250}
@@ -108,7 +108,7 @@ test('delete-row' , function(){
   var view = new recline.View.SlickGrid({
     model: dataset,
     state: {
-      hiddenColumns:['x','lat','title'],
+      hiddenColumns:['x','lat','title','p'],
       columnsOrder:['lon','id','z','date', 'y', 'country'],
       columnsWidth:[
         {column:'id',width: 250}
@@ -154,7 +154,7 @@ test('delete-row-with-row-reorder-activated' , function(){
   var view = new recline.View.SlickGrid({
     model: dataset,
     state: {
-      hiddenColumns:['x','lat','title'],
+      hiddenColumns:['x','lat','title','p'],
       columnsOrder:['lon','id','z','date', 'y', 'country'],
       columnsWidth:[
         {column:'id',width: 250}
@@ -197,7 +197,7 @@ var dataset = Fixture.getDataset();
   var view = new recline.View.SlickGrid({
     model: dataset,
     state: {
-      hiddenColumns:['x','lat','title'],
+      hiddenColumns:['x','lat','title','p'],
       columnsOrder:['lon','id','z','date', 'y', 'country'],
       columnsWidth:[
         {column:'id',width: 250}
@@ -226,7 +226,7 @@ test('update', function() {
   var view = new recline.View.SlickGrid({
     model: dataset,
     state: {
-      hiddenColumns:['x','lat','title'],
+      hiddenColumns:['x','lat','title','p'],
       columnsOrder:['lon','id','z','date', 'y', 'country'],
       columnsWidth:[
         {column:'id',width: 250}
