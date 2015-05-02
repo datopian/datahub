@@ -161,7 +161,12 @@ my.SlickGrid = Backbone.View.extend({
     }
 
     function sanitizeFieldName(name) {
-      var sanitized = $(name).text();
+      var sanitized;
+      try{
+        sanitized = $(name).text();
+      } catch(e){
+        sanitized = '';
+      }
       return (name !== sanitized && sanitized !== '') ? sanitized : name;
     }
 

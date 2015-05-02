@@ -55,6 +55,27 @@ test('dates in graph view', function () {
   view.remove();
 });
 
+test('percentages in graph view', function () {
+  var dataset = Fixture.getDataset();
+  var view = new recline.View.Flot({
+    model: dataset,
+    state: {
+      'graphType': 'lines',
+      'group': 'country',
+      'series': ['p']
+    }
+  });
+  view.render();
+  $('.fixtures').append(view.el);
+  view.redraw();
+  var graphData = view.plot.getData()[0].data;
+  $.each(graphData, function(i, p){
+    var percentage = p[1];
+    equal($.isNumeric(percentage), true);
+  }); 
+  view.remove();
+});
+
 test('FlotControls basics', function () {
   var dataset = Fixture.getDataset();
   var view = new recline.View.FlotControls({

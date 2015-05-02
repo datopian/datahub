@@ -622,7 +622,7 @@ could have a lot of values and so we limit to max 15 (we assume)</p>
         }
 
         <span class="hljs-keyword">var</span> yfield = self.model.fields.get(field);
-        <span class="hljs-keyword">var</span> y = doc.getFieldValueUnrendered(yfield);
+        <span class="hljs-keyword">var</span> y = <span class="hljs-built_in">parseFloat</span>(doc.getFieldValueUnrendered(yfield));
 
         <span class="hljs-keyword">if</span> (self.state.attributes.graphType == <span class="hljs-string">'bars'</span>) {
           points.push([y, x]);
