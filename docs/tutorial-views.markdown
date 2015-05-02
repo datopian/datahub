@@ -230,9 +230,6 @@ library and the Recline Map view:
 <![endif]-->
 <link rel="stylesheet" href="vendor/leaflet.markercluster/MarkerCluster.css">
 <link rel="stylesheet" href="vendor/leaflet.markercluster/MarkerCluster.Default.css">
-<!--[if lte IE 8]>
-<link rel="stylesheet" href="vendor/leaflet.markercluster/MarkerCluster.Default.ie.css" />
-<![endif]-->
 <link rel="stylesheet" href="css/map.css">
 
 <!-- javascript -->

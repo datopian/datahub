@@ -40,9 +40,6 @@ Before writing any code with Recline, you need to do the following preparation s
 <link href="vendor/leaflet.markercluster/MarkerCluster.css" rel="stylesheet">
 <link href="vendor/leaflet.markercluster/MarkerCluster.Default.css" rel=
   "stylesheet">
-<!--[if lte IE 8]>
-<link rel="stylesheet" href="vendor/leaflet.markercluster/MarkerCluster.Default.ie.css" />
-<![endif]-->
 <link rel="stylesheet" href="vendor/slickgrid/2.0.1/slick.grid.css">
 
 <!-- recline css -->
