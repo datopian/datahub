@@ -22,28 +22,26 @@ Views display Recline datasets in different ways. This page covers the interesti
 Before writing any code with Recline, you need to do the following preparation steps on your page:
 
 * [Download ReclineJS]({{page.root}}download.html) and relevant dependencies.
-* Include the relevant CSS in the head section of your document:
+* Include the relevant CSS in the head section of your document (for view-specific CSS files, see below):
     {% highlight html %}
 <!-- you do not have to use bootstrap but we use it by default -->
 <link rel="stylesheet" href="vendor/bootstrap/3.2.0/css/bootstrap.css" />
-<!-- CSS for relevant view components - here we just have grid -->
-<link rel="stylesheet" href="css/grid.css" />{% endhighlight %}
+{% endhighlight %}
 
-* Include the relevant Javascript files somewhere on the page (preferably before body close tag):
+* Include the relevant Javascript files somewhere on the page (preferably before body close tag; for view-specific Javascript dependencies, see below):
     {% highlight html %}<!-- 3rd party dependencies -->
 <script type="text/javascript" src="vendor/jquery/1.7.1/jquery.js"></script>
 <script type="text/javascript" src="vendor/underscore/1.4.4/underscore.js"></script>
 <script type="text/javascript" src="vendor/backbone/1.0.0/backbone.js"></script>
 <script type="text/javascript" src="vendor/mustache/0.5.0-dev/mustache.js"></script>
 <script type="text/javascript" src="vendor/bootstrap/3.2.0/js/bootstrap.js"></script>
-<script type="text/javascript" src="vendor/slickgrid/2.0.1/jquery.event.drag-2.2.js"></script>
-<script type="text/javascript" src="vendor/slickgrid/2.0.1/slick.core.js"></script>
-<script type="text/javascript" src="vendor/slickgrid/2.0.1/slick.grid.js"></script>
+
 <!-- note that we could include individual components rather than whole of recline e.g.
 <script type="text/javascript" src="src/model.js"></script>
 <script type="text/javascript" src="src/backend.memory.js"></script>
 <script type="text/javascript" src="src/view-grid.js"></script>
 -->
+
 <script type="text/javascript" src="dist/recline.js"></script>{% endhighlight %}
 
 You're now ready to start working with Recline.
@@ -81,15 +79,19 @@ Although it's not demonstrated here, you can also use the simpler Grid view with
 Let's create a data grid view to display the dataset we have just created.  We're going to use the SlickGrid-based grid so we need the following CSS and JS dependencies in addition to those above:
 
 {% highlight html %}
+<link rel="stylesheet" href="css/grid.css" />
 <link rel="stylesheet" href="css/slickgrid.css">
-<link rel="stylesheet" href="vendor/slickgrid/2.0.1/slick.grid.css">
+<link rel="stylesheet" href="vendor/slickgrid/2.2/slick.grid.css">
 
 <!-- vendor -->
-<script type="text/javascript" src="vendor/slickgrid/2.0.1/jquery-ui-1.8.16.custom.min.js"></script>
-<script type="text/javascript" src="vendor/slickgrid/2.0.1/jquery.event.drag-2.0.min.js"></script>
-<script type="text/javascript" src="vendor/slickgrid/2.0.1/slick.grid.min.js"></script>
-<script type="text/javascript" src="vendor/slickgrid/2.0.1/plugins/slick.rowselectionmodel.js"></script>
-<script type="text/javascript" src="vendor/slickgrid/2.0.1/plugins/slick.rowmovemanager.js"></script>
+<script type="text/javascript" src="vendor/slickgrid/2.2/jquery-ui-1.8.16.custom.min.js"></script>
+<script type="text/javascript" src="vendor/slickgrid/2.2/jquery.event.drag-2.2.js"></script>
+<script type="text/javascript" src="vendor/slickgrid/2.2/slick.core.js"></script>
+<script type="text/javascript" src="vendor/slickgrid/2.2/slick.grid.js"></script>
+<script type="text/javascript" src="vendor/slickgrid/2.2/slick.formatters.js"></script>
+<script type="text/javascript" src="vendor/slickgrid/2.2/slick.editors.js"></script>
+<script type="text/javascript" src="vendor/slickgrid/2.2/plugins/slick.rowselectionmodel.js"></script>
+<script type="text/javascript" src="vendor/slickgrid/2.2/plugins/slick.rowmovemanager.js"></script>
 
 <!-- Recline (only needed when NOT including the combined JS file as shown above) -->
 <script type="text/javascript" src="src/view.slickgrid.js"></script>
