@@ -1,10 +1,8 @@
 {
-  "name"          : "reclinejs",
-  "description"   : "A simple but powerful data library for building data-oriented applications in pure Javascript",
-  "version"       : "0.7.0",
-  "homepage"      : "http://reclinejs.com/",
-  "keywords"      : ["data", "explorer", "grid", "table", "library", "app"],
-  "contributors"  : [
+  "name": "reclinejs",
+  "description": "A simple but powerful data library for building data-oriented applications in pure Javascript",
+  "version": "0.7.0",
+  "contributors": [
     {
       "name": "Rufus Pollock",
       "email": "rufus.pollock@okfn.org"
@@ -18,17 +16,26 @@
       "email": "max@maxogden.com"
     }
   ],
-  "dependencies"  : {
-    "jquery"      : ">=1.6",
-    "underscore"  : ">=1.0",
-    "backbone"    : ">=0.5",
-    "mustache"    : ">=0.5.2"
+  "dependencies": {
+    "backbone": ">=0.5",
+    "jquery": ">=1.6",
+    "mustache": ">=0.5.2",
+    "underscore": ">=1.0"
   },
-  "lib"           : "src",
-  "main"          : "dist/recline.js",
+  "homepage": "http://reclinejs.com/",
+  "keywords": [
+    "app",
+    "data",
+    "explorer",
+    "grid",
+    "library",
+    "table"
+  ],
+  "lib": "src",
+  "main": "dist/recline.js",
   "repository": {
     "type": "git",
     "url": "http://github.com/okfn/recline.git",
     "path": "src"
-   }
+  }
 }
