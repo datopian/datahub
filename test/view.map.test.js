@@ -265,8 +265,7 @@ test('Custom map options', function () {
 
   assertPresent(tiles);
 
-  ok(tiles.find('.leaflet-tile')[0].src.startsWith('http://example.com'));
-
+  ok(tiles.find('.leaflet-tile')[0].src.indexOf('http://example.com') === 0);
   ok(view.$el.find('.leaflet-control-attribution').text().indexOf('MyTiles') !== -1);
 
   view.remove();
