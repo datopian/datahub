@@ -94,7 +94,7 @@ this.recline.View = this.recline.View || {};
 // of views in use -- e.g. those specified by the views argument -- but instead 
 // expect either that the default views are fine or that the client to have
 // initialized the MultiView with the relevant views themselves.
-my.MultiView = Backbone.View.extend({
+my.MultiView = Backbone.I18nView.extend({
   template: ' \
   <div class="recline-data-explorer"> \
     <div class="alert-messages"></div> \
@@ -108,6 +108,8 @@ my.MultiView = Backbone.View.extend({
         </div> \
       </div> \
       <div class="recline-results-info"> \
+        {{t.num_records}} -> t + getattr \
+        {{#trans}}<span class="doc-count">{{recordCount}}</span> records{{/trans}} -- \
         <span class="doc-count">{{recordCount}}</span> records\
       </div> \
       <div class="menu-right"> \
@@ -138,28 +140,28 @@ my.MultiView = Backbone.View.extend({
     } else {
       this.pageViews = [{
         id: 'grid',
-        label: 'Grid',
+        label: this.t('Grid'),
         view: new my.SlickGrid({
           model: this.model,
           state: this.state.get('view-grid')
         })
       }, {
         id: 'graph',
-        label: 'Graph',
+        label: this.t('Graph'),
         view: new my.Graph({
           model: this.model,
           state: this.state.get('view-graph')
         })
       }, {
         id: 'map',
-        label: 'Map',
+        label: this.t('Map'),
         view: new my.Map({
           model: this.model,
           state: this.state.get('view-map')
         })
       }, {
         id: 'timeline',
-        label: 'Timeline',
+        label: this.t('Timeline'),
         view: new my.Timeline({
           model: this.model,
           state: this.state.get('view-timeline')
@@ -238,6 +240,7 @@ my.MultiView = Backbone.View.extend({
     var tmplData = this.model.toTemplateJSON();
     tmplData.views = this.pageViews;
     tmplData.sidebarViews = this.sidebarViews;
+    tmplData = _.extend(tmplData, this.MustacheFormatter());
     var template = Mustache.render(this.template, tmplData);
     this.$el.html(template);
 
