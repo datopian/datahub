@@ -129,11 +129,16 @@ test('translate complex key custom locale custom count', function () {
     locale: 'pl'
   });
 
-// todo custom count string
-  equal(view.t('some_msg', {records: 0}, '<span>{{records}} records</span>'), '<span>brak rekordów</span>');
-  equal(view.t('some_msg', {records: 1}, '<span>{{records}} records</span>'), '<span>1 rekord</span>');
-  equal(view.t('some_msg', {records: 3}, '<span>{{records}} records</span>'), '<span>3 rekordy</span>');
-  equal(view.t('some_msg', {records: 5}, '<span>{{records}} records</span>'), '<span>5 rekordów</span>');
+  recline.View.translations['pl']['codeforall'] = '{records, plural, ' +
+      '=0 {brak zdjęć}' +
+      '=1 {{records} zdjęcie}' +
+      'few {{records} zdjęcia}' +
+      'other {{records} zdjęć}}';
+
+  equal(view.t('codeforall', {records: 0}), 'brak zdjęć');
+  equal(view.t('codeforall', {records: 1}), '1 zdjęcie');
+  equal(view.t('codeforall', {records: 3}), '3 zdjęcia');
+  equal(view.t('codeforall', {records: 5}), '5 zdjęć');
 });
 
 

@@ -22,7 +22,8 @@ my.Grid = Backbone.I18nView.extend({
     var state = _.extend({
         hiddenFields: []
       }, modelEtc.state
-    ); 
+    );
+    this.initializeI18n(modelEtc.locale);
     this.state = new recline.Model.ObjectState(state);
   },
 

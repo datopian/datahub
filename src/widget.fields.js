@@ -75,6 +75,8 @@ my.Fields = Backbone.I18nView.extend({
       self.render();
     });
     this.$el.find('.collapse').collapse();
+    this.initializeI18n(model.locale);
+
     this.render();
   },
   render: function() {

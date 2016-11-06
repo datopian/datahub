@@ -19,7 +19,7 @@ my.QueryEditor = Backbone.I18nView.extend({
           <input class="form-control search-query" type="text" id="q" name="q" value="{{q}}" placeholder="{{t.Search_data}} ..."> \
         </div> \
       </div> \
-      <button type="submit" class="btn btn-default">{{t.Go}} &raquo;</button> \
+      <button type="submit" class="btn btn-default">{{t.Search}} &raquo;</button> \
     </form> \
   ',
 
@@ -27,9 +27,11 @@ my.QueryEditor = Backbone.I18nView.extend({
     'submit form': 'onFormSubmit'
   },
 
-  initialize: function() {
+  initialize: function(options = {}) {
     _.bindAll(this, 'render');
     this.listenTo(this.model, 'change', this.render);
+    this.initializeI18n(options.locale);
+
     this.render();
   },
   onFormSubmit: function(e) {

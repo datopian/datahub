@@ -132,7 +132,7 @@ my.MultiView = Backbone.I18nView.extend({
     var self = this;
     this._setupState(options.state);
     // todo any better idea to pass locale than by initialization? singleton? or does Intl API handle that?
-    this.initializeI18n(options.locale || 'en');
+    this.initializeI18n(options.locale);
 
     // Hash of 'page' views (i.e. those for whole page) keyed by page name
     if (options.views) {
@@ -176,13 +176,15 @@ my.MultiView = Backbone.I18nView.extend({
         id: 'filterEditor',
         label: this.t('Filters'),
         view: new my.FilterEditor({
-          model: this.model
+          model: this.model,
+          locale: this.locale
         })
       }, {
         id: 'fieldsView',
         label: this.t('Fields'),
         view: new my.Fields({
-          model: this.model
+          model: this.model,
+          locale: this.locale
         })
       }];
     }
@@ -271,7 +273,8 @@ my.MultiView = Backbone.I18nView.extend({
     this.$el.find('.recline-results-info').after(this.pager.el);
 
     this.queryEditor = new recline.View.QueryEditor({
-      model: this.model.queryState
+      model: this.model.queryState,
+      locale: this.locale
     });
     this.$el.find('.query-editor-here').append(this.queryEditor.el);
 

@@ -8,8 +8,10 @@
 Backbone.I18nView = Backbone.View.extend({
     defaultLocale: 'en',
     locale: 'en',
-    initializeI18n: function(locale) {
-        this.locale = locale;
+    initializeI18n: function(locale, appHardcodedLocale) {
+        this.defaultLocale = appHardcodedLocale || 'en';
+        this.locale = locale || this.defaultLocale;
+
         // TODO implement cache
         //memoizeFormatConstructor(Intl.NumberFormat).getNumberFormat();
     },
@@ -30,7 +32,14 @@ Backbone.I18nView = Backbone.View.extend({
             }
             msg = defaultMessage;
         }
-        if (msg == null) { msg = key; } // TODO w domyślnym locale automatycznie usuwaj podkreślenia
+        if (msg == null) {
+            msg = key;
+            if (this.locale === this.defaultLocale) {
+                // no need to define lang entry for short sentences, just use underscores as spaces
+                msg = msg.replace(/_/g, ' ');
+            }
+
+        }
 
         // TODO i18n documentation
 

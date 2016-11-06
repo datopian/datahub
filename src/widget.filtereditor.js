@@ -58,7 +58,7 @@ my.FilterEditor = Backbone.I18nView.extend({
         <fieldset> \
           <legend> \
             {{field}} <small>{{type}}</small> \
-            <a class="js-remove-filter" href="#" title="{{t.Remove_this_filter}" data-filter-id="{{id}}"><span class="wcag_hide">{{t.Remove_this_filter}}</span><span aria-hidden="true">&times;</span></a> \
+            <a class="js-remove-filter" href="#" title="{{t.Remove_this_filter}}" data-filter-id="{{id}}"><span class="wcag_hide">{{t.Remove_this_filter}}</span><span aria-hidden="true">&times;</span></a> \
           </legend> \
           <div class="form-group"> \
             <label class="control-label" for="">{{t.From}}</label> \
@@ -100,10 +100,12 @@ my.FilterEditor = Backbone.I18nView.extend({
     'submit form.js-edit': 'onTermFiltersUpdate',
     'submit form.js-add': 'onAddFilter'
   },
-  initialize: function() {
+  initialize: function(options) {
     _.bindAll(this, 'render');
     this.listenTo(this.model.fields, 'all', this.render);
     this.listenTo(this.model.queryState, 'change change:filters:new-blank', this.render);
+    this.initializeI18n(options.locale);
+
     this.render();
   },
   render: function() {
@@ -116,10 +118,10 @@ my.FilterEditor = Backbone.I18nView.extend({
     });
     tmplData.fields = this.model.fields.toJSON();
     tmplData.filterRender = function() {
-      var filterData = _.extend(this, this.MustacheFormatter());
+      var filterData = _.extend(this, self.MustacheFormatter());
       return Mustache.render(self.filterTemplates[this.type], filterData);
     };
-    tmplData = _.extend(tmplData, this.MustacheFormatter());
+    tmplData = _.extend(tmplData, self.MustacheFormatter());
     var out = Mustache.render(this.template, tmplData);
     this.$el.html(out);
   },

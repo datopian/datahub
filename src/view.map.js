@@ -58,7 +58,7 @@ my.Map = Backbone.I18nView.extend({
     // this will be the Leaflet L.Map object (setup below)
     this.map = null;
 
-    this.initializeI18n(options.locale || 'en');
+    this.initializeI18n(options.locale);
 
     var stateData = _.extend({
         geomField: null,
@@ -97,7 +97,8 @@ my.Map = Backbone.I18nView.extend({
 
     this.menu = new my.MapMenu({
       model: this.model,
-      state: this.state.toJSON()
+      state: this.state.toJSON(),
+      locale: this.locale
     });
     this.listenTo(this.menu.state, 'change', function() {
       self.state.set(self.menu.state.toJSON());
@@ -514,15 +515,16 @@ my.MapMenu = Backbone.I18nView.extend({
     <form class="form-stacked"> \
       <div class="clearfix"> \
         <div class="editor-field-type"> \
+            <span>{{t.map_mapping}}:</span> \
             <label class="radio"> \
               <input type="radio" id="editor-field-type-latlon" name="editor-field-type" value="latlon" checked="checked"/> \
-              Latitude / Longitude fields</label> \
+              {{t.map_mapping_lat_lon}}</label> \
             <label class="radio"> \
               <input type="radio" id="editor-field-type-geom" name="editor-field-type" value="geom" /> \
-              GeoJSON field</label> \
+              {{t.map_mapping_geojson}}</label> \
         </div> \
         <div class="editor-field-type-latlon"> \
-          <label>Latitude field</label> \
+          <label>{{t.Latitude_field}}</label> \
           <div class="input editor-lat-field"> \
             <select class="form-control"> \
             <option value=""></option> \
@@ -531,7 +533,7 @@ my.MapMenu = Backbone.I18nView.extend({
             {{/fields}} \
             </select> \
           </div> \
-          <label>Longitude field</label> \
+          <label>{{t.Longitude_field}}</label> \
           <div class="input editor-lon-field"> \
             <select class="form-control"> \
             <option value=""></option> \
@@ -542,7 +544,7 @@ my.MapMenu = Backbone.I18nView.extend({
           </div> \
         </div> \
         <div class="editor-field-type-geom" style="display:none"> \
-          <label>Geometry field (GeoJSON)</label> \
+          <label>{{t.map_mapping_geojson}}</label> \
           <div class="input editor-geom-field"> \
             <select class="form-control"> \
             <option value=""></option> \
@@ -554,15 +556,15 @@ my.MapMenu = Backbone.I18nView.extend({
         </div> \
       </div> \
       <div class="editor-buttons"> \
-        <button class="btn btn-default editor-update-map">Update</button> \
+        <button class="btn btn-default editor-update-map">{{t.Update}}</button> \
       </div> \
       <div class="editor-options" > \
         <label class="checkbox"> \
           <input type="checkbox" id="editor-auto-zoom" value="autozoom" checked="checked" /> \
-          Auto zoom to features</label> \
+          {{t.Auto_zoom_to_features}}</label> \
         <label class="checkbox"> \
           <input type="checkbox" id="editor-cluster" value="cluster"/> \
-          Cluster markers</label> \
+          {{t.Cluster_markers}}</label> \
       </div> \
       <input type="hidden" class="editor-id" value="map-1" /> \
     </form> \
@@ -582,6 +584,7 @@ my.MapMenu = Backbone.I18nView.extend({
     this.listenTo(this.model.fields, 'change', this.render);
     this.state = new recline.Model.ObjectState(options.state);
     this.listenTo(this.state, 'change', this.render);
+    this.initializeI18n(options.locale);
     this.render();
   },
 

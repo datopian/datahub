@@ -50,10 +50,12 @@ my.ValueFilter = Backbone.I18nView.extend({
     'submit form.js-edit': 'onTermFiltersUpdate',
     'submit form.js-add': 'onAddFilter'
   },
-  initialize: function() {
+  initialize: function(options = {}) {
     _.bindAll(this, 'render');
     this.listenTo(this.model.fields, 'all', this.render);
     this.listenTo(this.model.queryState, 'change change:filters:new-blank', this.render);
+    this.initializeI18n(options.locale);
+
     this.render();
   },
   render: function() {
