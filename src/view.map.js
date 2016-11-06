@@ -38,7 +38,7 @@ this.recline.View = this.recline.View || {};
 //
 // * map: the Leaflet map (L.Map)
 // * features: Leaflet GeoJSON layer containing all the features (L.GeoJSON)
-my.Map = Backbone.View.extend({
+my.Map = Backbone.I18nView.extend({
   template: ' \
     <div class="recline-map"> \
       <div class="panel map"></div> \
@@ -57,6 +57,8 @@ my.Map = Backbone.View.extend({
     this.mapReady = false;
     // this will be the Leaflet L.Map object (setup below)
     this.map = null;
+
+    this.initializeI18n(options.locale || 'en');
 
     var stateData = _.extend({
         geomField: null,
@@ -173,7 +175,7 @@ my.Map = Backbone.View.extend({
   // Also sets up the editor fields and the map if necessary.
   render: function() {
     var self = this;
-    var htmls = Mustache.render(this.template, this.model.toTemplateJSON());
+    var htmls = Mustache.render(this.template, _.extend(this.model.toTemplateJSON(), this.MustacheFormatter()));
     this.$el.html(htmls);
     this.$map = this.$el.find('.panel.map');
     this.redraw();
@@ -505,7 +507,7 @@ my.Map = Backbone.View.extend({
   }
 });
 
-my.MapMenu = Backbone.View.extend({
+my.MapMenu = Backbone.I18nView.extend({
   className: 'editor',
 
   template: ' \
@@ -588,7 +590,7 @@ my.MapMenu = Backbone.View.extend({
   // Also sets up the editor fields and the map if necessary.
   render: function() {
     var self = this;
-    var htmls = Mustache.render(this.template, this.model.toTemplateJSON());
+    var htmls = Mustache.render(this.template, _.extend(this.model.toTemplateJSON(), this.MustacheFormatter()));
     this.$el.html(htmls);
 
     if (this._geomReady() && this.model.fields.length){

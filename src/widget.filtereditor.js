@@ -6,15 +6,15 @@ this.recline.View = this.recline.View || {};
 (function($, my) {
   "use strict";
 
-my.FilterEditor = Backbone.View.extend({
+my.FilterEditor = Backbone.I18nView.extend({
   className: 'recline-filter-editor well', 
   template: ' \
     <div class="filters"> \
-      <h3>Filters</h3> \
-      <a href="#" class="js-add-filter">Add filter</a> \
+      <h3>{{t.Filters}}</h3> \
+      <a href="#" class="js-add-filter">{{t.Add_filter}}</a> \
       <form class="form-stacked js-add" style="display: none;"> \
         <div class="form-group"> \
-          <label>Field</label> \
+          <label>{{t.Field}}</label> \
           <select class="fields form-control"> \
             {{#fields}} \
             <option value="{{id}}">{{label}}</option> \
@@ -22,21 +22,21 @@ my.FilterEditor = Backbone.View.extend({
           </select> \
         </div> \
         <div class="form-group"> \
-          <label>Filter type</label> \
+          <label>{{t.Filter_type}}</label> \
           <select class="filterType form-control"> \
-            <option value="term">Value</option> \
-            <option value="range">Range</option> \
-            <option value="geo_distance">Geo distance</option> \
+            <option value="term">{{t.Value}}</option> \
+            <option value="range">{{t.Range}}</option> \
+            <option value="geo_distance">{{t.Geo_distance}}</option> \
           </select> \
         </div> \
-        <button type="submit" class="btn btn-default">Add</button> \
+        <button type="submit" class="btn btn-default">{{t.Add}}</button> \
       </form> \
       <form class="form-stacked js-edit"> \
         {{#filters}} \
           {{{filterRender}}} \
         {{/filters}} \
         {{#filters.length}} \
-        <button type="submit" class="btn btn-default">Update</button> \
+        <button type="submit" class="btn btn-default">{{t.Update}}</button> \
         {{/filters.length}} \
       </form> \
     </div> \
@@ -47,7 +47,7 @@ my.FilterEditor = Backbone.View.extend({
         <fieldset> \
           <legend> \
             {{field}} <small>{{type}}</small> \
-            <a class="js-remove-filter" href="#" title="Remove this filter" data-filter-id="{{id}}">&times;</a> \
+            <a class="js-remove-filter" href="#" title="{{t.Remove_this_filter}}" data-filter-id="{{id}}"><span class="wcag_hide">{{t.Remove_this_filter}}</span><span aria-hidden="true">&times;</span></a> \
           </legend> \
           <input class="input-sm" type="text" value="{{term}}" name="term" data-filter-field="{{field}}" data-filter-id="{{id}}" data-filter-type="{{type}}" /> \
         </fieldset> \
@@ -58,14 +58,14 @@ my.FilterEditor = Backbone.View.extend({
         <fieldset> \
           <legend> \
             {{field}} <small>{{type}}</small> \
-            <a class="js-remove-filter" href="#" title="Remove this filter" data-filter-id="{{id}}">&times;</a> \
+            <a class="js-remove-filter" href="#" title="{{t.Remove_this_filter}" data-filter-id="{{id}}"><span class="wcag_hide">{{t.Remove_this_filter}}</span><span aria-hidden="true">&times;</span></a> \
           </legend> \
           <div class="form-group"> \
-            <label class="control-label" for="">From</label> \
+            <label class="control-label" for="">{{t.From}}</label> \
             <input class="input-sm" type="text" value="{{from}}" name="from" data-filter-field="{{field}}" data-filter-id="{{id}}" data-filter-type="{{type}}" /> \
           </div> \
           <div class="form-group"> \
-            <label class="control-label" for="">To</label> \
+            <label class="control-label" for="">{{t.To}}</label> \
             <input class="input-sm" type="text" value="{{to}}" name="to" data-filter-field="{{field}}" data-filter-id="{{id}}" data-filter-type="{{type}}" /> \
           </div> \
         </fieldset> \
@@ -76,18 +76,18 @@ my.FilterEditor = Backbone.View.extend({
         <fieldset> \
           <legend> \
             {{field}} <small>{{type}}</small> \
-            <a class="js-remove-filter" href="#" title="Remove this filter" data-filter-id="{{id}}">&times;</a> \
+            <a class="js-remove-filter" href="#" title="{{t.Remove_this_filter}}" data-filter-id="{{id}}"><span class="wcag_hide">{{t.Remove_this_filter}}</span><span aria-hidden="true">&times;</span></a> \
           </legend> \
           <div class="form-group"> \
-            <label class="control-label" for="">Longitude</label> \
+            <label class="control-label" for="">{{t.Longitude}}</label> \
             <input class="input-sm" type="text" value="{{point.lon}}" name="lon" data-filter-field="{{field}}" data-filter-id="{{id}}" data-filter-type="{{type}}" /> \
           </div> \
           <div class="form-group"> \
-            <label class="control-label" for="">Latitude</label> \
+            <label class="control-label" for="">{{t.Latitude}}</label> \
             <input class="input-sm" type="text" value="{{point.lat}}" name="lat" data-filter-field="{{field}}" data-filter-id="{{id}}" data-filter-type="{{type}}" /> \
           </div> \
           <div class="form-group"> \
-            <label class="control-label" for="">Distance (km)</label> \
+            <label class="control-label" for="">{{t.Distance_km}}</label> \
             <input class="input-sm" type="text" value="{{distance}}" name="distance" data-filter-field="{{field}}" data-filter-id="{{id}}" data-filter-type="{{type}}" /> \
           </div> \
         </fieldset> \
@@ -116,8 +116,10 @@ my.FilterEditor = Backbone.View.extend({
     });
     tmplData.fields = this.model.fields.toJSON();
     tmplData.filterRender = function() {
-      return Mustache.render(self.filterTemplates[this.type], this);
+      var filterData = _.extend(this, this.MustacheFormatter());
+      return Mustache.render(self.filterTemplates[this.type], filterData);
     };
+    tmplData = _.extend(tmplData, this.MustacheFormatter());
     var out = Mustache.render(this.template, tmplData);
     this.$el.html(out);
   },

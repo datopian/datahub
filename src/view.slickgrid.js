@@ -40,14 +40,14 @@ this.recline.View = this.recline.View || {};
 //        }
 //      });
 //// NB: you need an explicit height on the element for slickgrid to work
-my.SlickGrid = Backbone.View.extend({
+my.SlickGrid = Backbone.I18nView.extend({
   initialize: function(modelEtc) {
     var self = this;
     this.$el.addClass('recline-slickgrid');
   
     // Template for row delete menu , change it if you don't love 
     this.templates = {
-      "deleterow" : '<button href="#" class="recline-row-delete btn btn-default" title="Delete row">X</button>'
+      "deleterow" : '<button href="#" class="recline-row-delete btn btn-default" title="{{t.Delete_row}}"><span class="wcag_hide">{{t.Delete_row}}</span><span aria-hidden="true">X</span></button>'
     };
 
     _.bindAll(this, 'render', 'onRecordChanged');
@@ -125,9 +125,10 @@ my.SlickGrid = Backbone.View.extend({
     var validator = function(field) {
       return function(value){
         if (field.type == "date" && isNaN(Date.parse(value))){
+        // todo test translation
           return {
             valid: false,
-            msg: "A date is required, check field field-date-format"
+            msg: self.t('date_required', {}, "A date is required, check field field-date-format")
           };
         } else {
           return {valid: true, msg :null } 
@@ -436,7 +437,7 @@ my.SlickGrid = Backbone.View.extend({
 my.GridControl= Backbone.View.extend({
   className: "recline-row-add",
   // Template for row edit menu , change it if you don't love
-  template: '<h1><button href="#" class="recline-row-add btn btn-default">Add row</button></h1>',
+  template: '<h1><button href="#" class="recline-row-add btn btn-default">{{t.Add_row}}</button></h1>',
   
   initialize: function(options){
     var self = this;
@@ -514,7 +515,7 @@ my.GridControl= Backbone.View.extend({
       $input = $('<input type="checkbox" />').data('option', 'autoresize').attr('id','slick-option-autoresize');
       $input.appendTo($li);
       $('<label />')
-          .text('Force fit columns')
+          .text(this.t('Force_fit_columns'))
           .attr('for','slick-option-autoresize')
           .appendTo($li);
       if (grid.getOptions().forceFitColumns) {

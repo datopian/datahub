@@ -22,11 +22,11 @@ this.recline.View = this.recline.View || {};
 (function($, my) {
   "use strict";
   
-my.Fields = Backbone.View.extend({
+my.Fields = Backbone.I18nView.extend({
   className: 'recline-fields-view', 
   template: ' \
     <div class="panel-group fields-list well"> \
-    <h3>Fields <a href="#" class="js-show-hide">+</a></h3> \
+    <h3>{{t.Fields}} <a href="#" class="js-show-hide" title="{{t.Show_field}}"><span class="wcag_hide">{{t.Show_field}}</span><span aria-hidden="true">+</span></a></h3> \
     {{#fields}} \
       <div class="panel panel-default field"> \
         <div class="panel-heading"> \
@@ -35,7 +35,7 @@ my.Fields = Backbone.View.extend({
             {{label}} \
             <small> \
               {{type}} \
-              <a class="accordion-toggle" data-toggle="collapse" href="#collapse{{id}}"> &raquo; </a> \
+              <a class="accordion-toggle" data-toggle="collapse" href="#collapse{{id}}" title="{{t.Expand_and_collapse}}"> <span class="wcag_hide">{{t.Expand_and_collapse}}</span><span aria-hidden="true">&raquo;</span> </a> \
             </small> \
           </h4> \
         </div> \
@@ -87,6 +87,7 @@ my.Fields = Backbone.View.extend({
       out.facets = field.facets.toJSON();
       tmplData.fields.push(out);
     });
+    tmplData = _.extend(tmplData, this.MustacheFormatter());
     var templated = Mustache.render(this.template, tmplData);
     this.$el.html(templated);
   }

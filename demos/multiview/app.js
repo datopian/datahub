@@ -110,6 +110,7 @@ var createMultiView = function(dataset, state) {
     model: dataset,
     el: $el,
     state: state,
+    locale: 'pl',
     views: views
   });
   return multiView;

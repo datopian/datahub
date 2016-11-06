@@ -108,9 +108,7 @@ my.MultiView = Backbone.I18nView.extend({
         </div> \
       </div> \
       <div class="recline-results-info"> \
-        {{t.num_records}} -> t + getattr \
-        {{#trans}}<span class="doc-count">{{recordCount}}</span> records{{/trans}} -- \
-        <span class="doc-count">{{recordCount}}</span> records\
+        {{#t.num_records}}<span class="doc-count">{recordCount}</span> records{{/t.num_records}}\
       </div> \
       <div class="menu-right"> \
         <div class="btn-group" data-toggle="buttons-checkbox"> \
@@ -133,6 +131,8 @@ my.MultiView = Backbone.I18nView.extend({
   initialize: function(options) {
     var self = this;
     this._setupState(options.state);
+    // todo any better idea to pass locale than by initialization? singleton? or does Intl API handle that?
+    this.initializeI18n(options.locale || 'en');
 
     // Hash of 'page' views (i.e. those for whole page) keyed by page name
     if (options.views) {
@@ -174,13 +174,13 @@ my.MultiView = Backbone.I18nView.extend({
     } else {
       this.sidebarViews = [{
         id: 'filterEditor',
-        label: 'Filters',
+        label: this.t('Filters'),
         view: new my.FilterEditor({
           model: this.model
         })
       }, {
         id: 'fieldsView',
-        label: 'Fields',
+        label: this.t('Fields'),
         view: new my.Fields({
           model: this.model
         })
@@ -206,7 +206,7 @@ my.MultiView = Backbone.I18nView.extend({
     });
     this.listenTo(this.model, 'query:done', function() {
       self.clearNotifications();
-      self.$el.find('.doc-count').text(self.model.recordCount || 'Unknown');
+      self.$el.find('.doc-count').text(self.model.recordCount || this.t('Unknown'));
     });
     this.listenTo(this.model, 'query:fail', function(error) {
       self.clearNotifications();
@@ -221,7 +221,7 @@ my.MultiView = Backbone.I18nView.extend({
           msg += error.message;
         }
       } else {
-        msg = 'There was an error querying the backend';
+        msg = this.t('backend_error', {}, 'There was an error querying the backend');
       }
       self.notify({message: msg, category: 'error', persist: true});
     });
@@ -370,6 +370,7 @@ my.MultiView = Backbone.I18nView.extend({
 
     // now get default data + hash url plus initial state and initial our state object with it
     var stateData = _.extend({
+        locale: 'en',
         query: query,
         'view-graph': graphState,
         backend: this.model.backend.__type__,

@@ -6,7 +6,7 @@ this.recline.View = this.recline.View || {};
 (function($, my) {
   "use strict";
 
-my.QueryEditor = Backbone.View.extend({
+my.QueryEditor = Backbone.I18nView.extend({
   className: 'recline-query-editor', 
   template: ' \
     <form action="" method="GET" class="form-inline" role="form"> \
@@ -15,11 +15,11 @@ my.QueryEditor = Backbone.View.extend({
           <div class="input-group-addon"> \
             <i class="glyphicon glyphicon-search"></i> \
           </div> \
-          <label for="q">Search</label> \
-          <input class="form-control search-query" type="text" id="q" name="q" value="{{q}}" placeholder="Search data ..."> \
+          <label for="q">{{t.Search}}</label> \
+          <input class="form-control search-query" type="text" id="q" name="q" value="{{q}}" placeholder="{{t.Search_data}} ..."> \
         </div> \
       </div> \
-      <button type="submit" class="btn btn-default">Go &raquo;</button> \
+      <button type="submit" class="btn btn-default">{{t.Go}} &raquo;</button> \
     </form> \
   ',
 
@@ -39,6 +39,7 @@ my.QueryEditor = Backbone.View.extend({
   },
   render: function() {
     var tmplData = this.model.toJSON();
+    tmplData = _.extend(tmplData, this.MustacheFormatter());
     var templated = Mustache.render(this.template, tmplData);
     this.$el.html(templated);
   }

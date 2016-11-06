@@ -6,6 +6,7 @@
 //_.extend(my.View, Backbone.I18nView);
 
 Backbone.I18nView = Backbone.View.extend({
+    defaultLocale: 'en',
     locale: 'en',
     initializeI18n: function(locale) {
         this.locale = locale;
@@ -24,10 +25,12 @@ Backbone.I18nView = Backbone.View.extend({
 
         // fallback to key or default message if no translation is defined
         if (msg == null) {
-            console.warn("Missing locale for " + this.locale + "." + key); // TODO when dfault set and it's default locale then be quiet
+            if (this.locale != this.defaultLocale) {
+                console.warn("Missing locale for " + this.locale + "." + key);
+            }
             msg = defaultMessage;
         }
-        if (msg == null) { msg = key; }
+        if (msg == null) { msg = key; } // TODO w domyślnym locale automatycznie usuwaj podkreślenia
 
         // TODO i18n documentation
 
@@ -37,36 +40,28 @@ Backbone.I18nView = Backbone.View.extend({
 
             return formatted;
         } catch (e) {
-            console.error("Got error while formatting \"" + msg + "\": " + e.message);
-            // todo {{ wywala Message format, trzeba by wyescapować i pwrzywrócic po podmianie
+            var err = "Got error while formatting \"" + msg + "\": " + e.message;
+            if (e.name == 'SyntaxError' && e.found == '{') {
+                err += '. Probably you should change double brackets around variables (Mustache style) to single brackets (Intl style).';
+            }
+            console.error(err);
+
             return msg;
         }
-
-        // TODO document below error (most probable variables ref hasn't ben changed in template)
-        /* 19:10:40.954 SyntaxError: <template>:1
- >>    <div class="recline-data-explorer">     <div class="alert-messages"></div>         <div class="header clearfix">       <div class="navigation">         <div class="btn-group" data-toggle="buttons-radio">         {{#views}}         <button href="#{{id}}" data-view="{{id}}" class="btn btn-default">{{label}}</button>         {{/views}}         </div>       </div>       <div class="recline-results-info">         {{t.num_records}} -> t + getattr         {{#trans.num_records_defmsg}}<span class="doc-count">{{recordCount}}</span> records{{/trans.num_records_defmsg}} --         <span class="doc-count">{{recordCount}}</span> records      </div>       <div class="menu-right">         <div class="btn-group" data-toggle="buttons-checkbox">           {{#sidebarViews}}           <button href="#" data-action="{{id}}" class="btn btn-default">{{label}}</button>           {{/sidebarViews}}         </div>       </div>       <div class="query-editor-here" style="display:inline;"></div>     </div>     <div class="data-view-sidebar"></div>     <div class="data-view-container"></div>   </div>
-Expected "0", [1-9] or [^ \t\n\r,.+={}#] but "{" found.1(unknown)
-*/
-
     },
 
     MustacheFormatter: function() {
-        var property_formatter = new Proxy(this, {
-            get(view, name) {
-                return view.t(name);
-            },
-            has(target, prop) {
-                return true;
-            }
-        });
-
-        var section_formatter = new Proxy(this, {
+        var formatter = new Proxy(this, {
             get(view, name) {
                 return function() {
-                    return function (text, render) {
+                    var f = function (text, render) {
                         var trans = view.t(name, this, text);
-                        return render(text);
+                        return render(trans);
                     }
+                    f.toString = function() {
+                        return view.t(name);
+                    }
+                    return f;
                 };
             },
             has(target, prop) {
@@ -75,8 +70,7 @@ Expected "0", [1-9] or [^ \t\n\r,.+={}#] but "{" found.1(unknown)
         });
 
         return {
-            't': property_formatter,
-            'trans': section_formatter
+            't': formatter,
         };
     },
 });

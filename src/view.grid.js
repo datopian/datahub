@@ -10,7 +10,7 @@ this.recline.View = this.recline.View || {};
 // Provides a tabular view on a Dataset.
 //
 // Initialize it with a `recline.Model.Dataset`.
-my.Grid = Backbone.View.extend({
+my.Grid = Backbone.I18nView.extend({
   tagName:  "div",
   className: "recline-grid-container",
 
@@ -113,7 +113,9 @@ my.Grid = Backbone.View.extend({
         field.set({width: width});
       }
     });
-    var htmls = Mustache.render(this.template, this.toTemplateJSON());
+    var tmplData = this.toTemplateJSON();
+    tmplData = _.extend(tmplData, this.MustacheFormatter());
+    var htmls = Mustache.render(this.template, tmplData);
     this.$el.html(htmls);
     this.model.records.forEach(function(doc) {
       var tr = $('<tr />');
@@ -174,7 +176,7 @@ my.GridRow = Backbone.View.extend({
       {{#cells}} \
       <td data-field="{{field}}" style="width: {{width}}px; max-width: {{width}}px; min-width: {{width}}px;"> \
         <div class="data-table-cell-content"> \
-          <a href="javascript:{}" class="data-table-cell-edit" title="Edit this cell">&nbsp;</a> \
+          <a href="javascript:{}" class="data-table-cell-edit" title="{{t.Edit_this_cell}}">&nbsp;</a> \
           <div class="data-table-cell-value">{{{value}}}</div> \
         </div> \
       </td> \
@@ -201,7 +203,9 @@ my.GridRow = Backbone.View.extend({
 
   render: function() {
     this.$el.attr('data-id', this.model.id);
-    var html = Mustache.render(this.template, this.toTemplateJSON());
+    var tmplData = this.toTemplateJSON();
+    tmplData = _.extend(tmplData, this.MustacheFormatter());
+    var html = Mustache.render(this.template, tmplData);
     this.$el.html(html);
     return this;
   },
@@ -214,8 +218,8 @@ my.GridRow = Backbone.View.extend({
       <textarea class="data-table-cell-editor-editor" bind="textarea">{{value}}</textarea> \
       <div id="data-table-cell-editor-actions"> \
         <div class="data-table-cell-editor-action"> \
-          <button class="okButton btn primary">Update</button> \
-          <button class="cancelButton btn danger">Cancel</button> \
+          <button class="okButton btn primary">{{t.Update}}</button> \
+          <button class="cancelButton btn danger">{{t.Cancel}}</button> \
         </div> \
       </div> \
     </div> \
@@ -229,7 +233,8 @@ my.GridRow = Backbone.View.extend({
     $(e.target).addClass("hidden");
     var cell = $(e.target).siblings('.data-table-cell-value');
     cell.data("previousContents", cell.text());
-    var templated = Mustache.render(this.cellEditorTemplate, {value: cell.text()});
+
+    var templated = Mustache.render(this.cellEditorTemplate, _.extend({value: cell.text()}, this.MustacheFormatter()));
     cell.html(templated);
   },
 
@@ -242,6 +247,7 @@ my.GridRow = Backbone.View.extend({
     var newData = {};
     newData[field] = newValue;
     this.model.set(newData);
+    throw "Czym tu jest this? " + this;
     this.trigger('recline:flash', {message: "Updating row...", loader: true});
     this.model.save().then(function(response) {
         this.trigger('recline:flash', {message: "Row updated successfully", category: 'success'});
