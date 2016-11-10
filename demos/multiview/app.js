@@ -64,12 +64,14 @@ var createMultiView = function(dataset, state) {
   $el.appendTo(window.explorerDiv);
 
   // customize the subviews for the MultiView
+  var locale = 'en';
   var views = [
     {
       id: 'grid',
       label: 'Grid',
       view: new recline.View.SlickGrid({
         model: dataset,
+        locale: locale,
         state: {
           gridOptions: {
             editable: true,
@@ -93,15 +95,16 @@ var createMultiView = function(dataset, state) {
       id: 'graph',
       label: 'Graph',
       view: new recline.View.Graph({
-        model: dataset
-
+        model: dataset,
+        locale: locale
       })
     },
     {
       id: 'map',
       label: 'Map',
       view: new recline.View.Map({
-        model: dataset
+        model: dataset,
+        locale: locale
       })
     }
   ];
@@ -110,7 +113,7 @@ var createMultiView = function(dataset, state) {
     model: dataset,
     el: $el,
     state: state,
-    locale: 'pl',
+    locale: locale,
     views: views
   });
   return multiView;

@@ -5,12 +5,12 @@
 Backbone.I18nView = Backbone.View.extend({
     defaultLocale: 'en',
     locale: 'en',
+    cache: {},
     initializeI18n: function(locale, appHardcodedLocale) {
         this.defaultLocale = appHardcodedLocale || 'en';
         this.locale = locale || this.defaultLocale;
 
-        // TODO implement cache
-        //memoizeFormatConstructor(Intl.NumberFormat).getNumberFormat();
+        this.cache[this.locale] = {};
     },
 
     formatMessage(key, values) {
@@ -41,8 +41,11 @@ Backbone.I18nView = Backbone.View.extend({
         // TODO i18n documentation
 
         try {
-            var mf = new IntlMessageFormat(msg, 'pl');
-            var formatted = mf.format(values);
+            var formatter = this.cache[this.locale][msg];
+            if (formatter === undefined) {
+                this.cache[this.locale][msg] = formatter = new IntlMessageFormat(msg, this.locale);
+            }
+            var formatted = formatter.format(values);
 
             return formatted;
         } catch (e) {
