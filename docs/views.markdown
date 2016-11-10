@@ -105,3 +105,92 @@ of such behaviour see the DataExplorer view.
 
 See the existing Views.
 
+## Internationalization
+
+### Adding translations to templates
+
+Internationalization is implemented with help of [intl-messageformat](https://www.npmjs.com/package/intl-messageformat) library and supports [ICU Message syntax](http://userguide.icu-project.org/formatparse/messages).
+ 
+Translation keys are using Mustache tags prefixed by `t.`. You can specify translated strings in two ways:
+
+1. Simple text with no variables is rendered using Mustache variable-tag
+```javascript
+$template = '{{ "{{t.Add_row"}}}}'; // will show "Add row" in defaultLocale (English) 
+```
+
+2. Text with variables or special characters is rendered using Mustache section-tag
+
+```javascript
+$template = '{{ "{{#t.desc"}}}}Add first_row field{{ "{{/t.desc"}}}}'; 
+// using special chars; will show "Add first_row field" in defaultLocale
+ 
+$template = '{{ "{{#t.num_records"}}}}{recordCount, plural, =0 {no records} =1{# record} other {# records}}{{ "{{/t.num_records"}}}}'; 
+// will show "no records", "1 record" or "x records" in defaultLocale (English) 
+```
+
+When using section-tags in existing templates be sure to remove a bracket from variables inside sections:
+```javascript
+#template___notranslation = '{{ "{{recordCount"}}}} records';
+#template_withtranslation = '{{ "{{#t.num_records"}}}} {recordCount} records {{ "{{/t.num_records"}}}}';
+```
+
+
+Then to setup Backbone and Mustache to use translation you have to extend some objects:
+
+```javascript
+// ============== BEFORE ===================
+
+my.MultiView = Backbone.View.extend({
+  initialize: function(options) {
+    ...:
+  },
+  render: function() {
+    var tmplData = this.model.toTemplateJSON();
+    var output = Mustache.render(this.template, tmplData);
+    ...
+  }    
+});
+
+var multiView = new recline.View.MultiView({
+    model: dataset
+});
+
+// ============== AFTER ==================== 
+
+my.MultiView = Backbone.I18nView.extend({ // extend I18n view
+  initialize: function(options) {
+    this.initializeI18n(options.locale);
+    ...:
+  },
+  render: function() {
+    var tmplData = this.model.toTemplateJSON();
+    tmplData = _.extend(tmplData, this.MustacheFormatter()); // inject Moustache formatter
+    var output = Mustache.render(this.template, tmplData);
+    ...
+  }    
+});
+
+var multiView = new recline.View.MultiView({
+    model: dataset,
+    locale: 'pl'  // set Locale used
+});
+
+```
+ 
+
+### Adding new language
+
+Create a copy of `src/i18n/pl.js` and translate all the keys. Long English messages can be found in `en.js`.
+
+### Overriding defined messages
+
+If you want to override translations from provided locale do it in a script tag after including recline:
+
+```html
+<script type="text/javascript" src="recline.js"></script>
+<script type="text/javascript">
+  this.recline.View.translations['en'] = {
+    Add_row: 'Add new row'
+  } 
+</script>
+```

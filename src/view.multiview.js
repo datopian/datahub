@@ -108,7 +108,7 @@ my.MultiView = Backbone.I18nView.extend({
         </div> \
       </div> \
       <div class="recline-results-info"> \
-        {{#t.num_records}}<span class="doc-count">{recordCount}</span> records{{/t.num_records}}\
+        {{#t.num_records}}<span class="doc-count">{recordCount}</span> {recordCount, plural, =1{record} other{records}}{{/t.num_records}}\
       </div> \
       <div class="menu-right"> \
         <div class="btn-group" data-toggle="buttons-checkbox"> \
