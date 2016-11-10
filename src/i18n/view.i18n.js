@@ -1,9 +1,6 @@
 /*jshint multistr:true */
 
-// todo probably some kind of mixin would be better
-//usage: (zamienic na extension)
-// my.View - Backbone.View.extend({});
-//_.extend(my.View, Backbone.I18nView);
+// TODO probably some kind of mixin would be better, like: my.View - Backbone.View.extend({}); _.extend(my.View, Backbone.I18nView);
 
 Backbone.I18nView = Backbone.View.extend({
     defaultLocale: 'en',

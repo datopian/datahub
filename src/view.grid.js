@@ -124,7 +124,8 @@ my.Grid = Backbone.I18nView.extend({
       var newView = new my.GridRow({
           model: doc,
           el: tr,
-          fields: self.fields
+          fields: self.fields,
+          locale: self.locale
         });
       newView.render();
     });
@@ -166,11 +167,12 @@ my.Grid = Backbone.I18nView.extend({
 //     fields: mydatasets.fields // a FieldList object
 //   });
 // </pre>
-my.GridRow = Backbone.View.extend({
+my.GridRow = Backbone.I18nView.extend({
   initialize: function(initData) {
     _.bindAll(this, 'render');
     this._fields = initData.fields;
     this.listenTo(this.model, 'change', this.render);
+    this.initializeI18n(initData.locale);
   },
 
   template: ' \

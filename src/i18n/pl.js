@@ -64,12 +64,3 @@ this.recline.View.translations['pl'] = {
 
     num_records: '<span class="doc-count">{recordCount}</span> rekordów'
 }
-
-//
-//(function(v) {
-//  "use strict";
-//
-//
-//
-//})(recline.t);
-//

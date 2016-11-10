@@ -12,12 +12,3 @@ this.recline.View.translations['en'] = {
     map_mapping_lat_lon: 'Latitude / Longitude fields',
     map_mapping_geojson: 'GeoJSON field'
 }
-
-//
-//(function(v) {
-//  "use strict";
-//
-//
-//
-//})(recline.t);
-//
