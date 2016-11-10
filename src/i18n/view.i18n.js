@@ -13,12 +13,11 @@ Backbone.I18nView = Backbone.View.extend({
         this.cache[this.locale] = {};
     },
 
-    formatMessage(key, values) {
-        this.cachedMsg.format(key, values);
-    },
-
     // TODO how to use it from outside? an singleton instance of I18n? use case: pass translated strings into view initializer
-    t: function(key, values = {}, defaultMessage = null) {
+    t: function(key) {
+        this.t(key, {}, null);
+    },
+    t: function(key, values, defaultMessage) {
         // get the message from current locale
         var msg = recline.View.translations[this.locale][key];
 
@@ -37,8 +36,6 @@ Backbone.I18nView = Backbone.View.extend({
             }
 
         }
-
-        // TODO i18n documentation
 
         try {
             var formatter = this.cache[this.locale][msg];
@@ -61,7 +58,7 @@ Backbone.I18nView = Backbone.View.extend({
 
     MustacheFormatter: function() {
         var formatter = new Proxy(this, {
-            get(view, name) {
+            get: function(view, name) {
                 return function() {
                     var f = function (text, render) {
                         var trans = view.t(name, this, text);
@@ -73,7 +70,7 @@ Backbone.I18nView = Backbone.View.extend({
                     return f;
                 };
             },
-            has(target, prop) {
+            has: function(target, prop) {
                 return true;
             }
         });

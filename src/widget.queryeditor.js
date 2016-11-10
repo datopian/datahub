@@ -27,9 +27,10 @@ my.QueryEditor = Backbone.I18nView.extend({
     'submit form': 'onFormSubmit'
   },
 
-  initialize: function(options = {}) {
+  initialize: function(options) {
     _.bindAll(this, 'render');
     this.listenTo(this.model, 'change', this.render);
+    options = options || {};
     this.initializeI18n(options.locale);
 
     this.render();

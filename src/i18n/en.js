@@ -11,4 +11,4 @@ this.recline.View.translations['en'] = {
     map_mapping: 'Coordinates source',
     map_mapping_lat_lon: 'Latitude / Longitude fields',
     map_mapping_geojson: 'GeoJSON field'
-}
+};

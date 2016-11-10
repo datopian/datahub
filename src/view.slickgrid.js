@@ -448,10 +448,11 @@ my.GridControl= Backbone.I18nView.extend({
   // Template for row edit menu , change it if you don't love
   template: '<h1><button href="#" class="recline-row-add btn btn-default">{{t.Add_row}}</button></h1>',
   
-  initialize: function(options = {}){
+  initialize: function(options){
     var self = this;
     _.bindAll(this, 'render');
     this.state = new recline.Model.ObjectState();
+    options = options || {};
     this.initializeI18n(options.locale);
 
     this.render();

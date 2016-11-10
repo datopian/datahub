@@ -63,4 +63,4 @@ this.recline.View.translations['pl'] = {
     Cluster_markers: 'Łącz pobliskie punkty w grupy',
 
     num_records: '<span class="doc-count">{recordCount}</span> rekordów'
-}
+};
