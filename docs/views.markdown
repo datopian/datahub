@@ -135,48 +135,50 @@ When using section-tags in existing templates be sure to remove a bracket from v
 ```
 
 
-Then to setup Backbone and Mustache to use translation you have to extend some objects:
+Then setup Mustache to use translation by injecting tranlation tags in `render` function:
 
 ```javascript
 // ============== BEFORE ===================
 
 my.MultiView = Backbone.View.extend({
-  initialize: function(options) {
-    ...:
-  },
   render: function() {
     var tmplData = this.model.toTemplateJSON();
     var output = Mustache.render(this.template, tmplData);
     ...
   }    
-});
-
-var multiView = new recline.View.MultiView({
-    model: dataset
 });
 
 // ============== AFTER ==================== 
 
-my.MultiView = Backbone.I18nView.extend({ // extend I18n view
-  initialize: function(options) {
-    this.initializeI18n(options.locale);
-    ...:
-  },
+my.MultiView = Backbone.View.extend({
   render: function() {
     var tmplData = this.model.toTemplateJSON();
-    tmplData = _.extend(tmplData, this.MustacheFormatter()); // inject Moustache formatter
+    tmplData = I18nMessages('recline', recline.View.translations).injectMustache(tmplData);  // inject Moustache formatter
     var output = Mustache.render(this.template, tmplData);
     ...
   }    
 });
-
-var multiView = new recline.View.MultiView({
-    model: dataset,
-    locale: 'pl'  // set Locale used
-});
-
 ```
- 
+
+### Language resolution
+
+By default the language is detected from the root `lang` attributes - <html lang="xx">` and `<html xml:lang="xx">`. 
+
+If you want to override this functionality then override `I18nMessages.languageResolver` with your implementation.
+
+```html
+<script type="text/javascript" src="common-intl-wmustache.js"></script>
+<script type="text/javascript">
+  I18nMessages.languageResolver = function() {
+    // implement here your language resolution 
+    return 'fr';
+  };
+</script>
+```
+
+Libraries can also ask for specific language: `I18nMessages('recline', recline.View.translations, 'pl')`. Language resolver is not used in that case.
+
+If you're creating templates using default language other than English (why?) set appropriately appHardcodedLocale: `I18nMessages('recline', recline.View.translations, undefined, 'pl')`. Then missing strings won't be reported in console and underscores in simple translations will be converted to spaces.
 
 ### Adding new language
 

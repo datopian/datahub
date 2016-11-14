@@ -9,13 +9,8 @@ var I18nMessages = function(libraryID, translations, languageResolverOrLocale, a
         return new I18nMessages(libraryID, translations, languageResolverOrLocale, appHardcodedLocale);
     }
 
-    var defaultResolver = function() {
-        var h = $('html');
-        return h.attr('lang') || h.attr('xml:lang');
-    };
-
     // which locale should we use?
-    languageResolverOrLocale = (typeof languageResolverOrLocale !== 'undefined') ?  languageResolverOrLocale : defaultResolver;
+    languageResolverOrLocale = (typeof languageResolverOrLocale !== 'undefined') ?  languageResolverOrLocale : I18nMessages.languageResolver;
     appHardcodedLocale = appHardcodedLocale || 'en';
 
     if (typeof(languageResolverOrLocale) === 'function') {
@@ -117,4 +112,9 @@ var I18nMessages = function(libraryID, translations, languageResolverOrLocale, a
     this.injectMustache = function(tmplData) {
         return _.extend(tmplData, self.mustacheI18Tags());
     }
+};
+
+I18nMessages.languageResolver = function() {
+    var h = $('html');
+    return h.attr('lang') || h.attr('xml:lang');
 };

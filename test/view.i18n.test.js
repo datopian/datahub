@@ -102,11 +102,22 @@ test('I18nMessages default locale', function () {
   equal(fmt.getLocale(), 'en');
 });
 
-test('I18nMessages default locale custom resolver', function () {
+test('I18nMessages custom language resolver', function () {
   var localeResolver = function() { return 'fr'; };
   var fmt = I18nMessages('somelib', {}, localeResolver);
 
   equal(fmt.getLocale(), 'fr');
+});
+
+test('I18nMessages override language resolver', function () {
+  var oldResolver = I18nMessages.languageResolver;
+  I18nMessages.languageResolver = function() {
+    return 'fr';
+  };
+  var fmt = I18nMessages('somelib', {});
+
+  equal(fmt.getLocale(), 'fr');
+  I18nMessages.languageResolver = oldResolver;
 });
 
 test('I18nMessages singletons', function () {
