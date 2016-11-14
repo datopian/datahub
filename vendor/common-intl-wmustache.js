@@ -1,5 +1,8 @@
-/*jshint multistr:true */
-
+/**
+ *  Copyright (c) 2016 Krzysztof Madejski
+ *
+ * This code is licensed under GPL v3 http://choosealicense.com/licenses/gpl-3.0/
+ */
 "use strict";
 var I18nMessages = function(libraryID, translations, languageResolverOrLocale, appHardcodedLocale) {
     if (typeof this === 'undefined') {
