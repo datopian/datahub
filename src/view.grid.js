@@ -10,7 +10,7 @@ this.recline.View = this.recline.View || {};
 // Provides a tabular view on a Dataset.
 //
 // Initialize it with a `recline.Model.Dataset`.
-my.Grid = Backbone.I18nView.extend({
+my.Grid = Backbone.View.extend({
   tagName:  "div",
   className: "recline-grid-container",
 
@@ -23,7 +23,6 @@ my.Grid = Backbone.I18nView.extend({
         hiddenFields: []
       }, modelEtc.state
     );
-    this.initializeI18n(modelEtc.locale);
     this.state = new recline.Model.ObjectState(state);
   },
 
@@ -115,7 +114,8 @@ my.Grid = Backbone.I18nView.extend({
       }
     });
     var tmplData = this.toTemplateJSON();
-    tmplData = _.extend(tmplData, this.MustacheFormatter());
+    tmplData = I18nMessages('recline', recline.View.translations).injectMustache(tmplData);
+
     var htmls = Mustache.render(this.template, tmplData);
     this.$el.html(htmls);
     this.model.records.forEach(function(doc) {
@@ -124,8 +124,7 @@ my.Grid = Backbone.I18nView.extend({
       var newView = new my.GridRow({
           model: doc,
           el: tr,
-          fields: self.fields,
-          locale: self.locale
+          fields: self.fields
         });
       newView.render();
     });
@@ -167,12 +166,11 @@ my.Grid = Backbone.I18nView.extend({
 //     fields: mydatasets.fields // a FieldList object
 //   });
 // </pre>
-my.GridRow = Backbone.I18nView.extend({
+my.GridRow = Backbone.View.extend({
   initialize: function(initData) {
     _.bindAll(this, 'render');
     this._fields = initData.fields;
     this.listenTo(this.model, 'change', this.render);
-    this.initializeI18n(initData.locale);
   },
 
   template: ' \
@@ -207,7 +205,7 @@ my.GridRow = Backbone.I18nView.extend({
   render: function() {
     this.$el.attr('data-id', this.model.id);
     var tmplData = this.toTemplateJSON();
-    tmplData = _.extend(tmplData, this.MustacheFormatter());
+    tmplData = I18nMessages('recline', recline.View.translations).injectMustache(tmplData);
     var html = Mustache.render(this.template, tmplData);
     this.$el.html(html);
     return this;
@@ -237,8 +235,9 @@ my.GridRow = Backbone.I18nView.extend({
     var cell = $(e.target).siblings('.data-table-cell-value');
     cell.data("previousContents", cell.text());
 
-    var templated = Mustache.render(this.cellEditorTemplate, _.extend({value: cell.text()}, this.MustacheFormatter()));
-    cell.html(templated);
+    var tmplData = I18nMessages('recline', recline.View.translations).injectMustache({value: cell.text()});
+    var output = Mustache.render(this.cellEditorTemplate, tmplData);
+    cell.html(output);
   },
 
   onEditorOK: function(e) {
@@ -250,14 +249,15 @@ my.GridRow = Backbone.I18nView.extend({
     var newData = {};
     newData[field] = newValue;
     this.model.set(newData);
-    throw "Czym tu jest this? " + this;
-    this.trigger('recline:flash', {message: "Updating row...", loader: true});
+
+    var fmt = I18nMessages('recline', recline.View.translations);
+    this.trigger('recline:flash', {message: fmt.t("Updating_row") + "...", loader: true});
     this.model.save().then(function(response) {
-        this.trigger('recline:flash', {message: "Row updated successfully", category: 'success'});
+        this.trigger('recline:flash', {message: fmt.t("Row_updated_successfully"), category: 'success'});
       })
       .fail(function() {
         this.trigger('recline:flash', {
-          message: 'Error saving row',
+          message: fmt.t('Error_saving_row'),
           category: 'error',
           persist: true
         });

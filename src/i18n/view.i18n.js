@@ -1,8 +1,14 @@
 /*jshint multistr:true */
 
 "use strict";
-var I18nMessages = function(uniqueID, translations, languageResolverOrLocale, appHardcodedLocale) {
+var I18nMessages = function(libraryID, translations, languageResolverOrLocale, appHardcodedLocale) {
+    if (typeof this === 'undefined') {
+        return new I18nMessages(libraryID, translations, languageResolverOrLocale, appHardcodedLocale);
+    }
+
     var defaultResolver = function() {
+        var h = $('html');
+        return h.attr('lang') || h.attr('xml:lang');
     };
 
     // which locale should we use?
@@ -16,15 +22,20 @@ var I18nMessages = function(uniqueID, translations, languageResolverOrLocale, ap
         languageResolverOrLocale = appHardcodedLocale;
     }
 
-    if (I18nMessages.prototype._formatters[uniqueID, languageResolverOrLocale]) {
-        return I18nMessages.prototype._formatters[uniqueID, languageResolverOrLocale];
+    if (((I18nMessages.prototype._formatters || {})[libraryID] || {})[languageResolverOrLocale]) {
+        return I18nMessages.prototype._formatters[libraryID][languageResolverOrLocale];
     }
-    I18nMessages.prototype._formatters[uniqueID, languageResolverOrLocale] = this;
+    I18nMessages.prototype._formatters = I18nMessages.prototype._formatters || {};
+    I18nMessages.prototype._formatters[libraryID] = I18nMessages.prototype._formatters[libraryID] || {};
+    I18nMessages.prototype._formatters[libraryID][languageResolverOrLocale] = this;
 
     // ========== VARIABLES & FUNCTIONS ==========
     var self = this;
 
+    this.uniqueID = this.uniqueID;
     this.locale = languageResolverOrLocale;
+    this.translations = translations;
+    this.appHardcodedLocale = appHardcodedLocale;
     this.cache= {};
 
     this.getLocale = function() {
@@ -37,7 +48,7 @@ var I18nMessages = function(uniqueID, translations, languageResolverOrLocale, ap
         values = (typeof values !== 'undefined') ?  values : {};
 
         // get the message from current locale
-        var msg = this.translations[this.locale][key];
+        var msg = (this.translations[this.locale] || {})[key];
 
         // fallback to key or default message if no translation is defined
         if (msg == null) {

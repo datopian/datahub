@@ -40,11 +40,10 @@ this.recline.View = this.recline.View || {};
 //        }
 //      });
 //// NB: you need an explicit height on the element for slickgrid to work
-my.SlickGrid = Backbone.I18nView.extend({
+my.SlickGrid = Backbone.View.extend({
   initialize: function(modelEtc) {
     var self = this;
     this.$el.addClass('recline-slickgrid');
-    this.initializeI18n(modelEtc.locale);
   
     // Template for row delete menu , change it if you don't love 
     this.templates = {
@@ -73,7 +72,7 @@ my.SlickGrid = Backbone.I18nView.extend({
     if(this.state.get("gridOptions") 
   && this.state.get("gridOptions").enabledAddRow != undefined 
       && this.state.get("gridOptions").enabledAddRow == true ){
-      this.editor    =  new  my.GridControl({locale: this.locale})
+      this.editor    =  new  my.GridControl()
       this.elSidebar =  this.editor.$el
   this.listenTo(this.editor.state, 'change', function(){   
     this.model.records.add(new recline.Model.Record())
@@ -104,18 +103,19 @@ my.SlickGrid = Backbone.I18nView.extend({
     }, self.state.get('gridOptions'));
 
     // We need all columns, even the hidden ones, to show on the column picker
-    var columns = []; 
+    var columns = [];
+    var fmt = I18nMessages('recline', recline.View.translations);
 
     // custom formatter as default one escapes html
     // plus this way we distinguish between rendering/formatting and computed value (so e.g. sort still works ...)
     // row = row index, cell = cell index, value = value, columnDef = column definition, dataContext = full row values
     var formatter = function(row, cell, value, columnDef, dataContext) {
       if(columnDef.id == "del"){
-        var formatted = Mustache.render(self.templates.deleterow, _.extend({}, self.MustacheFormatter()));
+        var formatted = Mustache.render(self.templates.deleterow, fmt.injectMustache({}));
         return formatted;
       }
       if(columnDef.id == "#"){
-        var formatted = Mustache.render(self.templates.reorderrows, _.extend({}, self.MustacheFormatter()));
+        var formatted = Mustache.render(self.templates.reorderrows, fmt.injectMustache({}));
         return formatted;
       }
 
@@ -133,10 +133,9 @@ my.SlickGrid = Backbone.I18nView.extend({
     var validator = function(field) {
       return function(value){
         if (field.type == "date" && isNaN(Date.parse(value))){
-        // todo test translation
           return {
             valid: false,
-            msg: self.t('date_required', {}, "A date is required, check field field-date-format")
+            msg: fmt.t('date_required', {}, "A date is required, check field field-date-format")
           };
         } else {
           return {valid: true, msg :null } 
@@ -443,7 +442,7 @@ my.SlickGrid = Backbone.I18nView.extend({
 // Add new grid Control to display a new row add menu bouton
 // It display a simple side-bar menu ,for user to add new 
 // row to grid 
-my.GridControl= Backbone.I18nView.extend({
+my.GridControl= Backbone.View.extend({
   className: "recline-row-add",
   // Template for row edit menu , change it if you don't love
   template: '<h1><button href="#" class="recline-row-add btn btn-default">{{t.Add_row}}</button></h1>',
@@ -452,16 +451,14 @@ my.GridControl= Backbone.I18nView.extend({
     var self = this;
     _.bindAll(this, 'render');
     this.state = new recline.Model.ObjectState();
-    options = options || {};
-    this.initializeI18n(options.locale);
-
     this.render();
   },
 
   render: function() {
     var self = this;
 
-    var formatted = Mustache.render(this.template, _.extend({}, this.MustacheFormatter()));
+    var tmplData = I18nMessages('recline', recline.View.translations).injectMustache({});
+    var formatted = Mustache.render(this.template, tmplData);
     this.$el.html(formatted);
   },
 

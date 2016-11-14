@@ -94,7 +94,7 @@ this.recline.View = this.recline.View || {};
 // of views in use -- e.g. those specified by the views argument -- but instead 
 // expect either that the default views are fine or that the client to have
 // initialized the MultiView with the relevant views themselves.
-my.MultiView = Backbone.I18nView.extend({
+my.MultiView = Backbone.View.extend({
   template: ' \
   <div class="recline-data-explorer"> \
     <div class="alert-messages"></div> \
@@ -131,8 +131,7 @@ my.MultiView = Backbone.I18nView.extend({
   initialize: function(options) {
     var self = this;
     this._setupState(options.state);
-    // todo any better idea to pass locale than by initialization? singleton? or does Intl API handle that?
-    this.initializeI18n(options.locale);
+    var fmt = I18nMessages('recline', recline.View.translations);
 
     // Hash of 'page' views (i.e. those for whole page) keyed by page name
     if (options.views) {
@@ -140,28 +139,28 @@ my.MultiView = Backbone.I18nView.extend({
     } else {
       this.pageViews = [{
         id: 'grid',
-        label: this.t('Grid'),
+        label: fmt.t('Grid'),
         view: new my.SlickGrid({
           model: this.model,
           state: this.state.get('view-grid')
         })
       }, {
         id: 'graph',
-        label: this.t('Graph'),
+        label: fmt.t('Graph'),
         view: new my.Graph({
           model: this.model,
           state: this.state.get('view-graph')
         })
       }, {
         id: 'map',
-        label: this.t('Map'),
+        label: fmt.t('Map'),
         view: new my.Map({
           model: this.model,
           state: this.state.get('view-map')
         })
       }, {
         id: 'timeline',
-        label: this.t('Timeline'),
+        label: fmt.t('Timeline'),
         view: new my.Timeline({
           model: this.model,
           state: this.state.get('view-timeline')
@@ -174,17 +173,15 @@ my.MultiView = Backbone.I18nView.extend({
     } else {
       this.sidebarViews = [{
         id: 'filterEditor',
-        label: this.t('Filters'),
+        label: fmt.t('Filters'),
         view: new my.FilterEditor({
-          model: this.model,
-          locale: this.locale
+          model: this.model
         })
       }, {
         id: 'fieldsView',
-        label: this.t('Fields'),
+        label: fmt.t('Fields'),
         view: new my.Fields({
-          model: this.model,
-          locale: this.locale
+          model: this.model
         })
       }];
     }
@@ -208,7 +205,7 @@ my.MultiView = Backbone.I18nView.extend({
     });
     this.listenTo(this.model, 'query:done', function() {
       self.clearNotifications();
-      self.$el.find('.doc-count').text(self.model.recordCount || this.t('Unknown'));
+      self.$el.find('.doc-count').text(self.model.recordCount || fmt.t('Unknown'));
     });
     this.listenTo(this.model, 'query:fail', function(error) {
       self.clearNotifications();
@@ -223,7 +220,7 @@ my.MultiView = Backbone.I18nView.extend({
           msg += error.message;
         }
       } else {
-        msg = this.t('backend_error', {}, 'There was an error querying the backend');
+        msg = fmt.t('backend_error', {}, 'There was an error querying the backend');
       }
       self.notify({message: msg, category: 'error', persist: true});
     });
@@ -242,7 +239,7 @@ my.MultiView = Backbone.I18nView.extend({
     var tmplData = this.model.toTemplateJSON();
     tmplData.views = this.pageViews;
     tmplData.sidebarViews = this.sidebarViews;
-    tmplData = _.extend(tmplData, this.MustacheFormatter());
+    tmplData = I18nMessages('recline', recline.View.translations).injectMustache(tmplData);
     var template = Mustache.render(this.template, tmplData);
     this.$el.html(template);
 
@@ -273,8 +270,7 @@ my.MultiView = Backbone.I18nView.extend({
     this.$el.find('.recline-results-info').after(this.pager.el);
 
     this.queryEditor = new recline.View.QueryEditor({
-      model: this.model.queryState,
-      locale: this.locale
+      model: this.model.queryState
     });
     this.$el.find('.query-editor-here').append(this.queryEditor.el);
 
@@ -373,7 +369,6 @@ my.MultiView = Backbone.I18nView.extend({
 
     // now get default data + hash url plus initial state and initial our state object with it
     var stateData = _.extend({
-        locale: 'en',
         query: query,
         'view-graph': graphState,
         backend: this.model.backend.__type__,

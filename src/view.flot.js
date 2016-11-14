@@ -22,7 +22,7 @@ this.recline.View = this.recline.View || {};
 //
 // NB: should *not* provide an el argument to the view but must let the view
 // generate the element itself (you can then append view.el to the DOM.
-my.Flot = Backbone.I18nView.extend({
+my.Flot = Backbone.View.extend({
   template: ' \
     <div class="recline-flot"> \
       <div class="panel graph" style="display: block;"> \
@@ -38,7 +38,6 @@ my.Flot = Backbone.I18nView.extend({
   initialize: function(options) {
     var self = this;
     this.graphColors = ["#edc240", "#afd8f8", "#cb4b4b", "#4da74d", "#9440ed"];
-    this.initializeI18n(options.locale);
 
     _.bindAll(this, 'render', 'redraw', '_toolTip', '_xaxisLabel');
     this.needToRedraw = false;
@@ -57,8 +56,7 @@ my.Flot = Backbone.I18nView.extend({
     this.previousTooltipPoint = {x: null, y: null};
     this.editor = new my.FlotControls({
       model: this.model,
-      state: this.state.toJSON(),
-      locale: this.locale
+      state: this.state.toJSON()
     });
     this.listenTo(this.editor.state, 'change', function() {
       self.state.set(self.editor.state.toJSON());
@@ -69,7 +67,7 @@ my.Flot = Backbone.I18nView.extend({
 
   render: function() {
     var self = this;
-    var tmplData = _.extend(this.model.toTemplateJSON(), this.MustacheFormatter());
+    var tmplData = I18nMessages('recline', recline.View.translations).injectMustache(this.model.toTemplateJSON());
     var htmls = Mustache.render(this.template, tmplData);
     this.$el.html(htmls);
     this.$graph = this.$el.find('.panel.graph');
@@ -364,7 +362,7 @@ my.Flot = Backbone.I18nView.extend({
   }
 });
 
-my.FlotControls = Backbone.I18nView.extend({
+my.FlotControls = Backbone.View.extend({
   className: "editor",
   template: ' \
   <div class="editor"> \
@@ -433,14 +431,13 @@ my.FlotControls = Backbone.I18nView.extend({
     _.bindAll(this, 'render');
     this.listenTo(this.model.fields, 'reset add', this.render);
     this.state = new recline.Model.ObjectState(options.state);
-    this.initializeI18n(options.locale);
     this.render();
   },
 
   render: function() {
     var self = this;
     var tmplData = this.model.toTemplateJSON();
-    tmplData = _.extend(tmplData, this.MustacheFormatter());
+    tmplData = I18nMessages('recline', recline.View.translations).injectMustache(tmplData);
     var htmls = Mustache.render(this.template, tmplData);
     this.$el.html(htmls);
 
@@ -503,7 +500,7 @@ my.FlotControls = Backbone.I18nView.extend({
       seriesName: String.fromCharCode(idx + 64 + 1)
     }, this.model.toTemplateJSON());
 
-    data = _.extend(data, this.MustacheFormatter());
+    data = I18nMessages('recline', recline.View.translations).injectMustache(data);
     var htmls = Mustache.render(this.templateSeriesEditor, data);
     this.$el.find('.editor-series-group').append(htmls);
     return this;

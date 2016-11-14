@@ -38,7 +38,7 @@ this.recline.View = this.recline.View || {};
 //
 // * map: the Leaflet map (L.Map)
 // * features: Leaflet GeoJSON layer containing all the features (L.GeoJSON)
-my.Map = Backbone.I18nView.extend({
+my.Map = Backbone.View.extend({
   template: ' \
     <div class="recline-map"> \
       <div class="panel map"></div> \
@@ -57,8 +57,6 @@ my.Map = Backbone.I18nView.extend({
     this.mapReady = false;
     // this will be the Leaflet L.Map object (setup below)
     this.map = null;
-
-    this.initializeI18n(options.locale);
 
     var stateData = _.extend({
         geomField: null,
@@ -97,8 +95,7 @@ my.Map = Backbone.I18nView.extend({
 
     this.menu = new my.MapMenu({
       model: this.model,
-      state: this.state.toJSON(),
-      locale: this.locale
+      state: this.state.toJSON()
     });
     this.listenTo(this.menu.state, 'change', function() {
       self.state.set(self.menu.state.toJSON());
@@ -176,7 +173,8 @@ my.Map = Backbone.I18nView.extend({
   // Also sets up the editor fields and the map if necessary.
   render: function() {
     var self = this;
-    var htmls = Mustache.render(this.template, _.extend(this.model.toTemplateJSON(), this.MustacheFormatter()));
+    var tmplData = I18nMessages('recline', recline.View.translations).injectMustache(this.model.toTemplateJSON());
+    var htmls = Mustache.render(this.template, tmplData);
     this.$el.html(htmls);
     this.$map = this.$el.find('.panel.map');
     this.redraw();
@@ -508,7 +506,7 @@ my.Map = Backbone.I18nView.extend({
   }
 });
 
-my.MapMenu = Backbone.I18nView.extend({
+my.MapMenu = Backbone.View.extend({
   className: 'editor',
 
   template: ' \
@@ -584,7 +582,6 @@ my.MapMenu = Backbone.I18nView.extend({
     this.listenTo(this.model.fields, 'change', this.render);
     this.state = new recline.Model.ObjectState(options.state);
     this.listenTo(this.state, 'change', this.render);
-    this.initializeI18n(options.locale);
     this.render();
   },
 
@@ -593,7 +590,8 @@ my.MapMenu = Backbone.I18nView.extend({
   // Also sets up the editor fields and the map if necessary.
   render: function() {
     var self = this;
-    var htmls = Mustache.render(this.template, _.extend(this.model.toTemplateJSON(), this.MustacheFormatter()));
+    var tmplData = I18nMessages('recline', recline.View.translations).injectMustache(this.model.toTemplateJSON());
+    var htmls = Mustache.render(this.template, tmplData);
     this.$el.html(htmls);
 
     if (this._geomReady() && this.model.fields.length){

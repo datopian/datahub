@@ -22,7 +22,7 @@ this.recline.View = this.recline.View || {};
 (function($, my) {
   "use strict";
   
-my.Fields = Backbone.I18nView.extend({
+my.Fields = Backbone.View.extend({
   className: 'recline-fields-view', 
   template: ' \
     <div class="panel-group fields-list well"> \
@@ -75,8 +75,6 @@ my.Fields = Backbone.I18nView.extend({
       self.render();
     });
     this.$el.find('.collapse').collapse();
-    this.initializeI18n(model.locale);
-
     this.render();
   },
   render: function() {
@@ -89,7 +87,7 @@ my.Fields = Backbone.I18nView.extend({
       out.facets = field.facets.toJSON();
       tmplData.fields.push(out);
     });
-    tmplData = _.extend(tmplData, this.MustacheFormatter());
+    var tmplData = I18nMessages('recline', recline.View.translations).injectMustache(tmplData);
     var templated = Mustache.render(this.template, tmplData);
     this.$el.html(templated);
   }

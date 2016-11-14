@@ -6,7 +6,7 @@ this.recline.View = this.recline.View || {};
 (function($, my) {
   "use strict";
 
-my.QueryEditor = Backbone.I18nView.extend({
+my.QueryEditor = Backbone.View.extend({
   className: 'recline-query-editor', 
   template: ' \
     <form action="" method="GET" class="form-inline" role="form"> \
@@ -27,12 +27,9 @@ my.QueryEditor = Backbone.I18nView.extend({
     'submit form': 'onFormSubmit'
   },
 
-  initialize: function(options) {
+  initialize: function() {
     _.bindAll(this, 'render');
     this.listenTo(this.model, 'change', this.render);
-    options = options || {};
-    this.initializeI18n(options.locale);
-
     this.render();
   },
   onFormSubmit: function(e) {
@@ -41,8 +38,7 @@ my.QueryEditor = Backbone.I18nView.extend({
     this.model.set({q: query});
   },
   render: function() {
-    var tmplData = this.model.toJSON();
-    tmplData = _.extend(tmplData, this.MustacheFormatter());
+    var tmplData = I18nMessages('recline', recline.View.translations).injectMustache(this.model.toJSON());
     var templated = Mustache.render(this.template, tmplData);
     this.$el.html(templated);
   }

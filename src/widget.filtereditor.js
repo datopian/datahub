@@ -6,7 +6,7 @@ this.recline.View = this.recline.View || {};
 (function($, my) {
   "use strict";
 
-my.FilterEditor = Backbone.I18nView.extend({
+my.FilterEditor = Backbone.View.extend({
   className: 'recline-filter-editor well', 
   template: ' \
     <div class="filters"> \
@@ -100,12 +100,10 @@ my.FilterEditor = Backbone.I18nView.extend({
     'submit form.js-edit': 'onTermFiltersUpdate',
     'submit form.js-add': 'onAddFilter'
   },
-  initialize: function(options) {
+  initialize: function() {
     _.bindAll(this, 'render');
     this.listenTo(this.model.fields, 'all', this.render);
     this.listenTo(this.model.queryState, 'change change:filters:new-blank', this.render);
-    this.initializeI18n(options.locale);
-
     this.render();
   },
   render: function() {
@@ -118,10 +116,10 @@ my.FilterEditor = Backbone.I18nView.extend({
     });
     tmplData.fields = this.model.fields.toJSON();
     tmplData.filterRender = function() {
-      var filterData = _.extend(this, self.MustacheFormatter());
+      var filterData = I18nMessages('recline', recline.View.translations).injectMustache(this);
       return Mustache.render(self.filterTemplates[this.type], filterData);
     };
-    tmplData = _.extend(tmplData, self.MustacheFormatter());
+    tmplData = I18nMessages('recline', recline.View.translations).injectMustache(tmplData);
     var out = Mustache.render(this.template, tmplData);
     this.$el.html(out);
   },
