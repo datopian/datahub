@@ -3,6 +3,7 @@
  *
  * This code is licensed under GPL v3 http://choosealicense.com/licenses/gpl-3.0/
  */
+ (function (global) {
 "use strict";
 var I18nMessages = function(libraryID, translations, languageResolverOrLocale, appHardcodedLocale) {
     if (typeof this === 'undefined') {
@@ -118,3 +119,8 @@ I18nMessages.languageResolver = function() {
     var h = $('html');
     return h.attr('lang') || h.attr('xml:lang');
 };
+
+
+global.I18nMessages = I18nMessages;
+
+}(window));
