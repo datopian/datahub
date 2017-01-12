@@ -176,6 +176,27 @@ my.Dataset = Backbone.Model.extend({
     return this._store.save(this._changes, this.toJSON());
   },
 
+  // ### update
+  //
+  // AJAX method with promise API to update a record in the backend.
+  //
+  // It will call update on the underlying data store, and trigger
+  // either an update:done event (on success) or update:fail (on failure)
+  //
+  update: function(doc, doc_id) {
+    var self = this;
+    var dfd = new Deferred();
+    this._store.update(doc, doc_id, this.toJSON())
+      .done(function(queryResult) {
+        self.trigger('update:done');
+      })
+    .fail(function(args) {
+        self.trigger('update:fail');
+        dfd.reject(args);
+    });
+    return dfd.promise();
+  },
+
   // ### query
   //
   // AJAX method with promise API to get records from the backend.
