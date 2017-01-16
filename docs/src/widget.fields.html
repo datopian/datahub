@@ -154,7 +154,7 @@
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-3">&#182;</a>
               </div>
-              <p>Editor — to change type (and possibly format)
+              <p>Editor – to change type (and possibly format)
 Editor for show/hide …</p>
 
             </div>
@@ -191,12 +191,12 @@ If number: max, min average …</p>
 <span class="hljs-keyword">this</span>.recline = <span class="hljs-keyword">this</span>.recline || {};
 <span class="hljs-keyword">this</span>.recline.View = <span class="hljs-keyword">this</span>.recline.View || {};
 
-(<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">($, my)</span> </span>{
-<span class="hljs-pi">  "use strict"</span>;
+(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">$, my</span>) </span>{
+<span class="hljs-meta">  "use strict"</span>;
   
 my.Fields = Backbone.View.extend({
-  className: <span class="hljs-string">'recline-fields-view'</span>, 
-  template: <span class="hljs-string">' \
+  <span class="hljs-attr">className</span>: <span class="hljs-string">'recline-fields-view'</span>, 
+  <span class="hljs-attr">template</span>: <span class="hljs-string">' \
     &lt;div class="panel-group fields-list well"&gt; \
     &lt;h3&gt;Fields &lt;a href="#" class="js-show-hide"&gt;+&lt;/a&gt;&lt;/h3&gt; \
     {{#fields}} \
@@ -230,7 +230,7 @@ my.Fields = Backbone.View.extend({
     &lt;/div&gt; \
   '</span>,
 
-  initialize: <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(model)</span> </span>{
+  <span class="hljs-attr">initialize</span>: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">model</span>) </span>{
     <span class="hljs-keyword">var</span> self = <span class="hljs-keyword">this</span>;
     _.bindAll(<span class="hljs-keyword">this</span>, <span class="hljs-string">'render'</span>);</pre></div></div>
             
@@ -249,8 +249,8 @@ being more liberal (e.g. binding to all) can lead to being called a lot (e.g. fo
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>    <span class="hljs-keyword">this</span>.listenTo(<span class="hljs-keyword">this</span>.model.fields, <span class="hljs-string">'reset'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(action)</span> </span>{
-      self.model.fields.each(<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(field)</span> </span>{
+            <div class="content"><div class='highlight'><pre>    <span class="hljs-keyword">this</span>.listenTo(<span class="hljs-keyword">this</span>.model.fields, <span class="hljs-string">'reset'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">action</span>) </span>{
+      self.model.fields.each(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">field</span>) </span>{
         field.facets.unbind(<span class="hljs-string">'all'</span>, self.render);
         field.facets.bind(<span class="hljs-string">'all'</span>, self.render);
       });</pre></div></div>
@@ -274,12 +274,12 @@ being more liberal (e.g. binding to all) can lead to being called a lot (e.g. fo
     <span class="hljs-keyword">this</span>.$el.find(<span class="hljs-string">'.collapse'</span>).collapse();
     <span class="hljs-keyword">this</span>.render();
   },
-  render: <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> </span>{
+  <span class="hljs-attr">render</span>: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
     <span class="hljs-keyword">var</span> self = <span class="hljs-keyword">this</span>;
     <span class="hljs-keyword">var</span> tmplData = {
-      fields: []
+      <span class="hljs-attr">fields</span>: []
     };
-    <span class="hljs-keyword">this</span>.model.fields.each(<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(field)</span> </span>{
+    <span class="hljs-keyword">this</span>.model.fields.each(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">field</span>) </span>{
       <span class="hljs-keyword">var</span> out = field.toJSON();
       out.facets = field.facets.toJSON();
       tmplData.fields.push(out);

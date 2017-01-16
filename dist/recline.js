@@ -1980,7 +1980,7 @@ my.Map = Backbone.View.extend({
     // NB: inside pointToLayer `this` will be set to point to this map view
     // instance (which allows e.g. this.markers to work in this default case)
     pointToLayer: function (feature, latlng) {
-      var marker = new L.Marker(latlng);
+      var marker = new L.Marker(latlng, { alt: 'Marker Icon' });
       marker.bindPopup(feature.properties.popupContent);
       // this is for cluster case
       this.markers.addLayer(marker);

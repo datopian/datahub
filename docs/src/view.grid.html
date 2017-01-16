@@ -133,8 +133,8 @@
 <span class="hljs-keyword">this</span>.recline = <span class="hljs-keyword">this</span>.recline || {};
 <span class="hljs-keyword">this</span>.recline.View = <span class="hljs-keyword">this</span>.recline.View || {};
 
-(<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">($, my)</span> </span>{
-<span class="hljs-pi">  "use strict"</span>;</pre></div></div>
+(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">$, my</span>) </span>{
+<span class="hljs-meta">  "use strict"</span>;</pre></div></div>
             
         </li>
         
@@ -152,22 +152,22 @@
             </div>
             
             <div class="content"><div class='highlight'><pre>my.Grid = Backbone.View.extend({
-  tagName:  <span class="hljs-string">"div"</span>,
-  className: <span class="hljs-string">"recline-grid-container"</span>,
+  <span class="hljs-attr">tagName</span>:  <span class="hljs-string">"div"</span>,
+  <span class="hljs-attr">className</span>: <span class="hljs-string">"recline-grid-container"</span>,
 
-  initialize: <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(modelEtc)</span> </span>{
+  <span class="hljs-attr">initialize</span>: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">modelEtc</span>) </span>{
     <span class="hljs-keyword">var</span> self = <span class="hljs-keyword">this</span>;
     _.bindAll(<span class="hljs-keyword">this</span>, <span class="hljs-string">'render'</span>, <span class="hljs-string">'onHorizontalScroll'</span>);
     <span class="hljs-keyword">this</span>.listenTo(<span class="hljs-keyword">this</span>.model.records, <span class="hljs-string">'add reset remove'</span>, <span class="hljs-keyword">this</span>.render);
     <span class="hljs-keyword">this</span>.tempState = {};
     <span class="hljs-keyword">var</span> state = _.extend({
-        hiddenFields: []
+        <span class="hljs-attr">hiddenFields</span>: []
       }, modelEtc.state
     ); 
     <span class="hljs-keyword">this</span>.state = <span class="hljs-keyword">new</span> recline.Model.ObjectState(state);
   },
 
-  events: {</pre></div></div>
+  <span class="hljs-attr">events</span>: {</pre></div></div>
             
         </li>
         
@@ -212,16 +212,16 @@
             </div>
             
             <div class="content"><div class='highlight'><pre>
-  setColumnSort: <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(order)</span> </span>{
+  setColumnSort: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">order</span>) </span>{
     <span class="hljs-keyword">var</span> sort = [{}];
-    sort[<span class="hljs-number">0</span>][<span class="hljs-keyword">this</span>.tempState.currentColumn] = {order: order};
-    <span class="hljs-keyword">this</span>.model.query({sort: sort});
+    sort[<span class="hljs-number">0</span>][<span class="hljs-keyword">this</span>.tempState.currentColumn] = {<span class="hljs-attr">order</span>: order};
+    <span class="hljs-keyword">this</span>.model.query({<span class="hljs-attr">sort</span>: sort});
   },
   
-  hideColumn: <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> </span>{
+  <span class="hljs-attr">hideColumn</span>: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
     <span class="hljs-keyword">var</span> hiddenFields = <span class="hljs-keyword">this</span>.state.get(<span class="hljs-string">'hiddenFields'</span>);
     hiddenFields.push(<span class="hljs-keyword">this</span>.tempState.currentColumn);
-    <span class="hljs-keyword">this</span>.state.set({hiddenFields: hiddenFields});</pre></div></div>
+    <span class="hljs-keyword">this</span>.state.set({<span class="hljs-attr">hiddenFields</span>: hiddenFields});</pre></div></div>
             
         </li>
         
@@ -240,13 +240,13 @@
     <span class="hljs-keyword">this</span>.render();
   },
   
-  showColumn: <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(e)</span> </span>{
+  <span class="hljs-attr">showColumn</span>: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">e</span>) </span>{
     <span class="hljs-keyword">var</span> hiddenFields = _.without(<span class="hljs-keyword">this</span>.state.get(<span class="hljs-string">'hiddenFields'</span>), $(e.target).data(<span class="hljs-string">'column'</span>));
-    <span class="hljs-keyword">this</span>.state.set({hiddenFields: hiddenFields});
+    <span class="hljs-keyword">this</span>.state.set({<span class="hljs-attr">hiddenFields</span>: hiddenFields});
     <span class="hljs-keyword">this</span>.render();
   },
 
-  onHorizontalScroll: <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(e)</span> </span>{
+  <span class="hljs-attr">onHorizontalScroll</span>: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">e</span>) </span>{
     <span class="hljs-keyword">var</span> currentScroll = $(e.target).scrollLeft();
     <span class="hljs-keyword">this</span>.$el.find(<span class="hljs-string">'.recline-grid thead tr'</span>).scrollLeft(currentScroll);
   },</pre></div></div>
@@ -295,7 +295,7 @@
     &lt;/div&gt; \
   '</span>,
 
-  toTemplateJSON: <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> </span>{
+  <span class="hljs-attr">toTemplateJSON</span>: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
     <span class="hljs-keyword">var</span> self = <span class="hljs-keyword">this</span>; 
     <span class="hljs-keyword">var</span> modelData = <span class="hljs-keyword">this</span>.model.toJSON();
     modelData.notEmpty = ( <span class="hljs-keyword">this</span>.fields.length &gt; <span class="hljs-number">0</span> );</pre></div></div>
@@ -313,7 +313,7 @@
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>    modelData.fields = <span class="hljs-keyword">this</span>.fields.map(<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(field)</span> </span>{
+            <div class="content"><div class='highlight'><pre>    modelData.fields = <span class="hljs-keyword">this</span>.fields.map(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">field</span>) </span>{
       <span class="hljs-keyword">return</span> field.toJSON();
     });</pre></div></div>
             
@@ -333,10 +333,10 @@
             <div class="content"><div class='highlight'><pre>    modelData.lastHeaderWidth = <span class="hljs-keyword">this</span>.scrollbarDimensions.width - <span class="hljs-number">2</span>;
     <span class="hljs-keyword">return</span> modelData;
   },
-  render: <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> </span>{
+  <span class="hljs-attr">render</span>: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
     <span class="hljs-keyword">var</span> self = <span class="hljs-keyword">this</span>;
-    <span class="hljs-keyword">this</span>.fields = <span class="hljs-keyword">new</span> recline.Model.FieldList(<span class="hljs-keyword">this</span>.model.fields.filter(<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(field)</span> </span>{
-      <span class="hljs-keyword">return</span> _.indexOf(self.state.get(<span class="hljs-string">'hiddenFields'</span>), field.id) == -<span class="hljs-number">1</span>;
+    <span class="hljs-keyword">this</span>.fields = <span class="hljs-keyword">new</span> recline.Model.FieldList(<span class="hljs-keyword">this</span>.model.fields.filter(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">field</span>) </span>{
+      <span class="hljs-keyword">return</span> _.indexOf(self.state.get(<span class="hljs-string">'hiddenFields'</span>), field.id) == <span class="hljs-number">-1</span>;
     }));
 
     <span class="hljs-keyword">this</span>.scrollbarDimensions = <span class="hljs-keyword">this</span>.scrollbarDimensions || <span class="hljs-keyword">this</span>._scrollbarSize(); <span class="hljs-comment">// skip measurement if already have dimensions</span>
@@ -372,7 +372,7 @@
             </div>
             
             <div class="content"><div class='highlight'><pre>    <span class="hljs-keyword">var</span> remainder = <span class="hljs-built_in">Math</span>.max(fullWidth - numFields * width,<span class="hljs-number">0</span>);
-    <span class="hljs-keyword">this</span>.fields.each(<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(field, idx)</span> </span>{</pre></div></div>
+    <span class="hljs-keyword">this</span>.fields.each(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">field, idx</span>) </span>{</pre></div></div>
             
         </li>
         
@@ -388,20 +388,20 @@
             </div>
             
             <div class="content"><div class='highlight'><pre>      <span class="hljs-keyword">if</span> (idx === <span class="hljs-number">0</span>) {
-        field.set({width: width+remainder});
+        field.set({<span class="hljs-attr">width</span>: width+remainder});
       } <span class="hljs-keyword">else</span> {
-        field.set({width: width});
+        field.set({<span class="hljs-attr">width</span>: width});
       }
     });
     <span class="hljs-keyword">var</span> htmls = Mustache.render(<span class="hljs-keyword">this</span>.template, <span class="hljs-keyword">this</span>.toTemplateJSON());
     <span class="hljs-keyword">this</span>.$el.html(htmls);
-    <span class="hljs-keyword">this</span>.model.records.forEach(<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(doc)</span> </span>{
+    <span class="hljs-keyword">this</span>.model.records.forEach(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">doc</span>) </span>{
       <span class="hljs-keyword">var</span> tr = $(<span class="hljs-string">'&lt;tr /&gt;'</span>);
       self.$el.find(<span class="hljs-string">'tbody'</span>).append(tr);
       <span class="hljs-keyword">var</span> newView = <span class="hljs-keyword">new</span> my.GridRow({
-          model: doc,
-          el: tr,
-          fields: self.fields
+          <span class="hljs-attr">model</span>: doc,
+          <span class="hljs-attr">el</span>: tr,
+          <span class="hljs-attr">fields</span>: self.fields
         });
       newView.render();
     });</pre></div></div>
@@ -443,9 +443,9 @@
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  _scrollbarSize: <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> </span>{
+            <div class="content"><div class='highlight'><pre>  _scrollbarSize: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
     <span class="hljs-keyword">var</span> $c = $(<span class="hljs-string">"&lt;div style='position:absolute; top:-10000px; left:-10000px; width:100px; height:100px; overflow:scroll;'&gt;&lt;/div&gt;"</span>).appendTo(<span class="hljs-string">"body"</span>);
-    <span class="hljs-keyword">var</span> dim = { width: $c.width() - $c[<span class="hljs-number">0</span>].clientWidth + <span class="hljs-number">1</span>, height: $c.height() - $c[<span class="hljs-number">0</span>].clientHeight };
+    <span class="hljs-keyword">var</span> dim = { <span class="hljs-attr">width</span>: $c.width() - $c[<span class="hljs-number">0</span>].clientWidth + <span class="hljs-number">1</span>, <span class="hljs-attr">height</span>: $c.height() - $c[<span class="hljs-number">0</span>].clientHeight };
     $c.remove();
     <span class="hljs-keyword">return</span> dim;
   }
@@ -475,13 +475,13 @@ var row = new GridRow({
             </div>
             
             <div class="content"><div class='highlight'><pre>my.GridRow = Backbone.View.extend({
-  initialize: <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(initData)</span> </span>{
+  <span class="hljs-attr">initialize</span>: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">initData</span>) </span>{
     _.bindAll(<span class="hljs-keyword">this</span>, <span class="hljs-string">'render'</span>);
     <span class="hljs-keyword">this</span>._fields = initData.fields;
     <span class="hljs-keyword">this</span>.listenTo(<span class="hljs-keyword">this</span>.model, <span class="hljs-string">'change'</span>, <span class="hljs-keyword">this</span>.render);
   },
 
-  template: <span class="hljs-string">' \
+  <span class="hljs-attr">template</span>: <span class="hljs-string">' \
       {{#cells}} \
       &lt;td data-field="{{field}}" style="width: {{width}}px; max-width: {{width}}px; min-width: {{width}}px;"&gt; \
         &lt;div class="data-table-cell-content"&gt; \
@@ -491,26 +491,26 @@ var row = new GridRow({
       &lt;/td&gt; \
       {{/cells}} \
     '</span>,
-  events: {
+  <span class="hljs-attr">events</span>: {
     <span class="hljs-string">'click .data-table-cell-edit'</span>: <span class="hljs-string">'onEditClick'</span>,
     <span class="hljs-string">'click .data-table-cell-editor .okButton'</span>: <span class="hljs-string">'onEditorOK'</span>,
     <span class="hljs-string">'click .data-table-cell-editor .cancelButton'</span>: <span class="hljs-string">'onEditorCancel'</span>
   },
   
-  toTemplateJSON: <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> </span>{
+  <span class="hljs-attr">toTemplateJSON</span>: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
     <span class="hljs-keyword">var</span> self = <span class="hljs-keyword">this</span>;
     <span class="hljs-keyword">var</span> doc = <span class="hljs-keyword">this</span>.model;
-    <span class="hljs-keyword">var</span> cellData = <span class="hljs-keyword">this</span>._fields.map(<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(field)</span> </span>{
+    <span class="hljs-keyword">var</span> cellData = <span class="hljs-keyword">this</span>._fields.map(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">field</span>) </span>{
       <span class="hljs-keyword">return</span> {
-        field: field.id,
-        width: field.get(<span class="hljs-string">'width'</span>),
-        value: doc.getFieldValue(field)
+        <span class="hljs-attr">field</span>: field.id,
+        <span class="hljs-attr">width</span>: field.get(<span class="hljs-string">'width'</span>),
+        <span class="hljs-attr">value</span>: doc.getFieldValue(field)
       };
     });
-    <span class="hljs-keyword">return</span> { id: <span class="hljs-keyword">this</span>.id, cells: cellData };
+    <span class="hljs-keyword">return</span> { <span class="hljs-attr">id</span>: <span class="hljs-keyword">this</span>.id, <span class="hljs-attr">cells</span>: cellData };
   },
 
-  render: <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> </span>{
+  <span class="hljs-attr">render</span>: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
     <span class="hljs-keyword">this</span>.$el.attr(<span class="hljs-string">'data-id'</span>, <span class="hljs-keyword">this</span>.model.id);
     <span class="hljs-keyword">var</span> html = Mustache.render(<span class="hljs-keyword">this</span>.template, <span class="hljs-keyword">this</span>.toTemplateJSON());
     <span class="hljs-keyword">this</span>.$el.html(html);
@@ -556,7 +556,7 @@ var row = new GridRow({
     &lt;/div&gt; \
   '</span>,
 
-  onEditClick: <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(e)</span> </span>{
+  <span class="hljs-attr">onEditClick</span>: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">e</span>) </span>{
     <span class="hljs-keyword">var</span> editing = <span class="hljs-keyword">this</span>.$el.find(<span class="hljs-string">'.data-table-cell-editor-editor'</span>);
     <span class="hljs-keyword">if</span> (editing.length &gt; <span class="hljs-number">0</span>) {
       editing.parents(<span class="hljs-string">'.data-table-cell-value'</span>).html(editing.text()).siblings(<span class="hljs-string">'.data-table-cell-edit'</span>).removeClass(<span class="hljs-string">"hidden"</span>);
@@ -564,11 +564,11 @@ var row = new GridRow({
     $(e.target).addClass(<span class="hljs-string">"hidden"</span>);
     <span class="hljs-keyword">var</span> cell = $(e.target).siblings(<span class="hljs-string">'.data-table-cell-value'</span>);
     cell.data(<span class="hljs-string">"previousContents"</span>, cell.text());
-    <span class="hljs-keyword">var</span> templated = Mustache.render(<span class="hljs-keyword">this</span>.cellEditorTemplate, {value: cell.text()});
+    <span class="hljs-keyword">var</span> templated = Mustache.render(<span class="hljs-keyword">this</span>.cellEditorTemplate, {<span class="hljs-attr">value</span>: cell.text()});
     cell.html(templated);
   },
 
-  onEditorOK: <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(e)</span> </span>{
+  <span class="hljs-attr">onEditorOK</span>: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">e</span>) </span>{
     <span class="hljs-keyword">var</span> self = <span class="hljs-keyword">this</span>;
     <span class="hljs-keyword">var</span> cell = $(e.target);
     <span class="hljs-keyword">var</span> rowId = cell.parents(<span class="hljs-string">'tr'</span>).attr(<span class="hljs-string">'data-id'</span>);
@@ -577,20 +577,20 @@ var row = new GridRow({
     <span class="hljs-keyword">var</span> newData = {};
     newData[field] = newValue;
     <span class="hljs-keyword">this</span>.model.set(newData);
-    <span class="hljs-keyword">this</span>.trigger(<span class="hljs-string">'recline:flash'</span>, {message: <span class="hljs-string">"Updating row..."</span>, loader: <span class="hljs-literal">true</span>});
-    <span class="hljs-keyword">this</span>.model.save().then(<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(response)</span> </span>{
-        <span class="hljs-keyword">this</span>.trigger(<span class="hljs-string">'recline:flash'</span>, {message: <span class="hljs-string">"Row updated successfully"</span>, category: <span class="hljs-string">'success'</span>});
+    <span class="hljs-keyword">this</span>.trigger(<span class="hljs-string">'recline:flash'</span>, {<span class="hljs-attr">message</span>: <span class="hljs-string">"Updating row..."</span>, <span class="hljs-attr">loader</span>: <span class="hljs-literal">true</span>});
+    <span class="hljs-keyword">this</span>.model.save().then(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">response</span>) </span>{
+        <span class="hljs-keyword">this</span>.trigger(<span class="hljs-string">'recline:flash'</span>, {<span class="hljs-attr">message</span>: <span class="hljs-string">"Row updated successfully"</span>, <span class="hljs-attr">category</span>: <span class="hljs-string">'success'</span>});
       })
-      .fail(<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> </span>{
+      .fail(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
         <span class="hljs-keyword">this</span>.trigger(<span class="hljs-string">'recline:flash'</span>, {
-          message: <span class="hljs-string">'Error saving row'</span>,
-          category: <span class="hljs-string">'error'</span>,
-          persist: <span class="hljs-literal">true</span>
+          <span class="hljs-attr">message</span>: <span class="hljs-string">'Error saving row'</span>,
+          <span class="hljs-attr">category</span>: <span class="hljs-string">'error'</span>,
+          <span class="hljs-attr">persist</span>: <span class="hljs-literal">true</span>
         });
       });
   },
 
-  onEditorCancel: <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(e)</span> </span>{
+  <span class="hljs-attr">onEditorCancel</span>: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">e</span>) </span>{
     <span class="hljs-keyword">var</span> cell = $(e.target).parents(<span class="hljs-string">'.data-table-cell-value'</span>);
     cell.html(cell.data(<span class="hljs-string">'previousContents'</span>)).siblings(<span class="hljs-string">'.data-table-cell-edit'</span>).removeClass(<span class="hljs-string">"hidden"</span>);
   }

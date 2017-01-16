@@ -133,12 +133,12 @@
 <span class="hljs-keyword">this</span>.recline = <span class="hljs-keyword">this</span>.recline || {};
 <span class="hljs-keyword">this</span>.recline.View = <span class="hljs-keyword">this</span>.recline.View || {};
 
-(<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">($, my)</span> </span>{
-<span class="hljs-pi">  "use strict"</span>;
+(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">$, my</span>) </span>{
+<span class="hljs-meta">  "use strict"</span>;
 
 my.Pager = Backbone.View.extend({
-  className: <span class="hljs-string">'recline-pager'</span>, 
-  template: <span class="hljs-string">' \
+  <span class="hljs-attr">className</span>: <span class="hljs-string">'recline-pager'</span>, 
+  <span class="hljs-attr">template</span>: <span class="hljs-string">' \
     &lt;div class="pagination"&gt; \
       &lt;ul class="pagination"&gt; \
         &lt;li class="prev action-pagination-update"&gt;&lt;a href="" class="btn btn-default"&gt;&amp;laquo;&lt;/a&gt;&lt;/li&gt; \
@@ -148,17 +148,17 @@ my.Pager = Backbone.View.extend({
     &lt;/div&gt; \
   '</span>,
 
-  events: {
+  <span class="hljs-attr">events</span>: {
     <span class="hljs-string">'click .action-pagination-update'</span>: <span class="hljs-string">'onPaginationUpdate'</span>,
     <span class="hljs-string">'change input'</span>: <span class="hljs-string">'onFormSubmit'</span>
   },
 
-  initialize: <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> </span>{
+  <span class="hljs-attr">initialize</span>: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
     _.bindAll(<span class="hljs-keyword">this</span>, <span class="hljs-string">'render'</span>);
     <span class="hljs-keyword">this</span>.listenTo(<span class="hljs-keyword">this</span>.model.queryState, <span class="hljs-string">'change'</span>, <span class="hljs-keyword">this</span>.render);
     <span class="hljs-keyword">this</span>.render();
   },
-  onFormSubmit: <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(e)</span> </span>{
+  <span class="hljs-attr">onFormSubmit</span>: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">e</span>) </span>{
     e.preventDefault();</pre></div></div>
             
         </li>
@@ -174,17 +174,17 @@ my.Pager = Backbone.View.extend({
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>    <span class="hljs-keyword">var</span> formFrom = <span class="hljs-built_in">parseInt</span>(<span class="hljs-keyword">this</span>.$el.find(<span class="hljs-string">'input[name="from"]'</span>).val())-<span class="hljs-number">1</span>; 
-    <span class="hljs-keyword">var</span> formTo = <span class="hljs-built_in">parseInt</span>(<span class="hljs-keyword">this</span>.$el.find(<span class="hljs-string">'input[name="to"]'</span>).val())-<span class="hljs-number">1</span>; 
-    <span class="hljs-keyword">var</span> maxRecord = <span class="hljs-keyword">this</span>.model.recordCount-<span class="hljs-number">1</span>;
+            <div class="content"><div class='highlight'><pre>    <span class="hljs-keyword">var</span> formFrom = <span class="hljs-built_in">parseInt</span>(<span class="hljs-keyword">this</span>.$el.find(<span class="hljs-string">'input[name="from"]'</span>).val())<span class="hljs-number">-1</span>; 
+    <span class="hljs-keyword">var</span> formTo = <span class="hljs-built_in">parseInt</span>(<span class="hljs-keyword">this</span>.$el.find(<span class="hljs-string">'input[name="to"]'</span>).val())<span class="hljs-number">-1</span>; 
+    <span class="hljs-keyword">var</span> maxRecord = <span class="hljs-keyword">this</span>.model.recordCount<span class="hljs-number">-1</span>;
     <span class="hljs-keyword">if</span> (<span class="hljs-keyword">this</span>.model.queryState.get(<span class="hljs-string">'from'</span>) != formFrom) { <span class="hljs-comment">// changed from; update from</span>
-      <span class="hljs-keyword">this</span>.model.queryState.set({from: <span class="hljs-built_in">Math</span>.min(maxRecord, <span class="hljs-built_in">Math</span>.max(formFrom, <span class="hljs-number">0</span>))});
+      <span class="hljs-keyword">this</span>.model.queryState.set({<span class="hljs-attr">from</span>: <span class="hljs-built_in">Math</span>.min(maxRecord, <span class="hljs-built_in">Math</span>.max(formFrom, <span class="hljs-number">0</span>))});
     } <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (<span class="hljs-keyword">this</span>.model.queryState.get(<span class="hljs-string">'to'</span>) != formTo) { <span class="hljs-comment">// change to; update size</span>
       <span class="hljs-keyword">var</span> to = <span class="hljs-built_in">Math</span>.min(maxRecord, <span class="hljs-built_in">Math</span>.max(formTo, <span class="hljs-number">0</span>));
-      <span class="hljs-keyword">this</span>.model.queryState.set({size: <span class="hljs-built_in">Math</span>.min(maxRecord+<span class="hljs-number">1</span>, <span class="hljs-built_in">Math</span>.max(to-formFrom+<span class="hljs-number">1</span>, <span class="hljs-number">1</span>))});
+      <span class="hljs-keyword">this</span>.model.queryState.set({<span class="hljs-attr">size</span>: <span class="hljs-built_in">Math</span>.min(maxRecord+<span class="hljs-number">1</span>, <span class="hljs-built_in">Math</span>.max(to-formFrom+<span class="hljs-number">1</span>, <span class="hljs-number">1</span>))});
     }
   },
-  onPaginationUpdate: <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(e)</span> </span>{
+  <span class="hljs-attr">onPaginationUpdate</span>: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">e</span>) </span>{
     e.preventDefault();
     <span class="hljs-keyword">var</span> $el = $(e.target);
     <span class="hljs-keyword">var</span> newFrom = <span class="hljs-number">0</span>;
@@ -199,14 +199,14 @@ my.Pager = Backbone.View.extend({
       updateQuery = (newFrom &lt; <span class="hljs-keyword">this</span>.model.recordCount);
     }
     <span class="hljs-keyword">if</span> (updateQuery) {
-      <span class="hljs-keyword">this</span>.model.queryState.set({from: newFrom});
+      <span class="hljs-keyword">this</span>.model.queryState.set({<span class="hljs-attr">from</span>: newFrom});
     }
   },
-  render: <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> </span>{
+  <span class="hljs-attr">render</span>: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
     <span class="hljs-keyword">var</span> tmplData = <span class="hljs-keyword">this</span>.model.toJSON();
-    <span class="hljs-keyword">var</span> from = <span class="hljs-built_in">parseInt</span>(<span class="hljs-keyword">this</span>.model.queryState.get(<span class="hljs-string">'from'</span>));
-    tmplData.from = from+<span class="hljs-number">1</span>;
-    tmplData.to = <span class="hljs-built_in">Math</span>.min(from+<span class="hljs-keyword">this</span>.model.queryState.get(<span class="hljs-string">'size'</span>), <span class="hljs-keyword">this</span>.model.recordCount);
+    <span class="hljs-keyword">var</span> <span class="hljs-keyword">from</span> = <span class="hljs-built_in">parseInt</span>(<span class="hljs-keyword">this</span>.model.queryState.get(<span class="hljs-string">'from'</span>));
+    tmplData.from = <span class="hljs-keyword">from</span>+<span class="hljs-number">1</span>;
+    tmplData.to = <span class="hljs-built_in">Math</span>.min(<span class="hljs-keyword">from</span>+<span class="hljs-keyword">this</span>.model.queryState.get(<span class="hljs-string">'size'</span>), <span class="hljs-keyword">this</span>.model.recordCount);
     <span class="hljs-keyword">var</span> templated = Mustache.render(<span class="hljs-keyword">this</span>.template, tmplData);
     <span class="hljs-keyword">this</span>.$el.html(templated);
     <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>;

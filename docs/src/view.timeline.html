@@ -133,8 +133,8 @@
 <span class="hljs-keyword">this</span>.recline = <span class="hljs-keyword">this</span>.recline || {};
 <span class="hljs-keyword">this</span>.recline.View = <span class="hljs-keyword">this</span>.recline.View || {};
 
-(<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">($, my)</span> </span>{
-<span class="hljs-pi">  "use strict"</span>;</pre></div></div>
+(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">$, my</span>) </span>{
+<span class="hljs-meta">  "use strict"</span>;</pre></div></div>
             
         </li>
         
@@ -168,7 +168,7 @@
             </div>
             
             <div class="content"><div class='highlight'><pre>my.Timeline = Backbone.View.extend({
-  template: <span class="hljs-string">' \
+  <span class="hljs-attr">template</span>: <span class="hljs-string">' \
     &lt;div class="recline-timeline"&gt; \
       &lt;div id="vmm-timeline-id"&gt;&lt;/div&gt; \
     &lt;/div&gt; \
@@ -189,22 +189,22 @@ If not found, the user will need to define these fields on initialization</p>
             </div>
             
             <div class="content"><div class='highlight'><pre>  startFieldNames: [<span class="hljs-string">'date'</span>,<span class="hljs-string">'startdate'</span>, <span class="hljs-string">'start'</span>, <span class="hljs-string">'start-date'</span>],
-  endFieldNames: [<span class="hljs-string">'end'</span>,<span class="hljs-string">'endDate'</span>],
-  elementId: <span class="hljs-string">'#vmm-timeline-id'</span>,
+  <span class="hljs-attr">endFieldNames</span>: [<span class="hljs-string">'end'</span>,<span class="hljs-string">'endDate'</span>],
+  <span class="hljs-attr">elementId</span>: <span class="hljs-string">'#vmm-timeline-id'</span>,
 
-  initialize: <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(options)</span> </span>{
+  <span class="hljs-attr">initialize</span>: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">options</span>) </span>{
     <span class="hljs-keyword">var</span> self = <span class="hljs-keyword">this</span>;
     <span class="hljs-keyword">this</span>.timeline = <span class="hljs-keyword">new</span> VMM.Timeline(<span class="hljs-keyword">this</span>.elementId);
     <span class="hljs-keyword">this</span>._timelineIsInitialized = <span class="hljs-literal">false</span>;
-    <span class="hljs-keyword">this</span>.listenTo(<span class="hljs-keyword">this</span>.model.fields, <span class="hljs-string">'reset'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> </span>{
+    <span class="hljs-keyword">this</span>.listenTo(<span class="hljs-keyword">this</span>.model.fields, <span class="hljs-string">'reset'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
       self._setupTemporalField();
     });
-    <span class="hljs-keyword">this</span>.listenTo(<span class="hljs-keyword">this</span>.model.records, <span class="hljs-string">'all'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> </span>{
+    <span class="hljs-keyword">this</span>.listenTo(<span class="hljs-keyword">this</span>.model.records, <span class="hljs-string">'all'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
       self.reloadData();
     });
     <span class="hljs-keyword">var</span> stateData = _.extend({
-        startField: <span class="hljs-literal">null</span>,
-        endField: <span class="hljs-literal">null</span>,</pre></div></div>
+        <span class="hljs-attr">startField</span>: <span class="hljs-literal">null</span>,
+        <span class="hljs-attr">endField</span>: <span class="hljs-literal">null</span>,</pre></div></div>
             
         </li>
         
@@ -221,7 +221,7 @@ set to true to interpret dd/dd/dddd as dd/mm/yyyy</p>
             </div>
             
             <div class="content"><div class='highlight'><pre>        nonUSDates: <span class="hljs-literal">false</span>,
-        timelineJSOptions: {}
+        <span class="hljs-attr">timelineJSOptions</span>: {}
       },
       options.state
     );
@@ -229,7 +229,7 @@ set to true to interpret dd/dd/dddd as dd/mm/yyyy</p>
     <span class="hljs-keyword">this</span>._setupTemporalField();
   },
 
-  render: <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> </span>{
+  <span class="hljs-attr">render</span>: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
     <span class="hljs-keyword">var</span> tmplData = {};
     <span class="hljs-keyword">var</span> htmls = Mustache.render(<span class="hljs-keyword">this</span>.template, tmplData);
     <span class="hljs-keyword">this</span>.$el.html(htmls);</pre></div></div>
@@ -253,7 +253,7 @@ internally to look up element</p>
     }
   },
 
-  show: <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> </span>{</pre></div></div>
+  <span class="hljs-attr">show</span>: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{</pre></div></div>
             
         </li>
         
@@ -273,7 +273,7 @@ internally to look up element</p>
     }
   },
 
-  _initTimeline: <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> </span>{
+  <span class="hljs-attr">_initTimeline</span>: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
     <span class="hljs-keyword">var</span> data = <span class="hljs-keyword">this</span>._timelineJSON();
     <span class="hljs-keyword">var</span> config = <span class="hljs-keyword">this</span>.state.get(<span class="hljs-string">"timelineJSOptions"</span>);
     config.id = <span class="hljs-keyword">this</span>.elementId;
@@ -281,7 +281,7 @@ internally to look up element</p>
     <span class="hljs-keyword">this</span>._timelineIsInitialized = <span class="hljs-literal">true</span>
   },
 
-  reloadData: <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> </span>{
+  <span class="hljs-attr">reloadData</span>: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
     <span class="hljs-keyword">if</span> (<span class="hljs-keyword">this</span>._timelineIsInitialized) {
       <span class="hljs-keyword">var</span> data = <span class="hljs-keyword">this</span>._timelineJSON();
       <span class="hljs-keyword">this</span>.timeline.reload(data);
@@ -302,7 +302,7 @@ internally to look up element</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  convertRecord: <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(record, fields)</span> </span>{
+            <div class="content"><div class='highlight'><pre>  convertRecord: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">record, fields</span>) </span>{
     <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>._convertRecord(record, fields);
   },</pre></div></div>
             
@@ -319,7 +319,7 @@ internally to look up element</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  _convertRecord: <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(record, fields)</span> </span>{
+            <div class="content"><div class='highlight'><pre>  _convertRecord: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">record, fields</span>) </span>{
     <span class="hljs-keyword">var</span> start = <span class="hljs-keyword">this</span>._parseDate(record.get(<span class="hljs-keyword">this</span>.state.get(<span class="hljs-string">'startField'</span>)));
     <span class="hljs-keyword">var</span> end = <span class="hljs-keyword">this</span>._parseDate(record.get(<span class="hljs-keyword">this</span>.state.get(<span class="hljs-string">'endField'</span>)));
     <span class="hljs-keyword">if</span> (start) {
@@ -336,7 +336,7 @@ internally to look up element</p>
     }
   },
 
-  _timelineJSON: <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> </span>{
+  <span class="hljs-attr">_timelineJSON</span>: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
     <span class="hljs-keyword">var</span> self = <span class="hljs-keyword">this</span>;
     <span class="hljs-keyword">var</span> out = {
       <span class="hljs-string">'timeline'</span>: {
@@ -346,7 +346,7 @@ internally to look up element</p>
         ]
       }
     };
-    <span class="hljs-keyword">this</span>.model.records.each(<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(record)</span> </span>{
+    <span class="hljs-keyword">this</span>.model.records.each(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">record</span>) </span>{
       <span class="hljs-keyword">var</span> newEntry = self.convertRecord(record, self.fields);
       <span class="hljs-keyword">if</span> (newEntry) {
         out.timeline.date.push(newEntry); 
@@ -394,7 +394,7 @@ Supported: mm/dd/yyyy</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  _parseDate: <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(date)</span> </span>{
+            <div class="content"><div class='highlight'><pre>  _parseDate: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">date</span>) </span>{
     <span class="hljs-keyword">if</span> (!date) {
       <span class="hljs-keyword">return</span> <span class="hljs-literal">null</span>;
     }
@@ -417,14 +417,14 @@ Supported: mm/dd/yyyy</p>
     <span class="hljs-keyword">return</span> out;
   },
 
-  _setupTemporalField: <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> </span>{
+  <span class="hljs-attr">_setupTemporalField</span>: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
     <span class="hljs-keyword">this</span>.state.set({
-      startField: <span class="hljs-keyword">this</span>._checkField(<span class="hljs-keyword">this</span>.startFieldNames),
-      endField: <span class="hljs-keyword">this</span>._checkField(<span class="hljs-keyword">this</span>.endFieldNames)
+      <span class="hljs-attr">startField</span>: <span class="hljs-keyword">this</span>._checkField(<span class="hljs-keyword">this</span>.startFieldNames),
+      <span class="hljs-attr">endField</span>: <span class="hljs-keyword">this</span>._checkField(<span class="hljs-keyword">this</span>.endFieldNames)
     });
   },
 
-  _checkField: <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(possibleFieldNames)</span> </span>{
+  <span class="hljs-attr">_checkField</span>: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">possibleFieldNames</span>) </span>{
     <span class="hljs-keyword">var</span> modelFieldNames = <span class="hljs-keyword">this</span>.model.fields.pluck(<span class="hljs-string">'id'</span>);
     <span class="hljs-keyword">for</span> (<span class="hljs-keyword">var</span> i = <span class="hljs-number">0</span>; i &lt; possibleFieldNames.length; i++){
       <span class="hljs-keyword">for</span> (<span class="hljs-keyword">var</span> j = <span class="hljs-number">0</span>; j &lt; modelFieldNames.length; j++){

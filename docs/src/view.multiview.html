@@ -146,8 +146,8 @@
             <div class="content"><div class='highlight'><pre><span class="hljs-keyword">this</span>.recline = <span class="hljs-keyword">this</span>.recline || {};
 <span class="hljs-keyword">this</span>.recline.View = <span class="hljs-keyword">this</span>.recline.View || {};
 
-(<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">($, my)</span> </span>{
-<span class="hljs-pi">  "use strict"</span>;</pre></div></div>
+(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">$, my</span>) </span>{
+<span class="hljs-meta">  "use strict"</span>;</pre></div></div>
             
         </li>
         
@@ -235,14 +235,14 @@ var state = {
 </pre>
 
 <p>Note that at present we do <em>not</em> serialize information about the actual set
-of views in use — e.g. those specified by the views argument — but instead 
+of views in use – e.g. those specified by the views argument – but instead 
 expect either that the default views are fine or that the client to have
 initialized the MultiView with the relevant views themselves.</p>
 
             </div>
             
             <div class="content"><div class='highlight'><pre>my.MultiView = Backbone.View.extend({
-  template: <span class="hljs-string">' \
+  <span class="hljs-attr">template</span>: <span class="hljs-string">' \
   &lt;div class="recline-data-explorer"&gt; \
     &lt;div class="alert-messages"&gt;&lt;/div&gt; \
     \
@@ -270,12 +270,12 @@ initialized the MultiView with the relevant views themselves.</p>
     &lt;div class="data-view-container"&gt;&lt;/div&gt; \
   &lt;/div&gt; \
   '</span>,
-  events: {
+  <span class="hljs-attr">events</span>: {
     <span class="hljs-string">'click .menu-right button'</span>: <span class="hljs-string">'_onMenuClick'</span>,
     <span class="hljs-string">'click .navigation button'</span>: <span class="hljs-string">'_onSwitchView'</span>
   },
 
-  initialize: <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(options)</span> </span>{
+  <span class="hljs-attr">initialize</span>: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">options</span>) </span>{
     <span class="hljs-keyword">var</span> self = <span class="hljs-keyword">this</span>;
     <span class="hljs-keyword">this</span>._setupState(options.state);</pre></div></div>
             
@@ -296,32 +296,32 @@ initialized the MultiView with the relevant views themselves.</p>
       <span class="hljs-keyword">this</span>.pageViews = options.views;
     } <span class="hljs-keyword">else</span> {
       <span class="hljs-keyword">this</span>.pageViews = [{
-        id: <span class="hljs-string">'grid'</span>,
-        label: <span class="hljs-string">'Grid'</span>,
-        view: <span class="hljs-keyword">new</span> my.SlickGrid({
-          model: <span class="hljs-keyword">this</span>.model,
-          state: <span class="hljs-keyword">this</span>.state.get(<span class="hljs-string">'view-grid'</span>)
+        <span class="hljs-attr">id</span>: <span class="hljs-string">'grid'</span>,
+        <span class="hljs-attr">label</span>: <span class="hljs-string">'Grid'</span>,
+        <span class="hljs-attr">view</span>: <span class="hljs-keyword">new</span> my.SlickGrid({
+          <span class="hljs-attr">model</span>: <span class="hljs-keyword">this</span>.model,
+          <span class="hljs-attr">state</span>: <span class="hljs-keyword">this</span>.state.get(<span class="hljs-string">'view-grid'</span>)
         })
       }, {
-        id: <span class="hljs-string">'graph'</span>,
-        label: <span class="hljs-string">'Graph'</span>,
-        view: <span class="hljs-keyword">new</span> my.Graph({
-          model: <span class="hljs-keyword">this</span>.model,
-          state: <span class="hljs-keyword">this</span>.state.get(<span class="hljs-string">'view-graph'</span>)
+        <span class="hljs-attr">id</span>: <span class="hljs-string">'graph'</span>,
+        <span class="hljs-attr">label</span>: <span class="hljs-string">'Graph'</span>,
+        <span class="hljs-attr">view</span>: <span class="hljs-keyword">new</span> my.Graph({
+          <span class="hljs-attr">model</span>: <span class="hljs-keyword">this</span>.model,
+          <span class="hljs-attr">state</span>: <span class="hljs-keyword">this</span>.state.get(<span class="hljs-string">'view-graph'</span>)
         })
       }, {
-        id: <span class="hljs-string">'map'</span>,
-        label: <span class="hljs-string">'Map'</span>,
-        view: <span class="hljs-keyword">new</span> my.Map({
-          model: <span class="hljs-keyword">this</span>.model,
-          state: <span class="hljs-keyword">this</span>.state.get(<span class="hljs-string">'view-map'</span>)
+        <span class="hljs-attr">id</span>: <span class="hljs-string">'map'</span>,
+        <span class="hljs-attr">label</span>: <span class="hljs-string">'Map'</span>,
+        <span class="hljs-attr">view</span>: <span class="hljs-keyword">new</span> my.Map({
+          <span class="hljs-attr">model</span>: <span class="hljs-keyword">this</span>.model,
+          <span class="hljs-attr">state</span>: <span class="hljs-keyword">this</span>.state.get(<span class="hljs-string">'view-map'</span>)
         })
       }, {
-        id: <span class="hljs-string">'timeline'</span>,
-        label: <span class="hljs-string">'Timeline'</span>,
-        view: <span class="hljs-keyword">new</span> my.Timeline({
-          model: <span class="hljs-keyword">this</span>.model,
-          state: <span class="hljs-keyword">this</span>.state.get(<span class="hljs-string">'view-timeline'</span>)
+        <span class="hljs-attr">id</span>: <span class="hljs-string">'timeline'</span>,
+        <span class="hljs-attr">label</span>: <span class="hljs-string">'Timeline'</span>,
+        <span class="hljs-attr">view</span>: <span class="hljs-keyword">new</span> my.Timeline({
+          <span class="hljs-attr">model</span>: <span class="hljs-keyword">this</span>.model,
+          <span class="hljs-attr">state</span>: <span class="hljs-keyword">this</span>.state.get(<span class="hljs-string">'view-timeline'</span>)
         })
       }];
     }</pre></div></div>
@@ -343,16 +343,16 @@ initialized the MultiView with the relevant views themselves.</p>
       <span class="hljs-keyword">this</span>.sidebarViews = options.sidebarViews;
     } <span class="hljs-keyword">else</span> {
       <span class="hljs-keyword">this</span>.sidebarViews = [{
-        id: <span class="hljs-string">'filterEditor'</span>,
-        label: <span class="hljs-string">'Filters'</span>,
-        view: <span class="hljs-keyword">new</span> my.FilterEditor({
-          model: <span class="hljs-keyword">this</span>.model
+        <span class="hljs-attr">id</span>: <span class="hljs-string">'filterEditor'</span>,
+        <span class="hljs-attr">label</span>: <span class="hljs-string">'Filters'</span>,
+        <span class="hljs-attr">view</span>: <span class="hljs-keyword">new</span> my.FilterEditor({
+          <span class="hljs-attr">model</span>: <span class="hljs-keyword">this</span>.model
         })
       }, {
-        id: <span class="hljs-string">'fieldsView'</span>,
-        label: <span class="hljs-string">'Fields'</span>,
-        view: <span class="hljs-keyword">new</span> my.Fields({
-          model: <span class="hljs-keyword">this</span>.model
+        <span class="hljs-attr">id</span>: <span class="hljs-string">'fieldsView'</span>,
+        <span class="hljs-attr">label</span>: <span class="hljs-string">'Fields'</span>,
+        <span class="hljs-attr">view</span>: <span class="hljs-keyword">new</span> my.Fields({
+          <span class="hljs-attr">model</span>: <span class="hljs-keyword">this</span>.model
         })
       }];
     }</pre></div></div>
@@ -397,14 +397,14 @@ initialized the MultiView with the relevant views themselves.</p>
     }
     <span class="hljs-keyword">this</span>._showHideSidebar();
 
-    <span class="hljs-keyword">this</span>.listenTo(<span class="hljs-keyword">this</span>.model, <span class="hljs-string">'query:start'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> </span>{
-      self.notify({loader: <span class="hljs-literal">true</span>, persist: <span class="hljs-literal">true</span>});
+    <span class="hljs-keyword">this</span>.listenTo(<span class="hljs-keyword">this</span>.model, <span class="hljs-string">'query:start'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+      self.notify({<span class="hljs-attr">loader</span>: <span class="hljs-literal">true</span>, <span class="hljs-attr">persist</span>: <span class="hljs-literal">true</span>});
     });
-    <span class="hljs-keyword">this</span>.listenTo(<span class="hljs-keyword">this</span>.model, <span class="hljs-string">'query:done'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> </span>{
+    <span class="hljs-keyword">this</span>.listenTo(<span class="hljs-keyword">this</span>.model, <span class="hljs-string">'query:done'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
       self.clearNotifications();
       self.$el.find(<span class="hljs-string">'.doc-count'</span>).text(self.model.recordCount || <span class="hljs-string">'Unknown'</span>);
     });
-    <span class="hljs-keyword">this</span>.listenTo(<span class="hljs-keyword">this</span>.model, <span class="hljs-string">'query:fail'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(error)</span> </span>{
+    <span class="hljs-keyword">this</span>.listenTo(<span class="hljs-keyword">this</span>.model, <span class="hljs-string">'query:fail'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">error</span>) </span>{
       self.clearNotifications();
       <span class="hljs-keyword">var</span> msg = <span class="hljs-string">''</span>;
       <span class="hljs-keyword">if</span> (<span class="hljs-keyword">typeof</span>(error) == <span class="hljs-string">'string'</span>) {
@@ -419,7 +419,7 @@ initialized the MultiView with the relevant views themselves.</p>
       } <span class="hljs-keyword">else</span> {
         msg = <span class="hljs-string">'There was an error querying the backend'</span>;
       }
-      self.notify({message: msg, category: <span class="hljs-string">'error'</span>, persist: <span class="hljs-literal">true</span>});
+      self.notify({<span class="hljs-attr">message</span>: msg, <span class="hljs-attr">category</span>: <span class="hljs-string">'error'</span>, <span class="hljs-attr">persist</span>: <span class="hljs-literal">true</span>});
     });</pre></div></div>
             
         </li>
@@ -437,14 +437,14 @@ TODO: set query state …?</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>    <span class="hljs-keyword">this</span>.model.queryState.set(self.state.get(<span class="hljs-string">'query'</span>), {silent: <span class="hljs-literal">true</span>});
+            <div class="content"><div class='highlight'><pre>    <span class="hljs-keyword">this</span>.model.queryState.set(self.state.get(<span class="hljs-string">'query'</span>), {<span class="hljs-attr">silent</span>: <span class="hljs-literal">true</span>});
   },
 
-  setReadOnly: <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> </span>{
+  <span class="hljs-attr">setReadOnly</span>: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
     <span class="hljs-keyword">this</span>.$el.addClass(<span class="hljs-string">'recline-read-only'</span>);
   },
 
-  render: <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> </span>{
+  <span class="hljs-attr">render</span>: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
     <span class="hljs-keyword">var</span> tmplData = <span class="hljs-keyword">this</span>.model.toTemplateJSON();
     tmplData.views = <span class="hljs-keyword">this</span>.pageViews;
     tmplData.sidebarViews = <span class="hljs-keyword">this</span>.sidebarViews;
@@ -480,7 +480,7 @@ TODO: set query state …?</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>    _.each(<span class="hljs-keyword">this</span>.pageViews, <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(view, pageName)</span> </span>{
+            <div class="content"><div class='highlight'><pre>    _.each(<span class="hljs-keyword">this</span>.pageViews, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">view, pageName</span>) </span>{
       view.view.render();
       <span class="hljs-keyword">if</span> (view.view.redraw) {
         view.view.redraw();
@@ -491,28 +491,28 @@ TODO: set query state …?</p>
       }
     });
 
-    _.each(<span class="hljs-keyword">this</span>.sidebarViews, <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(view)</span> </span>{
+    _.each(<span class="hljs-keyword">this</span>.sidebarViews, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">view</span>) </span>{
       <span class="hljs-keyword">this</span>[<span class="hljs-string">'$'</span>+view.id] = view.view.$el;
       $dataSidebar.append(view.view.el);
     }, <span class="hljs-keyword">this</span>);
 
     <span class="hljs-keyword">this</span>.pager = <span class="hljs-keyword">new</span> recline.View.Pager({
-      model: <span class="hljs-keyword">this</span>.model
+      <span class="hljs-attr">model</span>: <span class="hljs-keyword">this</span>.model
     });
     <span class="hljs-keyword">this</span>.$el.find(<span class="hljs-string">'.recline-results-info'</span>).after(<span class="hljs-keyword">this</span>.pager.el);
 
     <span class="hljs-keyword">this</span>.queryEditor = <span class="hljs-keyword">new</span> recline.View.QueryEditor({
-      model: <span class="hljs-keyword">this</span>.model.queryState
+      <span class="hljs-attr">model</span>: <span class="hljs-keyword">this</span>.model.queryState
     });
     <span class="hljs-keyword">this</span>.$el.find(<span class="hljs-string">'.query-editor-here'</span>).append(<span class="hljs-keyword">this</span>.queryEditor.el);
 
   },
 
-  remove: <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">()</span> </span>{
-    _.each(<span class="hljs-keyword">this</span>.pageViews, <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(view)</span> </span>{
+  <span class="hljs-attr">remove</span>: <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params"></span>) </span>{
+    _.each(<span class="hljs-keyword">this</span>.pageViews, <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">view</span>) </span>{
       view.view.remove();
     });
-    _.each(<span class="hljs-keyword">this</span>.sidebarViews, <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(view)</span> </span>{
+    _.each(<span class="hljs-keyword">this</span>.sidebarViews, <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">view</span>) </span>{
       view.view.remove();
     });
     <span class="hljs-keyword">this</span>.pager.remove();
@@ -533,9 +533,9 @@ TODO: set query state …?</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  _showHideSidebar: <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> </span>{
+            <div class="content"><div class='highlight'><pre>  _showHideSidebar: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
     <span class="hljs-keyword">var</span> $dataSidebar = <span class="hljs-keyword">this</span>.$el.find(<span class="hljs-string">'.data-view-sidebar'</span>);
-    <span class="hljs-keyword">var</span> visibleChildren = $dataSidebar.children().filter(<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> </span>{
+    <span class="hljs-keyword">var</span> visibleChildren = $dataSidebar.children().filter(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
       <span class="hljs-keyword">return</span> $(<span class="hljs-keyword">this</span>).css(<span class="hljs-string">"display"</span>) != <span class="hljs-string">"none"</span>;
     }).length;
 
@@ -546,7 +546,7 @@ TODO: set query state …?</p>
     }
   },
 
-  updateNav: <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(pageName)</span> </span>{
+  <span class="hljs-attr">updateNav</span>: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">pageName</span>) </span>{
     <span class="hljs-keyword">this</span>.$el.find(<span class="hljs-string">'.navigation button'</span>).removeClass(<span class="hljs-string">'active'</span>);
     <span class="hljs-keyword">var</span> $el = <span class="hljs-keyword">this</span>.$el.find(<span class="hljs-string">'.navigation button[data-view="'</span> + pageName + <span class="hljs-string">'"]'</span>);
     $el.addClass(<span class="hljs-string">'active'</span>);</pre></div></div>
@@ -564,7 +564,7 @@ TODO: set query state …?</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>    _.each(<span class="hljs-keyword">this</span>.pageViews, <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(view, idx)</span> </span>{
+            <div class="content"><div class='highlight'><pre>    _.each(<span class="hljs-keyword">this</span>.pageViews, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">view, idx</span>) </span>{
       <span class="hljs-keyword">if</span> (view.id === pageName) {
         view.view.$el.show();
         <span class="hljs-keyword">if</span> (view.view.elSidebar) {
@@ -597,7 +597,7 @@ that views can correctly calculate their maximum width</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>    _.each(<span class="hljs-keyword">this</span>.pageViews, <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(view, idx)</span> </span>{
+            <div class="content"><div class='highlight'><pre>    _.each(<span class="hljs-keyword">this</span>.pageViews, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">view, idx</span>) </span>{
       <span class="hljs-keyword">if</span> (view.id === pageName) {
         <span class="hljs-keyword">if</span> (view.view.show) {
           view.view.show();
@@ -606,18 +606,18 @@ that views can correctly calculate their maximum width</p>
     });
   },
 
-  _onMenuClick: <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(e)</span> </span>{
+  <span class="hljs-attr">_onMenuClick</span>: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">e</span>) </span>{
     e.preventDefault();
     <span class="hljs-keyword">var</span> action = $(e.target).attr(<span class="hljs-string">'data-action'</span>);
     <span class="hljs-keyword">this</span>[<span class="hljs-string">'$'</span>+action].toggle();
     <span class="hljs-keyword">this</span>._showHideSidebar();
   },
 
-  _onSwitchView: <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(e)</span> </span>{
+  <span class="hljs-attr">_onSwitchView</span>: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">e</span>) </span>{
     e.preventDefault();
     <span class="hljs-keyword">var</span> viewName = $(e.target).attr(<span class="hljs-string">'data-view'</span>);
     <span class="hljs-keyword">this</span>.updateNav(viewName);
-    <span class="hljs-keyword">this</span>.state.set({currentView: viewName});
+    <span class="hljs-keyword">this</span>.state.set({<span class="hljs-attr">currentView</span>: viewName});
   },</pre></div></div>
             
         </li>
@@ -635,7 +635,7 @@ that views can correctly calculate their maximum width</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  _setupState: <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(initialState)</span> </span>{
+            <div class="content"><div class='highlight'><pre>  _setupState: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">initialState</span>) </span>{
     <span class="hljs-keyword">var</span> self = <span class="hljs-keyword">this</span>;</pre></div></div>
             
         </li>
@@ -685,19 +685,19 @@ that views can correctly calculate their maximum width</p>
             </div>
             
             <div class="content"><div class='highlight'><pre>    <span class="hljs-keyword">var</span> stateData = _.extend({
-        query: query,
+        <span class="hljs-attr">query</span>: query,
         <span class="hljs-string">'view-graph'</span>: graphState,
-        backend: <span class="hljs-keyword">this</span>.model.backend.__type__,
-        url: <span class="hljs-keyword">this</span>.model.get(<span class="hljs-string">'url'</span>),
-        dataset: <span class="hljs-keyword">this</span>.model.toJSON(),
-        currentView: <span class="hljs-literal">null</span>,
-        readOnly: <span class="hljs-literal">false</span>
+        <span class="hljs-attr">backend</span>: <span class="hljs-keyword">this</span>.model.backend.__type__,
+        <span class="hljs-attr">url</span>: <span class="hljs-keyword">this</span>.model.get(<span class="hljs-string">'url'</span>),
+        <span class="hljs-attr">dataset</span>: <span class="hljs-keyword">this</span>.model.toJSON(),
+        <span class="hljs-attr">currentView</span>: <span class="hljs-literal">null</span>,
+        <span class="hljs-attr">readOnly</span>: <span class="hljs-literal">false</span>
       },
       initialState);
     <span class="hljs-keyword">this</span>.state = <span class="hljs-keyword">new</span> recline.Model.ObjectState(stateData);
   },
 
-  _bindStateChanges: <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> </span>{
+  <span class="hljs-attr">_bindStateChanges</span>: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
     <span class="hljs-keyword">var</span> self = <span class="hljs-keyword">this</span>;</pre></div></div>
             
         </li>
@@ -713,15 +713,15 @@ that views can correctly calculate their maximum width</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>    <span class="hljs-keyword">this</span>.listenTo(<span class="hljs-keyword">this</span>.model.queryState, <span class="hljs-string">'change'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> </span>{
-      self.state.set({query: self.model.queryState.toJSON()});
+            <div class="content"><div class='highlight'><pre>    <span class="hljs-keyword">this</span>.listenTo(<span class="hljs-keyword">this</span>.model.queryState, <span class="hljs-string">'change'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+      self.state.set({<span class="hljs-attr">query</span>: self.model.queryState.toJSON()});
     });
-    _.each(<span class="hljs-keyword">this</span>.pageViews, <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(pageView)</span> </span>{
+    _.each(<span class="hljs-keyword">this</span>.pageViews, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">pageView</span>) </span>{
       <span class="hljs-keyword">if</span> (pageView.view.state &amp;&amp; pageView.view.state.bind) {
         <span class="hljs-keyword">var</span> update = {};
         update[<span class="hljs-string">'view-'</span> + pageView.id] = pageView.view.state.toJSON();
         self.state.set(update);
-        self.listenTo(pageView.view.state, <span class="hljs-string">'change'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> </span>{
+        self.listenTo(pageView.view.state, <span class="hljs-string">'change'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
           <span class="hljs-keyword">var</span> update = {};
           update[<span class="hljs-string">'view-'</span> + pageView.id] = pageView.view.state.toJSON();</pre></div></div>
             
@@ -738,17 +738,17 @@ that views can correctly calculate their maximum width</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>          self.state.set(update, {silent: <span class="hljs-literal">true</span>});
+            <div class="content"><div class='highlight'><pre>          self.state.set(update, {<span class="hljs-attr">silent</span>: <span class="hljs-literal">true</span>});
           self.state.trigger(<span class="hljs-string">'change'</span>);
         });
       }
     });
   },
 
-  _bindFlashNotifications: <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> </span>{
+  <span class="hljs-attr">_bindFlashNotifications</span>: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
     <span class="hljs-keyword">var</span> self = <span class="hljs-keyword">this</span>;
-    _.each(<span class="hljs-keyword">this</span>.pageViews, <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(pageView)</span> </span>{
-      self.listenTo(pageView.view, <span class="hljs-string">'recline:flash'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(flash)</span> </span>{
+    _.each(<span class="hljs-keyword">this</span>.pageViews, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">pageView</span>) </span>{
+      self.listenTo(pageView.view, <span class="hljs-string">'recline:flash'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">flash</span>) </span>{
         self.notify(flash);
       });
     });
@@ -775,11 +775,11 @@ flash object. Flash attributes (all are optional):</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  notify: <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(flash)</span> </span>{
+            <div class="content"><div class='highlight'><pre>  notify: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">flash</span>) </span>{
     <span class="hljs-keyword">var</span> tmplData = _.extend({
-      message: <span class="hljs-string">'Loading'</span>,
-      category: <span class="hljs-string">'warning'</span>,
-      loader: <span class="hljs-literal">false</span>
+      <span class="hljs-attr">message</span>: <span class="hljs-string">'Loading'</span>,
+      <span class="hljs-attr">category</span>: <span class="hljs-string">'warning'</span>,
+      <span class="hljs-attr">loader</span>: <span class="hljs-literal">false</span>
       },
       flash
     );
@@ -799,8 +799,8 @@ flash object. Flash attributes (all are optional):</p>
     <span class="hljs-keyword">var</span> _templated = $(Mustache.render(_template, tmplData));
     _templated = $(_templated).appendTo($(<span class="hljs-string">'.recline-data-explorer .alert-messages'</span>));
     <span class="hljs-keyword">if</span> (!flash.persist) {
-      setTimeout(<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> </span>{
-        $(_templated).fadeOut(<span class="hljs-number">1000</span>, <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> </span>{
+      setTimeout(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+        $(_templated).fadeOut(<span class="hljs-number">1000</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
           $(<span class="hljs-keyword">this</span>).remove();
         });
       }, <span class="hljs-number">1000</span>);
@@ -821,9 +821,9 @@ flash object. Flash attributes (all are optional):</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  clearNotifications: <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> </span>{
+            <div class="content"><div class='highlight'><pre>  clearNotifications: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
     <span class="hljs-keyword">var</span> $notifications = $(<span class="hljs-string">'.recline-data-explorer .alert-messages .alert'</span>);
-    $notifications.fadeOut(<span class="hljs-number">1500</span>, <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> </span>{
+    $notifications.fadeOut(<span class="hljs-number">1500</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
       $(<span class="hljs-keyword">this</span>).remove();
     });
   }
@@ -844,7 +844,7 @@ flash object. Flash attributes (all are optional):</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>my.MultiView.restore = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(state)</span> </span>{</pre></div></div>
+            <div class="content"><div class='highlight'><pre>my.MultiView.restore = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">state</span>) </span>{</pre></div></div>
             
         </li>
         
@@ -862,21 +862,21 @@ flash object. Flash attributes (all are optional):</p>
             <div class="content"><div class='highlight'><pre>  <span class="hljs-keyword">var</span> datasetInfo;
   <span class="hljs-keyword">if</span> (state.backend === <span class="hljs-string">'memory'</span>) {
     datasetInfo = {
-      backend: <span class="hljs-string">'memory'</span>,
-      records: [{stub: <span class="hljs-string">'this is a stub dataset because we do not restore memory datasets'</span>}]
+      <span class="hljs-attr">backend</span>: <span class="hljs-string">'memory'</span>,
+      <span class="hljs-attr">records</span>: [{<span class="hljs-attr">stub</span>: <span class="hljs-string">'this is a stub dataset because we do not restore memory datasets'</span>}]
     };
   } <span class="hljs-keyword">else</span> {
     datasetInfo = _.extend({
-        url: state.url,
-        backend: state.backend
+        <span class="hljs-attr">url</span>: state.url,
+        <span class="hljs-attr">backend</span>: state.backend
       },
       state.dataset
     );
   }
   <span class="hljs-keyword">var</span> dataset = <span class="hljs-keyword">new</span> recline.Model.Dataset(datasetInfo);
   <span class="hljs-keyword">var</span> explorer = <span class="hljs-keyword">new</span> my.MultiView({
-    model: dataset,
-    state: state
+    <span class="hljs-attr">model</span>: dataset,
+    <span class="hljs-attr">state</span>: state
   });
   <span class="hljs-keyword">return</span> explorer;
 };</pre></div></div>
@@ -909,14 +909,14 @@ flash object. Flash attributes (all are optional):</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>my.parseHashUrl = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(hashUrl)</span> </span>{
+            <div class="content"><div class='highlight'><pre>my.parseHashUrl = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">hashUrl</span>) </span>{
   <span class="hljs-keyword">var</span> parsed = urlPathRegex.exec(hashUrl);
   <span class="hljs-keyword">if</span> (parsed === <span class="hljs-literal">null</span>) {
     <span class="hljs-keyword">return</span> {};
   } <span class="hljs-keyword">else</span> {
     <span class="hljs-keyword">return</span> {
-      path: parsed[<span class="hljs-number">1</span>],
-      query: parsed[<span class="hljs-number">2</span>] || <span class="hljs-string">''</span>
+      <span class="hljs-attr">path</span>: parsed[<span class="hljs-number">1</span>],
+      <span class="hljs-attr">query</span>: parsed[<span class="hljs-number">2</span>] || <span class="hljs-string">''</span>
     };
   }
 };</pre></div></div>
@@ -934,12 +934,12 @@ flash object. Flash attributes (all are optional):</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>my.parseQueryString = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(q)</span> </span>{
+            <div class="content"><div class='highlight'><pre>my.parseQueryString = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">q</span>) </span>{
   <span class="hljs-keyword">if</span> (!q) {
     <span class="hljs-keyword">return</span> {};
   }
   <span class="hljs-keyword">var</span> urlParams = {},
-    e, d = <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(s)</span> </span>{
+    e, d = <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">s</span>) </span>{
       <span class="hljs-keyword">return</span> <span class="hljs-built_in">unescape</span>(s.replace(<span class="hljs-regexp">/\+/g</span>, <span class="hljs-string">" "</span>));
     },
     r = <span class="hljs-regexp">/([^&amp;=]+)=?([^&amp;]*)/g</span>;
@@ -980,7 +980,7 @@ flash object. Flash attributes (all are optional):</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>my.parseHashQueryString = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> </span>{
+            <div class="content"><div class='highlight'><pre>my.parseHashQueryString = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
   <span class="hljs-keyword">var</span> q = my.parseHashUrl(<span class="hljs-built_in">window</span>.location.hash).query;
   <span class="hljs-keyword">return</span> my.parseQueryString(q);
 };</pre></div></div>
@@ -998,10 +998,10 @@ flash object. Flash attributes (all are optional):</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>my.composeQueryString = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(queryParams)</span> </span>{
+            <div class="content"><div class='highlight'><pre>my.composeQueryString = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">queryParams</span>) </span>{
   <span class="hljs-keyword">var</span> queryString = <span class="hljs-string">'?'</span>;
   <span class="hljs-keyword">var</span> items = [];
-  $.each(queryParams, <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(key, value)</span> </span>{
+  $.each(queryParams, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">key, value</span>) </span>{
     <span class="hljs-keyword">if</span> (<span class="hljs-keyword">typeof</span>(value) === <span class="hljs-string">'object'</span>) {
       value = <span class="hljs-built_in">JSON</span>.stringify(value);
     }
@@ -1011,7 +1011,7 @@ flash object. Flash attributes (all are optional):</p>
   <span class="hljs-keyword">return</span> queryString;
 };
 
-my.getNewHashForQueryString = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(queryParams)</span> </span>{
+my.getNewHashForQueryString = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">queryParams</span>) </span>{
   <span class="hljs-keyword">var</span> queryPart = my.composeQueryString(queryParams);
   <span class="hljs-keyword">if</span> (<span class="hljs-built_in">window</span>.location.hash) {</pre></div></div>
             
@@ -1034,7 +1034,7 @@ my.getNewHashForQueryString = <span class="hljs-function"><span class="hljs-keyw
   }
 };
 
-my.setHashQueryString = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(queryParams)</span> </span>{
+my.setHashQueryString = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">queryParams</span>) </span>{
   <span class="hljs-built_in">window</span>.location.hash = my.getNewHashForQueryString(queryParams);
 };
 

@@ -133,8 +133,8 @@
 <span class="hljs-keyword">this</span>.recline = <span class="hljs-keyword">this</span>.recline || {};
 <span class="hljs-keyword">this</span>.recline.View = <span class="hljs-keyword">this</span>.recline.View || {};
 
-(<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">($, my)</span> </span>{
-<span class="hljs-pi">  "use strict"</span>;</pre></div></div>
+(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">$, my</span>) </span>{
+<span class="hljs-meta">  "use strict"</span>;</pre></div></div>
             
         </li>
         
@@ -149,14 +149,14 @@
 <p>Widget for displaying facets </p>
 <p>Usage:</p>
 <pre><code> <span class="hljs-keyword">var</span> viewer = <span class="hljs-keyword">new</span> FacetViewer({
-   model: dataset
+   <span class="hljs-attr">model</span>: dataset
  });
 </code></pre>
             </div>
             
             <div class="content"><div class='highlight'><pre>my.FacetViewer = Backbone.View.extend({
-  className: <span class="hljs-string">'recline-facet-viewer'</span>, 
-  template: <span class="hljs-string">' \
+  <span class="hljs-attr">className</span>: <span class="hljs-string">'recline-facet-viewer'</span>, 
+  <span class="hljs-attr">template</span>: <span class="hljs-string">' \
     &lt;div class="facets"&gt; \
       {{#facets}} \
       &lt;div class="facet-summary" data-facet="{{id}}"&gt; \
@@ -176,22 +176,22 @@
     &lt;/div&gt; \
   '</span>,
 
-  events: {
+  <span class="hljs-attr">events</span>: {
     <span class="hljs-string">'click .js-facet-filter'</span>: <span class="hljs-string">'onFacetFilter'</span>
   },
-  initialize: <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(model)</span> </span>{
+  <span class="hljs-attr">initialize</span>: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">model</span>) </span>{
     _.bindAll(<span class="hljs-keyword">this</span>, <span class="hljs-string">'render'</span>);
     <span class="hljs-keyword">this</span>.listenTo(<span class="hljs-keyword">this</span>.model.facets, <span class="hljs-string">'all'</span>, <span class="hljs-keyword">this</span>.render);
     <span class="hljs-keyword">this</span>.listenTo(<span class="hljs-keyword">this</span>.model.fields, <span class="hljs-string">'all'</span>, <span class="hljs-keyword">this</span>.render);
     <span class="hljs-keyword">this</span>.render();
   },
-  render: <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> </span>{
+  <span class="hljs-attr">render</span>: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
     <span class="hljs-keyword">var</span> tmplData = {
-      fields: <span class="hljs-keyword">this</span>.model.fields.toJSON()
+      <span class="hljs-attr">fields</span>: <span class="hljs-keyword">this</span>.model.fields.toJSON()
     };
-    tmplData.facets = _.map(<span class="hljs-keyword">this</span>.model.facets.toJSON(), <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(facet)</span> </span>{
+    tmplData.facets = _.map(<span class="hljs-keyword">this</span>.model.facets.toJSON(), <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">facet</span>) </span>{
       <span class="hljs-keyword">if</span> (facet._type === <span class="hljs-string">'date_histogram'</span>) {
-        facet.entries = _.map(facet.entries, <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(entry)</span> </span>{
+        facet.entries = _.map(facet.entries, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">entry</span>) </span>{
           entry.term = <span class="hljs-keyword">new</span> <span class="hljs-built_in">Date</span>(entry.time).toDateString();
           <span class="hljs-keyword">return</span> entry;
         });
@@ -220,16 +220,16 @@
       <span class="hljs-keyword">this</span>.$el.hide();
     }
   },
-  onHide: <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(e)</span> </span>{
+  <span class="hljs-attr">onHide</span>: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">e</span>) </span>{
     e.preventDefault();
     <span class="hljs-keyword">this</span>.$el.hide();
   },
-  onFacetFilter: <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(e)</span> </span>{
+  <span class="hljs-attr">onFacetFilter</span>: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">e</span>) </span>{
     e.preventDefault();
     <span class="hljs-keyword">var</span> $target= $(e.target);
     <span class="hljs-keyword">var</span> fieldId = $target.closest(<span class="hljs-string">'.facet-summary'</span>).attr(<span class="hljs-string">'data-facet'</span>);
     <span class="hljs-keyword">var</span> value = $target.attr(<span class="hljs-string">'data-value'</span>);
-    <span class="hljs-keyword">this</span>.model.queryState.addFilter({type: <span class="hljs-string">'term'</span>, field: fieldId, term: value});</pre></div></div>
+    <span class="hljs-keyword">this</span>.model.queryState.addFilter({<span class="hljs-attr">type</span>: <span class="hljs-string">'term'</span>, <span class="hljs-attr">field</span>: fieldId, <span class="hljs-attr">term</span>: value});</pre></div></div>
             
         </li>
         

@@ -144,36 +144,36 @@ see: <a href="http://stackoverflow.com/questions/2790001/fixing-javascript-array
             </div>
             
             <div class="content"><div class='highlight'><pre><span class="hljs-keyword">if</span> (!(<span class="hljs-string">'indexOf'</span> <span class="hljs-keyword">in</span> <span class="hljs-built_in">Array</span>.prototype)) {
-    <span class="hljs-built_in">Array</span>.prototype.indexOf= <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(find, i <span class="hljs-comment">/*opt*/</span>)</span> </span>{
+    <span class="hljs-built_in">Array</span>.prototype.indexOf= <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">find, i <span class="hljs-regexp">/*opt*/</span></span>) </span>{
         <span class="hljs-keyword">if</span> (i===<span class="hljs-literal">undefined</span>) i= <span class="hljs-number">0</span>;
         <span class="hljs-keyword">if</span> (i&lt;<span class="hljs-number">0</span>) i+= <span class="hljs-keyword">this</span>.length;
         <span class="hljs-keyword">if</span> (i&lt;<span class="hljs-number">0</span>) i= <span class="hljs-number">0</span>;
         <span class="hljs-keyword">for</span> (<span class="hljs-keyword">var</span> n= <span class="hljs-keyword">this</span>.length; i&lt;n; i++)
             <span class="hljs-keyword">if</span> (i <span class="hljs-keyword">in</span> <span class="hljs-keyword">this</span> &amp;&amp; <span class="hljs-keyword">this</span>[i]===find)
                 <span class="hljs-keyword">return</span> i;
-        <span class="hljs-keyword">return</span> -<span class="hljs-number">1</span>;
+        <span class="hljs-keyword">return</span> <span class="hljs-number">-1</span>;
     };
 }
 <span class="hljs-keyword">if</span> (!(<span class="hljs-string">'lastIndexOf'</span> <span class="hljs-keyword">in</span> <span class="hljs-built_in">Array</span>.prototype)) {
-    <span class="hljs-built_in">Array</span>.prototype.lastIndexOf= <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(find, i <span class="hljs-comment">/*opt*/</span>)</span> </span>{
-        <span class="hljs-keyword">if</span> (i===<span class="hljs-literal">undefined</span>) i= <span class="hljs-keyword">this</span>.length-<span class="hljs-number">1</span>;
+    <span class="hljs-built_in">Array</span>.prototype.lastIndexOf= <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">find, i <span class="hljs-regexp">/*opt*/</span></span>) </span>{
+        <span class="hljs-keyword">if</span> (i===<span class="hljs-literal">undefined</span>) i= <span class="hljs-keyword">this</span>.length<span class="hljs-number">-1</span>;
         <span class="hljs-keyword">if</span> (i&lt;<span class="hljs-number">0</span>) i+= <span class="hljs-keyword">this</span>.length;
-        <span class="hljs-keyword">if</span> (i&gt;<span class="hljs-keyword">this</span>.length-<span class="hljs-number">1</span>) i= <span class="hljs-keyword">this</span>.length-<span class="hljs-number">1</span>;
+        <span class="hljs-keyword">if</span> (i&gt;<span class="hljs-keyword">this</span>.length<span class="hljs-number">-1</span>) i= <span class="hljs-keyword">this</span>.length<span class="hljs-number">-1</span>;
         <span class="hljs-keyword">for</span> (i++; i--&gt;<span class="hljs-number">0</span>;) <span class="hljs-comment">/* i++ because from-argument is sadly inclusive */</span>
             <span class="hljs-keyword">if</span> (i <span class="hljs-keyword">in</span> <span class="hljs-keyword">this</span> &amp;&amp; <span class="hljs-keyword">this</span>[i]===find)
                 <span class="hljs-keyword">return</span> i;
-        <span class="hljs-keyword">return</span> -<span class="hljs-number">1</span>;
+        <span class="hljs-keyword">return</span> <span class="hljs-number">-1</span>;
     };
 }
 <span class="hljs-keyword">if</span> (!(<span class="hljs-string">'forEach'</span> <span class="hljs-keyword">in</span> <span class="hljs-built_in">Array</span>.prototype)) {
-    <span class="hljs-built_in">Array</span>.prototype.forEach= <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(action, that <span class="hljs-comment">/*opt*/</span>)</span> </span>{
+    <span class="hljs-built_in">Array</span>.prototype.forEach= <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">action, that <span class="hljs-regexp">/*opt*/</span></span>) </span>{
         <span class="hljs-keyword">for</span> (<span class="hljs-keyword">var</span> i= <span class="hljs-number">0</span>, n= <span class="hljs-keyword">this</span>.length; i&lt;n; i++)
             <span class="hljs-keyword">if</span> (i <span class="hljs-keyword">in</span> <span class="hljs-keyword">this</span>)
                 action.call(that, <span class="hljs-keyword">this</span>[i], i, <span class="hljs-keyword">this</span>);
     };
 }
 <span class="hljs-keyword">if</span> (!(<span class="hljs-string">'map'</span> <span class="hljs-keyword">in</span> <span class="hljs-built_in">Array</span>.prototype)) {
-    <span class="hljs-built_in">Array</span>.prototype.map= <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(mapper, that <span class="hljs-comment">/*opt*/</span>)</span> </span>{
+    <span class="hljs-built_in">Array</span>.prototype.map= <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">mapper, that <span class="hljs-regexp">/*opt*/</span></span>) </span>{
         <span class="hljs-keyword">var</span> other= <span class="hljs-keyword">new</span> <span class="hljs-built_in">Array</span>(<span class="hljs-keyword">this</span>.length);
         <span class="hljs-keyword">for</span> (<span class="hljs-keyword">var</span> i= <span class="hljs-number">0</span>, n= <span class="hljs-keyword">this</span>.length; i&lt;n; i++)
             <span class="hljs-keyword">if</span> (i <span class="hljs-keyword">in</span> <span class="hljs-keyword">this</span>)
@@ -182,7 +182,7 @@ see: <a href="http://stackoverflow.com/questions/2790001/fixing-javascript-array
     };
 }
 <span class="hljs-keyword">if</span> (!(<span class="hljs-string">'filter'</span> <span class="hljs-keyword">in</span> <span class="hljs-built_in">Array</span>.prototype)) {
-    <span class="hljs-built_in">Array</span>.prototype.filter= <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(filter, that <span class="hljs-comment">/*opt*/</span>)</span> </span>{
+    <span class="hljs-built_in">Array</span>.prototype.filter= <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">filter, that <span class="hljs-regexp">/*opt*/</span></span>) </span>{
         <span class="hljs-keyword">var</span> other= [], v;
         <span class="hljs-keyword">for</span> (<span class="hljs-keyword">var</span> i=<span class="hljs-number">0</span>, n= <span class="hljs-keyword">this</span>.length; i&lt;n; i++)
             <span class="hljs-keyword">if</span> (i <span class="hljs-keyword">in</span> <span class="hljs-keyword">this</span> &amp;&amp; filter.call(that, v= <span class="hljs-keyword">this</span>[i], i, <span class="hljs-keyword">this</span>))
@@ -191,7 +191,7 @@ see: <a href="http://stackoverflow.com/questions/2790001/fixing-javascript-array
     };
 }
 <span class="hljs-keyword">if</span> (!(<span class="hljs-string">'every'</span> <span class="hljs-keyword">in</span> <span class="hljs-built_in">Array</span>.prototype)) {
-    <span class="hljs-built_in">Array</span>.prototype.every= <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(tester, that <span class="hljs-comment">/*opt*/</span>)</span> </span>{
+    <span class="hljs-built_in">Array</span>.prototype.every= <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">tester, that <span class="hljs-regexp">/*opt*/</span></span>) </span>{
         <span class="hljs-keyword">for</span> (<span class="hljs-keyword">var</span> i= <span class="hljs-number">0</span>, n= <span class="hljs-keyword">this</span>.length; i&lt;n; i++)
             <span class="hljs-keyword">if</span> (i <span class="hljs-keyword">in</span> <span class="hljs-keyword">this</span> &amp;&amp; !tester.call(that, <span class="hljs-keyword">this</span>[i], i, <span class="hljs-keyword">this</span>))
                 <span class="hljs-keyword">return</span> <span class="hljs-literal">false</span>;
@@ -199,7 +199,7 @@ see: <a href="http://stackoverflow.com/questions/2790001/fixing-javascript-array
     };
 }
 <span class="hljs-keyword">if</span> (!(<span class="hljs-string">'some'</span> <span class="hljs-keyword">in</span> <span class="hljs-built_in">Array</span>.prototype)) {
-    <span class="hljs-built_in">Array</span>.prototype.some= <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(tester, that <span class="hljs-comment">/*opt*/</span>)</span> </span>{
+    <span class="hljs-built_in">Array</span>.prototype.some= <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">tester, that <span class="hljs-regexp">/*opt*/</span></span>) </span>{
         <span class="hljs-keyword">for</span> (<span class="hljs-keyword">var</span> i= <span class="hljs-number">0</span>, n= <span class="hljs-keyword">this</span>.length; i&lt;n; i++)
             <span class="hljs-keyword">if</span> (i <span class="hljs-keyword">in</span> <span class="hljs-keyword">this</span> &amp;&amp; tester.call(that, <span class="hljs-keyword">this</span>[i], i, <span class="hljs-keyword">this</span>))
                 <span class="hljs-keyword">return</span> <span class="hljs-literal">true</span>;

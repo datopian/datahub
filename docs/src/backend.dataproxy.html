@@ -132,8 +132,8 @@
 <span class="hljs-keyword">this</span>.recline.Backend = <span class="hljs-keyword">this</span>.recline.Backend || {};
 <span class="hljs-keyword">this</span>.recline.Backend.DataProxy = <span class="hljs-keyword">this</span>.recline.Backend.DataProxy || {};
 
-(<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(my)</span> </span>{
-<span class="hljs-pi">  "use strict"</span>;
+(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">my</span>) </span>{
+<span class="hljs-meta">  "use strict"</span>;
   my.__type__ = <span class="hljs-string">'dataproxy'</span>;</pre></div></div>
             
         </li>
@@ -197,30 +197,30 @@ Needed because use JSONP so do not receive e.g. 500 errors </p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  my.fetch = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(dataset)</span> </span>{
+            <div class="content"><div class='highlight'><pre>  my.fetch = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">dataset</span>) </span>{
     <span class="hljs-keyword">var</span> data = {
-      url: dataset.url,
+      <span class="hljs-attr">url</span>: dataset.url,
       <span class="hljs-string">'max-results'</span>:  dataset.size || dataset.rows || <span class="hljs-number">1000</span>,
-      type: dataset.format || <span class="hljs-string">''</span>
+      <span class="hljs-attr">type</span>: dataset.format || <span class="hljs-string">''</span>
     };
     <span class="hljs-keyword">var</span> jqxhr = jQuery.ajax({
-      url: my.dataproxy_url,
-      data: data,
-      dataType: <span class="hljs-string">'jsonp'</span>
+      <span class="hljs-attr">url</span>: my.dataproxy_url,
+      <span class="hljs-attr">data</span>: data,
+      <span class="hljs-attr">dataType</span>: <span class="hljs-string">'jsonp'</span>
     });
     <span class="hljs-keyword">var</span> dfd = <span class="hljs-keyword">new</span> Deferred();
-    _wrapInTimeout(jqxhr).done(<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(results)</span> </span>{
+    _wrapInTimeout(jqxhr).done(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">results</span>) </span>{
       <span class="hljs-keyword">if</span> (results.error) {
         dfd.reject(results.error);
       }
 
       dfd.resolve({
-        records: results.data,
-        fields: results.fields,
-        useMemoryStore: <span class="hljs-literal">true</span>
+        <span class="hljs-attr">records</span>: results.data,
+        <span class="hljs-attr">fields</span>: results.fields,
+        <span class="hljs-attr">useMemoryStore</span>: <span class="hljs-literal">true</span>
       });
     })
-    .fail(<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(args)</span> </span>{
+    .fail(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">args</span>) </span>{
       dfd.reject(args);
     });
     <span class="hljs-keyword">return</span> dfd.promise();
@@ -242,18 +242,18 @@ a crude way to catch those errors.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-keyword">var</span> _wrapInTimeout = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(ourFunction)</span> </span>{
+            <div class="content"><div class='highlight'><pre>  <span class="hljs-keyword">var</span> _wrapInTimeout = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">ourFunction</span>) </span>{
     <span class="hljs-keyword">var</span> dfd = <span class="hljs-keyword">new</span> Deferred();
-    <span class="hljs-keyword">var</span> timer = setTimeout(<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> </span>{
+    <span class="hljs-keyword">var</span> timer = setTimeout(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
       dfd.reject({
-        message: <span class="hljs-string">'Request Error: Backend did not respond after '</span> + (my.timeout / <span class="hljs-number">1000</span>) + <span class="hljs-string">' seconds'</span>
+        <span class="hljs-attr">message</span>: <span class="hljs-string">'Request Error: Backend did not respond after '</span> + (my.timeout / <span class="hljs-number">1000</span>) + <span class="hljs-string">' seconds'</span>
       });
     }, my.timeout);
-    ourFunction.done(<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(args)</span> </span>{
+    ourFunction.done(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">args</span>) </span>{
         clearTimeout(timer);
         dfd.resolve(args);
       })
-      .fail(<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(args)</span> </span>{
+      .fail(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">args</span>) </span>{
         clearTimeout(timer);
         dfd.reject(args);
       })
