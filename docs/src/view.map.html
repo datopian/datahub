@@ -206,6 +206,7 @@ If not found, the user will need to define the fields via the editor.</p>
 
   <span class="hljs-attr">initialize</span>: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">options</span>) </span>{
     <span class="hljs-keyword">var</span> self = <span class="hljs-keyword">this</span>;
+    <span class="hljs-keyword">this</span>.options = options;
     <span class="hljs-keyword">this</span>.visible = <span class="hljs-keyword">this</span>.$el.is(<span class="hljs-string">':visible'</span>);
     <span class="hljs-keyword">this</span>.mapReady = <span class="hljs-literal">false</span>;</pre></div></div>
             
@@ -1105,18 +1106,18 @@ my.MapMenu = Backbone.View.extend({
               GeoJSON field&lt;/label&gt; \
         &lt;/div&gt; \
         &lt;div class="editor-field-type-latlon"&gt; \
-          &lt;label&gt;Latitude field&lt;/label&gt; \
+          &lt;label for="form-field-lat-field"&gt;Latitude field&lt;/label&gt; \
           &lt;div class="input editor-lat-field"&gt; \
-            &lt;select class="form-control"&gt; \
+            &lt;select id="form-field-lat-field" class="form-control"&gt; \
             &lt;option value=""&gt;&lt;/option&gt; \
             {{#fields}} \
             &lt;option value="{{id}}"&gt;{{label}}&lt;/option&gt; \
             {{/fields}} \
             &lt;/select&gt; \
           &lt;/div&gt; \
-          &lt;label&gt;Longitude field&lt;/label&gt; \
+          &lt;label for="form-field-lon-field"&gt;Longitude field&lt;/label&gt; \
           &lt;div class="input editor-lon-field"&gt; \
-            &lt;select class="form-control"&gt; \
+            &lt;select id="form-field-lon-field" class="form-control"&gt; \
             &lt;option value=""&gt;&lt;/option&gt; \
             {{#fields}} \
             &lt;option value="{{id}}"&gt;{{label}}&lt;/option&gt; \
@@ -1125,9 +1126,9 @@ my.MapMenu = Backbone.View.extend({
           &lt;/div&gt; \
         &lt;/div&gt; \
         &lt;div class="editor-field-type-geom" style="display:none"&gt; \
-          &lt;label&gt;Geometry field (GeoJSON)&lt;/label&gt; \
+          &lt;label for="form-field-type-geom"&gt;Geometry field (GeoJSON)&lt;/label&gt; \
           &lt;div class="input editor-geom-field"&gt; \
-            &lt;select class="form-control"&gt; \
+            &lt;select id="form-field-type-geom" class="form-control"&gt; \
             &lt;option value=""&gt;&lt;/option&gt; \
             {{#fields}} \
             &lt;option value="{{id}}"&gt;{{label}}&lt;/option&gt; \

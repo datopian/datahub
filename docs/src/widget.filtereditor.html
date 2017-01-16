@@ -144,16 +144,16 @@ my.FilterEditor = Backbone.View.extend({
       &lt;a href="#" class="js-add-filter"&gt;Add filter&lt;/a&gt; \
       &lt;form class="form-stacked js-add" style="display: none;"&gt; \
         &lt;div class="form-group"&gt; \
-          &lt;label&gt;Field&lt;/label&gt; \
-          &lt;select class="fields form-control"&gt; \
+          &lt;label for="form-field-add-field"&gt;Field&lt;/label&gt; \
+          &lt;select id="form-field-add-field" class="fields form-control"&gt; \
             {{#fields}} \
             &lt;option value="{{id}}"&gt;{{label}}&lt;/option&gt; \
             {{/fields}} \
           &lt;/select&gt; \
         &lt;/div&gt; \
         &lt;div class="form-group"&gt; \
-          &lt;label&gt;Filter type&lt;/label&gt; \
-          &lt;select class="filterType form-control"&gt; \
+          &lt;label for="form-field-filter-type"&gt;Filter type&lt;/label&gt; \
+          &lt;select id="form-field-filter-type" class="filterType form-control"&gt; \
             &lt;option value="term"&gt;Value&lt;/option&gt; \
             &lt;option value="range"&gt;Range&lt;/option&gt; \
             &lt;option value="geo_distance"&gt;Geo distance&lt;/option&gt; \

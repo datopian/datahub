@@ -648,9 +648,9 @@ my.FlotControls = Backbone.View.extend({
     &lt;form class="form-stacked"&gt; \
       &lt;div class="clearfix"&gt; \
         &lt;div class="form-group"&gt; \
-          &lt;label&gt;Graph Type&lt;/label&gt; \
+          &lt;label for ="form-field-type"&gt;Graph Type&lt;/label&gt; \
           &lt;div class="input editor-type"&gt; \
-            &lt;select class="form-control"&gt; \
+            &lt;select id="form-field-type" class="form-control"&gt; \
               &lt;option value="lines-and-points"&gt;Lines and Points&lt;/option&gt; \
               &lt;option value="lines"&gt;Lines&lt;/option&gt; \
               &lt;option value="points"&gt;Points&lt;/option&gt; \
@@ -660,9 +660,9 @@ my.FlotControls = Backbone.View.extend({
           &lt;/div&gt; \
         &lt;/div&gt; \
         &lt;div class="form-group"&gt; \
-          &lt;label&gt;Group Column (Axis 1)&lt;/label&gt; \
+          &lt;label for="field-form-group"&gt;Group Column (Axis 1)&lt;/label&gt; \
           &lt;div class="input editor-group"&gt; \
-            &lt;select class="form-control"&gt; \
+            &lt;select id="field-form-group" class="form-control"&gt; \
               &lt;option value=""&gt;Please choose ...&lt;/option&gt; \
                 {{#fields}} \
               &lt;option value="{{id}}"&gt;{{label}}&lt;/option&gt; \
@@ -686,11 +686,11 @@ my.FlotControls = Backbone.View.extend({
   <span class="hljs-attr">templateSeriesEditor</span>: <span class="hljs-string">' \
     &lt;div class="editor-series js-series-{{seriesIndex}}"&gt; \
       &lt;div class="form-group"&gt; \
-        &lt;label&gt;Series &lt;span&gt;{{seriesName}} (Axis 2)&lt;/span&gt; \
+        &lt;label for="form-field-{{seriesName}}"&gt;Series &lt;span&gt;{{seriesName}} (Axis 2)&lt;/span&gt; \
           [&lt;a href="#remove" class="action-remove-series"&gt;Remove&lt;/a&gt;] \
         &lt;/label&gt; \
         &lt;div class="input"&gt; \
-          &lt;select class="form-control"&gt; \
+          &lt;select id="form-field-{{seriesName}}" class="form-control"&gt; \
           {{#fields}} \
           &lt;option value="{{id}}"&gt;{{label}}&lt;/option&gt; \
           {{/fields}} \
