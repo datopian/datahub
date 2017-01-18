@@ -133,8 +133,8 @@
 <span class="hljs-keyword">this</span>.recline = <span class="hljs-keyword">this</span>.recline || {};
 <span class="hljs-keyword">this</span>.recline.View = <span class="hljs-keyword">this</span>.recline.View || {};
 
-(<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">($, my)</span> </span>{
-<span class="hljs-pi">  "use strict"</span>;</pre></div></div>
+(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">$, my</span>) </span>{
+<span class="hljs-meta">  "use strict"</span>;</pre></div></div>
             
         </li>
         
@@ -180,7 +180,7 @@ have the following (optional) configuration options:</p>
             </div>
             
             <div class="content"><div class='highlight'><pre>my.Map = Backbone.View.extend({
-  template: <span class="hljs-string">' \
+  <span class="hljs-attr">template</span>: <span class="hljs-string">' \
     &lt;div class="recline-map"&gt; \
       &lt;div class="panel map"&gt;&lt;/div&gt; \
     &lt;/div&gt; \
@@ -201,11 +201,12 @@ If not found, the user will need to define the fields via the editor.</p>
             </div>
             
             <div class="content"><div class='highlight'><pre>  latitudeFieldNames: [<span class="hljs-string">'lat'</span>,<span class="hljs-string">'latitude'</span>],
-  longitudeFieldNames: [<span class="hljs-string">'lon'</span>,<span class="hljs-string">'longitude'</span>],
-  geometryFieldNames: [<span class="hljs-string">'geojson'</span>, <span class="hljs-string">'geom'</span>,<span class="hljs-string">'the_geom'</span>,<span class="hljs-string">'geometry'</span>,<span class="hljs-string">'spatial'</span>,<span class="hljs-string">'location'</span>, <span class="hljs-string">'geo'</span>, <span class="hljs-string">'lonlat'</span>],
+  <span class="hljs-attr">longitudeFieldNames</span>: [<span class="hljs-string">'lon'</span>,<span class="hljs-string">'longitude'</span>],
+  <span class="hljs-attr">geometryFieldNames</span>: [<span class="hljs-string">'geojson'</span>, <span class="hljs-string">'geom'</span>,<span class="hljs-string">'the_geom'</span>,<span class="hljs-string">'geometry'</span>,<span class="hljs-string">'spatial'</span>,<span class="hljs-string">'location'</span>, <span class="hljs-string">'geo'</span>, <span class="hljs-string">'lonlat'</span>],
 
-  initialize: <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(options)</span> </span>{
+  <span class="hljs-attr">initialize</span>: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">options</span>) </span>{
     <span class="hljs-keyword">var</span> self = <span class="hljs-keyword">this</span>;
+    <span class="hljs-keyword">this</span>.options = options;
     <span class="hljs-keyword">this</span>.visible = <span class="hljs-keyword">this</span>.$el.is(<span class="hljs-string">':visible'</span>);
     <span class="hljs-keyword">this</span>.mapReady = <span class="hljs-literal">false</span>;</pre></div></div>
             
@@ -225,18 +226,18 @@ If not found, the user will need to define the fields via the editor.</p>
             <div class="content"><div class='highlight'><pre>    <span class="hljs-keyword">this</span>.map = <span class="hljs-literal">null</span>;
 
     <span class="hljs-keyword">var</span> stateData = _.extend({
-        geomField: <span class="hljs-literal">null</span>,
-        lonField: <span class="hljs-literal">null</span>,
-        latField: <span class="hljs-literal">null</span>,
-        autoZoom: <span class="hljs-literal">true</span>,
-        cluster: <span class="hljs-literal">false</span>
+        <span class="hljs-attr">geomField</span>: <span class="hljs-literal">null</span>,
+        <span class="hljs-attr">lonField</span>: <span class="hljs-literal">null</span>,
+        <span class="hljs-attr">latField</span>: <span class="hljs-literal">null</span>,
+        <span class="hljs-attr">autoZoom</span>: <span class="hljs-literal">true</span>,
+        <span class="hljs-attr">cluster</span>: <span class="hljs-literal">false</span>
       },
       options.state
     );
     <span class="hljs-keyword">this</span>.state = <span class="hljs-keyword">new</span> recline.Model.ObjectState(stateData);
 
     <span class="hljs-keyword">this</span>._clusterOptions = {
-      zoomToBoundsOnClick: <span class="hljs-literal">true</span>,</pre></div></div>
+      <span class="hljs-attr">zoomToBoundsOnClick</span>: <span class="hljs-literal">true</span>,</pre></div></div>
             
         </li>
         
@@ -252,9 +253,9 @@ If not found, the user will need to define the fields via the editor.</p>
             </div>
             
             <div class="content"><div class='highlight'><pre>      maxClusterRadius: <span class="hljs-number">80</span>,
-      singleMarkerMode: <span class="hljs-literal">false</span>,
-      skipDuplicateAddTesting: <span class="hljs-literal">true</span>,
-      animateAddingMarkers: <span class="hljs-literal">false</span>
+      <span class="hljs-attr">singleMarkerMode</span>: <span class="hljs-literal">false</span>,
+      <span class="hljs-attr">skipDuplicateAddTesting</span>: <span class="hljs-literal">true</span>,
+      <span class="hljs-attr">animateAddingMarkers</span>: <span class="hljs-literal">false</span>
     };</pre></div></div>
             
         </li>
@@ -270,7 +271,7 @@ If not found, the user will need to define the fields via the editor.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>    <span class="hljs-keyword">this</span>.listenTo(<span class="hljs-keyword">this</span>.model.fields, <span class="hljs-string">'change'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> </span>{
+            <div class="content"><div class='highlight'><pre>    <span class="hljs-keyword">this</span>.listenTo(<span class="hljs-keyword">this</span>.model.fields, <span class="hljs-string">'change'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
       self._setupGeometryField();
       self.render();
     });</pre></div></div>
@@ -288,23 +289,23 @@ If not found, the user will need to define the fields via the editor.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>    <span class="hljs-keyword">this</span>.listenTo(<span class="hljs-keyword">this</span>.model.records, <span class="hljs-string">'add'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(doc)</span></span>{self.redraw(<span class="hljs-string">'add'</span>,doc);});
-    <span class="hljs-keyword">this</span>.listenTo(<span class="hljs-keyword">this</span>.model.records, <span class="hljs-string">'change'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(doc)</span></span>{
+            <div class="content"><div class='highlight'><pre>    <span class="hljs-keyword">this</span>.listenTo(<span class="hljs-keyword">this</span>.model.records, <span class="hljs-string">'add'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">doc</span>)</span>{self.redraw(<span class="hljs-string">'add'</span>,doc);});
+    <span class="hljs-keyword">this</span>.listenTo(<span class="hljs-keyword">this</span>.model.records, <span class="hljs-string">'change'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">doc</span>)</span>{
         self.redraw(<span class="hljs-string">'remove'</span>,doc);
         self.redraw(<span class="hljs-string">'add'</span>,doc);
     });
-    <span class="hljs-keyword">this</span>.listenTo(<span class="hljs-keyword">this</span>.model.records, <span class="hljs-string">'remove'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(doc)</span></span>{self.redraw(<span class="hljs-string">'remove'</span>,doc);});
-    <span class="hljs-keyword">this</span>.listenTo(<span class="hljs-keyword">this</span>.model.records, <span class="hljs-string">'reset'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span></span>{self.redraw(<span class="hljs-string">'reset'</span>);});
+    <span class="hljs-keyword">this</span>.listenTo(<span class="hljs-keyword">this</span>.model.records, <span class="hljs-string">'remove'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">doc</span>)</span>{self.redraw(<span class="hljs-string">'remove'</span>,doc);});
+    <span class="hljs-keyword">this</span>.listenTo(<span class="hljs-keyword">this</span>.model.records, <span class="hljs-string">'reset'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>)</span>{self.redraw(<span class="hljs-string">'reset'</span>);});
 
     <span class="hljs-keyword">this</span>.menu = <span class="hljs-keyword">new</span> my.MapMenu({
-      model: <span class="hljs-keyword">this</span>.model,
-      state: <span class="hljs-keyword">this</span>.state.toJSON()
+      <span class="hljs-attr">model</span>: <span class="hljs-keyword">this</span>.model,
+      <span class="hljs-attr">state</span>: <span class="hljs-keyword">this</span>.state.toJSON()
     });
-    <span class="hljs-keyword">this</span>.listenTo(<span class="hljs-keyword">this</span>.menu.state, <span class="hljs-string">'change'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> </span>{
+    <span class="hljs-keyword">this</span>.listenTo(<span class="hljs-keyword">this</span>.menu.state, <span class="hljs-string">'change'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
       self.state.set(self.menu.state.toJSON());
       self.redraw();
     });
-    <span class="hljs-keyword">this</span>.listenTo(<span class="hljs-keyword">this</span>.state, <span class="hljs-string">'change'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> </span>{
+    <span class="hljs-keyword">this</span>.listenTo(<span class="hljs-keyword">this</span>.state, <span class="hljs-string">'change'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
       self.redraw();
     });
     <span class="hljs-keyword">this</span>.elSidebar = <span class="hljs-keyword">this</span>.menu.$el;
@@ -338,13 +339,13 @@ behaviour</p>
 <p>Function to create infoboxes used in popups. The default behaviour is very simple and just lists all attributes.</p>
 <p>Users should override this function to customize behaviour i.e.</p>
 <pre><code>view = <span class="hljs-keyword">new</span> View({...});
-view.infobox = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(record)</span> </span>{
+view.infobox = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">record</span>) </span>{
   ...
 }
 </code></pre>
             </div>
             
-            <div class="content"><div class='highlight'><pre>  infobox: <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(record)</span> </span>{
+            <div class="content"><div class='highlight'><pre>  infobox: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">record</span>) </span>{
     <span class="hljs-keyword">var</span> html = <span class="hljs-string">''</span>;
     <span class="hljs-keyword">for</span> (<span class="hljs-keyword">var</span> key <span class="hljs-keyword">in</span> record.attributes){
       <span class="hljs-keyword">if</span> (!(<span class="hljs-keyword">this</span>.state.get(<span class="hljs-string">'geomField'</span>) &amp;&amp; key == <span class="hljs-keyword">this</span>.state.get(<span class="hljs-string">'geomField'</span>))){
@@ -366,8 +367,8 @@ view.infobox = <span class="hljs-function"><span class="hljs-keyword">function</
               <p>Options to use for the <a href="http://leaflet.cloudmade.com/reference.html#geojson">Leaflet GeoJSON layer</a>
 See also <a href="http://leaflet.cloudmade.com/examples/geojson.html">http://leaflet.cloudmade.com/examples/geojson.html</a></p>
 <p>e.g.</p>
-<pre><code>pointToLayer: <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(feature, latLng)</span>
-<span class="hljs-title">onEachFeature</span>: <span class="hljs-title">function</span><span class="hljs-params">(feature, layer)</span></span>
+<pre><code>pointToLayer: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">feature, latLng</span>)
+<span class="hljs-title">onEachFeature</span>: <span class="hljs-title">function</span>(<span class="hljs-params">feature, layer</span>)</span>
 </code></pre><p>See defaults for examples</p>
 
             </div>
@@ -392,8 +393,8 @@ instance (which allows e.g. this.markers to work in this default case)</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>    pointToLayer: <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(feature, latlng)</span> </span>{
-      <span class="hljs-keyword">var</span> marker = <span class="hljs-keyword">new</span> L.Marker(latlng);
+            <div class="content"><div class='highlight'><pre>    pointToLayer: <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">feature, latlng</span>) </span>{
+      <span class="hljs-keyword">var</span> marker = <span class="hljs-keyword">new</span> L.Marker(latlng, { <span class="hljs-attr">alt</span>: <span class="hljs-string">'Marker Icon'</span> });
       marker.bindPopup(feature.properties.popupContent);</pre></div></div>
             
         </li>
@@ -426,7 +427,7 @@ instance (which allows e.g. this.markers to work in this default case)</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>    onEachFeature: <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(feature, layer)</span> </span>{
+            <div class="content"><div class='highlight'><pre>    onEachFeature: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">feature, layer</span>) </span>{
       <span class="hljs-keyword">if</span> (feature.properties &amp;&amp; feature.properties.popupContent) {
         layer.bindPopup(feature.properties.popupContent);
       }
@@ -472,7 +473,7 @@ instance (which allows e.g. this.markers to work in this default case)</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  render: <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> </span>{
+            <div class="content"><div class='highlight'><pre>  render: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
     <span class="hljs-keyword">var</span> self = <span class="hljs-keyword">this</span>;
     <span class="hljs-keyword">var</span> htmls = Mustache.render(<span class="hljs-keyword">this</span>.template, <span class="hljs-keyword">this</span>.model.toTemplateJSON());
     <span class="hljs-keyword">this</span>.$el.html(htmls);
@@ -501,7 +502,7 @@ instance (which allows e.g. this.markers to work in this default case)</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  redraw: <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(action, doc)</span></span>{
+            <div class="content"><div class='highlight'><pre>  redraw: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">action, doc</span>)</span>{
     <span class="hljs-keyword">var</span> self = <span class="hljs-keyword">this</span>;
     action = action || <span class="hljs-string">'refresh'</span>;</pre></div></div>
             
@@ -544,7 +545,7 @@ instance (which allows e.g. this.markers to work in this default case)</p>
       <span class="hljs-keyword">this</span>.map.removeLayer(<span class="hljs-keyword">this</span>.markers);
 
       <span class="hljs-keyword">var</span> countBefore = <span class="hljs-number">0</span>;
-      <span class="hljs-keyword">this</span>.features.eachLayer(<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span></span>{countBefore++;});
+      <span class="hljs-keyword">this</span>.features.eachLayer(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>)</span>{countBefore++;});
 
       <span class="hljs-keyword">if</span> (action == <span class="hljs-string">'refresh'</span> || action == <span class="hljs-string">'reset'</span>) {
         <span class="hljs-keyword">this</span>.features.clearLayers();</pre></div></div>
@@ -602,7 +603,7 @@ if not: errors when using e.g. circle markers like
     }
   },
 
-  show: <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> </span>{</pre></div></div>
+  <span class="hljs-attr">show</span>: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{</pre></div></div>
             
         </li>
         
@@ -628,11 +629,11 @@ to display properly</p>
     <span class="hljs-keyword">this</span>.visible = <span class="hljs-literal">true</span>;
   },
 
-  hide: <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> </span>{
+  <span class="hljs-attr">hide</span>: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
     <span class="hljs-keyword">this</span>.visible = <span class="hljs-literal">false</span>;
   },
 
-  _geomReady: <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> </span>{
+  <span class="hljs-attr">_geomReady</span>: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
     <span class="hljs-keyword">return</span> <span class="hljs-built_in">Boolean</span>(<span class="hljs-keyword">this</span>.state.get(<span class="hljs-string">'geomField'</span>) || (<span class="hljs-keyword">this</span>.state.get(<span class="hljs-string">'latField'</span>) &amp;&amp; <span class="hljs-keyword">this</span>.state.get(<span class="hljs-string">'lonField'</span>)));
   },</pre></div></div>
             
@@ -653,14 +654,14 @@ stopped and an error notification shown.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  _add: <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(docs)</span></span>{
+            <div class="content"><div class='highlight'><pre>  _add: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">docs</span>)</span>{
     <span class="hljs-keyword">var</span> self = <span class="hljs-keyword">this</span>;
 
     <span class="hljs-keyword">if</span> (!(docs <span class="hljs-keyword">instanceof</span> <span class="hljs-built_in">Array</span>)) docs = [docs];
 
     <span class="hljs-keyword">var</span> count = <span class="hljs-number">0</span>;
     <span class="hljs-keyword">var</span> wrongSoFar = <span class="hljs-number">0</span>;
-    _.every(docs, <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(doc)</span></span>{
+    _.every(docs, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">doc</span>)</span>{
       count += <span class="hljs-number">1</span>;
       <span class="hljs-keyword">var</span> feature = self._getGeometryFromRecord(doc);
       <span class="hljs-keyword">if</span> (<span class="hljs-keyword">typeof</span> feature === <span class="hljs-string">'undefined'</span> || feature === <span class="hljs-literal">null</span>){</pre></div></div>
@@ -681,7 +682,7 @@ stopped and an error notification shown.</p>
             <div class="content"><div class='highlight'><pre>        <span class="hljs-keyword">return</span> <span class="hljs-literal">true</span>;
       } <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (feature <span class="hljs-keyword">instanceof</span> <span class="hljs-built_in">Object</span>){
         feature.properties = {
-          popupContent: self.infobox(doc),</pre></div></div>
+          <span class="hljs-attr">popupContent</span>: self.infobox(doc),</pre></div></div>
             
         </li>
         
@@ -707,13 +708,13 @@ link this Leaflet layer to a Recline doc</p>
           <span class="hljs-keyword">var</span> msg = <span class="hljs-string">'Wrong geometry value'</span>;
           <span class="hljs-keyword">if</span> (except.message) msg += <span class="hljs-string">' ('</span> + except.message + <span class="hljs-string">')'</span>;
           <span class="hljs-keyword">if</span> (wrongSoFar &lt;= <span class="hljs-number">10</span>) {
-            self.trigger(<span class="hljs-string">'recline:flash'</span>, {message: msg, category:<span class="hljs-string">'error'</span>});
+            self.trigger(<span class="hljs-string">'recline:flash'</span>, {<span class="hljs-attr">message</span>: msg, <span class="hljs-attr">category</span>:<span class="hljs-string">'error'</span>});
           }
         }
       } <span class="hljs-keyword">else</span> {
         wrongSoFar += <span class="hljs-number">1</span>;
         <span class="hljs-keyword">if</span> (wrongSoFar &lt;= <span class="hljs-number">10</span>) {
-          self.trigger(<span class="hljs-string">'recline:flash'</span>, {message: <span class="hljs-string">'Wrong geometry value'</span>, category:<span class="hljs-string">'error'</span>});
+          self.trigger(<span class="hljs-string">'recline:flash'</span>, {<span class="hljs-attr">message</span>: <span class="hljs-string">'Wrong geometry value'</span>, <span class="hljs-attr">category</span>:<span class="hljs-string">'error'</span>});
         }
       }
       <span class="hljs-keyword">return</span> <span class="hljs-literal">true</span>;
@@ -733,13 +734,13 @@ link this Leaflet layer to a Recline doc</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  _remove: <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(docs)</span></span>{
+            <div class="content"><div class='highlight'><pre>  _remove: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">docs</span>)</span>{
 
     <span class="hljs-keyword">var</span> self = <span class="hljs-keyword">this</span>;
 
     <span class="hljs-keyword">if</span> (!(docs <span class="hljs-keyword">instanceof</span> <span class="hljs-built_in">Array</span>)) docs = [docs];
 
-    _.each(docs,<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(doc)</span></span>{
+    _.each(docs,<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">doc</span>)</span>{
       <span class="hljs-keyword">for</span> (<span class="hljs-keyword">var</span> key <span class="hljs-keyword">in</span> self.features._layers){
         <span class="hljs-keyword">if</span> (self.features._layers[key].feature.geometry.properties.cid == doc.cid){
           self.features.removeLayer(self.features._layers[key]);
@@ -763,7 +764,7 @@ link this Leaflet layer to a Recline doc</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  _parseCoordinateString: <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(coord)</span></span>{
+            <div class="content"><div class='highlight'><pre>  _parseCoordinateString: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">coord</span>)</span>{
     <span class="hljs-keyword">if</span> (<span class="hljs-keyword">typeof</span>(coord) != <span class="hljs-string">'string'</span>) {
       <span class="hljs-keyword">return</span>(<span class="hljs-built_in">parseFloat</span>(coord));
     }
@@ -779,7 +780,7 @@ link this Leaflet layer to a Recline doc</p>
         m += <span class="hljs-number">1</span>;
     }
     <span class="hljs-keyword">if</span> (coord.match(<span class="hljs-regexp">/[SW]/</span>)) {
-          deg = -<span class="hljs-number">1</span>*deg;
+          deg = <span class="hljs-number">-1</span>*deg;
     }
     <span class="hljs-keyword">return</span>(deg);
   },</pre></div></div>
@@ -797,7 +798,7 @@ link this Leaflet layer to a Recline doc</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  _getGeometryFromRecord: <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(doc)</span></span>{
+            <div class="content"><div class='highlight'><pre>  _getGeometryFromRecord: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">doc</span>)</span>{
     <span class="hljs-keyword">if</span> (<span class="hljs-keyword">this</span>.state.get(<span class="hljs-string">'geomField'</span>)){
       <span class="hljs-keyword">var</span> value = doc.get(<span class="hljs-keyword">this</span>.state.get(<span class="hljs-string">'geomField'</span>));
       <span class="hljs-keyword">if</span> (<span class="hljs-keyword">typeof</span>(value) === <span class="hljs-string">'string'</span>){</pre></div></div>
@@ -909,8 +910,8 @@ link this Leaflet layer to a Recline doc</p>
 
       <span class="hljs-keyword">if</span> (!<span class="hljs-built_in">isNaN</span>(<span class="hljs-built_in">parseFloat</span>(lon)) &amp;&amp; !<span class="hljs-built_in">isNaN</span>(<span class="hljs-built_in">parseFloat</span>(lat))) {
         <span class="hljs-keyword">return</span> {
-          type: <span class="hljs-string">'Point'</span>,
-          coordinates: [lon,lat]
+          <span class="hljs-attr">type</span>: <span class="hljs-string">'Point'</span>,
+          <span class="hljs-attr">coordinates</span>: [lon,lat]
         };
       }
     }
@@ -932,7 +933,7 @@ two fields with lat/lon values.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  _setupGeometryField: <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span></span>{</pre></div></div>
+            <div class="content"><div class='highlight'><pre>  _setupGeometryField: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>)</span>{</pre></div></div>
             
         </li>
         
@@ -949,9 +950,9 @@ two fields with lat/lon values.</p>
             
             <div class="content"><div class='highlight'><pre>    <span class="hljs-keyword">if</span> (!<span class="hljs-keyword">this</span>._geomReady()) {
       <span class="hljs-keyword">this</span>.state.set({
-        geomField: <span class="hljs-keyword">this</span>._checkField(<span class="hljs-keyword">this</span>.geometryFieldNames),
-        latField: <span class="hljs-keyword">this</span>._checkField(<span class="hljs-keyword">this</span>.latitudeFieldNames),
-        lonField: <span class="hljs-keyword">this</span>._checkField(<span class="hljs-keyword">this</span>.longitudeFieldNames)
+        <span class="hljs-attr">geomField</span>: <span class="hljs-keyword">this</span>._checkField(<span class="hljs-keyword">this</span>.geometryFieldNames),
+        <span class="hljs-attr">latField</span>: <span class="hljs-keyword">this</span>._checkField(<span class="hljs-keyword">this</span>.latitudeFieldNames),
+        <span class="hljs-attr">lonField</span>: <span class="hljs-keyword">this</span>._checkField(<span class="hljs-keyword">this</span>.longitudeFieldNames)
       });
       <span class="hljs-keyword">this</span>.menu.state.set(<span class="hljs-keyword">this</span>.state.toJSON());
     }
@@ -971,7 +972,7 @@ list of names.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  _checkField: <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(fieldNames)</span></span>{
+            <div class="content"><div class='highlight'><pre>  _checkField: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">fieldNames</span>)</span>{
     <span class="hljs-keyword">var</span> field;
     <span class="hljs-keyword">var</span> modelFieldNames = <span class="hljs-keyword">this</span>.model.fields.pluck(<span class="hljs-string">'id'</span>);
     <span class="hljs-keyword">for</span> (<span class="hljs-keyword">var</span> i = <span class="hljs-number">0</span>; i &lt; fieldNames.length; i++){
@@ -997,7 +998,7 @@ extent if none.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  _zoomToFeatures: <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span></span>{
+            <div class="content"><div class='highlight'><pre>  _zoomToFeatures: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>)</span>{
     <span class="hljs-keyword">var</span> bounds = <span class="hljs-keyword">this</span>.features.getBounds();
     <span class="hljs-keyword">if</span> (bounds &amp;&amp; bounds.getNorthEast() &amp;&amp; bounds.getSouthWest()){
       <span class="hljs-keyword">this</span>.map.fitBounds(bounds);
@@ -1016,18 +1017,27 @@ extent if none.</p>
                 <a class="pilcrow" href="#section-38">&#182;</a>
               </div>
               <p>Private: Sets up the Leaflet map control and the features layer.</p>
-<p>The map uses a base layer from <a href="http://www.openstreetmap.org">OpenStreetMap</a> based
-on <a href="http://openstreetmap.org">OpenStreetMap data</a>.</p>
+<p>The map uses a base layer from <a href="http://maps.stamen.com">Stamen</a> based
+on <a href="http://openstreetmap.org">OpenStreetMap data</a> by default, but it can
+be configured passing the <code>mapTilesURL</code> and <code>mapTilesAttribution</code> options
+(<code>mapTilesSubdomains</code> is also supported), eg:</p>
+<p>   view = new recline.View.Map({
+       model: dataset,
+       mapTilesURL: ‘//{s}.tiles.mapbox.com/v4/mapbox.mapbox-streets-v7/{z}/{x}/{y}.png?access_token=pk.XXXX’,
+       mapTilesAttribution: ‘&copy; MapBox etc..’,
+       mapTilesSubdomains: ‘ab’
+   })</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  _setupMap: <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span></span>{
+            <div class="content"><div class='highlight'><pre>  _setupMap: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>)</span>{
     <span class="hljs-keyword">var</span> self = <span class="hljs-keyword">this</span>;
     <span class="hljs-keyword">this</span>.map = <span class="hljs-keyword">new</span> L.Map(<span class="hljs-keyword">this</span>.$map.get(<span class="hljs-number">0</span>));
+    <span class="hljs-keyword">var</span> mapUrl = <span class="hljs-keyword">this</span>.options.mapTilesURL || <span class="hljs-string">'https://stamen-tiles-{s}.a.ssl.fastly.net/terrain/{z}/{x}/{y}.png'</span>;
+    <span class="hljs-keyword">var</span> attribution = <span class="hljs-keyword">this</span>.options.mapTilesAttribution ||<span class="hljs-string">'Map tiles by &lt;a href="http://stamen.com"&gt;Stamen Design&lt;/a&gt; (&lt;a href="http://creativecommons.org/licenses/by/3.0"&gt;CC BY 3.0&lt;/a&gt;). Data by &lt;a href="http://openstreetmap.org"&gt;OpenStreetMap&lt;/a&gt; (&lt;a href="http://creativecommons.org/licenses/by-sa/3.0"&gt;CC BY SA&lt;/a&gt;)'</span>;
+    <span class="hljs-keyword">var</span> subdomains = <span class="hljs-keyword">this</span>.options.mapTilesSubdomains || <span class="hljs-string">'abc'</span>;
 
-    <span class="hljs-keyword">var</span> mapUrl = <span class="hljs-string">"http://otile{s}-s.mqcdn.com/tiles/1.0.0/osm/{z}/{x}/{y}.png"</span>;
-    <span class="hljs-keyword">var</span> osmAttribution = <span class="hljs-string">'Map data &amp;copy; 2011 OpenStreetMap contributors, Tiles Courtesy of &lt;a href="http://www.mapquest.com/" target="_blank"&gt;MapQuest&lt;/a&gt; &lt;img src="http://developer.mapquest.com/content/osm/mq_logo.png"&gt;'</span>;
-    <span class="hljs-keyword">var</span> bg = <span class="hljs-keyword">new</span> L.TileLayer(mapUrl, {maxZoom: <span class="hljs-number">18</span>, attribution: osmAttribution ,subdomains: <span class="hljs-string">'1234'</span>});
+    <span class="hljs-keyword">var</span> bg = <span class="hljs-keyword">new</span> L.TileLayer(mapUrl, {<span class="hljs-attr">maxZoom</span>: <span class="hljs-number">19</span>, <span class="hljs-attr">attribution</span>: attribution, <span class="hljs-attr">subdomains</span>: subdomains});
     <span class="hljs-keyword">this</span>.map.addLayer(bg);
 
     <span class="hljs-keyword">this</span>.markers = <span class="hljs-keyword">new</span> L.MarkerClusterGroup(<span class="hljs-keyword">this</span>._clusterOptions);</pre></div></div>
@@ -1068,10 +1078,10 @@ on <a href="http://openstreetmap.org">OpenStreetMap data</a>.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  _selectOption: <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(id,value)</span></span>{
+            <div class="content"><div class='highlight'><pre>  _selectOption: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">id,value</span>)</span>{
     <span class="hljs-keyword">var</span> options = $(<span class="hljs-string">'.'</span> + id + <span class="hljs-string">' &gt; select &gt; option'</span>);
     <span class="hljs-keyword">if</span> (options){
-      options.each(<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(opt)</span></span>{
+      options.each(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">opt</span>)</span>{
         <span class="hljs-keyword">if</span> (<span class="hljs-keyword">this</span>.value == value) {
           $(<span class="hljs-keyword">this</span>).attr(<span class="hljs-string">'selected'</span>,<span class="hljs-string">'selected'</span>);
           <span class="hljs-keyword">return</span> <span class="hljs-literal">false</span>;
@@ -1082,9 +1092,9 @@ on <a href="http://openstreetmap.org">OpenStreetMap data</a>.</p>
 });
 
 my.MapMenu = Backbone.View.extend({
-  className: <span class="hljs-string">'editor'</span>,
+  <span class="hljs-attr">className</span>: <span class="hljs-string">'editor'</span>,
 
-  template: <span class="hljs-string">' \
+  <span class="hljs-attr">template</span>: <span class="hljs-string">' \
     &lt;form class="form-stacked"&gt; \
       &lt;div class="clearfix"&gt; \
         &lt;div class="editor-field-type"&gt; \
@@ -1096,18 +1106,18 @@ my.MapMenu = Backbone.View.extend({
               GeoJSON field&lt;/label&gt; \
         &lt;/div&gt; \
         &lt;div class="editor-field-type-latlon"&gt; \
-          &lt;label&gt;Latitude field&lt;/label&gt; \
+          &lt;label for="form-field-lat-field"&gt;Latitude field&lt;/label&gt; \
           &lt;div class="input editor-lat-field"&gt; \
-            &lt;select class="form-control"&gt; \
+            &lt;select id="form-field-lat-field" class="form-control"&gt; \
             &lt;option value=""&gt;&lt;/option&gt; \
             {{#fields}} \
             &lt;option value="{{id}}"&gt;{{label}}&lt;/option&gt; \
             {{/fields}} \
             &lt;/select&gt; \
           &lt;/div&gt; \
-          &lt;label&gt;Longitude field&lt;/label&gt; \
+          &lt;label for="form-field-lon-field"&gt;Longitude field&lt;/label&gt; \
           &lt;div class="input editor-lon-field"&gt; \
-            &lt;select class="form-control"&gt; \
+            &lt;select id="form-field-lon-field" class="form-control"&gt; \
             &lt;option value=""&gt;&lt;/option&gt; \
             {{#fields}} \
             &lt;option value="{{id}}"&gt;{{label}}&lt;/option&gt; \
@@ -1116,9 +1126,9 @@ my.MapMenu = Backbone.View.extend({
           &lt;/div&gt; \
         &lt;/div&gt; \
         &lt;div class="editor-field-type-geom" style="display:none"&gt; \
-          &lt;label&gt;Geometry field (GeoJSON)&lt;/label&gt; \
+          &lt;label for="form-field-type-geom"&gt;Geometry field (GeoJSON)&lt;/label&gt; \
           &lt;div class="input editor-geom-field"&gt; \
-            &lt;select class="form-control"&gt; \
+            &lt;select id="form-field-type-geom" class="form-control"&gt; \
             &lt;option value=""&gt;&lt;/option&gt; \
             {{#fields}} \
             &lt;option value="{{id}}"&gt;{{label}}&lt;/option&gt; \
@@ -1162,7 +1172,7 @@ my.MapMenu = Backbone.View.extend({
     <span class="hljs-string">'click #editor-cluster'</span>: <span class="hljs-string">'onClusteringChange'</span>
   },
 
-  initialize: <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(options)</span> </span>{
+  <span class="hljs-attr">initialize</span>: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">options</span>) </span>{
     <span class="hljs-keyword">var</span> self = <span class="hljs-keyword">this</span>;
     _.bindAll(<span class="hljs-keyword">this</span>, <span class="hljs-string">'render'</span>);
     <span class="hljs-keyword">this</span>.listenTo(<span class="hljs-keyword">this</span>.model.fields, <span class="hljs-string">'change'</span>, <span class="hljs-keyword">this</span>.render);
@@ -1185,7 +1195,7 @@ my.MapMenu = Backbone.View.extend({
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  render: <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> </span>{
+            <div class="content"><div class='highlight'><pre>  render: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
     <span class="hljs-keyword">var</span> self = <span class="hljs-keyword">this</span>;
     <span class="hljs-keyword">var</span> htmls = Mustache.render(<span class="hljs-keyword">this</span>.template, <span class="hljs-keyword">this</span>.model.toTemplateJSON());
     <span class="hljs-keyword">this</span>.$el.html(htmls);
@@ -1213,7 +1223,7 @@ my.MapMenu = Backbone.View.extend({
     <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>;
   },
 
-  _geomReady: <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> </span>{
+  <span class="hljs-attr">_geomReady</span>: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
     <span class="hljs-keyword">return</span> <span class="hljs-built_in">Boolean</span>(<span class="hljs-keyword">this</span>.state.get(<span class="hljs-string">'geomField'</span>) || (<span class="hljs-keyword">this</span>.state.get(<span class="hljs-string">'latField'</span>) &amp;&amp; <span class="hljs-keyword">this</span>.state.get(<span class="hljs-string">'lonField'</span>)));
   },</pre></div></div>
             
@@ -1245,19 +1255,19 @@ location information.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  onEditorSubmit: <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(e)</span></span>{
+            <div class="content"><div class='highlight'><pre>  onEditorSubmit: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">e</span>)</span>{
     e.preventDefault();
     <span class="hljs-keyword">if</span> (<span class="hljs-keyword">this</span>.$el.find(<span class="hljs-string">'#editor-field-type-geom'</span>).attr(<span class="hljs-string">'checked'</span>)){
       <span class="hljs-keyword">this</span>.state.set({
-        geomField: <span class="hljs-keyword">this</span>.$el.find(<span class="hljs-string">'.editor-geom-field &gt; select &gt; option:selected'</span>).val(),
-        lonField: <span class="hljs-literal">null</span>,
-        latField: <span class="hljs-literal">null</span>
+        <span class="hljs-attr">geomField</span>: <span class="hljs-keyword">this</span>.$el.find(<span class="hljs-string">'.editor-geom-field &gt; select &gt; option:selected'</span>).val(),
+        <span class="hljs-attr">lonField</span>: <span class="hljs-literal">null</span>,
+        <span class="hljs-attr">latField</span>: <span class="hljs-literal">null</span>
       });
     } <span class="hljs-keyword">else</span> {
       <span class="hljs-keyword">this</span>.state.set({
-        geomField: <span class="hljs-literal">null</span>,
-        lonField: <span class="hljs-keyword">this</span>.$el.find(<span class="hljs-string">'.editor-lon-field &gt; select &gt; option:selected'</span>).val(),
-        latField: <span class="hljs-keyword">this</span>.$el.find(<span class="hljs-string">'.editor-lat-field &gt; select &gt; option:selected'</span>).val()
+        <span class="hljs-attr">geomField</span>: <span class="hljs-literal">null</span>,
+        <span class="hljs-attr">lonField</span>: <span class="hljs-keyword">this</span>.$el.find(<span class="hljs-string">'.editor-lon-field &gt; select &gt; option:selected'</span>).val(),
+        <span class="hljs-attr">latField</span>: <span class="hljs-keyword">this</span>.$el.find(<span class="hljs-string">'.editor-lat-field &gt; select &gt; option:selected'</span>).val()
       });
     }
     <span class="hljs-keyword">return</span> <span class="hljs-literal">false</span>;
@@ -1277,7 +1287,7 @@ type selected.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  onFieldTypeChange: <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(e)</span></span>{
+            <div class="content"><div class='highlight'><pre>  onFieldTypeChange: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">e</span>)</span>{
     <span class="hljs-keyword">if</span> (e.target.value == <span class="hljs-string">'geom'</span>){
         <span class="hljs-keyword">this</span>.$el.find(<span class="hljs-string">'.editor-field-type-geom'</span>).show();
         <span class="hljs-keyword">this</span>.$el.find(<span class="hljs-string">'.editor-field-type-latlon'</span>).hide();
@@ -1287,12 +1297,12 @@ type selected.</p>
     }
   },
 
-  onAutoZoomChange: <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(e)</span></span>{
-    <span class="hljs-keyword">this</span>.state.set({autoZoom: !<span class="hljs-keyword">this</span>.state.get(<span class="hljs-string">'autoZoom'</span>)});
+  <span class="hljs-attr">onAutoZoomChange</span>: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">e</span>)</span>{
+    <span class="hljs-keyword">this</span>.state.set({<span class="hljs-attr">autoZoom</span>: !<span class="hljs-keyword">this</span>.state.get(<span class="hljs-string">'autoZoom'</span>)});
   },
 
-  onClusteringChange: <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(e)</span></span>{
-    <span class="hljs-keyword">this</span>.state.set({cluster: !<span class="hljs-keyword">this</span>.state.get(<span class="hljs-string">'cluster'</span>)});
+  <span class="hljs-attr">onClusteringChange</span>: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">e</span>)</span>{
+    <span class="hljs-keyword">this</span>.state.set({<span class="hljs-attr">cluster</span>: !<span class="hljs-keyword">this</span>.state.get(<span class="hljs-string">'cluster'</span>)});
   },</pre></div></div>
             
         </li>
@@ -1308,10 +1318,10 @@ type selected.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  _selectOption: <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(id,value)</span></span>{
+            <div class="content"><div class='highlight'><pre>  _selectOption: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">id,value</span>)</span>{
     <span class="hljs-keyword">var</span> options = <span class="hljs-keyword">this</span>.$el.find(<span class="hljs-string">'.'</span> + id + <span class="hljs-string">' &gt; select &gt; option'</span>);
     <span class="hljs-keyword">if</span> (options){
-      options.each(<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(opt)</span></span>{
+      options.each(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">opt</span>)</span>{
         <span class="hljs-keyword">if</span> (<span class="hljs-keyword">this</span>.value == value) {
           $(<span class="hljs-keyword">this</span>).attr(<span class="hljs-string">'selected'</span>,<span class="hljs-string">'selected'</span>);
           <span class="hljs-keyword">return</span> <span class="hljs-literal">false</span>;

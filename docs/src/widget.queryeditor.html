@@ -133,12 +133,12 @@
 <span class="hljs-keyword">this</span>.recline = <span class="hljs-keyword">this</span>.recline || {};
 <span class="hljs-keyword">this</span>.recline.View = <span class="hljs-keyword">this</span>.recline.View || {};
 
-(<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">($, my)</span> </span>{
-<span class="hljs-pi">  "use strict"</span>;
+(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">$, my</span>) </span>{
+<span class="hljs-meta">  "use strict"</span>;
 
 my.QueryEditor = Backbone.View.extend({
-  className: <span class="hljs-string">'recline-query-editor'</span>, 
-  template: <span class="hljs-string">' \
+  <span class="hljs-attr">className</span>: <span class="hljs-string">'recline-query-editor'</span>, 
+  <span class="hljs-attr">template</span>: <span class="hljs-string">' \
     &lt;form action="" method="GET" class="form-inline" role="form"&gt; \
       &lt;div class="form-group"&gt; \
         &lt;div class="input-group text-query"&gt; \
@@ -153,21 +153,21 @@ my.QueryEditor = Backbone.View.extend({
     &lt;/form&gt; \
   '</span>,
 
-  events: {
+  <span class="hljs-attr">events</span>: {
     <span class="hljs-string">'submit form'</span>: <span class="hljs-string">'onFormSubmit'</span>
   },
 
-  initialize: <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> </span>{
+  <span class="hljs-attr">initialize</span>: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
     _.bindAll(<span class="hljs-keyword">this</span>, <span class="hljs-string">'render'</span>);
     <span class="hljs-keyword">this</span>.listenTo(<span class="hljs-keyword">this</span>.model, <span class="hljs-string">'change'</span>, <span class="hljs-keyword">this</span>.render);
     <span class="hljs-keyword">this</span>.render();
   },
-  onFormSubmit: <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(e)</span> </span>{
+  <span class="hljs-attr">onFormSubmit</span>: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">e</span>) </span>{
     e.preventDefault();
     <span class="hljs-keyword">var</span> query = <span class="hljs-keyword">this</span>.$el.find(<span class="hljs-string">'.search-query'</span>).val();
-    <span class="hljs-keyword">this</span>.model.set({q: query});
+    <span class="hljs-keyword">this</span>.model.set({<span class="hljs-attr">q</span>: query});
   },
-  render: <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> </span>{
+  <span class="hljs-attr">render</span>: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
     <span class="hljs-keyword">var</span> tmplData = <span class="hljs-keyword">this</span>.model.toJSON();
     <span class="hljs-keyword">var</span> templated = Mustache.render(<span class="hljs-keyword">this</span>.template, tmplData);
     <span class="hljs-keyword">this</span>.$el.html(templated);

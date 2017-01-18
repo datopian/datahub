@@ -133,8 +133,8 @@
 <span class="hljs-keyword">this</span>.recline = <span class="hljs-keyword">this</span>.recline || {};
 <span class="hljs-keyword">this</span>.recline.View = <span class="hljs-keyword">this</span>.recline.View || {};
 
-(<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">($, my)</span> </span>{
-<span class="hljs-pi">  "use strict"</span>;</pre></div></div>
+(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">$, my</span>) </span>{
+<span class="hljs-meta">  "use strict"</span>;</pre></div></div>
             
         </li>
         
@@ -151,11 +151,11 @@
 <li>model: recline.Model.Dataset</li>
 <li><p>state: (optional) configuration hash of form:</p>
 <pre><code> {
-   group: {column name <span class="hljs-keyword">for</span> x-axis},
-   series: [{column name <span class="hljs-keyword">for</span> series A}, {column name series B}, ... ],
+   <span class="hljs-attr">group</span>: {column name <span class="hljs-keyword">for</span> x-axis},
+   <span class="hljs-attr">series</span>: [{column name <span class="hljs-keyword">for</span> series A}, {column name series B}, ... ],
    <span class="hljs-comment">// options are: lines, points, lines-and-points, bars, columns</span>
    graphType: <span class="hljs-string">'lines'</span>,
-   graphOptions: {custom [flot options]}
+   <span class="hljs-attr">graphOptions</span>: {custom [flot options]}
  }
 </code></pre></li>
 </ul>
@@ -165,7 +165,7 @@ generate the element itself (you can then append view.el to the DOM.</p>
             </div>
             
             <div class="content"><div class='highlight'><pre>my.Flot = Backbone.View.extend({
-  template: <span class="hljs-string">' \
+  <span class="hljs-attr">template</span>: <span class="hljs-string">' \
     &lt;div class="recline-flot"&gt; \
       &lt;div class="panel graph" style="display: block;"&gt; \
         &lt;div class="js-temp-notice alert alert-warning alert-block"&gt; \
@@ -177,7 +177,7 @@ generate the element itself (you can then append view.el to the DOM.</p>
     &lt;/div&gt; \
 '</span>,
 
-  initialize: <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(options)</span> </span>{
+  <span class="hljs-attr">initialize</span>: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">options</span>) </span>{
     <span class="hljs-keyword">var</span> self = <span class="hljs-keyword">this</span>;
     <span class="hljs-keyword">this</span>.graphColors = [<span class="hljs-string">"#edc240"</span>, <span class="hljs-string">"#afd8f8"</span>, <span class="hljs-string">"#cb4b4b"</span>, <span class="hljs-string">"#4da74d"</span>, <span class="hljs-string">"#9440ed"</span>];
 
@@ -187,7 +187,7 @@ generate the element itself (you can then append view.el to the DOM.</p>
     <span class="hljs-keyword">this</span>.listenTo(<span class="hljs-keyword">this</span>.model.fields, <span class="hljs-string">'reset add'</span>, <span class="hljs-keyword">this</span>.render);
     <span class="hljs-keyword">this</span>.listenTo(<span class="hljs-keyword">this</span>.model.records, <span class="hljs-string">'reset add'</span>, <span class="hljs-keyword">this</span>.redraw);
     <span class="hljs-keyword">var</span> stateData = _.extend({
-        group: <span class="hljs-literal">null</span>,</pre></div></div>
+        <span class="hljs-attr">group</span>: <span class="hljs-literal">null</span>,</pre></div></div>
             
         </li>
         
@@ -203,24 +203,24 @@ generate the element itself (you can then append view.el to the DOM.</p>
             </div>
             
             <div class="content"><div class='highlight'><pre>        series: [],
-        graphType: <span class="hljs-string">'lines-and-points'</span>
+        <span class="hljs-attr">graphType</span>: <span class="hljs-string">'lines-and-points'</span>
       },
       options.state
     );
     <span class="hljs-keyword">this</span>.state = <span class="hljs-keyword">new</span> recline.Model.ObjectState(stateData);
-    <span class="hljs-keyword">this</span>.previousTooltipPoint = {x: <span class="hljs-literal">null</span>, y: <span class="hljs-literal">null</span>};
+    <span class="hljs-keyword">this</span>.previousTooltipPoint = {<span class="hljs-attr">x</span>: <span class="hljs-literal">null</span>, <span class="hljs-attr">y</span>: <span class="hljs-literal">null</span>};
     <span class="hljs-keyword">this</span>.editor = <span class="hljs-keyword">new</span> my.FlotControls({
-      model: <span class="hljs-keyword">this</span>.model,
-      state: <span class="hljs-keyword">this</span>.state.toJSON()
+      <span class="hljs-attr">model</span>: <span class="hljs-keyword">this</span>.model,
+      <span class="hljs-attr">state</span>: <span class="hljs-keyword">this</span>.state.toJSON()
     });
-    <span class="hljs-keyword">this</span>.listenTo(<span class="hljs-keyword">this</span>.editor.state, <span class="hljs-string">'change'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> </span>{
+    <span class="hljs-keyword">this</span>.listenTo(<span class="hljs-keyword">this</span>.editor.state, <span class="hljs-string">'change'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
       self.state.set(self.editor.state.toJSON());
       self.redraw();
     });
     <span class="hljs-keyword">this</span>.elSidebar = <span class="hljs-keyword">this</span>.editor.$el;
   },
 
-  render: <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> </span>{
+  <span class="hljs-attr">render</span>: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
     <span class="hljs-keyword">var</span> self = <span class="hljs-keyword">this</span>;
     <span class="hljs-keyword">var</span> tmplData = <span class="hljs-keyword">this</span>.model.toTemplateJSON();
     <span class="hljs-keyword">var</span> htmls = Mustache.render(<span class="hljs-keyword">this</span>.template, tmplData);
@@ -230,12 +230,12 @@ generate the element itself (you can then append view.el to the DOM.</p>
     <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>;
   },
 
-  remove: <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">()</span> </span>{
+  <span class="hljs-attr">remove</span>: <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params"></span>) </span>{
     <span class="hljs-keyword">this</span>.editor.remove();
     Backbone.View.prototype.remove.apply(<span class="hljs-keyword">this</span>, <span class="hljs-built_in">arguments</span>);
   },
 
-  redraw: <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> </span>{</pre></div></div>
+  <span class="hljs-attr">redraw</span>: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{</pre></div></div>
             
         </li>
         
@@ -248,9 +248,9 @@ generate the element itself (you can then append view.el to the DOM.</p>
               </div>
               <p>There are issues generating a Flot graph if either:</p>
 <ul>
-<li>The relevant div that graph attaches to his hidden at the moment of creating the plot — Flot will complain with
+<li>The relevant div that graph attaches to his hidden at the moment of creating the plot – Flot will complain with
 Uncaught Invalid dimensions for plot, width = 0, height = 0</li>
-<li>There is no data for the plot — either same error or may have issues later with errors like ‘non-existent node-value’</li>
+<li>There is no data for the plot – either same error or may have issues later with errors like ‘non-existent node-value’</li>
 </ul>
 
             </div>
@@ -281,7 +281,7 @@ Uncaught Invalid dimensions for plot, width = 0, height = 0</li>
     }
   },
 
-  show: <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> </span>{</pre></div></div>
+  <span class="hljs-attr">show</span>: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{</pre></div></div>
             
         </li>
         
@@ -314,7 +314,7 @@ Uncaught Invalid dimensions for plot, width = 0, height = 0</li>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  _toolTip: <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(event, pos, item)</span> </span>{
+            <div class="content"><div class='highlight'><pre>  _toolTip: <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">event, pos, item</span>) </span>{
     <span class="hljs-keyword">if</span> (item) {
       <span class="hljs-keyword">if</span> (<span class="hljs-keyword">this</span>.previousTooltipPoint.x !== item.dataIndex ||
           <span class="hljs-keyword">this</span>.previousTooltipPoint.y !== item.seriesIndex) {
@@ -330,11 +330,12 @@ Uncaught Invalid dimensions for plot, width = 0, height = 0</li>
           y = item.datapoint[<span class="hljs-number">0</span>].toFixed(<span class="hljs-number">2</span>);
         }
 
-        <span class="hljs-keyword">var</span> content = _.template(<span class="hljs-string">'&lt;%= group %&gt; = &lt;%= x %&gt;, &lt;%= series %&gt; = &lt;%= y %&gt;'</span>, {
-          group: <span class="hljs-keyword">this</span>.state.attributes.group,
-          x: <span class="hljs-keyword">this</span>._xaxisLabel(x),
-          series: item.series.label,
-          y: y
+        <span class="hljs-keyword">var</span> template = _.template(<span class="hljs-string">'&lt;%= group %&gt; = &lt;%= x %&gt;, &lt;%= series %&gt; = &lt;%= y %&gt;'</span>);
+        <span class="hljs-keyword">var</span> content = template({
+          <span class="hljs-attr">group</span>: <span class="hljs-keyword">this</span>.state.attributes.group,
+          <span class="hljs-attr">x</span>: <span class="hljs-keyword">this</span>._xaxisLabel(x),
+          <span class="hljs-attr">series</span>: item.series.label,
+          <span class="hljs-attr">y</span>: y
         });</pre></div></div>
             
         </li>
@@ -363,8 +364,8 @@ Uncaught Invalid dimensions for plot, width = 0, height = 0</li>
         }
 
         $(<span class="hljs-string">'&lt;div id="recline-flot-tooltip"&gt;'</span> + content + <span class="hljs-string">'&lt;/div&gt;'</span>).css({
-            top: yLocation,
-            left: xLocation
+            <span class="hljs-attr">top</span>: yLocation,
+            <span class="hljs-attr">left</span>: xLocation
         }).appendTo(<span class="hljs-string">"body"</span>).fadeIn(<span class="hljs-number">200</span>);
       }
     } <span class="hljs-keyword">else</span> {
@@ -374,7 +375,7 @@ Uncaught Invalid dimensions for plot, width = 0, height = 0</li>
     }
   },
 
-  _xaxisLabel: <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(x)</span> </span>{
+  <span class="hljs-attr">_xaxisLabel</span>: <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">x</span>) </span>{
     <span class="hljs-keyword">if</span> (<span class="hljs-keyword">this</span>._groupFieldIsDateTime()) {</pre></div></div>
             
         </li>
@@ -433,13 +434,13 @@ records not its actual x-axis value</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  getGraphOptions: <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(typeId, numPoints)</span> </span>{
+            <div class="content"><div class='highlight'><pre>  getGraphOptions: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">typeId, numPoints</span>) </span>{
     <span class="hljs-keyword">var</span> self = <span class="hljs-keyword">this</span>;
     <span class="hljs-keyword">var</span> groupFieldIsDateTime = self._groupFieldIsDateTime();
     <span class="hljs-keyword">var</span> xaxis = {};
 
     <span class="hljs-keyword">if</span> (!groupFieldIsDateTime) {
-      xaxis.tickFormatter = <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(x)</span> </span>{</pre></div></div>
+      xaxis.tickFormatter = <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">x</span>) </span>{</pre></div></div>
             
         </li>
         
@@ -510,59 +511,59 @@ could have a lot of values and so we limit to max 15 (we assume)</p>
     grid.borderWidth = <span class="hljs-number">1</span>;
 
     <span class="hljs-keyword">var</span> optionsPerGraphType = {
-      lines: {
-        legend: legend,
-        colors: <span class="hljs-keyword">this</span>.graphColors,
-        lines: { show: <span class="hljs-literal">true</span> },
-        xaxis: xaxis,
-        yaxis: yaxis,
-        grid: grid
+      <span class="hljs-attr">lines</span>: {
+        <span class="hljs-attr">legend</span>: legend,
+        <span class="hljs-attr">colors</span>: <span class="hljs-keyword">this</span>.graphColors,
+        <span class="hljs-attr">lines</span>: { <span class="hljs-attr">show</span>: <span class="hljs-literal">true</span> },
+        <span class="hljs-attr">xaxis</span>: xaxis,
+        <span class="hljs-attr">yaxis</span>: yaxis,
+        <span class="hljs-attr">grid</span>: grid
       },
-      points: {
-        legend: legend,
-        colors: <span class="hljs-keyword">this</span>.graphColors,
-        points: { show: <span class="hljs-literal">true</span>, hitRadius: <span class="hljs-number">5</span> },
-        xaxis: xaxis,
-        yaxis: yaxis,
-        grid: grid
+      <span class="hljs-attr">points</span>: {
+        <span class="hljs-attr">legend</span>: legend,
+        <span class="hljs-attr">colors</span>: <span class="hljs-keyword">this</span>.graphColors,
+        <span class="hljs-attr">points</span>: { <span class="hljs-attr">show</span>: <span class="hljs-literal">true</span>, <span class="hljs-attr">hitRadius</span>: <span class="hljs-number">5</span> },
+        <span class="hljs-attr">xaxis</span>: xaxis,
+        <span class="hljs-attr">yaxis</span>: yaxis,
+        <span class="hljs-attr">grid</span>: grid
       },
       <span class="hljs-string">'lines-and-points'</span>: {
-        legend: legend,
-        colors: <span class="hljs-keyword">this</span>.graphColors,
-        points: { show: <span class="hljs-literal">true</span>, hitRadius: <span class="hljs-number">5</span> },
-        lines: { show: <span class="hljs-literal">true</span> },
-        xaxis: xaxis,
-        yaxis: yaxis,
-        grid: grid
+        <span class="hljs-attr">legend</span>: legend,
+        <span class="hljs-attr">colors</span>: <span class="hljs-keyword">this</span>.graphColors,
+        <span class="hljs-attr">points</span>: { <span class="hljs-attr">show</span>: <span class="hljs-literal">true</span>, <span class="hljs-attr">hitRadius</span>: <span class="hljs-number">5</span> },
+        <span class="hljs-attr">lines</span>: { <span class="hljs-attr">show</span>: <span class="hljs-literal">true</span> },
+        <span class="hljs-attr">xaxis</span>: xaxis,
+        <span class="hljs-attr">yaxis</span>: yaxis,
+        <span class="hljs-attr">grid</span>: grid
       },
-      bars: {
-        legend: legend,
-        colors: <span class="hljs-keyword">this</span>.graphColors,
-        lines: { show: <span class="hljs-literal">false</span> },
-        xaxis: yaxis,
-        yaxis: xaxis,
-        grid: grid,
-        bars: {
-          show: <span class="hljs-literal">true</span>,
-          horizontal: <span class="hljs-literal">true</span>,
-          shadowSize: <span class="hljs-number">0</span>,
-          align: <span class="hljs-string">'center'</span>,
-          barWidth: <span class="hljs-number">0.8</span>
+      <span class="hljs-attr">bars</span>: {
+        <span class="hljs-attr">legend</span>: legend,
+        <span class="hljs-attr">colors</span>: <span class="hljs-keyword">this</span>.graphColors,
+        <span class="hljs-attr">lines</span>: { <span class="hljs-attr">show</span>: <span class="hljs-literal">false</span> },
+        <span class="hljs-attr">xaxis</span>: yaxis,
+        <span class="hljs-attr">yaxis</span>: xaxis,
+        <span class="hljs-attr">grid</span>: grid,
+        <span class="hljs-attr">bars</span>: {
+          <span class="hljs-attr">show</span>: <span class="hljs-literal">true</span>,
+          <span class="hljs-attr">horizontal</span>: <span class="hljs-literal">true</span>,
+          <span class="hljs-attr">shadowSize</span>: <span class="hljs-number">0</span>,
+          <span class="hljs-attr">align</span>: <span class="hljs-string">'center'</span>,
+          <span class="hljs-attr">barWidth</span>: <span class="hljs-number">0.8</span>
         }
       },
-      columns: {
-        legend: legend,
-        colors: <span class="hljs-keyword">this</span>.graphColors,
-        lines: { show: <span class="hljs-literal">false</span> },
-        xaxis: xaxis,
-        yaxis: yaxis,
-        grid: grid,
-        bars: {
-          show: <span class="hljs-literal">true</span>,
-          horizontal: <span class="hljs-literal">false</span>,
-          shadowSize: <span class="hljs-number">0</span>,
-          align: <span class="hljs-string">'center'</span>,
-          barWidth: <span class="hljs-number">0.8</span>
+      <span class="hljs-attr">columns</span>: {
+        <span class="hljs-attr">legend</span>: legend,
+        <span class="hljs-attr">colors</span>: <span class="hljs-keyword">this</span>.graphColors,
+        <span class="hljs-attr">lines</span>: { <span class="hljs-attr">show</span>: <span class="hljs-literal">false</span> },
+        <span class="hljs-attr">xaxis</span>: xaxis,
+        <span class="hljs-attr">yaxis</span>: yaxis,
+        <span class="hljs-attr">grid</span>: grid,
+        <span class="hljs-attr">bars</span>: {
+          <span class="hljs-attr">show</span>: <span class="hljs-literal">true</span>,
+          <span class="hljs-attr">horizontal</span>: <span class="hljs-literal">false</span>,
+          <span class="hljs-attr">shadowSize</span>: <span class="hljs-number">0</span>,
+          <span class="hljs-attr">align</span>: <span class="hljs-string">'center'</span>,
+          <span class="hljs-attr">barWidth</span>: <span class="hljs-number">0.8</span>
         }
       }
     };
@@ -575,26 +576,26 @@ could have a lot of values and so we limit to max 15 (we assume)</p>
     }
   },
 
-  _groupFieldIsDateTime: <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> </span>{
+  <span class="hljs-attr">_groupFieldIsDateTime</span>: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
     <span class="hljs-keyword">var</span> xfield = <span class="hljs-keyword">this</span>.model.fields.get(<span class="hljs-keyword">this</span>.state.attributes.group);
     <span class="hljs-keyword">var</span> xtype = xfield.get(<span class="hljs-string">'type'</span>);
     <span class="hljs-keyword">var</span> isDateTime = (xtype === <span class="hljs-string">'date'</span> || xtype === <span class="hljs-string">'date-time'</span> || xtype  === <span class="hljs-string">'time'</span>);
     <span class="hljs-keyword">return</span> isDateTime;
   },
 
-  createSeries: <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> </span>{
+  <span class="hljs-attr">createSeries</span>: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
     <span class="hljs-keyword">var</span> self = <span class="hljs-keyword">this</span>;
     self.xvaluesAreIndex = <span class="hljs-literal">false</span>;
     <span class="hljs-keyword">var</span> series = [];
     <span class="hljs-keyword">var</span> xfield = self.model.fields.get(self.state.attributes.group);
     <span class="hljs-keyword">var</span> isDateTime = self._groupFieldIsDateTime();
 
-    _.each(<span class="hljs-keyword">this</span>.state.attributes.series, <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(field)</span> </span>{
+    _.each(<span class="hljs-keyword">this</span>.state.attributes.series, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">field</span>) </span>{
       <span class="hljs-keyword">var</span> points = [];
       <span class="hljs-keyword">var</span> fieldLabel = self.model.fields.get(field).get(<span class="hljs-string">'label'</span>);
 
         <span class="hljs-keyword">if</span> (isDateTime){
-            <span class="hljs-keyword">var</span> cast = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(x)</span></span>{
+            <span class="hljs-keyword">var</span> cast = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">x</span>)</span>{
                 <span class="hljs-keyword">var</span> _date = moment(<span class="hljs-built_in">String</span>(x));
                 <span class="hljs-keyword">if</span> (_date.isValid()) {
                     x = _date.toDate().getTime();
@@ -603,18 +604,18 @@ could have a lot of values and so we limit to max 15 (we assume)</p>
             }
         } <span class="hljs-keyword">else</span> {
             <span class="hljs-keyword">var</span> raw = _.map(self.model.records.models,
-                            <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(doc, index)</span></span>{
+                            <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">doc, index</span>)</span>{
                                 <span class="hljs-keyword">return</span> doc.getFieldValueUnrendered(xfield)
                             });
 
-            <span class="hljs-keyword">if</span> (_.all(raw, <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(x)</span></span>{ <span class="hljs-keyword">return</span> !<span class="hljs-built_in">isNaN</span>(<span class="hljs-built_in">parseFloat</span>(x)) })){
-                <span class="hljs-keyword">var</span> cast = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(x)</span></span>{ <span class="hljs-keyword">return</span> <span class="hljs-built_in">parseFloat</span>(x) }
+            <span class="hljs-keyword">if</span> (_.all(raw, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">x</span>)</span>{ <span class="hljs-keyword">return</span> !<span class="hljs-built_in">isNaN</span>(<span class="hljs-built_in">parseFloat</span>(x)) })){
+                <span class="hljs-keyword">var</span> cast = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">x</span>)</span>{ <span class="hljs-keyword">return</span> <span class="hljs-built_in">parseFloat</span>(x) }
             } <span class="hljs-keyword">else</span> {
                 self.xvaluesAreIndex = <span class="hljs-literal">true</span>
             }
         }
 
-      _.each(self.model.records.models, <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(doc, index)</span> </span>{
+      _.each(self.model.records.models, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">doc, index</span>) </span>{
         <span class="hljs-keyword">if</span>(self.xvaluesAreIndex){
             <span class="hljs-keyword">var</span> x = index;
         }<span class="hljs-keyword">else</span>{
@@ -631,9 +632,9 @@ could have a lot of values and so we limit to max 15 (we assume)</p>
         }
       });
       series.push({
-        data: points,
-        label: fieldLabel,
-        hoverable: <span class="hljs-literal">true</span>
+        <span class="hljs-attr">data</span>: points,
+        <span class="hljs-attr">label</span>: fieldLabel,
+        <span class="hljs-attr">hoverable</span>: <span class="hljs-literal">true</span>
       });
     });
     <span class="hljs-keyword">return</span> series;
@@ -641,15 +642,15 @@ could have a lot of values and so we limit to max 15 (we assume)</p>
 });
 
 my.FlotControls = Backbone.View.extend({
-  className: <span class="hljs-string">"editor"</span>,
-  template: <span class="hljs-string">' \
+  <span class="hljs-attr">className</span>: <span class="hljs-string">"editor"</span>,
+  <span class="hljs-attr">template</span>: <span class="hljs-string">' \
   &lt;div class="editor"&gt; \
     &lt;form class="form-stacked"&gt; \
       &lt;div class="clearfix"&gt; \
         &lt;div class="form-group"&gt; \
-          &lt;label&gt;Graph Type&lt;/label&gt; \
+          &lt;label for ="form-field-type"&gt;Graph Type&lt;/label&gt; \
           &lt;div class="input editor-type"&gt; \
-            &lt;select class="form-control"&gt; \
+            &lt;select id="form-field-type" class="form-control"&gt; \
               &lt;option value="lines-and-points"&gt;Lines and Points&lt;/option&gt; \
               &lt;option value="lines"&gt;Lines&lt;/option&gt; \
               &lt;option value="points"&gt;Points&lt;/option&gt; \
@@ -659,9 +660,9 @@ my.FlotControls = Backbone.View.extend({
           &lt;/div&gt; \
         &lt;/div&gt; \
         &lt;div class="form-group"&gt; \
-          &lt;label&gt;Group Column (Axis 1)&lt;/label&gt; \
+          &lt;label for="field-form-group"&gt;Group Column (Axis 1)&lt;/label&gt; \
           &lt;div class="input editor-group"&gt; \
-            &lt;select class="form-control"&gt; \
+            &lt;select id="field-form-group" class="form-control"&gt; \
               &lt;option value=""&gt;Please choose ...&lt;/option&gt; \
                 {{#fields}} \
               &lt;option value="{{id}}"&gt;{{label}}&lt;/option&gt; \
@@ -682,14 +683,14 @@ my.FlotControls = Backbone.View.extend({
     &lt;/form&gt; \
   &lt;/div&gt; \
 '</span>,
-  templateSeriesEditor: <span class="hljs-string">' \
+  <span class="hljs-attr">templateSeriesEditor</span>: <span class="hljs-string">' \
     &lt;div class="editor-series js-series-{{seriesIndex}}"&gt; \
       &lt;div class="form-group"&gt; \
-        &lt;label&gt;Series &lt;span&gt;{{seriesName}} (Axis 2)&lt;/span&gt; \
+        &lt;label for="form-field-{{seriesName}}"&gt;Series &lt;span&gt;{{seriesName}} (Axis 2)&lt;/span&gt; \
           [&lt;a href="#remove" class="action-remove-series"&gt;Remove&lt;/a&gt;] \
         &lt;/label&gt; \
         &lt;div class="input"&gt; \
-          &lt;select class="form-control"&gt; \
+          &lt;select id="form-field-{{seriesName}}" class="form-control"&gt; \
           {{#fields}} \
           &lt;option value="{{id}}"&gt;{{label}}&lt;/option&gt; \
           {{/fields}} \
@@ -698,13 +699,13 @@ my.FlotControls = Backbone.View.extend({
       &lt;/div&gt; \
     &lt;/div&gt; \
   '</span>,
-  events: {
+  <span class="hljs-attr">events</span>: {
     <span class="hljs-string">'change form select'</span>: <span class="hljs-string">'onEditorSubmit'</span>,
     <span class="hljs-string">'click .editor-add'</span>: <span class="hljs-string">'_onAddSeries'</span>,
     <span class="hljs-string">'click .action-remove-series'</span>: <span class="hljs-string">'removeSeries'</span>
   },
 
-  initialize: <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(options)</span> </span>{
+  <span class="hljs-attr">initialize</span>: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">options</span>) </span>{
     <span class="hljs-keyword">var</span> self = <span class="hljs-keyword">this</span>;
     _.bindAll(<span class="hljs-keyword">this</span>, <span class="hljs-string">'render'</span>);
     <span class="hljs-keyword">this</span>.listenTo(<span class="hljs-keyword">this</span>.model.fields, <span class="hljs-string">'reset add'</span>, <span class="hljs-keyword">this</span>.render);
@@ -712,7 +713,7 @@ my.FlotControls = Backbone.View.extend({
     <span class="hljs-keyword">this</span>.render();
   },
 
-  render: <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> </span>{
+  <span class="hljs-attr">render</span>: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
     <span class="hljs-keyword">var</span> self = <span class="hljs-keyword">this</span>;
     <span class="hljs-keyword">var</span> tmplData = <span class="hljs-keyword">this</span>.model.toTemplateJSON();
     <span class="hljs-keyword">var</span> htmls = Mustache.render(<span class="hljs-keyword">this</span>.template, tmplData);
@@ -755,7 +756,7 @@ my.FlotControls = Backbone.View.extend({
     <span class="hljs-keyword">if</span> (<span class="hljs-keyword">this</span>.state.get(<span class="hljs-string">'series'</span>).length &gt; <span class="hljs-number">0</span>) {
       tmpSeries = <span class="hljs-keyword">this</span>.state.get(<span class="hljs-string">'series'</span>);
     }
-    _.each(tmpSeries, <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(series, idx)</span> </span>{
+    _.each(tmpSeries, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">series, idx</span>) </span>{
       self.addSeries(idx);
       self._selectOption(<span class="hljs-string">'.editor-series.js-series-'</span> + idx, series);
     });
@@ -775,10 +776,10 @@ my.FlotControls = Backbone.View.extend({
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  _selectOption: <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(id,value)</span></span>{
+            <div class="content"><div class='highlight'><pre>  _selectOption: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">id,value</span>)</span>{
     <span class="hljs-keyword">var</span> options = <span class="hljs-keyword">this</span>.$el.find(id + <span class="hljs-string">' select &gt; option'</span>);
     <span class="hljs-keyword">if</span> (options) {
-      options.each(<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(opt)</span></span>{
+      options.each(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">opt</span>)</span>{
         <span class="hljs-keyword">if</span> (<span class="hljs-keyword">this</span>.value == value) {
           $(<span class="hljs-keyword">this</span>).attr(<span class="hljs-string">'selected'</span>,<span class="hljs-string">'selected'</span>);
           <span class="hljs-keyword">return</span> <span class="hljs-literal">false</span>;
@@ -787,17 +788,17 @@ my.FlotControls = Backbone.View.extend({
     }
   },
 
-  onEditorSubmit: <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(e)</span> </span>{
+  <span class="hljs-attr">onEditorSubmit</span>: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">e</span>) </span>{
     <span class="hljs-keyword">var</span> select = <span class="hljs-keyword">this</span>.$el.find(<span class="hljs-string">'.editor-group select'</span>);
     <span class="hljs-keyword">var</span> $editor = <span class="hljs-keyword">this</span>;
     <span class="hljs-keyword">var</span> $series = <span class="hljs-keyword">this</span>.$el.find(<span class="hljs-string">'.editor-series select'</span>);
-    <span class="hljs-keyword">var</span> series = $series.map(<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">()</span> </span>{
+    <span class="hljs-keyword">var</span> series = $series.map(<span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params"></span>) </span>{
       <span class="hljs-keyword">return</span> $(<span class="hljs-keyword">this</span>).val();
     });
     <span class="hljs-keyword">var</span> updatedState = {
-      series: $.makeArray(series),
-      group: <span class="hljs-keyword">this</span>.$el.find(<span class="hljs-string">'.editor-group select'</span>).val(),
-      graphType: <span class="hljs-keyword">this</span>.$el.find(<span class="hljs-string">'.editor-type select'</span>).val()
+      <span class="hljs-attr">series</span>: $.makeArray(series),
+      <span class="hljs-attr">group</span>: <span class="hljs-keyword">this</span>.$el.find(<span class="hljs-string">'.editor-group select'</span>).val(),
+      <span class="hljs-attr">graphType</span>: <span class="hljs-keyword">this</span>.$el.find(<span class="hljs-string">'.editor-type select'</span>).val()
     };
     <span class="hljs-keyword">this</span>.state.set(updatedState);
   },</pre></div></div>
@@ -817,10 +818,10 @@ my.FlotControls = Backbone.View.extend({
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  addSeries: <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(idx)</span> </span>{
+            <div class="content"><div class='highlight'><pre>  addSeries: <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">idx</span>) </span>{
     <span class="hljs-keyword">var</span> data = _.extend({
-      seriesIndex: idx,
-      seriesName: <span class="hljs-built_in">String</span>.fromCharCode(idx + <span class="hljs-number">64</span> + <span class="hljs-number">1</span>)
+      <span class="hljs-attr">seriesIndex</span>: idx,
+      <span class="hljs-attr">seriesName</span>: <span class="hljs-built_in">String</span>.fromCharCode(idx + <span class="hljs-number">64</span> + <span class="hljs-number">1</span>)
     }, <span class="hljs-keyword">this</span>.model.toTemplateJSON());
 
     <span class="hljs-keyword">var</span> htmls = Mustache.render(<span class="hljs-keyword">this</span>.templateSeriesEditor, data);
@@ -828,7 +829,7 @@ my.FlotControls = Backbone.View.extend({
     <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>;
   },
 
-  _onAddSeries: <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(e)</span> </span>{
+  <span class="hljs-attr">_onAddSeries</span>: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">e</span>) </span>{
     e.preventDefault();
     <span class="hljs-keyword">this</span>.addSeries(<span class="hljs-keyword">this</span>.state.get(<span class="hljs-string">'series'</span>).length);
   },</pre></div></div>
@@ -847,7 +848,7 @@ my.FlotControls = Backbone.View.extend({
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  removeSeries: <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(e)</span> </span>{
+            <div class="content"><div class='highlight'><pre>  removeSeries: <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">e</span>) </span>{
     e.preventDefault();
     <span class="hljs-keyword">var</span> $el = $(e.target);
     $el.parent().parent().remove();

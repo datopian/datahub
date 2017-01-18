@@ -132,8 +132,8 @@
 <span class="hljs-keyword">this</span>.recline.Backend = <span class="hljs-keyword">this</span>.recline.Backend || {};
 <span class="hljs-keyword">this</span>.recline.Backend.Memory = <span class="hljs-keyword">this</span>.recline.Backend.Memory || {};
 
-(<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(my)</span> </span>{
-<span class="hljs-pi">  "use strict"</span>;
+(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">my</span>) </span>{
+<span class="hljs-meta">  "use strict"</span>;
   my.__type__ = <span class="hljs-string">'memory'</span>;</pre></div></div>
             
         </li>
@@ -172,7 +172,7 @@ from the data.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  my.Store = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(records, fields)</span> </span>{
+            <div class="content"><div class='highlight'><pre>  my.Store = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">records, fields</span>) </span>{
     <span class="hljs-keyword">var</span> self = <span class="hljs-keyword">this</span>;
     <span class="hljs-keyword">this</span>.records = records;</pre></div></div>
             
@@ -194,28 +194,28 @@ from the data.</p>
       <span class="hljs-keyword">this</span>.fields = fields;
     } <span class="hljs-keyword">else</span> {
       <span class="hljs-keyword">if</span> (records) {
-        <span class="hljs-keyword">this</span>.fields = _.map(records[<span class="hljs-number">0</span>], <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(value, key)</span> </span>{
-          <span class="hljs-keyword">return</span> {id: key, type: <span class="hljs-string">'string'</span>};
+        <span class="hljs-keyword">this</span>.fields = _.map(records[<span class="hljs-number">0</span>], <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">value, key</span>) </span>{
+          <span class="hljs-keyword">return</span> {<span class="hljs-attr">id</span>: key, <span class="hljs-attr">type</span>: <span class="hljs-string">'string'</span>};
         });
       }
     }
 
-    <span class="hljs-keyword">this</span>.update = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(doc)</span> </span>{
-      _.each(self.records, <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(internalDoc, idx)</span> </span>{
+    <span class="hljs-keyword">this</span>.update = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">doc</span>) </span>{
+      _.each(self.records, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">internalDoc, idx</span>) </span>{
         <span class="hljs-keyword">if</span>(doc.id === internalDoc.id) {
           self.records[idx] = doc;
         }
       });
     };
 
-    <span class="hljs-keyword">this</span>.remove = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(doc)</span> </span>{
-      <span class="hljs-keyword">var</span> newdocs = _.reject(self.records, <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(internalDoc)</span> </span>{
+    <span class="hljs-keyword">this</span>.remove = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">doc</span>) </span>{
+      <span class="hljs-keyword">var</span> newdocs = _.reject(self.records, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">internalDoc</span>) </span>{
         <span class="hljs-keyword">return</span> (doc.id === internalDoc.id);
       });
       <span class="hljs-keyword">this</span>.records = newdocs;
     };
 
-    <span class="hljs-keyword">this</span>.save = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(changes, dataset)</span> </span>{
+    <span class="hljs-keyword">this</span>.save = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">changes, dataset</span>) </span>{
       <span class="hljs-keyword">var</span> self = <span class="hljs-keyword">this</span>;
       <span class="hljs-keyword">var</span> dfd = <span class="hljs-keyword">new</span> Deferred();</pre></div></div>
             
@@ -232,17 +232,17 @@ from the data.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>      _.each(changes.updates, <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(record)</span> </span>{
+            <div class="content"><div class='highlight'><pre>      _.each(changes.updates, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">record</span>) </span>{
         self.update(record);
       });
-      _.each(changes.deletes, <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(record)</span> </span>{
+      _.each(changes.deletes, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">record</span>) </span>{
         self.remove(record);
       });
       dfd.resolve();
       <span class="hljs-keyword">return</span> dfd.promise();
     },
 
-    <span class="hljs-keyword">this</span>.query = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(queryObj)</span> </span>{
+    <span class="hljs-keyword">this</span>.query = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">queryObj</span>) </span>{
       <span class="hljs-keyword">var</span> dfd = <span class="hljs-keyword">new</span> Deferred();
       <span class="hljs-keyword">var</span> numRows = queryObj.size || <span class="hljs-keyword">this</span>.records.length;
       <span class="hljs-keyword">var</span> start = queryObj.from || <span class="hljs-number">0</span>;
@@ -265,9 +265,9 @@ What’s wrong is we sort on the <em>last</em> entry in the sort list if there a
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>      _.each(queryObj.sort, <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(sortObj)</span> </span>{
+            <div class="content"><div class='highlight'><pre>      _.each(queryObj.sort, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">sortObj</span>) </span>{
         <span class="hljs-keyword">var</span> fieldName = sortObj.field;
-        results = _.sortBy(results, <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(doc)</span> </span>{
+        results = _.sortBy(results, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">doc</span>) </span>{
           <span class="hljs-keyword">var</span> _out = doc[fieldName];
           <span class="hljs-keyword">return</span> _out;
         });
@@ -277,9 +277,9 @@ What’s wrong is we sort on the <em>last</em> entry in the sort list if there a
       });
       <span class="hljs-keyword">var</span> facets = <span class="hljs-keyword">this</span>.computeFacets(results, queryObj);
       <span class="hljs-keyword">var</span> out = {
-        total: results.length,
-        hits: results.slice(start, start+numRows),
-        facets: facets
+        <span class="hljs-attr">total</span>: results.length,
+        <span class="hljs-attr">hits</span>: results.slice(start, start+numRows),
+        <span class="hljs-attr">facets</span>: facets
       };
       dfd.resolve(out);
       <span class="hljs-keyword">return</span> dfd.promise();
@@ -298,7 +298,7 @@ What’s wrong is we sort on the <em>last</em> entry in the sort list if there a
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>    <span class="hljs-keyword">this</span>._applyFilters = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(results, queryObj)</span> </span>{
+            <div class="content"><div class='highlight'><pre>    <span class="hljs-keyword">this</span>._applyFilters = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">results, queryObj</span>) </span>{
       <span class="hljs-keyword">var</span> filters = queryObj.filters;</pre></div></div>
             
         </li>
@@ -315,24 +315,24 @@ What’s wrong is we sort on the <em>last</em> entry in the sort list if there a
             </div>
             
             <div class="content"><div class='highlight'><pre>      <span class="hljs-keyword">var</span> filterFunctions = {
-        term         : term,
-        terms        : terms,
-        range        : range,
-        geo_distance : geo_distance
+        <span class="hljs-attr">term</span>         : term,
+        <span class="hljs-attr">terms</span>        : terms,
+        <span class="hljs-attr">range</span>        : range,
+        <span class="hljs-attr">geo_distance</span> : geo_distance
       };
       <span class="hljs-keyword">var</span> dataParsers = {
-        integer: <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(e)</span> </span>{ <span class="hljs-keyword">return</span> <span class="hljs-built_in">parseFloat</span>(e, <span class="hljs-number">10</span>); },
-        <span class="hljs-string">'float'</span>: <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(e)</span> </span>{ <span class="hljs-keyword">return</span> <span class="hljs-built_in">parseFloat</span>(e, <span class="hljs-number">10</span>); },
-        number: <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(e)</span> </span>{ <span class="hljs-keyword">return</span> <span class="hljs-built_in">parseFloat</span>(e, <span class="hljs-number">10</span>); },
-        string : <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(e)</span> </span>{ <span class="hljs-keyword">return</span> e.toString(); },
-        date   : <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(e)</span> </span>{ <span class="hljs-keyword">return</span> moment(e).valueOf(); },
-        datetime   : <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(e)</span> </span>{ <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> <span class="hljs-built_in">Date</span>(e).valueOf(); }
+        <span class="hljs-attr">integer</span>: <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">e</span>) </span>{ <span class="hljs-keyword">return</span> <span class="hljs-built_in">parseFloat</span>(e, <span class="hljs-number">10</span>); },
+        <span class="hljs-string">'float'</span>: <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">e</span>) </span>{ <span class="hljs-keyword">return</span> <span class="hljs-built_in">parseFloat</span>(e, <span class="hljs-number">10</span>); },
+        <span class="hljs-attr">number</span>: <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">e</span>) </span>{ <span class="hljs-keyword">return</span> <span class="hljs-built_in">parseFloat</span>(e, <span class="hljs-number">10</span>); },
+        <span class="hljs-attr">string</span> : <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">e</span>) </span>{ <span class="hljs-keyword">return</span> e.toString(); },
+        <span class="hljs-attr">date</span>   : <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">e</span>) </span>{ <span class="hljs-keyword">return</span> moment(e).valueOf(); },
+        <span class="hljs-attr">datetime</span>   : <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">e</span>) </span>{ <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> <span class="hljs-built_in">Date</span>(e).valueOf(); }
       };
       <span class="hljs-keyword">var</span> keyedFields = {};
-      _.each(self.fields, <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(field)</span> </span>{
+      _.each(self.fields, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">field</span>) </span>{
         keyedFields[field.id] = field;
       });
-      <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">getDataParser</span><span class="hljs-params">(filter)</span> </span>{
+      <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">getDataParser</span>(<span class="hljs-params">filter</span>) </span>{
         <span class="hljs-keyword">var</span> fieldType = keyedFields[filter.field].type || <span class="hljs-string">'string'</span>;
         <span class="hljs-keyword">return</span> dataParsers[fieldType];
       }</pre></div></div>
@@ -350,8 +350,8 @@ What’s wrong is we sort on the <em>last</em> entry in the sort list if there a
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>      <span class="hljs-keyword">return</span> _.filter(results, <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(record)</span> </span>{
-        <span class="hljs-keyword">var</span> passes = _.map(filters, <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(filter)</span> </span>{
+            <div class="content"><div class='highlight'><pre>      <span class="hljs-keyword">return</span> _.filter(results, <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">record</span>) </span>{
+        <span class="hljs-keyword">var</span> passes = _.map(filters, <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">filter</span>) </span>{
           <span class="hljs-keyword">return</span> filterFunctions[filter.type](record, filter);
         });</pre></div></div>
             
@@ -384,7 +384,7 @@ What’s wrong is we sort on the <em>last</em> entry in the sort list if there a
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>      <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">term</span><span class="hljs-params">(record, filter)</span> </span>{
+            <div class="content"><div class='highlight'><pre>      <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">term</span>(<span class="hljs-params">record, filter</span>) </span>{
         <span class="hljs-keyword">var</span> parse = getDataParser(filter);
         <span class="hljs-keyword">var</span> value = parse(record[filter.field]);
         <span class="hljs-keyword">var</span> term  = parse(filter.term);
@@ -392,7 +392,7 @@ What’s wrong is we sort on the <em>last</em> entry in the sort list if there a
         <span class="hljs-keyword">return</span> (value === term);
       }
 
-      <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">terms</span><span class="hljs-params">(record, filter)</span> </span>{
+      <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">terms</span>(<span class="hljs-params">record, filter</span>) </span>{
         <span class="hljs-keyword">var</span> parse = getDataParser(filter);
         <span class="hljs-keyword">var</span> value = parse(record[filter.field]);
         <span class="hljs-keyword">var</span> terms  = parse(filter.terms).split(<span class="hljs-string">","</span>);
@@ -400,12 +400,12 @@ What’s wrong is we sort on the <em>last</em> entry in the sort list if there a
         <span class="hljs-keyword">return</span> (_.indexOf(terms, value) &gt;= <span class="hljs-number">0</span>);
       }
 
-      <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">range</span><span class="hljs-params">(record, filter)</span> </span>{
+      <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">range</span>(<span class="hljs-params">record, filter</span>) </span>{
         <span class="hljs-keyword">var</span> fromnull = (_.isUndefined(filter.from) || filter.from === <span class="hljs-literal">null</span> || filter.from === <span class="hljs-string">''</span>);
         <span class="hljs-keyword">var</span> tonull = (_.isUndefined(filter.to) || filter.to === <span class="hljs-literal">null</span> || filter.to === <span class="hljs-string">''</span>);
         <span class="hljs-keyword">var</span> parse = getDataParser(filter);
         <span class="hljs-keyword">var</span> value = parse(record[filter.field]);
-        <span class="hljs-keyword">var</span> from = parse(fromnull ? <span class="hljs-string">''</span> : filter.from);
+        <span class="hljs-keyword">var</span> <span class="hljs-keyword">from</span> = parse(fromnull ? <span class="hljs-string">''</span> : filter.from);
         <span class="hljs-keyword">var</span> to  = parse(tonull ? <span class="hljs-string">''</span> : filter.to);</pre></div></div>
             
         </li>
@@ -425,10 +425,10 @@ note that for strings ‘’ &lt;= {any-character} e.g. ‘’ &lt;= ‘a’</p>
             <div class="content"><div class='highlight'><pre>        <span class="hljs-keyword">if</span> ((!fromnull || !tonull) &amp;&amp; value === <span class="hljs-string">''</span>) {
           <span class="hljs-keyword">return</span> <span class="hljs-literal">false</span>;
         }
-        <span class="hljs-keyword">return</span> ((fromnull || value &gt;= from) &amp;&amp; (tonull || value &lt;= to));
+        <span class="hljs-keyword">return</span> ((fromnull || value &gt;= <span class="hljs-keyword">from</span>) &amp;&amp; (tonull || value &lt;= to));
       }
 
-      <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">geo_distance</span><span class="hljs-params">()</span> </span>{</pre></div></div>
+      <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">geo_distance</span>(<span class="hljs-params"></span>) </span>{</pre></div></div>
             
         </li>
         
@@ -459,17 +459,17 @@ note that for strings ‘’ &lt;= {any-character} e.g. ‘’ &lt;= ‘a’</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>    <span class="hljs-keyword">this</span>._applyFreeTextQuery = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(results, queryObj)</span> </span>{
+            <div class="content"><div class='highlight'><pre>    <span class="hljs-keyword">this</span>._applyFreeTextQuery = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">results, queryObj</span>) </span>{
       <span class="hljs-keyword">if</span> (queryObj.q) {
         <span class="hljs-keyword">var</span> terms = queryObj.q.split(<span class="hljs-string">' '</span>);
-        <span class="hljs-keyword">var</span> patterns=_.map(terms, <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(term)</span> </span>{
+        <span class="hljs-keyword">var</span> patterns=_.map(terms, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">term</span>) </span>{
           <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> <span class="hljs-built_in">RegExp</span>(term.toLowerCase());
         });
-        results = _.filter(results, <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(rawdoc)</span> </span>{
+        results = _.filter(results, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">rawdoc</span>) </span>{
           <span class="hljs-keyword">var</span> matches = <span class="hljs-literal">true</span>;
-          _.each(patterns, <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(pattern)</span> </span>{
+          _.each(patterns, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">pattern</span>) </span>{
             <span class="hljs-keyword">var</span> foundmatch = <span class="hljs-literal">false</span>;
-            _.each(self.fields, <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(field)</span> </span>{
+            _.each(self.fields, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">field</span>) </span>{
               <span class="hljs-keyword">var</span> value = rawdoc[field.id];
               <span class="hljs-keyword">if</span> ((value !== <span class="hljs-literal">null</span>) &amp;&amp; (value !== <span class="hljs-literal">undefined</span>)) { 
                 value = value.toString();
@@ -544,12 +544,12 @@ if (!matches) return false;</p>
       <span class="hljs-keyword">return</span> results;
     };
 
-    <span class="hljs-keyword">this</span>.computeFacets = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(records, queryObj)</span> </span>{
+    <span class="hljs-keyword">this</span>.computeFacets = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">records, queryObj</span>) </span>{
       <span class="hljs-keyword">var</span> facetResults = {};
       <span class="hljs-keyword">if</span> (!queryObj.facets) {
         <span class="hljs-keyword">return</span> facetResults;
       }
-      _.each(queryObj.facets, <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(query, facetId)</span> </span>{</pre></div></div>
+      _.each(queryObj.facets, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">query, facetId</span>) </span>{</pre></div></div>
             
         </li>
         
@@ -564,7 +564,7 @@ if (!matches) return false;</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>        facetResults[facetId] = <span class="hljs-keyword">new</span> recline.Model.Facet({id: facetId}).toJSON();
+            <div class="content"><div class='highlight'><pre>        facetResults[facetId] = <span class="hljs-keyword">new</span> recline.Model.Facet({<span class="hljs-attr">id</span>: facetId}).toJSON();
         facetResults[facetId].termsall = {};
       });</pre></div></div>
             
@@ -581,8 +581,8 @@ if (!matches) return false;</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>      _.each(records, <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(doc)</span> </span>{
-        _.each(queryObj.facets, <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(query, facetId)</span> </span>{
+            <div class="content"><div class='highlight'><pre>      _.each(records, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">doc</span>) </span>{
+        _.each(queryObj.facets, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">query, facetId</span>) </span>{
           <span class="hljs-keyword">var</span> fieldId = query.terms.field;
           <span class="hljs-keyword">var</span> val = doc[fieldId];
           <span class="hljs-keyword">var</span> tmp = facetResults[facetId];
@@ -593,12 +593,12 @@ if (!matches) return false;</p>
           }
         });
       });
-      _.each(queryObj.facets, <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(query, facetId)</span> </span>{
+      _.each(queryObj.facets, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">query, facetId</span>) </span>{
         <span class="hljs-keyword">var</span> tmp = facetResults[facetId];
-        <span class="hljs-keyword">var</span> terms = _.map(tmp.termsall, <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(count, term)</span> </span>{
-          <span class="hljs-keyword">return</span> { term: term, count: count };
+        <span class="hljs-keyword">var</span> terms = _.map(tmp.termsall, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">count, term</span>) </span>{
+          <span class="hljs-keyword">return</span> { <span class="hljs-attr">term</span>: term, <span class="hljs-attr">count</span>: count };
         });
-        tmp.terms = _.sortBy(terms, <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(item)</span> </span>{</pre></div></div>
+        tmp.terms = _.sortBy(terms, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">item</span>) </span>{</pre></div></div>
             
         </li>
         

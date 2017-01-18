@@ -126,8 +126,8 @@
             <div class="content"><div class='highlight'><pre><span class="hljs-keyword">this</span>.recline = <span class="hljs-keyword">this</span>.recline || {};
 <span class="hljs-keyword">this</span>.recline.Model = <span class="hljs-keyword">this</span>.recline.Model || {};
 
-(<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(my)</span> </span>{
-<span class="hljs-pi">  "use strict"</span>;</pre></div></div>
+(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">my</span>) </span>{
+<span class="hljs-meta">  "use strict"</span>;</pre></div></div>
             
         </li>
         
@@ -158,7 +158,7 @@
             </div>
             
             <div class="content"><div class='highlight'><pre>my.Dataset = Backbone.Model.extend({
-  constructor: <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">Dataset</span><span class="hljs-params">()</span> </span>{
+  <span class="hljs-attr">constructor</span>: <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">Dataset</span>(<span class="hljs-params"></span>) </span>{
     Backbone.Model.prototype.constructor.apply(<span class="hljs-keyword">this</span>, <span class="hljs-built_in">arguments</span>);
   },</pre></div></div>
             
@@ -175,7 +175,7 @@
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  initialize: <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> </span>{
+            <div class="content"><div class='highlight'><pre>  initialize: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
     <span class="hljs-keyword">var</span> self = <span class="hljs-keyword">this</span>;
     _.bindAll(<span class="hljs-keyword">this</span>, <span class="hljs-string">'query'</span>);
     <span class="hljs-keyword">this</span>.backend = <span class="hljs-literal">null</span>;
@@ -189,14 +189,14 @@
     <span class="hljs-keyword">this</span>.fields = <span class="hljs-keyword">new</span> my.FieldList();
     <span class="hljs-keyword">this</span>.records = <span class="hljs-keyword">new</span> my.RecordList();
     <span class="hljs-keyword">this</span>._changes = {
-      deletes: [],
-      updates: [],
-      creates: []
+      <span class="hljs-attr">deletes</span>: [],
+      <span class="hljs-attr">updates</span>: [],
+      <span class="hljs-attr">creates</span>: []
     };
     <span class="hljs-keyword">this</span>.facets = <span class="hljs-keyword">new</span> my.FacetList();
     <span class="hljs-keyword">this</span>.recordCount = <span class="hljs-literal">null</span>;
     <span class="hljs-keyword">this</span>.queryState = <span class="hljs-keyword">new</span> my.Query();
-    <span class="hljs-keyword">this</span>.queryState.bind(<span class="hljs-string">'change facet:add'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">()</span> </span>{
+    <span class="hljs-keyword">this</span>.queryState.bind(<span class="hljs-string">'change facet:add'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params"></span>) </span>{
       self.query(); <span class="hljs-comment">// We want to call query() without any arguments.</span>
     });</pre></div></div>
             
@@ -237,7 +237,7 @@ tells us to use memory store</p>
     }
   },
 
-  sync: <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(method, model, options)</span> </span>{
+  <span class="hljs-attr">sync</span>: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">method, model, options</span>) </span>{
     <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>.backend.sync(method, model, options);
   },</pre></div></div>
             
@@ -255,14 +255,14 @@ tells us to use memory store</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  fetch: <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> </span>{
+            <div class="content"><div class='highlight'><pre>  fetch: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
     <span class="hljs-keyword">var</span> self = <span class="hljs-keyword">this</span>;
     <span class="hljs-keyword">var</span> dfd = <span class="hljs-keyword">new</span> Deferred();
 
     <span class="hljs-keyword">if</span> (<span class="hljs-keyword">this</span>.backend !== recline.Backend.Memory) {
       <span class="hljs-keyword">this</span>.backend.fetch(<span class="hljs-keyword">this</span>.toJSON())
         .done(handleResults)
-        .fail(<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(args)</span> </span>{
+        .fail(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">args</span>) </span>{
           dfd.reject(args);
         });
     } <span class="hljs-keyword">else</span> {</pre></div></div>
@@ -281,13 +281,13 @@ tells us to use memory store</p>
             </div>
             
             <div class="content"><div class='highlight'><pre>      handleResults({
-        records: <span class="hljs-keyword">this</span>.get(<span class="hljs-string">'records'</span>),
-        fields: <span class="hljs-keyword">this</span>.get(<span class="hljs-string">'fields'</span>),
-        useMemoryStore: <span class="hljs-literal">true</span>
+        <span class="hljs-attr">records</span>: <span class="hljs-keyword">this</span>.get(<span class="hljs-string">'records'</span>),
+        <span class="hljs-attr">fields</span>: <span class="hljs-keyword">this</span>.get(<span class="hljs-string">'fields'</span>),
+        <span class="hljs-attr">useMemoryStore</span>: <span class="hljs-literal">true</span>
       });
     }
 
-    <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">handleResults</span><span class="hljs-params">(results)</span> </span>{</pre></div></div>
+    <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">handleResults</span>(<span class="hljs-params">results</span>) </span>{</pre></div></div>
             
         </li>
         
@@ -315,10 +315,10 @@ use that field info over anything we get back by parsing the data
       self.set(results.metadata);
       self.fields.reset(out.fields);
       self.query()
-        .done(<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> </span>{
+        .done(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
           dfd.resolve(self);
         })
-        .fail(<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(args)</span> </span>{
+        .fail(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">args</span>) </span>{
           dfd.reject(args);
         });
     }
@@ -342,7 +342,7 @@ fields = [ {id: a}, {id: b}, {id: c}], records = [ {a: 1}, {b: 2}, {c: 3}]</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  _normalizeRecordsAndFields: <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(records, fields)</span> </span>{</pre></div></div>
+            <div class="content"><div class='highlight'><pre>  _normalizeRecordsAndFields: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">records, fields</span>) </span>{</pre></div></div>
             
         </li>
         
@@ -376,8 +376,8 @@ fields = [ {id: a}, {id: b}, {id: c}], records = [ {a: 1}, {b: 2}, {c: 3}]</p>
         fields = records[<span class="hljs-number">0</span>];
         records = records.slice(<span class="hljs-number">1</span>);
       } <span class="hljs-keyword">else</span> {
-        fields = _.map(_.keys(records[<span class="hljs-number">0</span>]), <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(key)</span> </span>{
-          <span class="hljs-keyword">return</span> {id: key};
+        fields = _.map(_.keys(records[<span class="hljs-number">0</span>]), <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">key</span>) </span>{
+          <span class="hljs-keyword">return</span> {<span class="hljs-attr">id</span>: key};
         });
       }
     }</pre></div></div>
@@ -412,7 +412,7 @@ unique.</p>
             </div>
             
             <div class="content"><div class='highlight'><pre>      <span class="hljs-keyword">var</span> seen = {};
-      fields = _.map(fields, <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(field, index)</span> </span>{
+      fields = _.map(fields, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">field, index</span>) </span>{
         <span class="hljs-keyword">if</span> (field === <span class="hljs-literal">null</span>) {
           field = <span class="hljs-string">''</span>;
         } <span class="hljs-keyword">else</span> {
@@ -459,7 +459,7 @@ return { id: fieldId, label: field || fieldId }</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>        <span class="hljs-keyword">return</span> { id: fieldId };
+            <div class="content"><div class='highlight'><pre>        <span class="hljs-keyword">return</span> { <span class="hljs-attr">id</span>: fieldId };
       });
     }</pre></div></div>
             
@@ -478,21 +478,21 @@ NB: this requires you to have fields to match arrays</p>
             </div>
             
             <div class="content"><div class='highlight'><pre>    <span class="hljs-keyword">if</span> (records &amp;&amp; records.length &gt; <span class="hljs-number">0</span> &amp;&amp; records[<span class="hljs-number">0</span>] <span class="hljs-keyword">instanceof</span> <span class="hljs-built_in">Array</span>) {
-      records = _.map(records, <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(doc)</span> </span>{
+      records = _.map(records, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">doc</span>) </span>{
         <span class="hljs-keyword">var</span> tmp = {};
-        _.each(fields, <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(field, idx)</span> </span>{
+        _.each(fields, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">field, idx</span>) </span>{
           tmp[field.id] = doc[idx];
         });
         <span class="hljs-keyword">return</span> tmp;
       });
     }
     <span class="hljs-keyword">return</span> {
-      fields: fields,
-      records: records
+      <span class="hljs-attr">fields</span>: fields,
+      <span class="hljs-attr">records</span>: records
     };
   },
 
-  save: <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> </span>{
+  <span class="hljs-attr">save</span>: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
     <span class="hljs-keyword">var</span> self = <span class="hljs-keyword">this</span>;</pre></div></div>
             
         </li>
@@ -529,7 +529,7 @@ also returned.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  query: <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(queryObj)</span> </span>{
+            <div class="content"><div class='highlight'><pre>  query: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">queryObj</span>) </span>{
     <span class="hljs-keyword">var</span> self = <span class="hljs-keyword">this</span>;
     <span class="hljs-keyword">var</span> dfd = <span class="hljs-keyword">new</span> Deferred();
     <span class="hljs-keyword">this</span>.trigger(<span class="hljs-string">'query:start'</span>);
@@ -539,40 +539,40 @@ also returned.</p>
       <span class="hljs-keyword">if</span> (queryObj <span class="hljs-keyword">instanceof</span> my.Query) {
         attributes = queryObj.toJSON();
       }
-      <span class="hljs-keyword">this</span>.queryState.set(attributes, {silent: <span class="hljs-literal">true</span>});
+      <span class="hljs-keyword">this</span>.queryState.set(attributes, {<span class="hljs-attr">silent</span>: <span class="hljs-literal">true</span>});
     }
     <span class="hljs-keyword">var</span> actualQuery = <span class="hljs-keyword">this</span>.queryState.toJSON();
 
     <span class="hljs-keyword">this</span>._store.query(actualQuery, <span class="hljs-keyword">this</span>.toJSON())
-      .done(<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(queryResult)</span> </span>{
+      .done(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">queryResult</span>) </span>{
         self._handleResult(queryResult);
         self.trigger(<span class="hljs-string">'query:done'</span>);
         dfd.resolve(self.records);
       })
-      .fail(<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(args)</span> </span>{
+      .fail(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">args</span>) </span>{
         self.trigger(<span class="hljs-string">'query:fail'</span>, args);
         dfd.reject(args);
       });
     <span class="hljs-keyword">return</span> dfd.promise();
   },
 
-  _handleQueryResult: <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(queryResult)</span> </span>{
+  <span class="hljs-attr">_handleQueryResult</span>: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">queryResult</span>) </span>{
     <span class="hljs-keyword">var</span> self = <span class="hljs-keyword">this</span>;
     self.recordCount = queryResult.total;
-    <span class="hljs-keyword">var</span> docs = _.map(queryResult.hits, <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(hit)</span> </span>{
+    <span class="hljs-keyword">var</span> docs = _.map(queryResult.hits, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">hit</span>) </span>{
       <span class="hljs-keyword">var</span> _doc = <span class="hljs-keyword">new</span> my.Record(hit);
       _doc.fields = self.fields;
-      _doc.bind(<span class="hljs-string">'change'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(doc)</span> </span>{
+      _doc.bind(<span class="hljs-string">'change'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">doc</span>) </span>{
         self._changes.updates.push(doc.toJSON());
       });
-      _doc.bind(<span class="hljs-string">'destroy'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(doc)</span> </span>{
+      _doc.bind(<span class="hljs-string">'destroy'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">doc</span>) </span>{
         self._changes.deletes.push(doc.toJSON());
       });
       <span class="hljs-keyword">return</span> _doc;
     });
     self.records.reset(docs);
     <span class="hljs-keyword">if</span> (queryResult.facets) {
-      <span class="hljs-keyword">var</span> facets = _.map(queryResult.facets, <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(facetResult, facetId)</span> </span>{
+      <span class="hljs-keyword">var</span> facets = _.map(queryResult.facets, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">facetResult, facetId</span>) </span>{
         facetResult.id = facetId;
         <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> my.Facet(facetResult);
       });
@@ -580,7 +580,7 @@ also returned.</p>
     }
   },
 
-  toTemplateJSON: <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> </span>{
+  <span class="hljs-attr">toTemplateJSON</span>: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
     <span class="hljs-keyword">var</span> data = <span class="hljs-keyword">this</span>.toJSON();
     data.recordCount = <span class="hljs-keyword">this</span>.recordCount;
     data.fields = <span class="hljs-keyword">this</span>.fields.toJSON();
@@ -602,17 +602,17 @@ also returned.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  getFieldsSummary: <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> </span>{
+            <div class="content"><div class='highlight'><pre>  getFieldsSummary: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
     <span class="hljs-keyword">var</span> self = <span class="hljs-keyword">this</span>;
     <span class="hljs-keyword">var</span> query = <span class="hljs-keyword">new</span> my.Query();
-    query.set({size: <span class="hljs-number">0</span>});
-    <span class="hljs-keyword">this</span>.fields.each(<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(field)</span> </span>{
+    query.set({<span class="hljs-attr">size</span>: <span class="hljs-number">0</span>});
+    <span class="hljs-keyword">this</span>.fields.each(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">field</span>) </span>{
       query.addFacet(field.id);
     });
     <span class="hljs-keyword">var</span> dfd = <span class="hljs-keyword">new</span> Deferred();
-    <span class="hljs-keyword">this</span>._store.query(query.toJSON(), <span class="hljs-keyword">this</span>.toJSON()).done(<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(queryResult)</span> </span>{
+    <span class="hljs-keyword">this</span>._store.query(query.toJSON(), <span class="hljs-keyword">this</span>.toJSON()).done(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">queryResult</span>) </span>{
       <span class="hljs-keyword">if</span> (queryResult.facets) {
-        _.each(queryResult.facets, <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(facetResult, facetId)</span> </span>{
+        _.each(queryResult.facets, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">facetResult, facetId</span>) </span>{
           facetResult.id = facetId;
           <span class="hljs-keyword">var</span> facet = <span class="hljs-keyword">new</span> my.Facet(facetResult);</pre></div></div>
             
@@ -650,7 +650,7 @@ also returned.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  recordSummary: <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(record)</span> </span>{
+            <div class="content"><div class='highlight'><pre>  recordSummary: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">record</span>) </span>{
     <span class="hljs-keyword">return</span> record.summary();
   },</pre></div></div>
             
@@ -668,10 +668,10 @@ also returned.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  _backendFromString: <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(backendString)</span> </span>{
+            <div class="content"><div class='highlight'><pre>  _backendFromString: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">backendString</span>) </span>{
     <span class="hljs-keyword">var</span> backend = <span class="hljs-literal">null</span>;
     <span class="hljs-keyword">if</span> (recline &amp;&amp; recline.Backend) {
-      _.each(_.keys(recline.Backend), <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(name)</span> </span>{
+      _.each(_.keys(recline.Backend), <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">name</span>) </span>{
         <span class="hljs-keyword">if</span> (name.toLowerCase() === backendString.toLowerCase()) {
           backend = recline.Backend[name];
         }
@@ -696,7 +696,7 @@ also returned.</p>
             </div>
             
             <div class="content"><div class='highlight'><pre>my.Record = Backbone.Model.extend({
-  constructor: <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">Record</span><span class="hljs-params">()</span> </span>{
+  <span class="hljs-attr">constructor</span>: <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">Record</span>(<span class="hljs-params"></span>) </span>{
     Backbone.Model.prototype.constructor.apply(<span class="hljs-keyword">this</span>, <span class="hljs-built_in">arguments</span>);
   },</pre></div></div>
             
@@ -717,7 +717,7 @@ Dataset e.g. in query method</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  initialize: <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> </span>{
+            <div class="content"><div class='highlight'><pre>  initialize: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
     _.bindAll(<span class="hljs-keyword">this</span>, <span class="hljs-string">'getFieldValue'</span>);
   },</pre></div></div>
             
@@ -737,7 +737,7 @@ for this record.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  getFieldValue: <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(field)</span> </span>{
+            <div class="content"><div class='highlight'><pre>  getFieldValue: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">field</span>) </span>{
     <span class="hljs-keyword">var</span> val = <span class="hljs-keyword">this</span>.getFieldValueUnrendered(field);
     <span class="hljs-keyword">if</span> (field &amp;&amp; !_.isUndefined(field.renderer)) {
       val = field.renderer(val, field, <span class="hljs-keyword">this</span>.toJSON());
@@ -761,7 +761,7 @@ for this record.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  getFieldValueUnrendered: <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(field)</span> </span>{
+            <div class="content"><div class='highlight'><pre>  getFieldValueUnrendered: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">field</span>) </span>{
     <span class="hljs-keyword">if</span> (!field) {
       <span class="hljs-keyword">return</span> <span class="hljs-string">''</span>;
     }
@@ -786,10 +786,10 @@ for this record.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  summary: <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(record)</span> </span>{
+            <div class="content"><div class='highlight'><pre>  summary: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">record</span>) </span>{
     <span class="hljs-keyword">var</span> self = <span class="hljs-keyword">this</span>;
     <span class="hljs-keyword">var</span> html = <span class="hljs-string">'&lt;div class="recline-record-summary"&gt;'</span>;
-    <span class="hljs-keyword">this</span>.fields.each(<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(field)</span> </span>{ 
+    <span class="hljs-keyword">this</span>.fields.each(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">field</span>) </span>{ 
       <span class="hljs-keyword">if</span> (field.id != <span class="hljs-string">'id'</span>) {
         html += <span class="hljs-string">'&lt;div class="'</span> + field.id + <span class="hljs-string">'"&gt;&lt;strong&gt;'</span> + field.get(<span class="hljs-string">'label'</span>) + <span class="hljs-string">'&lt;/strong&gt;: '</span> + self.getFieldValue(field) + <span class="hljs-string">'&lt;/div&gt;'</span>;
       }
@@ -814,9 +814,9 @@ WARNING: these will not persist <em>unless</em> you call save on Dataset</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  fetch: <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> </span>{},
-  save: <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> </span>{},
-  destroy: <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> </span>{ <span class="hljs-keyword">this</span>.trigger(<span class="hljs-string">'destroy'</span>, <span class="hljs-keyword">this</span>); }
+            <div class="content"><div class='highlight'><pre>  fetch: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{},
+  <span class="hljs-attr">save</span>: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{},
+  <span class="hljs-attr">destroy</span>: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{ <span class="hljs-keyword">this</span>.trigger(<span class="hljs-string">'destroy'</span>, <span class="hljs-keyword">this</span>); }
 });</pre></div></div>
             
         </li>
@@ -833,10 +833,10 @@ WARNING: these will not persist <em>unless</em> you call save on Dataset</p>
             </div>
             
             <div class="content"><div class='highlight'><pre>my.RecordList = Backbone.Collection.extend({
-  constructor: <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">RecordList</span><span class="hljs-params">()</span> </span>{
+  <span class="hljs-attr">constructor</span>: <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">RecordList</span>(<span class="hljs-params"></span>) </span>{
     Backbone.Collection.prototype.constructor.apply(<span class="hljs-keyword">this</span>, <span class="hljs-built_in">arguments</span>);
   },
-  model: my.Record
+  <span class="hljs-attr">model</span>: my.Record
 });</pre></div></div>
             
         </li>
@@ -853,7 +853,7 @@ WARNING: these will not persist <em>unless</em> you call save on Dataset</p>
             </div>
             
             <div class="content"><div class='highlight'><pre>my.Field = Backbone.Model.extend({
-  constructor: <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">Field</span><span class="hljs-params">()</span> </span>{
+  <span class="hljs-attr">constructor</span>: <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">Field</span>(<span class="hljs-params"></span>) </span>{
     Backbone.Model.prototype.constructor.apply(<span class="hljs-keyword">this</span>, <span class="hljs-built_in">arguments</span>);
   },</pre></div></div>
             
@@ -871,10 +871,10 @@ WARNING: these will not persist <em>unless</em> you call save on Dataset</p>
             </div>
             
             <div class="content"><div class='highlight'><pre>  defaults: {
-    label: <span class="hljs-literal">null</span>,
-    type: <span class="hljs-string">'string'</span>,
-    format: <span class="hljs-literal">null</span>,
-    is_derived: <span class="hljs-literal">false</span>
+    <span class="hljs-attr">label</span>: <span class="hljs-literal">null</span>,
+    <span class="hljs-attr">type</span>: <span class="hljs-string">'string'</span>,
+    <span class="hljs-attr">format</span>: <span class="hljs-literal">null</span>,
+    <span class="hljs-attr">is_derived</span>: <span class="hljs-literal">false</span>
   },</pre></div></div>
             
         </li>
@@ -892,7 +892,7 @@ WARNING: these will not persist <em>unless</em> you call save on Dataset</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  initialize: <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(data, options)</span> </span>{</pre></div></div>
+            <div class="content"><div class='highlight'><pre>  initialize: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">data, options</span>) </span>{</pre></div></div>
             
         </li>
         
@@ -911,7 +911,7 @@ WARNING: these will not persist <em>unless</em> you call save on Dataset</p>
       <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> <span class="hljs-built_in">Error</span>(<span class="hljs-string">'Looks like you did not pass a proper hash with id to Field constructor'</span>);
     }
     <span class="hljs-keyword">if</span> (<span class="hljs-keyword">this</span>.attributes.label === <span class="hljs-literal">null</span>) {
-      <span class="hljs-keyword">this</span>.set({label: <span class="hljs-keyword">this</span>.id});
+      <span class="hljs-keyword">this</span>.set({<span class="hljs-attr">label</span>: <span class="hljs-keyword">this</span>.id});
     }
     <span class="hljs-keyword">if</span> (<span class="hljs-keyword">this</span>.attributes.type.toLowerCase() <span class="hljs-keyword">in</span> <span class="hljs-keyword">this</span>._typeMap) {
       <span class="hljs-keyword">this</span>.attributes.type = <span class="hljs-keyword">this</span>._typeMap[<span class="hljs-keyword">this</span>.attributes.type.toLowerCase()];
@@ -925,7 +925,7 @@ WARNING: these will not persist <em>unless</em> you call save on Dataset</p>
     }
     <span class="hljs-keyword">this</span>.facets = <span class="hljs-keyword">new</span> my.FacetList();
   },
-  _typeMap: {
+  <span class="hljs-attr">_typeMap</span>: {
     <span class="hljs-string">'text'</span>: <span class="hljs-string">'string'</span>,
     <span class="hljs-string">'double'</span>: <span class="hljs-string">'number'</span>,
     <span class="hljs-string">'float'</span>: <span class="hljs-string">'number'</span>,
@@ -936,21 +936,21 @@ WARNING: these will not persist <em>unless</em> you call save on Dataset</p>
     <span class="hljs-string">'timestamp'</span>: <span class="hljs-string">'date-time'</span>,
     <span class="hljs-string">'json'</span>: <span class="hljs-string">'object'</span>
   },
-  defaultRenderers: {
-    object: <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(val, field, doc)</span> </span>{
+  <span class="hljs-attr">defaultRenderers</span>: {
+    <span class="hljs-attr">object</span>: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">val, field, doc</span>) </span>{
       <span class="hljs-keyword">return</span> <span class="hljs-built_in">JSON</span>.stringify(val);
     },
-    geo_point: <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(val, field, doc)</span> </span>{
+    <span class="hljs-attr">geo_point</span>: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">val, field, doc</span>) </span>{
       <span class="hljs-keyword">return</span> <span class="hljs-built_in">JSON</span>.stringify(val);
     },
-    <span class="hljs-string">'number'</span>: <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(val, field, doc)</span> </span>{
+    <span class="hljs-string">'number'</span>: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">val, field, doc</span>) </span>{
       <span class="hljs-keyword">var</span> format = field.get(<span class="hljs-string">'format'</span>); 
       <span class="hljs-keyword">if</span> (format === <span class="hljs-string">'percentage'</span>) {
         <span class="hljs-keyword">return</span> val + <span class="hljs-string">'%'</span>;
       }
       <span class="hljs-keyword">return</span> val;
     },
-    <span class="hljs-string">'string'</span>: <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(val, field, doc)</span> </span>{
+    <span class="hljs-string">'string'</span>: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">val, field, doc</span>) </span>{
       <span class="hljs-keyword">var</span> format = field.get(<span class="hljs-string">'format'</span>);
       <span class="hljs-keyword">if</span> (format === <span class="hljs-string">'markdown'</span>) {
         <span class="hljs-keyword">if</span> (<span class="hljs-keyword">typeof</span> Showdown !== <span class="hljs-string">'undefined'</span>) {
@@ -988,10 +988,10 @@ here that are not actually strings</p>
 });
 
 my.FieldList = Backbone.Collection.extend({
-  constructor: <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">FieldList</span><span class="hljs-params">()</span> </span>{
+  <span class="hljs-attr">constructor</span>: <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">FieldList</span>(<span class="hljs-params"></span>) </span>{
     Backbone.Collection.prototype.constructor.apply(<span class="hljs-keyword">this</span>, <span class="hljs-built_in">arguments</span>);
   },
-  model: my.Field
+  <span class="hljs-attr">model</span>: my.Field
 });</pre></div></div>
             
         </li>
@@ -1008,21 +1008,21 @@ my.FieldList = Backbone.Collection.extend({
             </div>
             
             <div class="content"><div class='highlight'><pre>my.Query = Backbone.Model.extend({
-  constructor: <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">Query</span><span class="hljs-params">()</span> </span>{
+  <span class="hljs-attr">constructor</span>: <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">Query</span>(<span class="hljs-params"></span>) </span>{
     Backbone.Model.prototype.constructor.apply(<span class="hljs-keyword">this</span>, <span class="hljs-built_in">arguments</span>);
   },
-  defaults: <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> </span>{
+  <span class="hljs-attr">defaults</span>: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
     <span class="hljs-keyword">return</span> {
-      size: <span class="hljs-number">100</span>,
-      from: <span class="hljs-number">0</span>,
-      q: <span class="hljs-string">''</span>,
-      facets: {},
-      filters: []
+      <span class="hljs-attr">size</span>: <span class="hljs-number">100</span>,
+      <span class="hljs-attr">from</span>: <span class="hljs-number">0</span>,
+      <span class="hljs-attr">q</span>: <span class="hljs-string">''</span>,
+      <span class="hljs-attr">facets</span>: {},
+      <span class="hljs-attr">filters</span>: []
     };
   },
-  _filterTemplates: {
-    term: {
-      type: <span class="hljs-string">'term'</span>,</pre></div></div>
+  <span class="hljs-attr">_filterTemplates</span>: {
+    <span class="hljs-attr">term</span>: {
+      <span class="hljs-attr">type</span>: <span class="hljs-string">'term'</span>,</pre></div></div>
             
         </li>
         
@@ -1038,20 +1038,20 @@ my.FieldList = Backbone.Collection.extend({
             </div>
             
             <div class="content"><div class='highlight'><pre>      field: <span class="hljs-string">''</span>,
-      term: <span class="hljs-string">''</span>
+      <span class="hljs-attr">term</span>: <span class="hljs-string">''</span>
     },
-    range: {
-      type: <span class="hljs-string">'range'</span>,
-      from: <span class="hljs-string">''</span>,
-      to: <span class="hljs-string">''</span>
+    <span class="hljs-attr">range</span>: {
+      <span class="hljs-attr">type</span>: <span class="hljs-string">'range'</span>,
+      <span class="hljs-attr">from</span>: <span class="hljs-string">''</span>,
+      <span class="hljs-attr">to</span>: <span class="hljs-string">''</span>
     },
-    geo_distance: {
-      type: <span class="hljs-string">'geo_distance'</span>,
-      distance: <span class="hljs-number">10</span>,
-      unit: <span class="hljs-string">'km'</span>,
-      point: {
-        lon: <span class="hljs-number">0</span>,
-        lat: <span class="hljs-number">0</span>
+    <span class="hljs-attr">geo_distance</span>: {
+      <span class="hljs-attr">type</span>: <span class="hljs-string">'geo_distance'</span>,
+      <span class="hljs-attr">distance</span>: <span class="hljs-number">10</span>,
+      <span class="hljs-attr">unit</span>: <span class="hljs-string">'km'</span>,
+      <span class="hljs-attr">point</span>: {
+        <span class="hljs-attr">lon</span>: <span class="hljs-number">0</span>,
+        <span class="hljs-attr">lat</span>: <span class="hljs-number">0</span>
       }
     }
   },</pre></div></div>
@@ -1071,7 +1071,7 @@ my.FieldList = Backbone.Collection.extend({
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  addFilter: <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(filter)</span> </span>{</pre></div></div>
+            <div class="content"><div class='highlight'><pre>  addFilter: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">filter</span>) </span>{</pre></div></div>
             
         </li>
         
@@ -1108,7 +1108,7 @@ my.FieldList = Backbone.Collection.extend({
     filters.push(ourfilter);
     <span class="hljs-keyword">this</span>.trigger(<span class="hljs-string">'change:filters:new-blank'</span>);
   },
-  replaceFilter: <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(filter)</span> </span>{</pre></div></div>
+  <span class="hljs-attr">replaceFilter</span>: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">filter</span>) </span>{</pre></div></div>
             
         </li>
         
@@ -1124,8 +1124,8 @@ my.FieldList = Backbone.Collection.extend({
             </div>
             
             <div class="content"><div class='highlight'><pre>    <span class="hljs-keyword">var</span> filters = <span class="hljs-keyword">this</span>.get(<span class="hljs-string">'filters'</span>);
-    <span class="hljs-keyword">var</span> idx = -<span class="hljs-number">1</span>;
-    _.each(<span class="hljs-keyword">this</span>.get(<span class="hljs-string">'filters'</span>), <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(f, key, list)</span> </span>{
+    <span class="hljs-keyword">var</span> idx = <span class="hljs-number">-1</span>;
+    _.each(<span class="hljs-keyword">this</span>.get(<span class="hljs-string">'filters'</span>), <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">f, key, list</span>) </span>{
       <span class="hljs-keyword">if</span> (filter.field == f.field) {
         idx = key;
       }
@@ -1147,11 +1147,11 @@ one for add</p>
             
             <div class="content"><div class='highlight'><pre>    <span class="hljs-keyword">if</span> (idx &gt;= <span class="hljs-number">0</span>) {
       filters.splice(idx, <span class="hljs-number">1</span>);
-      <span class="hljs-keyword">this</span>.set({filters: filters});
+      <span class="hljs-keyword">this</span>.set({<span class="hljs-attr">filters</span>: filters});
     }
     <span class="hljs-keyword">this</span>.addFilter(filter);
   },
-  updateFilter: <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(index, value)</span> </span>{
+  <span class="hljs-attr">updateFilter</span>: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">index, value</span>) </span>{
   },</pre></div></div>
             
         </li>
@@ -1168,10 +1168,10 @@ one for add</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  removeFilter: <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(filterIndex)</span> </span>{
+            <div class="content"><div class='highlight'><pre>  removeFilter: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">filterIndex</span>) </span>{
     <span class="hljs-keyword">var</span> filters = <span class="hljs-keyword">this</span>.get(<span class="hljs-string">'filters'</span>);
     filters.splice(filterIndex, <span class="hljs-number">1</span>);
-    <span class="hljs-keyword">this</span>.set({filters: filters});
+    <span class="hljs-keyword">this</span>.set({<span class="hljs-attr">filters</span>: filters});
     <span class="hljs-keyword">this</span>.trigger(<span class="hljs-string">'change'</span>);
   },</pre></div></div>
             
@@ -1190,7 +1190,7 @@ one for add</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  addFacet: <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(fieldId, size, silent)</span> </span>{
+            <div class="content"><div class='highlight'><pre>  addFacet: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">fieldId, size, silent</span>) </span>{
     <span class="hljs-keyword">var</span> facets = <span class="hljs-keyword">this</span>.get(<span class="hljs-string">'facets'</span>);</pre></div></div>
             
         </li>
@@ -1210,28 +1210,28 @@ one for add</p>
       <span class="hljs-keyword">return</span>;
     }
     facets[fieldId] = {
-      terms: { field: fieldId }
+      <span class="hljs-attr">terms</span>: { <span class="hljs-attr">field</span>: fieldId }
     };
     <span class="hljs-keyword">if</span> (!_.isUndefined(size)) {
       facets[fieldId].terms.size = size;
     }
-    <span class="hljs-keyword">this</span>.set({facets: facets}, {silent: <span class="hljs-literal">true</span>});
+    <span class="hljs-keyword">this</span>.set({<span class="hljs-attr">facets</span>: facets}, {<span class="hljs-attr">silent</span>: <span class="hljs-literal">true</span>});
     <span class="hljs-keyword">if</span> (!silent) {
       <span class="hljs-keyword">this</span>.trigger(<span class="hljs-string">'facet:add'</span>, <span class="hljs-keyword">this</span>);
     }
   },
-  addHistogramFacet: <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(fieldId)</span> </span>{
+  <span class="hljs-attr">addHistogramFacet</span>: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">fieldId</span>) </span>{
     <span class="hljs-keyword">var</span> facets = <span class="hljs-keyword">this</span>.get(<span class="hljs-string">'facets'</span>);
     facets[fieldId] = {
-      date_histogram: {
-        field: fieldId,
-        interval: <span class="hljs-string">'day'</span>
+      <span class="hljs-attr">date_histogram</span>: {
+        <span class="hljs-attr">field</span>: fieldId,
+        <span class="hljs-attr">interval</span>: <span class="hljs-string">'day'</span>
       }
     };
-    <span class="hljs-keyword">this</span>.set({facets: facets}, {silent: <span class="hljs-literal">true</span>});
+    <span class="hljs-keyword">this</span>.set({<span class="hljs-attr">facets</span>: facets}, {<span class="hljs-attr">silent</span>: <span class="hljs-literal">true</span>});
     <span class="hljs-keyword">this</span>.trigger(<span class="hljs-string">'facet:add'</span>, <span class="hljs-keyword">this</span>);
   },
-  removeFacet: <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(fieldId)</span> </span>{
+  <span class="hljs-attr">removeFacet</span>: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">fieldId</span>) </span>{
     <span class="hljs-keyword">var</span> facets = <span class="hljs-keyword">this</span>.get(<span class="hljs-string">'facets'</span>);</pre></div></div>
             
         </li>
@@ -1251,12 +1251,12 @@ one for add</p>
       <span class="hljs-keyword">return</span>;
     }
     <span class="hljs-keyword">delete</span> facets[fieldId];
-    <span class="hljs-keyword">this</span>.set({facets: facets}, {silent: <span class="hljs-literal">true</span>});
+    <span class="hljs-keyword">this</span>.set({<span class="hljs-attr">facets</span>: facets}, {<span class="hljs-attr">silent</span>: <span class="hljs-literal">true</span>});
     <span class="hljs-keyword">this</span>.trigger(<span class="hljs-string">'facet:remove'</span>, <span class="hljs-keyword">this</span>);
   },
-  clearFacets: <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> </span>{
+  <span class="hljs-attr">clearFacets</span>: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
     <span class="hljs-keyword">var</span> facets = <span class="hljs-keyword">this</span>.get(<span class="hljs-string">'facets'</span>);
-    _.each(_.keys(facets), <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(fieldId)</span> </span>{
+    _.each(_.keys(facets), <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">fieldId</span>) </span>{
       <span class="hljs-keyword">delete</span> facets[fieldId];
     });
     <span class="hljs-keyword">this</span>.trigger(<span class="hljs-string">'facet:remove'</span>, <span class="hljs-keyword">this</span>);
@@ -1276,7 +1276,7 @@ multiple facets</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  refreshFacets: <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> </span>{
+            <div class="content"><div class='highlight'><pre>  refreshFacets: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
     <span class="hljs-keyword">this</span>.trigger(<span class="hljs-string">'facet:add'</span>, <span class="hljs-keyword">this</span>);
   }
 
@@ -1296,16 +1296,16 @@ multiple facets</p>
             </div>
             
             <div class="content"><div class='highlight'><pre>my.Facet = Backbone.Model.extend({
-  constructor: <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">Facet</span><span class="hljs-params">()</span> </span>{
+  <span class="hljs-attr">constructor</span>: <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">Facet</span>(<span class="hljs-params"></span>) </span>{
     Backbone.Model.prototype.constructor.apply(<span class="hljs-keyword">this</span>, <span class="hljs-built_in">arguments</span>);
   },
-  defaults: <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> </span>{
+  <span class="hljs-attr">defaults</span>: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
     <span class="hljs-keyword">return</span> {
-      _type: <span class="hljs-string">'terms'</span>,
-      total: <span class="hljs-number">0</span>,
-      other: <span class="hljs-number">0</span>,
-      missing: <span class="hljs-number">0</span>,
-      terms: []
+      <span class="hljs-attr">_type</span>: <span class="hljs-string">'terms'</span>,
+      <span class="hljs-attr">total</span>: <span class="hljs-number">0</span>,
+      <span class="hljs-attr">other</span>: <span class="hljs-number">0</span>,
+      <span class="hljs-attr">missing</span>: <span class="hljs-number">0</span>,
+      <span class="hljs-attr">terms</span>: []
     };
   }
 });</pre></div></div>
@@ -1324,10 +1324,10 @@ multiple facets</p>
             </div>
             
             <div class="content"><div class='highlight'><pre>my.FacetList = Backbone.Collection.extend({
-  constructor: <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">FacetList</span><span class="hljs-params">()</span> </span>{
+  <span class="hljs-attr">constructor</span>: <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">FacetList</span>(<span class="hljs-params"></span>) </span>{
     Backbone.Collection.prototype.constructor.apply(<span class="hljs-keyword">this</span>, <span class="hljs-built_in">arguments</span>);
   },
-  model: my.Facet
+  <span class="hljs-attr">model</span>: my.Facet
 });</pre></div></div>
             
         </li>

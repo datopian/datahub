@@ -133,8 +133,8 @@
 <span class="hljs-keyword">this</span>.recline = <span class="hljs-keyword">this</span>.recline || {};
 <span class="hljs-keyword">this</span>.recline.View = <span class="hljs-keyword">this</span>.recline.View || {};
 
-(<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">($, my)</span> </span>{
-<span class="hljs-pi">  "use strict"</span>;</pre></div></div>
+(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">$, my</span>) </span>{
+<span class="hljs-meta">  "use strict"</span>;</pre></div></div>
             
         </li>
         
@@ -180,7 +180,7 @@ The following keys allow for customization:</p>
             </div>
             
             <div class="content"><div class='highlight'><pre>my.SlickGrid = Backbone.View.extend({
-  initialize: <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(modelEtc)</span> </span>{
+  <span class="hljs-attr">initialize</span>: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">modelEtc</span>) </span>{
     <span class="hljs-keyword">var</span> self = <span class="hljs-keyword">this</span>;
     <span class="hljs-keyword">this</span>.$el.addClass(<span class="hljs-string">'recline-slickgrid'</span>);</pre></div></div>
             
@@ -205,13 +205,13 @@ The following keys allow for customization:</p>
     <span class="hljs-keyword">this</span>.listenTo(<span class="hljs-keyword">this</span>.model.records, <span class="hljs-string">'add remove reset'</span>, <span class="hljs-keyword">this</span>.render);
     <span class="hljs-keyword">this</span>.listenTo(<span class="hljs-keyword">this</span>.model.records, <span class="hljs-string">'change'</span>, <span class="hljs-keyword">this</span>.onRecordChanged);
     <span class="hljs-keyword">var</span> state = _.extend({
-        hiddenColumns: [],
-        columnsOrder: [],
-        columnsSort: {},
-        columnsWidth: [],
-        columnsEditor: [],
-        options: {},
-        fitColumns: <span class="hljs-literal">false</span>
+        <span class="hljs-attr">hiddenColumns</span>: [],
+        <span class="hljs-attr">columnsOrder</span>: [],
+        <span class="hljs-attr">columnsSort</span>: {},
+        <span class="hljs-attr">columnsWidth</span>: [],
+        <span class="hljs-attr">columnsEditor</span>: [],
+        <span class="hljs-attr">options</span>: {},
+        <span class="hljs-attr">fitColumns</span>: <span class="hljs-literal">false</span>
       }, modelEtc.state
 
     );
@@ -236,13 +236,13 @@ The following keys allow for customization:</p>
       &amp;&amp; <span class="hljs-keyword">this</span>.state.get(<span class="hljs-string">"gridOptions"</span>).enabledAddRow == <span class="hljs-literal">true</span> ){
       <span class="hljs-keyword">this</span>.editor    =  <span class="hljs-keyword">new</span>  my.GridControl()
       <span class="hljs-keyword">this</span>.elSidebar =  <span class="hljs-keyword">this</span>.editor.$el
-  <span class="hljs-keyword">this</span>.listenTo(<span class="hljs-keyword">this</span>.editor.state, <span class="hljs-string">'change'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span></span>{   
+  <span class="hljs-keyword">this</span>.listenTo(<span class="hljs-keyword">this</span>.editor.state, <span class="hljs-string">'change'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>)</span>{   
     <span class="hljs-keyword">this</span>.model.records.add(<span class="hljs-keyword">new</span> recline.Model.Record())
       });
     }
   },
 
-  onRecordChanged: <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(record)</span> </span>{</pre></div></div>
+  <span class="hljs-attr">onRecordChanged</span>: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">record</span>) </span>{</pre></div></div>
             
         </li>
         
@@ -280,14 +280,14 @@ The following keys allow for customization:</p>
     <span class="hljs-keyword">this</span>.grid.render();
   },
 
-  render: <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> </span>{
+  <span class="hljs-attr">render</span>: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
     <span class="hljs-keyword">var</span> self = <span class="hljs-keyword">this</span>;
     <span class="hljs-keyword">var</span> options = _.extend({
-      enableCellNavigation: <span class="hljs-literal">true</span>,
-      enableColumnReorder: <span class="hljs-literal">true</span>,
-      explicitInitialization: <span class="hljs-literal">true</span>,
-      syncColumnCellResize: <span class="hljs-literal">true</span>,
-      forceFitColumns: <span class="hljs-keyword">this</span>.state.get(<span class="hljs-string">'fitColumns'</span>)
+      <span class="hljs-attr">enableCellNavigation</span>: <span class="hljs-literal">true</span>,
+      <span class="hljs-attr">enableColumnReorder</span>: <span class="hljs-literal">true</span>,
+      <span class="hljs-attr">explicitInitialization</span>: <span class="hljs-literal">true</span>,
+      <span class="hljs-attr">syncColumnCellResize</span>: <span class="hljs-literal">true</span>,
+      <span class="hljs-attr">forceFitColumns</span>: <span class="hljs-keyword">this</span>.state.get(<span class="hljs-string">'fitColumns'</span>)
     }, self.state.get(<span class="hljs-string">'gridOptions'</span>));</pre></div></div>
             
         </li>
@@ -320,7 +320,7 @@ row = row index, cell = cell index, value = value, columnDef = column definition
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>    <span class="hljs-keyword">var</span> formatter = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(row, cell, value, columnDef, dataContext)</span> </span>{
+            <div class="content"><div class='highlight'><pre>    <span class="hljs-keyword">var</span> formatter = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">row, cell, value, columnDef, dataContext</span>) </span>{
       <span class="hljs-keyword">if</span>(columnDef.id == <span class="hljs-string">"del"</span>){
         <span class="hljs-keyword">return</span> self.templates.deleterow 
       }
@@ -347,15 +347,15 @@ user enter a correct value </p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>    <span class="hljs-keyword">var</span> validator = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(field)</span> </span>{
-      <span class="hljs-keyword">return</span> <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(value)</span></span>{
+            <div class="content"><div class='highlight'><pre>    <span class="hljs-keyword">var</span> validator = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">field</span>) </span>{
+      <span class="hljs-keyword">return</span> <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">value</span>)</span>{
         <span class="hljs-keyword">if</span> (field.type == <span class="hljs-string">"date"</span> &amp;&amp; <span class="hljs-built_in">isNaN</span>(<span class="hljs-built_in">Date</span>.parse(value))){
           <span class="hljs-keyword">return</span> {
-            valid: <span class="hljs-literal">false</span>,
-            msg: <span class="hljs-string">"A date is required, check field field-date-format"</span>
+            <span class="hljs-attr">valid</span>: <span class="hljs-literal">false</span>,
+            <span class="hljs-attr">msg</span>: <span class="hljs-string">"A date is required, check field field-date-format"</span>
           };
         } <span class="hljs-keyword">else</span> {
-          <span class="hljs-keyword">return</span> {valid: <span class="hljs-literal">true</span>, msg :<span class="hljs-literal">null</span> } 
+          <span class="hljs-keyword">return</span> {<span class="hljs-attr">valid</span>: <span class="hljs-literal">true</span>, <span class="hljs-attr">msg</span> :<span class="hljs-literal">null</span> } 
         }
       }
     };</pre></div></div>
@@ -375,13 +375,13 @@ user enter a correct value </p>
             
             <div class="content"><div class='highlight'><pre>    <span class="hljs-keyword">if</span> (<span class="hljs-keyword">this</span>.state.get(<span class="hljs-string">"gridOptions"</span>) &amp;&amp; <span class="hljs-keyword">this</span>.state.get(<span class="hljs-string">"gridOptions"</span>).enableReOrderRow == <span class="hljs-literal">true</span>) {
       columns.push({
-        id: <span class="hljs-string">"#"</span>,
-        name: <span class="hljs-string">""</span>,
-        width: <span class="hljs-number">22</span>,
-        behavior: <span class="hljs-string">"selectAndMove"</span>,
-        selectable: <span class="hljs-literal">false</span>,
-        resizable: <span class="hljs-literal">false</span>,
-        cssClass: <span class="hljs-string">"recline-cell-reorder"</span>
+        <span class="hljs-attr">id</span>: <span class="hljs-string">"#"</span>,
+        <span class="hljs-attr">name</span>: <span class="hljs-string">""</span>,
+        <span class="hljs-attr">width</span>: <span class="hljs-number">22</span>,
+        <span class="hljs-attr">behavior</span>: <span class="hljs-string">"selectAndMove"</span>,
+        <span class="hljs-attr">selectable</span>: <span class="hljs-literal">false</span>,
+        <span class="hljs-attr">resizable</span>: <span class="hljs-literal">false</span>,
+        <span class="hljs-attr">cssClass</span>: <span class="hljs-string">"recline-cell-reorder"</span>
       })
     }</pre></div></div>
             
@@ -400,36 +400,35 @@ user enter a correct value </p>
             
             <div class="content"><div class='highlight'><pre>    <span class="hljs-keyword">if</span> (<span class="hljs-keyword">this</span>.state.get(<span class="hljs-string">"gridOptions"</span>) &amp;&amp; <span class="hljs-keyword">this</span>.state.get(<span class="hljs-string">"gridOptions"</span>).enabledDelRow == <span class="hljs-literal">true</span>) {
       columns.push({
-        id: <span class="hljs-string">'del'</span>,
-        name: <span class="hljs-string">''</span>,
-        field: <span class="hljs-string">'del'</span>,
-        sortable: <span class="hljs-literal">true</span>,
-        width: <span class="hljs-number">38</span>,
-        formatter: formatter,
-        validator:validator
+        <span class="hljs-attr">id</span>: <span class="hljs-string">'del'</span>,
+        <span class="hljs-attr">name</span>: <span class="hljs-string">''</span>,
+        <span class="hljs-attr">field</span>: <span class="hljs-string">'del'</span>,
+        <span class="hljs-attr">sortable</span>: <span class="hljs-literal">true</span>,
+        <span class="hljs-attr">width</span>: <span class="hljs-number">38</span>,
+        <span class="hljs-attr">formatter</span>: formatter,
+        <span class="hljs-attr">validator</span>:validator
       })
     }
 
-    <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">sanitizeFieldName</span><span class="hljs-params">(name)</span> </span>{
-      <span class="hljs-keyword">var</span> sanitized = $(name).text();
-      <span class="hljs-keyword">return</span> (name !== sanitized &amp;&amp; sanitized !== <span class="hljs-string">''</span>) ? sanitized : name;
+    <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">sanitizeFieldName</span>(<span class="hljs-params">name</span>) </span>{
+      <span class="hljs-keyword">return</span> $(<span class="hljs-string">'&lt;div&gt;'</span>).text(name).html();
     }
 
-    _.each(<span class="hljs-keyword">this</span>.model.fields.toJSON(),<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(field)</span></span>{
+    _.each(<span class="hljs-keyword">this</span>.model.fields.toJSON(),<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">field</span>)</span>{
       <span class="hljs-keyword">var</span> column = {
-        id: field.id,
-        name: sanitizeFieldName(field.label),
-        field: field.id,
-        sortable: <span class="hljs-literal">true</span>,
-        minWidth: <span class="hljs-number">80</span>,
-        formatter: formatter,
-        validator:validator(field)
+        <span class="hljs-attr">id</span>: field.id,
+        <span class="hljs-attr">name</span>: sanitizeFieldName(field.label),
+        <span class="hljs-attr">field</span>: field.id,
+        <span class="hljs-attr">sortable</span>: <span class="hljs-literal">true</span>,
+        <span class="hljs-attr">minWidth</span>: <span class="hljs-number">80</span>,
+        <span class="hljs-attr">formatter</span>: formatter,
+        <span class="hljs-attr">validator</span>:validator(field)
       };
-      <span class="hljs-keyword">var</span> widthInfo = _.find(self.state.get(<span class="hljs-string">'columnsWidth'</span>),<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(c)</span></span>{<span class="hljs-keyword">return</span> c.column === field.id;});
+      <span class="hljs-keyword">var</span> widthInfo = _.find(self.state.get(<span class="hljs-string">'columnsWidth'</span>),<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">c</span>)</span>{<span class="hljs-keyword">return</span> c.column === field.id;});
       <span class="hljs-keyword">if</span> (widthInfo){
         column.width = widthInfo.width;
       }
-      <span class="hljs-keyword">var</span> editInfo = _.find(self.state.get(<span class="hljs-string">'columnsEditor'</span>),<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(c)</span></span>{<span class="hljs-keyword">return</span> c.column === field.id;});
+      <span class="hljs-keyword">var</span> editInfo = _.find(self.state.get(<span class="hljs-string">'columnsEditor'</span>),<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">c</span>)</span>{<span class="hljs-keyword">return</span> c.column === field.id;});
       <span class="hljs-keyword">if</span> (editInfo){
         column.editor = editInfo.editor;
       } <span class="hljs-keyword">else</span> {</pre></div></div>
@@ -506,8 +505,8 @@ Plus what if dates are in distant past or future … (?)
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>    <span class="hljs-keyword">var</span> visibleColumns = _.filter(columns, <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(column)</span> </span>{
-      <span class="hljs-keyword">return</span> _.indexOf(self.state.get(<span class="hljs-string">'hiddenColumns'</span>), column.id) === -<span class="hljs-number">1</span>;
+            <div class="content"><div class='highlight'><pre>    <span class="hljs-keyword">var</span> visibleColumns = _.filter(columns, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">column</span>) </span>{
+      <span class="hljs-keyword">return</span> _.indexOf(self.state.get(<span class="hljs-string">'hiddenColumns'</span>), column.id) === <span class="hljs-number">-1</span>;
     });</pre></div></div>
             
         </li>
@@ -524,11 +523,11 @@ Plus what if dates are in distant past or future … (?)
             </div>
             
             <div class="content"><div class='highlight'><pre>    <span class="hljs-keyword">if</span> (<span class="hljs-keyword">this</span>.state.get(<span class="hljs-string">'columnsOrder'</span>) &amp;&amp; <span class="hljs-keyword">this</span>.state.get(<span class="hljs-string">'columnsOrder'</span>).length &gt; <span class="hljs-number">0</span>) {
-      visibleColumns = visibleColumns.sort(<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(a,b)</span></span>{
-        <span class="hljs-keyword">return</span> _.indexOf(self.state.get(<span class="hljs-string">'columnsOrder'</span>),a.id) &gt; _.indexOf(self.state.get(<span class="hljs-string">'columnsOrder'</span>),b.id) ? <span class="hljs-number">1</span> : -<span class="hljs-number">1</span>;
+      visibleColumns = visibleColumns.sort(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">a,b</span>)</span>{
+        <span class="hljs-keyword">return</span> _.indexOf(self.state.get(<span class="hljs-string">'columnsOrder'</span>),a.id) &gt; _.indexOf(self.state.get(<span class="hljs-string">'columnsOrder'</span>),b.id) ? <span class="hljs-number">1</span> : <span class="hljs-number">-1</span>;
       });
-      columns = columns.sort(<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(a,b)</span></span>{
-        <span class="hljs-keyword">return</span> _.indexOf(self.state.get(<span class="hljs-string">'columnsOrder'</span>),a.id) &gt; _.indexOf(self.state.get(<span class="hljs-string">'columnsOrder'</span>),b.id) ? <span class="hljs-number">1</span> : -<span class="hljs-number">1</span>;
+      columns = columns.sort(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">a,b</span>)</span>{
+        <span class="hljs-keyword">return</span> _.indexOf(self.state.get(<span class="hljs-string">'columnsOrder'</span>),a.id) &gt; _.indexOf(self.state.get(<span class="hljs-string">'columnsOrder'</span>),b.id) ? <span class="hljs-number">1</span> : <span class="hljs-number">-1</span>;
       });
     }</pre></div></div>
             
@@ -547,8 +546,8 @@ column picker</p>
             </div>
             
             <div class="content"><div class='highlight'><pre>    <span class="hljs-keyword">var</span> tempHiddenColumns = [];
-    <span class="hljs-keyword">for</span> (<span class="hljs-keyword">var</span> i = columns.length -<span class="hljs-number">1</span>; i &gt;= <span class="hljs-number">0</span>; i--){
-      <span class="hljs-keyword">if</span> (_.indexOf(_.pluck(visibleColumns,<span class="hljs-string">'id'</span>),columns[i].id) === -<span class="hljs-number">1</span>){
+    <span class="hljs-keyword">for</span> (<span class="hljs-keyword">var</span> i = columns.length <span class="hljs-number">-1</span>; i &gt;= <span class="hljs-number">0</span>; i--){
+      <span class="hljs-keyword">if</span> (_.indexOf(_.pluck(visibleColumns,<span class="hljs-string">'id'</span>),columns[i].id) === <span class="hljs-number">-1</span>){
         tempHiddenColumns.push(columns.splice(i,<span class="hljs-number">1</span>)[<span class="hljs-number">0</span>]);
       }
     }
@@ -567,9 +566,9 @@ column picker</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>    <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">toRow</span><span class="hljs-params">(m)</span> </span>{
+            <div class="content"><div class='highlight'><pre>    <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">toRow</span>(<span class="hljs-params">m</span>) </span>{
       <span class="hljs-keyword">var</span> row = {};
-      self.model.fields.each(<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(field)</span> </span>{
+      self.model.fields.each(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">field</span>) </span>{
         <span class="hljs-keyword">var</span> render = <span class="hljs-string">""</span>;</pre></div></div>
             
         </li>
@@ -593,21 +592,21 @@ column picker</p>
       <span class="hljs-keyword">return</span> row;
     }
 
-    <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">RowSet</span><span class="hljs-params">()</span> </span>{
+    <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">RowSet</span>(<span class="hljs-params"></span>) </span>{
       <span class="hljs-keyword">var</span> models = [];
       <span class="hljs-keyword">var</span> rows = [];
 
-      <span class="hljs-keyword">this</span>.push = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(model, row)</span> </span>{
+      <span class="hljs-keyword">this</span>.push = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">model, row</span>) </span>{
         models.push(model);
         rows.push(row);
       };
 
-      <span class="hljs-keyword">this</span>.getLength = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> </span>{<span class="hljs-keyword">return</span> rows.length; };
-      <span class="hljs-keyword">this</span>.getItem = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(index)</span> </span>{<span class="hljs-keyword">return</span> rows[index];};
-      <span class="hljs-keyword">this</span>.getItemMetadata = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(index)</span> </span>{<span class="hljs-keyword">return</span> {};};
-      <span class="hljs-keyword">this</span>.getModel = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(index)</span> </span>{<span class="hljs-keyword">return</span> models[index];};
-      <span class="hljs-keyword">this</span>.getModelRow = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(m)</span> </span>{<span class="hljs-keyword">return</span> _.indexOf(models, m);};
-      <span class="hljs-keyword">this</span>.updateItem = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(m,i)</span> </span>{
+      <span class="hljs-keyword">this</span>.getLength = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{<span class="hljs-keyword">return</span> rows.length; };
+      <span class="hljs-keyword">this</span>.getItem = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">index</span>) </span>{<span class="hljs-keyword">return</span> rows[index];};
+      <span class="hljs-keyword">this</span>.getItemMetadata = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">index</span>) </span>{<span class="hljs-keyword">return</span> {};};
+      <span class="hljs-keyword">this</span>.getModel = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">index</span>) </span>{<span class="hljs-keyword">return</span> models[index];};
+      <span class="hljs-keyword">this</span>.getModelRow = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">m</span>) </span>{<span class="hljs-keyword">return</span> _.indexOf(models, m);};
+      <span class="hljs-keyword">this</span>.updateItem = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">m,i</span>) </span>{
         rows[i] = toRow(m);
         models[i] = m;
       };
@@ -615,7 +614,7 @@ column picker</p>
 
     <span class="hljs-keyword">var</span> data = <span class="hljs-keyword">new</span> RowSet();
 
-    <span class="hljs-keyword">this</span>.model.records.each(<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(doc)</span></span>{
+    <span class="hljs-keyword">this</span>.model.records.each(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">doc</span>)</span>{
       data.push(doc, toRow(doc));
     });
 
@@ -645,32 +644,32 @@ column picker</p>
       <span class="hljs-keyword">this</span>._setupRowReordering();
     }
     
-    <span class="hljs-keyword">this</span>._slickHandler.subscribe(<span class="hljs-keyword">this</span>.grid.onSort, <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(e, args)</span></span>{
+    <span class="hljs-keyword">this</span>._slickHandler.subscribe(<span class="hljs-keyword">this</span>.grid.onSort, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">e, args</span>)</span>{
       <span class="hljs-keyword">var</span> order = (args.sortAsc) ? <span class="hljs-string">'asc'</span>:<span class="hljs-string">'desc'</span>;
       <span class="hljs-keyword">var</span> sort = [{
-        field: args.sortCol.field,
-        order: order
+        <span class="hljs-attr">field</span>: args.sortCol.field,
+        <span class="hljs-attr">order</span>: order
       }];
-      self.model.query({sort: sort});
+      self.model.query({<span class="hljs-attr">sort</span>: sort});
     });
     
-    <span class="hljs-keyword">this</span>._slickHandler.subscribe(<span class="hljs-keyword">this</span>.grid.onColumnsReordered, <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(e, args)</span></span>{
-      self.state.set({columnsOrder: _.pluck(self.grid.getColumns(),<span class="hljs-string">'id'</span>)});
+    <span class="hljs-keyword">this</span>._slickHandler.subscribe(<span class="hljs-keyword">this</span>.grid.onColumnsReordered, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">e, args</span>)</span>{
+      self.state.set({<span class="hljs-attr">columnsOrder</span>: _.pluck(self.grid.getColumns(),<span class="hljs-string">'id'</span>)});
     });
     
-    <span class="hljs-keyword">this</span>.grid.onColumnsResized.subscribe(<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(e, args)</span></span>{
+    <span class="hljs-keyword">this</span>.grid.onColumnsResized.subscribe(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">e, args</span>)</span>{
         <span class="hljs-keyword">var</span> columns = args.grid.getColumns();
         <span class="hljs-keyword">var</span> defaultColumnWidth = args.grid.getOptions().defaultColumnWidth;
         <span class="hljs-keyword">var</span> columnsWidth = [];
-        _.each(columns,<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(column)</span></span>{
+        _.each(columns,<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">column</span>)</span>{
           <span class="hljs-keyword">if</span> (column.width != defaultColumnWidth){
-            columnsWidth.push({column:column.id,width:column.width});
+            columnsWidth.push({<span class="hljs-attr">column</span>:column.id,<span class="hljs-attr">width</span>:column.width});
           }
         });
-        self.state.set({columnsWidth:columnsWidth});
+        self.state.set({<span class="hljs-attr">columnsWidth</span>:columnsWidth});
     });
     
-    <span class="hljs-keyword">this</span>._slickHandler.subscribe(<span class="hljs-keyword">this</span>.grid.onCellChange, <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(e, args)</span> </span>{</pre></div></div>
+    <span class="hljs-keyword">this</span>._slickHandler.subscribe(<span class="hljs-keyword">this</span>.grid.onCellChange, <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">e, args</span>) </span>{</pre></div></div>
             
         </li>
         
@@ -692,7 +691,7 @@ column picker</p>
       v[field] = args.item[field];
       model.set(v);
     });  
-    <span class="hljs-keyword">this</span>._slickHandler.subscribe(<span class="hljs-keyword">this</span>.grid.onClick,<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(e, args)</span></span>{</pre></div></div>
+    <span class="hljs-keyword">this</span>._slickHandler.subscribe(<span class="hljs-keyword">this</span>.grid.onClick,<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">e, args</span>)</span>{</pre></div></div>
             
         </li>
         
@@ -752,7 +751,7 @@ that handle row Reoder.</p>
         }
     }) ;
     <span class="hljs-keyword">var</span> columnpicker = <span class="hljs-keyword">new</span> Slick.Controls.ColumnPicker(columns, <span class="hljs-keyword">this</span>.grid,
-                                                       _.extend(options,{state:<span class="hljs-keyword">this</span>.state}));
+                                                       _.extend(options,{<span class="hljs-attr">state</span>:<span class="hljs-keyword">this</span>.state}));
     <span class="hljs-keyword">if</span> (self.visible){
       self.grid.init();
       self.rendered = <span class="hljs-literal">true</span>;
@@ -790,15 +789,15 @@ that handle row Reoder.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  _setupRowReordering: <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> </span>{
+            <div class="content"><div class='highlight'><pre>  _setupRowReordering: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
     <span class="hljs-keyword">var</span> self = <span class="hljs-keyword">this</span>;
     self.grid.setSelectionModel(<span class="hljs-keyword">new</span> Slick.RowSelectionModel());
 
     <span class="hljs-keyword">var</span> moveRowsPlugin = <span class="hljs-keyword">new</span> Slick.RowMoveManager({
-      cancelEditOnDrag: <span class="hljs-literal">true</span>
+      <span class="hljs-attr">cancelEditOnDrag</span>: <span class="hljs-literal">true</span>
     });
 
-    moveRowsPlugin.onBeforeMoveRows.subscribe(<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(e, data)</span> </span>{
+    moveRowsPlugin.onBeforeMoveRows.subscribe(<span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">e, data</span>) </span>{
       <span class="hljs-keyword">for</span> (<span class="hljs-keyword">var</span> i = <span class="hljs-number">0</span>; i &lt; data.rows.length; i++) {</pre></div></div>
             
         </li>
@@ -822,7 +821,7 @@ that handle row Reoder.</p>
       <span class="hljs-keyword">return</span> <span class="hljs-literal">true</span>;
     });
     
-    moveRowsPlugin.onMoveRows.subscribe(<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(e, args)</span> </span>{
+    moveRowsPlugin.onMoveRows.subscribe(<span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">e, args</span>) </span>{
       <span class="hljs-keyword">var</span> extractedRows = [], left, right;
       <span class="hljs-keyword">var</span> rows = args.rows;
       <span class="hljs-keyword">var</span> insertBefore = args.insertBefore;
@@ -831,7 +830,7 @@ that handle row Reoder.</p>
       left = data.slice(<span class="hljs-number">0</span>, insertBefore);
       right= data.slice(insertBefore, data.length);
       
-      rows.sort(<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(a,b)</span> </span>{ <span class="hljs-keyword">return</span> a-b; });
+      rows.sort(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">a,b</span>) </span>{ <span class="hljs-keyword">return</span> a-b; });
 
       <span class="hljs-keyword">for</span> (<span class="hljs-keyword">var</span> i = <span class="hljs-number">0</span>; i &lt; rows.length; i++) {
           extractedRows.push(data[rows[i]]);
@@ -875,12 +874,12 @@ that handle row Reoder.</p>
     }
   },
 
-  remove: <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">()</span> </span>{
+  <span class="hljs-attr">remove</span>: <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params"></span>) </span>{
     <span class="hljs-keyword">this</span>._slickHandler.unsubscribeAll();
     Backbone.View.prototype.remove.apply(<span class="hljs-keyword">this</span>, <span class="hljs-built_in">arguments</span>);
   },
 
-  show: <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> </span>{</pre></div></div>
+  <span class="hljs-attr">show</span>: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{</pre></div></div>
             
         </li>
         
@@ -906,7 +905,7 @@ sizes so we must render it explicitly when the view is visible</p>
     <span class="hljs-keyword">this</span>.visible = <span class="hljs-literal">true</span>;
   },
 
-  hide: <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> </span>{
+  <span class="hljs-attr">hide</span>: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
     <span class="hljs-keyword">this</span>.visible = <span class="hljs-literal">false</span>;
   }
 });</pre></div></div>
@@ -927,7 +926,7 @@ row to grid </p>
             </div>
             
             <div class="content"><div class='highlight'><pre>my.GridControl= Backbone.View.extend({
-  className: <span class="hljs-string">"recline-row-add"</span>,</pre></div></div>
+  <span class="hljs-attr">className</span>: <span class="hljs-string">"recline-row-add"</span>,</pre></div></div>
             
         </li>
         
@@ -944,23 +943,23 @@ row to grid </p>
             
             <div class="content"><div class='highlight'><pre>  template: <span class="hljs-string">'&lt;h1&gt;&lt;button href="#" class="recline-row-add btn btn-default"&gt;Add row&lt;/button&gt;&lt;/h1&gt;'</span>,
   
-  initialize: <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(options)</span></span>{
+  <span class="hljs-attr">initialize</span>: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">options</span>)</span>{
     <span class="hljs-keyword">var</span> self = <span class="hljs-keyword">this</span>;
     _.bindAll(<span class="hljs-keyword">this</span>, <span class="hljs-string">'render'</span>);
     <span class="hljs-keyword">this</span>.state = <span class="hljs-keyword">new</span> recline.Model.ObjectState();
     <span class="hljs-keyword">this</span>.render();
   },
 
-  render: <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> </span>{
+  <span class="hljs-attr">render</span>: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
     <span class="hljs-keyword">var</span> self = <span class="hljs-keyword">this</span>;
     <span class="hljs-keyword">this</span>.$el.html(<span class="hljs-keyword">this</span>.template)
   },
 
-  events : {
+  <span class="hljs-attr">events</span> : {
     <span class="hljs-string">"click .recline-row-add"</span> : <span class="hljs-string">"addNewRow"</span>
   },
 
-  addNewRow : <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(e)</span></span>{
+  <span class="hljs-attr">addNewRow</span> : <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">e</span>)</span>{
     e.preventDefault()
     <span class="hljs-keyword">this</span>.state.trigger(<span class="hljs-string">"change"</span>)
  }
@@ -973,29 +972,29 @@ row to grid </p>
 * http://mleibman.github.com/SlickGrid/examples/example-grouping
 *
 */</span>
-(<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">($)</span> </span>{
-  <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">SlickColumnPicker</span><span class="hljs-params">(columns, grid, options)</span> </span>{
+(<span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">$</span>) </span>{
+  <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">SlickColumnPicker</span>(<span class="hljs-params">columns, grid, options</span>) </span>{
     <span class="hljs-keyword">var</span> $menu;
     <span class="hljs-keyword">var</span> columnCheckboxes;
 
     <span class="hljs-keyword">var</span> defaults = {
-      fadeSpeed:<span class="hljs-number">250</span>
+      <span class="hljs-attr">fadeSpeed</span>:<span class="hljs-number">250</span>
     };
 
-    <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">init</span><span class="hljs-params">()</span> </span>{
+    <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">init</span>(<span class="hljs-params"></span>) </span>{
       grid.onHeaderContextMenu.subscribe(handleHeaderContextMenu);
       options = $.extend({}, defaults, options);
 
       $menu = $(<span class="hljs-string">'&lt;ul class="dropdown-menu slick-contextmenu" style="display:none;position:absolute;z-index:20;" /&gt;'</span>).appendTo(<span class="hljs-built_in">document</span>.body);
 
-      $menu.bind(<span class="hljs-string">'mouseleave'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(e)</span> </span>{
+      $menu.bind(<span class="hljs-string">'mouseleave'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">e</span>) </span>{
         $(<span class="hljs-keyword">this</span>).fadeOut(options.fadeSpeed);
       });
       $menu.bind(<span class="hljs-string">'click'</span>, updateColumn);
 
     }
 
-    <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">handleHeaderContextMenu</span><span class="hljs-params">(e, args)</span> </span>{
+    <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">handleHeaderContextMenu</span>(<span class="hljs-params">e, args</span>) </span>{
       e.preventDefault();
       $menu.empty();
       columnCheckboxes = [];
@@ -1032,7 +1031,7 @@ row to grid </p>
           .fadeIn(options.fadeSpeed);
     }
 
-    <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">updateColumn</span><span class="hljs-params">(e)</span> </span>{
+    <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">updateColumn</span>(<span class="hljs-params">e</span>) </span>{
       <span class="hljs-keyword">var</span> checkbox;
 
       <span class="hljs-keyword">if</span> ($(e.target).data(<span class="hljs-string">'option'</span>) === <span class="hljs-string">'autoresize'</span>) {
@@ -1046,12 +1045,12 @@ row to grid </p>
         }
 
         <span class="hljs-keyword">if</span> (checked) {
-          grid.setOptions({forceFitColumns:<span class="hljs-literal">true</span>});
+          grid.setOptions({<span class="hljs-attr">forceFitColumns</span>:<span class="hljs-literal">true</span>});
           grid.autosizeColumns();
         } <span class="hljs-keyword">else</span> {
-          grid.setOptions({forceFitColumns:<span class="hljs-literal">false</span>});
+          grid.setOptions({<span class="hljs-attr">forceFitColumns</span>:<span class="hljs-literal">false</span>});
         }
-        options.state.set({fitColumns:checked});
+        options.state.set({<span class="hljs-attr">fitColumns</span>:checked});
         <span class="hljs-keyword">return</span>;
       }
 
@@ -1063,7 +1062,7 @@ row to grid </p>
         }
         <span class="hljs-keyword">var</span> visibleColumns = [];
         <span class="hljs-keyword">var</span> hiddenColumnsIds = [];
-        $.each(columnCheckboxes, <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(i, e)</span> </span>{
+        $.each(columnCheckboxes, <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">i, e</span>) </span>{
           <span class="hljs-keyword">if</span> ($(<span class="hljs-keyword">this</span>).is(<span class="hljs-string">':checked'</span>)) {
             visibleColumns.push(columns[i]);
           } <span class="hljs-keyword">else</span> {
@@ -1077,7 +1076,7 @@ row to grid </p>
         }
 
         grid.setColumns(visibleColumns);
-        options.state.set({hiddenColumns:hiddenColumnsIds});
+        options.state.set({<span class="hljs-attr">hiddenColumns</span>:hiddenColumnsIds});
       }
     }
     init();
@@ -1097,9 +1096,9 @@ row to grid </p>
             </div>
             
             <div class="content"><div class='highlight'><pre>  $.extend(<span class="hljs-literal">true</span>, <span class="hljs-built_in">window</span>, {
-    Slick: {
-      Controls: {
-        ColumnPicker: SlickColumnPicker
+    <span class="hljs-attr">Slick</span>: {
+      <span class="hljs-attr">Controls</span>: {
+        <span class="hljs-attr">ColumnPicker</span>: SlickColumnPicker
       }
     }
   });
