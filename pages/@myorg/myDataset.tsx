@@ -45,7 +45,7 @@ export default function Showcase() {
           <a href="#data-cli" className="border border-black text-black py-4 px-4 rounded-sm">Developers</a>
         </div>
         <div className="my-16">
-          <h2 className="text-3xl" id="data">Data Files</h2>
+          <h2 className="text-3xl pb-2" id="data">Data Files</h2>
           <p>Download files in this dataset</p>
           <table className="table-auto">
             <thead>
@@ -57,7 +57,7 @@ export default function Showcase() {
             </thead>
             <tbody>
               <tr className="bg-gray-100 text-sm">
-                <td className="pr-10 py-4">
+                <td className="pr-10 py-4 text-orange-500">
                   <i className="far fa-file-alt"></i> <a href="#" className="anchor-link">Dataset Metadata</a>
                 </td>
                 <td className="px-10 py-4">
@@ -68,14 +68,14 @@ export default function Showcase() {
                 <td className="px-10 py-4" title="{{ item.resource.modified }}">
                   Invalid Date
                 </td>
-                <td className="download truncate px-10 py-4">
+                <td className="px-10 py-4 text-orange-500">
                   <a href="#">
                     Text
                   </a>
                 </td>
               </tr>
               <tr className="text-sm">
-                <td className="pr-10 py-4">
+                <td className="pr-10 py-4 text-orange-500">
                   <i className="far fa-file-alt"></i> <a href="#" className="anchor-link">Dataset Metadata</a>
                 </td>
                 <td className="px-10 py-4">
@@ -86,27 +86,27 @@ export default function Showcase() {
                 <td className="px-10 py-4" title="{{ item.resource.modified }}">
                   Invalid Date
                 </td>
-                <td className="px-10 py-4">
+                <td className="px-10 py-4 text-orange-500">
                   <a href="#">
-                    Text
+                    Xls
                   </a>
                 </td>
               </tr>
               <tr className="bg-gray-100 text-sm">
-                <td className="pr-10 py-4">
+                <td className="pr-10 py-4 text-orange-500">
                   <i className="far fa-file-alt"></i> <a href="#" className="anchor-link">Dataset Metadata</a>
                 </td>
                 <td className="px-10 py-4">
                   Dataset's Metadata
                 </td>
-                <td className="px-10 py-4" title="{{ item.resource.sizeFormatted }}">
+                <td className="px-10 py-4">
                 </td>
-                <td className="px-10 py-4" title="{{ item.resource.modified }}">
+                <td className="px-10 py-4">
                   Invalid Date
                 </td>
-                <td className="download truncate px-10 py-4">
+                <td className="px-10 py-4 text-orange-500">
                   <a href="#">
-                    Text
+                    Data File
                   </a>
                 </td>
               </tr>
@@ -114,33 +114,6 @@ export default function Showcase() {
           </table>
         </div>
       </div>
-      <style jsx>{` 
-        .logo {
-          height: 1em;
-        }
-
-        @media (max-width: 600px) {
-          .grid {
-            width: 100%;
-            flex-direction: column;
-          }
-        }
-      `}</style>
-
-      <style jsx global>{`
-        html,
-        body {
-          padding: 0;
-          margin: 0;
-          font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto,
-            Oxygen, Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue,
-            sans-serif;
-        }
-
-        * {
-          box-sizing: border-box;
-        }
-      `}</style>
     </div>
   )
 }
