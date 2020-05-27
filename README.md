@@ -1,4 +1,5 @@
 ## Frontend V3 - Portal
+CKAN / Data Portal frontend. "Next Generation" architecture as a microservice so can run and customize standalone and then connect to your backend of choice. Designed for CKAN but can and is used with other systems. Built with Next.js.
 
 ## Getting Started
 
