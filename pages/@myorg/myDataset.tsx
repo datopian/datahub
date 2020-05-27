@@ -49,27 +49,64 @@ export default function Showcase() {
           <p>Download files in this dataset</p>
           <table className="table-auto">
             <thead>
-              <th className="pr-6 py-4">File</th>
-              <th className="px-6 py-4">Description</th>
-              <th className="px-6 py-4">Size</th>
-              <th className="px-6 py-4">Last changed</th>
-              <th className="px-6 py-4">Download</th>
+              <th className="pr-10 text-left py-4">File</th>
+              <th className="px-10 text-left py-4">Description</th>
+              <th className="px-10 text-left py-4">Size</th>
+              <th className="px-10 text-left py-4">Last changed</th>
+              <th className="px-10 text-left py-4">Download</th>
             </thead>
             <tbody>
-              <tr>
-                <td className="pr-6 py-4">
-                  <i className="far fa-file-alt"></i> <a href="#{{item.slug}}" className="anchor-link" title="{{item.resource.title or item.resource.name}}">#</a>
+              <tr className="bg-gray-100 text-sm">
+                <td className="pr-10 py-4">
+                  <i className="far fa-file-alt"></i> <a href="#" className="anchor-link">Dataset Metadata</a>
                 </td>
-                <td className="px-6 py-4" title="{{ item.resource.descriptionHtml or item.resource.title }}">
+                <td className="px-10 py-4">
+                  Dataset's Metadata
                 </td>
-                <td className="px-6 py-4" title="{{ item.resource.sizeFormatted }}">
+                <td className="px-10 py-4" title="{{ item.resource.sizeFormatted }}">
                 </td>
-                <td className="px-6 py-4" title="{{ item.resource.modified }}">
+                <td className="px-10 py-4" title="{{ item.resource.modified }}">
+                  Invalid Date
                 </td>
-                <td className="download truncate px-6 py-4">
+                <td className="download truncate px-10 py-4">
                   <a href="#">
+                    Text
                   </a>
+                </td>
+              </tr>
+              <tr className="text-sm">
+                <td className="pr-10 py-4">
+                  <i className="far fa-file-alt"></i> <a href="#" className="anchor-link">Dataset Metadata</a>
+                </td>
+                <td className="px-10 py-4">
+                  Dataset's Metadata
+                </td>
+                <td className="px-10 py-4" title="{{ item.resource.sizeFormatted }}">
+                </td>
+                <td className="px-10 py-4" title="{{ item.resource.modified }}">
+                  Invalid Date
+                </td>
+                <td className="px-10 py-4">
                   <a href="#">
+                    Text
+                  </a>
+                </td>
+              </tr>
+              <tr className="bg-gray-100 text-sm">
+                <td className="pr-10 py-4">
+                  <i className="far fa-file-alt"></i> <a href="#" className="anchor-link">Dataset Metadata</a>
+                </td>
+                <td className="px-10 py-4">
+                  Dataset's Metadata
+                </td>
+                <td className="px-10 py-4" title="{{ item.resource.sizeFormatted }}">
+                </td>
+                <td className="px-10 py-4" title="{{ item.resource.modified }}">
+                  Invalid Date
+                </td>
+                <td className="download truncate px-10 py-4">
+                  <a href="#">
+                    Text
                   </a>
                 </td>
               </tr>
