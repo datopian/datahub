@@ -10,11 +10,11 @@ export default function Showcase() {
       <div className="my-16">
         <div className="showcase-page-header">
           <h1 className="text-4xl">
-            Agricultural Production Statistics
-            </h1>
+            Remuneración octubre 2017
+          </h1>
           <p className="publisher flex">
             <img src="https://www.gravatar.com/avatar/none?d=https%3A%2F%2Ftesting.datahub.io%2Fstatic%2Fimg%2Flogo-cube03.png" className="rounded-full w-6 mr-2" />
-            <a href="#" className="text-orange-400">Stats New Zealand</a>
+            <a href="#" className="text-orange-400">Datos Abiertos Municipio Loja Ecuador</a>
           </p>
           <table className="table-auto my-6">
             <thead>
@@ -35,12 +35,12 @@ export default function Showcase() {
                 <td className="px-10 py-2">text xls</td>
                 <td className="px-10 py-2">2020-05-27</td>
                 <td className="px-10 py-2">a few seconds ago</td>
-                <td className="px-10 py-2">cc-by</td>
-                <td className="px-10 py-2">Stats New Zealand</td>
+                <td className="px-10 py-2 text-orange-500">cc-by</td>
+                <td className="px-10 py-2">Datos Abiertos Municipio Loja Ecuador</td>
               </tr>
             </tbody>
           </table>
-          <div className="mb-10"> These releases contain information on farming in New Zealand - including livestock and arable farming, horticulture, and forestry. Agricultural production statistics are produced in collaboration with the Ministry for Primary Industries.<a href="#readme" className="underline"> Read more</a></div>
+          <div className="mb-10"> Contiene información sobre las remuneraciones de los servidores de la institución, correspondiente al mes de octubre del año 2017.</div>
           <a href="#data" className="bg-black text-white py-4 px-4 rounded-sm mr-2 hover:border-0 hover:border-black hover:text-black hover:bg-transparent">Download</a>
           <a href="#data-cli" className="border border-black text-black py-4 px-4 rounded-sm">Developers</a>
         </div>
@@ -58,10 +58,10 @@ export default function Showcase() {
             <tbody>
               <tr className="bg-gray-100 text-sm">
                 <td className="pr-10 py-4 text-orange-500">
-                  <i className="far fa-file-alt"></i> <a href="#" className="anchor-link">Dataset Metadata</a>
+                  <i className="far fa-file-alt"></i> <a href="/@myorg/preview" className="anchor-link">Remuneración octubre 2017</a>
                 </td>
                 <td className="px-10 py-4">
-                  Dataset's Metadata
+                  Remuneración octubre 2017
                 </td>
                 <td className="px-10 py-4" title="{{ item.resource.sizeFormatted }}">
                 </td>
@@ -71,42 +71,6 @@ export default function Showcase() {
                 <td className="px-10 py-4 text-orange-500">
                   <a href="#">
                     Text
-                  </a>
-                </td>
-              </tr>
-              <tr className="text-sm">
-                <td className="pr-10 py-4 text-orange-500">
-                  <i className="far fa-file-alt"></i> <a href="#" className="anchor-link">Dataset Metadata</a>
-                </td>
-                <td className="px-10 py-4">
-                  Dataset's Metadata
-                </td>
-                <td className="px-10 py-4" title="{{ item.resource.sizeFormatted }}">
-                </td>
-                <td className="px-10 py-4" title="{{ item.resource.modified }}">
-                  Invalid Date
-                </td>
-                <td className="px-10 py-4 text-orange-500">
-                  <a href="#">
-                    Xls
-                  </a>
-                </td>
-              </tr>
-              <tr className="bg-gray-100 text-sm">
-                <td className="pr-10 py-4 text-orange-500">
-                  <i className="far fa-file-alt"></i> <a href="#" className="anchor-link">Dataset Metadata</a>
-                </td>
-                <td className="px-10 py-4">
-                  Dataset's Metadata
-                </td>
-                <td className="px-10 py-4">
-                </td>
-                <td className="px-10 py-4">
-                  Invalid Date
-                </td>
-                <td className="px-10 py-4 text-orange-500">
-                  <a href="#">
-                    Data File
                   </a>
                 </td>
               </tr>
