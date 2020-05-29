@@ -1,4 +1,6 @@
 import Head from 'next/head'
+import Link from 'next/link'
+import Nav from '../components/Nav'
 
 export default function Home() {
   return (
@@ -7,164 +9,137 @@ export default function Home() {
         <title>Create Next App</title>
         <link rel="icon" href="/favicon.ico" />
       </Head>
-
       <main>
-        <h1 className="title">
-          Welcome to <a href="https://nextjs.org">Next.js!</a>
-        </h1>
-
-        <p className="description">
-          Get started with Next.js
-        </p>
-
-        <div className="grid">
-          <a href="/@myorg/myDataset" className="card">
-            <h3>Showcase &rarr;</h3>
-            <p>Find Mocked Data Page of frontend v3 Project.</p>
-          </a>
-
-          <a
-            href="https://vercel.com/import?filter=next.js&utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-            className="card"
-          >
-            <h3>Deploy &rarr;</h3>
-            <p>
-              Instantly deploy your Next.js site to a public URL with Vercel.
-            </p>
-          </a>
-        </div>
+        <Nav />
+        <section className="flex mt-10 ml-40 justify-center">
+          <div>
+            <img src="/banner.png" width="500" />
+          </div>
+          <div className="mx-32">
+            <h1 className="text-4xl font-thin">Find, Share and Publish <br /> Quality Data with <span className="text-orange-500">Datahub</span>
+            </h1>
+            <p className="text-md font-light w-4/5">At Datahub, we have over thousands of datasets for free and a Premium Data Service for additional or customised data with guaranteed updates.</p>
+            <form className="py-4 flex" action="/search" method="GET">
+              <div className="border-2">
+                <input type="text" className="pr-24 pl-4 py-2" placeholder="Search ..." name="q" required />
+              </div>
+              <div className="mx-3">
+                <button className="bg-black text-white rounded-sm px-4 py-3 font-thin" type="submit">Search Datasets</button>
+              </div>
+            </form>
+          </div>
+        </section>
+        <section className="flex mt-6">
+          <div className="bg-gray-100 px-4 flex items-start py-5 mx-3">
+            <div className="px-5 pt-4">
+              <img src="/core.png" alt="core icon" width="100" />
+            </div>
+            <div>
+              <h2 className="text-2xl font-thin">Core Datasets</h2>
+              <p className="pb-3 sub">Datahub provides important, commonly-used data as high quality, easy-to-use and open data packages.</p>
+              <Link href="#" >
+                <a className="text-orange-500">View Collections ›</a>
+              </Link>
+            </div>
+          </div>
+          <div className="bg-gray-100 px-4 flex items-start py-5 mx-3">
+            <div className="px-5 pt-4">
+              <img src="/request.png" alt="core icon" width="100" />
+            </div>
+            <div>
+              <h2 className="text-2xl font-thin">Request Data</h2>
+              <p className="pb-3 sub">A service to locate and/or prepare data. There is no cost for making a request and all requests are completely confidential.</p>
+              <Link href="#">
+                <a className="text-orange-500">Request Now ›</a>
+              </Link>
+            </div>
+          </div>
+          <div className="bg-gray-100 px-4 flex items-start py-5 mx-3">
+            <div className="px-5 pt-4">
+              <img src="/earth-globe.png" alt="core icon" width="100" />
+            </div>
+            <div>
+              <h2 className="text-2xl font-thin">Publish Data</h2>
+              <p className="pb-3 sub">Securely share and elegantly put data online with quality checks, versioning, data APIs, notifications & integrations.</p>
+              <Link href="#">
+                <a className="text-orange-500"> Start Publishing ›</a>
+              </Link>
+            </div>
+          </div>
+        </section>
+        <section className="core-datasets mt-20 flex justify-center" id="core-datasets">
+          <div className="grid grid-cols-3 grid-rows-2 w-3/6">
+            <div className="bg-gray-100 px-3 m-1">
+              <div className="py-2">
+                <h4 className="title font-thin">S&P 500 Companies</h4>
+                <p className="sub mb-4">S&P 500 Companies with Financial Information</p>
+                <a href="/core/s-and-p-500-companies" className="text-orange-500 text-base">View</a>
+              </div>
+            </div>
+            <div className="bg-gray-100 px-3 m-1">
+              <div className="py-2">
+                <h4 className="title font-thin">Major cities of the world</h4>
+                <p className="sub mb-4">List of all the major cities in the world</p>
+                <a href="/core/world-cities" className="text-orange-500 text-base">View</a>
+              </div>
+            </div>
+            <div className="bg-gray-100 row-span-2 px-3 m-1">
+              <div className="py-2">
+                <img src="/co2.png" width="70" />
+                <h4 className="title font-thin">CO2 PPM</h4>
+                <p className="sub mb-4">CO2 PPM - Trends in Atmospheric Carbon Dioxide
+                        <br />co2-ppm | files 7 | 300kB</p>
+                <a href="/core/co2-ppm" className="text-orange-500 text-base">View Dataset</a>
+              </div>
+            </div>
+            <div className="bg-gray-100 row-span-2 px-3 m-1">
+              <div className="py-2">
+                <img src="/worldwide.png" width="70" />
+                <h4 className="title font-thin">Country List</h4>
+                <p className="sub mb-4">List of all countries with their 2 digit codes (ISO 3166-1)
+                <br />country-list | files 2 | 27kB</p>
+                <a href="/core/country-list" className="text-orange-500 text-base">View Dataset</a>
+              </div>
+            </div>
+            <div className="bg-gray-100 px-3 m-1">
+              <div className="py-2">
+                <h4 className="title font-thin">ISO Language Codes</h4>
+                <p className="sub mb-4">ISO Language Codes (639-1 and 693-2) and IETF Language Types</p>
+                <a href="/core/language-codes" className="text-orange-500 text-base">View</a>
+              </div>
+            </div>
+            <div className="bg-gray-100 px-3 m-1">
+              <div className="py-2">
+                <h4 className="title font-thin">Global Temperature</h4>
+                <p className="sub mb-4">Data are included from the GISS Surface Temperature</p>
+                <a href="/core/global-temp" className="text-orange-500 text-base">View</a>
+              </div>
+            </div>
+          </div>
+          <div className="ml-10">
+            <h3 className="text-2xl font-thin">Core Datasets, data as you’d want to use it</h3>
+            <h1 className="text-4xl py-3 font-thin">Quality Data ready to Integrate</h1>
+            <ul className="list-disc mb-10">
+              <li className="py-3">High quality data ready to inspect, download and use. <a href="/docs/core-data" className="text-orange-500">Read more &rsaquo;</a></li>
+              <li className="py-3">Bulk and API access ready for automated integration with SDKs in Python, JS and many more. <a href="/docs/getting-started/getting-data" className="text-orange-500">Read more &rsaquo;</a></li>
+              <li className="py-3">Send a request if you need a help to find some good, quality dataset.</li>
+            </ul>
+            <a href="/core" className="bg-black text-white px-5 py-4 rounded-sm">Discover Datasets</a>
+          </div>
+        </section>
       </main>
-
-      <footer>
-        <a
-          href="https://vercel.com?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Powered by{' '}
-          <img src="/vercel.svg" alt="Vercel Logo" className="logo" />
-        </a>
-      </footer>
-
       <style jsx>{`
-        .container {
-          min-height: 100vh;
-          padding: 0 0.5rem;
-          display: flex;
-          flex-direction: column;
-          justify-content: center;
-          align-items: center;
-        }
-
         main {
-          padding: 5rem 0;
           flex: 1;
           display: flex;
           flex-direction: column;
-          justify-content: center;
-          align-items: center;
         }
-
-        footer {
-          width: 100%;
-          height: 100px;
-          border-top: 1px solid #eaeaea;
-          display: flex;
-          justify-content: center;
-          align-items: center;
-        }
-
-        footer img {
-          margin-left: 0.5rem;
-        }
-
-        footer a {
-          display: flex;
-          justify-content: center;
-          align-items: center;
-        }
-
-        a {
-          color: inherit;
-          text-decoration: none;
-        }
-
-        .title a {
-          color: #0070f3;
-          text-decoration: none;
-        }
-
-        .title a:hover,
-        .title a:focus,
-        .title a:active {
-          text-decoration: underline;
-        }
-
         .title {
-          margin: 0;
-          line-height: 1.15;
-          font-size: 4rem;
+          font-size: 16px;
         }
 
-        .title,
-        .description {
-          text-align: center;
-        }
-
-        .description {
-          line-height: 1.5;
-          font-size: 1.5rem;
-        }
-        
-        .grid {
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          flex-wrap: wrap;
-
-          max-width: 800px;
-          margin-top: 3rem;
-        }
-
-        .card {
-          margin: 1rem;
-          flex-basis: 45%;
-          padding: 1.5rem;
-          text-align: left;
-          color: inherit;
-          text-decoration: none;
-          border: 1px solid #eaeaea;
-          border-radius: 10px;
-          transition: color 0.15s ease, border-color 0.15s ease;
-        }
-
-        .card:hover,
-        .card:focus,
-        .card:active {
-          color: #0070f3;
-          border-color: #0070f3;
-        }
-
-        .card h3 {
-          margin: 0 0 1rem 0;
-          font-size: 1.5rem;
-        }
-
-        .card p {
-          margin: 0;
-          font-size: 1.25rem;
-          line-height: 1.5;
-        }
-
-        .logo {
-          height: 1em;
-        }
-
-        @media (max-width: 600px) {
-          .grid {
-            width: 100%;
-            flex-direction: column;
-          }
+        .sub {
+          font-size: 12px;
         }
       `}</style>
 
@@ -182,6 +157,6 @@ export default function Home() {
           box-sizing: border-box;
         }
       `}</style>
-    </div>
+    </div >
   )
 }
