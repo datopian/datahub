@@ -1,5 +1,4 @@
 import Head from 'next/head'
-import Link from 'next/link'
 
 export default function Showcase() {
   return (
@@ -9,15 +8,21 @@ export default function Showcase() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <div className="my-16">
+      <div id="datapackage-view-{{view.id}}" className="react-me tables"></div>
+      <p className="notice">
+        This is a preview version. There might be more data in the original version.
+      </p>
         <div className="my-16">
           <h2 className="text-3xl pb-2" id="data">Remuneración octubre 2017</h2>
           <p className="text-2xl my-4 font-light">Field Information</p>
           <table className="table-auto border text-sm mb-2">
             <thead>
-              <th className="px-5 w-2/5 text-left py-4 border">Field Name</th>
-              <th className="px-5 w-1/5 text-left py-4 border">Order</th>
-              <th className="px-5 w-1/6 text-left py-4 border">Type(Format)</th>
-              <th className="px-5 w-1/5 text-left py-4 border">Description</th>
+              <tr>
+                <th className="px-5 w-2/5 text-left py-4 border">Field Name</th>
+                <th className="px-5 w-1/5 text-left py-4 border">Order</th>
+                <th className="px-5 w-1/6 text-left py-4 border">Type(Format)</th>
+                <th className="px-5 w-1/5 text-left py-4 border">Description</th>
+              </tr>
             </thead>
             <tbody>
               <tr className="bg-gray-200 text-sm border">

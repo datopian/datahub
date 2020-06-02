@@ -6,7 +6,7 @@ export default function Home() {
   return (
     <div className="container mx-auto">
       <Head>
-        <title>Create Next App</title>
+        <title>Portal</title>
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <main>

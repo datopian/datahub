@@ -58,7 +58,7 @@ export default function Showcase() {
             <tbody>
               <tr className="bg-gray-100 text-sm">
                 <td className="pr-10 py-4 text-orange-500">
-                  <i className="far fa-file-alt"></i> <a href="/@myorg/preview" className="anchor-link">Remuneración octubre 2017</a>
+                  <i className="far fa-file-alt"></i> <a href="/@myorg/myDataset/r/myresource" className="anchor-link">Remuneración octubre 2017</a>
                 </td>
                 <td className="px-10 py-4">
                   Remuneración octubre 2017
