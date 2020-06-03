@@ -1,0 +1,534 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`renders snapshot homepage 1`] = `
+<div
+  className="jsx-2293288804 container mx-auto"
+>
+  <main
+    className="jsx-2293288804"
+  >
+    <nav
+      className="flex justify-between"
+    >
+      <div>
+        <button
+          className="navbar-toggle"
+          data-target="#myNavbar"
+          data-toggle="collapse"
+          type="button"
+        >
+          <span
+            className="icon-bar"
+          />
+          <span
+            className="icon-bar"
+          />
+          <span
+            className="icon-bar"
+          />
+        </button>
+        <a
+          className="main-logo pull-left"
+          href="/"
+        >
+          <img
+            className="img-responsive"
+            src="/datahub-cube.svg"
+            width="50"
+          />
+        </a>
+      </div>
+      <div
+        className="collapse navbar-collapse"
+        id="myNavbar"
+      >
+        <ul
+          className="flex uppercase text-sm pt-10"
+        >
+          <li
+            className="pr-12"
+          >
+            <a
+              href="/about"
+            >
+              About
+            </a>
+          </li>
+          <li
+            className="pr-12"
+          >
+            <a
+              href="/news"
+            >
+              News
+            </a>
+          </li>
+          <li
+            className="pr-12"
+          >
+            <a
+              className="text-orange-500 join-link"
+              href="/search"
+            >
+              Find data
+            </a>
+          </li>
+          <li
+            className="pr-12"
+          >
+            <a
+              href="/collections"
+            >
+              Collections
+            </a>
+          </li>
+          <li
+            className="pr-12"
+          >
+            <a
+              href="/requests"
+            >
+              Requests
+            </a>
+          </li>
+          <li
+            className="pr-12"
+          >
+            <a
+              href="/docs"
+            >
+              Docs
+            </a>
+          </li>
+          <li
+            className="pr-12"
+          >
+            <a
+              href="/pricing"
+            >
+              Pricing
+            </a>
+          </li>
+          <li
+            className="pr-12"
+          >
+            <a
+              href="/download"
+            >
+              Tools
+            </a>
+          </li>
+          <li
+            className="pr-12"
+          >
+            <a
+              className="chat"
+              href="https://gitter.im/datahubio/chat"
+              target="_blank"
+            >
+              Chat
+            </a>
+          </li>
+        </ul>
+      </div>
+    </nav>
+    <section
+      className="jsx-2293288804 flex mt-10 ml-40 justify-center"
+    >
+      <div
+        className="jsx-2293288804"
+      >
+        <img
+          className="jsx-2293288804"
+          src="/banner.png"
+          width="500"
+        />
+      </div>
+      <div
+        className="jsx-2293288804 mx-32"
+      >
+        <h1
+          className="jsx-2293288804 text-4xl font-thin"
+        >
+          Find, Share and Publish 
+          <br
+            className="jsx-2293288804"
+          />
+           Quality Data with 
+          <span
+            className="jsx-2293288804 text-orange-500"
+          >
+            Datahub
+          </span>
+        </h1>
+        <p
+          className="jsx-2293288804 text-md font-light w-4/5"
+        >
+          At Datahub, we have over thousands of datasets for free and a Premium Data Service for additional or customised data with guaranteed updates.
+        </p>
+        <form
+          action="/search"
+          className="jsx-2293288804 py-4 flex"
+          method="GET"
+        >
+          <div
+            className="jsx-2293288804 border-2"
+          >
+            <input
+              className="jsx-2293288804 pr-24 pl-4 py-2"
+              name="q"
+              placeholder="Search ..."
+              required={true}
+              type="text"
+            />
+          </div>
+          <div
+            className="jsx-2293288804 mx-3"
+          >
+            <button
+              className="jsx-2293288804 bg-black text-white rounded-sm px-4 py-3 font-thin"
+              type="submit"
+            >
+              Search Datasets
+            </button>
+          </div>
+        </form>
+      </div>
+    </section>
+    <section
+      className="jsx-2293288804 flex mt-6"
+    >
+      <div
+        className="jsx-2293288804 bg-gray-100 px-4 flex items-start py-5 mx-3"
+      >
+        <div
+          className="jsx-2293288804 px-5 pt-4"
+        >
+          <img
+            alt="core icon"
+            className="jsx-2293288804"
+            src="/core.png"
+            width="100"
+          />
+        </div>
+        <div
+          className="jsx-2293288804"
+        >
+          <h2
+            className="jsx-2293288804 text-2xl font-thin"
+          >
+            Core Datasets
+          </h2>
+          <p
+            className="jsx-2293288804 pb-3 sub"
+          >
+            Datahub provides important, commonly-used data as high quality, easy-to-use and open data packages.
+          </p>
+          <a
+            className="jsx-2293288804 text-orange-500"
+            href="#"
+            onClick={[Function]}
+            onMouseEnter={[Function]}
+          >
+            View Collections ›
+          </a>
+        </div>
+      </div>
+      <div
+        className="jsx-2293288804 bg-gray-100 px-4 flex items-start py-5 mx-3"
+      >
+        <div
+          className="jsx-2293288804 px-5 pt-4"
+        >
+          <img
+            alt="core icon"
+            className="jsx-2293288804"
+            src="/request.png"
+            width="100"
+          />
+        </div>
+        <div
+          className="jsx-2293288804"
+        >
+          <h2
+            className="jsx-2293288804 text-2xl font-thin"
+          >
+            Request Data
+          </h2>
+          <p
+            className="jsx-2293288804 pb-3 sub"
+          >
+            A service to locate and/or prepare data. There is no cost for making a request and all requests are completely confidential.
+          </p>
+          <a
+            className="jsx-2293288804 text-orange-500"
+            href="#"
+            onClick={[Function]}
+            onMouseEnter={[Function]}
+          >
+            Request Now ›
+          </a>
+        </div>
+      </div>
+      <div
+        className="jsx-2293288804 bg-gray-100 px-4 flex items-start py-5 mx-3"
+      >
+        <div
+          className="jsx-2293288804 px-5 pt-4"
+        >
+          <img
+            alt="core icon"
+            className="jsx-2293288804"
+            src="/earth-globe.png"
+            width="100"
+          />
+        </div>
+        <div
+          className="jsx-2293288804"
+        >
+          <h2
+            className="jsx-2293288804 text-2xl font-thin"
+          >
+            Publish Data
+          </h2>
+          <p
+            className="jsx-2293288804 pb-3 sub"
+          >
+            Securely share and elegantly put data online with quality checks, versioning, data APIs, notifications & integrations.
+          </p>
+          <a
+            className="jsx-2293288804 text-orange-500"
+            href="#"
+            onClick={[Function]}
+            onMouseEnter={[Function]}
+          >
+             Start Publishing ›
+          </a>
+        </div>
+      </div>
+    </section>
+    <section
+      className="jsx-2293288804 core-datasets mt-20 flex justify-center"
+      id="core-datasets"
+    >
+      <div
+        className="jsx-2293288804 grid grid-cols-3 grid-rows-2 w-3/6"
+      >
+        <div
+          className="jsx-2293288804 bg-gray-100 px-3 m-1"
+        >
+          <div
+            className="jsx-2293288804 py-2"
+          >
+            <h4
+              className="jsx-2293288804 title font-thin"
+            >
+              S&P 500 Companies
+            </h4>
+            <p
+              className="jsx-2293288804 sub mb-4"
+            >
+              S&P 500 Companies with Financial Information
+            </p>
+            <a
+              className="jsx-2293288804 text-orange-500 text-base"
+              href="/core/s-and-p-500-companies"
+            >
+              View
+            </a>
+          </div>
+        </div>
+        <div
+          className="jsx-2293288804 bg-gray-100 px-3 m-1"
+        >
+          <div
+            className="jsx-2293288804 py-2"
+          >
+            <h4
+              className="jsx-2293288804 title font-thin"
+            >
+              Major cities of the world
+            </h4>
+            <p
+              className="jsx-2293288804 sub mb-4"
+            >
+              List of all the major cities in the world
+            </p>
+            <a
+              className="jsx-2293288804 text-orange-500 text-base"
+              href="/core/world-cities"
+            >
+              View
+            </a>
+          </div>
+        </div>
+        <div
+          className="jsx-2293288804 bg-gray-100 row-span-2 px-3 m-1"
+        >
+          <div
+            className="jsx-2293288804 py-2"
+          >
+            <img
+              className="jsx-2293288804"
+              src="/co2.png"
+              width="70"
+            />
+            <h4
+              className="jsx-2293288804 title font-thin"
+            >
+              CO2 PPM
+            </h4>
+            <p
+              className="jsx-2293288804 sub mb-4"
+            >
+              CO2 PPM - Trends in Atmospheric Carbon Dioxide
+              <br
+                className="jsx-2293288804"
+              />
+              co2-ppm | files 7 | 300kB
+            </p>
+            <a
+              className="jsx-2293288804 text-orange-500 text-base"
+              href="/core/co2-ppm"
+            >
+              View Dataset
+            </a>
+          </div>
+        </div>
+        <div
+          className="jsx-2293288804 bg-gray-100 row-span-2 px-3 m-1"
+        >
+          <div
+            className="jsx-2293288804 py-2"
+          >
+            <img
+              className="jsx-2293288804"
+              src="/worldwide.png"
+              width="70"
+            />
+            <h4
+              className="jsx-2293288804 title font-thin"
+            >
+              Country List
+            </h4>
+            <p
+              className="jsx-2293288804 sub mb-4"
+            >
+              List of all countries with their 2 digit codes (ISO 3166-1)
+              <br
+                className="jsx-2293288804"
+              />
+              country-list | files 2 | 27kB
+            </p>
+            <a
+              className="jsx-2293288804 text-orange-500 text-base"
+              href="/core/country-list"
+            >
+              View Dataset
+            </a>
+          </div>
+        </div>
+        <div
+          className="jsx-2293288804 bg-gray-100 px-3 m-1"
+        >
+          <div
+            className="jsx-2293288804 py-2"
+          >
+            <h4
+              className="jsx-2293288804 title font-thin"
+            >
+              ISO Language Codes
+            </h4>
+            <p
+              className="jsx-2293288804 sub mb-4"
+            >
+              ISO Language Codes (639-1 and 693-2) and IETF Language Types
+            </p>
+            <a
+              className="jsx-2293288804 text-orange-500 text-base"
+              href="/core/language-codes"
+            >
+              View
+            </a>
+          </div>
+        </div>
+        <div
+          className="jsx-2293288804 bg-gray-100 px-3 m-1"
+        >
+          <div
+            className="jsx-2293288804 py-2"
+          >
+            <h4
+              className="jsx-2293288804 title font-thin"
+            >
+              Global Temperature
+            </h4>
+            <p
+              className="jsx-2293288804 sub mb-4"
+            >
+              Data are included from the GISS Surface Temperature
+            </p>
+            <a
+              className="jsx-2293288804 text-orange-500 text-base"
+              href="/core/global-temp"
+            >
+              View
+            </a>
+          </div>
+        </div>
+      </div>
+      <div
+        className="jsx-2293288804 ml-10"
+      >
+        <h3
+          className="jsx-2293288804 text-2xl font-thin"
+        >
+          Core Datasets, data as you’d want to use it
+        </h3>
+        <h1
+          className="jsx-2293288804 text-4xl py-3 font-thin"
+        >
+          Quality Data ready to Integrate
+        </h1>
+        <ul
+          className="jsx-2293288804 list-disc mb-10"
+        >
+          <li
+            className="jsx-2293288804 py-3"
+          >
+            High quality data ready to inspect, download and use. 
+            <a
+              className="jsx-2293288804 text-orange-500"
+              href="/docs/core-data"
+            >
+              Read more ›
+            </a>
+          </li>
+          <li
+            className="jsx-2293288804 py-3"
+          >
+            Bulk and API access ready for automated integration with SDKs in Python, JS and many more. 
+            <a
+              className="jsx-2293288804 text-orange-500"
+              href="/docs/getting-started/getting-data"
+            >
+              Read more ›
+            </a>
+          </li>
+          <li
+            className="jsx-2293288804 py-3"
+          >
+            Send a request if you need a help to find some good, quality dataset.
+          </li>
+        </ul>
+        <a
+          className="jsx-2293288804 bg-black text-white px-5 py-4 rounded-sm"
+          href="/core"
+        >
+          Discover Datasets
+        </a>
+      </div>
+    </section>
+  </main>
+</div>
+`;
