@@ -2,8 +2,8 @@ import Link from 'next/link'
 
 export default function Item({ datapackage }) {
   return (
-    <div>
-      <h3 className="text-2xl font-semibold">
+    <div className="mb-6">
+      <h3 className="text-xl font-semibold">
         <Link href={`/@${datapackage.organization ? datapackage.organization.name : 'dataset'}/${datapackage.name}`}>
           <a className="text-primary">{ datapackage.title || datapackage.name }</a>
         </Link>

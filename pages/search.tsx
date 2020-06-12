@@ -2,6 +2,8 @@ import { GetServerSideProps } from 'next'
 import querystring from 'querystring'
 import config from '../config'
 import utils from '../utils'
+import Head from 'next/head'
+import Nav from '../components/Nav'
 import Input from '../components/search/Input'
 import Total from '../components/search/Total'
 import Sort from '../components/search/Sort'
@@ -9,12 +11,19 @@ import List from '../components/search/List'
 
 function Search({ ckanResult, datapackages, query }) {
   return (
-    <div>
+    <>
+    <Head>
+      <title>Portal | Search</title>
+      <link rel="icon" href="/favicon.ico" />
+    </Head>
+    <Nav />
+    <main className="p-6">
       <Input query={query} />
       <Total total={ckanResult.count} />
       <Sort sort={query.sort} />
       <List datapackages={datapackages} />
-    </div>
+    </main>
+    </>
   )
 }
 

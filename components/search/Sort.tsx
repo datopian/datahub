@@ -1,6 +1,6 @@
 export default function Sort({ selected }) {
   return (
-    <div>
+    <div className="inline-block my-6 float-right">
       <label htmlFor="field-order-by">Order by:</label>
       <select className="bg-white" id="field-order-by" name="sort">
         <option value="score:desc">Relevance</option>
