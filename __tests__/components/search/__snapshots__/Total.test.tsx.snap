@@ -1,0 +1,10 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`📸 of Total component 1`] = `
+<h1
+  className="text-4xl font-semibold text-primary"
+>
+  2
+   results found
+</h1>
+`;
