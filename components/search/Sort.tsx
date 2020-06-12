@@ -1,4 +1,4 @@
-export default function Sort({ selected }) {
+export default function Sort() {
   return (
     <div className="inline-block my-6 float-right">
       <label htmlFor="field-order-by">Order by:</label>

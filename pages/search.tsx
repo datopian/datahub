@@ -20,7 +20,7 @@ function Search({ ckanResult, datapackages, query }) {
     <main className="p-6">
       <Input query={query} />
       <Total total={ckanResult.count} />
-      <Sort sort={query.sort} />
+      <Sort />
       <List datapackages={datapackages} />
     </main>
     </>
