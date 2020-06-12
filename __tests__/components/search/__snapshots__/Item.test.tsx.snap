@@ -1,9 +1,11 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`📸 of Item component 1`] = `
-<div>
+<div
+  className="mb-6"
+>
   <h3
-    className="text-2xl font-semibold"
+    className="text-xl font-semibold"
   >
     <a
       className="text-primary"

@@ -2,7 +2,7 @@
 
 exports[`📸 of Total component 1`] = `
 <h1
-  className="text-4xl font-semibold text-primary"
+  className="text-3xl font-semibold text-primary my-6 inline-block"
 >
   2
    results found
