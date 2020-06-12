@@ -7,13 +7,21 @@ const gdp = {
   "resources": [
     {
       "name": "gdp",
-      "title": "GDP data"
+      "title": "GDP data",
+      "format": "csv",
+      "created": "2019-03-07T12:00:36.273495",
+      "last_modified": "2020-05-07T12:00:36.273495"
     }
   ],
   "organization": {
     "title": "World Bank",
     "name": "world-bank",
-  }
+    "description": "The World Bank is an international financial institution that provides loans and grants to the governments of poorer countries for the purpose of pursuing capital projects.",
+    "created": "2019-03-07T11:51:13.758844",
+    "image_url": "https://github.com/datahq/frontend/raw/master/public/img/avatars/world-bank.jpg"
+  },
+  "metadata_created": "2019-03-07T11:56:19.696257",
+  "metadata_modified": "2019-03-07T12:03:58.817280"
 }
 
 const population = {
@@ -23,12 +31,18 @@ const population = {
   "resources": [
     {
       "name": "population",
-      "title": "Population data"
+      "title": "Population data",
+      "format": "csv",
+      "created": "2019-03-07T12:00:36.273495",
+      "last_modified": "2020-05-07T12:00:36.273495"
     }
   ],
   "organization": {
     "title": "World Bank",
     "name": "world-bank",
+    "description": "The World Bank is an international financial institution that provides loans and grants to the governments of poorer countries for the purpose of pursuing capital projects.",
+    "created": "2019-03-07T11:51:13.758844",
+    "image_url": "https://github.com/datahq/frontend/raw/master/public/img/avatars/world-bank.jpg"
   }
 }
 

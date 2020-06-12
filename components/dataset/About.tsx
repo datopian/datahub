@@ -1,32 +1,31 @@
 export default function About({ datapackage }) {
   return (
     <>
-      <h1 className="text-4xl font-semibold text-primary">{ datapackage.title || datapackage.name }</h1>
-      <table className="table info no-left-padding">
+      <table className="table-auto w-full text-sm text-left my-6">
         <thead>
           <tr>
-            <th>Files</th>
-            <th>Size</th>
-            <th>Format</th>
-            <th>Created</th>
-            <th>Updated</th>
-            <th>License</th>
-            <th>Source</th>
+            <th className="px-4 py-2">Files</th>
+            <th className="px-4 py-2">Size</th>
+            <th className="px-4 py-2">Format</th>
+            <th className="px-4 py-2">Created</th>
+            <th className="px-4 py-2">Updated</th>
+            <th className="px-4 py-2">License</th>
+            <th className="px-4 py-2">Source</th>
           </tr>
         </thead>
         <tbody>
           <tr>
-            <td className="col-xs-1">{ datapackage.resources.length }</td>
-            <td className="col-xs-1">{ datapackage.size || 'N\A' }</td>
-            <td className="col-xs-2 format-list">
-            
-            </td>
-            <td className="col-xs-2">{ datapackage.created }</td>
-            <td className="col-xs-2">{ datapackage.modified }</td>
-            <td className="col-xs-2">
+            <td className="px-4 py-2">{ datapackage.resources.length }</td>
+            <td className="px-4 py-2">{ datapackage.size || 'N\A' }</td>
+            <td className="px-4 py-2">
 
             </td>
-            <td className="col-xs-2">
+            <td className="px-4 py-2">{ datapackage.created }</td>
+            <td className="px-4 py-2">{ datapackage.modified }</td>
+            <td className="px-4 py-2">
+
+            </td>
+            <td className="px-4 py-2">
 
             </td>
           </tr>
