@@ -5,6 +5,7 @@
 [CKAN]: https://ckan.org/
 [Next.js]: https://nextjs.com/
 
+Live DEMO: https://portal.datopian1.now.sh
 
 ## Getting Started
 
