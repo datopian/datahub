@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`renders snapshot homepage 1`] = `
+exports[`📸 of Home page 1`] = `
 <div
   className="jsx-2293288804 container mx-auto"
 >
