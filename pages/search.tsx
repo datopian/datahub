@@ -23,7 +23,6 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   const ckanQuery = querystring.stringify(
     utils.convertToCkanSearchQuery(query)
   )
-  console.log(ckanQuery)
   const res = await fetch(`${config.get('DMS')}/api/3/action/package_search?${ckanQuery}`)
   const ckanResult = (await res.json()).result
   const datapackages = ckanResult.results.map(item => utils.ckanToDataPackage(item))
