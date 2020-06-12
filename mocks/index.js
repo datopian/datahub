@@ -19,9 +19,11 @@ const gdp = {
 const population = {
   "name": "population",
   "title": "World population data",
+  "notes": "Population figures for countries, regions (e.g. Asia) and the world. Data comes originally from World Bank and has been converted into standard CSV.",
   "resources": [
     {
-      "name": "population"
+      "name": "population",
+      "title": "Population data"
     }
   ],
   "organization": {
