@@ -1,5 +1,35 @@
 const nock = require('nock')
 
+const gdp = {
+  "name": "gdp",
+  "title": "Country, Regional and World GDP (Gross Domestic Product)",
+  "notes": "Country, regional and world GDP in current US Dollars ($). Regional means collections of countries e.g. Europe & Central Asia. Data is sourced from the World Bank and turned into a standard normalized CSV.",
+  "resources": [
+    {
+      "name": "gdp",
+      "title": "GDP data"
+    }
+  ],
+  "organization": {
+    "title": "World Bank",
+    "name": "world-bank",
+  }
+}
+
+const population = {
+  "name": "population",
+  "title": "World population data",
+  "resources": [
+    {
+      "name": "population"
+    }
+  ],
+  "organization": {
+    "title": "World Bank",
+    "name": "world-bank",
+  }
+}
+
 module.exports.initMocks = function() {
   // Uncomment this line if you want to record API calls
   // nock.recorder.rec()
@@ -17,33 +47,8 @@ module.exports.initMocks = function() {
         "sort": "score desc, metadata_modified desc",
         "facets": {},
         "results": [
-          {
-            "name": "gdp",
-            "title": "Country, Regional and World GDP (Gross Domestic Product)",
-            "notes": "Country, regional and world GDP in current US Dollars ($). Regional means collections of countries e.g. Europe & Central Asia. Data is sourced from the World Bank and turned into a standard normalized CSV.",
-            "resources": [
-              {
-                "name": "gdp"
-              }
-            ],
-            "organization": {
-              "title": "World Bank",
-              "name": "world-bank",
-            }
-          },
-          {
-            "name": "population",
-            "title": "World population data",
-            "resources": [
-              {
-                "name": "population"
-              }
-            ],
-            "organization": {
-              "title": "World Bank",
-              "name": "world-bank",
-            }
-          }
+          gdp,
+          population
         ],
         "search_facets": {}
       }
@@ -57,26 +62,20 @@ module.exports.initMocks = function() {
         "sort": "score desc, metadata_modified desc",
         "facets": {},
         "results": [
-          {
-            "name": "gdp",
-            "title": "Country, Regional and World GDP (Gross Domestic Product)",
-            "notes": "Country, regional and world GDP in current US Dollars ($). Regional means collections of countries e.g. Europe & Central Asia. Data is sourced from the World Bank and turned into a standard normalized CSV.",
-            "resources": [
-              {
-                "name": "gdp"
-              }
-            ],
-            "organization": {
-              "title": "World Bank",
-              "name": "world-bank",
-            }
-          }
+          gdp
         ],
         "search_facets": {}
       }
     })
 
   // "package_show" mocks
+  nock('http://mock.ckan/api/3/action', {'encodedQueryParams':true})
+    .persist()
+    .get('/package_show?id=gdp')
+    .reply(200, {
+      "success": true,
+      "result": gdp
+    })
 
   // "organization_show" mocks
 }
