@@ -10,7 +10,9 @@ const gdp = {
       "title": "GDP data",
       "format": "csv",
       "created": "2019-03-07T12:00:36.273495",
-      "last_modified": "2020-05-07T12:00:36.273495"
+      "last_modified": "2020-05-07T12:00:36.273495",
+      "datastore_active": false,
+      "url": "https://raw.githubusercontent.com/datasets/gdp/master/data/gdp.csv"
     }
   ],
   "organization": {
@@ -34,7 +36,9 @@ const population = {
       "title": "Population data",
       "format": "csv",
       "created": "2019-03-07T12:00:36.273495",
-      "last_modified": "2020-05-07T12:00:36.273495"
+      "last_modified": "2020-05-07T12:00:36.273495",
+      "datastore_active": true,
+      "url": "https://raw.githubusercontent.com/datasets/gdp/master/data/gdp.csv"
     }
   ],
   "organization": {
@@ -92,6 +96,9 @@ module.exports.initMocks = function() {
       "success": true,
       "result": gdp
     })
-
-  // "organization_show" mocks
+    .get('/package_show?id=population')
+    .reply(200, {
+      "success": true,
+      "result": population
+    })
 }
