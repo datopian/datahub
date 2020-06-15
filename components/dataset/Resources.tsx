@@ -1,6 +1,6 @@
 import Link from 'next/link'
 
-export default function Resources({ resources }) {
+export default function Resources({ datapackage }) {
   return (
     <>
       <h3 className="text-xl font-semibold">Data Files</h3>
@@ -15,10 +15,10 @@ export default function Resources({ resources }) {
           </tr>
         </thead>
         <tbody>
-          {resources.map((resource, index) => (
+          {datapackage.resources.map((resource, index) => (
               <tr key={index}>
                 <td className="px-4 py-2">
-                  <Link href={`r/${resource.name}`}>
+                  <Link href={`${datapackage.name}/r/${resource.name}`}>
                     <a className="underline">{ resource.title || resource.name }</a>
                   </Link>
                 </td>
@@ -26,7 +26,7 @@ export default function Resources({ resources }) {
                 <td className="px-4 py-2">{ resource.created }</td>
                 <td className="px-4 py-2">{ resource.last_modified }</td>
                 <td className="px-4 py-2">
-                  <Link href={`r/${resource.name}`}>
+                  <Link href={`${datapackage.name}/r/${resource.name}`}>
                     <a className="underline">Preview</a>
                   </Link>
                 </td>

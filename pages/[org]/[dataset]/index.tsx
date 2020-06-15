@@ -21,7 +21,7 @@ function Dataset({ datapackage }) {
         </h1>
         <Org org={datapackage.organization} />
         <About datapackage={datapackage} />
-        <Resources resources={datapackage.resources} />
+        <Resources datapackage={datapackage} />
       </main>
     </>
   )
