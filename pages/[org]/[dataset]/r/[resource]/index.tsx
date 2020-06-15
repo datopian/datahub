@@ -4,7 +4,7 @@ const toArray = require('stream-to-array')
 import config from '../../../../../config'
 import utils from '../../../../../utils'
 import Head from 'next/head'
-import Nav from '../../../../../components/Nav'
+import Nav from '../../../../../components/home/Nav'
 import About from '../../../../../components/resource/About'
 import DataExplorer from '../../../../../components/resource/DataExplorer'
 import DataView from '../../../../../components/resource/DataView'
