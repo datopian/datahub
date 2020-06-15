@@ -12,12 +12,14 @@
   },
   "dependencies": {
     "bytes": "^3.1.0",
+    "data.js": "^0.12.11",
     "markdown-it": "^11.0.0",
     "next": "9.4.2",
     "querystring": "^0.2.0",
     "react": "16.13.1",
     "react-dom": "16.13.1",
-    "slugify": "^1.4.0"
+    "slugify": "^1.4.0",
+    "stream-to-array": "^2.3.0"
   },
   "devDependencies": {
     "@testing-library/jest-dom": "^5.8.0",

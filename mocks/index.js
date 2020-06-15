@@ -7,12 +7,13 @@ const gdp = {
   "resources": [
     {
       "name": "gdp",
+      "id": "gdp",
       "title": "GDP data",
       "format": "csv",
       "created": "2019-03-07T12:00:36.273495",
       "last_modified": "2020-05-07T12:00:36.273495",
       "datastore_active": false,
-      "url": "https://raw.githubusercontent.com/datasets/gdp/master/data/gdp.csv"
+      "url": "http://mock.filestore/gdp.csv"
     }
   ],
   "organization": {
@@ -33,12 +34,13 @@ const population = {
   "resources": [
     {
       "name": "population",
+      "id": "population",
       "title": "Population data",
       "format": "csv",
       "created": "2019-03-07T12:00:36.273495",
       "last_modified": "2020-05-07T12:00:36.273495",
       "datastore_active": true,
-      "url": "https://raw.githubusercontent.com/datasets/gdp/master/data/gdp.csv"
+      "url": "http://mock.filestore/population.csv"
     }
   ],
   "organization": {
@@ -101,4 +103,40 @@ module.exports.initMocks = function() {
       "success": true,
       "result": population
     })
+
+  // "datastore_search" mocks
+  nock('http://mock.ckan/api/3/action', {'encodedQueryParams':true})
+    .persist()
+    .get('/datastore_search?resource_id=population')
+    .reply(200, {
+      "success": true,
+      "result": {
+        "records": [
+          {
+          "Country Code": "ARB",
+          "Country Name": "Arab World",
+          "Value": 92197753,
+          "Year": 1960
+          },
+          {
+          "Country Code": "ARB",
+          "Country Name": "Arab World",
+          "Value": 94724510,
+          "Year": 1961
+          },
+          {
+          "Country Code": "ARB",
+          "Country Name": "Arab World",
+          "Value": 97334442,
+          "Year": 1962
+          }
+        ]
+      }
+    })
+
+  // Filestore mocks
+  nock('http://mock.filestore', {'encodedQueryParams':true})
+    .persist()
+    .get('/gdp.csv')
+    .reply(200, 'a,b,c\n1,2,3\n4,5,6\n')
 }
