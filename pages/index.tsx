@@ -1,7 +1,7 @@
-import Head from 'next/head'
-import Nav from '../components/home/Nav'
-import Recent from '../components/home/Recent'
-import Input from '../components/search/Input'
+import Head from 'next/head';
+import Nav from '../components/home/Nav';
+import Recent from '../components/home/Recent';
+import Input from '../components/search/Input';
 
 export default function Home() {
   return (
@@ -13,9 +13,15 @@ export default function Home() {
       <Nav />
       <section className="flex justify-center items-center flex-col mt-8 mx-4 lg:flex-row">
         <div>
-          <h1 className="text-4xl mb-3 font-thin">Find, Share and Publish <br /> Quality Data with <span className="text-orange-500">Datahub</span>
+          <h1 className="text-4xl mb-3 font-thin">
+            Find, Share and Publish <br /> Quality Data with{' '}
+            <span className="text-orange-500">Datahub</span>
           </h1>
-          <p className="text-md font-light mb-3 w-4/5">At Datahub, we have over thousands of datasets for free and a Premium Data Service for additional or customised data with guaranteed updates.</p>
+          <p className="text-md font-light mb-3 w-4/5">
+            At Datahub, we have over thousands of datasets for free and a
+            Premium Data Service for additional or customised data with
+            guaranteed updates.
+          </p>
           <Input query={{}} />
         </div>
         <div className="mt-4">
@@ -24,5 +30,5 @@ export default function Home() {
       </section>
       <Recent />
     </div>
-  )
+  );
 }

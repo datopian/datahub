@@ -2,8 +2,8 @@
 
 `Portal` assumes a "decoupled" approach where the frontend is a separate service from the backend and interacts with backend(s) via an API. It can be used with any backend and has out of the box support for [CKAN][]. `portal` is built in Javascript and React on top of the popular [Next.js][] framework.
 
-[CKAN]: https://ckan.org/
-[Next.js]: https://nextjs.com/
+[ckan]: https://ckan.org/
+[next.js]: https://nextjs.com/
 
 Live DEMO: https://portal.datopian1.now.sh
 
@@ -22,13 +22,12 @@ npm init portal-app my-data-portal
 ```
 
 > NB: Under the hood, this uses the tool called create-next-app, which bootstraps a Next.js app for you. It uses this template through the --example flag.
-> 
+>
 > If it doesn’t work, please open an issue.
-
 
 ## Guide
 
-### Styling :art: 
+### Styling :art:
 
 We use Tailwind as a CSS framework. Take a look at `/styles/index.css` to see what we're importing from Tailwind bundle. You can also configure Tailwind using `tailwind.config.js` file.
 
@@ -49,13 +48,13 @@ $ export CMS=http://myblog.wordpress.com
 
 These are the default routes set up in the "starter" app.
 
-* Home `/`
-* Search `/search`
-* Dataset `/@org/dataset`
-* Resource `/@org/dataset/r/resource`
-* Organization `/@org`
-* Collection (aka group in CKAN) (?) - suggest to merge into org
-* Static pages, eg, `/about` etc. from CMS or can do it without external CMS, e.g., in Next.js
+- Home `/`
+- Search `/search`
+- Dataset `/@org/dataset`
+- Resource `/@org/dataset/r/resource`
+- Organization `/@org`
+- Collection (aka group in CKAN) (?) - suggest to merge into org
+- Static pages, eg, `/about` etc. from CMS or can do it without external CMS, e.g., in Next.js
 
 ### New Routes
 
@@ -77,10 +76,9 @@ Boot the demo portal:
 $ yarn dev # or npm run dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) to see the home page :tada: 
+Open [http://localhost:3000](http://localhost:3000) to see the home page :tada:
 
 You can start editing the page by modifying `/pages/index.tsx`. The page auto-updates as you edit the file.
-
 
 ### Tests
 

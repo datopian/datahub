@@ -15,22 +15,16 @@ export default function About({ datapackage }) {
         </thead>
         <tbody>
           <tr>
-            <td className="px-4 py-2">{ datapackage.resources.length }</td>
-            <td className="px-4 py-2">{ datapackage.size || 'N\A' }</td>
-            <td className="px-4 py-2">
-
-            </td>
-            <td className="px-4 py-2">{ datapackage.created }</td>
-            <td className="px-4 py-2">{ datapackage.modified }</td>
-            <td className="px-4 py-2">
-
-            </td>
-            <td className="px-4 py-2">
-
-            </td>
+            <td className="px-4 py-2">{datapackage.resources.length}</td>
+            <td className="px-4 py-2">{datapackage.size || 'NA'}</td>
+            <td className="px-4 py-2"></td>
+            <td className="px-4 py-2">{datapackage.created}</td>
+            <td className="px-4 py-2">{datapackage.modified}</td>
+            <td className="px-4 py-2"></td>
+            <td className="px-4 py-2"></td>
           </tr>
         </tbody>
       </table>
     </>
-  )
+  );
 }
