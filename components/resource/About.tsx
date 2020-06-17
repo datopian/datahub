@@ -1,4 +1,4 @@
-import Link from 'next/link'
+import Link from 'next/link';
 
 export default function About({ resource }) {
   return (
@@ -18,21 +18,23 @@ export default function About({ resource }) {
         </thead>
         <tbody>
           <tr>
-            <td className="px-4 py-2">{ resource.name || resource.id }</td>
-            <td className="px-4 py-2">{ resource.title || '' }</td>
-            <td className="px-4 py-2">{ resource.description || '' }</td>
-            <td className="px-4 py-2">{ resource.format }</td>
-            <td className="px-4 py-2">{ resource.size }</td>
-            <td className="px-4 py-2">{ resource.created }</td>
-            <td className="px-4 py-2">{ resource.last_modified || '' }</td>
+            <td className="px-4 py-2">{resource.name || resource.id}</td>
+            <td className="px-4 py-2">{resource.title || ''}</td>
+            <td className="px-4 py-2">{resource.description || ''}</td>
+            <td className="px-4 py-2">{resource.format}</td>
+            <td className="px-4 py-2">{resource.size}</td>
+            <td className="px-4 py-2">{resource.created}</td>
+            <td className="px-4 py-2">{resource.last_modified || ''}</td>
             <td className="px-4 py-2">
               <Link href={resource.path}>
-                <a className="bg-white hover:bg-gray-200 border text-black font-semibold py-2 px-4 rounded">{ resource.format }</a>
+                <a className="bg-white hover:bg-gray-200 border text-black font-semibold py-2 px-4 rounded">
+                  {resource.format}
+                </a>
               </Link>
             </td>
           </tr>
         </tbody>
       </table>
     </>
-  )
+  );
 }
