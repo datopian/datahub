@@ -12,7 +12,7 @@ export default function Nav() {
   return (
     <nav className="flex items-center justify-between flex-wrap bg-white p-4 border-b border-gray-200">
       <div className="flex items-center flex-shrink-0 text-gray-700 mr-6">
-        <img src="./images/logo.svg" alt="portal logo" width="40" />
+        <img src="/images/logo.svg" alt="portal logo" width="40" />
       </div>
       <div className="block lg:hidden mx-4">
         <button onClick={handleClick} className="flex items-center px-3 py-2 border rounded text-gray-700 border-orange-400 hover:text-black hover:border-black">
