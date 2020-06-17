@@ -10,7 +10,7 @@
     "test:watch": "jest --watch",
     "test:coverage": "jest --coverage",
     "format": "prettier --single-quote --write .",
-    "pre-comit": "echo 'formating your changes.....' && prettier --single-quote --write"
+    "pre-commit": "echo 'formating your changes.....' && prettier --single-quote --write"
   },
   "dependencies": {
     "bytes": "^3.1.0",
@@ -45,6 +45,6 @@
     }
   },
   "lint-staged": {
-    "*.{ts,css,html,tsx}": "yarn pre-comit"
+    "*.{ts,tsx,js,jsx,css,html,md}": "yarn pre-commit"
   }
 }
