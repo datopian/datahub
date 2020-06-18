@@ -13,7 +13,15 @@
     "pre-commit": "echo 'formating your changes.....' && prettier --single-quote --write"
   },
   "dependencies": {
+    "@apollo/react-hooks": "^3.1.5",
+    "apollo-cache-inmemory": "^1.6.6",
+    "apollo-client": "^2.6.10",
+    "apollo-link-http": "^1.5.17",
+    "apollo-link-schema": "^1.2.5",
     "bytes": "^3.1.0",
+    "graphql": "^15.1.0",
+    "graphql-tag": "^2.10.3",
+    "graphql-tools": "^6.0.10",
     "markdown-it": "^11.0.0",
     "next": "9.4.2",
     "querystring": "^0.2.0",
@@ -27,6 +35,7 @@
     "@types/jest": "^25.2.3",
     "@types/react": "^16.9.35",
     "babel-jest": "^26.0.1",
+    "babel-plugin-graphql-tag": "^2.5.0",
     "dotenv": "^8.2.0",
     "husky": ">=4",
     "jest": "^26.0.1",

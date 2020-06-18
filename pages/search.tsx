@@ -7,7 +7,8 @@ import Nav from '../components/home/Nav';
 import Input from '../components/search/Input';
 import Total from '../components/search/Total';
 import Sort from '../components/search/Sort';
-import List from '../components/search/List';
+import List, { DEFAULT_SEARCH_QUERY } from '../components/search/List';
+import { initializeApollo } from '../lib/apolloClient';
 
 function Search({ ckanResult, datapackages, query }) {
   return (
@@ -28,19 +29,32 @@ function Search({ ckanResult, datapackages, query }) {
 }
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
-  const query = context.query || {};
-  const ckanQuery = querystring.stringify(
-    utils.convertToCkanSearchQuery(query)
-  );
-  const res = await fetch(
-    `${config.get('DMS')}/api/3/action/package_search?${ckanQuery}`
-  );
-  const ckanResult = (await res.json()).result;
-  const datapackages = ckanResult.results.map((item) =>
-    utils.ckanToDataPackage(item)
-  );
+  const apolloClient = initializeApollo();
 
-  return { props: { ckanResult, datapackages, query } };
+  await apolloClient.query({
+    query: DEFAULT_SEARCH_QUERY,
+  });
+
+  return {
+    props: {
+      initialApolloState: apolloClient.cache.extract(),
+    },
+    unstable_revalidate: 1,
+  };
+  //
+  // const query = context.query || {};
+  // const ckanQuery = querystring.stringify(
+  //   utils.convertToCkanSearchQuery(query)
+  // );
+  // const res = await fetch(
+  //   `${config.get('DMS')}/api/3/action/package_search?${ckanQuery}`
+  // );
+  // const ckanResult = (await res.json()).result;
+  // const datapackages = ckanResult.results.map((item) =>
+  //   utils.ckanToDataPackage(item)
+  // );
+  //
+  // return { props: { ckanResult, datapackages, query } };
 };
 
 export default Search;
