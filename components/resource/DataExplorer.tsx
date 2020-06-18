@@ -1,5 +1,5 @@
-import Link from 'next/link'
+import Link from 'next/link';
 
 export default function DataExplorer({ resource }) {
-  return <>{JSON.stringify(resource)}</>
+  return <>{JSON.stringify(resource)}</>;
 }

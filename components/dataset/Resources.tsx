@@ -1,4 +1,4 @@
-import Link from 'next/link'
+import Link from 'next/link';
 
 export default function Resources({ datapackage }) {
   return (
@@ -16,25 +16,24 @@ export default function Resources({ datapackage }) {
         </thead>
         <tbody>
           {datapackage.resources.map((resource, index) => (
-              <tr key={index}>
-                <td className="px-4 py-2">
-                  <Link href={`${datapackage.name}/r/${resource.name}`}>
-                    <a className="underline">{ resource.title || resource.name }</a>
-                  </Link>
-                </td>
-                <td className="px-4 py-2">{ resource.format }</td>
-                <td className="px-4 py-2">{ resource.created }</td>
-                <td className="px-4 py-2">{ resource.last_modified }</td>
-                <td className="px-4 py-2">
-                  <Link href={`${datapackage.name}/r/${resource.name}`}>
-                    <a className="underline">Preview</a>
-                  </Link>
-                </td>
-              </tr>
-            )
-          )}
+            <tr key={index}>
+              <td className="px-4 py-2">
+                <Link href={`${datapackage.name}/r/${resource.name}`}>
+                  <a className="underline">{resource.title || resource.name}</a>
+                </Link>
+              </td>
+              <td className="px-4 py-2">{resource.format}</td>
+              <td className="px-4 py-2">{resource.created}</td>
+              <td className="px-4 py-2">{resource.last_modified}</td>
+              <td className="px-4 py-2">
+                <Link href={`${datapackage.name}/r/${resource.name}`}>
+                  <a className="underline">Preview</a>
+                </Link>
+              </td>
+            </tr>
+          ))}
         </tbody>
       </table>
     </>
-  )
+  );
 }

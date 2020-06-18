@@ -10,5 +10,5 @@ export default function Sort() {
         <option value="views_recent:desc">Popular</option>
       </select>
     </div>
-  )
+  );
 }
