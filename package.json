@@ -3,6 +3,9 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
+    "mock": "npm start --prefix mock",
+    "dev-mock": "GRAPHQL_ENDPOINT=\"http://localhost:4000/\" run-p dev mock",
+    "postinstall": "npm install --prefix mock",
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
@@ -42,6 +45,7 @@
     "lint-staged": ">=10",
     "nconf": "^0.10.0",
     "nock": "^12.0.3",
+    "npm-run-all": "^4.1.5",
     "postcss-preset-env": "^6.7.0",
     "prettier": "2.0.5",
     "react-test-renderer": "^16.13.1",

@@ -2,9 +2,9 @@ import { useState } from 'react';
 import { useRouter } from 'next/router';
 import Link from 'next/link';
 
-export default function Input({ query }) {
+export default function Input() {
   const router = useRouter();
-  const [q, setQ] = useState(query.q);
+  const [q, setQ] = useState(router.query.q);
 
   const handleChange = (event) => {
     setQ(event.target.value);

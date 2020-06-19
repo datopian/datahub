@@ -10,7 +10,7 @@ import Sort from '../components/search/Sort';
 import List, { DEFAULT_SEARCH_QUERY } from '../components/search/List';
 import { initializeApollo } from '../lib/apolloClient';
 
-function Search({ ckanResult, datapackages, query }) {
+function Search({ variables }) {
   return (
     <>
       <Head>
@@ -19,42 +19,35 @@ function Search({ ckanResult, datapackages, query }) {
       </Head>
       <Nav />
       <main className="p-6">
-        <Input query={query} />
-        <Total total={ckanResult.count} />
+        <Input />
+        <Total variables={variables} />
         <Sort />
-        <List datapackages={datapackages} />
+        <List variables={variables} />
       </main>
     </>
   );
 }
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
+  const query = context.query || {};
+  const ckanQuery = utils.convertToCkanSearchQuery(query);
+
   const apolloClient = initializeApollo();
+  const variables = {
+    query: { q: ckanQuery.q || '' },
+  };
 
   await apolloClient.query({
     query: DEFAULT_SEARCH_QUERY,
+    variables,
   });
 
   return {
     props: {
       initialApolloState: apolloClient.cache.extract(),
+      variables,
     },
-    unstable_revalidate: 1,
   };
-  //
-  // const query = context.query || {};
-  // const ckanQuery = querystring.stringify(
-  //   utils.convertToCkanSearchQuery(query)
-  // );
-  // const res = await fetch(
-  //   `${config.get('DMS')}/api/3/action/package_search?${ckanQuery}`
-  // );
-  // const ckanResult = (await res.json()).result;
-  // const datapackages = ckanResult.results.map((item) =>
-  //   utils.ckanToDataPackage(item)
-  // );
-  //
-  // return { props: { ckanResult, datapackages, query } };
 };
 
 export default Search;
