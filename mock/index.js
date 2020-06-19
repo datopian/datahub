@@ -2,57 +2,7 @@ const { GraphQLScalarType } = require('graphql');
 const { ApolloServer } = require('apollo-server');
 const { makeExecutableSchema } = require('graphql-tools');
 const { importSchema } = require('graphql-import');
-const typeDefs = `
-  type Query {
-    search(query: SearchQuery!): Response!
-  }
-
-  input SearchQuery {
-    q: String!
-  }
-
-  type Response {
-    success: Boolean!
-    result: Result!
-  }
-
-  type Result {
-    count: Int!
-    sort: String!
-    facets: String!
-    search_facets: String!
-    results: [Package!]!
-  }
-
-  type Package {
-    name: String!
-    title: String!
-    notes: String!
-    resources: [Resource!]!
-    organization: Organization!
-    metadata_created: String!
-    metadata_modified: String!
-  }
-
-  type Resource {
-    name: String!
-    id: String!
-    title: String!
-    format: String!
-    created: String!
-    last_modified: String!
-    datastore_active: Boolean!
-    url: String!
-  }
-
-  type Organization {
-    name: String!
-    title: String!
-    description: String!
-    created: String!
-    image_url: String!
-  }
-`;
+const typeDefs = importSchema('./schema.graphql');
 
 const resolvers = {
   Query: {
