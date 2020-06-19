@@ -1,9 +1,13 @@
 import Head from 'next/head';
+import { GetServerSideProps } from 'next';
 import Nav from '../components/home/Nav';
 import Recent from '../components/home/Recent';
 import Input from '../components/search/Input';
+import config from '../config/';
+import utils from '../utils';
+import { util } from 'prettier';
 
-export default function Home() {
+function Home() {
   return (
     <div className="container mx-auto">
       <Head>
@@ -32,3 +36,21 @@ export default function Home() {
     </div>
   );
 }
+
+export const getServerSideProps: GetServerSideProps = async (context) => {
+  const res = await fetch(
+    `${config.get(
+      'DMS'
+    )}/api/3/action/package_search?sort=metadata_created%20desc`
+  );
+  const ckanResult = (await res.json()).result;
+  const datapackages = ckanResult;
+  console.log(datapackages);
+  return {
+    props: {
+      datapackages,
+    },
+  };
+};
+
+export default Home;
