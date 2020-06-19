@@ -1,5 +1,5 @@
 import Item from './Item';
-import ErrorMessage from './Error';
+import ErrorMessage from '../Error';
 import { NetworkStatus } from 'apollo-client';
 import { useQuery } from '@apollo/react-hooks';
 import gql from 'graphql-tag';
@@ -35,7 +35,7 @@ export default function List({ variables }) {
     }
   );
 
-  if (error) return <ErrorMessage message="Error loading posts." />;
+  if (error) return <ErrorMessage message="Error loading search results." />;
   if (loading) return <div>Loading</div>;
 
   const { result } = data.search;
