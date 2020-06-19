@@ -4,9 +4,8 @@ import config from '../config';
 import utils from '../utils';
 import Head from 'next/head';
 import Nav from '../components/home/Nav';
-import Input from '../components/search/Input';
+import Form from '../components/search/Form';
 import Total from '../components/search/Total';
-import Sort from '../components/search/Sort';
 import List, { DEFAULT_SEARCH_QUERY } from '../components/search/List';
 import { initializeApollo } from '../lib/apolloClient';
 
@@ -19,9 +18,8 @@ function Search({ variables }) {
       </Head>
       <Nav />
       <main className="p-6">
-        <Input />
+        <Form />
         <Total variables={variables} />
-        <Sort />
         <List variables={variables} />
       </main>
     </>
