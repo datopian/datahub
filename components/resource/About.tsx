@@ -1,6 +1,41 @@
 import Link from 'next/link';
+import ErrorMessage from '../Error';
+import { NetworkStatus } from 'apollo-client';
+import { useQuery } from '@apollo/react-hooks';
+import gql from 'graphql-tag';
 
-export default function About({ resource }) {
+export const QUERY = gql`
+  query dataset($id: String!) {
+    dataset(id: $id) {
+      result {
+        resources {
+          name
+          id
+          url
+          format
+          title
+          created
+          last_modified
+        }
+      }
+    }
+  }
+`;
+
+export default function About({ variables }) {
+  const { loading, error, data } = useQuery(QUERY, {
+    variables,
+    // Setting this value to true will make the component rerender when
+    // the "networkStatus" changes, so we are able to know if it is fetching
+    // more data
+    notifyOnNetworkStatusChange: true,
+  });
+
+  if (error) return <ErrorMessage message="Error loading dataset." />;
+  if (loading) return <div>Loading</div>;
+
+  const { result } = data.dataset;
+  const resource = result.resources[0];
   return (
     <>
       <table className="table-auto w-full text-sm text-left my-6">
@@ -26,7 +61,7 @@ export default function About({ resource }) {
             <td className="px-4 py-2">{resource.created}</td>
             <td className="px-4 py-2">{resource.last_modified || ''}</td>
             <td className="px-4 py-2">
-              <Link href={resource.path}>
+              <Link href={resource.url}>
                 <a className="bg-white hover:bg-gray-200 border text-black font-semibold py-2 px-4 rounded">
                   {resource.format}
                 </a>
