@@ -4,10 +4,8 @@ import Nav from '../components/home/Nav';
 import Recent from '../components/home/Recent';
 import Input from '../components/search/Input';
 import config from '../config/';
-import utils from '../utils';
-import { util } from 'prettier';
 
-function Home() {
+function Home({ datapackages }) {
   return (
     <div className="container mx-auto">
       <Head>
@@ -32,7 +30,7 @@ function Home() {
           <img src="/images/banner.svg" className="w-4/5" />
         </div>
       </section>
-      <Recent />
+      <Recent datapackages={datapackages} />
     </div>
   );
 }
@@ -44,8 +42,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     )}/api/3/action/package_search?sort=metadata_created%20desc`
   );
   const ckanResult = (await res.json()).result;
-  const datapackages = ckanResult;
-  console.log(datapackages);
+  const datapackages = ckanResult.results;
   return {
     props: {
       datapackages,
