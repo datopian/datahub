@@ -28,6 +28,7 @@ const gdp = {
   },
   metadata_created: '2019-03-07T11:56:19.696257',
   metadata_modified: '2019-03-07T12:03:58.817280',
+  size: '',
 };
 
 const population = {

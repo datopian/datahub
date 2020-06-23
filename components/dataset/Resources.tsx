@@ -4,9 +4,9 @@ import { NetworkStatus } from 'apollo-client';
 import { useQuery } from '@apollo/react-hooks';
 import gql from 'graphql-tag';
 
-export const DEFAULT_DATASET_QUERY = gql`
-  query dataset($id: String!) {
-    dataset(id: $id) {
+export const GET_DATAPACKAGE_QUERY = gql`
+  query dataset($id: String) {
+    dataset(id: $id) @rest(type: "Response", path: "package_show?{args}") {
       result {
         name
         resources {
@@ -23,7 +23,7 @@ export const DEFAULT_DATASET_QUERY = gql`
 
 export default function Resources({ variables }) {
   const { loading, error, data, fetchMore, networkStatus } = useQuery(
-    DEFAULT_DATASET_QUERY,
+    GET_DATAPACKAGE_QUERY,
     {
       variables,
       // Setting this value to true will make the component rerender when

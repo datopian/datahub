@@ -28,6 +28,25 @@ const restLink = new RestLink({
       }
       return data;
     },
+    Response: (
+      data: any,
+      outerType: string,
+      patchDeeper: RestLink.FunctionalTypePatcher
+    ): any => {
+      if (data.result != null) {
+        data.result.__typename = 'Package';
+        if (data.result.organization != null) {
+          data.result.organization.__typename = 'Organization';
+        }
+
+        if (data.result.resources != null) {
+          data.result.resources = data.result.resources.map((item) => {
+            return { __typename: 'Resource', ...item };
+          });
+        }
+      }
+      return data;
+    },
   },
 });
 

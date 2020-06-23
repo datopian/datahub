@@ -6,16 +6,40 @@ import Head from 'next/head';
 import Nav from '../../../components/home/Nav';
 import About from '../../../components/dataset/About';
 import Org from '../../../components/dataset/Org';
-import Resources, {
-  DEFAULT_DATASET_QUERY,
-} from '../../../components/dataset/Resources';
+import Resources from '../../../components/dataset/Resources';
+import gql from 'graphql-tag';
+
+const QUERY = gql`
+  query dataset($id: String) {
+    dataset(id: $id) @rest(type: "Response", path: "package_show?{args}") {
+      result {
+        name
+        title
+        size
+        metadata_created
+        metadata_modified
+        resources {
+          name
+          title
+          format
+          created
+          last_modified
+        }
+        organization {
+          name
+          title
+          image_url
+        }
+      }
+    }
+  }
+`;
 
 function Dataset({ variables }) {
-  const {
-    data: {
-      dataset: { result },
-    },
-  } = useQuery(DEFAULT_DATASET_QUERY, { variables });
+  const { data, loading } = useQuery(QUERY, { variables });
+
+  if (loading) return <div>Loading</div>;
+  const { result } = data.dataset;
 
   return (
     <>
@@ -42,8 +66,8 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     id: context.query.dataset,
   };
 
-  const apolloResponse = await apolloClient.query({
-    query: DEFAULT_DATASET_QUERY,
+  await apolloClient.query({
+    query: QUERY,
     variables,
   });
 

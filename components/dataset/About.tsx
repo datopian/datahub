@@ -4,10 +4,12 @@ import { useQuery } from '@apollo/react-hooks';
 import gql from 'graphql-tag';
 
 export const GET_DATAPACKAGE_QUERY = gql`
-  query dataset($id: String!) {
-    dataset(id: $id) {
+  query dataset($id: String) {
+    dataset(id: $id) @rest(type: "Response", path: "package_show?{args}") {
       result {
         name
+        title
+        size
         metadata_created
         metadata_modified
         resources {

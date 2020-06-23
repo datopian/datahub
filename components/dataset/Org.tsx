@@ -5,8 +5,8 @@ import { useQuery } from '@apollo/react-hooks';
 import gql from 'graphql-tag';
 
 export const GET_ORG_QUERY = gql`
-  query dataset($id: String!) {
-    dataset(id: $id) {
+  query dataset($id: String) {
+    dataset(id: $id) @rest(type: "Response", path: "package_show?{args}") {
       result {
         organization {
           name
