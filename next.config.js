@@ -1,7 +1,37 @@
-module.exports = {
-  publicRuntimeConfig: {
-    graphqlEndpoint:
-      process.env.GRAPHQL_ENDPOINT ||
-      'https://api.graph.cool/simple/v1/cixmkt2ul01q00122mksg82pn',
-  },
+const { PHASE_DEVELOPMENT_SERVER } = require('next/constants');
+
+module.exports = (phase, { defaultConfig }) => {
+  const dms = process.env.DMS;
+  if (phase === PHASE_DEVELOPMENT_SERVER) {
+    if (dms) {
+      console.log('\nYou are running the app in dev mode 🌀');
+      console.log(
+        'Did you know that you can use mocked CKAN API? Just unset your `DMS` env var.'
+      );
+      console.log('Happy coding ☀️\n');
+    } else {
+      const mocks = require('./mocks');
+      mocks.initMocks();
+      console.log(
+        '\nYou have not defined any DMS API so we are activating the mocks ⚠️'
+      );
+      console.log(
+        'If you wish to run against your CKAN API, you can set `DMS` env var.'
+      );
+      console.log(
+        'For example, to run against demo ckan site: `DMS=https://demo.ckan.org`\n'
+      );
+    }
+
+    return {
+      publicRuntimeConfig: {
+        DMS: dms ? dms.replace(/\/?$/, '') : 'http://mock.ckan',
+      },
+    };
+  }
+  return {
+    publicRuntimeConfig: {
+      DMS: dms ? dms.replace(/\/?$/, '') : 'https://demo.ckan.org',
+    },
+  };
 };

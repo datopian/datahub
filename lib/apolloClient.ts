@@ -7,7 +7,7 @@ import { RestLink } from 'apollo-link-rest';
 let apolloClient;
 
 const restLink = new RestLink({
-  uri: 'https://demo.ckan.org/api/3/action/',
+  uri: getConfig().publicRuntimeConfig.DMS + '/api/3/action/',
   typePatcher: {
     Search: (
       data: any,
