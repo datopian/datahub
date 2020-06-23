@@ -6,7 +6,27 @@ import Head from 'next/head';
 import Nav from '../components/home/Nav';
 import Form from '../components/search/Form';
 import Total from '../components/search/Total';
-import List, { DEFAULT_SEARCH_QUERY } from '../components/search/List';
+import List from '../components/search/List';
+import gql from 'graphql-tag';
+
+const QUERY = gql`
+  query search($q: String, $sort: String) {
+    search(q: $q, sort: $sort)
+      @rest(type: "Search", path: "package_search?{args}") {
+      result {
+        count
+        results {
+          name
+          title
+          organization {
+            name
+            title
+          }
+        }
+      }
+    }
+  }
+`;
 
 function Search({ variables }) {
   return (
@@ -27,15 +47,12 @@ function Search({ variables }) {
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
   const query = context.query || {};
-  const ckanQuery = utils.convertToCkanSearchQuery(query);
+  const variables = utils.convertToCkanSearchQuery(query);
 
   const apolloClient = initializeApollo();
-  const variables = {
-    query: { q: ckanQuery.q || '' },
-  };
 
-  await apolloClient.query({
-    query: DEFAULT_SEARCH_QUERY,
+  const { data } = await apolloClient.query({
+    query: QUERY,
     variables,
   });
 

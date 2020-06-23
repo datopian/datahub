@@ -1,9 +1,10 @@
 import { useQuery } from '@apollo/react-hooks';
 import gql from 'graphql-tag';
 
-export const GET_NUMBER_OF_DATASETS = gql`
-  query search($query: SearchQuery!) {
-    search(query: $query) {
+const QUERY = gql`
+  query search($q: String, $sort: String) {
+    search(q: $q, sort: $sort)
+      @rest(type: "Search", path: "package_search?{args}") {
       result {
         count
       }
@@ -12,7 +13,7 @@ export const GET_NUMBER_OF_DATASETS = gql`
 `;
 
 export default function Total({ variables }) {
-  const { loading, error, data } = useQuery(GET_NUMBER_OF_DATASETS, {
+  const { loading, error, data } = useQuery(QUERY, {
     variables,
     // Setting this value to true will make the component rerender when
     // the "networkStatus" changes, so we are able to know if it is fetching

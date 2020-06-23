@@ -2,18 +2,39 @@ import { useMemo } from 'react';
 import getConfig from 'next/config';
 import { ApolloClient } from 'apollo-client';
 import { InMemoryCache } from 'apollo-cache-inmemory';
-import { HttpLink } from 'apollo-link-http';
+import { RestLink } from 'apollo-link-rest';
 
 let apolloClient;
+
+const restLink = new RestLink({
+  uri: 'https://demo.ckan.org/api/3/action/',
+  typePatcher: {
+    Search: (
+      data: any,
+      outerType: string,
+      patchDeeper: RestLink.FunctionalTypePatcher
+    ): any => {
+      if (data.result != null) {
+        data.result.__typename = 'SearchResponse';
+
+        if (data.result.results != null) {
+          data.result.results = data.result.results.map((item) => {
+            if (item.organization != null) {
+              item.organization.__typename = 'Organization';
+            }
+            return { __typename: 'Package', ...item };
+          });
+        }
+      }
+      return data;
+    },
+  },
+});
 
 function createApolloClient() {
   const { publicRuntimeConfig } = getConfig();
   return new ApolloClient({
-    ssrMode: typeof window === 'undefined',
-    link: new HttpLink({
-      uri: publicRuntimeConfig.graphqlEndpoint, // Server URL (must be absolute)
-      credentials: 'same-origin', // Additional fetch() options like `credentials` or `headers`
-    }),
+    link: restLink,
     cache: new InMemoryCache(),
   });
 }
