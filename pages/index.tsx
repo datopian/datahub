@@ -1,7 +1,7 @@
 import Head from 'next/head';
 import Nav from '../components/home/Nav';
 import Recent from '../components/home/Recent';
-import Input from '../components/search/Input';
+import Form from '../components/search/Form';
 
 export default function Home() {
   return (
@@ -22,7 +22,7 @@ export default function Home() {
             Premium Data Service for additional or customised data with
             guaranteed updates.
           </p>
-          <Input query={{}} />
+          <Form query={{}} />
         </div>
         <div className="mt-4">
           <img src="/images/banner.svg" className="w-4/5" />
