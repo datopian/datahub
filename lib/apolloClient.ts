@@ -32,7 +32,6 @@ const restLink = new RestLink({
 });
 
 function createApolloClient() {
-  const { publicRuntimeConfig } = getConfig();
   return new ApolloClient({
     link: restLink,
     cache: new InMemoryCache(),

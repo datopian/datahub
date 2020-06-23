@@ -1,6 +1,5 @@
 import { GetServerSideProps } from 'next';
 import { initializeApollo } from '../lib/apolloClient';
-import config from '../config';
 import utils from '../utils';
 import Head from 'next/head';
 import Nav from '../components/home/Nav';

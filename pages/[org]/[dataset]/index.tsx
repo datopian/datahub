@@ -1,7 +1,6 @@
 import { GetServerSideProps } from 'next';
 import { useQuery } from '@apollo/react-hooks';
 import { initializeApollo } from '../../../lib/apolloClient';
-import config from '../../../config';
 import utils from '../../../utils';
 import Head from 'next/head';
 import Nav from '../../../components/home/Nav';
