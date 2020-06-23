@@ -50,7 +50,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 
   const apolloClient = initializeApollo();
 
-  const { data } = await apolloClient.query({
+  await apolloClient.query({
     query: QUERY,
     variables,
   });
