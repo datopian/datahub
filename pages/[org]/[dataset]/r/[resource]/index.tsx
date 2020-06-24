@@ -9,12 +9,19 @@ import About from '../../../../../components/resource/About';
 import DataExplorer from '../../../../../components/resource/DataExplorer';
 
 const QUERY = gql`
-  query dataset($id: String!) {
-    dataset(id: $id) {
+  query dataset($id: String) {
+    dataset(id: $id) @rest(type: "Response", path: "package_show?{args}") {
       result {
         resources {
           name
+          id
           title
+          description
+          format
+          size
+          created
+          last_modified
+          url
         }
       }
     }
@@ -22,24 +29,24 @@ const QUERY = gql`
 `;
 
 function Resource({ variables }) {
-  const {
-    data: {
-      dataset: { result },
-    },
-  } = useQuery(QUERY, { variables });
+  const { data, loading } = useQuery(QUERY, { variables });
 
+  if (loading) return <div>Loading</div>;
+  const result = data.dataset.result;
+  // Find right resource
+  const resource = result.resources.find(
+    (item) => item.name === variables.resource
+  );
   return (
     <>
       <Head>
-        <title>
-          Portal | {result.resources[0].title || result.resources[0].name}
-        </title>
+        <title>Portal | {resource.title || resource.name}</title>
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <Nav />
       <main className="p-6">
         <h1 className="text-3xl font-semibold text-primary mb-2">
-          {result.resources[0].title || result.resources[0].name}
+          {resource.title || resource.name}
         </h1>
         <About variables={variables} />
         <DataExplorer variables={variables} />
@@ -55,7 +62,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     resource: context.query.resource,
   };
 
-  const apolloResponse = await apolloClient.query({
+  await apolloClient.query({
     query: QUERY,
     variables,
   });

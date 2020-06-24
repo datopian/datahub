@@ -4,18 +4,20 @@ import { NetworkStatus } from 'apollo-client';
 import { useQuery } from '@apollo/react-hooks';
 import gql from 'graphql-tag';
 
-export const QUERY = gql`
-  query dataset($id: String!) {
-    dataset(id: $id) {
+const QUERY = gql`
+  query dataset($id: String) {
+    dataset(id: $id) @rest(type: "Response", path: "package_show?{args}") {
       result {
         resources {
           name
           id
-          url
-          format
           title
+          description
+          format
+          size
           created
           last_modified
+          url
         }
       }
     }
@@ -35,7 +37,9 @@ export default function DataExplorer({ variables }) {
   if (loading) return <div>Loading</div>;
 
   const { result } = data.dataset;
-  const resource = result.resources[0];
+  const resource = result.resources.find(
+    (item) => item.name === variables.resource
+  );
 
   return <>{JSON.stringify(resource)}</>;
 }

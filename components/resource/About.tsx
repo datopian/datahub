@@ -4,18 +4,20 @@ import { NetworkStatus } from 'apollo-client';
 import { useQuery } from '@apollo/react-hooks';
 import gql from 'graphql-tag';
 
-export const QUERY = gql`
-  query dataset($id: String!) {
-    dataset(id: $id) {
+const QUERY = gql`
+  query dataset($id: String) {
+    dataset(id: $id) @rest(type: "Response", path: "package_show?{args}") {
       result {
         resources {
           name
           id
-          url
-          format
           title
+          description
+          format
+          size
           created
           last_modified
+          url
         }
       }
     }
@@ -35,7 +37,9 @@ export default function About({ variables }) {
   if (loading) return <div>Loading</div>;
 
   const { result } = data.dataset;
-  const resource = result.resources[0];
+  const resource = result.resources.find(
+    (item) => item.name === variables.resource
+  );
   return (
     <>
       <table className="table-auto w-full text-sm text-left my-6">
@@ -61,11 +65,12 @@ export default function About({ variables }) {
             <td className="px-4 py-2">{resource.created}</td>
             <td className="px-4 py-2">{resource.last_modified || ''}</td>
             <td className="px-4 py-2">
-              <Link href={resource.url}>
-                <a className="bg-white hover:bg-gray-200 border text-black font-semibold py-2 px-4 rounded">
-                  {resource.format}
-                </a>
-              </Link>
+              <a
+                href={resource.url}
+                className="bg-white hover:bg-gray-200 border text-black font-semibold py-2 px-4 rounded"
+              >
+                {resource.format}
+              </a>
             </td>
           </tr>
         </tbody>
