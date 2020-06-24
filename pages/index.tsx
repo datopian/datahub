@@ -22,7 +22,7 @@ export default function Home() {
             Premium Data Service for additional or customised data with
             guaranteed updates.
           </p>
-          <Form query={{}} />
+          <Form />
         </div>
         <div className="mt-4">
           <img src="/images/banner.svg" className="w-4/5" />
