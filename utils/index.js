@@ -1,7 +1,7 @@
 const { URL } = require('url');
 const bytes = require('bytes');
 const slugify = require('slugify');
-const config = require('../config');
+const config = require('../next.config.js');
 
 module.exports.ckanToDataPackage = function (descriptor) {
   // Make a copy

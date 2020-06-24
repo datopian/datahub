@@ -1,15 +1,33 @@
 import { GetServerSideProps } from 'next';
-import querystring from 'querystring';
-import config from '../config';
+import { initializeApollo } from '../lib/apolloClient';
 import utils from '../utils';
 import Head from 'next/head';
 import Nav from '../components/home/Nav';
-import Input from '../components/search/Input';
+import Form from '../components/search/Form';
 import Total from '../components/search/Total';
-import Sort from '../components/search/Sort';
 import List from '../components/search/List';
+import gql from 'graphql-tag';
 
-function Search({ ckanResult, datapackages, query }) {
+const QUERY = gql`
+  query search($q: String, $sort: String) {
+    search(q: $q, sort: $sort)
+      @rest(type: "Search", path: "package_search?{args}") {
+      result {
+        count
+        results {
+          name
+          title
+          organization {
+            name
+            title
+          }
+        }
+      }
+    }
+  }
+`;
+
+function Search({ variables }) {
   return (
     <>
       <Head>
@@ -18,10 +36,9 @@ function Search({ ckanResult, datapackages, query }) {
       </Head>
       <Nav />
       <main className="p-6">
-        <Input query={query} />
-        <Total total={ckanResult.count} />
-        <Sort />
-        <List datapackages={datapackages} />
+        <Form />
+        <Total variables={variables} />
+        <List variables={variables} />
       </main>
     </>
   );
@@ -29,18 +46,21 @@ function Search({ ckanResult, datapackages, query }) {
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
   const query = context.query || {};
-  const ckanQuery = querystring.stringify(
-    utils.convertToCkanSearchQuery(query)
-  );
-  const res = await fetch(
-    `${config.get('DMS')}/api/3/action/package_search?${ckanQuery}`
-  );
-  const ckanResult = (await res.json()).result;
-  const datapackages = ckanResult.results.map((item) =>
-    utils.ckanToDataPackage(item)
-  );
+  const variables = utils.convertToCkanSearchQuery(query);
 
-  return { props: { ckanResult, datapackages, query } };
+  const apolloClient = initializeApollo();
+
+  await apolloClient.query({
+    query: QUERY,
+    variables,
+  });
+
+  return {
+    props: {
+      initialApolloState: apolloClient.cache.extract(),
+      variables,
+    },
+  };
 };
 
 export default Search;

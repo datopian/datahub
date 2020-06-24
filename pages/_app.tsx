@@ -1,13 +1,15 @@
 /* istanbul ignore file */
 import '../styles/index.css';
 
-// Setup mocks
-if (process.env.NODE_ENV === 'development') {
-  const mocks = require('../mocks');
-  mocks.initMocks();
-  console.warn('You have activated the mocks.');
-}
+import { ApolloProvider } from '@apollo/react-hooks';
+import { useApollo } from '../lib/apolloClient';
 
 export default function MyApp({ Component, pageProps }) {
-  return <Component {...pageProps} />;
+  const apolloClient = useApollo(pageProps.initialApolloState);
+
+  return (
+    <ApolloProvider client={apolloClient}>
+      <Component {...pageProps} />
+    </ApolloProvider>
+  );
 }
