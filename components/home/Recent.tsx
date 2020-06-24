@@ -24,7 +24,7 @@ export const QUERY = gql`
 
 function Recent() {
   const { loading, error, data } = useQuery(QUERY, {
-    sort: 'sort=metadata_created%20desc',
+    variables: { sort: 'metadata_created desc' },
     // Setting this value to true will make the component rerender when
     // the "networkStatus" changes, so we are able to know if it is fetching
     // more data

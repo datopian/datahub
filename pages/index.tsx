@@ -40,6 +40,9 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 
   await apolloClient.query({
     query: QUERY,
+    variables: {
+      sort: 'metadata_created desc',
+    },
   });
 
   return {
