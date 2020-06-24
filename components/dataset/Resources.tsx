@@ -1,6 +1,5 @@
 import Link from 'next/link';
 import ErrorMessage from '../Error';
-import { NetworkStatus } from 'apollo-client';
 import { useQuery } from '@apollo/react-hooks';
 import gql from 'graphql-tag';
 
@@ -22,16 +21,13 @@ export const GET_DATAPACKAGE_QUERY = gql`
 `;
 
 export default function Resources({ variables }) {
-  const { loading, error, data, fetchMore, networkStatus } = useQuery(
-    GET_DATAPACKAGE_QUERY,
-    {
-      variables,
-      // Setting this value to true will make the component rerender when
-      // the "networkStatus" changes, so we are able to know if it is fetching
-      // more data
-      notifyOnNetworkStatusChange: true,
-    }
-  );
+  const { loading, error, data } = useQuery(GET_DATAPACKAGE_QUERY, {
+    variables,
+    // Setting this value to true will make the component rerender when
+    // the "networkStatus" changes, so we are able to know if it is fetching
+    // more data
+    notifyOnNetworkStatusChange: true,
+  });
 
   if (error) return <ErrorMessage message="Error loading dataset." />;
   if (loading) return <div>Loading</div>;

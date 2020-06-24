@@ -1,6 +1,5 @@
 import Item from './Item';
 import ErrorMessage from '../Error';
-import { NetworkStatus } from 'apollo-client';
 import { useQuery } from '@apollo/react-hooks';
 import gql from 'graphql-tag';
 
@@ -23,7 +22,7 @@ const QUERY = gql`
 `;
 
 export default function List({ variables }) {
-  const { loading, error, data, fetchMore, networkStatus } = useQuery(QUERY, {
+  const { loading, error, data } = useQuery(QUERY, {
     variables,
     // Setting this value to true will make the component rerender when
     // the "networkStatus" changes, so we are able to know if it is fetching

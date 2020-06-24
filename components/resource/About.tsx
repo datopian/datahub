@@ -1,6 +1,5 @@
 import Link from 'next/link';
 import ErrorMessage from '../Error';
-import { NetworkStatus } from 'apollo-client';
 import { useQuery } from '@apollo/react-hooks';
 import gql from 'graphql-tag';
 

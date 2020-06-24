@@ -1,3 +1,4 @@
+import ErrorMessage from '../Error';
 import { useQuery } from '@apollo/react-hooks';
 import gql from 'graphql-tag';
 
@@ -21,6 +22,7 @@ export default function Total({ variables }) {
     notifyOnNetworkStatusChange: true,
   });
 
+  if (error) return <ErrorMessage message="Error loading search results." />;
   if (loading) return <div>Loading</div>;
 
   const { result } = data.search;
