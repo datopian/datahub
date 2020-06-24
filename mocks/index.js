@@ -59,65 +59,6 @@ const population = {
   },
 };
 
-const recentDataset = [
-  {
-    name: 'gdp',
-    title: 'Country, Regional and World GDP (Gross Domestic Product)',
-    notes:
-      'Country, regional and world GDP in current US Dollars ($). Regional means collections of countries e.g. Europe & Central Asia. Data is sourced from the World Bank and turned into a standard normalized CSV.',
-    resources: [
-      {
-        name: 'gdp',
-        id: 'gdp',
-        title: 'GDP data',
-        format: 'csv',
-        created: '2019-03-07T12:00:36.273495',
-        last_modified: '2020-05-07T12:00:36.273495',
-        datastore_active: false,
-        url: 'http://mock.filestore/gdp.csv',
-      },
-    ],
-    organization: {
-      title: 'World Bank',
-      name: 'world-bank',
-      description:
-        'The World Bank is an international financial institution that provides loans and grants to the governments of poorer countries for the purpose of pursuing capital projects.',
-      created: '2019-03-07T11:51:13.758844',
-      image_url:
-        'https://github.com/datahq/frontend/raw/master/public/img/avatars/world-bank.jpg',
-    },
-    metadata_created: '2019-03-07T11:56:19.696257',
-    metadata_modified: '2019-03-07T12:03:58.817280',
-  },
-  {
-    name: 'population',
-    title: 'World population data',
-    notes:
-      'Population figures for countries, regions (e.g. Asia) and the world. Data comes originally from World Bank and has been converted into standard CSV.',
-    resources: [
-      {
-        name: 'population',
-        id: 'population',
-        title: 'Population data',
-        format: 'csv',
-        created: '2019-03-07T12:00:36.273495',
-        last_modified: '2020-05-07T12:00:36.273495',
-        datastore_active: true,
-        url: 'http://mock.filestore/population.csv',
-      },
-    ],
-    organization: {
-      title: 'World Bank',
-      name: 'world-bank',
-      description:
-        'The World Bank is an international financial institution that provides loans and grants to the governments of poorer countries for the purpose of pursuing capital projects.',
-      created: '2019-03-07T11:51:13.758844',
-      image_url:
-        'https://github.com/datahq/frontend/raw/master/public/img/avatars/world-bank.jpg',
-    },
-  },
-];
-
 module.exports.initMocks = function () {
   // Uncomment this line if you want to record API calls
   // nock.recorder.rec()
@@ -148,6 +89,18 @@ module.exports.initMocks = function () {
         results: [gdp],
         search_facets: {},
       },
+    })
+    // 3. Call for recent packages.
+    .get('/package_search?sort=metadata_created%20desc')
+    .reply(200, {
+      success: true,
+      result: {
+        count: 2,
+        sort: 'metadata_created desc',
+        facets: {},
+        results: [gdp, population],
+        search_facets: {},
+      },
     });
 
   // "package_show" mocks
@@ -162,21 +115,6 @@ module.exports.initMocks = function () {
     .reply(200, {
       success: true,
       result: population,
-    });
-
-  // recent datapackages
-  nock('http://mock.ckan/api/3/action', { encodedQueryParams: true })
-    .persist()
-    .get('/package_search?sort=metadata_created%20desc')
-    .reply(200, {
-      success: true,
-      result: {
-        count: 2,
-        sort: 'metadata_created desc',
-        facets: {},
-        results: recentDataset,
-        search_facets: {},
-      },
     });
 
   // "datastore_search" mocks
