@@ -13,12 +13,11 @@
     "pre-commit": "echo 'formating your changes.....' && prettier --single-quote --write"
   },
   "dependencies": {
-    "@apollo/client": "^3.0.0-rc.6",
     "@apollo/react-hooks": "^3.1.5",
     "apollo-cache-inmemory": "^1.6.6",
     "apollo-client": "^2.6.10",
     "apollo-link": "^1.2.14",
-    "apollo-link-rest": "^0.8.0-beta.0",
+    "apollo-link-rest": "0.7.3",
     "bytes": "^3.1.0",
     "graphql": "^15.1.0",
     "graphql-anywhere": "^4.2.7",
