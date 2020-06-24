@@ -1,7 +1,8 @@
-import Head from 'next/head';
 import { GetServerSideProps } from 'next';
+import { initializeApollo } from '../lib/apolloClient';
+import Head from 'next/head';
 import Nav from '../components/home/Nav';
-import Recent from '../components/home/Recent';
+import Recent, { QUERY } from '../components/home/Recent';
 import Form from '../components/search/Form';
 
 function Home({ datapackages }) {
@@ -29,22 +30,21 @@ function Home({ datapackages }) {
           <img src="/images/banner.svg" className="w-4/5" />
         </div>
       </section>
-      <Recent datapackages={datapackages} />
+      <Recent />
     </div>
   );
 }
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
-  const res = await fetch(
-    `${config.get(
-      'DMS'
-    )}/api/3/action/package_search?sort=metadata_created%20desc`
-  );
-  const ckanResult = (await res.json()).result;
-  const datapackages = ckanResult.results;
+  const apolloClient = initializeApollo();
+
+  await apolloClient.query({
+    query: QUERY,
+  });
+
   return {
     props: {
-      datapackages,
+      initialApolloState: apolloClient.cache.extract(),
     },
   };
 };
