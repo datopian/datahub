@@ -91,7 +91,7 @@ module.exports.initMocks = function () {
       },
     })
     // 3. Call for recent packages.
-    .get('/package_search?sort=metadata_created%20desc')
+    .get('/package_search?sort=metadata_created%20desc&rows=3')
     .reply(200, {
       success: true,
       result: {

@@ -5,7 +5,7 @@ import Nav from '../components/home/Nav';
 import Recent, { QUERY } from '../components/home/Recent';
 import Form from '../components/search/Form';
 
-function Home({ datapackages }) {
+function Home() {
   return (
     <div className="container mx-auto">
       <Head>
@@ -42,6 +42,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     query: QUERY,
     variables: {
       sort: 'metadata_created desc',
+      rows: 3,
     },
   });
 

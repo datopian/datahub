@@ -4,8 +4,8 @@ import { useQuery } from '@apollo/react-hooks';
 import gql from 'graphql-tag';
 
 export const QUERY = gql`
-  query search($q: String, $sort: String) {
-    search(q: $q, sort: $sort)
+  query search($q: String, $sort: String, $rows: Int) {
+    search(q: $q, sort: $sort, rows: $rows)
       @rest(type: "Search", path: "package_search?{args}") {
       result {
         results {
@@ -24,7 +24,10 @@ export const QUERY = gql`
 
 function Recent() {
   const { loading, error, data } = useQuery(QUERY, {
-    variables: { sort: 'metadata_created desc' },
+    variables: {
+      sort: 'metadata_created desc',
+      rows: 3,
+    },
     // Setting this value to true will make the component rerender when
     // the "networkStatus" changes, so we are able to know if it is fetching
     // more data
