@@ -89,6 +89,18 @@ module.exports.initMocks = function () {
         results: [gdp],
         search_facets: {},
       },
+    })
+    // 3. Call for recent packages.
+    .get('/package_search?sort=metadata_created%20desc')
+    .reply(200, {
+      success: true,
+      result: {
+        count: 2,
+        sort: 'metadata_created desc',
+        facets: {},
+        results: [gdp, population],
+        search_facets: {},
+      },
     });
 
   // "package_show" mocks

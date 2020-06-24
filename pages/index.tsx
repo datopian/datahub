@@ -1,9 +1,11 @@
+import { GetServerSideProps } from 'next';
+import { initializeApollo } from '../lib/apolloClient';
 import Head from 'next/head';
 import Nav from '../components/home/Nav';
-import Recent from '../components/home/Recent';
+import Recent, { QUERY } from '../components/home/Recent';
 import Form from '../components/search/Form';
 
-export default function Home() {
+function Home({ datapackages }) {
   return (
     <div className="container mx-auto">
       <Head>
@@ -32,3 +34,22 @@ export default function Home() {
     </div>
   );
 }
+
+export const getServerSideProps: GetServerSideProps = async (context) => {
+  const apolloClient = initializeApollo();
+
+  await apolloClient.query({
+    query: QUERY,
+    variables: {
+      sort: 'metadata_created desc',
+    },
+  });
+
+  return {
+    props: {
+      initialApolloState: apolloClient.cache.extract(),
+    },
+  };
+};
+
+export default Home;
