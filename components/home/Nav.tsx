@@ -35,19 +35,20 @@ export default function Nav() {
             Search
           </a>
         </Link>
-        <Link href="http://tech.datopian.com/frontend/">
-          <a
-            className="block mt-4 lg:inline-block lg:mt-0 text-gray-700 hover:text-black mr-6"
-            target="_blank"
-          >
-            Docs
-          </a>
-        </Link>
-        <Link href="https://github.com/datopian/portal">
-          <a className="inline-block text-sm px-4 py-2 leading-none border rounded text-white bg-black border-black hover:border-gray-700 hover:text-gray-700 hover:bg-white mt-4 lg:mt-0">
-            GitHub
-          </a>
-        </Link>
+        <a
+          href="http://tech.datopian.com/frontend/"
+          className="block mt-4 lg:inline-block lg:mt-0 text-gray-700 hover:text-black mr-6"
+          target="_blank"
+        >
+          Docs
+        </a>
+        <a
+          href="https://github.com/datopian/portal"
+          className="inline-block text-sm px-4 py-2 leading-none border rounded text-white bg-black border-black hover:border-gray-700 hover:text-gray-700 hover:bg-white mt-4 lg:mt-0"
+          target="_blank"
+        >
+          GitHub
+        </a>
       </div>
     </nav>
   );

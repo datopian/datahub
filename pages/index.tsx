@@ -2,8 +2,7 @@ import Head from 'next/head';
 import { GetServerSideProps } from 'next';
 import Nav from '../components/home/Nav';
 import Recent from '../components/home/Recent';
-import Input from '../components/search/Input';
-import config from '../config/';
+import Form from '../components/search/Form';
 
 function Home({ datapackages }) {
   return (
@@ -24,7 +23,7 @@ function Home({ datapackages }) {
             Premium Data Service for additional or customised data with
             guaranteed updates.
           </p>
-          <Input query={{}} />
+          <Form />
         </div>
         <div className="mt-4">
           <img src="/images/banner.svg" className="w-4/5" />

@@ -28,6 +28,7 @@ const gdp = {
   },
   metadata_created: '2019-03-07T11:56:19.696257',
   metadata_modified: '2019-03-07T12:03:58.817280',
+  size: '',
 };
 
 const population = {
@@ -125,9 +126,7 @@ module.exports.initMocks = function () {
   nock('http://mock.ckan/api/3/action', { encodedQueryParams: true })
     .persist()
     // 1. Call without query.
-    .get(
-      '/package_search?facet.field=organization&facet.field=groups&facet.field=tags&facet.field=res_format&facet.field=license_id&facet.limit=5'
-    )
+    .get('/package_search?')
     .reply(200, {
       success: true,
       result: {
@@ -139,9 +138,7 @@ module.exports.initMocks = function () {
       },
     })
     // 2. Call with `q=gdp` query.
-    .get(
-      '/package_search?q=gdp&facet.field=organization&facet.field=groups&facet.field=tags&facet.field=res_format&facet.field=license_id&facet.limit=5'
-    )
+    .get('/package_search?q=gdp')
     .reply(200, {
       success: true,
       result: {

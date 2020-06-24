@@ -25,7 +25,9 @@ export default function Item({ datapackage }) {
             : 'dataset'}
         </a>
       </Link>
-      <div className="leading-relaxed mt-2">{datapackage.description}</div>
+      <div className="leading-relaxed mt-2">
+        {datapackage.description || datapackage.notes}
+      </div>
     </div>
   );
 }
