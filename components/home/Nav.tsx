@@ -30,6 +30,11 @@ export default function Nav() {
         </button>
       </div>
       <div className={`${open ? `block` : `hidden`} lg:block`}>
+        <Link href="/blog">
+          <a className="block mt-4 lg:inline-block lg:mt-0 text-gray-700 hover:text-black mr-6">
+            Blog
+          </a>
+        </Link>
         <Link href="/search">
           <a className="block mt-4 lg:inline-block lg:mt-0 text-gray-700 hover:text-black mr-6">
             Search
