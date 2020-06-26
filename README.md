@@ -44,6 +44,13 @@ $ export DMS=http://ckan:5000
 $ export CMS=http://myblog.wordpress.com
 ```
 
+> Note that we don't yet have implementations for the following CKAN features:
+>
+> - Activities
+> - Auth
+> - Groups
+> - Facets
+
 ### Routes
 
 These are the default routes set up in the "starter" app.
