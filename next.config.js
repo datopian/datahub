@@ -2,6 +2,7 @@ const { PHASE_DEVELOPMENT_SERVER } = require('next/constants');
 
 module.exports = (phase, { defaultConfig }) => {
   const dms = process.env.DMS;
+  const cms = process.env.CMS;
   if (phase === PHASE_DEVELOPMENT_SERVER) {
     if (dms) {
       console.log('\nYou are running the app in dev mode 🌀');
@@ -26,12 +27,14 @@ module.exports = (phase, { defaultConfig }) => {
     return {
       publicRuntimeConfig: {
         DMS: dms ? dms.replace(/\/?$/, '') : 'http://mock.ckan',
+        CMS: cms ? cms.replace(/\/?$/, '') : 'oddk.home.blog',
       },
     };
   }
   return {
     publicRuntimeConfig: {
       DMS: dms ? dms.replace(/\/?$/, '') : 'https://demo.ckan.org',
+      CMS: cms ? cms.replace(/\/?$/, '') : 'oddk.home.blog',
     },
   };
 };

@@ -8,6 +8,14 @@ let apolloClient;
 
 const restLink = new RestLink({
   uri: getConfig().publicRuntimeConfig.DMS + '/api/3/action/',
+  endpoints: {
+    wordpress: `https://public-api.wordpress.com/rest/v1.1/sites/${
+      getConfig().publicRuntimeConfig.CMS
+    }/posts/slug:`,
+    'wordpress-posts': `https://public-api.wordpress.com/rest/v1.1/sites/${
+      getConfig().publicRuntimeConfig.CMS
+    }/posts/`,
+  },
   typePatcher: {
     Search: (
       data: any,
