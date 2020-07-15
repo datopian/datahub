@@ -103,7 +103,7 @@ my.MultiView = Backbone.View.extend({
       <div class="navigation"> \
         <div class="btn-group" data-toggle="buttons-radio"> \
         {{#views}} \
-        <button href="#{{id}}" data-view="{{id}}" class="btn btn-default">{{label}}</button> \
+        <button href="#{{id}}" data-view="{{id}}" class="btn btn-default" aria-label="{{id}} view">{{label}}</button> \
         {{/views}} \
         </div> \
       </div> \
