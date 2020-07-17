@@ -42,7 +42,7 @@ function Recent() {
   return (
     <section className="my-10 mx-4 lg:my-20">
       <h1 className="text-2xl font-thin mb-4">Recent Datasets</h1>
-      <div className="flex flex-col lg:flex-row">
+      <div className="recent flex flex-col lg:flex-row">
         {result.results.map((dataset, index) => (
           <div
             key={index}

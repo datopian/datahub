@@ -9,6 +9,9 @@
     "test": "jest",
     "test:watch": "jest --watch",
     "test:coverage": "jest --coverage",
+    "cypress:open": "cypress open",
+    "cypress:ci": "cypress run --config video=false",
+    "e2e": "cypress run",
     "format": "prettier --single-quote --write .",
     "pre-commit": "echo 'formating your changes.....' && prettier --single-quote --write"
   },
@@ -26,7 +29,7 @@
     "markdown-it": "^11.0.0",
     "next": "9.4.2",
     "qs": "^6.9.4",
-    "react": "16.13.1",
+    "react": "^16.13.1",
     "react-dom": "16.13.1",
     "slugify": "^1.4.0"
   },
@@ -37,6 +40,7 @@
     "@types/react": "^16.9.35",
     "babel-jest": "^26.0.1",
     "babel-plugin-graphql-tag": "^2.5.0",
+    "cypress": "^4.8.0",
     "husky": ">=4",
     "jest": "^26.0.1",
     "lint-staged": ">=10",
