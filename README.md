@@ -232,6 +232,12 @@ yarn test # or npm run test
 yarn test --watch
 ```
 
+We use Cypress tests as well
+
+```
+yarn run e2e
+```
+
 ### Architecture
 
 * Language: Javascript
