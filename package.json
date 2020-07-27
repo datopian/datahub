@@ -16,12 +16,16 @@
     "pre-commit": "echo 'formating your changes.....' && prettier --single-quote --write"
   },
   "dependencies": {
+    "@apollo/client": "^3.0.2",
     "@apollo/react-hooks": "^3.1.5",
     "apollo-cache-inmemory": "^1.6.6",
     "apollo-client": "^2.6.10",
     "apollo-link": "^1.2.14",
     "apollo-link-rest": "0.7.3",
+    "apollo-server-testing": "^2.16.0",
     "bytes": "^3.1.0",
+    "enzyme": "^3.11.0",
+    "enzyme-adapter-react-15": "^1.4.1",
     "graphql": "^15.1.0",
     "graphql-anywhere": "^4.2.7",
     "graphql-tag": "^2.10.3",
@@ -30,7 +34,8 @@
     "next": "9.4.2",
     "qs": "^6.9.4",
     "react": "^16.13.1",
-    "react-dom": "16.13.1",
+    "react-dom": "^16.13.1",
+    "react-router": "^5.2.0",
     "slugify": "^1.4.0"
   },
   "devDependencies": {
@@ -42,7 +47,7 @@
     "babel-plugin-graphql-tag": "^2.5.0",
     "cypress": "^4.8.0",
     "husky": ">=4",
-    "jest": "^26.0.1",
+    "jest": "^26.1.0",
     "lint-staged": ">=10",
     "nock": "^12.0.3",
     "npm-run-all": "^4.1.5",

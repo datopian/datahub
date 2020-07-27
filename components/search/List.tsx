@@ -32,7 +32,6 @@ export default function List({ variables }) {
 
   if (error) return <ErrorMessage message="Error loading search results." />;
   if (loading) return <div>Loading</div>;
-
   const { result } = data.search;
   return (
     <ul>
