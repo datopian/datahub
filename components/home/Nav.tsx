@@ -31,7 +31,7 @@ export default function Nav() {
       </div>
       <div className={`${open ? `block` : `hidden`} lg:block`}>
         <Link href="/blog">
-          <a className="block mt-4 lg:inline-block lg:mt-0 text-gray-700 hover:text-black mr-6">
+          <a className="block mt-4 lg:inline-block lg:mt-0 active:bg-primary-background text-gray-700 hover:text-black mr-6">
             Blog
           </a>
         </Link>
@@ -49,7 +49,7 @@ export default function Nav() {
         </a>
         <a
           href="https://github.com/datopian/portal"
-          className="inline-block text-sm px-4 py-2 leading-none border rounded text-white bg-black border-black hover:border-gray-700 hover:text-gray-700 hover:bg-white mt-4 lg:mt-0"
+          className="inline-block text-sm px-4 py-2 leading-none border rounded text-primary bg-primary-background border-black hover:border-gray-700 hover:text-gray-700 hover:bg-white mt-4 lg:mt-0"
           target="_blank"
         >
           GitHub
