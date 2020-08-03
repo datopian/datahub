@@ -21,6 +21,9 @@ export const mapTheme = (variables: ITheme): IMappedTheme => {
     '--color-text-primary': variables.textPrimary || '',
     '--background-primary': variables.backgroundPrimary || '',
     '--background-sec': variables.backgroundSecondary || '',
+    '--font-size-small': variables.fontSmall || '18px',
+    '--font-size-medium': variables.fontMedium || '30px',
+    '--font-size-large': variables.fontLarge || '45px',
   };
 };
 

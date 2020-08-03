@@ -4,7 +4,7 @@ import { useApollo } from '../lib/apolloClient';
 import { DEFAULT_THEME } from '../themes';
 import { applyTheme } from '../themes/utils';
 
-import './App.css';
+import '../styles/app.css';
 
 export default function MyApp({ Component, pageProps }) {
   const apolloClient = useApollo(pageProps.initialApolloState);
