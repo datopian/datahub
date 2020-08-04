@@ -1,5 +1,5 @@
 import { useQuery } from '@apollo/react-hooks';
-import ErrorMessage from '../Error';
+import { ErrorMessage } from '../_shared';
 import { GET_RESOURCES_QUERY } from '../../graphql/queries';
 
 export default function DataExplorer({ variables }) {

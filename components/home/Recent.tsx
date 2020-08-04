@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import { useQuery } from '@apollo/react-hooks';
-import ErrorMessage from '../Error';
+import { ErrorMessage } from '../_shared';
 import { SEARCH_QUERY } from '../../graphql/queries';
 
 function Recent() {

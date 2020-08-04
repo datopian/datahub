@@ -1,6 +1,6 @@
 import { useQuery } from '@apollo/react-hooks';
 import Item from './Item';
-import ErrorMessage from '../Error';
+import { ErrorMessage } from '../_shared';
 import { SEARCH_QUERY } from '../../graphql/queries';
 
 export default function List({ variables }) {

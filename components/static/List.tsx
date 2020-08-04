@@ -1,6 +1,6 @@
 import parse from 'html-react-parser';
 import { useQuery } from '@apollo/react-hooks';
-import ErrorMessage from '../Error';
+import { ErrorMessage } from '../_shared';
 import { GET_POSTS_QUERY } from '../../graphql/queries';
 
 export default function List() {

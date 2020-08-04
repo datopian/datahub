@@ -24,7 +24,8 @@ const Table: React.FC<TableProps> = ({ columns, data, className }) => {
             {columns.map(({ key, render }) => (
               <td className="px-4 py-2">
                 {(render && typeof render === 'function' && render(item)) ||
-                  item[key]}
+                  item[key] ||
+                  ''}
               </td>
             ))}
           </tr>
