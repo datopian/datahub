@@ -22,7 +22,7 @@ const Table: React.FC<TableProps> = ({ columns, data, className }) => {
         {data.map((item) => (
           <tr key={item.id}>
             {columns.map(({ key, render }) => (
-              <td className="px-4 py-2">
+              <td key={key} className="px-4 py-2">
                 {(render && typeof render === 'function' && render(item)) ||
                   item[key] ||
                   ''}
