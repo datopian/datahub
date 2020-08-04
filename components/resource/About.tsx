@@ -6,9 +6,7 @@ const columns = [
   {
     name: 'Name',
     key: 'name',
-    render: ({ name, id }) => {
-      name || id;
-    },
+    render: ({ name, id }) => name || id,
   },
   {
     name: 'Title',
