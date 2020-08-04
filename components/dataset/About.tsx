@@ -1,35 +1,36 @@
 import { useQuery } from '@apollo/react-hooks';
-import ErrorMessage from '../Error';
+import { Table, ErrorMessage } from '../_shared';
 import { GET_DATAPACKAGE_QUERY } from '../../graphql/queries';
 
 const columns = [
   {
     name: 'Files',
+    key: 'files',
     render: ({ resources }) => (resources && resources.length) || 0,
   },
   {
     name: 'Size',
-    render: ({ size }) => size || 'N/A',
+    key: 'size',
   },
   {
     name: 'Format',
-    render: () => null,
+    key: 'format',
   },
   {
     name: 'Created',
-    render: ({ metadata_created: created }) => created || 'N/A',
+    key: 'metadata_created',
   },
   {
     name: 'Updated',
-    render: ({ metadata_modified: updated }) => updated || 'N/A',
+    key: 'metadata_modified',
   },
   {
     name: 'License',
-    render: () => null,
+    key: 'license',
   },
   {
     name: 'Source',
-    render: () => null,
+    key: 'source',
   },
 ];
 
@@ -46,28 +47,5 @@ export default function About({ variables }) {
   if (loading) return <div>Loading</div>;
 
   const { result } = data.dataset;
-  return (
-    <>
-      <table className="table-auto w-full text-sm text-left my-6">
-        <thead>
-          <tr>
-            {columns.map(({ name }) => (
-              <th key={name} className="px-4 py-2">
-                {name}
-              </th>
-            ))}
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            {columns.map(({ name, render }) => (
-              <td key={name} className="px-4 py-2">
-                {render(result)}
-              </td>
-            ))}
-          </tr>
-        </tbody>
-      </table>
-    </>
-  );
+  return <Table columns={columns} data={[result]} />;
 }

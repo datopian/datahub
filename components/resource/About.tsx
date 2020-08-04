@@ -1,5 +1,5 @@
 import { useQuery } from '@apollo/react-hooks';
-import ErrorMessage from '../Error';
+import { Table, ErrorMessage } from '../_shared';
 import { GET_RESOURCES_QUERY } from '../../graphql/queries';
 
 const columns = [
@@ -64,29 +64,5 @@ export default function About({ variables }) {
   const resource = result.resources.find(
     (item) => item.name === variables.resource
   );
-  return (
-    <>
-      <table className="table-auto w-full text-sm text-left my-6">
-        <thead>
-          <tr>
-            {columns.map(({ key, name }) => (
-              <th key={key} className="px-4 py-2">
-                {name}
-              </th>
-            ))}
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            {columns.map(({ key, render }) => (
-              <td className="px-4 py-2">
-                {(render && typeof render === 'function' && render(resource)) ||
-                  resource[key]}
-              </td>
-            ))}
-          </tr>
-        </tbody>
-      </table>
-    </>
-  );
+  return <Table columns={columns} data={[resource]} />;
 }
