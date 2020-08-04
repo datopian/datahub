@@ -1,21 +1,7 @@
 import Link from 'next/link';
-import ErrorMessage from '../Error';
 import { useQuery } from '@apollo/react-hooks';
-import gql from 'graphql-tag';
-
-export const GET_ORG_QUERY = gql`
-  query dataset($id: String) {
-    dataset(id: $id) @rest(type: "Response", path: "package_show?{args}") {
-      result {
-        organization {
-          name
-          title
-          image_url
-        }
-      }
-    }
-  }
-`;
+import ErrorMessage from '../Error';
+import { GET_ORG_QUERY } from '../../graphql/queries';
 
 export default function Org({ variables }) {
   const { loading, error, data } = useQuery(GET_ORG_QUERY, {

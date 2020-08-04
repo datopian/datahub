@@ -1,19 +1,9 @@
 import { GetServerSideProps } from 'next';
-import { initializeApollo } from '../../lib/apolloClient';
 import Head from 'next/head';
+import { initializeApollo } from '../../lib/apolloClient';
 import Nav from '../../components/home/Nav';
 import List from '../../components/static/List';
-import gql from 'graphql-tag';
-
-const QUERY = gql`
-  query posts {
-    posts @rest(type: "Posts", path: "", endpoint: "wordpress-posts") {
-      found
-      posts
-      meta
-    }
-  }
-`;
+import { GET_POSTS_QUERY } from '../../graphql/queries';
 
 function PostList() {
   return (
@@ -34,7 +24,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   const apolloClient = initializeApollo();
 
   await apolloClient.query({
-    query: QUERY,
+    query: GET_POSTS_QUERY,
   });
 
   return {

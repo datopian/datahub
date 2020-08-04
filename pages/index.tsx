@@ -1,9 +1,10 @@
 import { GetServerSideProps } from 'next';
-import { initializeApollo } from '../lib/apolloClient';
 import Head from 'next/head';
+import { initializeApollo } from '../lib/apolloClient';
 import Nav from '../components/home/Nav';
-import Recent, { QUERY } from '../components/home/Recent';
+import Recent from '../components/home/Recent';
 import Form from '../components/search/Form';
+import { SEARCH_QUERY } from '../graphql/queries';
 
 function Home() {
   return (
@@ -39,7 +40,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   const apolloClient = initializeApollo();
 
   await apolloClient.query({
-    query: QUERY,
+    query: SEARCH_QUERY,
     variables: {
       sort: 'metadata_created desc',
       rows: 3,

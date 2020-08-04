@@ -1,23 +1,9 @@
 import { GetServerSideProps } from 'next';
-import { initializeApollo } from '../../../lib/apolloClient';
 import Head from 'next/head';
+import { initializeApollo } from '../../../lib/apolloClient';
 import Nav from '../../../components/home/Nav';
 import Page from '../../../components/static/Page';
-import gql from 'graphql-tag';
-
-const QUERY = gql`
-  query page($slug: String) {
-    page(slug: $slug)
-      @rest(type: "Page", path: "{args.slug}", endpoint: "wordpress") {
-      title
-      content
-      excerpt
-      slug
-      date
-      modified
-    }
-  }
-`;
+import { GET_PAGE_QUERY } from '../../../graphql/queries';
 
 function PageItem({ variables }) {
   return (
@@ -42,7 +28,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   const apolloClient = initializeApollo();
 
   await apolloClient.query({
-    query: QUERY,
+    query: GET_PAGE_QUERY,
     variables,
   });
 

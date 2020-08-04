@@ -6,26 +6,7 @@ import Nav from '../components/home/Nav';
 import Form from '../components/search/Form';
 import Total from '../components/search/Total';
 import List from '../components/search/List';
-import gql from 'graphql-tag';
-
-const QUERY = gql`
-  query search($q: String, $sort: String) {
-    search(q: $q, sort: $sort)
-      @rest(type: "Search", path: "package_search?{args}") {
-      result {
-        count
-        results {
-          name
-          title
-          organization {
-            name
-            title
-          }
-        }
-      }
-    }
-  }
-`;
+import { SEARCH_QUERY } from '../graphql/queries';
 
 function Search({ variables }) {
   return (
@@ -51,7 +32,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   const apolloClient = initializeApollo();
 
   await apolloClient.query({
-    query: QUERY,
+    query: SEARCH_QUERY,
     variables,
   });
 

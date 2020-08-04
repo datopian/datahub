@@ -1,27 +1,10 @@
 import Link from 'next/link';
-import ErrorMessage from '../Error';
 import { useQuery } from '@apollo/react-hooks';
-import gql from 'graphql-tag';
-
-export const GET_DATAPACKAGE_QUERY = gql`
-  query dataset($id: String) {
-    dataset(id: $id) @rest(type: "Response", path: "package_show?{args}") {
-      result {
-        name
-        resources {
-          name
-          title
-          format
-          created
-          last_modified
-        }
-      }
-    }
-  }
-`;
+import ErrorMessage from '../Error';
+import { GET_RESOURCES_QUERY } from '../../graphql/queries';
 
 export default function Resources({ variables }) {
-  const { loading, error, data } = useQuery(GET_DATAPACKAGE_QUERY, {
+  const { loading, error, data } = useQuery(GET_RESOURCES_QUERY, {
     variables,
     // Setting this value to true will make the component rerender when
     // the "networkStatus" changes, so we are able to know if it is fetching

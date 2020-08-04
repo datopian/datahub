@@ -1,29 +1,10 @@
 import Link from 'next/link';
-import ErrorMessage from '../Error';
 import { useQuery } from '@apollo/react-hooks';
-import gql from 'graphql-tag';
-
-export const QUERY = gql`
-  query search($q: String, $sort: String, $rows: Int) {
-    search(q: $q, sort: $sort, rows: $rows)
-      @rest(type: "Search", path: "package_search?{args}") {
-      result {
-        results {
-          name
-          title
-          organization {
-            name
-            title
-            description
-          }
-        }
-      }
-    }
-  }
-`;
+import ErrorMessage from '../Error';
+import { SEARCH_QUERY } from '../../graphql/queries';
 
 function Recent() {
-  const { loading, error, data } = useQuery(QUERY, {
+  const { loading, error, data } = useQuery(SEARCH_QUERY, {
     variables: {
       sort: 'metadata_created desc',
       rows: 3,
