@@ -1,20 +1,9 @@
-import ErrorMessage from '../Error';
 import { useQuery } from '@apollo/react-hooks';
-import gql from 'graphql-tag';
-
-const QUERY = gql`
-  query search($q: String, $sort: String) {
-    search(q: $q, sort: $sort)
-      @rest(type: "Search", path: "package_search?{args}") {
-      result {
-        count
-      }
-    }
-  }
-`;
+import { ErrorMessage } from '../_shared';
+import { GET_TOTAL_COUNT_QUERY } from '../../graphql/queries';
 
 export default function Total({ variables }) {
-  const { loading, error, data } = useQuery(QUERY, {
+  const { loading, error, data } = useQuery(GET_TOTAL_COUNT_QUERY, {
     variables,
     // Setting this value to true will make the component rerender when
     // the "networkStatus" changes, so we are able to know if it is fetching

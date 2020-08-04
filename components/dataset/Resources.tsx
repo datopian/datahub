@@ -1,27 +1,43 @@
 import Link from 'next/link';
-import ErrorMessage from '../Error';
 import { useQuery } from '@apollo/react-hooks';
-import gql from 'graphql-tag';
+import { Table, ErrorMessage } from '../_shared';
+import { GET_RESOURCES_QUERY } from '../../graphql/queries';
 
-export const GET_DATAPACKAGE_QUERY = gql`
-  query dataset($id: String) {
-    dataset(id: $id) @rest(type: "Response", path: "package_show?{args}") {
-      result {
-        name
-        resources {
-          name
-          title
-          format
-          created
-          last_modified
-        }
-      }
-    }
-  }
-`;
+const columns = [
+  {
+    name: 'File',
+    key: 'file',
+    render: ({ name: resName, title, parentName }) => (
+      <Link href={`${parentName}/r/${resName}`}>
+        <a className="underline">{title || resName}</a>
+      </Link>
+    ),
+  },
+  {
+    name: 'Format',
+    key: 'format',
+  },
+  {
+    name: 'Created',
+    key: 'created',
+  },
+  {
+    name: 'Updated',
+    key: 'last_modified',
+  },
+  {
+    name: 'Link',
+    key: 'link',
+    render: ({ name: resName, parentName }) => (
+      <Link href={`${parentName}/r/${resName}`}>
+        <a className="underline">Preview</a>
+      </Link>
+    ),
+  },
+];
 
 export default function Resources({ variables }) {
-  const { loading, error, data } = useQuery(GET_DATAPACKAGE_QUERY, {
+  const { loading, error, data } = useQuery(GET_RESOURCES_QUERY, {
     variables,
     // Setting this value to true will make the component rerender when
     // the "networkStatus" changes, so we are able to know if it is fetching
@@ -37,36 +53,13 @@ export default function Resources({ variables }) {
   return (
     <>
       <h3 className="text-xl font-semibold">Data Files</h3>
-      <table className="table-auto w-full text-sm text-left mb-6">
-        <thead>
-          <tr>
-            <th className="px-4 py-2">File</th>
-            <th className="px-4 py-2">Format</th>
-            <th className="px-4 py-2">Created</th>
-            <th className="px-4 py-2">Updated</th>
-            <th className="px-4 py-2">Link</th>
-          </tr>
-        </thead>
-        <tbody>
-          {result.resources.map((resource, index) => (
-            <tr key={index}>
-              <td className="px-4 py-2">
-                <Link href={`${result.name}/r/${resource.name}`}>
-                  <a className="underline">{resource.title || resource.name}</a>
-                </Link>
-              </td>
-              <td className="px-4 py-2">{resource.format}</td>
-              <td className="px-4 py-2">{resource.created}</td>
-              <td className="px-4 py-2">{resource.last_modified}</td>
-              <td className="px-4 py-2">
-                <Link href={`${result.name}/r/${resource.name}`}>
-                  <a className="underline">Preview</a>
-                </Link>
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+      <Table
+        columns={columns}
+        data={result.resources.map((resource) => ({
+          ...resource,
+          parentName: result.name,
+        }))}
+      />
     </>
   );
 }

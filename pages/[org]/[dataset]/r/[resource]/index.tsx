@@ -1,35 +1,14 @@
 import { GetServerSideProps } from 'next';
-import gql from 'graphql-tag';
 import { useQuery } from '@apollo/react-hooks';
-import { initializeApollo } from '../../../../../lib/apolloClient';
-import utils from '../../../../../utils';
 import Head from 'next/head';
+import { initializeApollo } from '../../../../../lib/apolloClient';
 import Nav from '../../../../../components/home/Nav';
 import About from '../../../../../components/resource/About';
 import DataExplorer from '../../../../../components/resource/DataExplorer';
-
-const QUERY = gql`
-  query dataset($id: String) {
-    dataset(id: $id) @rest(type: "Response", path: "package_show?{args}") {
-      result {
-        resources {
-          name
-          id
-          title
-          description
-          format
-          size
-          created
-          last_modified
-          url
-        }
-      }
-    }
-  }
-`;
+import { GET_RESOURCES_QUERY } from '../../../../../graphql/queries';
 
 function Resource({ variables }) {
-  const { data, loading } = useQuery(QUERY, { variables });
+  const { data, loading } = useQuery(GET_RESOURCES_QUERY, { variables });
 
   if (loading) return <div>Loading</div>;
   const result = data.dataset.result;
@@ -63,7 +42,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   };
 
   await apolloClient.query({
-    query: QUERY,
+    query: GET_RESOURCES_QUERY,
     variables,
   });
 

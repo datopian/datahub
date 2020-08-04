@@ -1,22 +1,10 @@
-import ErrorMessage from '../Error';
 import parse from 'html-react-parser';
 import { useQuery } from '@apollo/react-hooks';
-import gql from 'graphql-tag';
-
-const QUERY = gql`
-  query page($slug: String) {
-    page(slug: $slug)
-      @rest(type: "Page", path: "{args.slug}", endpoint: "wordpress") {
-      title
-      content
-      modified
-      featured_image
-    }
-  }
-`;
+import { ErrorMessage } from '../_shared';
+import { GET_PAGE_QUERY } from '../../graphql/queries';
 
 export default function Post({ variables }) {
-  const { loading, error, data } = useQuery(QUERY, {
+  const { loading, error, data } = useQuery(GET_PAGE_QUERY, {
     variables,
     // Setting this value to true will make the component rerender when
     // the "networkStatus" changes, so we are able to know if it is fetching

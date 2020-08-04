@@ -1,23 +1,38 @@
-import ErrorMessage from '../Error';
 import { useQuery } from '@apollo/react-hooks';
-import gql from 'graphql-tag';
+import { Table, ErrorMessage } from '../_shared';
+import { GET_DATAPACKAGE_QUERY } from '../../graphql/queries';
 
-export const GET_DATAPACKAGE_QUERY = gql`
-  query dataset($id: String) {
-    dataset(id: $id) @rest(type: "Response", path: "package_show?{args}") {
-      result {
-        name
-        title
-        size
-        metadata_created
-        metadata_modified
-        resources {
-          name
-        }
-      }
-    }
-  }
-`;
+const columns = [
+  {
+    name: 'Files',
+    key: 'files',
+    render: ({ resources }) => (resources && resources.length) || 0,
+  },
+  {
+    name: 'Size',
+    key: 'size',
+  },
+  {
+    name: 'Format',
+    key: 'format',
+  },
+  {
+    name: 'Created',
+    key: 'metadata_created',
+  },
+  {
+    name: 'Updated',
+    key: 'metadata_modified',
+  },
+  {
+    name: 'License',
+    key: 'license',
+  },
+  {
+    name: 'Source',
+    key: 'source',
+  },
+];
 
 export default function About({ variables }) {
   const { loading, error, data } = useQuery(GET_DATAPACKAGE_QUERY, {
@@ -32,32 +47,5 @@ export default function About({ variables }) {
   if (loading) return <div>Loading</div>;
 
   const { result } = data.dataset;
-  return (
-    <>
-      <table className="table-auto w-full text-sm text-left my-6">
-        <thead>
-          <tr>
-            <th className="px-4 py-2">Files</th>
-            <th className="px-4 py-2">Size</th>
-            <th className="px-4 py-2">Format</th>
-            <th className="px-4 py-2">Created</th>
-            <th className="px-4 py-2">Updated</th>
-            <th className="px-4 py-2">License</th>
-            <th className="px-4 py-2">Source</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td className="px-4 py-2">{result.resources.length}</td>
-            <td className="px-4 py-2">{result.size || 'NA'}</td>
-            <td className="px-4 py-2"></td>
-            <td className="px-4 py-2">{result.metadata_created}</td>
-            <td className="px-4 py-2">{result.metadata_modified}</td>
-            <td className="px-4 py-2"></td>
-            <td className="px-4 py-2"></td>
-          </tr>
-        </tbody>
-      </table>
-    </>
-  );
+  return <Table columns={columns} data={[result]} />;
 }
