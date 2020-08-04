@@ -2,6 +2,52 @@ import { useQuery } from '@apollo/react-hooks';
 import ErrorMessage from '../Error';
 import { GET_RESOURCES_QUERY } from '../../graphql/queries';
 
+const columns = [
+  {
+    name: 'Name',
+    key: 'name',
+    render: ({ name, id }) => {
+      name || id;
+    },
+  },
+  {
+    name: 'Title',
+    key: 'title',
+  },
+  {
+    name: 'Description',
+    key: 'description',
+  },
+  {
+    name: 'Format',
+    key: 'format',
+  },
+  {
+    name: 'Size',
+    key: 'size',
+  },
+  {
+    name: 'Created',
+    key: 'created',
+  },
+  {
+    name: 'Updated',
+    key: 'last_modified',
+  },
+  {
+    name: 'Download',
+    key: 'download',
+    render: ({ url, format }) => (
+      <a
+        href={url}
+        className="bg-white hover:bg-gray-200 border text-black font-semibold py-2 px-4 rounded"
+      >
+        {format}
+      </a>
+    ),
+  },
+];
+
 export default function About({ variables }) {
   const { loading, error, data } = useQuery(GET_RESOURCES_QUERY, {
     variables,
@@ -23,33 +69,21 @@ export default function About({ variables }) {
       <table className="table-auto w-full text-sm text-left my-6">
         <thead>
           <tr>
-            <th className="px-4 py-2">Name</th>
-            <th className="px-4 py-2">Title</th>
-            <th className="px-4 py-2">Description</th>
-            <th className="px-4 py-2">Format</th>
-            <th className="px-4 py-2">Size</th>
-            <th className="px-4 py-2">Created</th>
-            <th className="px-4 py-2">Updated</th>
-            <th className="px-4 py-2">Download</th>
+            {columns.map(({ key, name }) => (
+              <th key={key} className="px-4 py-2">
+                {name}
+              </th>
+            ))}
           </tr>
         </thead>
         <tbody>
           <tr>
-            <td className="px-4 py-2">{resource.name || resource.id}</td>
-            <td className="px-4 py-2">{resource.title || ''}</td>
-            <td className="px-4 py-2">{resource.description || ''}</td>
-            <td className="px-4 py-2">{resource.format}</td>
-            <td className="px-4 py-2">{resource.size}</td>
-            <td className="px-4 py-2">{resource.created}</td>
-            <td className="px-4 py-2">{resource.last_modified || ''}</td>
-            <td className="px-4 py-2">
-              <a
-                href={resource.url}
-                className="bg-white hover:bg-gray-200 border text-black font-semibold py-2 px-4 rounded"
-              >
-                {resource.format}
-              </a>
-            </td>
+            {columns.map(({ key, render }) => (
+              <td className="px-4 py-2">
+                {(render && typeof render === 'function' && render(resource)) ||
+                  resource[key]}
+              </td>
+            ))}
           </tr>
         </tbody>
       </table>
