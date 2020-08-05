@@ -3,7 +3,7 @@ import { useQuery } from '@apollo/react-hooks';
 import { ErrorMessage } from '../_shared';
 import { GET_ORG_QUERY } from '../../graphql/queries';
 
-export default function Org({ variables }) {
+const Org: React.FC<{ variables: any }> = ({ variables }) => {
   const { loading, error, data } = useQuery(GET_ORG_QUERY, {
     variables,
     // Setting this value to true will make the component rerender when
@@ -26,8 +26,10 @@ export default function Org({ variables }) {
               'https://datahub.io/static/img/datahub-cube-edited.svg'
             }
             className="h-5 w-5 mr-2 inline-block"
+            alt="org_img"
           />
           <Link href={`/@${organization.name}`}>
+            {/* eslint-disable-next-line jsx-a11y/anchor-is-valid */}
             <a className="font-semibold text-primary underline">
               {organization.title || organization.name}
             </a>
@@ -38,4 +40,6 @@ export default function Org({ variables }) {
       )}
     </>
   );
-}
+};
+
+export default Org;

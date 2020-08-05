@@ -2,7 +2,7 @@ import { useQuery } from '@apollo/react-hooks';
 import { ErrorMessage } from '../_shared';
 import { GET_TOTAL_COUNT_QUERY } from '../../graphql/queries';
 
-export default function Total({ variables }) {
+const Total: React.FC<{ variables: any }> = ({ variables }) => {
   const { loading, error, data } = useQuery(GET_TOTAL_COUNT_QUERY, {
     variables,
     // Setting this value to true will make the component rerender when
@@ -21,4 +21,6 @@ export default function Total({ variables }) {
       {result.count} results found
     </h1>
   );
-}
+};
+
+export default Total;

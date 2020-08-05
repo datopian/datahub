@@ -1,9 +1,10 @@
+/* eslint-disable jsx-a11y/anchor-is-valid */
 import Link from 'next/link';
 import { useQuery } from '@apollo/react-hooks';
 import { ErrorMessage } from '../_shared';
 import { SEARCH_QUERY } from '../../graphql/queries';
 
-function Recent() {
+const Recent: React.FC = () => {
   const { loading, error, data } = useQuery(SEARCH_QUERY, {
     variables: {
       sort: 'metadata_created desc',
@@ -47,6 +48,6 @@ function Recent() {
       </div>
     </section>
   );
-}
+};
 
 export default Recent;

@@ -1,10 +1,16 @@
 import { useMemo } from 'react';
 import getConfig from 'next/config';
 import { ApolloClient } from 'apollo-client';
-import { InMemoryCache } from 'apollo-cache-inmemory';
+import {
+  InMemoryCache,
+  NormalizedCache,
+  NormalizedCacheObject,
+} from 'apollo-cache-inmemory';
 import { RestLink } from 'apollo-link-rest';
 
-let apolloClient;
+let apolloClient:
+  | ApolloClient<NormalizedCache>
+  | ApolloClient<NormalizedCacheObject>;
 
 const restLink = new RestLink({
   uri: getConfig().publicRuntimeConfig.DMS + '/api/3/action/',
@@ -17,11 +23,7 @@ const restLink = new RestLink({
     }/posts/`,
   },
   typePatcher: {
-    Search: (
-      data: any,
-      outerType: string,
-      patchDeeper: RestLink.FunctionalTypePatcher
-    ): any => {
+    Search: (data: any): any => {
       if (data.result != null) {
         data.result.__typename = 'SearchResponse';
 
@@ -36,11 +38,7 @@ const restLink = new RestLink({
       }
       return data;
     },
-    Response: (
-      data: any,
-      outerType: string,
-      patchDeeper: RestLink.FunctionalTypePatcher
-    ): any => {
+    Response: (data: any): any => {
       if (data.result != null) {
         data.result.__typename = 'Package';
         if (data.result.organization != null) {
@@ -65,8 +63,13 @@ function createApolloClient() {
   });
 }
 
-export function initializeApollo(initialState = null) {
-  const _apolloClient = apolloClient ?? createApolloClient();
+export function initializeApollo(
+  initialState = null
+): ApolloClient<NormalizedCache> | ApolloClient<NormalizedCacheObject> {
+  const _apolloClient:
+    | ApolloClient<NormalizedCache>
+    | ApolloClient<NormalizedCacheObject> =
+    apolloClient ?? createApolloClient();
 
   // If your page has Next.js data fetching methods that use Apollo Client, the initial state
   // gets hydrated here
@@ -81,7 +84,9 @@ export function initializeApollo(initialState = null) {
   return _apolloClient;
 }
 
-export function useApollo(initialState) {
+export function useApollo(
+  initialState = null
+): ApolloClient<NormalizedCache> | ApolloClient<NormalizedCacheObject> {
   const store = useMemo(() => initializeApollo(initialState), [initialState]);
   return store;
 }

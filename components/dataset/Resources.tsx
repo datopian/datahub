@@ -1,3 +1,5 @@
+/* eslint-disable jsx-a11y/anchor-is-valid */
+/* eslint-disable react/display-name */
 import Link from 'next/link';
 import { useQuery } from '@apollo/react-hooks';
 import { Table, ErrorMessage } from '../_shared';
@@ -36,7 +38,7 @@ const columns = [
   },
 ];
 
-export default function Resources({ variables }) {
+const Resources: React.FC<{ variables: any }> = ({ variables }) => {
   const { loading, error, data } = useQuery(GET_RESOURCES_QUERY, {
     variables,
     // Setting this value to true will make the component rerender when
@@ -62,4 +64,6 @@ export default function Resources({ variables }) {
       />
     </>
   );
-}
+};
+
+export default Resources;

@@ -15,7 +15,7 @@
     "format": "prettier --single-quote --write .",
     "pre-commit": "yarn lint:fix && prettier --single-quote --write",
     "lint": "eslint . --ext .ts,.tsx",
-    "lint:fix": "yarn lint -- --fix"
+    "lint:fix": "yarn lint --fix"
   },
   "dependencies": {
     "@apollo/client": "^3.0.2",

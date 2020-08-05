@@ -7,7 +7,7 @@ import About from '../../../../../components/resource/About';
 import DataExplorer from '../../../../../components/resource/DataExplorer';
 import { GET_RESOURCES_QUERY } from '../../../../../graphql/queries';
 
-function Resource({ variables }) {
+const Resource: React.FC<{ variables: any }> = ({ variables }) => {
   const { data, loading } = useQuery(GET_RESOURCES_QUERY, { variables });
 
   if (loading) return <div>Loading</div>;
@@ -32,7 +32,7 @@ function Resource({ variables }) {
       </main>
     </>
   );
-}
+};
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
   const apolloClient = initializeApollo();

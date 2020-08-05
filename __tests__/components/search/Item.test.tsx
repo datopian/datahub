@@ -1,5 +1,4 @@
 import React from 'react';
-import { render } from '@testing-library/react';
 import renderer from 'react-test-renderer';
 import Item from '../../../components/search/Item';
 
@@ -10,6 +9,8 @@ test('📸 of Input component with empty', () => {
     organization: null,
     __typename: 'Package',
   };
-  const tree = renderer.create(<Item datapackage={fixture} key={0} />).toJSON();
+  const tree = renderer
+    .create(<Item datapackage={fixture} key={0} />)
+    .toJSON();
   expect(tree).toMatchSnapshot();
 });
