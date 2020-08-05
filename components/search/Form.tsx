@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useRouter } from 'next/router';
 
-export default function Form() {
+const Form: React.FC = () => {
   const router = useRouter();
   const [q, setQ] = useState(router.query.q);
   const [sort, setSort] = useState(router.query.sort);
@@ -48,6 +48,7 @@ export default function Form() {
           id="field-order-by"
           name="sort"
           onChange={handleChange}
+          onBlur={handleChange}
           value={sort}
         >
           <option value="score:desc">Relevance</option>
@@ -59,4 +60,6 @@ export default function Form() {
       </div>
     </form>
   );
-}
+};
+
+export default Form;

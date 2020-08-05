@@ -2,7 +2,7 @@ import { useQuery } from '@apollo/react-hooks';
 import { ErrorMessage } from '../_shared';
 import { GET_RESOURCES_QUERY } from '../../graphql/queries';
 
-export default function DataExplorer({ variables }) {
+const DataExplorer: React.FC<{ variables: any }> = ({ variables }) => {
   const { loading, error, data } = useQuery(GET_RESOURCES_QUERY, {
     variables,
     // Setting this value to true will make the component rerender when
@@ -20,4 +20,6 @@ export default function DataExplorer({ variables }) {
   );
 
   return <>{JSON.stringify(resource)}</>;
-}
+};
+
+export default DataExplorer;

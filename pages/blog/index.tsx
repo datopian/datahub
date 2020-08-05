@@ -5,22 +5,20 @@ import Nav from '../../components/home/Nav';
 import List from '../../components/static/List';
 import { GET_POSTS_QUERY } from '../../graphql/queries';
 
-function PostList() {
-  return (
-    <>
-      <Head>
-        <title>Portal | Blog</title>
-        <link rel="icon" href="/favicon.ico" />
-      </Head>
-      <Nav />
-      <main className="p-6">
-        <List />
-      </main>
-    </>
-  );
-}
+const PostList: React.FC = () => (
+  <>
+    <Head>
+      <title>Portal | Blog</title>
+      <link rel="icon" href="/favicon.ico" />
+    </Head>
+    <Nav />
+    <main className="p-6">
+      <List />
+    </main>
+  </>
+);
 
-export const getServerSideProps: GetServerSideProps = async (context) => {
+export const getServerSideProps: GetServerSideProps = async () => {
   const apolloClient = initializeApollo();
 
   await apolloClient.query({

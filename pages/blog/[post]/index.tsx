@@ -5,20 +5,22 @@ import Nav from '../../../components/home/Nav';
 import Post from '../../../components/static/Post';
 import { GET_POST_QUERY } from '../../../graphql/queries';
 
-function PostItem({ variables }) {
-  return (
-    <>
-      <Head>
-        <title>Portal | {variables.slug}</title>
-        <link rel="icon" href="/favicon.ico" />
-      </Head>
-      <Nav />
-      <main className="p-6">
-        <Post variables={variables} />
-      </main>
-    </>
-  );
-}
+type Props = {
+  variables: any;
+};
+
+const PostItem: React.FC<Props> = ({ variables }) => (
+  <>
+    <Head>
+      <title>Portal | {variables.slug}</title>
+      <link rel="icon" href="/favicon.ico" />
+    </Head>
+    <Nav />
+    <main className="p-6">
+      <Post variables={variables} />
+    </main>
+  </>
+);
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
   const variables = {

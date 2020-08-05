@@ -34,7 +34,7 @@ const columns = [
   },
 ];
 
-export default function About({ variables }) {
+const About: React.FC<{ variables: any }> = ({ variables }) => {
   const { loading, error, data } = useQuery(GET_DATAPACKAGE_QUERY, {
     variables,
     // Setting this value to true will make the component rerender when
@@ -48,4 +48,6 @@ export default function About({ variables }) {
 
   const { result } = data.dataset;
   return <Table columns={columns} data={[result]} />;
-}
+};
+
+export default About;

@@ -3,7 +3,7 @@ import { useQuery } from '@apollo/react-hooks';
 import { ErrorMessage } from '../_shared';
 import { GET_PAGE_QUERY } from '../../graphql/queries';
 
-export default function Page({ variables }) {
+const Page: React.FC<{ variables: any }> = ({ variables }) => {
   const { loading, error, data } = useQuery(GET_PAGE_QUERY, {
     variables,
     // Setting this value to true will make the component rerender when
@@ -23,8 +23,10 @@ export default function Page({ variables }) {
         {title}
       </h1>
       <p className="mb-6">Edited: {modified}</p>
-      <img src={featured_image} className="mb-6" />
+      <img src={featured_image} className="mb-6" alt="featured_img" />
       <div>{parse(content)}</div>
     </>
   );
-}
+};
+
+export default Page;

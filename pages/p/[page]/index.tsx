@@ -5,20 +5,22 @@ import Nav from '../../../components/home/Nav';
 import Page from '../../../components/static/Page';
 import { GET_PAGE_QUERY } from '../../../graphql/queries';
 
-function PageItem({ variables }) {
-  return (
-    <>
-      <Head>
-        <title>Portal | {variables.slug}</title>
-        <link rel="icon" href="/favicon.ico" />
-      </Head>
-      <Nav />
-      <main className="p-6">
-        <Page variables={variables} />
-      </main>
-    </>
-  );
-}
+type Props = {
+  variables: any;
+};
+
+const PageItem: React.FC<Props> = ({ variables }) => (
+  <>
+    <Head>
+      <title>Portal | {variables.slug}</title>
+      <link rel="icon" href="/favicon.ico" />
+    </Head>
+    <Nav />
+    <main className="p-6">
+      <Page variables={variables} />
+    </main>
+  </>
+);
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
   const variables = {

@@ -8,22 +8,24 @@ import Total from '../components/search/Total';
 import List from '../components/search/List';
 import { SEARCH_QUERY } from '../graphql/queries';
 
-function Search({ variables }) {
-  return (
-    <>
-      <Head>
-        <title>Portal | Search</title>
-        <link rel="icon" href="/favicon.ico" />
-      </Head>
-      <Nav />
-      <main className="p-6">
-        <Form />
-        <Total variables={variables} />
-        <List variables={variables} />
-      </main>
-    </>
-  );
-}
+type Props = {
+  variables: any;
+};
+
+const Search: React.FC<Props> = ({ variables }) => (
+  <>
+    <Head>
+      <title>Portal | Search</title>
+      <link rel="icon" href="/favicon.ico" />
+    </Head>
+    <Nav />
+    <main className="p-6">
+      <Form />
+      <Total variables={variables} />
+      <List variables={variables} />
+    </main>
+  </>
+);
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
   const query = context.query || {};

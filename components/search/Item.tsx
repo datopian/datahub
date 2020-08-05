@@ -1,12 +1,15 @@
+/* eslint-disable jsx-a11y/anchor-is-valid */
 import Link from 'next/link';
 
-export default function Item({ datapackage }) {
+const Item: React.FC<{ datapackage: any }> = ({ datapackage }) => {
   return (
     <div className="mb-6">
       <h3 className="text-xl font-semibold">
         <Link
           href={`/@${
-            datapackage.organization ? datapackage.organization.name : 'dataset'
+            datapackage.organization
+              ? datapackage.organization.name
+              : 'dataset'
           }/${datapackage.name}`}
         >
           <a className="text-primary">
@@ -30,4 +33,6 @@ export default function Item({ datapackage }) {
       </div>
     </div>
   );
-}
+};
+
+export default Item;

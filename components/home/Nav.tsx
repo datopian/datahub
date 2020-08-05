@@ -1,7 +1,8 @@
+/* eslint-disable jsx-a11y/anchor-is-valid */
 import Link from 'next/link';
-import React, { useState } from 'react';
+import { useState } from 'react';
 
-export default function Nav() {
+const Nav: React.FC = () => {
   const [open, setOpen] = useState(false);
 
   const handleClick = (event) => {
@@ -44,6 +45,7 @@ export default function Nav() {
           href="http://tech.datopian.com/frontend/"
           className="block mt-4 lg:inline-block lg:mt-0 text-gray-700 hover:text-black mr-6"
           target="_blank"
+          rel="noreferrer"
         >
           Docs
         </a>
@@ -51,10 +53,13 @@ export default function Nav() {
           href="https://github.com/datopian/portal"
           className="inline-block text-tiny px-4 py-2 leading-none border rounded text-primary bg-primary-background border-black hover:border-gray-700 hover:text-gray-700 hover:bg-white mt-4 lg:mt-0"
           target="_blank"
+          rel="noreferrer"
         >
           GitHub
         </a>
       </div>
     </nav>
   );
-}
+};
+
+export default Nav;

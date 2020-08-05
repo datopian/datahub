@@ -3,7 +3,7 @@ import Item from './Item';
 import { ErrorMessage } from '../_shared';
 import { SEARCH_QUERY } from '../../graphql/queries';
 
-export default function List({ variables }) {
+const List: React.FC<{ variables: any }> = ({ variables }) => {
   const { loading, error, data } = useQuery(SEARCH_QUERY, {
     variables,
     // Setting this value to true will make the component rerender when
@@ -22,4 +22,6 @@ export default function List({ variables }) {
       ))}
     </ul>
   );
-}
+};
+
+export default List;

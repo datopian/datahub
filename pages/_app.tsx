@@ -6,9 +6,14 @@ import { applyTheme } from '../themes/utils';
 
 import '../styles/app.css';
 
-export default function MyApp({ Component, pageProps }) {
+type Props = {
+  Component: any;
+  pageProps: any;
+};
+
+const MyApp: React.FC<Props> = ({ Component, pageProps }) => {
   const apolloClient = useApollo(pageProps.initialApolloState);
-  const [theme, setTheme] = useState(DEFAULT_THEME);
+  const [theme] = useState(DEFAULT_THEME); // setTheme
 
   useEffect(() => {
     /**
@@ -24,4 +29,6 @@ export default function MyApp({ Component, pageProps }) {
       <Component {...pageProps} />
     </ApolloProvider>
   );
-}
+};
+
+export default MyApp;

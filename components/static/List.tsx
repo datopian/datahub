@@ -3,7 +3,7 @@ import { useQuery } from '@apollo/react-hooks';
 import { ErrorMessage } from '../_shared';
 import { GET_POSTS_QUERY } from '../../graphql/queries';
 
-export default function List() {
+const List: React.FC = () => {
   const { loading, error, data } = useQuery(GET_POSTS_QUERY, {
     // Setting this value to true will make the component rerender when
     // the "networkStatus" changes, so we are able to know if it is fetching
@@ -34,4 +34,6 @@ export default function List() {
       ))}
     </>
   );
-}
+};
+
+export default List;

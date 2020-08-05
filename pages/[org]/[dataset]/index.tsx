@@ -8,7 +8,7 @@ import Org from '../../../components/dataset/Org';
 import Resources from '../../../components/dataset/Resources';
 import { GET_DATASET_QUERY } from '../../../graphql/queries';
 
-function Dataset({ variables }) {
+const Dataset: React.FC<{ variables: any }> = ({ variables }) => {
   const { data, loading } = useQuery(GET_DATASET_QUERY, { variables });
 
   if (loading) return <div>Loading</div>;
@@ -31,7 +31,7 @@ function Dataset({ variables }) {
       </main>
     </>
   );
-}
+};
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
   const apolloClient = initializeApollo();
