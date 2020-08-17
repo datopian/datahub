@@ -10,6 +10,7 @@ jobs:
       - name: Cypress run
         uses: cypress-io/github-action@v1
         with:
+          working-directory: packages/portal
           browser: chrome
           build: yarn run build
           start: yarn start
