@@ -6,6 +6,10 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     - name: Install modules
-      run: yarn
+      run: |
+        cd packages/portal
+        yarn
     - name: Run tests
-      run: yarn test -u
+      run: |
+        cd packages/portal
+        yarn test -u
