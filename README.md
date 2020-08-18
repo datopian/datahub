@@ -1,8 +1,8 @@
-[![Build Status](https://travis-ci.org/okfn/recline.png)](https://travis-ci.org/okfn/recline)
+[![Build Status](https://travis-ci.org/datopian/recline.png)](https://travis-ci.org/datopian/recline)
 
 A simple but powerful library for building data applications in pure Javascript and HTML.
 
-<h3><a href="http://okfnlabs.org/recline/">Recline Website - including Overview, Documentation, Demos etc</a></h3>
+<h3><a href="http://datopian.github.io/recline/">Recline Website - including Overview, Documentation, Demos etc</a></h3>
 
 ## Features
 
