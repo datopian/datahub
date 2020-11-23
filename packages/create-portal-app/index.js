@@ -39,3 +39,38 @@ program.name(package.name)
     })
   
   }
+
+  /**
+   * Main method to start CLI and validate inputs
+   */
+  async function run(){
+    if(typeof path === 'string'){ 
+      path = path.trim()
+    }
+    if(!path){
+      const response = await promptPath()
+      if(typeof response.path === 'string'){
+        path = response.path.trim()
+      }
+    }
+    if(!path){
+      console.log()
+      console.log('Please choose a name to your project:')
+      console.log()
+      console.log('Example:')
+      console.log(`${chalk.cyan(program.name())} ${chalk.yellow('ny-portal-app')}`)
+      console.log()
+  
+      process.exit(1)
+    }
+  
+    /**
+     * TODO Include workflow to create and manage the files and options
+     * 
+     * Example: 
+     * createApp()
+     *   .then(installDependencies)
+     *   .then(renameFiles)
+     *   .then(checkUpdated) 
+     */
+  }
