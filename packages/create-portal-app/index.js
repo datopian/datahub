@@ -71,6 +71,21 @@ program.name(package.name)
      * createApp()
      *   .then(installDependencies)
      *   .then(renameFiles)
+     *   .then(accessFolder)
      *   .then(checkUpdated) 
      */
   }
+
+  //Main CLI execution workflow
+  run()
+  .then(`${chalk.greenBright('Project Installed Sucess')}`)
+  .catch(error => {
+    if(error.command){
+      console.log(`${chalk.cyan('Error on Create App')}`)
+    }else{
+      console.log(`${chalk.red('Unexpected Erro. Please report it as a bug')}`)
+      console.log(error)
+    }
+    console.log()
+    process.exit(1)
+  })
