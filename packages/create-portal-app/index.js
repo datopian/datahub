@@ -24,6 +24,7 @@ program.name(package.name)
 
   /**
    * Method to ask a custon name if was not passed as parameter
+   * returns the value passed from terminal input
    */
   async function promptPath(){
     return prompts({
