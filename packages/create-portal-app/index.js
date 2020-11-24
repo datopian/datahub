@@ -6,7 +6,7 @@ const prompts = require('prompts')
 const package = require('./package.json')
 
 // Output path to create new portal app
-let path = ''
+let projectPath = ''
 
 
 // Commander parameters to specify CLI behavior
@@ -17,7 +17,7 @@ program.name(package.name)
   .description({
     dir: 'Directory to be used on install Portal.js' 
   })
-  .action(name => path = name)
+  .action(name => projectPath = name)
   .allowUnknownOption()
   .parse(process.argv)
 
@@ -44,16 +44,16 @@ program.name(package.name)
    * Main method to start CLI and validate inputs
    */
   async function run(){
-    if(typeof path === 'string'){ 
-      path = path.trim()
+    if(typeof projectPath === 'string'){ 
+      projectPath = projectPath.trim()
     }
-    if(!path){
+    if(!projectPath){
       const response = await promptPath()
       if(typeof response.path === 'string'){
-        path = response.path.trim()
+        projectPath = response.path.trim()
       }
     }
-    if(!path){
+    if(!projectPath){
       console.log()
       console.log('Please choose a name to your project:')
       console.log()
