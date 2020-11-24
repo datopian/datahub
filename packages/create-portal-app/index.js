@@ -32,23 +32,22 @@ program
   .parse(process.argv);
 
 
-  /**
-   * Method to ask a custon name if was not passed as parameter
-   * returns the value passed from terminal input
-   */
-  async function promptPath(){
-    return prompts({
-      type: 'text',
-      name: 'path',
-      message: 'Choose a name to your project',
-      initial: '',
-      validate: name => {
-        //TODO Method to validate valid path name
-        return true
-      }
-    })
-  
-  }
+/**
+ * Method to ask a custon name if was not passed as parameter
+ * returns the value passed from terminal input
+ */
+async function promptPath() {
+  return prompts({
+    type: "text",
+    name: "path",
+    message: "Choose a name to your project",
+    initial: "",
+    validate: (name) => {
+      //TODO Method to validate valid path name
+      return true;
+    },
+  });
+}
 
   /**
    * Main method to start CLI and validate inputs
