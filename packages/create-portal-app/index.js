@@ -12,18 +12,24 @@ const Listr = require("listr");
 // Output path to create new portal app
 let projectPath = ''
 
-
 // Commander parameters to specify CLI behavior
-program.name(package.name)
+program
+  .name(package.name)
   .version(package.version)
-  .arguments('[dir]')
-  .usage(`${chalk.yellow('[dir]')}`)
+  /**
+   * TODO 
+   * Add Options
+   * Add Example Options
+   * Add templates
+   */
+  .arguments("[dir]")
+  .usage(`${chalk.yellow("[dir]")}`)
   .description({
-    dir: 'Directory to be used on install Portal.js' 
+    dir: "Directory to be used on install Portal.js",
   })
-  .action(name => projectPath = name)
+  .action((name) => (projectPath = name))
   .allowUnknownOption()
-  .parse(process.argv)
+  .parse(process.argv);
 
 
   /**
