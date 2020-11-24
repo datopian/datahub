@@ -1,9 +1,13 @@
 #!/usr/bin/env node
 
-const { program } = require('commander')
-const chalk = require('chalk')
-const prompts = require('prompts')
-const package = require('./package.json')
+const { program } = require("commander");
+const chalk = require("chalk");
+const prompts = require("prompts");
+const path = require("path");
+const { install, initGit } = require("./helpers/install");
+const package = require("./package.json");
+const copy = require("./helpers/copy");
+const Listr = require("listr");
 
 // Output path to create new portal app
 let projectPath = ''
