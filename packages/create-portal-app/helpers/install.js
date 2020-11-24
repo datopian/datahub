@@ -1,7 +1,11 @@
 const spawn = require("cross-spawn");
 const path = require("path");
 
-
+/**
+ *
+ * @param {String} projectName Project name to be created
+ * @param {Boolean} isYarn Check if will be installed under yarn or NPM
+ */
 function install(projectName, isYarn) {
   return new Promise((resolve, reject) => {
     const appPath = [process.cwd(), projectName].join(path.sep);
@@ -25,4 +29,11 @@ function install(projectName, isYarn) {
   });
 }
 
+/**
+ * Method to initialize git repo on the new project
+ */
+async function initGit() {
+  spawn(`git`, [`init`, `-q`]);
+}
 
+module.exports = { install, initGit };
