@@ -53,24 +53,27 @@ async function promptPath() {
    * Main method to start CLI and validate inputs
    */
   async function run(){
-    if(typeof projectPath === 'string'){ 
-      projectPath = projectPath.trim()
+    if (typeof projectPath === "string") {
+      projectPath = projectPath.trim();
     }
-    if(!projectPath){
-      const response = await promptPath()
-      if(typeof response.path === 'string'){
-        projectPath = response.path.trim()
+    if (!projectPath) {
+      const response = await promptPath();
+      if (typeof response.path === "string") {
+        projectPath = response.path.trim();
       }
     }
-    if(!projectPath){
-      console.log()
-      console.log('Please choose a name to your project:')
-      console.log()
-      console.log('Example:')
-      console.log(`${chalk.cyan(program.name())} ${chalk.yellow('ny-portal-app')}`)
-      console.log()
+    if (!projectPath) {
+      //TODO separate log methods
+      console.log();
+      console.log("Please choose a name to your project:");
+      console.log();
+      console.log("Example:");
+      console.log(
+        `${chalk.cyan(program.name())} ${chalk.yellow("ny-portal-app")}`
+      );
+      console.log();
   
-      process.exit(1)
+      process.exit(1);
     }
   
     /**
