@@ -105,16 +105,18 @@ async function run() {
     },
   ]);
 
-  tasks
-    .run()
-    .then(()=> {
-      console.log()
-      console.log(`${chalk.greenBright('Instalation Completed!')}`)
-      console.log()
-      console.log(`Run ${chalk.cyan('cd '+ projectPath)} and ${chalk.green('yarn dev')} or ${chalk.yellow('npm run dev')}`)
-      console.log()
-      console.log('Enjoy =)')
-    })
+  tasks.run().then(() => {
+    console.log();
+    console.log(`${chalk.greenBright("Instalation Completed!")}`);
+    console.log();
+    console.log(
+      `Run ${chalk.cyan("cd " + projectPath)} and ${chalk.green(
+        "yarn dev"
+      )} or ${chalk.yellow("npm run dev")}`
+    );
+    console.log();
+    console.log("Enjoy =)");
+  });
 }
 
 //Main CLI execution workflow
