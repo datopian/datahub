@@ -1,5 +1,7 @@
 const spawn = require("cross-spawn");
 const path = require("path");
+const execSync = require('child_process').execSync;
+const semver = require('semver');
 
 /**
  *
@@ -36,4 +38,15 @@ async function initGit() {
   spawn(`git`, [`init`, `-q`]);
 }
 
-module.exports = { install, initGit };
+/**
+ * Check the version for npm and Yarn
+ * @param {*} pname 
+ * @returns Boolean
+ */
+function checkPackageVersion(pname){
+  let userVersion = execSync(`${pname} --version`).toString();
+  let expectedVersion = pname === 'yarn' ? '1.22.10' : '6.14.5';
+  return !semver.lt(userVersion,expectedVersion)
+}
+
+module.exports = { install, initGit, checkPackageVersion };
