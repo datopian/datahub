@@ -8,6 +8,7 @@ const { install, initGit } = require("./helpers/install");
 const package = require("./package.json");
 const copy = require("./helpers/copy");
 const Listr = require("listr");
+const figlet = require('figlet');
 
 // Output path to create new portal app
 let projectPath = "";
@@ -31,6 +32,12 @@ program
   .allowUnknownOption()
   .parse(process.argv);
 
+// print a fancy Portal.js in the terminal
+console.log(
+  chalk.yellow(
+    figlet.textSync('Portal.Js', {horizontalLayout: 'full'})
+  )
+);
 /**
  * Method to ask a custon name if was not passed as parameter
  * returns the value passed from terminal input
