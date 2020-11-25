@@ -25,6 +25,10 @@ module.exports = (phase, { defaultConfig }) => {
     }
 
     return {
+      i18n: {
+        locales: ['en', 'fr', 'nl-NL'],
+        defaultLocale: 'en',
+      },
       publicRuntimeConfig: {
         DMS: dms ? dms.replace(/\/?$/, '') : 'http://mock.ckan',
         CMS: cms ? cms.replace(/\/?$/, '') : 'oddk.home.blog',
@@ -32,6 +36,10 @@ module.exports = (phase, { defaultConfig }) => {
     };
   }
   return {
+    i18n: {
+      locales: ['en-US', 'fr', 'nl-NL'],
+      defaultLocale: 'en-US',
+    },
     publicRuntimeConfig: {
       DMS: dms ? dms.replace(/\/?$/, '') : 'https://demo.ckan.org',
       CMS: cms ? cms.replace(/\/?$/, '') : 'oddk.home.blog',
