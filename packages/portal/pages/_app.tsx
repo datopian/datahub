@@ -3,8 +3,26 @@ import { ApolloProvider } from '@apollo/react-hooks';
 import { useApollo } from '../lib/apolloClient';
 import { DEFAULT_THEME } from '../themes';
 import { applyTheme } from '../themes/utils';
-
+import I18nProvider from 'next-translate/I18nProvider';
+import { useRouter } from 'next/router';
 import '../styles/app.css';
+
+interface I8nObject {
+  [property: string]: any;
+}
+
+export async function loadNamespaces(
+  namespaces: string[],
+  lang: string
+): Promise<I8nObject> {
+  const res = {};
+  for (const ns of namespaces) {
+    res[ns] = await import(`../locales/${lang}/${ns}.json`).then(
+      (m) => m.default
+    );
+  }
+  return res;
+}
 
 type Props = {
   Component: any;
@@ -14,6 +32,7 @@ type Props = {
 const MyApp: React.FC<Props> = ({ Component, pageProps }) => {
   const apolloClient = useApollo(pageProps.initialApolloState);
   const [theme] = useState(DEFAULT_THEME); // setTheme
+  const router = useRouter();
 
   useEffect(() => {
     /**
@@ -25,9 +44,11 @@ const MyApp: React.FC<Props> = ({ Component, pageProps }) => {
   }, [theme]);
 
   return (
-    <ApolloProvider client={apolloClient}>
-      <Component {...pageProps} />
-    </ApolloProvider>
+    <I18nProvider lang={router.locale} namespaces={pageProps._ns}>
+      <ApolloProvider client={apolloClient}>
+        <Component {...pageProps} />
+      </ApolloProvider>
+    </I18nProvider>
   );
 };
 
