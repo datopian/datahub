@@ -4,11 +4,12 @@ const { program } = require("commander");
 const chalk = require("chalk");
 const prompts = require("prompts");
 const path = require("path");
-const { install, initGit } = require("./helpers/install");
+const { install, initGit, checkPackageVersion } = require("./helpers/install");
 const package = require("./package.json");
 const copy = require("./helpers/copy");
 const Listr = require("listr");
 const figlet = require('figlet');
+const { truncate } = require("fs");
 
 // Output path to create new portal app
 let projectPath = "";
@@ -29,6 +30,7 @@ program
     dir: "Directory to be used on install Portal.js",
   })
   .action((name) => (projectPath = name))
+  .option('--use-npm')
   .allowUnknownOption()
   .parse(process.argv);
 
