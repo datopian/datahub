@@ -1,18 +1,19 @@
 #!/usr/bin/env node
 
+const Listr = require("listr");
 const { program } = require("commander");
 const chalk = require("chalk");
 const prompts = require("prompts");
 const path = require("path");
-const { install, initGit, checkPackageVersion } = require("./helpers/install");
+const figlet = require("figlet");
 const package = require("./package.json");
-const copy = require("./helpers/copy");
-const Listr = require("listr");
-const figlet = require('figlet');
-const { truncate } = require("fs");
+const { copy, isPathInUse } = require("./helpers/copy");
+const { install, initGit, checkPackageVersion } = require("./helpers/install");
+const replace = require("./helpers/replace");
 
 // Output path to create new portal app
 let projectPath = "";
+
 
 // Commander parameters to specify CLI behavior
 program
