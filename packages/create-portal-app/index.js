@@ -52,6 +52,7 @@ async function promptPath() {
   });
 }
 
+
 /**
  * Main method to start CLI and validate inputs
  */
@@ -81,27 +82,41 @@ async function run() {
 
   const root = path.join(__dirname + "/../portal");
 
-  const parsedPath = path.resolve(projectPath);
-  const project = path.basename(parsedPath);
+  if (isPathInUse(projectPath)) {
+    console.log();
+    console.log(
+      `${chalk.yellow(
+        "Path " +
+          chalk.redBright(projectPath) +
+          " is already in use and is not empty."
+      )}`
+    );
+    console.log();
+    process.exit(1);
+  }
+
+  // print a fancy Portal.js in the terminal
+  console.log(
+    chalk.yellow(figlet.textSync("Portal.Js", { horizontalLayout: "full" }))
+  );
 
   console.log();
-  console.log(
-    `Begin Instalation of new portal.js on ${chalk.cyan(projectPath)} folder`
-  );
+  console.log(`Creating new portal.js app in ${chalk.cyan(projectPath)}`);
   console.log();
-  //TODO Move this method to another one to keep more functional and split responsabilites
+
+  //Tasks workflow
   const tasks = new Listr([
     {
       title: "Fetching Content",
-      task: () => copy(root, project),
+      task: () => copy(root, projectPath),
     },
     {
       title: "Updating Content",
-      task: () => "",
+      task: () => replace(projectPath),
     },
     {
       title: "Installing Dependencies",
-      task: () => install(project, true),
+      task: () => install(projectPath, program.useNpm),
     },
     {
       title: "Git Init",
@@ -111,7 +126,7 @@ async function run() {
 
   tasks.run().then(() => {
     console.log();
-    console.log(`${chalk.greenBright("Instalation Completed!")}`);
+    console.log(`${chalk.greenBright("Instalation Completed Successfully")}`);
     console.log();
     console.log(
       `Run ${chalk.cyan("cd " + projectPath)} and ${chalk.green(
