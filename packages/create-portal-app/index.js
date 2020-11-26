@@ -139,17 +139,20 @@ async function run() {
 }
 
 //Main CLI execution workflow
-run()
-  .then(`${chalk.greenBright("Project Installed Sucess")}`)
-  .catch((error) => {
-    if (error.command) {
-      console.log(`${chalk.cyan("Error on Create App")}`);
-    } else {
-      console.log(
-        `${chalk.red("Unexpected Erro. Please report it as a bug")}`
-      );
-      console.log(error);
-    }
+run().catch((error) => {
+  console.log(error.name);
+  if (error.install) {
     console.log();
-    process.exit(1);
-  });
+    console.log(
+      `${chalk.redBright("Error on Create App :")}${chalk.yellow(
+        error.message.toString()
+      )}`
+    );
+  } else {
+    console.log(`${chalk.red("Unexpected Error. Please report it as a bug")}`);
+    console.log(error);
+  }
+  console.log();
+  process.exit(1);
+});
+
