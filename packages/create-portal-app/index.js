@@ -24,7 +24,7 @@ program
     dir: 'Directory to be used on install Portal.js',
   })
   .action((name) => (projectPath = name))
-  .option('--use-npm')
+  .option('--use-npm', 'Install dependencies using npm instead yarn')
   .parse(process.argv)
 
 /**
@@ -127,9 +127,7 @@ async function run() {
     console.log(`${chalk.greenBright('Instalation Completed Successfully')}`)
     console.log()
     console.log(
-      `Run ${chalk.cyan('cd ' + projectPath)} and ${chalk.green(
-        'yarn dev'
-      )} or ${chalk.yellow('npm run dev')}`
+      `Run ${chalk.cyan('cd ' + projectPath)} and ${chalk.green(program.useNpm ? 'npm run dev' : 'yarn dev')}`
     )
     console.log()
     console.log('Enjoy =)')
