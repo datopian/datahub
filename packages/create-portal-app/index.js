@@ -19,28 +19,15 @@ let projectPath = "";
 program
   .name(package.name)
   .version(package.version)
-  /**
-   * TODO
-   * Add Options
-   * Add Example Options
-   * Add templates
-   */
   .arguments("[dir]")
   .usage(`${chalk.yellow("[dir]")}`)
   .description({
     dir: "Directory to be used on install Portal.js",
   })
   .action((name) => (projectPath = name))
-  .option('--use-npm')
-  .allowUnknownOption()
+  .option("--use-npm")
   .parse(process.argv);
 
-// print a fancy Portal.js in the terminal
-console.log(
-  chalk.yellow(
-    figlet.textSync('Portal.Js', {horizontalLayout: 'full'})
-  )
-);
 /**
  * Method to ask a custon name if was not passed as parameter
  * returns the value passed from terminal input
@@ -52,8 +39,15 @@ async function promptPath() {
     message: "Choose a name to your project",
     initial: "",
     validate: (name) => {
-      //TODO Method to validate valid path name
-      return true;
+      projectPath = name
+      if(isPathInUse(projectPath)){
+        return  `${chalk.yellow(
+        "Path " +
+          chalk.redBright(projectPath) +
+          " is already in use and is not empty."
+      )}`
+      }
+      return true
     },
   });
 }
