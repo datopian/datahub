@@ -35,3 +35,4 @@ pages/App.css
 # Monorepo packages Node Modules
 packages/portal/node_modules
 packages/create-portal-app/node_modules
+packages/portal/.next
