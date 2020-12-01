@@ -1,6 +1,7 @@
 const fs = require('fs')
 const path = require('path')
 const { parserPath } = require('./copy')
+
 function _replacePackage(projectName) {
   const appPath = parserPath(projectName)
   const packagePath = `${appPath}/package.json`
