@@ -1,5 +1,4 @@
 const fs = require('fs')
-const path = require('path')
 const { parserPath } = require('./copy')
 
 function _replacePackage(projectName) {
