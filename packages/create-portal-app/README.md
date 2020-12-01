@@ -12,6 +12,13 @@ The CLI automatically create the project folder, install main dependencies, gene
 
 <br/> 
 
+## Requirements
+
+-  Yarn (> 1.22.10) or Npm (> 6.14.5)
+-  Git
+
+<br/>
+
 ## How to use
 
 To create a new portal.js application you can send the project name as first argument.
