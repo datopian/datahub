@@ -40,7 +40,7 @@ async function initGit() {
 
 /**
  * Check the version for npm and Yarn
- * @param {*} pname
+ * @param {String} pname
  * @returns Boolean
  */
 function checkPackageVersion(pname) {
