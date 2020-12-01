@@ -12,10 +12,10 @@ describe('Test Home Page', () => {
   });
 
   it('submits the search form', () => {
-    cy.get('form').find('[type="text"]').type('my-dataset');
+    cy.get('form').find('[type="text"]').type('gdp');
     cy.get('form').submit();
-    cy.url().should('include', '/search?q=my-dataset&sort=');
-    cy.get('.text-3xl').and('contain.text', 'results found');
+    cy.url().should('include', '/search?q=gdp&sort=');
+    cy.get('.text-3xl').and('contain.text', '1 results found');
   });
 
   it('shows the recent datasets', () => {
