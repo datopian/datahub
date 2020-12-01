@@ -55,15 +55,25 @@ async function promptPath() {
  * Main method to start CLI and validate inputs
  */
 async function run() {
+
+  if(checkPackageVersion(program.useNpm? 'npm' : 'yarn')) {
+    console.log()
+    console.log(`${chalk.yellowBright('Your package manager version is outdated, please update before continue.')}`)  
+    console.log()
+    return
+  }
+
   if (typeof projectPath === 'string') {
     projectPath = projectPath.trim()
   }
+
   if (!projectPath) {
     const response = await promptPath()
     if (typeof response.path === 'string') {
       projectPath = response.path.trim()
     }
   }
+
   if (!projectPath) {
     //TODO separate log methods
     console.log()
