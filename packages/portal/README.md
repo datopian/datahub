@@ -1,6 +1,6 @@
 <h1 align="center">
 
-  🌀 Portal.JS
+  🌀 Portal.JS<br/>
   The javascript framework for<br/>
   data portals
 
