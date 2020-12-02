@@ -2,7 +2,7 @@ name: Cypress Integration Tests
 on: [push]
 jobs:
   cypress-run:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-16.04
     steps:
       - name: Checkout
         uses: actions/checkout@v1
@@ -14,4 +14,4 @@ jobs:
           browser: chrome
           build: yarn run build
           start: yarn start
-          wait-on: 'http://localhost:3000'
+          wait-on: "http://localhost:3000"
