@@ -18,7 +18,7 @@ const Home: React.FC<{ locale: any; locales: any }> = ({
     <>
       <div className="container mx-auto">
         <Head>
-          <title>{t`common:title`}</title>
+          <title>{t(`common:title`)}</title>
           <link rel="icon" href="/favicon.ico" />
         </Head>
         <Nav />
@@ -29,7 +29,7 @@ const Home: React.FC<{ locale: any; locales: any }> = ({
               <span className="text-orange-500">Datahub</span>
             </h1>
             <p className="text-md font-light mb-3 w-4/5">
-              {t`common:description`}
+              {t(`common:description`)}
             </p>
             <Form />
           </div>
