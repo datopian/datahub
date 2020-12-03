@@ -1,0 +1,27 @@
+{
+  "name": "create-portal-app",
+  "version": "1.0.0",
+  "description": "Create Portal App CLI",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "chalk": "^4.1.0",
+    "commander": "^6.2.0",
+    "cpy": "^8.1.1",
+    "cross-spawn": "^7.0.3",
+    "figlet": "^1.5.0",
+    "listr": "^0.14.3",
+    "ora": "^5.1.0",
+    "prompts": "^2.4.0"
+  },
+  "files": [
+    "bin"
+  ],
+  "bin": {
+    "create-portal-app": "index.js"
+  }
+}
