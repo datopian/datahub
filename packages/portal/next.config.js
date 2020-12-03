@@ -37,8 +37,8 @@ module.exports = (phase, { defaultConfig }) => {
   }
   return {
     i18n: {
-      locales: ['en-US', 'fr', 'nl-NL'],
-      defaultLocale: 'en-US',
+      locales: ['en', 'fr', 'nl-NL'],
+      defaultLocale: 'en',
     },
     publicRuntimeConfig: {
       DMS: dms ? dms.replace(/\/?$/, '') : 'https://demo.ckan.org',
