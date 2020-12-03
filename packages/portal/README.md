@@ -199,6 +199,61 @@ export default function Org({ variables }) {
 }
 ```
 
+#### i18n configuration
+
+Portaljs is configured by default to support both `English` and `french` subpath for language translation. But for subsequent users, this following steps can be use to configure i18n for other languages;
+
+1.  Update ` next.config.js`, to add more languages to the i18n locales
+
+```js
+i18n: {
+  locales: ['en', 'fr', 'nl-NL'], // add more language to the list
+  defaultLocale: 'en',  // set the default language to use
+},
+```
+
+2. Create a folder for the language in `locales` --> `locales/en-Us`
+
+3. In the language folder, different namespace files (json) can be created for each translation. For the `index.js` use-case, I named it `common.json`
+
+```json
+// locales/en/common.json
+{
+   "title" : "Portal js in English",
+}
+
+// locales/fr/common.json
+{
+   "title" : "Portal js in French",
+}
+```
+
+4. To used on pages using Server-side Props.
+
+```js
+import { loadNamespaces } from './_app';
+import useTranslation from 'next-translate/useTranslation';
+
+const Home: React.FC = ()=> {
+  const { t } = useTranslation();
+  return (
+    <div>{t`common:title`}</div> // we use common and title base on the common.json data
+  );
+};
+
+export const getServerSideProps: GetServerSideProps = async ({ locale }) => {
+      ........  ........
+  return {
+    props : {
+      _ns:  await loadNamespaces(['common'], locale),
+    }
+  };
+};
+
+```
+
+5. Go to the browser and view the changes using language subpath like this. `http://localhost:3000` and `http://localhost:3000/fr`. **Note** The subpath also activate chrome language Translator
+
 #### Add a new data source
 
 TODO
