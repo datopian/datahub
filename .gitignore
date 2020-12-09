@@ -36,3 +36,4 @@ pages/App.css
 packages/portal/node_modules
 packages/create-portal-app/node_modules
 packages/portal/.next
+packages/portal/.env
