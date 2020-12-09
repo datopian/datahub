@@ -1,7 +1,9 @@
-<h1 style="text-align: center;">
-  PORTAL.js
+<h1 align="center">
+
+  🌀 Portal.JS<br/>
   The javascript framework for<br/>
   data portals
+
 </h1>
 
 🌀 `Portal` is a framework for rapidly building rich data portal frontends using a modern frontend approach (javascript, React, SSR).
