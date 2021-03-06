@@ -1,16 +1,14 @@
-# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
-
 # dependencies
-/node_modules
-/.pnp
+node_modules/
+.pnp
 .pnp.js
 
 # testing
-/coverage
-/cypress/videos
+coverage
+cypress/videos
 
 # next.js
-/.next/
+.next/
 /out/
 
 # production
@@ -25,15 +23,8 @@ yarn-debug.log*
 yarn-error.log*
 
 # local env files
+.env
 .env.local
 .env.development.local
 .env.test.local
 .env.production.local
-
-pages/App.css
-
-# Monorepo packages Node Modules
-packages/portal/node_modules
-packages/create-portal-app/node_modules
-packages/portal/.next
-packages/portal/.env
