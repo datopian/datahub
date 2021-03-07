@@ -1,7 +1,12 @@
 {
-  "name": "with-tailwindcss",
+  "name": "portal",
+  "description": "The data presentation framework",
+  "author": "Datopian",
+  "license": "MIT",
   "version": "0.1.0",
-  "private": true,
+  "bin": {
+    "portal": "./bin/portal.js"
+  },
   "scripts": {
     "dev": "next dev",
     "build": "next build",
@@ -28,7 +33,16 @@
     "remark-html": "^13.0.1",
     "tailwindcss": "^2.0.2",
     "vega": "^5.19.1",
-    "vega-lite": "^5.0.0"
+    "vega-lite": "^5.0.0",
+    "chalk": "^4.1.0",
+    "commander": "^6.2.0",
+    "cpy": "^8.1.1",
+    "cross-spawn": "^7.0.3",
+    "figlet": "^1.5.0",
+    "listr": "^0.14.3",
+    "open": "^8.0.2",
+    "ora": "^5.1.0",
+    "prompts": "^2.4.0"
   },
   "devDependencies": {
     "@testing-library/dom": "^7.29.6",
