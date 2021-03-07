@@ -1,0 +1,98 @@
+{
+  "name": "finance-vix",
+  "title": "VIX - CBOE Volatility Index",
+  "homepage": "http://www.cboe.com/micro/VIX/",
+  "version": "0.1.0",
+  "license": "PDDL-1.0",
+  "sources": [
+    {
+      "title": "CBOE VIX Page",
+      "name": "CBOE VIX Page",
+      "web": "http://www.cboe.com/micro/vix/historical.aspx"
+    }
+  ],
+  "resources": [
+    {
+      "name": "vix-daily",
+      "path": "vix-daily.csv",
+      "format": "csv",
+      "mediatype": "text/csv",
+      "schema": {
+        "fields": [
+          {
+            "name": "Date",
+            "type": "date",
+            "description": ""
+          },
+          {
+            "name": "VIXOpen",
+            "type": "number",
+            "description": ""
+          },
+          {
+            "name": "VIXHigh",
+            "type": "number",
+            "description": ""
+          },
+          {
+            "name": "VIXLow",
+            "type": "number",
+            "description": ""
+          },
+          {
+            "name": "VIXClose",
+            "type": "number",
+            "description": ""
+          }
+        ],
+        "primaryKey": "Date"
+      }
+    }
+  ],
+  "views": [
+    {
+      "name": "plotly graph",
+      "id": 2,
+      "specType": "plotly",
+      "resources": [
+        "vix-daily"
+      ],
+      "spec": {
+        "group": "VIXClose",
+        "series": [
+          "VIXOpen",
+          "VIXHigh",
+          "VIXLow"
+        ],
+        "data": [
+          {
+            "type": "bar"
+          }
+        ],
+        "layout": {
+          "title": "Plotly Layout Title",
+          "height": 450,
+          "xaxis": {
+            "title": "X Axis Title"
+          },
+          "yaxis": {
+            "title": "Y Axis Title"
+          },
+          "font": {
+            "family": "\"Open Sans\", verdana, arial, sans-serif",
+            "size": 12,
+            "color": "rgb(169, 169, 169)"
+          },
+          "titlefont": {
+            "family": "\"Open Sans\", verdana, arial, sans-serif",
+            "size": 17,
+            "color": "rgb(76, 76, 76)"
+          }
+        },
+        "config": {
+          "displayModeBar": false
+        }
+      }
+    }
+  ]
+}

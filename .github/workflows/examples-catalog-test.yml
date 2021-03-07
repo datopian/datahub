@@ -7,9 +7,9 @@ jobs:
     - uses: actions/checkout@v2
     - name: Install modules
       run: |
-        cd packages/portal
+        cd examples/catalog
         yarn
     - name: Run tests
       run: |
-        cd packages/portal
+        cd examples/catalog
         yarn test -u
