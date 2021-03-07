@@ -21,7 +21,7 @@ Live DEMO: https://portal.datopian1.now.sh
 - 👩‍💻 Developer friendly: built with familiar frontend tech Javascript, React etc
 - 🔋 Batteries included: Full set of portal components out of the box e.g. catalog search, dataset showcase, blog etc.
 - 🎨 Easy to theme and customize: installable themes, use standard CSS and React+CSS tooling. Add new routes quickly.
-- 🧱E Extensible: quickly extend and develop/import your own React components
+- 🧱 Extensible: quickly extend and develop/import your own React components
 - 📝 Well documented: full set of documentation plus the documentation of NextJS and Apollo.
 
 ### For developers
@@ -106,7 +106,7 @@ For development/debugging purposes, we suggest installing the Chrome extension -
 
 Portal.js is configured by default to support both `English` and `French` subpath for language translation. But for subsequent users, this following steps can be used to configure i18n for other languages;
 
-1.  Update ` next.config.js`, to add more languages to the i18n locales
+1.  Update `next.config.js`, to add more languages to the i18n locales
 
 ```js
 i18n: {
