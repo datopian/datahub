@@ -1,4 +1,4 @@
-name: Jest-Tests  
+name: Portal-Catalog-Tests  
 on: push
 jobs:
   build:
@@ -13,3 +13,18 @@ jobs:
       run: |
         cd examples/catalog
         yarn test -u
+
+  cypress-run:
+    runs-on: ubuntu-16.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v1
+
+      - name: Cypress run
+        uses: cypress-io/github-action@v2
+        with:
+          working-directory: examples/catalog
+          browser: chrome
+          build: yarn run build
+          start: yarn start
+          wait-on: "http://localhost:3000"
