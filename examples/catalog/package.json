@@ -56,7 +56,7 @@
     "autoprefixer": "^9.8.6",
     "babel-jest": "^26.0.1",
     "babel-plugin-graphql-tag": "^2.5.0",
-    "cypress": "^4.8.0",
+    "cypress": "^6.6.0",
     "eslint": "^7.6.0",
     "eslint-config-prettier": "^6.11.0",
     "eslint-plugin-jsx-a11y": "^6.3.1",
