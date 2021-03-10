@@ -1,8 +1,22 @@
-<h1 align="center">
+Present a (Frictionless) dataset for viewing and exploration.
 
-🌀 Portal.JS<br/>
-A gateway to your data
+## Install
 
-</h1>
+Git clone then:
 
-🌀 `Portal` is the data presentation framework. `Portal` can be used to showcase a single dataset or build full-scale data catalogs/portals. `Portal` is built in Javascript and React on top of the popular Next.js framework.
+```
+yarn install
+```
+
+## Usage
+
+In this directory:
+
+```bash
+export PORTAL_DATASET_PATH=/path/to/my/dataset
+yarn dev
+```
+
+And you will get a nice dataset page at `http://localhost:3000`
+
+![](https://i.imgur.com/KSEtNF1.png)

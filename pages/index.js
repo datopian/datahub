@@ -6,7 +6,7 @@ import { Vega } from 'react-vega';
 import { getDataset } from '../lib/dataset'
 import Chart from '../components/Chart'
 import { addView } from '../lib/utils'
-const datasetsDirectory = process.env.PORTAL_DATASET_PATH
+const datasetsDirectory = process.env.PORTAL_DATASET_PATH || path.join(process.cwd(), "fixtures", "datasetsDoubleView")
 
 export default function Home({ dataset, specs }) {
 
