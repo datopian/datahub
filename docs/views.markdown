@@ -105,3 +105,94 @@ of such behaviour see the DataExplorer view.
 
 See the existing Views.
 
+## Internationalization
+
+### Adding translations to templates
+
+Internationalization is implemented with help of [intl-messageformat](https://www.npmjs.com/package/intl-messageformat) library and supports [ICU Message syntax](http://userguide.icu-project.org/formatparse/messages).
+ 
+Translation keys are using Mustache tags prefixed by `t.`. You can specify translated strings in two ways:
+
+1. Simple text with no variables is rendered using Mustache variable-tag
+```javascript
+$template = '{{ "{{t.Add_row"}}}}'; // will show "Add row" in defaultLocale (English) 
+```
+
+2. Text with variables or special characters is rendered using Mustache section-tag
+
+```javascript
+$template = '{{ "{{#t.desc"}}}}Add first_row field{{ "{{/t.desc"}}}}'; 
+// using special chars; will show "Add first_row field" in defaultLocale
+ 
+$template = '{{ "{{#t.num_records"}}}}{recordCount, plural, =0 {no records} =1{# record} other {# records}}{{ "{{/t.num_records"}}}}'; 
+// will show "no records", "1 record" or "x records" in defaultLocale (English) 
+```
+
+When using section-tags in existing templates be sure to remove a bracket from variables inside sections:
+```javascript
+#template___notranslation = '{{ "{{recordCount"}}}} records';
+#template_withtranslation = '{{ "{{#t.num_records"}}}} {recordCount} records {{ "{{/t.num_records"}}}}';
+```
+
+
+Then setup Mustache to use translation by injecting tranlation tags in `render` function:
+
+```javascript
+// ============== BEFORE ===================
+
+my.MultiView = Backbone.View.extend({
+  render: function() {
+    var tmplData = this.model.toTemplateJSON();
+    var output = Mustache.render(this.template, tmplData);
+    ...
+  }    
+});
+
+// ============== AFTER ==================== 
+
+my.MultiView = Backbone.View.extend({
+  render: function() {
+    var tmplData = this.model.toTemplateJSON();
+    tmplData = I18nMessages('recline', recline.View.translations).injectMustache(tmplData);  // inject Moustache formatter
+    var output = Mustache.render(this.template, tmplData);
+    ...
+  }    
+});
+```
+
+### Language resolution
+
+By default the language is detected from the root `lang` attributes - <html lang="xx">` and `<html xml:lang="xx">`. 
+
+If you want to override this functionality then override `I18nMessages.languageResolver` with your implementation.
+
+```html
+<script type="text/javascript" src="common-intl-wmustache.js"></script>
+<script type="text/javascript">
+  I18nMessages.languageResolver = function() {
+    // implement here your language resolution 
+    return 'fr';
+  };
+</script>
+```
+
+Libraries can also ask for specific language: `I18nMessages('recline', recline.View.translations, 'pl')`. Language resolver is not used in that case.
+
+If you're creating templates using default language other than English (why?) set appropriately appHardcodedLocale: `I18nMessages('recline', recline.View.translations, undefined, 'pl')`. Then missing strings won't be reported in console and underscores in simple translations will be converted to spaces.
+
+### Adding new language
+
+Create a copy of `src/i18n/pl.js` and translate all the keys. Long English messages can be found in `en.js`.
+
+### Overriding defined messages
+
+If you want to override translations from provided locale do it in a script tag after including recline:
+
+```html
+<script type="text/javascript" src="recline.js"></script>
+<script type="text/javascript">
+  this.recline.View.translations['en'] = {
+    Add_row: 'Add new row'
+  } 
+</script>
+```

@@ -108,7 +108,7 @@ my.MultiView = Backbone.View.extend({
         </div> \
       </div> \
       <div class="recline-results-info"> \
-        <span class="doc-count">{{recordCount}}</span> records\
+        {{#t.num_records}}<span class="doc-count">{recordCount}</span> {recordCount, plural, =1{record} other{records}}{{/t.num_records}}\
       </div> \
       <div class="menu-right"> \
         <div class="btn-group" data-toggle="buttons-checkbox"> \
@@ -131,6 +131,7 @@ my.MultiView = Backbone.View.extend({
   initialize: function(options) {
     var self = this;
     this._setupState(options.state);
+    var fmt = I18nMessages('recline', recline.View.translations);
 
     // Hash of 'page' views (i.e. those for whole page) keyed by page name
     if (options.views) {
@@ -138,28 +139,28 @@ my.MultiView = Backbone.View.extend({
     } else {
       this.pageViews = [{
         id: 'grid',
-        label: 'Grid',
+        label: fmt.t('Grid'),
         view: new my.SlickGrid({
           model: this.model,
           state: this.state.get('view-grid')
         })
       }, {
         id: 'graph',
-        label: 'Graph',
+        label: fmt.t('Graph'),
         view: new my.Graph({
           model: this.model,
           state: this.state.get('view-graph')
         })
       }, {
         id: 'map',
-        label: 'Map',
+        label: fmt.t('Map'),
         view: new my.Map({
           model: this.model,
           state: this.state.get('view-map')
         })
       }, {
         id: 'timeline',
-        label: 'Timeline',
+        label: fmt.t('Timeline'),
         view: new my.Timeline({
           model: this.model,
           state: this.state.get('view-timeline')
@@ -172,13 +173,13 @@ my.MultiView = Backbone.View.extend({
     } else {
       this.sidebarViews = [{
         id: 'filterEditor',
-        label: 'Filters',
+        label: fmt.t('Filters'),
         view: new my.FilterEditor({
           model: this.model
         })
       }, {
         id: 'fieldsView',
-        label: 'Fields',
+        label: fmt.t('Fields'),
         view: new my.Fields({
           model: this.model
         })
@@ -204,7 +205,7 @@ my.MultiView = Backbone.View.extend({
     });
     this.listenTo(this.model, 'query:done', function() {
       self.clearNotifications();
-      self.$el.find('.doc-count').text(self.model.recordCount || 'Unknown');
+      self.$el.find('.doc-count').text(self.model.recordCount || fmt.t('Unknown'));
     });
     this.listenTo(this.model, 'query:fail', function(error) {
       self.clearNotifications();
@@ -219,7 +220,7 @@ my.MultiView = Backbone.View.extend({
           msg += error.message;
         }
       } else {
-        msg = 'There was an error querying the backend';
+        msg = fmt.t('backend_error', {}, 'There was an error querying the backend');
       }
       self.notify({message: msg, category: 'error', persist: true});
     });
@@ -238,6 +239,7 @@ my.MultiView = Backbone.View.extend({
     var tmplData = this.model.toTemplateJSON();
     tmplData.views = this.pageViews;
     tmplData.sidebarViews = this.sidebarViews;
+    tmplData = I18nMessages('recline', recline.View.translations).injectMustache(tmplData);
     var template = Mustache.render(this.template, tmplData);
     this.$el.html(template);
 

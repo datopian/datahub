@@ -27,9 +27,9 @@ my.Flot = Backbone.View.extend({
     <div class="recline-flot"> \
       <div class="panel graph" style="display: block;"> \
         <div class="js-temp-notice alert alert-warning alert-block"> \
-          <h3 class="alert-heading">Hey there!</h3> \
+          {{#t.flot_info}}<h3 class="alert-heading">Hey there!</h3> \
           <p>There\'s no graph here yet because we don\'t know what fields you\'d like to see plotted.</p> \
-          <p>Please tell us by <strong>using the menu on the right</strong> and a graph will automatically appear.</p> \
+          <p>Please tell us by <strong>using the menu on the right</strong> and a graph will automatically appear.</p>{{/t.flot_info}} \
         </div> \
       </div> \
     </div> \
@@ -67,7 +67,7 @@ my.Flot = Backbone.View.extend({
 
   render: function() {
     var self = this;
-    var tmplData = this.model.toTemplateJSON();
+    var tmplData = I18nMessages('recline', recline.View.translations).injectMustache(this.model.toTemplateJSON());
     var htmls = Mustache.render(this.template, tmplData);
     this.$el.html(htmls);
     this.$graph = this.$el.find('.panel.graph');
@@ -369,22 +369,22 @@ my.FlotControls = Backbone.View.extend({
     <form class="form-stacked"> \
       <div class="clearfix"> \
         <div class="form-group"> \
-          <label for ="form-field-type">Graph Type</label> \
+          <label>{{t.Graph_Type}}</label> \
           <div class="input editor-type"> \
-            <select id="form-field-type" class="form-control"> \
-              <option value="lines-and-points">Lines and Points</option> \
-              <option value="lines">Lines</option> \
-              <option value="points">Points</option> \
-              <option value="bars">Bars</option> \
-              <option value="columns">Columns</option> \
+            <select class="form-control"> \
+              <option value="lines-and-points">{{t.Lines_and_Points}}</option> \
+              <option value="lines">{{t.Lines}}</option> \
+              <option value="points">{{t.Points}}</option> \
+              <option value="bars">{{t.Bars}}</option> \
+              <option value="columns">{{t.Columns}}</option> \
             </select> \
           </div> \
         </div> \
         <div class="form-group"> \
-          <label for="field-form-group">Group Column (Axis 1)</label> \
+          <label>{{t.flot_Group_Column}}</label> \
           <div class="input editor-group"> \
-            <select id="field-form-group" class="form-control"> \
-              <option value="">Please choose ...</option> \
+            <select class="form-control"> \
+              <option value="">{{t.Please_choose}} ...</option> \
                 {{#fields}} \
               <option value="{{id}}">{{label}}</option> \
                 {{/fields}} \
@@ -395,10 +395,10 @@ my.FlotControls = Backbone.View.extend({
         </div> \
       </div> \
       <div class="editor-buttons"> \
-        <button class="btn btn-default editor-add">Add Series</button> \
+        <button class="btn btn-default editor-add">{{t.Add_Series}}</button> \
       </div> \
       <div class="editor-buttons editor-submit" comment="hidden temporarily" style="display: none;"> \
-        <button class="editor-save">Save</button> \
+        <button class="editor-save">{{t.Save}}</button> \
         <input type="hidden" class="editor-id" value="chart-1" /> \
       </div> \
     </form> \
@@ -407,15 +407,10 @@ my.FlotControls = Backbone.View.extend({
   templateSeriesEditor: ' \
     <div class="editor-series js-series-{{seriesIndex}}"> \
       <div class="form-group"> \
-        <label for="form-field-{{seriesName}}">Series <span>{{seriesName}} (Axis 2)</span> \
-          [<a href="#remove" class="action-remove-series">Remove</a>] \
-        </label> \
-        <div class="input"> \
-          <select id="form-field-{{seriesName}}" class="form-control"> \
-          {{#fields}} \
+        <label>{{t.Series}} <span>{{seriesName}} ({{t.Axis_2}})</span> \
+          [<a href="#remove" class="action-remove-series">{{t.Remove}}</a>] \
           <option value="{{id}}">{{label}}</option> \
           {{/fields}} \
-          </select> \
         </div> \
       </div> \
     </div> \
@@ -437,6 +432,7 @@ my.FlotControls = Backbone.View.extend({
   render: function() {
     var self = this;
     var tmplData = this.model.toTemplateJSON();
+    tmplData = I18nMessages('recline', recline.View.translations).injectMustache(tmplData);
     var htmls = Mustache.render(this.template, tmplData);
     this.$el.html(htmls);
 
@@ -499,6 +495,7 @@ my.FlotControls = Backbone.View.extend({
       seriesName: String.fromCharCode(idx + 64 + 1)
     }, this.model.toTemplateJSON());
 
+    data = I18nMessages('recline', recline.View.translations).injectMustache(data);
     var htmls = Mustache.render(this.templateSeriesEditor, data);
     this.$el.find('.editor-series-group').append(htmls);
     return this;

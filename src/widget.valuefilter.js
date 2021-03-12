@@ -10,17 +10,17 @@ my.ValueFilter = Backbone.View.extend({
   className: 'recline-filter-editor well', 
   template: ' \
     <div class="filters"> \
-      <h3>Filters</h3> \
-      <button class="btn js-add-filter add-filter">Add filter</button> \
+      <h3>{{t.Filters}}</h3> \
+      <button class="btn js-add-filter add-filter">{{t.Add_filter}}</button> \
       <form class="form-stacked js-add" style="display: none;"> \
         <fieldset> \
-          <label>Field</label> \
+          <label>{{t.Field}}</label> \
           <select class="fields form-control"> \
             {{#fields}} \
             <option value="{{id}}">{{label}}</option> \
             {{/fields}} \
           </select> \
-          <button type="submit" class="btn">Add</button> \
+          <button type="submit" class="btn">{{t.Add}}</button> \
         </fieldset> \
       </form> \
       <form class="form-stacked js-edit"> \
@@ -28,7 +28,7 @@ my.ValueFilter = Backbone.View.extend({
           {{{filterRender}}} \
         {{/filters}} \
         {{#filters.length}} \
-        <button type="submit" class="btn update-filter">Update</button> \
+        <button type="submit" class="btn update-filter">{{t.Update}}</button> \
         {{/filters.length}} \
       </form> \
     </div> \
@@ -38,7 +38,7 @@ my.ValueFilter = Backbone.View.extend({
       <div class="filter-{{type}} filter"> \
         <fieldset> \
           {{field}} \
-          <a class="js-remove-filter" href="#" title="Remove this filter" data-filter-id="{{id}}">&times;</a> \
+          <a class="js-remove-filter" href="#" title="{{t.Remove_this_filter}}" data-filter-id="{{id}}"><span class="wcag_hide">{{t.Remove_this_filter}}</span><span aria-hidden="true">&times;</span></a> \
           <input type="text" value="{{term}}" name="term" data-filter-field="{{field}}" data-filter-id="{{id}}" data-filter-type="{{type}}" /> \
         </fieldset> \
       </div> \
@@ -65,10 +65,11 @@ my.ValueFilter = Backbone.View.extend({
       return filter;
     });
     tmplData.fields = this.model.fields.toJSON();
+    var fmt = I18nMessages('recline', recline.View.translations);
     tmplData.filterRender = function() {
-      return Mustache.render(self.filterTemplates.term, this);
+      return Mustache.render(self.filterTemplates.term, fmt.injectMustache(this));
     };
-    var out = Mustache.render(this.template, tmplData);
+    var out = Mustache.render(this.template, fmt.injectMustache(tmplData));
     this.$el.html(out);
   },
   updateFilter: function(input) {
