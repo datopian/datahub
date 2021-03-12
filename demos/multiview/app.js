@@ -64,10 +64,11 @@ var createMultiView = function(dataset, state) {
   $el.appendTo(window.explorerDiv);
 
   // customize the subviews for the MultiView
+  var fmt = I18nMessages('recline', recline.View.translations);
   var views = [
     {
       id: 'grid',
-      label: 'Grid',
+      label: fmt.t('Grid'),
       view: new recline.View.SlickGrid({
         model: dataset,
         state: {
@@ -91,15 +92,14 @@ var createMultiView = function(dataset, state) {
     },
     {
       id: 'graph',
-      label: 'Graph',
+      label: fmt.t('Graph'),
       view: new recline.View.Graph({
         model: dataset
-
       })
     },
     {
       id: 'map',
-      label: 'Map',
+      label: fmt.t('Map'),
       view: new recline.View.Map({
         model: dataset
       })

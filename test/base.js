@@ -22,6 +22,14 @@ var Fixture = {
     ];
     var dataset = new recline.Model.Dataset({records: documents, fields: fields});
     return dataset;
+  },
+
+  getTranslations: function() {
+    return {
+      pl: {
+        Grid: 'Tabela'
+      }
+    };
   }
 };
 

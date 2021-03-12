@@ -174,7 +174,8 @@ my.Map = Backbone.View.extend({
   // Also sets up the editor fields and the map if necessary.
   render: function() {
     var self = this;
-    var htmls = Mustache.render(this.template, this.model.toTemplateJSON());
+    var tmplData = I18nMessages('recline', recline.View.translations).injectMustache(this.model.toTemplateJSON());
+    var htmls = Mustache.render(this.template, tmplData);
     this.$el.html(htmls);
     this.$map = this.$el.find('.panel.map');
     this.redraw();
@@ -513,15 +514,16 @@ my.MapMenu = Backbone.View.extend({
     <form class="form-stacked"> \
       <div class="clearfix"> \
         <div class="editor-field-type"> \
+            <span>{{t.map_mapping}}:</span> \
             <label class="radio"> \
               <input type="radio" id="editor-field-type-latlon" name="editor-field-type" value="latlon" checked="checked"/> \
-              Latitude / Longitude fields</label> \
+              {{t.map_mapping_lat_lon}}</label> \
             <label class="radio"> \
               <input type="radio" id="editor-field-type-geom" name="editor-field-type" value="geom" /> \
-              GeoJSON field</label> \
+              {{t.map_mapping_geojson}}</label> \
         </div> \
         <div class="editor-field-type-latlon"> \
-          <label for="form-field-lat-field">Latitude field</label> \
+          <label>{{t.Latitude_field}}</label> \
           <div class="input editor-lat-field"> \
             <select id="form-field-lat-field" class="form-control"> \
             <option value=""></option> \
@@ -530,7 +532,7 @@ my.MapMenu = Backbone.View.extend({
             {{/fields}} \
             </select> \
           </div> \
-          <label for="form-field-lon-field">Longitude field</label> \
+          <label>{{t.Longitude_field}}</label> \
           <div class="input editor-lon-field"> \
             <select id="form-field-lon-field" class="form-control"> \
             <option value=""></option> \
@@ -541,7 +543,7 @@ my.MapMenu = Backbone.View.extend({
           </div> \
         </div> \
         <div class="editor-field-type-geom" style="display:none"> \
-          <label for="form-field-type-geom">Geometry field (GeoJSON)</label> \
+          <label>{{t.map_mapping_geojson}}</label> \
           <div class="input editor-geom-field"> \
             <select id="form-field-type-geom" class="form-control"> \
             <option value=""></option> \
@@ -553,15 +555,15 @@ my.MapMenu = Backbone.View.extend({
         </div> \
       </div> \
       <div class="editor-buttons"> \
-        <button class="btn btn-default editor-update-map">Update</button> \
+        <button class="btn btn-default editor-update-map">{{t.Update}}</button> \
       </div> \
       <div class="editor-options" > \
         <label class="checkbox"> \
           <input type="checkbox" id="editor-auto-zoom" value="autozoom" checked="checked" /> \
-          Auto zoom to features</label> \
+          {{t.Auto_zoom_to_features}}</label> \
         <label class="checkbox"> \
           <input type="checkbox" id="editor-cluster" value="cluster"/> \
-          Cluster markers</label> \
+          {{t.Cluster_markers}}</label> \
       </div> \
       <input type="hidden" class="editor-id" value="map-1" /> \
     </form> \
@@ -589,7 +591,8 @@ my.MapMenu = Backbone.View.extend({
   // Also sets up the editor fields and the map if necessary.
   render: function() {
     var self = this;
-    var htmls = Mustache.render(this.template, this.model.toTemplateJSON());
+    var tmplData = I18nMessages('recline', recline.View.translations).injectMustache(this.model.toTemplateJSON());
+    var htmls = Mustache.render(this.template, tmplData);
     this.$el.html(htmls);
 
     if (this._geomReady() && this.model.fields.length){

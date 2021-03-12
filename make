@@ -7,6 +7,8 @@ def cat():
     print("** Combining js files")
     cmd = 'ls src/*.js | grep -v couchdb | xargs cat  > dist/recline.js'
     os.system(cmd)
+    cmd = 'ls src/**/*.js | grep -v couchdb | xargs cat  >> dist/recline.js'
+    os.system(cmd)
 
     cmd = 'cat src/model.js src/backend.memory.js > dist/recline.dataset.js'
     os.system(cmd)

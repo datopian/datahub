@@ -193,3 +193,29 @@ div.data-table-cell-content-numeric > a.data-table-cell-edit {
 .recline-read-only a.row-header-menu {
   display: none;
 }
+
+/*************************
+ * WCAG 2.0
+ *************************/
+
+.wcag_hide {
+   position:absolute;
+   top:0;
+   left:-10000px;
+   width:1px;
+   height:1px;
+}
+
+.wcag_hide2 {
+    clip: rect(1px, 1px, 1px, 1px);
+    display: block;
+    position: absolute;
+}
+
+.wcag_show_on_focus {
+    font-size: 0 !important;
+}
+
+.wcag_show_on_focus:focus {
+    font-size: 1em !important;
+}

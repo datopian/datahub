@@ -47,7 +47,8 @@ my.SlickGrid = Backbone.View.extend({
   
     // Template for row delete menu , change it if you don't love 
     this.templates = {
-      "deleterow" : '<button href="#" class="recline-row-delete btn btn-default" title="Delete row">X</button>'
+      deleterow : '<button href="#" class="recline-row-delete btn btn-default" title="{{t.Delete_row}}"><span class="wcag_hide">{{t.Delete_row}}</span><span aria-hidden="true">X</span></button>',
+      reorderrows: '<div title="{{t.Reorder_row}}" style="height: 100%;"><span class="wcag_hide">{{t.Reorder_row}}</span></div>'
     };
 
     _.bindAll(this, 'render', 'onRecordChanged');
@@ -102,15 +103,22 @@ my.SlickGrid = Backbone.View.extend({
     }, self.state.get('gridOptions'));
 
     // We need all columns, even the hidden ones, to show on the column picker
-    var columns = []; 
+    var columns = [];
+    var fmt = I18nMessages('recline', recline.View.translations);
 
     // custom formatter as default one escapes html
     // plus this way we distinguish between rendering/formatting and computed value (so e.g. sort still works ...)
     // row = row index, cell = cell index, value = value, columnDef = column definition, dataContext = full row values
     var formatter = function(row, cell, value, columnDef, dataContext) {
       if(columnDef.id == "del"){
-        return self.templates.deleterow 
+        var formatted = Mustache.render(self.templates.deleterow, fmt.injectMustache({}));
+        return formatted;
       }
+      if(columnDef.id == "#"){
+        var formatted = Mustache.render(self.templates.reorderrows, fmt.injectMustache({}));
+        return formatted;
+      }
+
       var field = self.model.fields.get(columnDef.id);
       if (field.renderer) {
         return  field.renderer(value, field, dataContext);
@@ -127,7 +135,7 @@ my.SlickGrid = Backbone.View.extend({
         if (field.type == "date" && isNaN(Date.parse(value))){
           return {
             valid: false,
-            msg: "A date is required, check field field-date-format"
+            msg: fmt.t('date_required', {}, "A date is required, check field field-date-format")
           };
         } else {
           return {valid: true, msg :null } 
@@ -144,7 +152,8 @@ my.SlickGrid = Backbone.View.extend({
         behavior: "selectAndMove",
         selectable: false,
         resizable: false,
-        cssClass: "recline-cell-reorder"
+        cssClass: "recline-cell-reorder",
+        formatter: formatter
       })
     }
     // Add column for row delete support
@@ -436,7 +445,7 @@ my.SlickGrid = Backbone.View.extend({
 my.GridControl= Backbone.View.extend({
   className: "recline-row-add",
   // Template for row edit menu , change it if you don't love
-  template: '<h1><button href="#" class="recline-row-add btn btn-default">Add row</button></h1>',
+  template: '<h1><button href="#" class="recline-row-add btn btn-default">{{t.Add_row}}</button></h1>',
   
   initialize: function(options){
     var self = this;
@@ -447,7 +456,10 @@ my.GridControl= Backbone.View.extend({
 
   render: function() {
     var self = this;
-    this.$el.html(this.template)
+
+    var tmplData = I18nMessages('recline', recline.View.translations).injectMustache({});
+    var formatted = Mustache.render(this.template, tmplData);
+    this.$el.html(formatted);
   },
 
   events : {
@@ -514,7 +526,7 @@ my.GridControl= Backbone.View.extend({
       $input = $('<input type="checkbox" />').data('option', 'autoresize').attr('id','slick-option-autoresize');
       $input.appendTo($li);
       $('<label />')
-          .text('Force fit columns')
+          .text(this.t('Force_fit_columns'))
           .attr('for','slick-option-autoresize')
           .appendTo($li);
       if (grid.getOptions().forceFitColumns) {

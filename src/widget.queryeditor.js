@@ -15,11 +15,11 @@ my.QueryEditor = Backbone.View.extend({
           <div class="input-group-addon"> \
             <i class="glyphicon glyphicon-search"></i> \
           </div> \
-          <label for="q">Search</label> \
-          <input class="form-control search-query" type="text" id="q" name="q" value="{{q}}" placeholder="Search data ..."> \
+          <label for="q">{{t.Search}}</label> \
+          <input class="form-control search-query" type="text" id="q" name="q" value="{{q}}" placeholder="{{t.Search_data}} ..."> \
         </div> \
       </div> \
-      <button type="submit" class="btn btn-default">Go &raquo;</button> \
+      <button type="submit" class="btn btn-default">{{t.Search}} &raquo;</button> \
     </form> \
   ',
 
@@ -38,7 +38,7 @@ my.QueryEditor = Backbone.View.extend({
     this.model.set({q: query});
   },
   render: function() {
-    var tmplData = this.model.toJSON();
+    var tmplData = I18nMessages('recline', recline.View.translations).injectMustache(this.model.toJSON());
     var templated = Mustache.render(this.template, tmplData);
     this.$el.html(templated);
   }
