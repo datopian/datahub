@@ -1,0 +1,133 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`📸 of Form component with empty 1`] = `
+<div>
+  <form
+    class="items-center"
+  >
+    <div
+      class="flex"
+    >
+      <input
+        aria-label="Search"
+        class="bg-white focus:outline-none focus:shadow-outline border border-gray-300 w-1/2 rounded-lg py-2 px-4 block appearance-none leading-normal"
+        name="q"
+        placeholder="Search"
+        type="text"
+        value=""
+      />
+      <button
+        class="inline-block text-sm px-4 py-3 mx-3 leading-none border rounded text-white bg-black border-black lg:mt-0"
+      >
+        Search
+      </button>
+    </div>
+    <div
+      class="inline-block my-6 float-right"
+    >
+      <label
+        for="field-order-by"
+      >
+        Order by:
+      </label>
+      <select
+        class="bg-white"
+        id="field-order-by"
+        name="sort"
+      >
+        <option
+          value="score:desc"
+        >
+          Relevance
+        </option>
+        <option
+          value="title_string:asc"
+        >
+          Name Ascending
+        </option>
+        <option
+          value="title_string:desc"
+        >
+          Name Descending
+        </option>
+        <option
+          value="metadata_modified:desc"
+        >
+          Last Modified
+        </option>
+        <option
+          value="views_recent:desc"
+        >
+          Popular
+        </option>
+      </select>
+    </div>
+  </form>
+</div>
+`;
+
+exports[`📸 of Form component with query 1`] = `
+<div>
+  <form
+    class="items-center"
+  >
+    <div
+      class="flex"
+    >
+      <input
+        aria-label="Search"
+        class="bg-white focus:outline-none focus:shadow-outline border border-gray-300 w-1/2 rounded-lg py-2 px-4 block appearance-none leading-normal"
+        name="q"
+        placeholder="Search"
+        type="text"
+        value=""
+      />
+      <button
+        class="inline-block text-sm px-4 py-3 mx-3 leading-none border rounded text-white bg-black border-black lg:mt-0"
+      >
+        Search
+      </button>
+    </div>
+    <div
+      class="inline-block my-6 float-right"
+    >
+      <label
+        for="field-order-by"
+      >
+        Order by:
+      </label>
+      <select
+        class="bg-white"
+        id="field-order-by"
+        name="sort"
+      >
+        <option
+          value="score:desc"
+        >
+          Relevance
+        </option>
+        <option
+          value="title_string:asc"
+        >
+          Name Ascending
+        </option>
+        <option
+          value="title_string:desc"
+        >
+          Name Descending
+        </option>
+        <option
+          value="metadata_modified:desc"
+        >
+          Last Modified
+        </option>
+        <option
+          value="views_recent:desc"
+        >
+          Popular
+        </option>
+      </select>
+    </div>
+  </form>
+</div>
+`;

@@ -1,0 +1,57 @@
+{
+  "name": "portal",
+  "description": "The data presentation framework",
+  "author": "Datopian",
+  "license": "MIT",
+  "version": "0.1.0",
+  "bin": {
+    "portal": "./bin/portal.js"
+  },
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "test": "jest --coverage"
+  },
+  "dependencies": {
+    "@material-ui/core": "^4.11.3",
+    "@material-ui/data-grid": "^4.0.0-alpha.20",
+    "@tailwindcss/typography": "^0.4.0",
+    "autoprefixer": "^10.0.4",
+    "datapackage-render": "git+https://github.com/frictionlessdata/datapackage-render-js.git",
+    "filesize": "^6.1.0",
+    "frictionless.js": "^0.13.4",
+    "next": "latest",
+    "plotly.js-basic-dist": "^1.58.4",
+    "postcss": "^8.1.10",
+    "react": "^17.0.1",
+    "react-dom": "^17.0.1",
+    "react-plotly.js": "^2.5.1",
+    "react-table": "^7.6.3",
+    "react-vega": "^7.4.2",
+    "remark": "^13.0.0",
+    "remark-html": "^13.0.1",
+    "tailwindcss": "^2.0.2",
+    "vega": "^5.19.1",
+    "vega-lite": "^5.0.0",
+    "chalk": "^4.1.0",
+    "commander": "^6.2.0",
+    "cpy": "^8.1.1",
+    "cross-spawn": "^7.0.3",
+    "figlet": "^1.5.0",
+    "listr": "^0.14.3",
+    "open": "^8.0.2",
+    "ora": "^5.1.0",
+    "prompts": "^2.4.0"
+  },
+  "devDependencies": {
+    "@testing-library/dom": "^7.29.6",
+    "@testing-library/jest-dom": "^5.11.9",
+    "@testing-library/react": "^11.2.5",
+    "babel-jest": "^26.6.3",
+    "identity-obj-proxy": "^3.0.0",
+    "jest": "^26.6.3",
+    "jest-canvas-mock": "^2.3.1",
+    "jest-dom": "^4.0.0"
+  }
+}
