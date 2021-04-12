@@ -1,50 +1,43 @@
 <h1 align="center">
 
 🌀 Portal.JS<br/>
-A gateway to your data
+The javascript framework for<br/>
+data portals
 
 </h1>
 
-🌀 `Portal` is the data presentation framework. `Portal` can be used to showcase a single dataset or build a full-scale data catalog/portal. `Portal` is built in Javascript and React on top of the popular Next.js framework.
+🌀 `portal` is a framework for rapidly building rich data portal frontends using a modern frontend approach.
 
-## Status
+`portal` can be used to present a single dataset or build a full-scale data catalog/portal. `portal` is built in Javascript and React on top of the popular [Next.js][] framework.
 
-`Portal` is currently focused on presenting a single (Frictionless) dataset for viewing and exploration.
+`Portal` assumes a "decoupled" approach where the frontend is a separate service from the backend and interacts with backend(s) via an API. It can be used with any backend and has out of the box support for [CKAN][].
 
-## Install
+[ckan]: https://ckan.org/
+[next.js]: https://nextjs.com/
 
-Git clone then:
+## Features
 
-```
-yarn install
-```
+- 🗺️ Unified sites: present data and content in one seamless site, pulling datasets from a DMS (e.g. CKAN) and content from a CMS (e.g. wordpress) with a common internal API.
+- 👩‍💻 Developer friendly: built with familiar frontend tech Javascript, React etc
+- 🔋 Batteries included: Full set of portal components out of the box e.g. catalog search, dataset showcase, blog etc.
+- 🎨 Easy to theme and customize: installable themes, use standard CSS and React+CSS tooling. Add new routes quickly.
+- 🧱 Extensible: quickly extend and develop/import your own React components
+- 📝 Well documented: full set of documentation plus the documentation of NextJS and Apollo.
 
-## Usage
+### For developers
 
-In this directory:
+- 🏗 Build with modern, familiar frontend tech such as Javascript and React.
+- 🚀 NextJS framework: so everything in NextJS for free React, SSR, static site generation, huge number of examples and integrations etc.
+  - SSR => unlimited number of pages, SEO etc whilst still using React.
+  - Static Site Generation (SSG) (good for small sites) => ultra-simple deployment, great performance and lighthouse scores etc
+- 📋 Typescript support
 
-```bash
-export PORTAL_DATASET_PATH=/path/to/my/dataset
-yarn dev
-```
+## Getting Started
 
-And you will get a nice dataset page at `http://localhost:3000`
+### Setup
 
-![](https://i.imgur.com/KSEtNF1.png)
+Install a recent version of Node. You'll need Node 10.13 or later.
 
+### Create a Portal app
 
-## Design Notes
-
-Portal.js is a React and NextJS based framework for building dataset/resources pages and catalogs. It consists of:
-
-* React components for data portal functionality e.g. data tables, graphs, dataset pages etc
-* Tooling to load data (based on Frictionless)
-* Template sites you can reuse using `create-next-app`
-  * Single dataset micro-site
-  * Github backed catalog
-  * CKAN backed catalog
-  * ...
-* Local development environment
-* Deployment integration with DataHub.io
-
-In summary, technically PortalJS is: NextJS + data specific react components + data loading glue (mostly using frictionless-js).
+To create a Portal app start with on the examples in the `[examples directory](./examples).

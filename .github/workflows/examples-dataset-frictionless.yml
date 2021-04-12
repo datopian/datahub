@@ -1,4 +1,4 @@
-name: portal
+name: dataset-frictionless
 on: 
   push:
     branches: [ main ]
@@ -11,7 +11,11 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - name: Install modules
-        run: yarn
+        run: |
+          cd examples/dataset-frictionless
+          yarn
     
       - name: Run tests
-        run: yarn test
+        run: |
+          cd examples/dataset-frictionless
+          yarn test -u
