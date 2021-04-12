@@ -6,11 +6,9 @@ data portals
 
 </h1>
 
-🌀 `portal` is a framework for rapidly building rich data portal frontends using a modern frontend approach.
+🌀 `portal` is a framework for rapidly building rich data portal frontends using a modern frontend approach. `portal` can be used to present a single dataset or build a full-scale data catalog/portal.
 
-`portal` can be used to present a single dataset or build a full-scale data catalog/portal. `portal` is built in Javascript and React on top of the popular [Next.js][] framework.
-
-`Portal` assumes a "decoupled" approach where the frontend is a separate service from the backend and interacts with backend(s) via an API. It can be used with any backend and has out of the box support for [CKAN][].
+`portal` is built in Javascript and React on top of the popular [Next.js][] framework. `portal` assumes a "decoupled" approach where the frontend is a separate service from the backend and interacts with backend(s) via an API. It can be used with any backend and has out of the box support for [CKAN][].
 
 [ckan]: https://ckan.org/
 [next.js]: https://nextjs.com/
@@ -38,6 +36,35 @@ data portals
 
 Install a recent version of Node. You'll need Node 10.13 or later.
 
-### Create a Portal app
+Install `yarn`.
 
-To create a Portal app start with on the examples in the `[examples directory](./examples).
+### Try out the demo portal
+
+Create a demo portal (for a single dataset):
+
+```
+# note: we have to use `yarn` until #529 is resolved ...
+yarn create next-app -e https://github.com/datopian/portal.js/tree/main/examples/dataset-frictionless
+# choose a name for your portal when prompted e.g. your-portal or go with default my-app
+
+# then run it
+cd your-portal
+yarn dev
+```
+
+You should see the demo portal running.
+
+You can try it out with other Frictionless datasets.
+
+### Check out more of the examples
+
+Check out more of the examples on how to create a portal for your dataset or datasets in the [`examples` directory](./examples) e.g.
+
+* [A portal for a single Frictionless dataset](./examples/dataset-frictionless)
+* [A portal with a CKAN backend](./examples/catalog)
+
+---
+
+# Appendix: What happened to Recline?
+
+Portal.JS used to be Recline(JS). If you are looking for the old Recline codebase it still exists:  see the [`recline` branch](https://github.com/datopian/portal.js/tree/recline). If you want context for the rename see [this issue](https://github.com/datopian/portal.js/issues/520).
