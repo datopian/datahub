@@ -11,6 +11,7 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
+    "export": "yarn build && next export",
     "test": "jest --coverage"
   },
   "dependencies": {
