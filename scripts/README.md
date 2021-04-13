@@ -2,11 +2,13 @@
 
 ### Single dataset with no portal commit
 This script creates and commit only the build files from nextjs to the gh-pages branch. 
+
 **Step 1:** Export an env variable with the name of your dataset github repo.
 For example if deploying https://github.com/datasets/finance-vix, then export the name as:
 ```bash
 export PORTAL_REPO_NAME=finance-vix
 ```
+
 **Step 2:** Create a file called `portal.sh` and paste the following content:
 ```bash
 #!/bin/bash
