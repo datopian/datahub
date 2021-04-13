@@ -144,7 +144,7 @@ export default function Home({ dataset, specs }) {
               </div>
               <div>
                 <h3 className="text-1xl">
-                  <a className="text-yellow-600" href={resource.path}>
+                  <a className="text-yellow-600" href={`/dataset/${resource.path}`}>
                     {resource.format} ({filesize(resource.size, { bits: true })})
                     </a>
                 </h3>
@@ -186,8 +186,8 @@ export default function Home({ dataset, specs }) {
         {resources[0].sample ? (
           <Table data={resources[0].sample} schema={resources[0].schema} />
         ) : (
-            'No preview is available for this dataset'
-          )}
+          'No preview is available for this dataset'
+        )}
       </section>
 
       <section className="m-8" name="sample-table">
