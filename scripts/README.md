@@ -1,6 +1,6 @@
-## Steps to use scripts
+# Using scripts
 
-### Deploy single dataset with no portal commit
+## Deploy single dataset with no portal commit
 This script creates and commit only the build files from nextjs to the gh-pages branch. 
 
 **Step 1:** Export an env variable with the name of your dataset github repo.
@@ -54,7 +54,7 @@ Open your deployed site at `https://<your github username>/github.io/<dataset re
 
 ____
 
-### Deploy single dataset with portal commit
+## Deploy single dataset with portal commit
 This script creates and commit the portal code as well as add an automated script to deploy page. Follow the steps below to use this script. 
 
 **Step 1:** Create a Github Personal Access Token (PAT).
