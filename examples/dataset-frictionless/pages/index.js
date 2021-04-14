@@ -6,7 +6,7 @@ import { Vega } from 'react-vega';
 import { getDataset } from '../lib/dataset'
 import Chart from '../components/Chart'
 import { addView } from '../lib/utils'
-const datasetsDirectory = process.env.PORTAL_DATASET_PATH || path.join(process.cwd(), "fixtures", "datasetsDoubleView")
+const datasetsDirectory = process.env.PORTAL_DATASET_PATH || path.join(process.cwd(), "public", "dataset")
 
 export default function Home({ dataset, specs }) {
 
@@ -144,9 +144,11 @@ export default function Home({ dataset, specs }) {
               </div>
               <div>
                 <h3 className="text-1xl">
-                  <a className="text-yellow-600" href={`/dataset/${resource.path}`}>
-                    {resource.format} ({filesize(resource.size, { bits: true })})
+                  <Link href={`/dataset/${resource.path}`}>
+                    <a className="text-yellow-600">
+                      {resource.format} ({filesize(resource.size, { bits: true })})
                     </a>
+                  </Link>
                 </h3>
               </div>
             </div>
