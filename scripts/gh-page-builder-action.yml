@@ -37,4 +37,4 @@ jobs:
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.PORTAL_NEXT_TOKEN }}
-          publish_dir: ./out
+          publish_dir: ./portal/out
