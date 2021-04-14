@@ -29,9 +29,9 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-yarn-
 
-      - run: yarn install --frozen-lockfile
-      - run: yarn build
-      - run: yarn export
+      - run: cd portal && yarn install --frozen-lockfile
+      - run: cd portal && yarn build
+      - run: cd portal && yarn export
 
       - name: Deploy
         uses: peaceiris/actions-gh-pages@v3
