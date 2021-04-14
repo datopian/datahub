@@ -1,5 +1,6 @@
 import path from 'path'
 import Head from 'next/head'
+import Link from 'next/link'
 import Table from '../components/Table'
 import filesize from 'filesize'
 import { Vega } from 'react-vega';
