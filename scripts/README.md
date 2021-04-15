@@ -102,7 +102,7 @@ echo 'module.exports = {assetPrefix:' ${assetPrefix}', basePath: '${basePath}' }
 yarn export
 
 cd ..
-cp -R -a portal/out/ ./
+cp -R -a portal/out/* ./
 touch .nojekyll
 git add $PWD'/_next' $PWD'/index.html' $PWD'/dataset' $PWD'/404.html' $PWD'/.nojekyll' $PWD'/favicon.ico'
 git commit -m "Build new dataset page"
