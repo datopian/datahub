@@ -42,26 +42,31 @@ Install `yarn`.
 
 Create a demo portal (for a single dataset):
 
-```
-# note: we have to use `yarn` until #529 is resolved ...
-yarn create next-app -e https://github.com/datopian/portal.js/tree/main/examples/dataset-frictionless
+```bash
+npx create next-app -e https://github.com/datopian/portal.js/tree/main/examples/dataset-frictionless
 # choose a name for your portal when prompted e.g. your-portal or go with default my-app
 
 # then run it
 cd your-portal
-yarn dev
+yarn #install packages
+yarn dev #start app in dev mode
 ```
 
+
 You should see the demo portal running.
+<img src="./assets/demo.gif" />
 
 You can try it out with other Frictionless datasets.
 
 ### Check out more of the examples
 
-Check out more of the examples on how to create a portal for your dataset or datasets in the [`examples` directory](./examples) e.g.
+The [`examples` directory](./examples) is regularly updated with different portal examples. 
 
 * [A portal for a single Frictionless dataset](./examples/dataset-frictionless)
 * [A portal with a CKAN backend](./examples/catalog)
+
+## Deploying portal build to github pages
+* [Deploying single frictionless dataset to Github]("./scripts/README.md")
 
 ---
 
