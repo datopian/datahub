@@ -1,3 +1,6 @@
-import { Table } from './components/explorer/Table/index'
+//Components
+import Table from './components/views/Table'
+import Chart from './components/views/Chart'
+import Document from './components/views/Document'
 
-export { Table }
+export { Table, Chart, Document }

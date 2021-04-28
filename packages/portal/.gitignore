@@ -30,4 +30,4 @@ yarn-error.log*
 .env.production.local
 
 # output
-dist/
+dist/*
