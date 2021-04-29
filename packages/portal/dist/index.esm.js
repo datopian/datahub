@@ -1,31 +1,41 @@
-import React, { useState, useRef, useEffect } from 'react';
-import ReactTable from 'react-table-v6';
-import Plotly from 'plotly.js-basic-dist';
+import React, { useState, useEffect } from 'react';
+import { DataGrid } from '@material-ui/data-grid';
 import createPlotlyComponent from 'react-plotly.js/factory';
-import { usePdf } from 'react-pdf-js';
-import { useTranslation } from 'react-i18next';
+import filesize from 'filesize';
 
-function _classCallCheck(instance, Constructor) {
-  if (!(instance instanceof Constructor)) {
-    throw new TypeError("Cannot call a class as a function");
-  }
-}
+/**
+ * Displays a table from a Frictionless dataset
+ * @param schema: Frictionless Table Schema
+ * @param data: an array of data objects e.g. [ {a: 1, b: 2}, {a: 5, b: 7} ]
+ */
 
-function _defineProperties(target, props) {
-  for (var i = 0; i < props.length; i++) {
-    var descriptor = props[i];
-    descriptor.enumerable = descriptor.enumerable || false;
-    descriptor.configurable = true;
-    if ("value" in descriptor) descriptor.writable = true;
-    Object.defineProperty(target, descriptor.key, descriptor);
-  }
-}
+var Table = function Table(_ref) {
+  var schema = _ref.schema,
+      data = _ref.data;
+  var columns = schema.fields.map(function (field) {
+    return {
+      field: field.title || field.name,
+      headerName: field.name,
+      width: 300
+    };
+  });
+  data = data.map(function (item, index) {
+    item.id = index; //Datagrid requires every row to have an ID
 
-function _createClass(Constructor, protoProps, staticProps) {
-  if (protoProps) _defineProperties(Constructor.prototype, protoProps);
-  if (staticProps) _defineProperties(Constructor, staticProps);
-  return Constructor;
-}
+    return item;
+  });
+  return /*#__PURE__*/React.createElement("div", {
+    "data-testid": "tableGrid",
+    style: {
+      height: 400,
+      width: '100%'
+    }
+  }, /*#__PURE__*/React.createElement(DataGrid, {
+    rows: data,
+    columns: columns,
+    pageSize: 5
+  }));
+};
 
 function _extends() {
   _extends = Object.assign || function (target) {
@@ -43,85 +53,6 @@ function _extends() {
   };
 
   return _extends.apply(this, arguments);
-}
-
-function _inherits(subClass, superClass) {
-  if (typeof superClass !== "function" && superClass !== null) {
-    throw new TypeError("Super expression must either be null or a function");
-  }
-
-  subClass.prototype = Object.create(superClass && superClass.prototype, {
-    constructor: {
-      value: subClass,
-      writable: true,
-      configurable: true
-    }
-  });
-  if (superClass) _setPrototypeOf(subClass, superClass);
-}
-
-function _getPrototypeOf(o) {
-  _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) {
-    return o.__proto__ || Object.getPrototypeOf(o);
-  };
-  return _getPrototypeOf(o);
-}
-
-function _setPrototypeOf(o, p) {
-  _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) {
-    o.__proto__ = p;
-    return o;
-  };
-
-  return _setPrototypeOf(o, p);
-}
-
-function _isNativeReflectConstruct() {
-  if (typeof Reflect === "undefined" || !Reflect.construct) return false;
-  if (Reflect.construct.sham) return false;
-  if (typeof Proxy === "function") return true;
-
-  try {
-    Boolean.prototype.valueOf.call(Reflect.construct(Boolean, [], function () {}));
-    return true;
-  } catch (e) {
-    return false;
-  }
-}
-
-function _assertThisInitialized(self) {
-  if (self === void 0) {
-    throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
-  }
-
-  return self;
-}
-
-function _possibleConstructorReturn(self, call) {
-  if (call && (typeof call === "object" || typeof call === "function")) {
-    return call;
-  }
-
-  return _assertThisInitialized(self);
-}
-
-function _createSuper(Derived) {
-  var hasNativeReflectConstruct = _isNativeReflectConstruct();
-
-  return function _createSuperInternal() {
-    var Super = _getPrototypeOf(Derived),
-        result;
-
-    if (hasNativeReflectConstruct) {
-      var NewTarget = _getPrototypeOf(this).constructor;
-
-      result = Reflect.construct(Super, arguments, NewTarget);
-    } else {
-      result = Super.apply(this, arguments);
-    }
-
-    return _possibleConstructorReturn(this, result);
-  };
 }
 
 function _slicedToArray(arr, i) {
@@ -183,96 +114,30 @@ function _nonIterableRest() {
   throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method.");
 }
 
-var Table = /*#__PURE__*/function (_React$Component) {
-  _inherits(Table, _React$Component);
+var Plot;
 
-  var _super = _createSuper(Table);
+var PlotlyChart = function PlotlyChart(props) {
+  var _useState = useState(0),
+      _useState2 = _slicedToArray(_useState, 2),
+      plotCreated = _useState2[0],
+      setPlotCreated = _useState2[1]; //0: false, 1: true
 
-  function Table(props) {
-    var _this;
 
-    _classCallCheck(this, Table);
-
-    _this = _super.call(this, props);
-    _this.state = {
-      data: _this.props.data,
-      schema: Object.assign({}, _this.props.schema)
-    };
-    return _this;
-  }
-
-  _createClass(Table, [{
-    key: "updateData",
-    value: function updateData(newData) {
-      this.setState({
-        data: newData
-      });
-    }
-  }, {
-    key: "getFields",
-    value: function getFields() {
-      if (this.state.schema && this.state.schema.fields) {
-        return this.state.schema.fields;
-      }
-
-      var fields = [];
-
-      for (var key in this.state.data[0]) {
-        fields.push({
-          name: key
-        });
-      }
-
-      return fields;
-    }
-  }, {
-    key: "render",
-    value: function render() {
-      return /*#__PURE__*/React.createElement(ReactTable, {
-        data: this.state.data,
-        columns: this.getFields().map(function (field) {
-          return {
-            Header: field.name,
-            id: field.name,
-            accessor: function accessor(val) {
-              return val[field.name];
-            },
-            Cell: function Cell(props) {
-              return /*#__PURE__*/React.createElement("div", {
-                className: field.type || ''
-              }, /*#__PURE__*/React.createElement("span", null, props.value));
-            }
-          };
-        }),
-        getTheadThProps: function getTheadThProps() {
-          return {
-            style: {
-              "wordWrap": "break-word",
-              "whiteSpace": "initial"
-            }
-          };
-        },
-        showPagination: false,
-        defaultPageSize: 100,
-        showPageSizeOptions: false,
-        minRows: 10
-      });
-    }
-  }]);
-
-  return Table;
-}(React.Component);
-
-function Chart (props) {
-  var Plot = createPlotlyComponent(Plotly); // removes produced with plotly logo by default
-
-  if (!props.spec.config || !props.spec.config.displaylogo) {
-    props.spec.config = Object.assign(props.spec.config || {}, {
-      displaylogo: false
+  useEffect(function () {
+    import('plotly.js-basic-dist').then(function (Plotly) {
+      //import Plotly dist when Page has been generated
+      Plot = createPlotlyComponent(Plotly);
+      setPlotCreated(1);
     });
+  }, []);
+
+  if (!plotCreated) {
+    return /*#__PURE__*/React.createElement("div", null, "Loading...");
   }
 
-  return /*#__PURE__*/React.createElement(Plot, _extends({}, props.spec, {
+  return /*#__PURE__*/React.createElement("div", {
+    "data-testid": "plotlyChart"
+  }, /*#__PURE__*/React.createElement(Plot, _extends({}, props.spec, {
     layout: {
       autosize: true
     },
@@ -280,95 +145,157 @@ function Chart (props) {
       width: "100%",
       height: "100%"
     },
-    useResizeHandler: "true"
-  }));
-}
-
-var PdfViewer = function PdfViewer(props) {
-  var _useState = useState(1),
-      _useState2 = _slicedToArray(_useState, 2),
-      page = _useState2[0],
-      setPage = _useState2[1];
-
-  var _useState3 = useState(null),
-      _useState4 = _slicedToArray(_useState3, 2),
-      pages = _useState4[0],
-      setPages = _useState4[1];
-
-  var _useTranslation = useTranslation(),
-      t = _useTranslation.t;
-
-  var renderPagination = function renderPagination(page, pages) {
-    if (!pages) {
-      return null;
-    }
-
-    var previousButton = /*#__PURE__*/React.createElement("li", {
-      className: "previous",
-      onClick: function onClick() {
-        return setPage(page - 1);
-      }
-    }, /*#__PURE__*/React.createElement("a", {
-      href: "#previous"
-    }, /*#__PURE__*/React.createElement("span", {
-      className: "arrow-left"
-    }), " Previous"));
-
-    if (page === 1) {
-      previousButton = /*#__PURE__*/React.createElement("li", {
-        className: "previous disabled"
-      }, /*#__PURE__*/React.createElement("a", {
-        href: "#previous"
-      }, /*#__PURE__*/React.createElement("span", {
-        className: "arrow-left"
-      }), " Previous"));
-    }
-
-    var nextButton = /*#__PURE__*/React.createElement("li", {
-      className: "next",
-      onClick: function onClick() {
-        return setPage(page + 1);
-      }
-    }, /*#__PURE__*/React.createElement("a", {
-      href: "#next"
-    }, "Next ", /*#__PURE__*/React.createElement("span", {
-      className: "arrow-right"
-    })));
-
-    if (page === pages) {
-      nextButton = /*#__PURE__*/React.createElement("li", {
-        className: "next disabled"
-      }, /*#__PURE__*/React.createElement("a", {
-        href: "#next"
-      }, "Next ", /*#__PURE__*/React.createElement("span", {
-        className: "arrow-right"
-      })));
-    }
-
-    return /*#__PURE__*/React.createElement("nav", {
-      "aria-label": "Navigate pages: Previous/Next"
-    }, /*#__PURE__*/React.createElement("ul", {
-      className: "pager"
-    }, previousButton, nextButton));
-  };
-
-  var canvasEl = useRef(null);
-
-  var _usePdf = usePdf({
-    file: props.file,
-    page: page,
-    canvasEl: canvasEl
-  }),
-      _usePdf2 = _slicedToArray(_usePdf, 2),
-      loading = _usePdf2[0],
-      numPages = _usePdf2[1];
-
-  useEffect(function () {
-    setPages(numPages);
-  }, [numPages]);
-  return /*#__PURE__*/React.createElement("div", null, loading && /*#__PURE__*/React.createElement("span", null, t('Loading...')), /*#__PURE__*/React.createElement("canvas", {
-    ref: canvasEl
-  }), renderPagination(page, pages));
+    useResizeHandler: true
+  })));
 };
 
-export { Chart, PdfViewer as Document, Table };
+/**
+ * KeyInfo component receives two arguments. 
+ * @param {Object} descriptor A Frictionless datapackage descriptor object with the following fields:
+ * {
+ *  title: "Title of the data package",
+ *  length: "The number of resources present in the data package"
+ *  datasetSize: The combined size of the data package resources
+ *  format: The format of resources in the dataset. e.g csv, json, excel
+ *  created: The date the dataset was created
+ *  updated: The date the dataset was last updated
+ *  licence: The licence of the dataset
+ *  sources: An array of the data set sources
+ * }
+ * @param {Array} resources A Frictionless datapackage resource array
+ * @returns React Component
+ */
+
+var KeyInfo = function KeyInfo(_ref) {
+  var descriptor = _ref.descriptor,
+      resources = _ref.resources;
+  var datasetSize = 0;
+
+  if (resources) {
+    datasetSize = resources.length == 1 ? resources[0].size : resources.reduce(function (accumulator, currentValue) {
+      return accumulator.size + currentValue.size;
+    });
+  }
+
+  return /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement("section", {
+    className: "m-8",
+    name: "key-info",
+    id: "key-info"
+  }, /*#__PURE__*/React.createElement("h1", {
+    "data-testid": "datasetTitle",
+    className: "text-3xl font-bold mb-8"
+  }, descriptor.title), /*#__PURE__*/React.createElement("h1", {
+    className: "text-2xl font-bold mb-4"
+  }, "Key info"), /*#__PURE__*/React.createElement("div", {
+    className: "grid grid-cols-7 gap-4"
+  }, /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("h3", {
+    className: "text-1xl font-bold mb-2"
+  }, "Files")), /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("h3", {
+    className: "text-1xl font-bold mb-2"
+  }, "Size")), /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("h3", {
+    className: "text-1xl font-bold mb-2"
+  }, "Format")), /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("h3", {
+    className: "text-1xl font-bold mb-2"
+  }, "Created")), /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("h3", {
+    className: "text-1xl font-bold mb-2"
+  }, "Updated")), /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("h3", {
+    className: "text-1xl font-bold mb-2"
+  }, "Licence")), /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("h3", {
+    className: "text-1xl font-bold mb-2"
+  }, "Source"))), /*#__PURE__*/React.createElement("div", {
+    className: "grid grid-cols-7 gap-4"
+  }, /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("h3", {
+    className: "text-1xl"
+  }, resources.length)), /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("h3", {
+    className: "text-1xl"
+  }, filesize(datasetSize, {
+    bits: true
+  }))), /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("h3", {
+    className: "text-1xl"
+  }, resources[0].format, " zip")), /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("h3", {
+    className: "text-1xl"
+  }, descriptor.created)), /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("h3", {
+    className: "text-1xl"
+  }, descriptor.updated)), /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("h3", {
+    className: "text-1xl"
+  }, descriptor.license)), /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("h3", {
+    className: "text-1xl"
+  }, /*#__PURE__*/React.createElement("a", {
+    className: "text-yellow-600",
+    href: descriptor.sources[0].web
+  }, descriptor.sources[0].title))))));
+};
+
+/**
+ * ResourceInfo component displays all resources in a data package 
+ * @param {Array} resources A Frictionless datapackage resource object
+ * @returns React Component
+ */
+
+var ResourcesInfo = function ResourcesInfo(_ref) {
+  var resources = _ref.resources;
+  return /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement("section", {
+    className: "m-8",
+    name: "file-list"
+  }, /*#__PURE__*/React.createElement("h1", {
+    className: "text-2xl font-bold mb-4"
+  }, "Data Files"), /*#__PURE__*/React.createElement("div", {
+    className: "grid grid-cols-7 gap-4"
+  }, /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("h3", {
+    className: "text-1xl font-bold mb-2"
+  }, "File")), /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("h3", {
+    className: "text-1xl font-bold mb-2"
+  }, "Description")), /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("h3", {
+    className: "text-1xl font-bold mb-2"
+  }, "Size")), /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("h3", {
+    className: "text-1xl font-bold mb-2"
+  }, "Last Changed")), /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("h3", {
+    className: "text-1xl font-bold mb-2"
+  }, "Download"))), resources.map(function (resource, index) {
+    return /*#__PURE__*/React.createElement("div", {
+      key: "".concat(index, "_").concat(resource.name),
+      className: "grid grid-cols-7 gap-4"
+    }, /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("h3", {
+      className: "text-1xl"
+    }, resource.name)), /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("h3", {
+      className: "text-1xl"
+    }, resource.description || "No description")), /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("h3", {
+      className: "text-1xl"
+    }, filesize(resource.size, {
+      bits: true
+    }))), /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("h3", {
+      className: "text-1xl"
+    }, resource.updated)), /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("h3", {
+      className: "text-1xl"
+    }, /*#__PURE__*/React.createElement("a", {
+      className: "text-yellow-600",
+      href: "/dataset/".concat(resource.path)
+    }, resource.format, " (", filesize(resource.size, {
+      bits: true
+    }), ")"))));
+  })));
+};
+
+/**
+ * ReadMe component displays the markdown description of a datapackage
+ * @param {string} readme parsed html of data package readme
+ * @returns React Component
+ */
+
+var ReadMe = function ReadMe(_ref) {
+  var readmeHtml = _ref.readmeHtml;
+  return /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement("section", {
+    className: "m-8",
+    name: "sample-table"
+  }, /*#__PURE__*/React.createElement("h1", {
+    className: "text-2xl font-bold mb-4"
+  }, "README"), /*#__PURE__*/React.createElement("div", {
+    className: "prose"
+  }, /*#__PURE__*/React.createElement("div", {
+    dangerouslySetInnerHTML: {
+      __html: readmeHtml
+    }
+  }))));
+};
+
+export { KeyInfo, PlotlyChart, ReadMe, ResourcesInfo as ResourceInfo, Table };
