@@ -1,6 +1,9 @@
 //Components
 import Table from './components/views/Table'
-import Chart from './components/views/Chart'
-import Document from './components/views/Document'
+import { PlotlyChart } from './components/views/Chart'
+import KeyInfo from './components/page/KeyInfo'
+import ResourceInfo from './components/page/ResourceInfo'
+import ReadMe from './components/page/Readme'
 
-export { Table, Chart, Document }
+
+export { Table, PlotlyChart, KeyInfo, ResourceInfo, ReadMe }
