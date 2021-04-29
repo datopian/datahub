@@ -1,58 +1,29 @@
-import React from "react"
-import ReactTable from 'react-table-v6'
-// import 'react-table-v6/react-table.css'
+import React from 'react';
+import { DataGrid } from '@material-ui/data-grid';
 
-
-export default class Table extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      data: this.props.data,
-      schema: Object.assign({}, this.props.schema)
-    };
-  }
-
-  updateData(newData) {
-    this.setState({
-      data: newData
-    })
-  }
-
-  getFields() {
-    if (this.state.schema && this.state.schema.fields) {
-      return this.state.schema.fields
+/**
+ * Displays a table from a Frictionless dataset
+ * @param schema: Frictionless Table Schema
+ * @param data: an array of data objects e.g. [ {a: 1, b: 2}, {a: 5, b: 7} ]
+ */
+const Table = ({ schema, data }) => {
+  const columns = schema.fields.map((field) => (
+    {
+      field: field.title || field.name,
+      headerName: field.name,
+      width: 300
     }
-    const fields = []
-    for (let key in this.state.data[0]) {
-      fields.push({
-        name: key
-      })
-    }
-    return fields
-  }
-
-  render() {
-    return (
-      <ReactTable
-        data={this.state.data}
-        columns={this.getFields().map(field => {
-          return {
-            Header: field.name,
-            id: field.name,
-            accessor: val => val[field.name],
-            Cell: props => <div className={field.type || ''}>
-              <span>{props.value}</span>
-            </div>
-          }
-        })}
-        getTheadThProps={() => {
-          return { style: { "wordWrap": "break-word", "whiteSpace": "initial" } }
-        }}
-        showPagination={false}
-        defaultPageSize={100}
-        showPageSizeOptions={false}
-        minRows={10}
-      />
-    )
-  }
+  ))
+  data = data.map((item, index)=>{
+    item.id = index //Datagrid requires every row to have an ID
+    return item
+  })
+  
+  return (
+    <div data-testid="tableGrid" style={{ height: 400, width: '100%' }}>
+      <DataGrid rows={data} columns={columns} pageSize={5} />
+    </div>
+  );
 }
+
+export default Table
