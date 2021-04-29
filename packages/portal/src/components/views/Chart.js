@@ -1,21 +1,30 @@
-import React from 'react';
-import Plotly from 'plotly.js-basic-dist';
+import React, { useState, useEffect } from 'react';
 import createPlotlyComponent from "react-plotly.js/factory";
+let Plot;
 
+const PlotlyChart = (props) => {
+  const [plotCreated, setPlotCreated] = useState(0) //0: false, 1: true
 
-export default function (props) {
-  const Plot = createPlotlyComponent(Plotly);
+  useEffect(() => {
+    import(`plotly.js-basic-dist`).then(Plotly => { //import Plotly dist when Page has been generated
+      Plot = createPlotlyComponent(Plotly);
+      setPlotCreated(1)
+    });
+  }, [])
 
-  // removes produced with plotly logo by default
-  if (!props.spec.config || !props.spec.config.displaylogo) {
-    props.spec.config = Object.assign(props.spec.config || {}, {displaylogo: false});
+  if (!plotCreated) {
+    return (<div>Loading...</div>)
   }
 
   return (
-    <Plot {...props.spec}
-      layout = { {autosize: true} }
-      style = { {width: "100%", height: "100%"} }
-      useResizeHandler = "true"
-    />
+    <div data-testid="plotlyChart">
+      <Plot {...props.spec}
+        layout={{ autosize: true }}
+        style={{ width: "100%", height: "100%" }}
+        useResizeHandler={true}
+      />
+    </div>
   )
 }
+
+export { PlotlyChart }
