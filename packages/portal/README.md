@@ -1,1 +1,0 @@
-Portaljs component library
