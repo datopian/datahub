@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
+import PropTypes from 'prop-types';
 import createPlotlyComponent from "react-plotly.js/factory";
 let Plot;
 
-const PlotlyChart = (props) => {
+const PlotlyChart = ({spec}) => {
   const [plotCreated, setPlotCreated] = useState(0) //0: false, 1: true
 
   useEffect(() => {
@@ -18,7 +19,7 @@ const PlotlyChart = (props) => {
 
   return (
     <div data-testid="plotlyChart">
-      <Plot {...props.spec}
+      <Plot {...spec}
         layout={{ autosize: true }}
         style={{ width: "100%", height: "100%" }}
         useResizeHandler={true}
@@ -27,4 +28,7 @@ const PlotlyChart = (props) => {
   )
 }
 
+PlotlyChart.propTypes = {
+  spec: PropTypes.object.isRequired
+}
 export { PlotlyChart }
