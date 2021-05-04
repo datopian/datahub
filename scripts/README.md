@@ -1,18 +1,31 @@
-# Deploying a single page dataset to Github pages
+# Publishing data on Github using Portal.js and Github pages
 
-In the following sections, we show you how to deploy a single page, Frictionless dataset to Github pages. We show you three ways to do this as listed below:
+Use case: you have some data in a Github repo and you'd like to publish it online using "portal" so that it is easy for others to view, explore and use it.
+
+Here we show how you can use portal.js plus github actions to publish your dataset in minutes and keep it updated as you make changes.
+
+The example focuses on the case of a [Frictionless dataset][fd] but it works for any dataset type supported by portal.js. 
+
+We provide three options on how to do this and recommend using the first one unless you really want to get hands on:
 
 * Deploying datasets automatically by setting up a github actions script.
 * Deploying datasets from a local bash script with portal code commits
 * Deploying datasets from a local bash script without portal code commits
 
-## Deploying datasets automatically by setting up a github actions script.
+[fd]: https://frictionlessdata.io/data-packages/
 
-The github actions below will automatically build and deploy a single page, Frictionless dataset to `gh-pages` branch. Folow the steps below to achieve this:
+## Publish datasets automatically by setting up a github actions script
+
+The github actions below will automatically build and publish a single page, Frictionless dataset to `gh-pages` branch. Follow the steps below to achieve this:
+
+1. Create a secret so we can automatically commit to gh-pages branch (see below)
+2. Set up the github action to build portal to your dataset and publish it (see below)
+3. Wait for your page to build and then setup github pages (see below)
+4. View the results: visit `https://<your github username>/github.io/<dataset repo name>/`
 
 ### Step 1
 
-In the dataset repository you want to deploy, create a github secret with the name `PORTAL_REPO_NAME` and the value should be the name of the repository. 
+In the dataset repository you want to publish, create a github secret with the name `PORTAL_REPO_NAME` and the value should be the name of the repository. 
 
 See steps on creating a secret [here](https://docs.github.com/en/actions/reference/encrypted-secrets)
 
@@ -20,15 +33,7 @@ See steps on creating a secret [here](https://docs.github.com/en/actions/referen
 
 ### Step 2
 
-Clone/Pull the dataset repository you want deploy:
-
-```bash
-git clone https://github.com/datasets/finance-vix
-```
-
-### Step 3
-
-Create a `.github/workflow` directory and add a `main.yml` file with the following content:
+In the dataset repository you want deploy create a `.github/workflow` directory and add a `main.yml` file with the following content (you can also view/download this [action file here]("./actions/single-dataset-ssg.yml"):
 
 ```bash
 name: github pages
@@ -59,11 +64,8 @@ jobs:
         source ./portal.sh
 
 ```
-You can see/download the action file [here]("./actions/single-dataset-ssg.yml")
 
-### Step 3
-
-Commit and push your code:
+Then, commit and push your code.
 
 ```bash
 git add .
@@ -71,17 +73,14 @@ git commit -m "Build dataset page"
 git push 
 ```
 
-### Step 4
+### Step 3
 
 Wait for a while as your page builds, and once you see the green check mark, navigate to your repository's github `pages` in settings, set the `source` to `gh-pages` and folder to `/root`:
 
 <img src='./assets/sdnocommit.png' />
 
-### Step 5
 
-Open your deployed site at `https://<your github username>/github.io/<dataset repo name>/index.html`
-
-### Deploy single dataset without commiting portal.js code
+## Deploy single dataset without commiting portal.js code
 
 Users who want to deploy datasets from a local bash script without saving/commiting the portal.js code, can use the script shown below. 
 
@@ -159,6 +158,7 @@ Go to your repository's github `pages` in setting and set the Branch to gh-pages
 ### Step 6
 
 Open your deployed site at `https://<your github username>/github.io/<dataset repo name>`
+
 
 ## Deploy single dataset with portal commit
 
