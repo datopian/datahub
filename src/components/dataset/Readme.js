@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 
 /**
  * ReadMe component displays the markdown description of a datapackage
@@ -16,6 +17,10 @@ const ReadMe = ({ readmeHtml }) => {
             </section>
         </>
     )
+}
+
+ReadMe.propTypes = {
+    readmeHtml: PropTypes.string.isRequired
 }
 
 export default ReadMe

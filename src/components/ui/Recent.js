@@ -1,10 +1,20 @@
 import React from 'react';
 import Link from 'next/link';
+import PropTypes from 'prop-types';
 
-const Recent = (datasets) => {
-  if (!datasets) {
-    return <></>
-  }
+/**
+ * Displays a list of recent datasets
+ * @param {object} props
+ * datasets = {
+ *    organization: {name: <some name>, title: <some title> },
+ *    title: <Data package title>
+ *    name:  <Data package name>
+ *    description: <description of data package>
+ *    notes: <Notes associated with the data package>
+ * } 
+ * @returns React Component
+ */
+const Recent = ({datasets}) => {
 
   return (
     <section className="my-10 mx-4 lg:my-20">
@@ -33,5 +43,9 @@ const Recent = (datasets) => {
     </section>
   );
 };
+
+Recent.propTypes = {
+  datasets: PropTypes.object.isRequired
+}
 
 export default Recent;

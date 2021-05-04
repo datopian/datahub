@@ -1,29 +1,23 @@
 import React from 'react';
 import { DataGrid } from '@material-ui/data-grid';
+import PropTypes from 'prop-types';
 
 /**
- * Displays a table from a Frictionless dataset
- * @param schema: Frictionless Table Schema
- * @param data: an array of data objects e.g. [ {a: 1, b: 2}, {a: 5, b: 7} ]
+ * Displays dataset in tabular form using data grid
+ * @param columns: An array of column names with properties: e.g [{field: "col1", headerName: "col1"}, {field: "col2", headerName: "col2"}]
+ * @param data: an array of data objects e.g. [ {col1: 1, col2: 2}, {col1: 5, col2: 7} ]
  */
-const Table = ({ schema, data }) => {
-  const columns = schema.fields.map((field) => (
-    {
-      field: field.title || field.name,
-      headerName: field.name,
-      width: 300
-    }
-  ))
-  data = data.map((item, index)=>{
-    item.id = index //Datagrid requires every row to have an ID
-    return item
-  })
-  
+const Table = ({ columns, data }) => {
   return (
     <div data-testid="tableGrid" style={{ height: 400, width: '100%' }}>
       <DataGrid rows={data} columns={columns} pageSize={5} />
     </div>
   );
+}
+
+Table.propTypes = {
+  columns: PropTypes.array.isRequired,
+  data: PropTypes.array.isRequired
 }
 
 export default Table

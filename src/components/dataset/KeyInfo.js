@@ -1,5 +1,6 @@
 import React from 'react';
 import filesize from 'filesize'
+import PropTypes from 'prop-types';
 
 /**
  * KeyInfo component receives two arguments. 
@@ -91,4 +92,8 @@ const KeyInfo = ({ descriptor, resources }) => {
     )
 }
 
+KeyInfo.propTypes = {
+    descriptor: PropTypes.object.isRequired,
+    resources: PropTypes.array.isRequired
+}
 export default KeyInfo

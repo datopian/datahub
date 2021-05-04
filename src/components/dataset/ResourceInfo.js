@@ -1,5 +1,6 @@
 import React from 'react';
 import filesize from 'filesize'
+import PropTypes from 'prop-types';
 
 /**
  * ResourceInfo component displays all resources in a data package 
@@ -59,4 +60,8 @@ const ResourcesInfo = ({ resources }) => {
     )
 }
 
+
+ResourcesInfo.propTypes = {
+    resources: PropTypes.array.isRequired
+}
 export default ResourcesInfo
