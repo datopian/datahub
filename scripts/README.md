@@ -1,13 +1,17 @@
 # Deploying a single page dataset to Github pages
+
 In the following sections, we show you how to deploy a single page, Frictionless dataset to Github pages. We show you three ways to do this as listed below:
+
 * Deploying datasets automatically by setting up a github actions script.
 * Deploying datasets from a local bash script with portal code commits
 * Deploying datasets from a local bash script without portal code commits
 
 ## Deploying datasets automatically by setting up a github actions script.
+
 The github actions below will automatically build and deploy a single page, Frictionless dataset to `gh-pages` branch. Folow the steps below to achieve this:
 
 ### Step 1
+
 In the dataset repository you want to deploy, create a github secret with the name `PORTAL_REPO_NAME` and the value should be the name of the repository. 
 
 See steps on creating a secret [here](https://docs.github.com/en/actions/reference/encrypted-secrets)
@@ -15,13 +19,16 @@ See steps on creating a secret [here](https://docs.github.com/en/actions/referen
 <img src="./assets/secrets.png" />
 
 ### Step 2
+
 Clone/Pull the dataset repository you want deploy:
 
 ```bash
 git clone https://github.com/datasets/finance-vix
 ```
+
 ### Step 3
- Create a `.github/workflow` directory and add a `main.yml` file with the following content:
+
+Create a `.github/workflow` directory and add a `main.yml` file with the following content:
 
 ```bash
 name: github pages
@@ -55,7 +62,9 @@ jobs:
 You can see/download the action file [here]("./actions/single-dataset-ssg.yml")
 
 ### Step 3
- Commit and push your code:
+
+Commit and push your code:
+
 ```bash
 git add .
 git commit -m "Build dataset page"
@@ -63,36 +72,44 @@ git push
 ```
 
 ### Step 4
+
 Wait for a while as your page builds, and once you see the green check mark, navigate to your repository's github `pages` in settings, set the `source` to `gh-pages` and folder to `/root`:
+
 <img src='./assets/sdnocommit.png' />
 
 ### Step 5
+
 Open your deployed site at `https://<your github username>/github.io/<dataset repo name>/index.html`
-______
-### Deploy single dataset without commiting portaljs code
-Users who want to deploy datasets from a local bash script
-without saving/commiting the portal.js code, can use the script shown below. 
+
+### Deploy single dataset without commiting portal.js code
+
+Users who want to deploy datasets from a local bash script without saving/commiting the portal.js code, can use the script shown below. 
 
 Using this script means you do not have access to the portal.js code used to generate the dataset page, and as such cannot modify/extend it. 
 
 This script creates and commit only the build/output files to the gh-pages branch. Follow the steps below to achieve this.
 
 ### Step 1
- Clone/Pull the dataset repository you want deploy. For example:
+
+Clone/Pull the dataset repository you want deploy. For example:
 
 ```bash
 git clone https://github.com/datasets/finance-vix
 cd finance-vix
 ```
+
 ### Step 2
-In a terminal, export an env variable with the name of your dataset github repo.
-For example if deploying https://github.com/datasets/finance-vix, then export the name as:
+
+In a terminal, export an env variable with the name of your dataset github repo. For example if deploying https://github.com/datasets/finance-vix, then export the name as:
+
 ```bash
 export PORTAL_REPO_NAME=finance-vix
 ```
 
 ### Step 3
- In the dataset repository's root folder, create a file called `portal.sh` and paste the following content:
+
+In the dataset repository's root folder, create a file called `portal.sh` and paste the following content:
+
 ```bash
 #!/bin/bash
 git checkout -b gh-pages
@@ -122,37 +139,46 @@ git add $PWD'/_next' $PWD'/index.html' $PWD'/dataset' $PWD'/404.html' $PWD'/.noj
 git commit -m "Build new dataset page"
 git push origin gh-pages
 ```
+
 ### Step 4
- Run the bash script in a terminal with:
+
+Run the bash script in a terminal with:
+
 ```bash
 source portal.sh
 ```
+
 > Note: Use `source` instead of `bash` so that the script can work well with environment variables. 
 
 ### Step 5
+
 Go to your repository's github `pages` in setting and set the Branch to gh-pages and folder to root:
+
 <img src='./assets/sdnocommit.png' />
 
 ### Step 6
+
 Open your deployed site at `https://<your github username>/github.io/<dataset repo name>`
 
-____
-
 ## Deploy single dataset with portal commit
+
 Users who want access to the portal.js code used for generating the dataset page can use the script shown in the following section. 
 
 This script creates and commit the portal.js code to the root branch and also adds an automated script to deploy to gh-page. Follow the steps below to use this script. 
 
 ### Step 1
- Create a Github Personal Access Token (PAT). See steps [here](https://docs.github.com/en/github/authenticating-to-github/creating-a-personal-access-token)
+
+Create a Github Personal Access Token (PAT). See steps [here](https://docs.github.com/en/github/authenticating-to-github/creating-a-personal-access-token)
 
 ### Step 2
- In the dataset repository you want to deploy, create a github secret with the name `PORTAL_NEXT_TOKEN`. The value should be the PAT created in step 1. See steps on creating a secret [here](https://docs.github.com/en/actions/reference/encrypted-secrets)
+
+In the dataset repository you want to deploy, create a github secret with the name `PORTAL_NEXT_TOKEN`. The value should be the PAT created in step 1. See steps on creating a secret [here](https://docs.github.com/en/actions/reference/encrypted-secrets)
 
 > Note: Without the PAT and the secret configured, the automatic build will fail. 
 
 ### Step 3
- Clone/Pull the dataset repository you want deploy. For example:
+
+Clone/Pull the dataset repository you want deploy. For example:
 
 ```bash
 git clone https://github.com/datasets/finance-vix
@@ -160,15 +186,19 @@ cd finance-vix
 ```
 
 ### Step 4
- In your computer's terminal/command prompt, export an environment variable with the name of your dataset's github repo.
+
+In your computer's terminal/command prompt, export an environment variable with the name of your dataset's github repo.
 
 For example if you want to deploy the dataset at https://github.com/datasets/finance-vix, then export the name using the command:
+
 ```bash
 export PORTAL_REPO_NAME=finance-vix
 ```
 
 ### Step 5
- Create a file called `portal.sh` and paste the following content:
+
+Create a file called `portal.sh` and paste the following content:
+
 ```bash
 #!/bin/bash
 rm -rf portal
@@ -195,20 +225,24 @@ cd ..
 git add .
 git commit -m "Add dataset build feature"
 git push 
-
 ```
+
 ### Step 6
- Run the bash script with:
+
+Run the bash script with:
+
 ```bash
 source portal.sh
 ```
+
 > Note: Use `source` instead of `bash` so that the script can work well with environment variables. 
 
 ### Step 7
+
 Go to your repository's github `pages` in setting and set the Branch to gh-pages and folder to root:
+
 <img src='./assets/sdnocommit.png' />
 
 ### Step 8
-Open your deployed site at `https://<your github username>/github.io/<dataset repo name>`
 
-____
+Open your deployed site at `https://<your github username>/github.io/<dataset repo name>`
