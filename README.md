@@ -1,5 +1,4 @@
 # 🌀 Portal.JS
-[TOC]
 > The javascript framework for data portals
 
 🌀 `portal.js` is a framework for rapidly building rich data portal frontends using a modern frontend approach. `portal.js` can be used to present a single dataset or build a full-scale data catalog/portal.
@@ -58,7 +57,7 @@ Which outputs a page with the following content:
 
 Now, we are going to do some clean up and add a table component. In the `index.js` file, import a [Table]() component from portal as shown below:
 
-```javascript=
+```javascript
 import Head from 'next/head'
 import { Table } from 'portal' //import Table component
 import styles from '../styles/Home.module.css'
@@ -164,7 +163,7 @@ In the UI we group all components that can be used for building generic page sec
 #### [Nav Component](https://github.com/datopian/portal.js/blob/main/src/components/ui/Nav.js)
 
 To build a navigation bar, you can use the `Nav` component as demonstrated below:
-```javascript=
+```javascript
 import { Nav } from 'portal'
 
 export default function Home(){
@@ -194,7 +193,7 @@ Nav component accepts two properties:
 The `Recent` component is used to display a list of recent [datasets](#Dataset) in the home page. This useful if you want to display the most recent dataset users have interacted with in your home page. 
 To build a recent dataset section, you can use the `Recent` component as demonstrated below:
 
-```javascript=
+```javascript
 import { Recent } from 'portal'
 
 export default function Home() {
@@ -260,7 +259,7 @@ The dataset component groups together components that can be used for building a
 #### [KeyInfo Component](https://github.com/datopian/portal.js/blob/main/src/components/dataset/KeyInfo.js)
 
 The `KeyInfo` components displays key properties like the number of resources, size, format, licences of in a dataset in tabular form. See example in the `Key Info` section [here](https://portal-js.vercel.app/). To use it, you can import the `KeyInfo` component as demonstrated below:
-```javascript=
+```javascript
 import { KeyInfo } from 'portal'
 
 export default function Home() {
@@ -311,7 +310,7 @@ KeyInfo component accepts two properties:
 The `ResourceInfo` components displays key properties like the name, size, format, modification dates, as well as a download link in a resource object. See an example of a `ResourceInfo` component in the `Data Files` section [here](https://portal-js.vercel.app/).
 
 You can import and use the`ResourceInfo` component as demonstrated below:
-```javascript=
+```javascript
 import { ResourceInfo } from 'portal'
 
 export default function Home() {
@@ -355,7 +354,7 @@ The `ReadMe` component is used for displaying a compiled dataset Readme in a rea
 > Note: By compiled ReadMe, we mean ReadMe that has been converted to plain string using a package like [remark](https://www.npmjs.com/package/remark).
 
 You can import and use the`ReadMe` component as demonstrated below:
-```javascript=
+```javascript
 import { ReadMe } from 'portal'
 import remark from 'remark'
 import html from 'remark-html'
@@ -430,7 +429,7 @@ Each Chart type have their specific spec, as explained in this [doc](https://spe
 
 In the example below, we assume there's a compiled Plotly spec:
 
-```javascript=
+```javascript
 import { PlotlyChart } from 'portal'
 
 export default function Home({plotlySpec}) {
@@ -456,7 +455,7 @@ KeyInfo component accepts two properties:
 The `Table` component is used for displaying dataset resources as a tabular grid. See example in the `Data Preview` section [here](https://portal-js.vercel.app/). 
 To use a Table component, you have to pass an array of data and columns as demonstrated below:
 
-```javascript=
+```javascript
 import { Table } from 'portal' //import Table component
 
 export default function Home() {
@@ -512,7 +511,7 @@ In this section, we explain some of the terms and concepts used throughtout the 
 > Some of these concepts are part of officila specs, and when appropriate, we'll link to the sources where you can get more details. 
 ### Dataset
 A dataset extends the [Frictionless data package](https://specs.frictionlessdata.io/data-package/#metadata) to add an extra organization property. The organization property describes the organization the dataset belongs to, and it should have the following properties:
-```javascript=
+```javascript
 organization = {
  name: "some org name",
  title: "Some optional org title",
@@ -520,7 +519,7 @@ organization = {
 }
 ```
 An example of dataset with organization properties is given below:
-```javascript=
+```javascript
 datasets = [{
     organization: {
      name: "some org name",
