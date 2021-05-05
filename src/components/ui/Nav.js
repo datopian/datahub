@@ -54,6 +54,6 @@ const Nav = ({ logo, navMenu }) => {
 
 Nav.propTypes = {
   logo: PropTypes.string.isRequired,
-  navMenu: PropTypes.string
+  navMenu: PropTypes.array.isRequired
 }
 export default Nav;

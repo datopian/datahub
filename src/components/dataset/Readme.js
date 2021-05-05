@@ -6,13 +6,12 @@ import PropTypes from 'prop-types';
  * @param {string} readme parsed html of data package readme
  * @returns React Component
  */
-const ReadMe = ({ readmeHtml }) => {
+const ReadMe = ({ readme }) => {
     return (
         <>
             <section className="m-8" name="sample-table">
-                <h1 className="text-2xl font-bold mb-4">README</h1>
                 <div className="prose">
-                    <div dangerouslySetInnerHTML={{ __html: readmeHtml }} />
+                    <div dangerouslySetInnerHTML={{ __html: readme }} />
                 </div>
             </section>
         </>
