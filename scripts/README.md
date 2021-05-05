@@ -1,6 +1,6 @@
 # Publishing data on Github using Portal.js and Github pages
 
-Use case: you have some data in a Github repo and you'd like to publish it online using "portal" so that it is easy for others to view, explore and use it.
+Use case: you have some data in a Github repo and you'd like to publish it online using "portal" so that it is easy for others to view, explore and use.
 
 Here we show how you can use portal.js plus github actions to publish your dataset in minutes and keep it updated as you make changes.
 
