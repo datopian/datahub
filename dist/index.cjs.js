@@ -327,17 +327,15 @@ ResourcesInfo.propTypes = {
  */
 
 var ReadMe = function ReadMe(_ref) {
-  var readmeHtml = _ref.readmeHtml;
+  var readme = _ref.readme;
   return /*#__PURE__*/React__default['default'].createElement(React__default['default'].Fragment, null, /*#__PURE__*/React__default['default'].createElement("section", {
     className: "m-8",
     name: "sample-table"
-  }, /*#__PURE__*/React__default['default'].createElement("h1", {
-    className: "text-2xl font-bold mb-4"
-  }, "README"), /*#__PURE__*/React__default['default'].createElement("div", {
+  }, /*#__PURE__*/React__default['default'].createElement("div", {
     className: "prose"
   }, /*#__PURE__*/React__default['default'].createElement("div", {
     dangerouslySetInnerHTML: {
-      __html: readmeHtml
+      __html: readme
     }
   }))));
 };
@@ -561,19 +559,19 @@ var Nav = function Nav(_ref) {
 
 Nav.propTypes = {
   logo: PropTypes__default['default'].string.isRequired,
-  navMenu: PropTypes__default['default'].string
+  navMenu: PropTypes__default['default'].array.isRequired
 };
 
 /**
  * Displays a list of recent datasets
- * @param {object} props
- * datasets = {
+ * @param {array} props An array of datasets
+ * { datasets = [{
  *    organization: {name: <some name>, title: <some title> },
  *    title: <Data package title>
  *    name:  <Data package name>
  *    description: <description of data package>
- *    notes: <Notes associated with the data package>
- * } 
+ *   }]
+ * }
  * @returns React Component
  */
 
@@ -581,9 +579,7 @@ var Recent = function Recent(_ref) {
   var datasets = _ref.datasets;
   return /*#__PURE__*/React__default['default'].createElement("section", {
     className: "my-10 mx-4 lg:my-20"
-  }, /*#__PURE__*/React__default['default'].createElement("h1", {
-    className: "text-2xl font-thin mb-4"
-  }, "Recent Datasets"), /*#__PURE__*/React__default['default'].createElement("div", {
+  }, /*#__PURE__*/React__default['default'].createElement("div", {
     className: "recent flex flex-col lg:flex-row"
   }, datasets.map(function (dataset, index) {
     return /*#__PURE__*/React__default['default'].createElement("div", {
@@ -602,7 +598,7 @@ var Recent = function Recent(_ref) {
 };
 
 Recent.propTypes = {
-  datasets: PropTypes__default['default'].object.isRequired
+  datasets: PropTypes__default['default'].array.isRequired
 };
 
 exports.CustomLink = CustomLink;

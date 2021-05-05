@@ -4,21 +4,20 @@ import PropTypes from 'prop-types';
 
 /**
  * Displays a list of recent datasets
- * @param {object} props
- * datasets = {
+ * @param {array} props An array of datasets
+ * { datasets = [{
  *    organization: {name: <some name>, title: <some title> },
  *    title: <Data package title>
  *    name:  <Data package name>
  *    description: <description of data package>
- *    notes: <Notes associated with the data package>
- * } 
+ *   }]
+ * }
  * @returns React Component
  */
 const Recent = ({datasets}) => {
 
   return (
     <section className="my-10 mx-4 lg:my-20">
-      <h1 className="text-2xl font-thin mb-4">Recent Datasets</h1>
       <div className="recent flex flex-col lg:flex-row">
         {datasets.map((dataset, index) => (
           <div
@@ -30,8 +29,7 @@ const Recent = ({datasets}) => {
               {dataset.organization && dataset.organization.description}
             </p>
             <Link
-              href={`/@${dataset.organization ? dataset.organization.name : 'dataset'
-                }/${dataset.name}`}
+              href={`/@${dataset.organization ? dataset.organization.name : 'dataset'}/${dataset.name}`}
             >
               <a className="pt-3 flex justify-end text-orange-500">
                 View Dataset
@@ -45,7 +43,7 @@ const Recent = ({datasets}) => {
 };
 
 Recent.propTypes = {
-  datasets: PropTypes.object.isRequired
+  datasets: PropTypes.array.isRequired
 }
 
 export default Recent;
