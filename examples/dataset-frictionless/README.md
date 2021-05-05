@@ -1,24 +1,39 @@
-This examples if for presenting a single dataset. The dataset should be a [Frictionless dataset (data package)][fd] i.e. there should be a `datapackage.json`.
+This example creates a portal/showcase for a single dataset. The dataset should be a [Frictionless dataset (data package)][fd] i.e. there should be a `datapackage.json`.
 
 [fd]: https://frictionlessdata.io/data-packages/
 
-## Install
+## How to use
 
-Git clone this directory then:
+```bash
+npx create next-app -e https://github.com/datopian/portal.js/tree/main/examples/dataset-frictionless
+# choose a name for your portal when prompted e.g. your-portal or go with default my-app
 
+# then run it
+cd your-portal
+yarn #install packages
+yarn dev #start app in dev mode
 ```
-yarn install
-```
 
-## Usage
+You should see the demo portal running with the example dataset provided:
 
-In this directory:
+<img src="./assets/demo.gif" />
+
+### Use your own dataset
+
+You can try it out with other Frictionless datasets.
+
+In the directory of your portal do:
 
 ```bash
 export PORTAL_DATASET_PATH=/path/to/my/dataset
+```
+
+Then restart the dev server:
+
+```
 yarn dev
 ```
 
-And you will get a nice dataset page at `http://localhost:3000`
+Check the portal page and it should have updated e.g. like:
 
 ![](https://i.imgur.com/KSEtNF1.png)

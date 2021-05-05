@@ -30,34 +30,6 @@ data portals
   - Static Site Generation (SSG) (good for small sites) => ultra-simple deployment, great performance and lighthouse scores etc
 - 📋 Typescript support
 
-## Getting Started
-
-### Setup
-
-Install a recent version of Node. You'll need Node 10.13 or later.
-
-Install `yarn`.
-
-### Try out the demo portal
-
-Create a demo portal (for a single dataset):
-
-```bash
-npx create next-app -e https://github.com/datopian/portal.js/tree/main/examples/dataset-frictionless
-# choose a name for your portal when prompted e.g. your-portal or go with default my-app
-
-# then run it
-cd your-portal
-yarn #install packages
-yarn dev #start app in dev mode
-```
-
-
-You should see the demo portal running.
-<img src="./assets/demo.gif" />
-
-You can try it out with other Frictionless datasets.
-
 ### Check out more of the examples
 
 The [`examples` directory](./examples) is regularly updated with different portal examples. 
