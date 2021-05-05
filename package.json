@@ -16,6 +16,7 @@
     "@material-ui/core": "^4.11.3",
     "@material-ui/data-grid": "^4.0.0-alpha.20",
     "filesize": "^6.3.0",
+    "html-react-parser": "^1.2.6",
     "next": "latest",
     "plotly.js-basic-dist": "^1.58.4",
     "postcss": "^8.1.10",
