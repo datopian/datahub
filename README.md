@@ -1,6 +1,6 @@
-# 🌀 Portal.JS
-> The javascript framework for data portals
-
+<h1 align="center">🌀 Portal.JS
+> The JavaScript framework for data portals
+</h1>
 🌀 `portal.js` is a framework for rapidly building rich data portal frontends using a modern frontend approach. `portal.js` can be used to present a single dataset or build a full-scale data catalog/portal.
 
 `portal.js` is built in Javascript and React on top of the popular [Next.js](https://nextjs.com/) framework. `portal` assumes a "decoupled" approach where the frontend is a separate service from the backend and interacts with backend(s) via an API. It can be used with any backend and has out of the box support for [CKAN](https://ckan.org/).
@@ -163,6 +163,7 @@ In the UI we group all components that can be used for building generic page sec
 #### [Nav Component](https://github.com/datopian/portal.js/blob/main/src/components/ui/Nav.js)
 
 To build a navigation bar, you can use the `Nav` component as demonstrated below:
+
 ```javascript
 import { Nav } from 'portal'
 
@@ -187,10 +188,10 @@ Nav component accepts two properties:
 * **logo**: A string to an image path. Can be relative or absolute.
 * **navMenu**: An array of objects with title and path. E.g : [{ title: 'Blog', path: '/blog' },{ title: 'Search', path: '/search' }]
 
-
 #### [Recent Component](https://github.com/datopian/portal.js/blob/main/src/components/ui/Recent.js)
 
 The `Recent` component is used to display a list of recent [datasets](#Dataset) in the home page. This useful if you want to display the most recent dataset users have interacted with in your home page. 
+
 To build a recent dataset section, you can use the `Recent` component as demonstrated below:
 
 ```javascript
@@ -258,7 +259,10 @@ The dataset component groups together components that can be used for building a
 
 #### [KeyInfo Component](https://github.com/datopian/portal.js/blob/main/src/components/dataset/KeyInfo.js)
 
-The `KeyInfo` components displays key properties like the number of resources, size, format, licences of in a dataset in tabular form. See example in the `Key Info` section [here](https://portal-js.vercel.app/). To use it, you can import the `KeyInfo` component as demonstrated below:
+The `KeyInfo` components displays key properties like the number of resources, size, format, licences of in a dataset in tabular form. See example in the `Key Info` section [here](https://portal-js.vercel.app/). 
+
+To use it, you can import the `KeyInfo` component as demonstrated below:
+
 ```javascript
 import { KeyInfo } from 'portal'
 
@@ -310,6 +314,7 @@ KeyInfo component accepts two properties:
 The `ResourceInfo` components displays key properties like the name, size, format, modification dates, as well as a download link in a resource object. See an example of a `ResourceInfo` component in the `Data Files` section [here](https://portal-js.vercel.app/).
 
 You can import and use the`ResourceInfo` component as demonstrated below:
+
 ```javascript
 import { ResourceInfo } from 'portal'
 
@@ -354,6 +359,7 @@ The `ReadMe` component is used for displaying a compiled dataset Readme in a rea
 > Note: By compiled ReadMe, we mean ReadMe that has been converted to plain string using a package like [remark](https://www.npmjs.com/package/remark).
 
 You can import and use the`ReadMe` component as demonstrated below:
+
 ```javascript
 import { ReadMe } from 'portal'
 import remark from 'remark'
@@ -424,6 +430,7 @@ View components is a set of components that can be used for displaying dataset v
 #### [Chart Component](https://github.com/datopian/portal.js/blob/main/src/components/views/Chart.js)
 
 The `Chart` components exposes different chart components like Plotly Chart, Vega charts, which can be used for showing graphs. See example in the `Graph` section [here](https://portal-js.vercel.app/). 
+
 To use a chart component, you need to compile and pass a view spec as props to the chart component. 
 Each Chart type have their specific spec, as explained in this [doc](https://specs.frictionlessdata.io/views/#graph-spec).
 
@@ -453,6 +460,7 @@ KeyInfo component accepts two properties:
 #### [Table Component](https://github.com/datopian/portal.js/blob/main/examples/dataset-frictionless/components/Table.js)
 
 The `Table` component is used for displaying dataset resources as a tabular grid. See example in the `Data Preview` section [here](https://portal-js.vercel.app/). 
+
 To use a Table component, you have to pass an array of data and columns as demonstrated below:
 
 ```javascript
@@ -508,9 +516,12 @@ ___
 
 ## Concepts and Terms
 In this section, we explain some of the terms and concepts used throughtout the portal.js documentation. 
+
 > Some of these concepts are part of officila specs, and when appropriate, we'll link to the sources where you can get more details. 
+
 ### Dataset
 A dataset extends the [Frictionless data package](https://specs.frictionlessdata.io/data-package/#metadata) to add an extra organization property. The organization property describes the organization the dataset belongs to, and it should have the following properties:
+
 ```javascript
 organization = {
  name: "some org name",
