@@ -360,27 +360,27 @@ Org.propTypes = {
 /**
  * Displays a blog post page
  * @param {object} props 
- * {
+ * post = {
  *  title: <The title of the blog post>
- *  content: <The body of the blog post>
- *  modified: <The utc date when the post was last modified.
- *  featured_image: <Url/relative url to post cover image
+ *  content: <The body of the blog post. Can be plain text or html>
+ *  createdAt: <The utc date when the post was last modified>.
+ *  featuredImage: <Url/relative url to post cover image>
  * }
  * @returns 
  */
 
 var Post = function Post(_ref) {
-  var page = _ref.page;
-  var title = page.title,
-      content = page.content,
-      modified = page.modified,
-      featured_image = page.featured_image;
+  var post = _ref.post;
+  var title = post.title,
+      content = post.content,
+      createdAt = post.createdAt,
+      featuredImage = post.featuredImage;
   return /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement("h1", {
     className: "text-3xl font-semibold text-primary my-6 inline-block"
   }, title), /*#__PURE__*/React.createElement("p", {
     className: "mb-6"
-  }, "Edited: ", modified), /*#__PURE__*/React.createElement("img", {
-    src: featured_image,
+  }, "Posted: ", createdAt), /*#__PURE__*/React.createElement("img", {
+    src: featuredImage,
     className: "mb-6",
     alt: "featured_img"
   }), /*#__PURE__*/React.createElement("div", null, parse(content)));
@@ -390,8 +390,8 @@ Post.propTypes = {
   page: PropTypes.shape({
     title: PropTypes.string.isRequired,
     content: PropTypes.string.isRequired,
-    modified: PropTypes.string,
-    featured_image: PropTypes.string
+    createdAt: PropTypes.number,
+    featuredImage: PropTypes.string
   })
 };
 
@@ -409,9 +409,7 @@ Post.propTypes = {
 
 var PostList = function PostList(_ref) {
   var posts = _ref.posts;
-  return /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement("h1", {
-    className: "text-3xl font-semibold text-primary my-6 inline-block"
-  }, posts.length, " posts found"), posts.map(function (post, index) {
+  return /*#__PURE__*/React.createElement(React.Fragment, null, posts.map(function (post, index) {
     return /*#__PURE__*/React.createElement("div", {
       key: index
     }, /*#__PURE__*/React.createElement("a", {
@@ -568,4 +566,110 @@ Recent.propTypes = {
   datasets: PropTypes.array.isRequired
 };
 
-export { CustomLink, DataExplorer, ErrorMessage as Error, KeyInfo, Nav, Org, PlotlyChart, Post, PostList, ReadMe, Recent, ResourcesInfo as ResourceInfo, Table };
+/**
+ * Search component form that can be customized with change and submit handlers
+ * @param {object} props
+ * {
+ *  handleChange: A form input change event handler. This function is executed when the
+ *                search input or order by input changes.
+ *  handleSubmit: A form submit event handler. This function is executed when the
+ *                search form is submitted.
+ * } 
+ * @returns 
+ */
+
+var Form = function Form(_ref) {
+  var handleSubmit = _ref.handleSubmit;
+
+  var _useState = useState(""),
+      _useState2 = _slicedToArray(_useState, 2),
+      searchQuery = _useState2[0],
+      setSearchQuery = _useState2[1];
+
+  return /*#__PURE__*/React.createElement("form", {
+    onSubmit: function onSubmit(e) {
+      return e.preventDefault();
+    },
+    className: "items-center"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "flex"
+  }, /*#__PURE__*/React.createElement("input", {
+    type: "text",
+    name: "search#q",
+    value: searchQuery,
+    onChange: function onChange(e) {
+      setSearchQuery(e.target.value);
+    },
+    placeholder: "Search",
+    "aria-label": "Search",
+    className: "bg-white focus:outline-none focus:shadow-outline border border-gray-300 w-1/2 rounded-lg py-2 px-4 block appearance-none leading-normal"
+  }), /*#__PURE__*/React.createElement("button", {
+    onClick: function onClick() {
+      return handleSubmit(searchQuery);
+    },
+    type: "button",
+    className: "inline-block text-sm px-4 py-3 mx-3 leading-none border rounded text-white bg-black border-black lg:mt-0"
+  }, "Search")));
+};
+
+Form.propTypes = {
+  handleSubmit: PropTypes.func.isRequired
+};
+
+/**
+ * Single item from a search result showing info about a dataset.
+ * @param {object} props data package with the following format:
+ * {
+ *  organization: {name: <some name>, title: <some title> },
+ *  title: <Data package title>
+ *  name:  <Data package name>
+ *  description: <description of data package>
+ *  notes: <Notes associated with the data package>
+ * }
+ * @returns React Component
+ */
+
+var Item = function Item(_ref) {
+  var dataset = _ref.dataset;
+  return /*#__PURE__*/React.createElement("div", {
+    className: "mb-6"
+  }, /*#__PURE__*/React.createElement("h3", {
+    className: "text-xl font-semibold"
+  }, /*#__PURE__*/React.createElement(Link, {
+    href: "/@".concat(dataset.organization ? dataset.organization.name : 'dataset', "/").concat(dataset.name)
+  }, /*#__PURE__*/React.createElement("a", {
+    className: "text-primary"
+  }, dataset.title || dataset.name))), /*#__PURE__*/React.createElement(Link, {
+    href: "/@".concat(dataset.organization ? dataset.organization.name : 'dataset')
+  }, /*#__PURE__*/React.createElement("a", {
+    className: "text-gray-500 block mt-1"
+  }, dataset.organization ? dataset.organization.title : 'dataset')), /*#__PURE__*/React.createElement("div", {
+    className: "leading-relaxed mt-2"
+  }, dataset.description || dataset.notes));
+};
+
+Item.propTypes = {
+  dataset: PropTypes.object.isRequired
+};
+
+/**
+ * Displays the total search result
+ * @param {object} props 
+ * {
+ *  count: The total number of search results
+ * } 
+ * @returns React Component
+ */
+
+var Total = function Total(_ref) {
+  var count = _ref.count;
+  return /*#__PURE__*/React.createElement("h1", {
+    className: "text-3xl font-semibold text-primary my-6 inline-block"
+  }, count, " results found");
+};
+
+Total.propTypes = {
+  count: PropTypes.number.isRequired
+};
+
+export { CustomLink, DataExplorer, ErrorMessage as Error, Form, Item, Total as ItemTotal, KeyInfo, Nav, Org, PlotlyChart, Post, PostList, ReadMe, Recent, ResourcesInfo as ResourceInfo, Table };

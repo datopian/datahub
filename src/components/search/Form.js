@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import PropTypes from 'prop-types';
 
 /**
@@ -12,50 +12,33 @@ import PropTypes from 'prop-types';
  * } 
  * @returns 
  */
-const Form = ({ handleChange, handleSubmit }) => {
-
+const Form = ({ handleSubmit }) => {
+  const [searchQuery, setSearchQuery] = useState("")
   return (
-    <form onSubmit={handleSubmit} className="items-center">
+    <form onSubmit={(e) => e.preventDefault()} className="items-center">
       <div className="flex">
         <input
           type="text"
-          name="q"
-          value={q}
-          onChange={handleChange}
+          name="search#q"
+          value={searchQuery}
+          onChange={(e) => { setSearchQuery(e.target.value) }}
           placeholder="Search"
           aria-label="Search"
           className="bg-white focus:outline-none focus:shadow-outline border border-gray-300 w-1/2 rounded-lg py-2 px-4 block appearance-none leading-normal"
         />
         <button
-          onClick={handleSubmit}
+          onClick={() => handleSubmit(searchQuery)}
+          type="button"
           className="inline-block text-sm px-4 py-3 mx-3 leading-none border rounded text-white bg-black border-black lg:mt-0"
         >
           Search
         </button>
-      </div>
-      <div className="inline-block my-6 float-right">
-        <label htmlFor="field-order-by">Order by:</label>
-        <select
-          className="bg-white"
-          id="field-order-by"
-          name="sort"
-          onChange={handleChange}
-          onBlur={handleChange}
-          value={sort}
-        >
-          <option value="score:desc">Relevance</option>
-          <option value="title_string:asc">Name Ascending</option>
-          <option value="title_string:desc">Name Descending</option>
-          <option value="metadata_modified:desc">Last Modified</option>
-          <option value="views_recent:desc">Popular</option>
-        </select>
       </div>
     </form>
   );
 };
 
 Form.propTypes = {
-  handleChange: PropTypes.func.isRequired,
   handleSubmit: PropTypes.func.isRequired
 }
 
