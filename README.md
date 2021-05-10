@@ -1,6 +1,31 @@
 <h1 align="center">🌀 Portal.JS
 > The JavaScript framework for data portals
 </h1>
+
+* [What is Portal.JS ?](#What-is-Portal.JS)
+    * [Features](#Features)
+      * [For developers](#For-developers)
+* [Installation and setup](#Installation-and-setup)
+* [Getting Started](#Getting-Started)
+* [Tutorial](#Tutorial)
+    * [Build a single Frictionless dataset portal](#Build-a-single-Frictionless-dataset-portal)
+    * [Build a CKAN powered dataset portal](#Build-a-CKAN-powered-dataset-portal)
+* [Architecture / Reference](#Architecture--Reference)
+    * [Component List](#Component-List)
+        * [UI Components](#UI-Components)
+        * [Dataset Components](#Dataset-Components)
+        * [View Components](#View-Components)
+        * [Search Components](#Search-Components)
+        * [Blog Components](#Blog-Components)
+        * [Misc Components](#Misc-Components)
+    * [Concepts and Terms](#Concepts-and-Terms)
+        * [Dataset](#Dataset)
+        * [Resource](#Resource)
+        * [View Spec](#view-spec)
+* [Appendix](#Appendix)
+    * [What happened to Recline?](#What-happened-to-Recline?)
+
+# What is Portal.JS
 🌀 `portal.js` is a framework for rapidly building rich data portal frontends using a modern frontend approach. `portal.js` can be used to present a single dataset or build a full-scale data catalog/portal.
 
 `portal.js` is built in Javascript and React on top of the popular [Next.js](https://nextjs.com/) framework. `portal` assumes a "decoupled" approach where the frontend is a separate service from the backend and interacts with backend(s) via an API. It can be used with any backend and has out of the box support for [CKAN](https://ckan.org/).
@@ -111,8 +136,9 @@ ___
 # Getting Started
 
 If you're new to Portal.js we recommend that you start with the step-by-step guide below. You can also check out the following examples of projects built with portal.js.
-* [A portal for a single Frictionless dataset](./examples/dataset-frictionless)
-* [A portal with a CKAN backend](./examples/catalog)
+
+* [A portal for a single Frictionless dataset](#Build-a-single-Frictionless-dataset-portal)
+* [A portal with a CKAN backend](#Build-a-CKAN-powered-dataset-portal)
 
 > The [`examples` directory](https://github.com/datopian/portal.js/tree/main/examples) is regularly updated with different portal examples. 
 
@@ -129,6 +155,7 @@ In this tutorial, you’ll learn Portal.js basics by creating a very simple port
 Let’s get started!
 
 > This tutorial assumes basic knowledge of JavaScript, React and Nextjs. If you are not familiar with React or Nextjs, it is advisable to learn them first. We provide some links below to get you started:
+
 * [Learn NextJS](https://nextjs.org/docs/getting-started)
 * [Getting started with React](https://reactjs.org/docs/getting-started.html#learn-react)
 
@@ -188,10 +215,10 @@ Nav component accepts two properties:
 * **logo**: A string to an image path. Can be relative or absolute.
 * **navMenu**: An array of objects with title and path. E.g : [{ title: 'Blog', path: '/blog' },{ title: 'Search', path: '/search' }]
 
+
 #### [Recent Component](https://github.com/datopian/portal.js/blob/main/src/components/ui/Recent.js)
 
 The `Recent` component is used to display a list of recent [datasets](#Dataset) in the home page. This useful if you want to display the most recent dataset users have interacted with in your home page. 
-
 To build a recent dataset section, you can use the `Recent` component as demonstrated below:
 
 ```javascript
@@ -259,10 +286,7 @@ The dataset component groups together components that can be used for building a
 
 #### [KeyInfo Component](https://github.com/datopian/portal.js/blob/main/src/components/dataset/KeyInfo.js)
 
-The `KeyInfo` components displays key properties like the number of resources, size, format, licences of in a dataset in tabular form. See example in the `Key Info` section [here](https://portal-js.vercel.app/). 
-
-To use it, you can import the `KeyInfo` component as demonstrated below:
-
+The `KeyInfo` components displays key properties like the number of resources, size, format, licences of in a dataset in tabular form. See example in the `Key Info` section [here](https://portal-js.vercel.app/). To use it, you can import the `KeyInfo` component as demonstrated below:
 ```javascript
 import { KeyInfo } from 'portal'
 
@@ -314,7 +338,6 @@ KeyInfo component accepts two properties:
 The `ResourceInfo` components displays key properties like the name, size, format, modification dates, as well as a download link in a resource object. See an example of a `ResourceInfo` component in the `Data Files` section [here](https://portal-js.vercel.app/).
 
 You can import and use the`ResourceInfo` component as demonstrated below:
-
 ```javascript
 import { ResourceInfo } from 'portal'
 
@@ -359,7 +382,6 @@ The `ReadMe` component is used for displaying a compiled dataset Readme in a rea
 > Note: By compiled ReadMe, we mean ReadMe that has been converted to plain string using a package like [remark](https://www.npmjs.com/package/remark).
 
 You can import and use the`ReadMe` component as demonstrated below:
-
 ```javascript
 import { ReadMe } from 'portal'
 import remark from 'remark'
@@ -430,7 +452,6 @@ View components is a set of components that can be used for displaying dataset v
 #### [Chart Component](https://github.com/datopian/portal.js/blob/main/src/components/views/Chart.js)
 
 The `Chart` components exposes different chart components like Plotly Chart, Vega charts, which can be used for showing graphs. See example in the `Graph` section [here](https://portal-js.vercel.app/). 
-
 To use a chart component, you need to compile and pass a view spec as props to the chart component. 
 Each Chart type have their specific spec, as explained in this [doc](https://specs.frictionlessdata.io/views/#graph-spec).
 
@@ -460,7 +481,6 @@ KeyInfo component accepts two properties:
 #### [Table Component](https://github.com/datopian/portal.js/blob/main/examples/dataset-frictionless/components/Table.js)
 
 The `Table` component is used for displaying dataset resources as a tabular grid. See example in the `Data Preview` section [here](https://portal-js.vercel.app/). 
-
 To use a Table component, you have to pass an array of data and columns as demonstrated below:
 
 ```javascript
@@ -503,25 +523,249 @@ Table component accepts two properties:
 
 ### [Search Components](https://github.com/datopian/portal.js/tree/main/src/components/search)
 
-TODO
+Search components groups together components that can be used for creating a search interface. This includes search forms, search item as well as search result list. 
+
+#### [Form Component](https://github.com/datopian/portal.js/blob/main/src/components/search/Form.js)
+
+The search`Form` component is a simple search input and submit button. See example of a search form [here](https://catalog-portal-js.vercel.app/search). 
+
+The search `form` requires a submit handler (`handleSubmit`). This handler function receives the search term, and handles actual search. 
+
+In the example below, we demonstrate how to use the `Form` component.
+
+```javascript
+import { Form } from 'portal'
+
+export default function Home() {
+
+  const handleSearchSubmit = (searchQuery) => {
+    // Write your custom code to perform search in db
+    console.log(searchQuery);
+  }
+
+  return (
+    <Form
+      handleSubmit={handleSearchSubmit} />
+  )
+}
+```
+
+#### Form Component Prop Types
+
+The `Form` component accepts a single property:
+* **handleSubmit**: A function that receives the search text, and can be customize to perform the actual search. 
+
+#### [Item Component](https://github.com/datopian/portal.js/blob/main/src/components/search/Item.js)
+
+The search`Item` component can be used to display a single search result. 
+
+In the example below, we demonstrate how to use the `Item` component.
+
+```javascript
+import { Item } from 'portal'
+
+export default function Home() {
+  const datapackage = {
+    "name": "finance-vix",
+    "title": "VIX - CBOE Volatility Index",
+    "homepage": "http://www.cboe.com/micro/VIX/",
+    "version": "0.1.0",
+    "description": "This is a test organization description",
+    "resources": [
+      {
+        "name": "vix-daily",
+        "path": "vix-daily.csv",
+        "format": "csv",
+        "size": 20982,
+        "mediatype": "text/csv",
+      }
+    ]
+  }
+
+  return (
+    <Item dataset={datapackage} />
+  )
+}
+```
+
+#### Item Component Prop Types
+
+The `Item` component accepts a single property:
+* **dataset**: A [Frictionless data package descriptor](https://specs.frictionlessdata.io/data-package/#descriptor)
+
+
+#### [ItemTotal Component](https://github.com/datopian/portal.js/blob/main/src/components/search/Item.js)
+
+The search`ItemTotal` is a simple component for displaying the total search result 
+
+In the example below, we demonstrate how to use the `ItemTotal` component.
+
+```javascript
+import { ItemTotal } from 'portal'
+
+export default function Home() {
+  //do some custom search to get results
+  const search = (text) => {
+    return [{ name: "data1" }, { name: "data2" }]
+  }
+  //get the total result count
+  const searchTotal = search("some text").length
+
+  return (
+    <ItemTotal count={searchTotal} />
+  )
+}
+```
+
+#### ItemTotal Component Prop Types
+
+The `ItemTotal` component accepts a single property:
+* **count**: An integer of the total number of results. 
+
 
 ### [Blog Components](https://github.com/datopian/portal.js/tree/main/src/components/blog)
 
-TODO
+These are group of components for building a portal blog. See example of portal blog [here](https://catalog-portal-js.vercel.app/blog)
+
+#### [PostList Components](https://github.com/datopian/portal.js/tree/main/src/components/misc)
+
+The `PostList` component is used to display a list of blog posts with the title and a short excerpts from the content.
+
+In the example below, we demonstrate how to use the `PostList` component.
+
+```javascript
+import { PostList } from 'portal'
+
+export default function Home() {
+
+  const posts = [
+    { title: "Blog post 1", excerpt: "This is the first blog excerpts in this list." },
+    { title: "Blog post 2", excerpt: "This is the second blog excerpts in this list." },
+    { title: "Blog post 3", excerpt: "This is the third blog excerpts in this list." },
+  ]
+  return (
+    <PostList posts={posts} />
+  )
+}
+```
+
+#### PostList Component Prop Types
+
+The `PostList` component accepts a single property:
+* **posts**: An array of post list objects with the following properties:
+    ```javascript
+    [
+        { 
+          title: "The title of the blog post",
+          excerpt: "A short excerpt from the post content",
+        },
+    ]
+    ```
+
+#### [Post Components](https://github.com/datopian/portal.js/tree/main/src/components/misc)
+
+The `Post` component is used to display a blog post. See an example of a blog post [here](https://catalog-portal-js.vercel.app/blog/nyt-pa-platformen-opdateringsfrekvens-og-andres-data)
+
+In the example below, we demonstrate how to use the `Post` component.
+
+```javascript
+import { Post } from 'portal'
+import * as dayjs from 'dayjs' //For converting UTC time to relative format
+import relativeTime from 'dayjs/plugin/relativeTime'
+
+dayjs.extend(relativeTime)
+
+export default function Home() {
+
+  const post = {
+    title: "This is a sample blog post",
+    content: `<h1>A simple header</h1>
+    The PostList component is used to display a list of blog posts
+              with the title and a short excerpts from the content.
+              In the example below, we demonstrate how to use the PostList component.`,
+    createdAt: dayjs().to(dayjs(1620649596902)),
+    featuredImage: "https://pixabay.com/get/ge9a766d1f7b5fe0eccbf0f439501a2cf2b191997290e7ab15e6a402574acc2fdba48a82d278dca3547030e0202b7906d_640.jpg"
+  }
+
+  return (
+    <Post post={post} />
+  )
+}
+```
+
+#### Post Component Prop Types
+
+The `Post` component accepts a single property:
+* **post**: An object with the following properties:
+```javascript
+  {
+    title: <The title of the blog post>
+    content: <The body of the blog post. Can be plain text or html>
+    createdAt: <The utc date when the post was last modified>
+    featuredImage: < Url/relative url to post cover image>
+  }
+```
+
 
 ### [Misc Components](https://github.com/datopian/portal.js/tree/main/src/components/misc)
 
-TODO
+These are group of miscellaneous/extra components for extending your portal. They include components like Errors, custom links, etc.
+
+#### [Error Component](https://github.com/datopian/portal.js/blob/main/src/components/misc/Error.js)
+
+The `Error` component is used to display a custom error message.
+
+In the example below, we demonstrate how to use the `Error` component.
+
+```javascript
+import { Error } from 'portal'
+
+export default function Home() {
+
+  return (
+    <Error message="An error occured when loading the file!" />
+  )
+}
+```
+
+#### Error Component Prop Types
+
+The `Error` component accepts a single property:
+* **message**: A string with the error message to display. 
+    
+    
+#### [Custom Component](https://github.com/datopian/portal.js/blob/main/src/components/misc/Error.js)
+
+The `CustomLink` component is used to create a link with a consistent style to other portal components. 
+
+In the example below, we demonstrate how to use the `CustomLink` component.
+
+```javascript
+import { CustomLink } from 'portal'
+
+export default function Home() {
+
+  return (
+    <CustomLink url="/blog" title="Goto Blog" />
+  )
+}
+```
+
+#### CustomLink Component Prop Types
+
+The `CustomLink` component accepts the following properties:
+
+* **url**: A string. The relative or absolute url of the link. 
+* **title**: A string. The title of the link
+
+
 ___
 
 ## Concepts and Terms
 In this section, we explain some of the terms and concepts used throughtout the portal.js documentation. 
-
 > Some of these concepts are part of officila specs, and when appropriate, we'll link to the sources where you can get more details. 
-
 ### Dataset
 A dataset extends the [Frictionless data package](https://specs.frictionlessdata.io/data-package/#metadata) to add an extra organization property. The organization property describes the organization the dataset belongs to, and it should have the following properties:
-
 ```javascript
 organization = {
  name: "some org name",
@@ -555,6 +799,7 @@ TODO
 ___
 
 # Appendix
+
 ## What happened to Recline?
 
 Portal.JS used to be Recline(JS). If you are looking for the old Recline codebase it still exists:  see the [`recline` branch](https://github.com/datopian/portal.js/tree/recline). If you want context for the rename see [this issue](https://github.com/datopian/portal.js/issues/520).
