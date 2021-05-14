@@ -24,7 +24,7 @@
     "frictionless.js": "^0.13.4",
     "next": "latest",
     "plotly.js-basic-dist": "^1.58.4",
-    "postcss": "^8.1.10",
+    "postcss": "^8.2.10",
     "react": "^17.0.1",
     "react-dom": "^17.0.1",
     "react-plotly.js": "^2.5.1",
