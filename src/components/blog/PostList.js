@@ -16,9 +16,6 @@ import parse from 'html-react-parser';
 const PostList = ({ posts }) => {
   return (
     <>
-      <h1 className="text-3xl font-semibold text-primary my-6 inline-block">
-        {posts.length} posts found
-      </h1>
       {posts.map((post, index) => (
         <div key={index}>
           <a
