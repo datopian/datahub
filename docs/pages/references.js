@@ -20,8 +20,8 @@ export default function Docs({ mdFile }) {
                     <div dangerouslySetInnerHTML={{ __html: mdFile }} />
                 </div>
                 <br />
-                <Link href="/installation">
-                    <button >Next Page</button>
+                <Link href="/">
+                    <button >Back Home</button>
                 </Link>
             </div>
 
@@ -33,7 +33,7 @@ export default function Docs({ mdFile }) {
 
 
 export async function getStaticProps() {
-    const mdFilePath = path.join(process.cwd(), "markdowns/api-doc/introduction.md")
+    const mdFilePath = path.join(process.cwd(), "markdowns/api-doc/references.md")
     const mdFile = await formatMD(mdFilePath)
     return {
         props: {
