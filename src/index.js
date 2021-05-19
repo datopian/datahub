@@ -21,6 +21,11 @@ import CustomLink from './components/misc/CustomLink'
 import Nav from './components/ui/Nav'
 import Recent from './components/ui/Recent'
 
+//UI components
+import Form from './components/search/Form'
+import Item from './components/search/Item'
+import ItemTotal from './components/search/Total'
+
 export {
     Table,
     PlotlyChart,
@@ -34,5 +39,8 @@ export {
     PostList,
     Org,
     Error,
-    CustomLink
+    CustomLink,
+    Form,
+    Item,
+    ItemTotal
 }
