@@ -4,63 +4,59 @@ export default function Home() {
   return (
     <div className="flex flex-col items-center justify-center min-h-screen py-2">
       <Head>
-        <title>Create Next App</title>
+        <title>Create a Portal App</title>
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
       <main className="flex flex-col items-center justify-center w-full flex-1 px-20 text-center">
         <h1 className="text-6xl font-bold">
-          Welcome to{' '}
-          <a className="text-blue-600" href="https://nextjs.org">
-            Next.js!
+          <a href="https://portaljs.com/">
+            <img src="/portaljs-logo.svg" alt="PortalJS Logo" className="h-28" />
           </a>
         </h1>
 
-        <p className="mt-3 text-2xl">
-          Get started by editing{' '}
-          <code className="p-3 font-mono text-lg bg-gray-100 rounded-md">
-            pages/index.js
-          </code>
-        </p>
+        <h2 className="mt-6 text-4xl font-normal leading-snug">
+          Yay, the portal is open 🌀<br />Let's go explore some data ...
+        </h2>
 
         <div className="flex flex-wrap items-center justify-around max-w-4xl mt-6 sm:w-full">
           <a
-            href="https://nextjs.org/docs"
+            href="https://portaljs.org/docs"
             className="p-6 mt-6 text-left border w-96 rounded-xl hover:text-blue-600 focus:text-blue-600"
           >
-            <h3 className="text-2xl font-bold">Documentation &rarr;</h3>
+            <h3 className="text-2xl font-semibold">▸ Documentation</h3>
             <p className="mt-4 text-xl">
-              Find in-depth information about Next.js features and API.
+              Find in-depth information about Portal.js features and API.
             </p>
           </a>
 
           <a
-            href="https://nextjs.org/learn"
+            href="https://portaljs.com/learn/"
             className="p-6 mt-6 text-left border w-96 rounded-xl hover:text-blue-600 focus:text-blue-600"
           >
-            <h3 className="text-2xl font-bold">Learn &rarr;</h3>
+            <h3 className="text-2xl font-semibold">▸ Learn</h3>
             <p className="mt-4 text-xl">
-              Learn about Next.js in an interactive course with quizzes!
+              Learn about Portal.js in an interactive course.
             </p>
           </a>
 
           <a
-            href="https://github.com/vercel/next.js/tree/master/examples"
+            href="https://github.com/datopian/portal.js/tree/main/examples"
             className="p-6 mt-6 text-left border w-96 rounded-xl hover:text-blue-600 focus:text-blue-600"
           >
-            <h3 className="text-2xl font-bold">Examples &rarr;</h3>
+            <h3 className="text-2xl font-semibold">▸ Examples</h3>
             <p className="mt-4 text-xl">
-              Discover and deploy boilerplate example Next.js projects.
+              Discover and deploy boilerplate example Portal.js projects.
             </p>
           </a>
 
           <a
-            href="https://vercel.com/import?filter=next.js&utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
+            href="https://portaljs.com/deploy/"
             className="p-6 mt-6 text-left border w-96 rounded-xl hover:text-blue-600 focus:text-blue-600"
           >
-            <h3 className="text-2xl font-bold">Deploy &rarr;</h3>
+            <h3 className="text-2xl font-semibold">▸ Deploy</h3>
             <p className="mt-4 text-xl">
-              Instantly deploy your Next.js site to a public URL with Vercel.
+              Learn how to deploy your Portal.js site with DataHub or Github pages.
             </p>
           </a>
         </div>
@@ -74,7 +70,7 @@ export default function Home() {
           rel="noopener noreferrer"
         >
           Powered by{' '}
-          <img src="/vercel.svg" alt="Vercel Logo" className="h-4 ml-2" />
+          <img src="https://www.datopian.com/wp-content/uploads/2020/09/datopian-bash-png.png" alt="Datopian Logo" className="h-6 ml-2" />
         </a>
       </footer>
     </div>
