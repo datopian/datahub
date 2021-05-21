@@ -796,7 +796,19 @@ TODO
 
 ### view spec
 
-___
+---
+
+## Deploying portal build to github pages
+
+* [Deploying single frictionless dataset to Github](./scripts/README.md)
+
+## Showcases
+
+### Single Dataset with Default Theme
+
+![Single Dataset Example](./examples/dataset-frictionless/assets/demo.gif)
+
+---
 
 # Appendix
 
