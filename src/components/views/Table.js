@@ -8,9 +8,14 @@ import PropTypes from 'prop-types';
  * @param data: an array of data objects e.g. [ {col1: 1, col2: 2}, {col1: 5, col2: 7} ]
  */
 const Table = ({ columns, data }) => {
+  let rows = [...data,]
+  rows = rows.map((row, i) => {
+    row['id'] = i
+    return row
+  })
   return (
     <div data-testid="tableGrid" style={{ height: 400, width: '100%' }}>
-      <DataGrid rows={data} columns={columns} pageSize={5} />
+      <DataGrid rows={rows} columns={columns} pageSize={5} />
     </div>
   );
 }
