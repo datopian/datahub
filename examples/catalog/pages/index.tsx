@@ -1,19 +1,24 @@
 import { GetServerSideProps } from 'next';
 import Head from 'next/head';
 import { initializeApollo } from '../lib/apolloClient';
-import Nav from '../components/home/Nav';
-import Recent from '../components/home/Recent';
-import Form from '../components/search/Form';
+import RecentDataset from '../components/home/Recent';
+import SearchForm from '../components/search/Form';
 import { SEARCH_QUERY } from '../graphql/queries';
 import { loadNamespaces } from './_app';
 import useTranslation from 'next-translate/useTranslation';
+import NavBar from '../components/home/Nav';
 
 const Home: React.FC<{ locale: any; locales: any }> = ({
   locale,
   locales,
 }) => {
   const { t } = useTranslation();
-
+  const navMenu = [
+    { title: 'Blog', path: '/blog' },
+    { title: 'Search', path: '/search' },
+    { title: 'Docs', path: 'http://tech.datopian.com/frontend/' },
+    { title: 'GitHub', path: 'https://github.com/datopian/portal' },
+  ];
   return (
     <>
       <div className="container mx-auto">
@@ -21,7 +26,7 @@ const Home: React.FC<{ locale: any; locales: any }> = ({
           <title>{t(`common:title`)}</title>
           <link rel="icon" href="/favicon.ico" />
         </Head>
-        <Nav />
+        <NavBar logo={'/images/logo.svg'} navMenu={navMenu} />
         <section className="flex justify-center items-center flex-col mt-8 mx-4 lg:flex-row">
           <div>
             <h1 className="text-4xl mb-3 font-thin">
@@ -31,13 +36,13 @@ const Home: React.FC<{ locale: any; locales: any }> = ({
             <p className="text-md font-light mb-3 w-4/5">
               {t(`common:description`)}
             </p>
-            <Form />
+            <SearchForm />
           </div>
           <div className="mt-4">
             <img src="/images/banner.svg" className="w-4/5" alt="banner_img" />
           </div>
         </section>
-        <Recent />
+        <RecentDataset />
       </div>
     </>
   );

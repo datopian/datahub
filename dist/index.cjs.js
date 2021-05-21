@@ -230,8 +230,8 @@ var KeyInfo = function KeyInfo(_ref) {
   var datasetSize = 0;
 
   if (resources) {
-    datasetSize = resources.length == 1 ? resources[0].size : resources.reduce(function (accumulator, currentValue) {
-      return accumulator.size + currentValue.size;
+    datasetSize = resources.length == 1 ? resources[0].size || 0 : resources.reduce(function (accumulator, currentValue) {
+      return (accumulator.size || 0) + (currentValue.size || 0);
     });
   }
 
@@ -266,22 +266,22 @@ var KeyInfo = function KeyInfo(_ref) {
     className: "text-1xl"
   }, resources.length)), /*#__PURE__*/React__default['default'].createElement("div", null, /*#__PURE__*/React__default['default'].createElement("h3", {
     className: "text-1xl"
-  }, filesize__default['default'](datasetSize, {
+  }, datasetSize && filesize__default['default'](datasetSize, {
     bits: true
   }))), /*#__PURE__*/React__default['default'].createElement("div", null, /*#__PURE__*/React__default['default'].createElement("h3", {
     className: "text-1xl"
-  }, resources[0].format, " zip")), /*#__PURE__*/React__default['default'].createElement("div", null, /*#__PURE__*/React__default['default'].createElement("h3", {
+  }, resources[0]["format"], " zip")), /*#__PURE__*/React__default['default'].createElement("div", null, /*#__PURE__*/React__default['default'].createElement("h3", {
     className: "text-1xl"
-  }, descriptor.created)), /*#__PURE__*/React__default['default'].createElement("div", null, /*#__PURE__*/React__default['default'].createElement("h3", {
+  }, descriptor["created"])), /*#__PURE__*/React__default['default'].createElement("div", null, /*#__PURE__*/React__default['default'].createElement("h3", {
     className: "text-1xl"
-  }, descriptor.updated)), /*#__PURE__*/React__default['default'].createElement("div", null, /*#__PURE__*/React__default['default'].createElement("h3", {
+  }, descriptor["updated"])), /*#__PURE__*/React__default['default'].createElement("div", null, /*#__PURE__*/React__default['default'].createElement("h3", {
     className: "text-1xl"
-  }, descriptor.license)), /*#__PURE__*/React__default['default'].createElement("div", null, /*#__PURE__*/React__default['default'].createElement("h3", {
+  }, descriptor["license"])), /*#__PURE__*/React__default['default'].createElement("div", null, /*#__PURE__*/React__default['default'].createElement("h3", {
     className: "text-1xl"
   }, /*#__PURE__*/React__default['default'].createElement("a", {
     className: "text-yellow-600",
-    href: descriptor.sources[0].web
-  }, descriptor.sources[0].title))))));
+    href: descriptor["sources"] && descriptor["sources"][0]["web"]
+  }, descriptor["sources"] && descriptor["sources"][0]["title"]))))));
 };
 
 KeyInfo.propTypes = {
@@ -300,9 +300,7 @@ var ResourcesInfo = function ResourcesInfo(_ref) {
   return /*#__PURE__*/React__default['default'].createElement(React__default['default'].Fragment, null, /*#__PURE__*/React__default['default'].createElement("section", {
     className: "m-8",
     name: "file-list"
-  }, /*#__PURE__*/React__default['default'].createElement("h1", {
-    className: "text-2xl font-bold mb-4"
-  }, "Data Files"), /*#__PURE__*/React__default['default'].createElement("div", {
+  }, /*#__PURE__*/React__default['default'].createElement("div", {
     className: "grid grid-cols-7 gap-4"
   }, /*#__PURE__*/React__default['default'].createElement("div", null, /*#__PURE__*/React__default['default'].createElement("h3", {
     className: "text-1xl font-bold mb-2"
@@ -324,7 +322,7 @@ var ResourcesInfo = function ResourcesInfo(_ref) {
       className: "text-1xl"
     }, resource.description || "No description")), /*#__PURE__*/React__default['default'].createElement("div", null, /*#__PURE__*/React__default['default'].createElement("h3", {
       className: "text-1xl"
-    }, filesize__default['default'](resource.size, {
+    }, resource.size && filesize__default['default'](resource.size, {
       bits: true
     }))), /*#__PURE__*/React__default['default'].createElement("div", null, /*#__PURE__*/React__default['default'].createElement("h3", {
       className: "text-1xl"
@@ -333,9 +331,7 @@ var ResourcesInfo = function ResourcesInfo(_ref) {
     }, /*#__PURE__*/React__default['default'].createElement("a", {
       className: "text-yellow-600",
       href: "/dataset/".concat(resource.path)
-    }, resource.format, " (", filesize__default['default'](resource.size, {
-      bits: true
-    }), ")"))));
+    }, resource.format))));
   })));
 };
 
@@ -551,11 +547,13 @@ var Nav = function Nav(_ref) {
     className: "flex items-center justify-between flex-wrap bg-white p-4 border-b border-gray-200"
   }, /*#__PURE__*/React__default['default'].createElement("div", {
     className: "flex items-center flex-shrink-0 text-gray-700 mr-6"
+  }, /*#__PURE__*/React__default['default'].createElement(Link__default['default'], {
+    href: "/"
   }, /*#__PURE__*/React__default['default'].createElement("img", {
     src: logo,
     alt: "portal logo",
     width: "40"
-  })), /*#__PURE__*/React__default['default'].createElement("div", {
+  }))), /*#__PURE__*/React__default['default'].createElement("div", {
     className: "block lg:hidden mx-4"
   }, /*#__PURE__*/React__default['default'].createElement("button", {
     onClick: handleClick,

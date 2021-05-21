@@ -1,6 +1,7 @@
 import { useQuery } from '@apollo/react-hooks';
 import { ErrorMessage } from '../_shared';
 import { GET_TOTAL_COUNT_QUERY } from '../../graphql/queries';
+import { ItemTotal } from 'portal';
 
 const Total: React.FC<{ variables: any }> = ({ variables }) => {
   const { loading, error, data } = useQuery(GET_TOTAL_COUNT_QUERY, {
@@ -16,11 +17,7 @@ const Total: React.FC<{ variables: any }> = ({ variables }) => {
 
   const { result } = data.search;
 
-  return (
-    <h1 className="text-3xl font-semibold text-primary my-6 inline-block">
-      {result.count} results found
-    </h1>
-  );
+  return <ItemTotal count={result.count} />;
 };
 
 export default Total;

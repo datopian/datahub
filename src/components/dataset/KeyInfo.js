@@ -22,9 +22,9 @@ const KeyInfo = ({ descriptor, resources }) => {
     let datasetSize = 0
     if (resources) {
         datasetSize = resources.length == 1 ?
-            resources[0].size :
+            (resources[0].size || 0) :
             resources.reduce((accumulator, currentValue) => {
-                return accumulator.size + currentValue.size
+                return (accumulator.size || 0) + (currentValue.size || 0)
             })
     }
 
@@ -63,25 +63,25 @@ const KeyInfo = ({ descriptor, resources }) => {
                         <h3 className="text-1xl">{resources.length}</h3>
                     </div>
                     <div>
-                        <h3 className="text-1xl">{filesize(datasetSize, { bits: true })}</h3>
+                        <h3 className="text-1xl">{datasetSize && filesize(datasetSize, { bits: true })}</h3>
                     </div>
                     <div>
-                        <h3 className="text-1xl">{resources[0].format} zip</h3>
+                        <h3 className="text-1xl">{resources[0]["format"]} zip</h3>
                     </div>
                     <div>
-                        <h3 className="text-1xl">{descriptor.created}</h3>
+                        <h3 className="text-1xl">{descriptor["created"]}</h3>
                     </div>
                     <div>
-                        <h3 className="text-1xl">{descriptor.updated}</h3>
+                        <h3 className="text-1xl">{descriptor["updated"]}</h3>
                     </div>
                     <div>
-                        <h3 className="text-1xl">{descriptor.license}</h3>
+                        <h3 className="text-1xl">{descriptor["license"]}</h3>
                     </div>
                     <div>
                         <h3 className="text-1xl">
                             <a className="text-yellow-600"
-                                href={descriptor.sources[0].web}>
-                                {descriptor.sources[0].title}
+                                href={descriptor["sources"] && descriptor["sources"][0]["web"]}>
+                                {descriptor["sources"] && descriptor["sources"][0]["title"]}
                             </a>
                         </h3>
                     </div>

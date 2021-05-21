@@ -1,38 +1,7 @@
 import { useQuery } from '@apollo/react-hooks';
-import { Table, ErrorMessage } from '../_shared';
+import { ErrorMessage } from '../_shared';
 import { GET_DATAPACKAGE_QUERY } from '../../graphql/queries';
-
-const columns = [
-  {
-    name: 'Files',
-    key: 'files',
-    render: ({ resources }) => (resources && resources.length) || 0,
-  },
-  {
-    name: 'Size',
-    key: 'size',
-  },
-  {
-    name: 'Format',
-    key: 'format',
-  },
-  {
-    name: 'Created',
-    key: 'metadata_created',
-  },
-  {
-    name: 'Updated',
-    key: 'metadata_modified',
-  },
-  {
-    name: 'License',
-    key: 'license',
-  },
-  {
-    name: 'Source',
-    key: 'source',
-  },
-];
+import { KeyInfo } from 'portal';
 
 const About: React.FC<{ variables: any }> = ({ variables }) => {
   const { loading, error, data } = useQuery(GET_DATAPACKAGE_QUERY, {
@@ -47,7 +16,7 @@ const About: React.FC<{ variables: any }> = ({ variables }) => {
   if (loading) return <div>Loading</div>;
 
   const { result } = data.dataset;
-  return <Table columns={columns} data={[result]} />;
+  return <KeyInfo descriptor={result} resources={result.resources} />;
 };
 
 export default About;
