@@ -19,7 +19,6 @@
     "html-react-parser": "^1.2.6",
     "next": "latest",
     "plotly.js-basic-dist": "^1.58.4",
-    "portal": "https://github.com/datopian/portal.js",
     "postcss": "^8.1.10",
     "react": "^17.0.1",
     "react-dom": "^17.0.1",
