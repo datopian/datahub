@@ -6,33 +6,6 @@ import filesize from 'filesize';
 import Link from 'next/link';
 import parse from 'html-react-parser';
 
-/**
- * Displays dataset in tabular form using data grid
- * @param columns: An array of column names with properties: e.g [{field: "col1", headerName: "col1"}, {field: "col2", headerName: "col2"}]
- * @param data: an array of data objects e.g. [ {col1: 1, col2: 2}, {col1: 5, col2: 7} ]
- */
-
-var Table = function Table(_ref) {
-  var columns = _ref.columns,
-      data = _ref.data;
-  return /*#__PURE__*/React.createElement("div", {
-    "data-testid": "tableGrid",
-    style: {
-      height: 400,
-      width: '100%'
-    }
-  }, /*#__PURE__*/React.createElement(DataGrid, {
-    rows: data,
-    columns: columns,
-    pageSize: 5
-  }));
-};
-
-Table.propTypes = {
-  columns: PropTypes.array.isRequired,
-  data: PropTypes.array.isRequired
-};
-
 function _extends() {
   _extends = Object.assign || function (target) {
     for (var i = 1; i < arguments.length; i++) {
@@ -55,8 +28,20 @@ function _slicedToArray(arr, i) {
   return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _unsupportedIterableToArray(arr, i) || _nonIterableRest();
 }
 
+function _toConsumableArray(arr) {
+  return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _unsupportedIterableToArray(arr) || _nonIterableSpread();
+}
+
+function _arrayWithoutHoles(arr) {
+  if (Array.isArray(arr)) return _arrayLikeToArray(arr);
+}
+
 function _arrayWithHoles(arr) {
   if (Array.isArray(arr)) return arr;
+}
+
+function _iterableToArray(iter) {
+  if (typeof Symbol !== "undefined" && iter[Symbol.iterator] != null || iter["@@iterator"] != null) return Array.from(iter);
 }
 
 function _iterableToArrayLimit(arr, i) {
@@ -106,9 +91,47 @@ function _arrayLikeToArray(arr, len) {
   return arr2;
 }
 
+function _nonIterableSpread() {
+  throw new TypeError("Invalid attempt to spread non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method.");
+}
+
 function _nonIterableRest() {
   throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method.");
 }
+
+/**
+ * Displays dataset in tabular form using data grid
+ * @param columns: An array of column names with properties: e.g [{field: "col1", headerName: "col1"}, {field: "col2", headerName: "col2"}]
+ * @param data: an array of data objects e.g. [ {col1: 1, col2: 2}, {col1: 5, col2: 7} ]
+ */
+
+var Table = function Table(_ref) {
+  var columns = _ref.columns,
+      data = _ref.data;
+
+  var rows = _toConsumableArray(data);
+
+  rows = rows.map(function (row, i) {
+    row['id'] = i;
+    return row;
+  });
+  return /*#__PURE__*/React.createElement("div", {
+    "data-testid": "tableGrid",
+    style: {
+      height: 400,
+      width: '100%'
+    }
+  }, /*#__PURE__*/React.createElement(DataGrid, {
+    rows: rows,
+    columns: columns,
+    pageSize: 5
+  }));
+};
+
+Table.propTypes = {
+  columns: PropTypes.array.isRequired,
+  data: PropTypes.array.isRequired
+};
 
 var Plot;
 
