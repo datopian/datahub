@@ -20,11 +20,13 @@
     "next": "latest",
     "plotly.js-basic-dist": "^1.58.4",
     "postcss": "^8.1.10",
-    "react": "^17.0.1",
-    "react-dom": "^17.0.1",
     "react-plotly.js": "^2.5.1",
     "react-scripts": "3.4.3",
     "tailwindcss": "^2.0.2"
+  },
+  "peerDependencies": {
+    "react": "^17.0.1",
+    "react-dom": "^17.0.1"
   },
   "devDependencies": {
     "@babel/cli": "^7.13.16",
