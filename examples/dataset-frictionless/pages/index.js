@@ -48,11 +48,11 @@ export default function Home({ dataset, specs }) {
       </Head>
 
 
-      <section className="m-8" name="key-info">
+      <section  name="key-info">
         <KeyInfo descriptor={descriptor} resources={resources} />
       </section>
 
-      <section className="m-8" name="file-list">
+      <section  name="file-list">
         <ResourceInfo resources={resources} />
       </section>
 

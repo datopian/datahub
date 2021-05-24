@@ -13,12 +13,6 @@ const Home: React.FC<{ locale: any; locales: any }> = ({
   locales,
 }) => {
   const { t } = useTranslation();
-  const navMenu = [
-    { title: 'Blog', path: '/blog' },
-    { title: 'Search', path: '/search' },
-    { title: 'Docs', path: 'http://tech.datopian.com/frontend/' },
-    { title: 'GitHub', path: 'https://github.com/datopian/portal' },
-  ];
   return (
     <>
       <div className="container mx-auto">
@@ -26,7 +20,7 @@ const Home: React.FC<{ locale: any; locales: any }> = ({
           <title>{t(`common:title`)}</title>
           <link rel="icon" href="/favicon.ico" />
         </Head>
-        <NavBar logo={'/images/logo.svg'} navMenu={navMenu} />
+        <NavBar />
         <section className="flex justify-center items-center flex-col mt-8 mx-4 lg:flex-row">
           <div>
             <h1 className="text-4xl mb-3 font-thin">

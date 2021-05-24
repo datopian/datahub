@@ -1,4 +1,6 @@
 module.exports = {
+  purge: ['./pages/**/*.{js,ts,jsx,tsx}', './components/**/*.{js,ts,jsx,tsx}'],
+  mode: 'jit',
   theme: {
     fontSize: {
       tiny: 'var(--font-size-small)',
