@@ -17,7 +17,9 @@ export default function Nav() {
   return (
     <nav className="flex items-center justify-between flex-wrap bg-white p-4 border-b border-gray-200">
       <div className="flex items-center flex-shrink-0 text-gray-700 mr-6">
-        <img src="/logo.svg" alt="portal logo" width="110" />
+        <Link href="/">
+          <img src="/logo.svg" alt="portal logo" width="110" />
+        </Link>
       </div>
       <div className="block lg:hidden mx-4">
         <button
