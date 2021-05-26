@@ -12,50 +12,62 @@ export default function Home() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <Nav />
-      <div className={styles.container}>
 
-        <main className={styles.main}>
+      <main className="flex flex-col items-center justify-center w-full flex-1 px-20 text-center py-10">
+        <h1 className="text-6xl font-bold">
+          <a href="https://portaljs.com/">
+            <img src="/logo.svg" alt="PortalJS Logo" className="h-28" />
+          </a>
+        </h1>
 
-          <h1 className={styles.title}>
-            Welcome to <a href="https://github.com/datopian/portal.js">Portal.js!</a>
-          </h1>
+        <h2 className="mt-6 text-4xl font-normal leading-snug">
+          Rapidly build rich data portals using a modern frontend framework
+        </h2>
 
-          <p className={styles.description}>
-            Rapidly build rich data portals using a modern frontend framework!
-          </p>
-
-          <div className={styles.grid}>
-            <a href="/docs" className={styles.card}>
-              <h3>Documentation &rarr;</h3>
-              <p>Find in-depth information about Portal.js features and API.</p>
-            </a>
-
-            <a href="/learn" className={styles.card}>
-              <h3>Learn &rarr;</h3>
-              <p>Learn about Portal.js with examples!</p>
-            </a>
-
-            <a
-              href="/gallery"
-              className={styles.card}
-            >
-              <h3>Gallery &rarr;</h3>
-              <p>Discover examples of Portal.js projects.</p>
-            </a>
-
-            <a
-              href="https://github.com/datopian/portal.js"
-              className={styles.card}
-            >
-              <h3>Contribute &rarr;</h3>
-              <p>
-                Checkout the Portal.js repository on github
+        <div className="flex flex-wrap items-center justify-around max-w-4xl mt-6 sm:w-full">
+          <a
+            href="/docs/"
+            className="p-6 mt-6 text-left border w-96 rounded-xl hover:text-blue-600 focus:text-blue-600"
+          >
+            <h3 className="text-2xl font-semibold">▸ Documentation</h3>
+            <p className="mt-4 text-xl">
+              Find in-depth information about Portal.js features and API.
             </p>
-            </a>
-          </div>
-        </main>
-        <Footer />
-      </div>
+          </a>
+
+          <a
+            href="/learn/"
+            className="p-6 mt-6 text-left border w-96 rounded-xl hover:text-blue-600 focus:text-blue-600"
+          >
+            <h3 className="text-2xl font-semibold">▸ Learn</h3>
+            <p className="mt-4 text-xl">
+              Learn about Portal.js in an interactive course.
+            </p>
+          </a>
+
+          <a
+            href="/gallery/"
+            className="p-6 mt-6 text-left border w-96 rounded-xl hover:text-blue-600 focus:text-blue-600"
+          >
+            <h3 className="text-2xl font-semibold">▸ Gallery</h3>
+            <p className="mt-4 text-xl">
+              Discover examples of Portal.js projects.
+            </p>
+          </a>
+
+          <a
+            href="https://github.com/datopian/portal.js"
+            className="p-6 mt-6 text-left border w-96 rounded-xl hover:text-blue-600 focus:text-blue-600"
+          >
+            <h3 className="text-2xl font-semibold">▸ Contribute</h3>
+            <p className="mt-4 text-xl">
+              Checkout the Portal.js repository on github
+            </p>
+          </a>
+        </div>
+      </main>
+
+      <Footer />
     </>
   )
 }
