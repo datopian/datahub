@@ -3,7 +3,6 @@ import Link from 'next/link'
 import path from 'path'
 import Nav from '../components/Nav'
 import Footer from '../components/Footer'
-import styles from '../styles/Home.module.css'
 import { formatMD } from '../lib/utils'
 
 export default function Docs({ mdFile }) {
@@ -15,7 +14,7 @@ export default function Docs({ mdFile }) {
                 <link rel="icon" href="/favicon.ico" />
             </Head>
             <Nav />
-            <div className={styles.container}>
+            <div >
                 <div className="prose">
                     <div dangerouslySetInnerHTML={{ __html: mdFile }} />
                 </div>
