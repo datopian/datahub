@@ -6,28 +6,24 @@ import Footer from '../components/Footer'
 import { formatMD } from '../lib/utils'
 
 export default function Docs({ mdFile }) {
-
-    return (
-        <>
-            <Head>
-                <title>Portal.js Api Documentation</title>
-                <link rel="icon" href="/favicon.ico" />
-            </Head>
-            <Nav />
-            <div>
-                <div className="prose">
-                    <div dangerouslySetInnerHTML={{ __html: mdFile }} />
-                </div>
-                <br />
-                <Link href="/installation">
-                    <button >Next Page</button>
-                </Link>
-            </div>
-
-            <Footer />
-
-        </>
-    )
+  return (
+    <>
+      <Head>
+        <title>Portal.js API Documentation</title>
+        <link rel="icon" href="/favicon.ico" />
+      </Head>
+      <Nav />
+      <div className="prose mx-auto my-24">
+        <div dangerouslySetInnerHTML={{ __html: mdFile }} />
+        <p className="text-center">
+          <Link href="/installation">
+            <button>Next Page</button>
+          </Link>
+        </p>
+      </div>
+      <Footer />
+    </>
+  )
 }
 
 
