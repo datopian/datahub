@@ -1,17 +1,9 @@
-import Head from 'next/head'
-import Nav from '../components/Nav'
-import Footer from '../components/Footer'
+import Layout from '../components/layout'
 
 export default function Home() {
 
   return (
-    <>
-      <Head>
-        <title>Create Portal App</title>
-        <link rel="icon" href="/favicon.ico" />
-      </Head>
-      <Nav />
-
+    <Layout>
       <main className="flex flex-col items-center justify-center w-full flex-1 px-20 text-center py-10">
         <h1 className="text-6xl font-bold">
           <a href="https://portaljs.com/">
@@ -65,8 +57,6 @@ export default function Home() {
           </a>
         </div>
       </main>
-
-      <Footer />
-    </>
+    </Layout>
   )
 }

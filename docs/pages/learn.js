@@ -1,35 +1,23 @@
-import Head from 'next/head'
 import Link from 'next/link'
 import path from 'path'
-import Nav from '../components/Nav'
-import Footer from '../components/Footer'
+
+import Layout from '../components/layout'
+import Prose from '../components/prose'
 import { formatMD } from '../lib/utils'
 
 export default function Docs({ mdFile }) {
-
-    return (
-        <>
-            <Head>
-                <title>Portal.js Api Documentation</title>
-                <link rel="icon" href="/favicon.ico" />
-            </Head>
-            <Nav />
-            <div >
-                <div className="prose">
-                    <div dangerouslySetInnerHTML={{ __html: mdFile }} />
-                </div>
-                <br />
-                <Link href="/references">
-                    <button >Next Page</button>
-                </Link>
-            </div>
-
-            <Footer />
-
-        </>
-    )
+  return (
+    <Layout title="Portal.js - Learn">
+      <Prose mdFile={mdFile}>
+        <p className="text-center">
+          <Link href="/references">
+            <button>Next Page</button>
+          </Link>
+        </p>
+      </Prose>
+    </Layout>
+  )
 }
-
 
 export async function getStaticProps() {
     const mdFilePath = path.join(process.cwd(), "markdowns/tutorial-doc/learn.md")

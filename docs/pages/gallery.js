@@ -1,22 +1,13 @@
-import Head from 'next/head'
-import Nav from '../components/Nav'
-import Footer from '../components/Footer'
+import Layout from '../components/layout'
+import Prose from '../components/prose'
 
 export default function Gallery() {
 
   return (
-    <>
-      <Head>
-        <title>Portal.js Gallery</title>
-        <link rel="icon" href="/favicon.ico" />
-      </Head>
-      <Nav />
-      <div >
-        <main >
-
-        </main>
-        <Footer />
-      </div>
-    </>
+    <Layout title="Portal.js Gallery">
+      <Prose>
+        <p className="text-center">Come back soon!</p>
+      </Prose>
+    </Layout>
   )
 }
