@@ -8,11 +8,12 @@ export default function Nav() {
     setOpen(!open);
   };
 
-  const navMenu = [{ title: 'Home', path: '/' },
-  { title: 'Gallery', path: '/gallery' },
-  { title: 'Docs', path: '/docs' },
-  { title: 'Learn', path: '/learn' },
-  { title: 'Github', path: 'https://github.com/datopian/portal.js' }]
+  const navMenu = [
+    { title: 'Docs', path: '/docs' },
+    { title: 'Learn', path: '/learn' },
+    { title: 'Gallery', path: '/gallery' },
+    { title: 'Github', path: 'https://github.com/datopian/portal.js' }
+  ]
 
   return (
     <nav className="flex items-center justify-between flex-wrap bg-white p-4 border-b border-gray-200">
