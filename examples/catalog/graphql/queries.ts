@@ -49,8 +49,8 @@ export const GET_RESOURCES_QUERY = gql`
 `;
 
 export const SEARCH_QUERY = gql`
-  query search($q: String, $sort: String, $rows: Int) {
-    search(q: $q, sort: $sort, rows: $rows)
+  query search($q: String, $sort: String, $rows: Int, $start: Int) {
+    search(q: $q, sort: $sort, rows: $rows, start: $start)
       @rest(type: "Search", path: "package_search?{args}") {
       result {
         count
