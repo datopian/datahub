@@ -46,7 +46,9 @@ If you are on Windows, we recommend downloading Git for Windows and use Git Bash
 
 To create a Portal.js app, open your terminal, cd into the directory you’d like to create the app in, and run the following command:
 
-npx create-next-app portaljs-dataset --use-npm --example "https://github.com/vercel/next-learn-starter"
+```
+npx create-next-app portaljs-dataset --use-npm --example "https://github.com/datopian/portal.js/tree/main/examples/default"
+```
 
 ### Run the development server
 
