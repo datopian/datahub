@@ -10,11 +10,6 @@ export default function Docs({ title, mdFile }) {
   return (
     <Layout title="Portal.js Documentation - {title}">
       <Prose mdFile={mdFile}>
-        <p className="text-center">
-          <Link href="/installation">
-            <button>Next Page</button>
-          </Link>
-        </p>
       </Prose>
     </Layout>
   )
