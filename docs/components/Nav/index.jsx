@@ -10,6 +10,7 @@ export default function Nav() {
 
   const navMenu = [
     { title: 'Docs', path: '/docs' },
+    { title: 'Components', path: '/docs/components' },
     { title: 'Learn', path: '/learn' },
     { title: 'Gallery', path: '/gallery' },
     { title: 'Github', path: 'https://github.com/datopian/portal.js' }
