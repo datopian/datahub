@@ -5,7 +5,7 @@ const NavBar: React.FC = () => {
     { title: 'Blog', path: '/blog' },
     { title: 'Search', path: '/search' },
     { title: 'Docs', path: 'http://tech.datopian.com/frontend/' },
-    { title: 'GitHub', path: 'https://github.com/datopian/portal' },
+    { title: 'GitHub', path: 'https://github.com/datopian/portal.js' },
   ];
 
   return <Nav logo={'/images/logo.svg'} navMenu={navMenu} />;
