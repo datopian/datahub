@@ -1,5 +1,17 @@
 module.exports = {
-  purge: ['./pages/**/*.{js,ts,jsx,tsx}', './components/**/*.{js,ts,jsx,tsx}'],
+  // 2021-06-24 trying out fix for tailwind production that worked for main site
+  // see https://github.com/datopian/portal.js/issues/571
+  // purge: ['./pages/**/*.{js,ts,jsx,tsx}', './components/**/*.{js,ts,jsx,tsx}'],
+  purge: [
+    "./pages/**/*.js",
+    "./pages/**/*.ts",
+    "./pages/**/*.jsx",
+    "./pages/**/*.tsx",
+    "./components/**/*.js",
+    "./components/**/*.ts",
+    "./components/**/*.jsx",
+    "./components/**/*.tsx"
+  ],
   mode: 'jit',
   theme: {
     fontSize: {
