@@ -10,7 +10,7 @@ Even still, there's a high learning curve before you can build a proper applicat
 
 Think about how apps are created as a frontend developer. You create some files, write some code, load some data and then simply deploy it. We don't have to worry about Docker, Kubernetes, data storage, Postgres etc.
 
-<img src="/logo.svg" alt="Portal.JS logo" style="height: 40px" />
+<img src="/logo.svg" alt="Portal.JS logo" style={{height: '40px'}} />
 
 That's exactly what we do with Portal.js. Built in pure Javascript and React on top of the awesome Next.js framework. Here are some the cool features Portal.js brings to the table:
 
