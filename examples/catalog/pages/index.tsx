@@ -7,6 +7,7 @@ import { loadNamespaces } from './_app';
 import useTranslation from 'next-translate/useTranslation';
 import NavBar from '../components/home/Nav';
 import Hero from '../components/home/Hero';
+import Footer from '../components/home/Footer';
 
 const Home: React.FC<{ locale: any; locales: any }> = ({
   locale,
@@ -23,6 +24,7 @@ const Home: React.FC<{ locale: any; locales: any }> = ({
         <NavBar />
         <Hero />
         <RecentDataset />
+        <Footer />
       </div>
     </>
   );
