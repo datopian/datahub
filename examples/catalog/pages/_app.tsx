@@ -5,7 +5,7 @@ import { DEFAULT_THEME } from '../themes';
 import { applyTheme } from '../themes/utils';
 import I18nProvider from 'next-translate/I18nProvider';
 import { useRouter } from 'next/router';
-import '../styles/app.css';
+import '../styles/globals.css';
 
 interface I8nObject {
   [property: string]: any;
