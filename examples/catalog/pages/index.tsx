@@ -8,6 +8,7 @@ import useTranslation from 'next-translate/useTranslation';
 import NavBar from '../components/home/Nav';
 import Hero from '../components/home/Hero';
 import Footer from '../components/home/Footer';
+import Stats from '../components/home/Stats';
 
 const Home: React.FC<{ locale: any; locales: any }> = ({
   locale,
@@ -23,6 +24,7 @@ const Home: React.FC<{ locale: any; locales: any }> = ({
         </Head>
         <NavBar />
         <Hero />
+        <Stats />
         <RecentDataset />
         <Footer />
       </div>

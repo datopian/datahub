@@ -79,6 +79,22 @@ export const GET_TOTAL_COUNT_QUERY = gql`
   }
 `;
 
+export const GET_STATS_QUERY = gql`
+  query stats {
+    datasets @rest(type: "Search", path: "package_search?rows=0") {
+      result {
+        count
+      }
+    }
+    orgs @rest(type: "Search", path: "organization_list") {
+      result
+    }
+    groups @rest(type: "Search", path: "group_list") {
+      result
+    }
+  }
+`;
+
 export const GET_POSTS_QUERY = gql`
   query posts {
     posts @rest(type: "Posts", path: "", endpoint: "wordpress-posts") {

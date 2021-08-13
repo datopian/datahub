@@ -9,10 +9,8 @@ const Footer: React.FC = () => {
       {
         name: 'GitHub',
         href: 'https://github.com/datopian/portal.js',
-        icon: (
-          // eslint-disable-line
-          props
-        ) => (
+        // eslint-disable-next-line
+        icon: (props) => (
           <svg fill="currentColor" viewBox="0 0 24 24" {...props}>
             <path
               fillRule="evenodd"
