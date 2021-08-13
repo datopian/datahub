@@ -4,7 +4,7 @@ describe('Test Home Page', () => {
   });
 
   it('renders the hero title', () => {
-    cy.contains('Find, Share and Publish Quality Data with Datahub');
+    cy.contains('Find and Share');
   });
 
   it('checks that a search form exists', () => {

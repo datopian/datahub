@@ -2,11 +2,11 @@ import { GetServerSideProps } from 'next';
 import Head from 'next/head';
 import { initializeApollo } from '../lib/apolloClient';
 import RecentDataset from '../components/home/Recent';
-import SearchForm from '../components/search/Form';
 import { SEARCH_QUERY } from '../graphql/queries';
 import { loadNamespaces } from './_app';
 import useTranslation from 'next-translate/useTranslation';
 import NavBar from '../components/home/Nav';
+import Hero from '../components/home/Hero';
 
 const Home: React.FC<{ locale: any; locales: any }> = ({
   locale,
@@ -21,21 +21,7 @@ const Home: React.FC<{ locale: any; locales: any }> = ({
           <link rel="icon" href="/favicon.ico" />
         </Head>
         <NavBar />
-        <section className="flex justify-center items-center flex-col mt-8 mx-4 lg:flex-row">
-          <div>
-            <h1 className="text-4xl mb-3 font-thin">
-              Find, Share and Publish <br /> Quality Data with{' '}
-              <span className="text-orange-500">Datahub</span>
-            </h1>
-            <p className="text-md font-light mb-3 w-4/5">
-              {t(`common:description`)}
-            </p>
-            <SearchForm />
-          </div>
-          <div className="mt-4">
-            <img src="/images/banner.svg" className="w-4/5" alt="banner_img" />
-          </div>
-        </section>
+        <Hero />
         <RecentDataset />
       </div>
     </>
