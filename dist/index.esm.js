@@ -3,6 +3,7 @@ import { DataGrid } from '@material-ui/data-grid';
 import PropTypes from 'prop-types';
 import createPlotlyComponent from 'react-plotly.js/factory';
 import filesize from 'filesize';
+import * as timeago from 'timeago.js';
 import Link from 'next/link';
 import parse from 'html-react-parser';
 
@@ -175,23 +176,15 @@ PlotlyChart.propTypes = {
 };
 
 /**
- * KeyInfo component receives two arguments. 
- * @param {Object} descriptor A Frictionless datapackage descriptor object with the following fields:
- * {
- *  title: "Title of the data package",
- *  length: "The number of resources present in the data package"
- *  datasetSize: The combined size of the data package resources
- *  format: The format of resources in the dataset. e.g csv, json, excel
- *  created: The date the dataset was created
- *  updated: The date the dataset was last updated
- *  licence: The licence of the dataset
- *  sources: An array of the data set sources
- * }
+ * KeyInfo component receives two arguments.
+ * @param {Object} descriptor A Frictionless datapackage descriptor object with the following fields
  * @param {Array} resources A Frictionless datapackage resource array
  * @returns React Component
  */
 
 var KeyInfo = function KeyInfo(_ref) {
+  var _descriptor$licenses, _descriptor$sources;
+
   var descriptor = _ref.descriptor,
       resources = _ref.resources;
   var datasetSize = 0;
@@ -202,15 +195,15 @@ var KeyInfo = function KeyInfo(_ref) {
     });
   }
 
+  var formats = resources.map(function (item) {
+    return item.format;
+  }).join(', ');
   return /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement("section", {
-    className: "m-8",
+    className: "mt-8 mb-8",
     name: "key-info",
     id: "key-info"
-  }, /*#__PURE__*/React.createElement("h1", {
-    "data-testid": "datasetTitle",
-    className: "text-3xl font-bold mb-8"
-  }, descriptor.title), /*#__PURE__*/React.createElement("h1", {
-    className: "text-2xl font-bold mb-4"
+  }, /*#__PURE__*/React.createElement("h2", {
+    className: "text-xl font-bold mb-4"
   }, "Key info"), /*#__PURE__*/React.createElement("div", {
     className: "grid grid-cols-7 gap-4"
   }, /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("h3", {
@@ -225,30 +218,38 @@ var KeyInfo = function KeyInfo(_ref) {
     className: "text-1xl font-bold mb-2"
   }, "Updated")), /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("h3", {
     className: "text-1xl font-bold mb-2"
-  }, "Licence")), /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("h3", {
+  }, "Licenses")), /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("h3", {
     className: "text-1xl font-bold mb-2"
-  }, "Source"))), /*#__PURE__*/React.createElement("div", {
+  }, "Sources"))), /*#__PURE__*/React.createElement("div", {
     className: "grid grid-cols-7 gap-4"
   }, /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("h3", {
     className: "text-1xl"
   }, resources.length)), /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("h3", {
     className: "text-1xl"
-  }, datasetSize && filesize(datasetSize, {
-    bits: true
+  }, datasetSize)), /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("h3", {
+    className: "text-1xl"
+  }, formats)), /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("h3", {
+    className: "text-1xl"
+  }, descriptor.created && timeago.format(descriptor.created))), /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("h3", {
+    className: "text-1xl"
+  }, descriptor.updated && timeago.format(descriptor.updated))), /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("h3", {
+    className: "text-1xl"
+  }, ((_descriptor$licenses = descriptor.licenses) === null || _descriptor$licenses === void 0 ? void 0 : _descriptor$licenses.length) && descriptor.licenses.map(function (item, index) {
+    return /*#__PURE__*/React.createElement("a", {
+      className: "text-yellow-600",
+      href: item.path || '#',
+      title: item.title || '',
+      key: index
+    }, item.name);
   }))), /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("h3", {
     className: "text-1xl"
-  }, resources[0]["format"], " zip")), /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("h3", {
-    className: "text-1xl"
-  }, descriptor["created"])), /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("h3", {
-    className: "text-1xl"
-  }, descriptor["updated"])), /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("h3", {
-    className: "text-1xl"
-  }, descriptor["license"])), /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("h3", {
-    className: "text-1xl"
-  }, /*#__PURE__*/React.createElement("a", {
-    className: "text-yellow-600",
-    href: descriptor["sources"] && descriptor["sources"][0]["web"]
-  }, descriptor["sources"] && descriptor["sources"][0]["title"]))))));
+  }, ((_descriptor$sources = descriptor.sources) === null || _descriptor$sources === void 0 ? void 0 : _descriptor$sources.length) && descriptor.sources.map(function (item, index) {
+    return /*#__PURE__*/React.createElement("a", {
+      className: "text-yellow-600",
+      href: item.path,
+      key: index
+    }, item.title);
+  }))))));
 };
 
 KeyInfo.propTypes = {
