@@ -1,14 +1,17 @@
 import gql from 'graphql-tag';
 
 export const GET_ORG_QUERY = gql`
-  query dataset($id: String) {
-    dataset(id: $id) @rest(type: "Response", path: "package_show?{args}") {
+  query org($id: String) {
+    org(id: $id) @rest(type: "Response", path: "organization_show?{args}") {
       result {
-        organization {
-          name
-          title
-          image_url
-        }
+        name
+        title
+        description
+        image: image_url
+        created
+        total: package_count
+        users
+        followers: num_followers
       }
     }
   }
