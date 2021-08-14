@@ -187,14 +187,6 @@ var KeyInfo = function KeyInfo(_ref) {
 
   var descriptor = _ref.descriptor,
       resources = _ref.resources;
-  var datasetSize = 0;
-
-  if (resources) {
-    datasetSize = resources.length == 1 ? resources[0].size || 0 : resources.reduce(function (accumulator, currentValue) {
-      return (accumulator.size || 0) + (currentValue.size || 0);
-    });
-  }
-
   var formats = resources.map(function (item) {
     return item.format;
   }).join(', ');
@@ -226,7 +218,7 @@ var KeyInfo = function KeyInfo(_ref) {
     className: "text-1xl"
   }, resources.length)), /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("h3", {
     className: "text-1xl"
-  }, datasetSize)), /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("h3", {
+  }, descriptor.size || 'N/A')), /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("h3", {
     className: "text-1xl"
   }, formats)), /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("h3", {
     className: "text-1xl"

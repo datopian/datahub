@@ -10,15 +10,6 @@ import PropTypes from 'prop-types';
  * @returns React Component
  */
 const KeyInfo = ({ descriptor, resources }) => {
-    let datasetSize = 0
-    if (resources) {
-        datasetSize = resources.length == 1 ?
-            (resources[0].size || 0) :
-            resources.reduce((accumulator, currentValue) => {
-                return (accumulator.size || 0) + (currentValue.size || 0)
-            })
-    }
-
     const formats = resources.map(item => item.format).join(', ');
 
     return (
@@ -53,7 +44,7 @@ const KeyInfo = ({ descriptor, resources }) => {
                         <h3 className="text-1xl">{resources.length}</h3>
                     </div>
                     <div>
-                        <h3 className="text-1xl">{datasetSize}</h3>
+                        <h3 className="text-1xl">{descriptor.size || 'N/A'}</h3>
                     </div>
                     <div>
                         <h3 className="text-1xl">{formats}</h3>
