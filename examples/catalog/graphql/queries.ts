@@ -41,7 +41,7 @@ export const GET_RESOURCES_QUERY = gql`
           title
           format
           created
-          last_modified
+          updated: last_modified
         }
       }
     }

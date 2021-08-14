@@ -2,6 +2,7 @@
 /* eslint-disable react/display-name */
 import Link from 'next/link';
 import { useQuery } from '@apollo/react-hooks';
+import * as timeago from 'timeago.js';
 import { Table, ErrorMessage } from '../_shared';
 import { GET_RESOURCES_QUERY } from '../../graphql/queries';
 
@@ -22,10 +23,12 @@ const columns = [
   {
     name: 'Created',
     key: 'created',
+    render: ({ created }) => timeago.format(created),
   },
   {
     name: 'Updated',
-    key: 'last_modified',
+    key: 'updated',
+    render: ({ updated }) => timeago.format(updated),
   },
   {
     name: 'Link',
