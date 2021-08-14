@@ -30,7 +30,7 @@ const Org: React.FC<{ variables: any }> = ({ variables }) => {
 export const getServerSideProps: GetServerSideProps = async (context) => {
   const apolloClient = initializeApollo();
   const variables = {
-    id: context.query.org.replace('@', ''),
+    id: (context.query.org as string).replace('@', ''),
   };
 
   await apolloClient.query({

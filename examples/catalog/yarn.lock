@@ -14152,7 +14152,7 @@ popper.js@1.16.1-lts:
 
 "portal@https://github.com/datopian/portal.js":
   version "0.1.0"
-  resolved "https://github.com/datopian/portal.js#b103b0e845d0e43c6b6f7d602af972423ea4c012"
+  resolved "https://github.com/datopian/portal.js#4dfaaad85eb4775f890bd9e87493f37a90a211f0"
   dependencies:
     "@material-ui/core" "^4.11.3"
     "@material-ui/data-grid" "^4.0.0-alpha.20"
@@ -14164,6 +14164,7 @@ popper.js@1.16.1-lts:
     react-plotly.js "^2.5.1"
     react-scripts "3.4.3"
     tailwindcss "^2.0.2"
+    timeago.js "^4.0.2"
 
 portfinder@^1.0.26:
   version "1.0.28"

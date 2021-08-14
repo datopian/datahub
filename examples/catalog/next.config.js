@@ -41,7 +41,7 @@ module.exports = (phase, { defaultConfig }) => {
       defaultLocale: 'en',
     },
     publicRuntimeConfig: {
-      DMS: dms ? dms.replace(/\/?$/, '') : 'https://demo.ckan.org',
+      DMS: dms ? dms.replace(/\/?$/, '') : 'https://demo.dev.datopian.com',
       CMS: cms ? cms.replace(/\/?$/, '') : 'oddk.home.blog',
     },
   };
