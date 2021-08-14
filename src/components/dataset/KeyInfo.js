@@ -1,20 +1,11 @@
 import React from 'react';
 import filesize from 'filesize'
+import * as timeago from 'timeago.js';
 import PropTypes from 'prop-types';
 
 /**
- * KeyInfo component receives two arguments. 
- * @param {Object} descriptor A Frictionless datapackage descriptor object with the following fields:
- * {
- *  title: "Title of the data package",
- *  length: "The number of resources present in the data package"
- *  datasetSize: The combined size of the data package resources
- *  format: The format of resources in the dataset. e.g csv, json, excel
- *  created: The date the dataset was created
- *  updated: The date the dataset was last updated
- *  licence: The licence of the dataset
- *  sources: An array of the data set sources
- * }
+ * KeyInfo component receives two arguments.
+ * @param {Object} descriptor A Frictionless datapackage descriptor object with the following fields
  * @param {Array} resources A Frictionless datapackage resource array
  * @returns React Component
  */
@@ -28,13 +19,12 @@ const KeyInfo = ({ descriptor, resources }) => {
             })
     }
 
+    const formats = resources.map(item => item.format).join(', ');
+
     return (
         <>
-            <section className="m-8" name="key-info" id="key-info">
-                <h1 data-testid="datasetTitle" className="text-3xl font-bold mb-8">
-                    {descriptor.title}
-                </h1>
-                <h1 className="text-2xl font-bold mb-4">Key info</h1>
+            <section className="mt-8 mb-8" name="key-info" id="key-info">
+                <h2 className="text-xl font-bold mb-4">Key info</h2>
                 <div className="grid grid-cols-7 gap-4">
                     <div>
                         <h3 className="text-1xl font-bold mb-2">Files</h3>
@@ -52,10 +42,10 @@ const KeyInfo = ({ descriptor, resources }) => {
                         <h3 className="text-1xl font-bold mb-2">Updated</h3>
                     </div>
                     <div>
-                        <h3 className="text-1xl font-bold mb-2">Licence</h3>
+                        <h3 className="text-1xl font-bold mb-2">Licenses</h3>
                     </div>
                     <div>
-                        <h3 className="text-1xl font-bold mb-2">Source</h3>
+                        <h3 className="text-1xl font-bold mb-2">Sources</h3>
                     </div>
                 </div>
                 <div className="grid grid-cols-7 gap-4">
@@ -63,27 +53,36 @@ const KeyInfo = ({ descriptor, resources }) => {
                         <h3 className="text-1xl">{resources.length}</h3>
                     </div>
                     <div>
-                        <h3 className="text-1xl">{datasetSize && filesize(datasetSize, { bits: true })}</h3>
+                        <h3 className="text-1xl">{datasetSize}</h3>
                     </div>
                     <div>
-                        <h3 className="text-1xl">{resources[0]["format"]} zip</h3>
+                        <h3 className="text-1xl">{formats}</h3>
                     </div>
                     <div>
-                        <h3 className="text-1xl">{descriptor["created"]}</h3>
+                        <h3 className="text-1xl">{descriptor.created && timeago.format(descriptor.created)}</h3>
                     </div>
                     <div>
-                        <h3 className="text-1xl">{descriptor["updated"]}</h3>
+                        <h3 className="text-1xl">{descriptor.updated && timeago.format(descriptor.updated)}</h3>
                     </div>
                     <div>
-                        <h3 className="text-1xl">{descriptor["license"]}</h3>
-                    </div>
-                    <div>
-                        <h3 className="text-1xl">
+                        <h3 className="text-1xl">{
+                          descriptor.licenses?.length && (descriptor.licenses.map((item, index) => (
                             <a className="text-yellow-600"
-                                href={descriptor["sources"] && descriptor["sources"][0]["web"]}>
-                                {descriptor["sources"] && descriptor["sources"][0]["title"]}
+                              href={item.path || '#'} title={item.title || ''}
+                              key={index}>
+                                {item.name}
                             </a>
-                        </h3>
+                          )))
+                        }</h3>
+                    </div>
+                    <div>
+                        <h3 className="text-1xl">{
+                          descriptor.sources?.length && (descriptor.sources.map((item, index) => (
+                            <a className="text-yellow-600" href={item.path} key={index}>
+                              {item.title}
+                            </a>
+                          )))
+                        }</h3>
                     </div>
                 </div>
             </section>
