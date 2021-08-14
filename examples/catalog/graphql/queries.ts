@@ -21,10 +21,14 @@ export const GET_DATAPACKAGE_QUERY = gql`
         name
         title
         size
-        metadata_created
-        metadata_modified
+        created: metadata_created
+        updated: metadata_modified
         resources {
           name
+          id
+          title
+          format
+          size
         }
       }
     }
