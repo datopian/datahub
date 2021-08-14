@@ -43,9 +43,12 @@ export const GET_RESOURCES_QUERY = gql`
         resources {
           name
           title
+          description
+          path: url
           format
           created
           updated: last_modified
+          size
         }
       }
     }
