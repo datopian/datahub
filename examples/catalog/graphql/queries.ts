@@ -67,7 +67,7 @@ export const SEARCH_QUERY = gql`
         results {
           name
           title
-          metadata_modified
+          updated: metadata_modified
           organization {
             name
             title
@@ -138,19 +138,19 @@ export const GET_DATASET_QUERY = gql`
         name
         title
         size
-        metadata_created
-        metadata_modified
+        created: metadata_created
+        updated: metadata_modified
         resources {
           name
           title
           format
           created
-          last_modified
+          updated: last_modified
         }
         organization {
           name
           title
-          image_url
+          image: image_url
         }
       }
     }
