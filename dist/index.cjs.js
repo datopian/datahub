@@ -312,7 +312,9 @@ var ResourcesInfo = function ResourcesInfo(_ref) {
     className: "text-1xl font-bold mb-2"
   }, "Size")), /*#__PURE__*/React__default['default'].createElement("div", null, /*#__PURE__*/React__default['default'].createElement("h3", {
     className: "text-1xl font-bold mb-2"
-  }, "Last Changed")), /*#__PURE__*/React__default['default'].createElement("div", null, /*#__PURE__*/React__default['default'].createElement("h3", {
+  }, "Created")), /*#__PURE__*/React__default['default'].createElement("div", null, /*#__PURE__*/React__default['default'].createElement("h3", {
+    className: "text-1xl font-bold mb-2"
+  }, "Updated")), /*#__PURE__*/React__default['default'].createElement("div", null, /*#__PURE__*/React__default['default'].createElement("h3", {
     className: "text-1xl font-bold mb-2"
   }, "Download"))), resources.map(function (resource, index) {
     return /*#__PURE__*/React__default['default'].createElement("div", {
@@ -320,19 +322,21 @@ var ResourcesInfo = function ResourcesInfo(_ref) {
       className: "grid grid-cols-7 gap-4"
     }, /*#__PURE__*/React__default['default'].createElement("div", null, /*#__PURE__*/React__default['default'].createElement("h3", {
       className: "text-1xl"
-    }, resource.name)), /*#__PURE__*/React__default['default'].createElement("div", null, /*#__PURE__*/React__default['default'].createElement("h3", {
+    }, resource.title || resource.name)), /*#__PURE__*/React__default['default'].createElement("div", null, /*#__PURE__*/React__default['default'].createElement("h3", {
       className: "text-1xl"
     }, resource.description || "No description")), /*#__PURE__*/React__default['default'].createElement("div", null, /*#__PURE__*/React__default['default'].createElement("h3", {
       className: "text-1xl"
-    }, resource.size && filesize__default['default'](resource.size, {
+    }, resource.size ? filesize__default['default'](resource.size, {
       bits: true
-    }))), /*#__PURE__*/React__default['default'].createElement("div", null, /*#__PURE__*/React__default['default'].createElement("h3", {
+    }) : 0)), /*#__PURE__*/React__default['default'].createElement("div", null, /*#__PURE__*/React__default['default'].createElement("h3", {
       className: "text-1xl"
-    }, resource.updated)), /*#__PURE__*/React__default['default'].createElement("div", null, /*#__PURE__*/React__default['default'].createElement("h3", {
+    }, resource.created && timeago__namespace.format(resource.created))), /*#__PURE__*/React__default['default'].createElement("div", null, /*#__PURE__*/React__default['default'].createElement("h3", {
+      className: "text-1xl"
+    }, resource.updated && timeago__namespace.format(resource.updated))), /*#__PURE__*/React__default['default'].createElement("div", null, /*#__PURE__*/React__default['default'].createElement("h3", {
       className: "text-1xl"
     }, /*#__PURE__*/React__default['default'].createElement("a", {
       className: "text-yellow-600",
-      href: "/dataset/".concat(resource.path)
+      href: resource.path
     }, resource.format))));
   })));
 };

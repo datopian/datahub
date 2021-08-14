@@ -1,5 +1,6 @@
 import React from 'react';
 import filesize from 'filesize'
+import * as timeago from 'timeago.js';
 import PropTypes from 'prop-types';
 
 /**
@@ -22,7 +23,10 @@ const ResourcesInfo = ({ resources }) => {
                         <h3 className="text-1xl font-bold mb-2">Size</h3>
                     </div>
                     <div>
-                        <h3 className="text-1xl font-bold mb-2">Last Changed</h3>
+                        <h3 className="text-1xl font-bold mb-2">Created</h3>
+                    </div>
+                    <div>
+                        <h3 className="text-1xl font-bold mb-2">Updated</h3>
                     </div>
                     <div>
                         <h3 className="text-1xl font-bold mb-2">Download</h3>
@@ -33,20 +37,24 @@ const ResourcesInfo = ({ resources }) => {
                     return (
                         <div key={`${index}_${resource.name}`} className="grid grid-cols-7 gap-4">
                             <div>
-                                <h3 className="text-1xl">{resource.name}</h3>
+                                <h3 className="text-1xl">{resource.title || resource.name}</h3>
                             </div>
                             <div>
                                 <h3 className="text-1xl">{resource.description || "No description"}</h3>
                             </div>
                             <div>
-                                <h3 className="text-1xl">{resource.size && filesize(resource.size, { bits: true })}</h3>
+                                <h3 className="text-1xl">{resource.size ? filesize(resource.size, { bits: true }) : 0}</h3>
                             </div>
                             <div>
-                                <h3 className="text-1xl">{resource.updated}</h3>
+                                <h3 className="text-1xl">{resource.created && timeago.format(resource.created)}</h3>
+                            </div>
+                            <div>
+                                <h3 className="text-1xl">{resource.updated && timeago.format(resource.updated)}</h3>
                             </div>
                             <div>
                                 <h3 className="text-1xl">
-                                    <a className="text-yellow-600" href={`/dataset/${resource.path}`}>
+                                    {/* We assume that resource.path is a URL but not relative path. */}
+                                    <a className="text-yellow-600" href={resource.path}>
                                         {resource.format}
                                     </a>
                                 </h3>
