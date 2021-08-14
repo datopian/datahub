@@ -57,6 +57,7 @@ export const SEARCH_QUERY = gql`
         results {
           name
           title
+          metadata_modified
           organization {
             name
             title

@@ -47,7 +47,8 @@
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
     "react-router": "^5.2.0",
-    "slugify": "^1.4.0"
+    "slugify": "^1.4.0",
+    "timeago.js": "^4.0.2"
   },
   "devDependencies": {
     "@tailwindcss/forms": "^0.3.3",
