@@ -72,6 +72,7 @@ export const SEARCH_QUERY = gql`
             name
             title
             description
+            image: image_url
           }
         }
       }
