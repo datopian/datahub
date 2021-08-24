@@ -17,7 +17,7 @@ export const GET_ORG_QUERY = gql`
   }
 `;
 
-export const GET_DATAPACKAGE_QUERY = gql`
+export const GET_DATASET_QUERY = gql`
   query dataset($id: String) {
     dataset(id: $id) @rest(type: "Response", path: "package_show?{args}") {
       result {
@@ -28,23 +28,6 @@ export const GET_DATAPACKAGE_QUERY = gql`
         updated: metadata_modified
         resources {
           name
-          id
-          title
-          format
-          size
-        }
-      }
-    }
-  }
-`;
-
-export const GET_RESOURCES_QUERY = gql`
-  query dataset($id: String) {
-    dataset(id: $id) @rest(type: "Response", path: "package_show?{args}") {
-      result {
-        name
-        resources {
-          name
           title
           description
           path: url
@@ -52,6 +35,11 @@ export const GET_RESOURCES_QUERY = gql`
           created
           updated: last_modified
           size
+        }
+        organization {
+          name
+          title
+          image: image_url
         }
       }
     }
@@ -128,32 +116,6 @@ export const GET_PAGE_QUERY = gql`
       date
       modified
       featured_image
-    }
-  }
-`;
-
-export const GET_DATASET_QUERY = gql`
-  query dataset($id: String) {
-    dataset(id: $id) @rest(type: "Response", path: "package_show?{args}") {
-      result {
-        name
-        title
-        size
-        created: metadata_created
-        updated: metadata_modified
-        resources {
-          name
-          title
-          format
-          created
-          updated: last_modified
-        }
-        organization {
-          name
-          title
-          image: image_url
-        }
-      }
     }
   }
 `;

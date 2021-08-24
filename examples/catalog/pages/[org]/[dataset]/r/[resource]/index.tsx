@@ -5,10 +5,10 @@ import { initializeApollo } from '../../../../../lib/apolloClient';
 import Nav from '../../../../../components/home/Nav';
 import About from '../../../../../components/resource/About';
 import DataExplorer from '../../../../../components/resource/DataExplorer';
-import { GET_RESOURCES_QUERY } from '../../../../../graphql/queries';
+import { GET_DATASET_QUERY } from '../../../../../graphql/queries';
 
 const Resource: React.FC<{ variables: any }> = ({ variables }) => {
-  const { data, loading } = useQuery(GET_RESOURCES_QUERY, { variables });
+  const { data, loading } = useQuery(GET_DATASET_QUERY, { variables });
 
   if (loading) return <div>Loading</div>;
   const result = data.dataset.result;
@@ -42,7 +42,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   };
 
   await apolloClient.query({
-    query: GET_RESOURCES_QUERY,
+    query: GET_DATASET_QUERY,
     variables,
   });
 
