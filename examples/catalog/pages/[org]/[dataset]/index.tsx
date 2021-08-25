@@ -6,6 +6,7 @@ import Nav from '../../../components/home/Nav';
 import About from '../../../components/dataset/About';
 import Org from '../../../components/dataset/Org';
 import Resources from '../../../components/dataset/Resources';
+import Footer from '../../../components/home/Footer';
 import { GET_DATASET_QUERY } from '../../../graphql/queries';
 
 const Dataset: React.FC<{ variables: any }> = ({ variables }) => {
@@ -21,13 +22,10 @@ const Dataset: React.FC<{ variables: any }> = ({ variables }) => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <Nav />
-      <main className="p-6">
-        <h1 className="text-3xl font-semibold text-primary mb-2">
-          {result.title || result.name}
-        </h1>
-        <Org variables={variables} />
+      <main className="p-8">
         <About variables={variables} />
         <Resources variables={variables} />
+        <Footer />
       </main>
     </>
   );

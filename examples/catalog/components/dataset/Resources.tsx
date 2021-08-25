@@ -56,8 +56,12 @@ const Resources: React.FC<{ variables: any }> = ({ variables }) => {
   const { result } = data.dataset;
 
   return (
-    <>
-      <h3 className="text-xl font-semibold">Data Files</h3>
+    <div className="mt-12">
+      <div className="pb-5 border-b border-gray-200">
+        <h1 className="text-2xl leading-6 font-medium text-gray-900">
+          Data files
+        </h1>
+      </div>
       <Table
         columns={columns}
         data={result.resources.map((resource) => ({
@@ -65,7 +69,7 @@ const Resources: React.FC<{ variables: any }> = ({ variables }) => {
           parentName: result.name,
         }))}
       />
-    </>
+    </div>
   );
 };
 
