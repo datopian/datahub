@@ -1,5 +1,35 @@
 import gql from 'graphql-tag';
 
+export const GET_RESOURCE_VIEWS = gql`
+  query views($id: String) {
+    views(id: $id) @rest(type: "Response", path: "resource_view_list?{args}") {
+      result @type(name: "View") {
+        id
+        title
+        description
+        resources: resource_id
+        viewType: view_type
+        series
+        group
+        type: graph_type
+      }
+    }
+  }
+`;
+
+export const GET_DATASTORE_DATA = gql`
+  query datastore($resource_id: String) {
+    datastore(resource_id: $resource_id)
+      @rest(type: "Response", path: "datastore_search?{args}") {
+      result {
+        count: total
+        fields
+        records
+      }
+    }
+  }
+`;
+
 export const GET_ORG_QUERY = gql`
   query org($id: String) {
     org(id: $id) @rest(type: "Response", path: "organization_show?{args}") {
@@ -27,6 +57,7 @@ export const GET_DATASET_QUERY = gql`
         created: metadata_created
         updated: metadata_modified
         resources {
+          id
           name
           title
           description

@@ -4,7 +4,8 @@ import Head from 'next/head';
 import { initializeApollo } from '../../../../../lib/apolloClient';
 import Nav from '../../../../../components/home/Nav';
 import About from '../../../../../components/resource/About';
-import DataExplorer from '../../../../../components/resource/DataExplorer';
+import View from '../../../../../components/resource/View';
+import Footer from '../../../../../components/home/Footer';
 import { GET_DATASET_QUERY } from '../../../../../graphql/queries';
 
 const Resource: React.FC<{ variables: any }> = ({ variables }) => {
@@ -24,11 +25,9 @@ const Resource: React.FC<{ variables: any }> = ({ variables }) => {
       </Head>
       <Nav />
       <main className="p-6">
-        <h1 className="text-3xl font-semibold text-primary mb-2">
-          {resource.title || resource.name}
-        </h1>
         <About variables={variables} />
-        <DataExplorer variables={variables} />
+        <View variables={{ id: resource.id }} />
+        <Footer />
       </main>
     </>
   );
