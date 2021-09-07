@@ -41,7 +41,7 @@
     "react-table": "^7.6.3",
     "react-vega": "^7.4.2",
     "remark": "^13.0.0",
-    "remark-html": "^13.0.1",
+    "remark-html": "^13.0.2",
     "tailwindcss": "^2.0.2",
     "vega": "^5.19.1",
     "vega-lite": "^5.0.0"
