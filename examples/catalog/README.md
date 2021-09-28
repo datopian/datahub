@@ -13,7 +13,7 @@ data portals
 [ckan]: https://ckan.org/
 [next.js]: https://nextjs.com/
 
-Live DEMO: https://portal.datopian1.now.sh
+Live DEMO: https://catalog-portal-js.vercel.app
 
 ## Features
 
