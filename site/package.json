@@ -25,7 +25,7 @@
     "remark": "^13.0.0",
     "remark-footnotes": "^3.0.0",
     "remark-gfm": "^1.0.0",
-    "remark-html": "^13.0.1",
+    "remark-html": "^13.0.2",
     "remark-slug": "^6.1.0",
     "remark-toc": "^7.2.0",
     "tailwindcss": "^2.0.2",
