@@ -5,13 +5,13 @@ export default function Home() {
   return (
     <Layout>
       <main className="flex flex-col items-center justify-center w-full flex-1 px-20 text-center py-10">
-        <h1 className="text-6xl font-bold">
+        <h1 className="text-4xl sm:text-8xl font-bold">
           <a href="https://portaljs.com/">
-            <img src="/logo.svg" alt="PortalJS Logo" className="h-28" />
+            P🌀RTAL.<small>JS</small>
           </a>
         </h1>
 
-        <h2 className="mt-6 text-4xl font-normal leading-snug">
+        <h2 className="mt-6 text-2xl sm:text-4xl font-normal leading-snug">
           Rapidly build rich data portals using a modern frontend framework
         </h2>
 
