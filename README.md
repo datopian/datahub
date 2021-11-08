@@ -1,5 +1,7 @@
-<h1 align="center">🌀 Portal.JS
-> The JavaScript framework for data portals
+<h1 align="center">
+🌀 Portal.JS
+<br />
+Create a gateway to your data
 </h1>
 
 * [What is Portal.JS ?](#What-is-Portal.JS)
