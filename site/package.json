@@ -28,7 +28,7 @@
     "remark-html": "^13.0.2",
     "remark-slug": "^6.1.0",
     "remark-toc": "^7.2.0",
-    "tailwindcss": "^2.0.2",
+    "tailwindcss": "^2.2.16",
     "vega": "^5.20.2",
     "vega-lite": "^5.1.0",
     "xlsx": "^0.17.0"
