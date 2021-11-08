@@ -13,7 +13,7 @@ export default function Layout({ children, title = 'Home' }) {
         <meta name="viewport" content="initial-scale=1.0, width=device-width" />
       </Head>
       <Nav />
-      <div className="prose mx-auto p-6">
+      <div className="mx-auto p-6">
         {children}
       </div>
       <footer className="flex items-center justify-center w-full h-24 border-t">
