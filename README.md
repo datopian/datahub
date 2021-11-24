@@ -183,7 +183,7 @@ Components are grouped under the following sections:
 * [Search](https://github.com/datopian/portal.js/tree/main/src/components/search): Components used for building a search interface for datasets
 * [Blog](https://github.com/datopian/portal.js/tree/main/src/components/blog): Components for building a simple blog for datasets
 * [Views](https://github.com/datopian/portal.js/tree/main/src/components/views): Components like charts, tables, maps for generating data views
-* [Misc](https://github.com/datopian/portal.js/tree/main/src/components/misc): Miscellaneos components like errors, custom links, etc used for extra design. 
+* [Misc](https://github.com/datopian/portal.js/tree/main/src/components/misc): Miscellaneous components like errors, custom links, etc used for extra design. 
 
 ### UI Components
 
@@ -339,7 +339,7 @@ KeyInfo component accepts two properties:
 
 The `ResourceInfo` components displays key properties like the name, size, format, modification dates, as well as a download link in a resource object. See an example of a `ResourceInfo` component in the `Data Files` section [here](https://portal-js.vercel.app/).
 
-You can import and use the`ResourceInfo` component as demonstrated below:
+You can import and use the `ResourceInfo` component as demonstrated below:
 ```javascript
 import { ResourceInfo } from 'portal'
 
@@ -383,7 +383,7 @@ The `ReadMe` component is used for displaying a compiled dataset Readme in a rea
 
 > Note: By compiled ReadMe, we mean ReadMe that has been converted to plain string using a package like [remark](https://www.npmjs.com/package/remark).
 
-You can import and use the`ReadMe` component as demonstrated below:
+You can import and use the `ReadMe` component as demonstrated below:
 ```javascript
 import { ReadMe } from 'portal'
 import remark from 'remark'
@@ -765,7 +765,7 @@ ___
 
 ## Concepts and Terms
 In this section, we explain some of the terms and concepts used throughtout the portal.js documentation. 
-> Some of these concepts are part of officila specs, and when appropriate, we'll link to the sources where you can get more details. 
+> Some of these concepts are part of official specs, and when appropriate, we'll link to the sources where you can get more details. 
 ### Dataset
 A dataset extends the [Frictionless data package](https://specs.frictionlessdata.io/data-package/#metadata) to add an extra organization property. The organization property describes the organization the dataset belongs to, and it should have the following properties:
 ```javascript
