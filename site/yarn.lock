@@ -3354,10 +3354,10 @@ react-refresh@0.8.3:
   resolved "https://registry.yarnpkg.com/react-refresh/-/react-refresh-0.8.3.tgz#721d4657672d400c5e3c75d063c4a85fb2d5d68f"
   integrity sha512-X8jZHc7nCMjaCqoU+V2I0cOhNW+QMBwSUkeXnTi8IPe6zaRWfn60ZzvFDZqWPfmSJfjub7dDW1SP0jaHWLu/hg==
 
-react-vega@^7.4.3:
-  version "7.4.3"
-  resolved "https://registry.yarnpkg.com/react-vega/-/react-vega-7.4.3.tgz#06b6acbc05eb97e628830f37c57b3a42c0cfb881"
-  integrity sha512-SjsXUh4xEzix0gaZ8/b+axF9Tvb6l2pG5DN3Ym7NlNGzqj1erga+GvSm0EwzxVygvzoIfhKI+3MszZ2Rdc0xaA==
+react-vega@^7.4.4:
+  version "7.4.4"
+  resolved "https://registry.yarnpkg.com/react-vega/-/react-vega-7.4.4.tgz#098bca8761e8f9b9e7ab300beef434ca18dbb843"
+  integrity sha512-zIQo5+iz82z0+tSHzhT0U32MkMtbzWJG4SVMEJoJlduQJvkeJCQ7qaqfjUaatOhiO8eqjE5oM81BadUAXZ5Njw==
   dependencies:
     "@types/react" "^16.9.19"
     fast-deep-equal "^3.1.1"

@@ -21,7 +21,7 @@
     "postcss": "^8.2.10",
     "react": "17.0.2",
     "react-dom": "17.0.2",
-    "react-vega": "^7.4.3",
+    "react-vega": "^7.4.4",
     "remark": "^13.0.0",
     "remark-footnotes": "^3.0.0",
     "remark-gfm": "^1.0.0",
