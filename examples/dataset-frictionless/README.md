@@ -5,7 +5,7 @@ This example creates a portal/showcase for a single dataset. The dataset should 
 ## How to use
 
 ```bash
-npx create next-app -e https://github.com/datopian/portal.js/tree/main/examples/dataset-frictionless
+npx create-next-app -e https://github.com/datopian/portal.js/tree/main/examples/dataset-frictionless
 # choose a name for your portal when prompted e.g. your-portal or go with default my-app
 
 # then run it
@@ -20,7 +20,7 @@ You should see the demo portal running with the example dataset provided:
 
 ### Use your own dataset
 
-You can try it out with other Frictionless datasets.
+You can try it out with other [Frictionless datasets](https://datahub.io/search).
 
 In the directory of your portal do:
 
