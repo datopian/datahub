@@ -3,6 +3,7 @@ import { Disclosure, Menu, Transition } from '@headlessui/react'
 import { BellIcon, MenuIcon, XIcon } from '@heroicons/react/outline'
 
 import Link from 'next/link'
+import GitHubButton from 'react-next-github-btn'
 
 const navigation = [
   { name: 'Docs', href: '/docs' },
@@ -65,6 +66,9 @@ export default function Nav() {
                   </div>
                 </div>
               </div>
+              <div className="mt-2 justify-end">
+                  <GitHubButton href="https://github.com/datopian/portal.js" data-color-scheme="no-preference: light; light: light; dark: dark;" data-size="large" data-show-count="true" aria-label="Star datopian/portal.js on GitHub">Stars</GitHubButton>
+                </div>
             </div>
           </div>
 
