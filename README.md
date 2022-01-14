@@ -802,7 +802,7 @@ TODO
 
 ## Deploying portal build to github pages
 
-* [Deploying single frictionless dataset to Github](./scripts/README.md)
+[Deploying single frictionless dataset to Github](https://portaljs.org/publish)
 
 ## Showcases
 
