@@ -20,7 +20,7 @@ jobs:
       env:
         PORTAL_REPO_NAME: ${{ secrets.PORTAL_REPO_NAME }}
       run: |
-        curl https://raw.githubusercontent.com/datopian/portal.js/main/scripts/single-dataset-no-commit.sh > portal.sh 
+        curl https://raw.githubusercontent.com/datopian/portal.js/main/site/public/scripts/single-dataset-no-commit.sh > portal.sh 
         git config --local user.email "$(git log --format='%ae' HEAD^!)"
         git config --local user.name "$(git log --format='%an' HEAD^!)"
         source ./portal.sh

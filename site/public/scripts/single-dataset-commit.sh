@@ -12,7 +12,7 @@ PORTAL_DATASET_PATH=$PWD"/portal/public/dataset"
 export PORTAL_DATASET_PATH
 
 mkdir -p .github && mkdir -p .github/workflows && touch .github/workflows/main.yml
-curl https://raw.githubusercontent.com/datopian/portal.js/main/scripts/gh-page-builder-action.yml > .github/workflows/main.yml
+curl https://raw.githubusercontent.com/datopian/portal.js/main/site/public/scripts/gh-page-builder-action.yml > .github/workflows/main.yml
 
 cd portal
 assetPrefix='"/'$PORTAL_REPO_NAME'/"'
@@ -22,5 +22,5 @@ echo 'module.exports = {assetPrefix:' ${assetPrefix}', basePath: '${basePath}' }
 cd ..
 git add .
 git commit -m "Add dataset build feature"
-# git push 
+git push 
 echo "Portal generated, please push your code to github"

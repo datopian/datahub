@@ -1,7 +1,9 @@
 # Publishing data on Github using Portal.js and Github pages
-
-Use case: you have some data in a Github repo and you'd like to publish it online using "portal" so that it is easy for others to view, explore and use.
-
+---
+**Use Case:** 
+---
+You have some data in a Github repo and you'd like to publish it online using "portal" so that it is easy for others to view, explore and use.
+---
 Here we show how you can use portal.js plus github actions to publish your dataset in minutes and keep it updated as you make changes.
 
 The example focuses on the case of a [Frictionless dataset][fd] but it works for any dataset type supported by portal.js. 
@@ -29,11 +31,11 @@ In the dataset repository you want to publish, create a github secret with the n
 
 See steps on creating a secret [here](https://docs.github.com/en/actions/reference/encrypted-secrets)
 
-<img src="./assets/secrets.png" />
+<img src="/scripts/assets/secrets.png" />
 
 ### Step 2
 
-In the dataset repository you want deploy create a `.github/workflow` directory and add a `main.yml` file with the following content (you can also view/download this [action file here]("./actions/single-dataset-ssg.yml"):
+In the dataset repository you want deploy create a `.github/workflow` directory and add a `main.yml` file with the following content (you can also view/download this [action file here](scripts/actions/single-dataset-ssg.yml):
 
 ```bash
 name: github pages
@@ -58,7 +60,7 @@ jobs:
       env:
         PORTAL_REPO_NAME: ${{ secrets.PORTAL_REPO_NAME }}
       run: |
-        curl https://raw.githubusercontent.com/datopian/portal.js/main/scripts/single-dataset-no-commit.sh > portal.sh 
+        curl https://raw.githubusercontent.com/datopian/portal.js/main/site/public/scripts/single-dataset-no-commit.sh > portal.sh 
         git config --local user.email "$(git log --format='%ae' HEAD^!)"
         git config --local user.name "$(git log --format='%an' HEAD^!)"
         source ./portal.sh
@@ -77,7 +79,7 @@ git push
 
 Wait for a while as your page builds, and once you see the green check mark, navigate to your repository's github `pages` in settings, set the `source` to `gh-pages` and folder to `/root`:
 
-<img src='./assets/sdnocommit.png' />
+<img src='/scripts/assets/sdnocommit.png' />
 
 
 ## Deploy single dataset without commiting portal.js code
@@ -107,7 +109,7 @@ export PORTAL_REPO_NAME=finance-vix
 
 ### Step 3
 
-In the dataset repository's root folder, create a file called `portal.sh` and paste the following content:
+In the dataset repository's root folder, create a file called `portal.sh` and paste the following [content](/scripts/single-dataset-no-commit.sh):
 
 ```bash
 #!/bin/bash
@@ -153,7 +155,7 @@ source portal.sh
 
 Go to your repository's github `pages` in setting and set the Branch to gh-pages and folder to root:
 
-<img src='./assets/sdnocommit.png' />
+<img src='/scripts/assets/sdnocommit.png' />
 
 ### Step 6
 
@@ -164,7 +166,7 @@ Open your deployed site at `https://<your github username>/github.io/<dataset re
 
 Users who want access to the portal.js code used for generating the dataset page can use the script shown in the following section. 
 
-This script creates and commit the portal.js code to the root branch and also adds an automated script to deploy to gh-page. Follow the steps below to use this script. 
+This script creates and commits the portal.js code to the root branch and also adds an automated script to deploy to gh-page. Follow the steps below to use this script. 
 
 ### Step 1
 
@@ -197,7 +199,7 @@ export PORTAL_REPO_NAME=finance-vix
 
 ### Step 5
 
-Create a file called `portal.sh` and paste the following content:
+Create a file called `portal.sh` and paste the following [content](/scripts/single-dataset-commit.sh):
 
 ```bash
 #!/bin/bash
@@ -214,7 +216,7 @@ PORTAL_DATASET_PATH=$PWD"/portal/public/dataset"
 export PORTAL_DATASET_PATH
 
 mkdir -p .github && mkdir -p .github/workflows && touch .github/workflows/main.yml
-curl https://raw.githubusercontent.com/datopian/portal.js/main/scripts/gh-page-builder-action.yml > .github/workflows/main.yml
+curl https://raw.githubusercontent.com/datopian/portal.js/main/site/public/scripts/gh-page-builder-action.yml > .github/workflows/main.yml
 
 cd portal
 assetPrefix='"/'$PORTAL_REPO_NAME'/"'
@@ -225,6 +227,7 @@ cd ..
 git add .
 git commit -m "Add dataset build feature"
 git push 
+echo "Portal generated, please push your code to github"
 ```
 
 ### Step 6
@@ -241,7 +244,7 @@ source portal.sh
 
 Go to your repository's github `pages` in setting and set the Branch to gh-pages and folder to root:
 
-<img src='./assets/sdnocommit.png' />
+<img src='/scripts/assets/sdnocommit.png' />
 
 ### Step 8
 
