@@ -65,3 +65,7 @@ npm run dev
 This starts your Portal.js app’s "development server" (more on this later) on port 3000.
 
 Let’s check to see if it’s working. Open http://localhost:3000 from your browser.
+
+## Next steps
+
+* Learn how to use Portal.js as a frontend for CKAN - [learn/ckan](/learn/ckan).
