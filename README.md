@@ -152,18 +152,26 @@ ___
 ## Build a single Frictionless dataset portal
 This tutorial will guide you through building a portal for a single Frictionless dataset.
 
-In this tutorial, you’ll learn Portal.js basics by creating a very simple portal app. [Here’s](https://portal-js.vercel.app/) an example of the final result.
-
-Let’s get started!
-
-> This tutorial assumes basic knowledge of JavaScript, React and Nextjs. If you are not familiar with React or Nextjs, it is advisable to learn them first. We provide some links below to get you started:
-
-* [Learn NextJS](https://nextjs.org/docs/getting-started)
-* [Getting started with React](https://reactjs.org/docs/getting-started.html#learn-react)
+[Here’s](https://portal-js.vercel.app/) an example of the final result.
 
 ### Setup
-TODO
+The dataset should be a Frictionless Dataset i.e. it should have a [datapackage.json](https://specs.frictionlessdata.io/data-package/).
 
+Create a frictionless dataset portal app from the template:
+```
+npx create-next-app -e https://github.com/datopian/portal.js/tree/main/examples/dataset-frictionless
+#choose a name for your portal when prompted e.g. your-portal 
+```
+Go into your portal's directory and set the path to your dataset directory that contains the `datapackage.json`:
+```
+cd <your-portal>
+export PORTAL_DATASET_PATH=<path/to/your/dataset>
+```
+Start the server:
+```
+yarn dev
+```
+Visit the Page to view your dataset portal.
 
 ## Build a CKAN powered dataset portal
 TODO
