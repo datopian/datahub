@@ -68,5 +68,11 @@ Let’s check to see if it’s working. Open http://localhost:3000 from your bro
 
 ## Next steps
 
+Learn how to use Portal.js for your frictionless dataset or CKAN catalog:
+
+* Learn how to build a portal for a single frictionless dataset - [learn/single-frictionless-dataset](/learn/single-frictionless-dataset).
 * Learn how to use Portal.js as a frontend for CKAN - [learn/ckan](/learn/ckan).
-* Learn how to build a portal for a single frictionless dataset - [learn/single-frictionless-dataset](/learn/single-frictionless-dataset)
+
+Learn how to deploy your data on GitHub using Portal.js:
+
+* Deploy to GitHub Pages - [learn/deploy-to-gh-pages](/learn/deploy-to-gh-pages).

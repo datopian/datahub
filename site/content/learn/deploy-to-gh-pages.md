@@ -1,10 +1,10 @@
-# Publishing data on Github using Portal.js and Github pages
+# Deploying data on Github using Portal.js and Github pages
 ---
 **Use Case:** 
 ---
-You have some data in a Github repo and you'd like to publish it online using "portal" so that it is easy for others to view, explore and use.
+You have some data in a Github repo and you'd like to deploy it online using "portal" so that it is easy for others to view, explore and use.
 ---
-Here we show how you can use portal.js plus github actions to publish your dataset in minutes and keep it updated as you make changes.
+Here we show how you can use portal.js plus github actions to deploy your dataset in minutes and keep it updated as you make changes.
 
 The example focuses on the case of a [Frictionless dataset][fd] but it works for any dataset type supported by portal.js. 
 
@@ -16,18 +16,18 @@ We provide three options on how to do this and recommend using the first one unl
 
 [fd]: https://frictionlessdata.io/data-packages/
 
-## Publish datasets automatically by setting up a github actions script
+## Deploy datasets automatically by setting up a github actions script
 
-The github actions below will automatically build and publish a single page, Frictionless dataset to `gh-pages` branch. Follow the steps below to achieve this:
+The github actions below will automatically build and deploy a single page, Frictionless dataset to `gh-pages` branch. Follow the steps below to achieve this:
 
 1. Create a secret so we can automatically commit to gh-pages branch (see below)
-2. Set up the github action to build portal to your dataset and publish it (see below)
+2. Set up the github action to build portal to your dataset and deploy it (see below)
 3. Wait for your page to build and then setup github pages (see below)
 4. View the results: visit `https://<your github username>/github.io/<dataset repo name>/`
 
 ### Step 1
 
-In the dataset repository you want to publish, create a github secret with the name `PORTAL_REPO_NAME` and the value should be the name of the repository. 
+In the dataset repository you want to deploy, create a github secret with the name `PORTAL_REPO_NAME` and the value should be the name of the repository. 
 
 See steps on creating a secret [here](https://docs.github.com/en/actions/reference/encrypted-secrets)
 

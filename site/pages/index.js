@@ -56,20 +56,6 @@ export default function Home() {
             </p>
           </a>
 
-          <a
-            href="/publish/"
-            className="p-6 mt-6 text-left border w-96 rounded-xl hover:text-blue-600 focus:text-blue-600"
-          >
-            <h3 className="text-2xl font-semibold">▸ Publish</h3>
-            <p className="mt-4 text-xl">
-              Learn how to publish data stored on Github using Portal.js and Github Pages.
-            </p>
-          </a>
-          {/* Use code below to create an invisible dummy box on the right of Publish box for a good UI look. */}
-          <a
-            className="p-6 mt-6 text-left w-96 rounded-xl hover:text-blue-600 focus:text-blue-600"
-          >
-          </a>
         </div>
       </main>
     </Layout>
