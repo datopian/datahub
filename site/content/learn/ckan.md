@@ -17,7 +17,7 @@ npx create-next-app -e https://github.com/datopian/portal.js/tree/main/examples/
 
 ### Styling 🎨
 
-We use Tailwind as a CSS framework. Take a look at `/styles/index.css` to see what we're importing from Tailwind bundle. You can also configure Tailwind using `tailwind.config.js` file.
+We use Tailwind as a CSS framework. Take a look at `/styles/globals.css` to see what we're importing from Tailwind bundle. You can also configure Tailwind using `tailwind.config.js` file.
 
 Have a look at Next.js support of CSS and ways of writing CSS:
 
