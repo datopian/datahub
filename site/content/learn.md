@@ -88,11 +88,8 @@ We won't dive into details of how to edit the pages as our focus is presenting d
 
 ## Next steps
 
-Learn how to use Portal.js for your frictionless dataset or CKAN catalog:
-
+* [Presenting a dataset]()
+* [Putting your portal online]()
+  * Deploy to GitHub Pages - [learn/deploy-to-gh-pages](/learn/deploy-to-gh-pages).
 * Learn how to build a portal for a single frictionless dataset - [learn/single-frictionless-dataset](/learn/single-frictionless-dataset).
 * Learn how to use Portal.js as a frontend for CKAN - [learn/ckan](/learn/ckan).
-
-Learn how to deploy your data on GitHub using Portal.js:
-
-* Deploy to GitHub Pages - [learn/deploy-to-gh-pages](/learn/deploy-to-gh-pages).
