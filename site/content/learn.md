@@ -64,15 +64,32 @@ npm run dev
 
 This starts your Portal.js app’s "development server" (more on this later) on port 3000.
 
-Let’s check to see if it’s working. Open http://localhost:3000 from your browser.
+Let’s check to see if it’s working. Open http://localhost:3000 from your browser and you should see the following page:
+
+![Portal.js screen](/portaljs-screen.png)
+
+### Edit the page
+
+Portal.js app is a Next.js/React.js based project. To edit the page follow these steps:
+
+1. Open the project in your text editor.
+2. Go to `/pages/index.js` file.
+3. Find the `h2` tag with text that says **"Yay, the portal is open 🌀"** and change it to **"Hello World!"**.
+4. Save the file.
+
+Once you've changed the file and saved it, the page on `localhost:3000` should update:
+
+![Portal.js screen update](/portaljs-screen-update.png)
+
+We won't dive into details of how to edit the pages as our focus is presenting data. To learn more about how to use Next.js and/or React, please visit the following sites:
+
+* [Learn NextJS](https://nextjs.org/docs/getting-started)
+* [Getting started with React](https://reactjs.org/docs/getting-started.html#learn-react)
 
 ## Next steps
 
-Learn how to use Portal.js for your frictionless dataset or CKAN catalog:
-
+* [Presenting a dataset]()
+* [Putting your portal online]()
+  * Deploy to GitHub Pages - [learn/deploy-to-gh-pages](/learn/deploy-to-gh-pages).
 * Learn how to build a portal for a single frictionless dataset - [learn/single-frictionless-dataset](/learn/single-frictionless-dataset).
 * Learn how to use Portal.js as a frontend for CKAN - [learn/ckan](/learn/ckan).
-
-Learn how to deploy your data on GitHub using Portal.js:
-
-* Deploy to GitHub Pages - [learn/deploy-to-gh-pages](/learn/deploy-to-gh-pages).
