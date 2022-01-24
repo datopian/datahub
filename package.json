@@ -48,5 +48,12 @@
     "rollup": "^2.45.2",
     "rollup-plugin-delete": "^2.0.0",
     "rollup-plugin-peer-deps-external": "^2.2.4"
+  },
+  "files": [
+    "bin",
+    "dist"
+  ],
+  "bin": {
+    "datahub": "bin/index.js"
   }
 }

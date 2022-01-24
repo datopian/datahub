@@ -5,7 +5,7 @@ const chalk = require('chalk')
 const path = require('path')
 const figlet = require('figlet')
 const { exec } = require('child_process');
-const package = require('../package.json')
+const package = require('./package.json')
 const fs = require('fs')
 
 
@@ -80,9 +80,10 @@ async function run() {
   const portalGithubRepo = "https://github.com/datopian/portal-experiment.git"
   const portalLocalRepoDirectory = path.join(datasetPath, 'portal-experiment')
 
-  const cloneRepoCmd = `cd ${datasetPath} && 
-                        export PORTAL_DATASET_PATH=${datasetPath} && 
-                        git clone ${portalGithubRepo}`
+  const cloneRepoCmd = `cd ${datasetPath} && git clone ${portalGithubRepo}`
+
+  // CD into portalLocalRepoDirectory, create an .env file and write PORTAL_DATASET_PATH={datasetPath} to it
+  const createEnvFileCmd = `cd ${portalLocalRepoDirectory} && touch .env && echo PORTAL_DATASET_PATH=${datasetPath} >> .env`
 
   const buildNextAppCmd = userArgs.npm ? `cd ${portalLocalRepoDirectory} && npm install && npm run build` :
                                           `cd ${portalLocalRepoDirectory} && yarn && yarn build`
@@ -111,7 +112,11 @@ async function run() {
       },
     },
     {
-      title: 'Preparing your app...',
+      title: 'Preparing app environment',
+      task: async () => {await execShellCommand(createEnvFileCmd)},
+    },
+    {
+      title: 'Building app...',
       task: async () => { await execShellCommand(buildNextAppCmd) }
     },
     {
