@@ -77,10 +77,10 @@ async function run() {
     process.exit(1)
   }
 
-  const portalGithubRepo = "https://github.com/datopian/portal-experiment.git"
-  const portalLocalRepoDirectory = path.join(datasetPath, 'portal-experiment')
+  const portalGithubRepo = 'https://github.com/datopian/portal.js/tree/main/examples/dataset-frictionless'
+  const portalLocalRepoDirectory = path.join(datasetPath, 'portal')
 
-  const cloneRepoCmd = `cd ${datasetPath} && git clone ${portalGithubRepo}`
+  const cloneRepoCmd = `cd ${datasetPath} && npx create-next-app portal -e ${portalGithubRepo}` 
 
   // CD into portalLocalRepoDirectory, create an .env file and write PORTAL_DATASET_PATH={datasetPath} to it
   const createEnvFileCmd = `cd ${portalLocalRepoDirectory} && touch .env && echo PORTAL_DATASET_PATH=${datasetPath} >> .env`
