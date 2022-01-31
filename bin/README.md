@@ -1,22 +1,52 @@
-# portal-cli-app
-Simple CLI for displaying and publishing datasets
+## DataHub CLI
+
+This command line tool helps you to instantly build and deploy data-driven pages. It doesn't require you to know any frontend technologies (HTML, CSS, JS) so that you can focus on your data. Simply run a command (`datahub deploy`) and get a URL for your data page.
+
+You can still customize the look and feel of your data-driven pages. It uses [Portal.js][] under the hood and with some basic knowledge of frontend development users can easily get started.
+
+[Portal.js]: https://portaljs.org/learn
+
+## Install
+
+Install the CLI tool:
+
+```bash
+npm install -g 'https://gitpkg.now.sh/datopian/portal.js/bin?main'
+# or with yarn
+yarn add 'https://gitpkg.now.sh/datopian/portal.js/bin?main'
+```
+
+Next, confirm if the `datahub` command is available:
+
+```bash
+which datahub
+# should print path to the executable
+```
+
+> Note: It is recommended you install the CLI tool globally so you can run it from anywhere on your machine.
+
 ## Features
 
 ### Show
-Easily preview data locally. 
+
+Easily preview data-driven pages locally. 
+
 I have a dataset `my-data` with the following content:
+
 ```
 README.md
 data.csv
-## descriptor is optional (we infer if not there) 
-# datapackage.json
+# descriptor is optional (we infer if not there) 
+datapackage.json
 ```
+
 I can do the following:
+
 ```
 cd my-data
-portal show
+datahub show
 ```
-I get a nice dataset page like:
+
 The single show command gives me access to the following:
 
 * Elegant presentation
@@ -25,57 +55,28 @@ The single show command gives me access to the following:
 * Show graphs
 * Data summary
 
-Show works with: 
+Show works with:
+
 * README + csv
 * Frictionless dataset
 * Frictionless resource
 * Pure README with frontmatter
  
-
 ### Deploy [Not implemented yet]
-Easily publish your dataset online. 
-If i have a dataset `my_data`:
-```
-cd my-data
-portal deploy
-```
-Gives me a url like: 
- 
-`Myusername-my-dataset.datahub.io`
 
-Deploy: what does it do?
+Once you are ready to deploy your data:
+
+```
+datahub deploy
+```
+
+It starts building your production ready data-driven page and deploys it in the cloud. With the single command you get a URL for you page (e.g., `https://my-data-abcd123.datahub.io`). Now, share it with everyone!
+
+Why to deploy my data?
+
 * Deploys a shareable url with the content of show
     * Semi-private
     * Can integrate access control (?)
 * Deploys a data API
 * [Other integrations e.g. push to google spreadsheets]
 * Dashboard showing your DataHub/Portal projects
-
-
-## User Guide
-
-Install portal-cli-app globally on your computer
-```bash
-npm install -g git+https://github.com/datopian/portal-experiment.git 
-```
->Note: It is recommended you install portal-cli-app globally so you can run the portal show command from anywhere in your computer. 
-
-In a folder with your dataset and optionally datapackage.json, run the command:
-```bash
-portal show 
-```
-
-You can also specify a folder from directory:
-```bash
-portal show path=\some\path\dataset 
-```
-
-Optional args you can pass yo the show command are:
-
-- path: The path to a dataset directory. If blank, defaults to current working directory
-- port: The port number to display your dataset in. Defaults to 3000.
-- npm: Whether or not to use npm when install packages. Defaults to `false`, uses yarn. 
-
-```
-portal show [path=/some/path/dataset | port=4000 | npm=true]
-```
