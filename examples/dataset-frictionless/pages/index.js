@@ -14,7 +14,7 @@ const datasetsDirectory = process.env.PORTAL_DATASET_PATH || path.join(process.c
 
 export default function Home({ dataset, specs }) {
 
-  if (!dataset) {
+  if (!dataset || dataset.hasError) {
     return (
       <div className="container">
         <Head>
@@ -23,8 +23,10 @@ export default function Home({ dataset, specs }) {
           <link rel="preconnect" href="https://fonts.gstatic.com" />
           <link href="https://fonts.googleapis.com/css2?family=Inconsolata&display=swap" rel="stylesheet" />
         </Head>
-        <h1 data-testid="datasetTitle" className="text-3xl font-bold mb-8">
-          No dataset found in path
+        <h1
+          data-testid="datasetTitle"
+          className="m-10 text-center"
+          dangerouslySetInnerHTML={{ __html: dataset.errorMsg }}>
         </h1>
       </div>
     )
@@ -48,11 +50,11 @@ export default function Home({ dataset, specs }) {
       </Head>
 
 
-      <section  name="key-info">
+      <section name="key-info">
         <KeyInfo descriptor={descriptor} resources={resources} />
       </section>
 
-      <section  name="file-list">
+      <section name="file-list">
         <ResourceInfo resources={resources} />
       </section>
 
@@ -85,10 +87,18 @@ export default function Home({ dataset, specs }) {
         )}
       </section>
 
-      <section className="m-8" name="sample-table">
-        <h1 className="text-2xl font-bold mb-4">README</h1>
-        <ReadMe readme={dataset.readmeHtml} />
-      </section>
+      {
+        dataset.readmeHtml != "" ? (
+          <section className="m-8" name="sample-table">
+
+            <h1 className="text-2xl font-bold mb-4">README</h1>
+            <ReadMe readme={dataset.readmeHtml} />
+          </section>
+        ) : (
+          ""
+        )
+      }
+
 
     </div>
   )
@@ -96,12 +106,17 @@ export default function Home({ dataset, specs }) {
 
 
 export async function getStaticProps() {
-  if (!datasetsDirectory) {
-    return { props: {} }
-  }
-
   const dataset = await getDataset(datasetsDirectory)
-  const datasetWithViews = addView(dataset)
-  return datasetWithViews
+
+  if (dataset.hasError == true) {
+    return {
+      props: {
+        dataset
+      }
+    }
+  } else {
+    const datasetWithViews = addView(dataset)
+    return datasetWithViews
+  }
 
 }
