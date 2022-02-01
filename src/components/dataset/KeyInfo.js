@@ -14,7 +14,7 @@ const KeyInfo = ({ descriptor, resources }) => {
 
     return (
         <>
-            <section className="mt-8 mb-8" name="key-info" id="key-info">
+            <section className="m-8" name="key-info" id="key-info">
                 <h2 className="text-xl font-bold mb-4">Key info</h2>
                 <div className="grid grid-cols-7 gap-4">
                     <div>

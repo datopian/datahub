@@ -117,11 +117,7 @@ var Table = function Table(_ref) {
     return row;
   });
   return /*#__PURE__*/React.createElement("div", {
-    "data-testid": "tableGrid",
-    style: {
-      height: 400,
-      width: '100%'
-    }
+    "data-testid": "tableGrid"
   }, /*#__PURE__*/React.createElement(DataGrid, {
     rows: rows,
     columns: columns,
@@ -191,7 +187,7 @@ var KeyInfo = function KeyInfo(_ref) {
     return item.format;
   }).join(', ');
   return /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement("section", {
-    className: "mt-8 mb-8",
+    className: "m-8",
     name: "key-info",
     id: "key-info"
   }, /*#__PURE__*/React.createElement("h2", {
@@ -324,7 +320,7 @@ var ReadMe = function ReadMe(_ref) {
 };
 
 ReadMe.propTypes = {
-  readmeHtml: PropTypes.string.isRequired
+  readme: PropTypes.string.isRequired
 };
 
 /**

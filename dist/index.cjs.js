@@ -151,11 +151,7 @@ var Table = function Table(_ref) {
     return row;
   });
   return /*#__PURE__*/React__default['default'].createElement("div", {
-    "data-testid": "tableGrid",
-    style: {
-      height: 400,
-      width: '100%'
-    }
+    "data-testid": "tableGrid"
   }, /*#__PURE__*/React__default['default'].createElement(dataGrid.DataGrid, {
     rows: rows,
     columns: columns,
@@ -225,7 +221,7 @@ var KeyInfo = function KeyInfo(_ref) {
     return item.format;
   }).join(', ');
   return /*#__PURE__*/React__default['default'].createElement(React__default['default'].Fragment, null, /*#__PURE__*/React__default['default'].createElement("section", {
-    className: "mt-8 mb-8",
+    className: "m-8",
     name: "key-info",
     id: "key-info"
   }, /*#__PURE__*/React__default['default'].createElement("h2", {
@@ -358,7 +354,7 @@ var ReadMe = function ReadMe(_ref) {
 };
 
 ReadMe.propTypes = {
-  readmeHtml: PropTypes__default['default'].string.isRequired
+  readme: PropTypes__default['default'].string.isRequired
 };
 
 /**
