@@ -80,3 +80,19 @@ Why to deploy my data?
 * Deploys a data API
 * [Other integrations e.g. push to google spreadsheets]
 * Dashboard showing your DataHub/Portal projects
+
+### Extra supported commands 
+You can directly specify a folder to build from:
+```bash
+portal show path=\some\path\dataset 
+```
+
+Optional args you can pass yo the show command are:
+
+- path: The path to a dataset directory. If blank, defaults to current working directory
+- port: The port number to display your dataset in. Defaults to 3000.
+- npm: Whether or not to use npm when install packages. Defaults to `false`, uses yarn. 
+
+```
+portal show [path=/some/path/dataset | port=4000 | npm=true]
+```
