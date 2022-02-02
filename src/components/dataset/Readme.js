@@ -19,7 +19,7 @@ const ReadMe = ({ readme }) => {
 }
 
 ReadMe.propTypes = {
-    readmeHtml: PropTypes.string.isRequired
+    readme: PropTypes.string.isRequired
 }
 
 export default ReadMe

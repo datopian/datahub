@@ -81,7 +81,9 @@ export default function Home({ dataset, specs }) {
         <h1 className="text-2xl font-bold mb-4">Data Preview</h1>
         <h2 className="text-1xl">{descriptor.title}</h2>
         {resources[0].sample ? (
-          <Table columns={columns} data={tableSample} />
+          <div >
+            <Table columns={columns} data={tableSample} />
+          </div>
         ) : (
           'No preview is available for this dataset'
         )}

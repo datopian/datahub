@@ -14,7 +14,7 @@ const Table = ({ columns, data }) => {
     return row
   })
   return (
-    <div data-testid="tableGrid" style={{ height: 400, width: '100%' }}>
+    <div data-testid="tableGrid">
       <DataGrid rows={rows} columns={columns} pageSize={5} />
     </div>
   );
