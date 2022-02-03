@@ -1,5 +1,4 @@
 import {
-  ResourceInfo,
   KeyInfo,
   PlotlyChart,
   Table,
@@ -36,7 +35,11 @@ export default function Home({ dataset, specs }) {
   const resources = dataset['resources']
 
   const columns = resources[0].schema.fields.map((field) => {
-    return { field: field.name, headerName: field.name }
+    return {
+      field: field.name,
+      headerName: field.name,
+      flex: 1
+    }
   })
   const tableSample = resources[0].sample
 
@@ -51,11 +54,7 @@ export default function Home({ dataset, specs }) {
 
 
       <section name="key-info">
-        <KeyInfo descriptor={descriptor} resources={resources} />
-      </section>
-
-      <section name="file-list">
-        <ResourceInfo resources={resources} />
+        <h1 className="text-3xl font-bold m-8">{descriptor.title}</h1>
       </section>
 
       <section className="m-8" name="graph">
@@ -79,28 +78,30 @@ export default function Home({ dataset, specs }) {
 
       <section className="m-8" name="sample-table" >
         <h1 className="text-2xl font-bold mb-4">Data Preview</h1>
-        <h2 className="text-1xl">{descriptor.title}</h2>
-        {resources[0].sample ? (
-          <div >
-            <Table columns={columns} data={tableSample} />
-          </div>
-        ) : (
-          'No preview is available for this dataset'
-        )}
+        <div className='ml-3'>
+          <h2 className="text-1xl">{descriptor.title}</h2>
+          {resources[0].sample ? (
+            <div >
+              <Table columns={columns} data={tableSample} />
+            </div>
+          ) : (
+            'No preview is available for this dataset'
+          )}
+        </div>
       </section>
 
-      {
-        dataset.readmeHtml != "" ? (
-          <section className="m-8" name="sample-table">
-
-            <h1 className="text-2xl font-bold mb-4">README</h1>
-            <ReadMe readme={dataset.readmeHtml} />
-          </section>
-        ) : (
-          ""
-        )
-      }
-
+      <section name="sample-table">
+        {
+          dataset.readmeHtml != "" ? (
+            <div>
+              <h1 className="text-2xl font-bold ml-8">README</h1>
+              <ReadMe readme={dataset.readmeHtml} />
+            </div>
+          ) : (
+            ""
+          )
+        }
+      </section>
 
     </div>
   )
