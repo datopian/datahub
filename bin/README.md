@@ -84,7 +84,7 @@ Why to deploy my data?
 ### Extra supported commands 
 You can directly specify a folder to build from:
 ```bash
-portal show path=\some\path\dataset 
+datahub show path=\some\path\dataset 
 ```
 
 Optional args you can pass yo the show command are:
@@ -94,5 +94,5 @@ Optional args you can pass yo the show command are:
 - npm: Whether or not to use npm when install packages. Defaults to `false`, uses yarn. 
 
 ```
-portal show [path=\some\path\dataset | port=4000 | npm=true]
+datahub show [path=\some\path\dataset | port=4000 | npm=true]
 ```
