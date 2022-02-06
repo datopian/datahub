@@ -35,7 +35,7 @@ function execShellCommand(cmd) {
 }
 
 function processArgs(args) {
-  const userArgs = { npm: false, override: false, port: 3000, path: process.cwd() }
+  const userArgs = { npm: true, override: false, port: 3000, path: process.cwd() }
   args.forEach((arg) => {
     if (arg.includes("=")) {
       let temp = arg.split("=")
@@ -89,7 +89,7 @@ async function run() {
                                           `cd ${portalLocalRepoDirectory} && yarn && yarn build`
 
   const startNextAppCmd = userArgs.npm ?
-    `cd ${portalLocalRepoDirectory} && npm run start -p ${userArgs.port}` :
+    `cd ${portalLocalRepoDirectory} && PORT=${userArgs.port} npm run start` :
     `cd ${portalLocalRepoDirectory} && yarn start -p ${userArgs.port}`
 
 
