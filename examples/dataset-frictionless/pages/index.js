@@ -1,9 +1,9 @@
+import React from 'react'
 import {
-  KeyInfo,
   PlotlyChart,
-  Table,
-  ReadMe
-} from 'portal'
+  ReadMe,
+  DataExplorer,
+} from 'portal/dist/index.cjs'
 import path from 'path'
 import Head from 'next/head'
 import { getDataset } from '../lib/dataset'
@@ -33,15 +33,6 @@ export default function Home({ dataset, specs }) {
 
   const descriptor = dataset['descriptor']
   const resources = dataset['resources']
-
-  const columns = resources[0].schema.fields.map((field) => {
-    return {
-      field: field.name,
-      headerName: field.name,
-      flex: 1
-    }
-  })
-  const tableSample = resources[0].sample
 
   return (
     <div className="container">
@@ -80,13 +71,7 @@ export default function Home({ dataset, specs }) {
         <h1 className="text-2xl font-bold mb-4">Data Preview</h1>
         <div className='ml-3'>
           <h2 className="text-1xl">{descriptor.title}</h2>
-          {resources[0].sample ? (
-            <div >
-              <Table columns={columns} data={tableSample} />
-            </div>
-          ) : (
-            'No preview is available for this dataset'
-          )}
+          <DataExplorer resources={resources} />
         </div>
       </section>
 
