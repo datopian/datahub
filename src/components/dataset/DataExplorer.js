@@ -1,6 +1,9 @@
 import { DataGrid } from '@mui/x-data-grid';
 import PropTypes from 'prop-types';
-import React from 'react';
+import { useState } from 'react';
+import FileDownloadIcon from '@mui/icons-material/FileDownload';
+import InsertDriveFileIcon from '@mui/icons-material/InsertDriveFile';
+import FolderIcon from '@mui/icons-material/Folder';
 
 /**
  * Opens a frictionless resource in data explorer. Data explorer gives you
@@ -9,8 +12,8 @@ import React from 'react';
  * @param resources: A array of frictionless datapackage resource
  */
 const DataExplorer = ({ resources, columnHeaderStyle }) => {
-    const [activeTable, setActiveTable] = React.useState(0);
-    const [previewMode, setPreviewMode] = React.useState(true);
+    const [activeTable, setActiveTable] = useState(0);
+    const [previewMode, setPreviewMode] = useState(true);
 
     const handleTableNameClick = (index) => {
         setActiveTable(index);
@@ -58,7 +61,7 @@ const DataExplorer = ({ resources, columnHeaderStyle }) => {
         <div className='grid grid-cols-12'  >
             <div className='col-span-3'>
                 <div className='flex'>
-                    <img src={"../../assets/files.svg"} />
+                    <FolderIcon />
                     <h1 className="font-bold ml-3">
                         Files
                     </h1>
@@ -68,7 +71,7 @@ const DataExplorer = ({ resources, columnHeaderStyle }) => {
                         resources.map((resource, i) => {
                             return (
                                 <div key={`res@${i}`} className='flex'>
-                                    <img className='ml-1' src={"./file.svg"} />
+                                    <InsertDriveFileIcon className='ml-2' />
                                     <button className='ml-3 focus:outline-none' id={i} onClick={() => handleTableNameClick(i)}>
                                         {
                                             i === activeTable ? (
@@ -90,7 +93,7 @@ const DataExplorer = ({ resources, columnHeaderStyle }) => {
                 <div className='flex'>
                     <div className='flex mr-3'>
                         <a href={resources[activeTable].path} >
-                            <img className='ml-3 mr-1' src={"./download.svg"} />
+                            <FileDownloadIcon className='ml-2' />
                         </a>
                         <span>
                             {resources[activeTable].size ? (formatResourceSize(resources[activeTable].size)) : 'N/A'}
