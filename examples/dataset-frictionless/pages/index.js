@@ -9,7 +9,7 @@ import Head from 'next/head'
 import { getDataset } from '../lib/dataset'
 import { addView } from '../lib/utils'
 
-const datasetsDirectory = process.env.PORTAL_DATASET_PATH || path.join(process.cwd(), "public", "dataset")
+const datasetsDirectory = process.env.PORTAL_DATASET_PATH || path.join(process.cwd(), "public", "country-codes")
 
 export default function Home({ dataset, specs }) {
 
@@ -70,7 +70,6 @@ export default function Home({ dataset, specs }) {
       <section className="m-8" name="sample-table" >
         <h1 className="text-2xl font-bold mb-4">Data Preview</h1>
         <div className='ml-3'>
-          <h2 className="text-1xl">{descriptor.title}</h2>
           <DataExplorer resources={resources} />
         </div>
       </section>
