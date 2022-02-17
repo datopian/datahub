@@ -2,12 +2,17 @@
 
 Object.defineProperty(exports, '__esModule', { value: true });
 
-var React = require('react');
+var react = require('react');
 var dataGrid = require('@material-ui/data-grid');
 var PropTypes = require('prop-types');
+var jsxRuntime = require('react/jsx-runtime');
 var createPlotlyComponent = require('react-plotly.js/factory');
 var filesize = require('filesize');
 var timeago = require('timeago.js');
+var xDataGrid = require('@mui/x-data-grid');
+var FileDownloadIcon = require('@mui/icons-material/FileDownload');
+var InsertDriveFileIcon = require('@mui/icons-material/InsertDriveFile');
+var FolderIcon = require('@mui/icons-material/Folder');
 var Link = require('next/link');
 var parse = require('html-react-parser');
 
@@ -33,130 +38,33 @@ function _interopNamespace(e) {
   return Object.freeze(n);
 }
 
-var React__default = /*#__PURE__*/_interopDefaultLegacy(React);
 var PropTypes__default = /*#__PURE__*/_interopDefaultLegacy(PropTypes);
 var createPlotlyComponent__default = /*#__PURE__*/_interopDefaultLegacy(createPlotlyComponent);
 var filesize__default = /*#__PURE__*/_interopDefaultLegacy(filesize);
 var timeago__namespace = /*#__PURE__*/_interopNamespace(timeago);
+var FileDownloadIcon__default = /*#__PURE__*/_interopDefaultLegacy(FileDownloadIcon);
+var InsertDriveFileIcon__default = /*#__PURE__*/_interopDefaultLegacy(InsertDriveFileIcon);
+var FolderIcon__default = /*#__PURE__*/_interopDefaultLegacy(FolderIcon);
 var Link__default = /*#__PURE__*/_interopDefaultLegacy(Link);
 var parse__default = /*#__PURE__*/_interopDefaultLegacy(parse);
 
-function _extends() {
-  _extends = Object.assign || function (target) {
-    for (var i = 1; i < arguments.length; i++) {
-      var source = arguments[i];
-
-      for (var key in source) {
-        if (Object.prototype.hasOwnProperty.call(source, key)) {
-          target[key] = source[key];
-        }
-      }
-    }
-
-    return target;
-  };
-
-  return _extends.apply(this, arguments);
-}
-
-function _slicedToArray(arr, i) {
-  return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _unsupportedIterableToArray(arr, i) || _nonIterableRest();
-}
-
-function _toConsumableArray(arr) {
-  return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _unsupportedIterableToArray(arr) || _nonIterableSpread();
-}
-
-function _arrayWithoutHoles(arr) {
-  if (Array.isArray(arr)) return _arrayLikeToArray(arr);
-}
-
-function _arrayWithHoles(arr) {
-  if (Array.isArray(arr)) return arr;
-}
-
-function _iterableToArray(iter) {
-  if (typeof Symbol !== "undefined" && iter[Symbol.iterator] != null || iter["@@iterator"] != null) return Array.from(iter);
-}
-
-function _iterableToArrayLimit(arr, i) {
-  var _i = arr && (typeof Symbol !== "undefined" && arr[Symbol.iterator] || arr["@@iterator"]);
-
-  if (_i == null) return;
-  var _arr = [];
-  var _n = true;
-  var _d = false;
-
-  var _s, _e;
-
-  try {
-    for (_i = _i.call(arr); !(_n = (_s = _i.next()).done); _n = true) {
-      _arr.push(_s.value);
-
-      if (i && _arr.length === i) break;
-    }
-  } catch (err) {
-    _d = true;
-    _e = err;
-  } finally {
-    try {
-      if (!_n && _i["return"] != null) _i["return"]();
-    } finally {
-      if (_d) throw _e;
-    }
-  }
-
-  return _arr;
-}
-
-function _unsupportedIterableToArray(o, minLen) {
-  if (!o) return;
-  if (typeof o === "string") return _arrayLikeToArray(o, minLen);
-  var n = Object.prototype.toString.call(o).slice(8, -1);
-  if (n === "Object" && o.constructor) n = o.constructor.name;
-  if (n === "Map" || n === "Set") return Array.from(o);
-  if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen);
-}
-
-function _arrayLikeToArray(arr, len) {
-  if (len == null || len > arr.length) len = arr.length;
-
-  for (var i = 0, arr2 = new Array(len); i < len; i++) arr2[i] = arr[i];
-
-  return arr2;
-}
-
-function _nonIterableSpread() {
-  throw new TypeError("Invalid attempt to spread non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method.");
-}
-
-function _nonIterableRest() {
-  throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method.");
-}
-
-/**
- * Displays dataset in tabular form using data grid
- * @param columns: An array of column names with properties: e.g [{field: "col1", headerName: "col1"}, {field: "col2", headerName: "col2"}]
- * @param data: an array of data objects e.g. [ {col1: 1, col2: 2}, {col1: 5, col2: 7} ]
- */
-
-var Table = function Table(_ref) {
-  var columns = _ref.columns,
-      data = _ref.data;
-
-  var rows = _toConsumableArray(data);
-
-  rows = rows.map(function (row, i) {
+const Table = ({
+  columns,
+  data
+}) => {
+  let rows = [...data];
+  rows = rows.map((row, i) => {
     row['id'] = i;
     return row;
   });
-  return /*#__PURE__*/React__default['default'].createElement("div", {
-    "data-testid": "tableGrid"
-  }, /*#__PURE__*/React__default['default'].createElement(dataGrid.DataGrid, {
-    rows: rows,
-    columns: columns,
-    pageSize: 5
-  }));
+  return /*#__PURE__*/jsxRuntime.jsx("div", {
+    "data-testid": "tableGrid",
+    children: /*#__PURE__*/jsxRuntime.jsx(dataGrid.DataGrid, {
+      rows: rows,
+      columns: columns,
+      pageSize: 5
+    })
+  });
 };
 
 Table.propTypes = {
@@ -164,19 +72,15 @@ Table.propTypes = {
   data: PropTypes__default['default'].array.isRequired
 };
 
-var Plot;
+let Plot;
 
-var PlotlyChart = function PlotlyChart(_ref) {
-  var spec = _ref.spec;
+const PlotlyChart = ({
+  spec
+}) => {
+  const [plotCreated, setPlotCreated] = react.useState(0); //0: false, 1: true
 
-  var _useState = React.useState(0),
-      _useState2 = _slicedToArray(_useState, 2),
-      plotCreated = _useState2[0],
-      setPlotCreated = _useState2[1]; //0: false, 1: true
-
-
-  React.useEffect(function () {
-    Promise.resolve().then(function () { return /*#__PURE__*/_interopNamespace(require('plotly.js-basic-dist')); }).then(function (Plotly) {
+  react.useEffect(() => {
+    Promise.resolve().then(function () { return /*#__PURE__*/_interopNamespace(require('plotly.js-basic-dist')); }).then(Plotly => {
       //import Plotly dist when Page has been generated
       Plot = createPlotlyComponent__default['default'](Plotly);
       setPlotCreated(1);
@@ -184,94 +88,131 @@ var PlotlyChart = function PlotlyChart(_ref) {
   }, []);
 
   if (!plotCreated) {
-    return /*#__PURE__*/React__default['default'].createElement("div", null, "Loading...");
+    return /*#__PURE__*/jsxRuntime.jsx("div", {
+      children: "Loading..."
+    });
   }
 
-  return /*#__PURE__*/React__default['default'].createElement("div", {
-    "data-testid": "plotlyChart"
-  }, /*#__PURE__*/React__default['default'].createElement(Plot, _extends({}, spec, {
-    layout: {
-      autosize: true
-    },
-    style: {
-      width: "100%",
-      height: "100%"
-    },
-    useResizeHandler: true
-  })));
+  return /*#__PURE__*/jsxRuntime.jsx("div", {
+    "data-testid": "plotlyChart",
+    children: /*#__PURE__*/jsxRuntime.jsx(Plot, { ...spec,
+      layout: {
+        autosize: true
+      },
+      style: {
+        width: "100%",
+        height: "100%"
+      },
+      useResizeHandler: true
+    })
+  });
 };
 
 PlotlyChart.propTypes = {
   spec: PropTypes__default['default'].object.isRequired
 };
 
-/**
- * KeyInfo component receives two arguments.
- * @param {Object} descriptor A Frictionless datapackage descriptor object with the following fields
- * @param {Array} resources A Frictionless datapackage resource array
- * @returns React Component
- */
-
-var KeyInfo = function KeyInfo(_ref) {
-  var _descriptor$licenses, _descriptor$sources;
-
-  var descriptor = _ref.descriptor,
-      resources = _ref.resources;
-  var formats = resources.map(function (item) {
-    return item.format;
-  }).join(', ');
-  return /*#__PURE__*/React__default['default'].createElement(React__default['default'].Fragment, null, /*#__PURE__*/React__default['default'].createElement("section", {
-    className: "m-8",
-    name: "key-info",
-    id: "key-info"
-  }, /*#__PURE__*/React__default['default'].createElement("h2", {
-    className: "text-xl font-bold mb-4"
-  }, "Key info"), /*#__PURE__*/React__default['default'].createElement("div", {
-    className: "grid grid-cols-7 gap-4"
-  }, /*#__PURE__*/React__default['default'].createElement("div", null, /*#__PURE__*/React__default['default'].createElement("h3", {
-    className: "text-1xl font-bold mb-2"
-  }, "Files")), /*#__PURE__*/React__default['default'].createElement("div", null, /*#__PURE__*/React__default['default'].createElement("h3", {
-    className: "text-1xl font-bold mb-2"
-  }, "Size")), /*#__PURE__*/React__default['default'].createElement("div", null, /*#__PURE__*/React__default['default'].createElement("h3", {
-    className: "text-1xl font-bold mb-2"
-  }, "Format")), /*#__PURE__*/React__default['default'].createElement("div", null, /*#__PURE__*/React__default['default'].createElement("h3", {
-    className: "text-1xl font-bold mb-2"
-  }, "Created")), /*#__PURE__*/React__default['default'].createElement("div", null, /*#__PURE__*/React__default['default'].createElement("h3", {
-    className: "text-1xl font-bold mb-2"
-  }, "Updated")), /*#__PURE__*/React__default['default'].createElement("div", null, /*#__PURE__*/React__default['default'].createElement("h3", {
-    className: "text-1xl font-bold mb-2"
-  }, "Licenses")), /*#__PURE__*/React__default['default'].createElement("div", null, /*#__PURE__*/React__default['default'].createElement("h3", {
-    className: "text-1xl font-bold mb-2"
-  }, "Sources"))), /*#__PURE__*/React__default['default'].createElement("div", {
-    className: "grid grid-cols-7 gap-4"
-  }, /*#__PURE__*/React__default['default'].createElement("div", null, /*#__PURE__*/React__default['default'].createElement("h3", {
-    className: "text-1xl"
-  }, resources.length)), /*#__PURE__*/React__default['default'].createElement("div", null, /*#__PURE__*/React__default['default'].createElement("h3", {
-    className: "text-1xl"
-  }, descriptor.size || 'N/A')), /*#__PURE__*/React__default['default'].createElement("div", null, /*#__PURE__*/React__default['default'].createElement("h3", {
-    className: "text-1xl"
-  }, formats)), /*#__PURE__*/React__default['default'].createElement("div", null, /*#__PURE__*/React__default['default'].createElement("h3", {
-    className: "text-1xl"
-  }, descriptor.created && timeago__namespace.format(descriptor.created))), /*#__PURE__*/React__default['default'].createElement("div", null, /*#__PURE__*/React__default['default'].createElement("h3", {
-    className: "text-1xl"
-  }, descriptor.updated && timeago__namespace.format(descriptor.updated))), /*#__PURE__*/React__default['default'].createElement("div", null, /*#__PURE__*/React__default['default'].createElement("h3", {
-    className: "text-1xl"
-  }, ((_descriptor$licenses = descriptor.licenses) === null || _descriptor$licenses === void 0 ? void 0 : _descriptor$licenses.length) && descriptor.licenses.map(function (item, index) {
-    return /*#__PURE__*/React__default['default'].createElement("a", {
-      className: "text-yellow-600",
-      href: item.path || '#',
-      title: item.title || '',
-      key: index
-    }, item.name);
-  }))), /*#__PURE__*/React__default['default'].createElement("div", null, /*#__PURE__*/React__default['default'].createElement("h3", {
-    className: "text-1xl"
-  }, ((_descriptor$sources = descriptor.sources) === null || _descriptor$sources === void 0 ? void 0 : _descriptor$sources.length) && descriptor.sources.map(function (item, index) {
-    return /*#__PURE__*/React__default['default'].createElement("a", {
-      className: "text-yellow-600",
-      href: item.path,
-      key: index
-    }, item.title);
-  }))))));
+const KeyInfo = ({
+  descriptor,
+  resources
+}) => {
+  const formats = resources.map(item => item.format).join(', ');
+  return /*#__PURE__*/jsxRuntime.jsx(jsxRuntime.Fragment, {
+    children: /*#__PURE__*/jsxRuntime.jsxs("section", {
+      className: "m-8",
+      name: "key-info",
+      id: "key-info",
+      children: [/*#__PURE__*/jsxRuntime.jsx("h2", {
+        className: "text-xl font-bold mb-4",
+        children: "Key info"
+      }), /*#__PURE__*/jsxRuntime.jsxs("div", {
+        className: "grid grid-cols-7 gap-4",
+        children: [/*#__PURE__*/jsxRuntime.jsx("div", {
+          children: /*#__PURE__*/jsxRuntime.jsx("h3", {
+            className: "text-1xl font-bold mb-2",
+            children: "Files"
+          })
+        }), /*#__PURE__*/jsxRuntime.jsx("div", {
+          children: /*#__PURE__*/jsxRuntime.jsx("h3", {
+            className: "text-1xl font-bold mb-2",
+            children: "Size"
+          })
+        }), /*#__PURE__*/jsxRuntime.jsx("div", {
+          children: /*#__PURE__*/jsxRuntime.jsx("h3", {
+            className: "text-1xl font-bold mb-2",
+            children: "Format"
+          })
+        }), /*#__PURE__*/jsxRuntime.jsx("div", {
+          children: /*#__PURE__*/jsxRuntime.jsx("h3", {
+            className: "text-1xl font-bold mb-2",
+            children: "Created"
+          })
+        }), /*#__PURE__*/jsxRuntime.jsx("div", {
+          children: /*#__PURE__*/jsxRuntime.jsx("h3", {
+            className: "text-1xl font-bold mb-2",
+            children: "Updated"
+          })
+        }), /*#__PURE__*/jsxRuntime.jsx("div", {
+          children: /*#__PURE__*/jsxRuntime.jsx("h3", {
+            className: "text-1xl font-bold mb-2",
+            children: "Licenses"
+          })
+        }), /*#__PURE__*/jsxRuntime.jsx("div", {
+          children: /*#__PURE__*/jsxRuntime.jsx("h3", {
+            className: "text-1xl font-bold mb-2",
+            children: "Sources"
+          })
+        })]
+      }), /*#__PURE__*/jsxRuntime.jsxs("div", {
+        className: "grid grid-cols-7 gap-4",
+        children: [/*#__PURE__*/jsxRuntime.jsx("div", {
+          children: /*#__PURE__*/jsxRuntime.jsx("h3", {
+            className: "text-1xl",
+            children: resources.length
+          })
+        }), /*#__PURE__*/jsxRuntime.jsx("div", {
+          children: /*#__PURE__*/jsxRuntime.jsx("h3", {
+            className: "text-1xl",
+            children: descriptor.size || 'N/A'
+          })
+        }), /*#__PURE__*/jsxRuntime.jsx("div", {
+          children: /*#__PURE__*/jsxRuntime.jsx("h3", {
+            className: "text-1xl",
+            children: formats
+          })
+        }), /*#__PURE__*/jsxRuntime.jsx("div", {
+          children: /*#__PURE__*/jsxRuntime.jsx("h3", {
+            className: "text-1xl",
+            children: descriptor.created && timeago__namespace.format(descriptor.created)
+          })
+        }), /*#__PURE__*/jsxRuntime.jsx("div", {
+          children: /*#__PURE__*/jsxRuntime.jsx("h3", {
+            className: "text-1xl",
+            children: descriptor.updated && timeago__namespace.format(descriptor.updated)
+          })
+        }), /*#__PURE__*/jsxRuntime.jsx("div", {
+          children: /*#__PURE__*/jsxRuntime.jsx("h3", {
+            className: "text-1xl",
+            children: descriptor.licenses?.length && descriptor.licenses.map((item, index) => /*#__PURE__*/jsxRuntime.jsx("a", {
+              className: "text-yellow-600",
+              href: item.path || '#',
+              title: item.title || '',
+              children: item.name
+            }, index))
+          })
+        }), /*#__PURE__*/jsxRuntime.jsx("div", {
+          children: /*#__PURE__*/jsxRuntime.jsx("h3", {
+            className: "text-1xl",
+            children: descriptor.sources?.length && descriptor.sources.map((item, index) => /*#__PURE__*/jsxRuntime.jsx("a", {
+              className: "text-yellow-600",
+              href: item.path,
+              children: item.title
+            }, index))
+          })
+        })]
+      })]
+    })
+  });
 };
 
 KeyInfo.propTypes = {
@@ -279,157 +220,367 @@ KeyInfo.propTypes = {
   resources: PropTypes__default['default'].array.isRequired
 };
 
-/**
- * ResourceInfo component displays all resources in a data package 
- * @param {Array} resources A Frictionless datapackage resource object
- * @returns React Component
- */
-
-var ResourcesInfo = function ResourcesInfo(_ref) {
-  var resources = _ref.resources;
-  return /*#__PURE__*/React__default['default'].createElement(React__default['default'].Fragment, null, /*#__PURE__*/React__default['default'].createElement("section", {
-    className: "m-8",
-    name: "file-list"
-  }, /*#__PURE__*/React__default['default'].createElement("div", {
-    className: "grid grid-cols-7 gap-4"
-  }, /*#__PURE__*/React__default['default'].createElement("div", null, /*#__PURE__*/React__default['default'].createElement("h3", {
-    className: "text-1xl font-bold mb-2"
-  }, "File")), /*#__PURE__*/React__default['default'].createElement("div", null, /*#__PURE__*/React__default['default'].createElement("h3", {
-    className: "text-1xl font-bold mb-2"
-  }, "Description")), /*#__PURE__*/React__default['default'].createElement("div", null, /*#__PURE__*/React__default['default'].createElement("h3", {
-    className: "text-1xl font-bold mb-2"
-  }, "Size")), /*#__PURE__*/React__default['default'].createElement("div", null, /*#__PURE__*/React__default['default'].createElement("h3", {
-    className: "text-1xl font-bold mb-2"
-  }, "Created")), /*#__PURE__*/React__default['default'].createElement("div", null, /*#__PURE__*/React__default['default'].createElement("h3", {
-    className: "text-1xl font-bold mb-2"
-  }, "Updated")), /*#__PURE__*/React__default['default'].createElement("div", null, /*#__PURE__*/React__default['default'].createElement("h3", {
-    className: "text-1xl font-bold mb-2"
-  }, "Download"))), resources.map(function (resource, index) {
-    return /*#__PURE__*/React__default['default'].createElement("div", {
-      key: "".concat(index, "_").concat(resource.name),
-      className: "grid grid-cols-7 gap-4"
-    }, /*#__PURE__*/React__default['default'].createElement("div", null, /*#__PURE__*/React__default['default'].createElement("h3", {
-      className: "text-1xl"
-    }, resource.title || resource.name)), /*#__PURE__*/React__default['default'].createElement("div", null, /*#__PURE__*/React__default['default'].createElement("h3", {
-      className: "text-1xl"
-    }, resource.description || "No description")), /*#__PURE__*/React__default['default'].createElement("div", null, /*#__PURE__*/React__default['default'].createElement("h3", {
-      className: "text-1xl"
-    }, resource.size ? filesize__default['default'](resource.size, {
-      bits: true
-    }) : 0)), /*#__PURE__*/React__default['default'].createElement("div", null, /*#__PURE__*/React__default['default'].createElement("h3", {
-      className: "text-1xl"
-    }, resource.created && timeago__namespace.format(resource.created))), /*#__PURE__*/React__default['default'].createElement("div", null, /*#__PURE__*/React__default['default'].createElement("h3", {
-      className: "text-1xl"
-    }, resource.updated && timeago__namespace.format(resource.updated))), /*#__PURE__*/React__default['default'].createElement("div", null, /*#__PURE__*/React__default['default'].createElement("h3", {
-      className: "text-1xl"
-    }, /*#__PURE__*/React__default['default'].createElement("a", {
-      className: "text-yellow-600",
-      href: resource.path
-    }, resource.format))));
-  })));
+const ResourcesInfo = ({
+  resources
+}) => {
+  return /*#__PURE__*/jsxRuntime.jsx(jsxRuntime.Fragment, {
+    children: /*#__PURE__*/jsxRuntime.jsxs("section", {
+      className: "m-8",
+      name: "file-list",
+      children: [/*#__PURE__*/jsxRuntime.jsxs("div", {
+        className: "grid grid-cols-7 gap-4",
+        children: [/*#__PURE__*/jsxRuntime.jsx("div", {
+          children: /*#__PURE__*/jsxRuntime.jsx("h3", {
+            className: "text-1xl font-bold mb-2",
+            children: "File"
+          })
+        }), /*#__PURE__*/jsxRuntime.jsx("div", {
+          children: /*#__PURE__*/jsxRuntime.jsx("h3", {
+            className: "text-1xl font-bold mb-2",
+            children: "Description"
+          })
+        }), /*#__PURE__*/jsxRuntime.jsx("div", {
+          children: /*#__PURE__*/jsxRuntime.jsx("h3", {
+            className: "text-1xl font-bold mb-2",
+            children: "Size"
+          })
+        }), /*#__PURE__*/jsxRuntime.jsx("div", {
+          children: /*#__PURE__*/jsxRuntime.jsx("h3", {
+            className: "text-1xl font-bold mb-2",
+            children: "Created"
+          })
+        }), /*#__PURE__*/jsxRuntime.jsx("div", {
+          children: /*#__PURE__*/jsxRuntime.jsx("h3", {
+            className: "text-1xl font-bold mb-2",
+            children: "Updated"
+          })
+        }), /*#__PURE__*/jsxRuntime.jsx("div", {
+          children: /*#__PURE__*/jsxRuntime.jsx("h3", {
+            className: "text-1xl font-bold mb-2",
+            children: "Download"
+          })
+        })]
+      }), resources.map((resource, index) => {
+        return /*#__PURE__*/jsxRuntime.jsxs("div", {
+          className: "grid grid-cols-7 gap-4",
+          children: [/*#__PURE__*/jsxRuntime.jsx("div", {
+            children: /*#__PURE__*/jsxRuntime.jsx("h3", {
+              className: "text-1xl",
+              children: resource.title || resource.name
+            })
+          }), /*#__PURE__*/jsxRuntime.jsx("div", {
+            children: /*#__PURE__*/jsxRuntime.jsx("h3", {
+              className: "text-1xl",
+              children: resource.description || "No description"
+            })
+          }), /*#__PURE__*/jsxRuntime.jsx("div", {
+            children: /*#__PURE__*/jsxRuntime.jsx("h3", {
+              className: "text-1xl",
+              children: resource.size ? filesize__default['default'](resource.size, {
+                bits: true
+              }) : 0
+            })
+          }), /*#__PURE__*/jsxRuntime.jsx("div", {
+            children: /*#__PURE__*/jsxRuntime.jsx("h3", {
+              className: "text-1xl",
+              children: resource.created && timeago__namespace.format(resource.created)
+            })
+          }), /*#__PURE__*/jsxRuntime.jsx("div", {
+            children: /*#__PURE__*/jsxRuntime.jsx("h3", {
+              className: "text-1xl",
+              children: resource.updated && timeago__namespace.format(resource.updated)
+            })
+          }), /*#__PURE__*/jsxRuntime.jsx("div", {
+            children: /*#__PURE__*/jsxRuntime.jsx("h3", {
+              className: "text-1xl",
+              children: /*#__PURE__*/jsxRuntime.jsx("a", {
+                className: "text-yellow-600",
+                href: resource.path,
+                children: resource.format
+              })
+            })
+          })]
+        }, `${index}_${resource.name}`);
+      })]
+    })
+  });
 };
 
 ResourcesInfo.propTypes = {
   resources: PropTypes__default['default'].array.isRequired
 };
 
-/**
- * ReadMe component displays the markdown description of a datapackage
- * @param {string} readme parsed html of data package readme
- * @returns React Component
- */
-
-var ReadMe = function ReadMe(_ref) {
-  var readme = _ref.readme;
-  return /*#__PURE__*/React__default['default'].createElement(React__default['default'].Fragment, null, /*#__PURE__*/React__default['default'].createElement("section", {
-    className: "m-8",
-    name: "sample-table"
-  }, /*#__PURE__*/React__default['default'].createElement("div", {
-    className: "prose"
-  }, /*#__PURE__*/React__default['default'].createElement("div", {
-    dangerouslySetInnerHTML: {
-      __html: readme
-    }
-  }))));
+const ReadMe = ({
+  readme
+}) => {
+  return /*#__PURE__*/jsxRuntime.jsx(jsxRuntime.Fragment, {
+    children: /*#__PURE__*/jsxRuntime.jsx("section", {
+      className: "m-8",
+      name: "sample-table",
+      children: /*#__PURE__*/jsxRuntime.jsx("div", {
+        className: "prose",
+        children: /*#__PURE__*/jsxRuntime.jsx("div", {
+          dangerouslySetInnerHTML: {
+            __html: readme
+          }
+        })
+      })
+    })
+  });
 };
 
 ReadMe.propTypes = {
   readme: PropTypes__default['default'].string.isRequired
 };
 
-/**
- * Opens a frictionless resource in data explorer. Data explorer gives you
- * an interface to interact with a resource. That means you can do things like 
- * data filtering, sorting, e.t.c
- * @param {object} resource A frictionless Data resource
- * @returns React component
- */
+const DataExplorer = ({
+  resources,
+  columnHeaderStyle
+}) => {
+  const [activeTable, setActiveTable] = react.useState(0);
+  const [previewMode, setPreviewMode] = react.useState(true);
 
-var DataExplorer = function DataExplorer(_ref) {
-  var resource = _ref.resource;
-  // TODO: Add data explorer code
-  return /*#__PURE__*/React__default['default'].createElement(React__default['default'].Fragment, null, JSON.stringify(resource));
+  const handleTableNameClick = index => {
+    setActiveTable(index);
+  };
+
+  const getDataGridTable = (resource, columnHeaderStyle) => {
+    return /*#__PURE__*/jsxRuntime.jsx(xDataGrid.DataGrid, {
+      sx: {
+        '& .table-column-header-style-class': {
+          backgroundColor: '#f5f5f5',
+          color: 'black',
+          ...columnHeaderStyle
+        }
+      },
+      columns: generateColumns(resource),
+      rows: prepareRows(resource),
+      pageSize: 5,
+      rowsPerPageOptions: [5]
+    }, resource.name);
+  };
+
+  const getDataGridSchema = (resource, columnHeaderStyle) => {
+    return /*#__PURE__*/jsxRuntime.jsx(xDataGrid.DataGrid, {
+      sx: {
+        '& .table-column-header-style-class': {
+          backgroundColor: '#f5f5f5',
+          color: 'black',
+          ...columnHeaderStyle
+        }
+      },
+      columns: generateSchemaColumns(),
+      rows: prepareSchemaRows(resource),
+      pageSize: 5,
+      rowsPerPageOptions: [5]
+    }, resource.name);
+  };
+
+  return /*#__PURE__*/jsxRuntime.jsxs("div", {
+    className: "grid grid-cols-12",
+    children: [/*#__PURE__*/jsxRuntime.jsxs("div", {
+      className: "col-span-3",
+      children: [/*#__PURE__*/jsxRuntime.jsxs("div", {
+        className: "flex",
+        children: [/*#__PURE__*/jsxRuntime.jsx(FolderIcon__default['default'], {}), /*#__PURE__*/jsxRuntime.jsx("h1", {
+          className: "font-bold ml-3",
+          children: "Files"
+        })]
+      }), /*#__PURE__*/jsxRuntime.jsx("div", {
+        className: "flex-col",
+        children: resources.map((resource, i) => {
+          return /*#__PURE__*/jsxRuntime.jsxs("div", {
+            className: "flex",
+            children: [/*#__PURE__*/jsxRuntime.jsx(InsertDriveFileIcon__default['default'], {
+              className: "ml-2"
+            }), /*#__PURE__*/jsxRuntime.jsx("button", {
+              className: "ml-3 focus:outline-none",
+              id: i,
+              onClick: () => handleTableNameClick(i),
+              children: i === activeTable ? /*#__PURE__*/jsxRuntime.jsxs("h3", {
+                children: [resource.name, ".", resource.format]
+              }) : /*#__PURE__*/jsxRuntime.jsxs("h3", {
+                className: "text-gray-400",
+                children: [resource.name, ".", resource.format]
+              })
+            })]
+          }, `res@${i}`);
+        })
+      })]
+    }), /*#__PURE__*/jsxRuntime.jsxs("div", {
+      className: "col-span-9 border-2",
+      children: [/*#__PURE__*/jsxRuntime.jsx("h1", {
+        className: "font-bold ml-3 mb-2 capitalize",
+        children: resources[activeTable].name
+      }), /*#__PURE__*/jsxRuntime.jsxs("div", {
+        className: "flex",
+        children: [/*#__PURE__*/jsxRuntime.jsxs("div", {
+          className: "flex mr-3",
+          children: [/*#__PURE__*/jsxRuntime.jsx("a", {
+            href: resources[activeTable].path,
+            children: /*#__PURE__*/jsxRuntime.jsx(FileDownloadIcon__default['default'], {
+              className: "ml-2"
+            })
+          }), /*#__PURE__*/jsxRuntime.jsx("span", {
+            children: resources[activeTable].size ? formatResourceSize(resources[activeTable].size) : 'N/A'
+          })]
+        }), /*#__PURE__*/jsxRuntime.jsx("div", {
+          className: "mr-3 text-gray-500",
+          children: "|"
+        }), /*#__PURE__*/jsxRuntime.jsx("div", {
+          className: "flex mr-3",
+          children: /*#__PURE__*/jsxRuntime.jsxs("span", {
+            children: [resources[activeTable].sample.length, " rows"]
+          })
+        }), /*#__PURE__*/jsxRuntime.jsx("div", {
+          className: "mr-3 text-gray-500",
+          children: "|"
+        }), /*#__PURE__*/jsxRuntime.jsx("div", {
+          className: "flex mr-3",
+          children: /*#__PURE__*/jsxRuntime.jsxs("span", {
+            children: [resources[activeTable].schema.fields.length, " columns"]
+          })
+        })]
+      }), /*#__PURE__*/jsxRuntime.jsxs("div", {
+        className: "flex mt-5 mb-4",
+        children: [/*#__PURE__*/jsxRuntime.jsx("button", {
+          className: `${previewMode && 'font-bold underline'} ml-3 mr-5 focus:outline-none`,
+          onClick: () => setPreviewMode(!previewMode),
+          children: "Preview"
+        }), /*#__PURE__*/jsxRuntime.jsx("button", {
+          className: `${!previewMode && 'font-bold underline'} ml-3 mr-5 focus:outline-none`,
+          onClick: () => setPreviewMode(!previewMode),
+          children: "Table Schema"
+        })]
+      }), previewMode && /*#__PURE__*/jsxRuntime.jsx("div", {
+        className: "ml-3",
+        style: {
+          height: "370px"
+        },
+        children: getDataGridTable(resources[activeTable], columnHeaderStyle)
+      }), !previewMode && /*#__PURE__*/jsxRuntime.jsx("div", {
+        className: "ml-3",
+        style: {
+          height: "370px"
+        },
+        children: getDataGridSchema(resources[activeTable], columnHeaderStyle)
+      })]
+    })]
+  });
+};
+
+const generateColumns = resource => {
+  return resource.schema?.fields.map(field => {
+    return {
+      field: field.name,
+      headerName: field.name,
+      width: 150,
+      description: field.description,
+      headerClassName: 'table-column-header-style-class'
+    };
+  });
+};
+
+const prepareRows = resource => {
+  return resource.sample.map((row, i) => {
+    row['id'] = i;
+    return row;
+  });
+};
+
+const generateSchemaColumns = () => {
+  return [{
+    field: "name",
+    headerName: "Field",
+    flex: 0.5,
+    description: "Field name",
+    headerClassName: 'table-column-header-style-class'
+  }, {
+    field: "type",
+    headerName: "Type",
+    width: 150,
+    description: "Field type",
+    headerClassName: 'table-column-header-style-class'
+  }, {
+    field: "description",
+    headerName: "Description",
+    flex: 1,
+    description: "Field description",
+    headerClassName: 'table-column-header-style-class'
+  }];
+};
+
+const prepareSchemaRows = resource => {
+  return resource.schema?.fields.map((field, i) => {
+    field['id'] = i;
+    return field;
+  });
+};
+
+const formatResourceSize = bytes => {
+  if (bytes < 1024) {
+    return bytes + ' b';
+  } else if (bytes < 1048576) {
+    return (bytes / 1024).toFixed(2) + ' kb';
+  } else if (bytes < 1073741824) {
+    return (bytes / 1048576).toFixed(2) + ' mb';
+  } else {
+    return bytes;
+  }
 };
 
 DataExplorer.propTypes = {
-  resource: PropTypes__default['default'].object.isRequired
+  resources: PropTypes__default['default'].array.isRequired
 };
 
-/**
- * Displays information about an organization in a dataset page
- * @param {Object} props object describing the dataset organization. 
- * organization: {
- *   image_url: The image url of the organization
- *   name: The name of the organization
- *   title: The title of the organization
- * } 
- * @returns 
- */
-
-var Org = function Org(_ref) {
-  var organization = _ref.organization;
-  return /*#__PURE__*/React__default['default'].createElement(React__default['default'].Fragment, null, organization ? /*#__PURE__*/React__default['default'].createElement(React__default['default'].Fragment, null, /*#__PURE__*/React__default['default'].createElement("img", {
-    src: organization.image_url || 'https://datahub.io/static/img/datahub-cube-edited.svg',
-    className: "h-5 w-5 mr-2 inline-block",
-    alt: "org_img"
-  }), /*#__PURE__*/React__default['default'].createElement(Link__default['default'], {
-    href: "/@".concat(organization.name)
-  }, /*#__PURE__*/React__default['default'].createElement("a", {
-    className: "font-semibold text-primary underline"
-  }, organization.title || organization.name))) : '');
+const Org = ({
+  organization
+}) => {
+  return /*#__PURE__*/jsxRuntime.jsx(jsxRuntime.Fragment, {
+    children: organization ? /*#__PURE__*/jsxRuntime.jsxs(jsxRuntime.Fragment, {
+      children: [/*#__PURE__*/jsxRuntime.jsx("img", {
+        src: organization.image_url || 'https://datahub.io/static/img/datahub-cube-edited.svg',
+        className: "h-5 w-5 mr-2 inline-block",
+        alt: "org_img"
+      }), /*#__PURE__*/jsxRuntime.jsx(Link__default['default'], {
+        href: `/@${organization.name}`,
+        children: /*#__PURE__*/jsxRuntime.jsx("a", {
+          className: "font-semibold text-primary underline",
+          children: organization.title || organization.name
+        })
+      })]
+    }) : ''
+  });
 };
 
 Org.propTypes = {
   organization: PropTypes__default['default'].object.isRequired
 };
 
-/**
- * Displays a blog post page
- * @param {object} props 
- * post = {
- *  title: <The title of the blog post>
- *  content: <The body of the blog post. Can be plain text or html>
- *  createdAt: <The utc date when the post was last modified>.
- *  featuredImage: <Url/relative url to post cover image>
- * }
- * @returns 
- */
-
-var Post = function Post(_ref) {
-  var post = _ref.post;
-  var title = post.title,
-      content = post.content,
-      createdAt = post.createdAt,
-      featuredImage = post.featuredImage;
-  return /*#__PURE__*/React__default['default'].createElement(React__default['default'].Fragment, null, /*#__PURE__*/React__default['default'].createElement("h1", {
-    className: "text-3xl font-semibold text-primary my-6 inline-block"
-  }, title), /*#__PURE__*/React__default['default'].createElement("p", {
-    className: "mb-6"
-  }, "Posted: ", createdAt), /*#__PURE__*/React__default['default'].createElement("img", {
-    src: featuredImage,
-    className: "mb-6",
-    alt: "featured_img"
-  }), /*#__PURE__*/React__default['default'].createElement("div", null, parse__default['default'](content)));
+const Post = ({
+  post
+}) => {
+  const {
+    title,
+    content,
+    createdAt,
+    featuredImage
+  } = post;
+  return /*#__PURE__*/jsxRuntime.jsxs(jsxRuntime.Fragment, {
+    children: [/*#__PURE__*/jsxRuntime.jsx("h1", {
+      className: "text-3xl font-semibold text-primary my-6 inline-block",
+      children: title
+    }), /*#__PURE__*/jsxRuntime.jsxs("p", {
+      className: "mb-6",
+      children: ["Posted: ", createdAt]
+    }), /*#__PURE__*/jsxRuntime.jsx("img", {
+      src: featuredImage,
+      className: "mb-6",
+      alt: "featured_img"
+    }), /*#__PURE__*/jsxRuntime.jsx("div", {
+      children: parse__default['default'](content)
+    })]
+  });
 };
 
 Post.propTypes = {
@@ -441,133 +592,114 @@ Post.propTypes = {
   })
 };
 
-/**
- * Displays a list of blog posts with the title and a short excerp from the content. 
- * @param {object} props 
- * {
- *  posts: {
- *    title: <The title of the blog post>
- *    excerpt: <A short excerpt from the post content>
- *   }
- * } 
- * @returns 
- */
-
-var PostList = function PostList(_ref) {
-  var posts = _ref.posts;
-  return /*#__PURE__*/React__default['default'].createElement(React__default['default'].Fragment, null, posts.map(function (post, index) {
-    return /*#__PURE__*/React__default['default'].createElement("div", {
-      key: index
-    }, /*#__PURE__*/React__default['default'].createElement("a", {
-      href: "/blog/".concat(post.slug),
-      className: "text-2xl font-semibold text-primary my-6 inline-block"
-    }, parse__default['default'](post.title)), /*#__PURE__*/React__default['default'].createElement("p", null, parse__default['default'](post.excerpt)));
-  }));
+const PostList = ({
+  posts
+}) => {
+  return /*#__PURE__*/jsxRuntime.jsx(jsxRuntime.Fragment, {
+    children: posts.map((post, index) => /*#__PURE__*/jsxRuntime.jsxs("div", {
+      children: [/*#__PURE__*/jsxRuntime.jsx("a", {
+        href: `/blog/${post.slug}`,
+        className: "text-2xl font-semibold text-primary my-6 inline-block",
+        children: parse__default['default'](post.title)
+      }), /*#__PURE__*/jsxRuntime.jsx("p", {
+        children: parse__default['default'](post.excerpt)
+      })]
+    }, index))
+  });
 };
 
 PostList.propTypes = {
   posts: PropTypes__default['default'].object.isRequired
 };
 
-/**
- * Error message component with consistent portal style
- * @param {object} props 
- * {
- *  message: The error message to display
- * } 
- * @returns 
- */
-
-var ErrorMessage = function ErrorMessage(_ref) {
-  var message = _ref.message;
-  return /*#__PURE__*/React__default['default'].createElement("aside", null, message, /*#__PURE__*/React__default['default'].createElement("style", {
-    jsx: true
-  }, "\n        aside {\n          padding: 1.5em;\n          font-size: 14px;\n          color: white;\n          background-color: red;\n        }\n      "));
+const ErrorMessage = ({
+  message
+}) => {
+  return /*#__PURE__*/jsxRuntime.jsxs("aside", {
+    children: [message, /*#__PURE__*/jsxRuntime.jsx("style", {
+      jsx: true,
+      children: `
+        aside {
+          padding: 1.5em;
+          font-size: 14px;
+          color: white;
+          background-color: red;
+        }
+      `
+    })]
+  });
 };
 
 ErrorMessage.propTypes = {
   message: PropTypes__default['default'].string.isRequired
 };
 
-/**
- * Creates a custom link with title
- * @param {object} props 
- * {
- *  url: The url of the custom link
- *  title: The title for the custom link
- * } 
- * @returns React Component
- */
-
-var CustomLink = function CustomLink(_ref) {
-  var url = _ref.url,
-      title = _ref.title;
-  return /*#__PURE__*/React__default['default'].createElement("a", {
-    href: url,
-    className: "bg-white hover:bg-gray-200 border text-black font-semibold py-2 px-4 rounded"
-  }, title);
-};
+const CustomLink = ({
+  url,
+  title
+}) => /*#__PURE__*/jsxRuntime.jsx("a", {
+  href: url,
+  className: "bg-white hover:bg-gray-200 border text-black font-semibold py-2 px-4 rounded",
+  children: title
+});
 
 CustomLink.propTypes = {
   url: PropTypes__default['default'].string.isRequired,
   title: PropTypes__default['default'].string.isRequired
 };
 
-/**
- * Displays a navigation bar with logo and menu links
- * @param {Object} props object with the following properties:
- * {
- *  logo: The relative url to the logo image
- *  navMenu: An array of objects with menu items. E.g : [{ title: 'Blog', path: '/blog' },{ title: 'Search', path: '/search' }]
- * }
- * @returns React Component
- */
+const Nav = ({
+  logo,
+  navMenu
+}) => {
+  const [open, setOpen] = react.useState(false);
 
-var Nav = function Nav(_ref) {
-  var logo = _ref.logo,
-      navMenu = _ref.navMenu;
-
-  var _useState = React.useState(false),
-      _useState2 = _slicedToArray(_useState, 2),
-      open = _useState2[0],
-      setOpen = _useState2[1];
-
-  var handleClick = function handleClick(event) {
+  const handleClick = event => {
     event.preventDefault();
     setOpen(!open);
   };
 
-  return /*#__PURE__*/React__default['default'].createElement("nav", {
-    className: "flex items-center justify-between flex-wrap bg-white p-4 border-b border-gray-200"
-  }, /*#__PURE__*/React__default['default'].createElement("div", {
-    className: "flex items-center flex-shrink-0 text-gray-700 mr-6"
-  }, /*#__PURE__*/React__default['default'].createElement(Link__default['default'], {
-    href: "/"
-  }, /*#__PURE__*/React__default['default'].createElement("img", {
-    src: logo,
-    alt: "portal logo",
-    width: "40"
-  }))), /*#__PURE__*/React__default['default'].createElement("div", {
-    className: "block lg:hidden mx-4"
-  }, /*#__PURE__*/React__default['default'].createElement("button", {
-    onClick: handleClick,
-    className: "flex items-center px-3 py-2 border rounded text-gray-700 border-orange-400 hover:text-black hover:border-black"
-  }, /*#__PURE__*/React__default['default'].createElement("svg", {
-    className: "fill-current h-3 w-3",
-    viewBox: "0 0 20 20",
-    xmlns: "http://www.w3.org/2000/svg"
-  }, /*#__PURE__*/React__default['default'].createElement("title", null, "Menu"), /*#__PURE__*/React__default['default'].createElement("path", {
-    d: "M0 3h20v2H0V3zm0 6h20v2H0V9zm0 6h20v2H0v-2z"
-  })))), /*#__PURE__*/React__default['default'].createElement("div", {
-    className: "".concat(open ? "block" : "hidden", " lg:block")
-  }, navMenu.map(function (menu, index) {
-    return /*#__PURE__*/React__default['default'].createElement(Link__default['default'], {
-      href: menu.path,
-      key: index
-    }, /*#__PURE__*/React__default['default'].createElement("a", {
-      className: "block mt-4 lg:inline-block lg:mt-0 active:bg-primary-background text-gray-700 hover:text-black mr-6"
-    }, menu.title));
-  })));
+  return /*#__PURE__*/jsxRuntime.jsxs("nav", {
+    className: "flex items-center justify-between flex-wrap bg-white p-4 border-b border-gray-200",
+    children: [/*#__PURE__*/jsxRuntime.jsx("div", {
+      className: "flex items-center flex-shrink-0 text-gray-700 mr-6",
+      children: /*#__PURE__*/jsxRuntime.jsx(Link__default['default'], {
+        href: "/",
+        children: /*#__PURE__*/jsxRuntime.jsx("img", {
+          src: logo,
+          alt: "portal logo",
+          width: "40"
+        })
+      })
+    }), /*#__PURE__*/jsxRuntime.jsx("div", {
+      className: "block lg:hidden mx-4",
+      children: /*#__PURE__*/jsxRuntime.jsx("button", {
+        onClick: handleClick,
+        className: "flex items-center px-3 py-2 border rounded text-gray-700 border-orange-400 hover:text-black hover:border-black",
+        children: /*#__PURE__*/jsxRuntime.jsxs("svg", {
+          className: "fill-current h-3 w-3",
+          viewBox: "0 0 20 20",
+          xmlns: "http://www.w3.org/2000/svg",
+          children: [/*#__PURE__*/jsxRuntime.jsx("title", {
+            children: "Menu"
+          }), /*#__PURE__*/jsxRuntime.jsx("path", {
+            d: "M0 3h20v2H0V3zm0 6h20v2H0V9zm0 6h20v2H0v-2z"
+          })]
+        })
+      })
+    }), /*#__PURE__*/jsxRuntime.jsx("div", {
+      className: `${open ? `block` : `hidden`} lg:block`,
+      children: navMenu.map((menu, index) => {
+        return /*#__PURE__*/jsxRuntime.jsx(Link__default['default'], {
+          href: menu.path,
+          children: /*#__PURE__*/jsxRuntime.jsx("a", {
+            className: "block mt-4 lg:inline-block lg:mt-0 active:bg-primary-background text-gray-700 hover:text-black mr-6",
+            children: menu.title
+          })
+        }, index);
+      })
+    })]
+  });
 };
 
 Nav.propTypes = {
@@ -575,145 +707,108 @@ Nav.propTypes = {
   navMenu: PropTypes__default['default'].array.isRequired
 };
 
-/**
- * Displays a list of recent datasets
- * @param {array} props An array of datasets
- * { datasets = [{
- *    organization: {name: <some name>, title: <some title> },
- *    title: <Data package title>
- *    name:  <Data package name>
- *    description: <description of data package>
- *   }]
- * }
- * @returns React Component
- */
-
-var Recent = function Recent(_ref) {
-  var datasets = _ref.datasets;
-  return /*#__PURE__*/React__default['default'].createElement("section", {
-    className: "my-10 mx-4 lg:my-20"
-  }, /*#__PURE__*/React__default['default'].createElement("div", {
-    className: "recent flex flex-col lg:flex-row"
-  }, datasets.map(function (dataset, index) {
-    return /*#__PURE__*/React__default['default'].createElement("div", {
-      key: index,
-      className: "border px-4 mb-4 mr-3 border-gray-100 w-5/6 shadow-sm"
-    }, /*#__PURE__*/React__default['default'].createElement("h1", {
-      className: "text-2xl font-thin"
-    }, dataset.title), /*#__PURE__*/React__default['default'].createElement("p", {
-      className: "text-gray-500"
-    }, dataset.organization && dataset.organization.description), /*#__PURE__*/React__default['default'].createElement(Link__default['default'], {
-      href: "/@".concat(dataset.organization ? dataset.organization.name : 'dataset', "/").concat(dataset.name)
-    }, /*#__PURE__*/React__default['default'].createElement("a", {
-      className: "pt-3 flex justify-end text-orange-500"
-    }, "View Dataset")));
-  })));
+const Recent = ({
+  datasets
+}) => {
+  return /*#__PURE__*/jsxRuntime.jsx("section", {
+    className: "my-10 mx-4 lg:my-20",
+    children: /*#__PURE__*/jsxRuntime.jsx("div", {
+      className: "recent flex flex-col lg:flex-row",
+      children: datasets.map((dataset, index) => /*#__PURE__*/jsxRuntime.jsxs("div", {
+        className: "border px-4 mb-4 mr-3 border-gray-100 w-5/6 shadow-sm",
+        children: [/*#__PURE__*/jsxRuntime.jsx("h1", {
+          className: "text-2xl font-thin",
+          children: dataset.title
+        }), /*#__PURE__*/jsxRuntime.jsx("p", {
+          className: "text-gray-500",
+          children: dataset.organization && dataset.organization.description
+        }), /*#__PURE__*/jsxRuntime.jsx(Link__default['default'], {
+          href: `/@${dataset.organization ? dataset.organization.name : 'dataset'}/${dataset.name}`,
+          children: /*#__PURE__*/jsxRuntime.jsx("a", {
+            className: "pt-3 flex justify-end text-orange-500",
+            children: "View Dataset"
+          })
+        })]
+      }, index))
+    })
+  });
 };
 
 Recent.propTypes = {
   datasets: PropTypes__default['default'].array.isRequired
 };
 
-/**
- * Search component form that can be customized with change and submit handlers
- * @param {object} props
- * {
- *  handleChange: A form input change event handler. This function is executed when the
- *                search input or order by input changes.
- *  handleSubmit: A form submit event handler. This function is executed when the
- *                search form is submitted.
- * } 
- * @returns 
- */
-
-var Form = function Form(_ref) {
-  var handleSubmit = _ref.handleSubmit;
-
-  var _useState = React.useState(""),
-      _useState2 = _slicedToArray(_useState, 2),
-      searchQuery = _useState2[0],
-      setSearchQuery = _useState2[1];
-
-  return /*#__PURE__*/React__default['default'].createElement("form", {
-    onSubmit: function onSubmit(e) {
-      return e.preventDefault();
-    },
-    className: "items-center"
-  }, /*#__PURE__*/React__default['default'].createElement("div", {
-    className: "flex"
-  }, /*#__PURE__*/React__default['default'].createElement("input", {
-    type: "text",
-    name: "search#q",
-    value: searchQuery,
-    onChange: function onChange(e) {
-      setSearchQuery(e.target.value);
-    },
-    placeholder: "Search",
-    "aria-label": "Search",
-    className: "bg-white focus:outline-none focus:shadow-outline border border-gray-300 w-1/2 rounded-lg py-2 px-4 block appearance-none leading-normal"
-  }), /*#__PURE__*/React__default['default'].createElement("button", {
-    onClick: function onClick() {
-      return handleSubmit(searchQuery);
-    },
-    type: "button",
-    className: "inline-block text-sm px-4 py-3 mx-3 leading-none border rounded text-white bg-black border-black lg:mt-0"
-  }, "Search")));
+const Form = ({
+  handleSubmit
+}) => {
+  const [searchQuery, setSearchQuery] = react.useState("");
+  return /*#__PURE__*/jsxRuntime.jsx("form", {
+    onSubmit: e => e.preventDefault(),
+    className: "items-center",
+    children: /*#__PURE__*/jsxRuntime.jsxs("div", {
+      className: "flex",
+      children: [/*#__PURE__*/jsxRuntime.jsx("input", {
+        type: "text",
+        name: "search#q",
+        value: searchQuery,
+        onChange: e => {
+          setSearchQuery(e.target.value);
+        },
+        placeholder: "Search",
+        "aria-label": "Search",
+        className: "bg-white focus:outline-none focus:shadow-outline border border-gray-300 w-1/2 rounded-lg py-2 px-4 block appearance-none leading-normal"
+      }), /*#__PURE__*/jsxRuntime.jsx("button", {
+        onClick: () => handleSubmit(searchQuery),
+        type: "button",
+        className: "inline-block text-sm px-4 py-3 mx-3 leading-none border rounded text-white bg-black border-black lg:mt-0",
+        children: "Search"
+      })]
+    })
+  });
 };
 
 Form.propTypes = {
   handleSubmit: PropTypes__default['default'].func.isRequired
 };
 
-/**
- * Single item from a search result showing info about a dataset.
- * @param {object} props data package with the following format:
- * {
- *  organization: {name: <some name>, title: <some title> },
- *  title: <Data package title>
- *  name:  <Data package name>
- *  description: <description of data package>
- *  notes: <Notes associated with the data package>
- * }
- * @returns React Component
- */
-
-var Item = function Item(_ref) {
-  var dataset = _ref.dataset;
-  return /*#__PURE__*/React__default['default'].createElement("div", {
-    className: "mb-6"
-  }, /*#__PURE__*/React__default['default'].createElement("h3", {
-    className: "text-xl font-semibold"
-  }, /*#__PURE__*/React__default['default'].createElement(Link__default['default'], {
-    href: "/@".concat(dataset.organization ? dataset.organization.name : 'dataset', "/").concat(dataset.name)
-  }, /*#__PURE__*/React__default['default'].createElement("a", {
-    className: "text-primary"
-  }, dataset.title || dataset.name))), /*#__PURE__*/React__default['default'].createElement(Link__default['default'], {
-    href: "/@".concat(dataset.organization ? dataset.organization.name : 'dataset')
-  }, /*#__PURE__*/React__default['default'].createElement("a", {
-    className: "text-gray-500 block mt-1"
-  }, dataset.organization ? dataset.organization.title : 'dataset')), /*#__PURE__*/React__default['default'].createElement("div", {
-    className: "leading-relaxed mt-2"
-  }, dataset.description || dataset.notes));
+const Item = ({
+  dataset
+}) => {
+  return /*#__PURE__*/jsxRuntime.jsxs("div", {
+    className: "mb-6",
+    children: [/*#__PURE__*/jsxRuntime.jsx("h3", {
+      className: "text-xl font-semibold",
+      children: /*#__PURE__*/jsxRuntime.jsx(Link__default['default'], {
+        href: `/@${dataset.organization ? dataset.organization.name : 'dataset'}/${dataset.name}`,
+        children: /*#__PURE__*/jsxRuntime.jsx("a", {
+          className: "text-primary",
+          children: dataset.title || dataset.name
+        })
+      })
+    }), /*#__PURE__*/jsxRuntime.jsx(Link__default['default'], {
+      href: `/@${dataset.organization ? dataset.organization.name : 'dataset'}`,
+      children: /*#__PURE__*/jsxRuntime.jsx("a", {
+        className: "text-gray-500 block mt-1",
+        children: dataset.organization ? dataset.organization.title : 'dataset'
+      })
+    }), /*#__PURE__*/jsxRuntime.jsx("div", {
+      className: "leading-relaxed mt-2",
+      children: dataset.description || dataset.notes
+    })]
+  });
 };
 
 Item.propTypes = {
   dataset: PropTypes__default['default'].object.isRequired
 };
 
-/**
- * Displays the total search result
- * @param {object} props 
- * {
- *  count: The total number of search results
- * } 
- * @returns React Component
- */
-
-var Total = function Total(_ref) {
-  var count = _ref.count;
-  return /*#__PURE__*/React__default['default'].createElement("h1", {
-    className: "text-3xl font-semibold text-primary my-6 inline-block"
-  }, count, " results found");
+const Total = ({
+  count
+}) => {
+  return /*#__PURE__*/jsxRuntime.jsxs("h1", {
+    className: "text-3xl font-semibold text-primary my-6 inline-block",
+    children: [count, " results found"]
+  });
 };
 
 Total.propTypes = {
