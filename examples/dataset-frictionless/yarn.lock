@@ -10113,9 +10113,9 @@ popper.js@1.16.1-lts:
   resolved "https://registry.yarnpkg.com/popper.js/-/popper.js-1.16.1-lts.tgz#cf6847b807da3799d80ee3d6d2f90df8a3f50b05"
   integrity sha512-Kjw8nKRl1m+VrSFCoVGPph93W/qrSO7ZkqPpTf7F4bk/sqcfWK019dWBUpE/fBOsOQY1dks/Bmcbfn1heM/IsA==
 
-"portal@git+https://github.com/datopian/portal.js.git":
+"portal@https://github.com/datopian/portal.js.git#25f3c6b32a60c4f922394c85d2d7d03fe2cbc143":
   version "0.1.0"
-  resolved "git+https://github.com/datopian/portal.js.git#9843ced6f19495fdd59c6385cba7e4afa4071e2e"
+  resolved "https://github.com/datopian/portal.js.git#25f3c6b32a60c4f922394c85d2d7d03fe2cbc143"
   dependencies:
     "@emotion/react" "^11.7.1"
     "@emotion/styled" "^11.6.0"

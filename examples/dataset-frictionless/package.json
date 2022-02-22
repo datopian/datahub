@@ -17,7 +17,7 @@
     "datapackage-render": "git+https://github.com/frictionlessdata/datapackage-render-js.git",
     "frictionless.js": "^0.13.4",
     "next": "latest",
-    "portal": "git+https://github.com/datopian/portal.js.git",
+    "portal": "https://github.com/datopian/portal.js.git#25f3c6b32a60c4f922394c85d2d7d03fe2cbc143",
     "postcss": "^8.2.10",
     "react": "^17.0.1",
     "react-dom": "^17.0.1",
