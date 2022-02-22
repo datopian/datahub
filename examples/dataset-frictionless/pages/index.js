@@ -3,7 +3,7 @@ import {
   PlotlyChart,
   ReadMe,
   DataExplorer,
-} from 'portal'
+} from 'portal/dist/index.cjs'
 import path from 'path'
 import Head from 'next/head'
 import { getDataset } from '../lib/dataset'
