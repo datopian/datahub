@@ -1,4 +1,3 @@
-const matter = require('gray-matter')
 const toc = require('remark-toc')
 const slug = require('remark-slug')
 const gfm = require('remark-gfm')
