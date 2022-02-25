@@ -50,7 +50,9 @@ var parse__default = /*#__PURE__*/_interopDefaultLegacy(parse);
 
 const Table = ({
   columns,
-  data
+  data,
+  height,
+  width
 }) => {
   let rows = [...data];
   rows = rows.map((row, i) => {
@@ -58,6 +60,10 @@ const Table = ({
     return row;
   });
   return /*#__PURE__*/jsxRuntime.jsx("div", {
+    style: {
+      height,
+      width
+    },
     "data-testid": "tableGrid",
     children: /*#__PURE__*/jsxRuntime.jsx(dataGrid.DataGrid, {
       rows: rows,

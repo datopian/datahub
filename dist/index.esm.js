@@ -14,7 +14,9 @@ import parse from 'html-react-parser';
 
 const Table = ({
   columns,
-  data
+  data,
+  height,
+  width
 }) => {
   let rows = [...data];
   rows = rows.map((row, i) => {
@@ -22,6 +24,10 @@ const Table = ({
     return row;
   });
   return /*#__PURE__*/jsx("div", {
+    style: {
+      height,
+      width
+    },
     "data-testid": "tableGrid",
     children: /*#__PURE__*/jsx(DataGrid, {
       rows: rows,
