@@ -2,6 +2,7 @@ import Layout from '../components/Layout'
 import Head from 'next/head'
 import Excel from '../components/Excel'
 import Table from '../components/Table'
+import TableGrid from '../components/TableGrid'
 import LineChart from '../components/LineChart'
 import { MDXProvider } from '@mdx-js/react'
 import { Vega, VegaLite } from 'react-vega'
@@ -17,6 +18,7 @@ const components = {
   VegaLite,
   LineChart,
   Head,
+  TableGrid
 }
 
 
