@@ -22,6 +22,7 @@
     "frictionless.js": "^0.13.4",
     "next": "12.1.0",
     "papaparse": "^5.3.1",
+    "portal": "https://github.com/datopian/portal.js.git",
     "postcss": "^8.2.10",
     "prop-types": "^15.7.2",
     "react": "17.0.2",
