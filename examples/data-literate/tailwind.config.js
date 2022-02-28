@@ -1,9 +1,8 @@
 const defaultTheme = require("tailwindcss/defaultTheme");
 
 module.exports = {
-  mode: 'jit',
   // purge: ['./pages/**/*.{js,ts,jsx,tsx}', './components/**/*.{js,ts,jsx,tsx}'],
-  purge: [
+  content: [
     "./pages/**/*.js",
     "./pages/**/*.ts",
     "./pages/**/*.jsx",
@@ -23,9 +22,6 @@ module.exports = {
         mono: ["Inconsolata", ...defaultTheme.fontFamily.mono]
       }
     },
-  },
-  variants: {
-    extend: {},
   },
   plugins: [
     require('@tailwindcss/typography'),
