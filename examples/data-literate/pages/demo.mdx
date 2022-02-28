@@ -65,7 +65,7 @@ You can create a table of contents by having a markdown heading named `Table of 
 
 ## A Table
 
-You can create tables ...
+You can create a simple table ...
 
 ```
 <Table cols={[
@@ -126,6 +126,71 @@ Year,Temp Anomaly,
 ```
 <Table url='/_files/HadCRUT.5.0.1.0.analysis.summary_series.global.annual.csv' />
 ```
+___
+
+You can also create a Table Grid, with more advance features
+
+```
+<TableGrid cols={[
+    { key: 'id', name: 'ID' },
+    { key: 'firstName', name: 'First name' },
+    { key: 'lastName', name: 'Last name' },
+    { key: 'age', name: 'Age' }
+  ]} data={[
+    { id: 1, lastName: 'Snow', firstName: 'Jon', age: 35 },
+    { id: 2, lastName: 'Lannister', firstName: 'Cersei', age: 42 },
+    { id: 3, lastName: 'Lannister', firstName: 'Jaime', age: 45 },
+    { id: 4, lastName: 'Stark', firstName: 'Arya', age: 16 },
+    { id: 7, lastName: 'Clifford', firstName: 'Ferrara', age: 44 },
+    { id: 8, lastName: 'Frances', firstName: 'Rossini', age: 36 },
+    { id: 9, lastName: 'Roxie', firstName: 'Harvey', age: 65 },
+  ]}
+  />
+```
+
+<TableGrid cols={[
+    { key: 'id', name: 'ID' },
+    { key: 'firstName', name: 'First name' },
+    { key: 'lastName', name: 'Last name' },
+    { key: 'age', name: 'Age' }
+  ]} data={[
+    { id: 1, lastName: 'Snow', firstName: 'Jon', age: 35 },
+    { id: 2, lastName: 'Lannister', firstName: 'Cersei', age: 42 },
+    { id: 3, lastName: 'Lannister', firstName: 'Jaime', age: 45 },
+    { id: 4, lastName: 'Stark', firstName: 'Arya', age: 16 },
+    { id: 7, lastName: 'Clifford', firstName: 'Ferrara', age: 44 },
+    { id: 8, lastName: 'Frances', firstName: 'Rossini', age: 36 },
+    { id: 9, lastName: 'Roxie', firstName: 'Harvey', age: 65 },
+  ]}
+  />
+
+### Table Grid from Raw CSV
+
+You can also pass raw CSV as the content ...
+
+```
+<TableGrid csv={`
+Year,Temp Anomaly
+1850,-0.418
+2020,0.923
+`} />
+```
+
+<TableGrid csv={`
+Year,Temp Anomaly,
+1850,-0.418
+2020,0.923
+`} />
+
+### Table Grid from a URL
+
+```
+<TableGrid url='/_files/HadCRUT.5.0.1.0.analysis.summary_series.global.annual.csv' />
+```
+
+<TableGrid url='/_files/HadCRUT.5.0.1.0.analysis.summary_series.global.annual.csv' />
+
+
 
 ## Charts
 
