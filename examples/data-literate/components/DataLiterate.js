@@ -1,9 +1,10 @@
-import Layout from '../components/Layout'
+import Layout from './Layout'
 import Head from 'next/head'
-import Excel from '../components/Excel'
-import Table from '../components/Table'
-import TableGrid from '../components/TableGrid'
-import LineChart from '../components/LineChart'
+import Excel from './Excel'
+import Table from './Table'
+import TableGrid from './TableGrid'
+import LineChart from './LineChart'
+import MetaData from './Metadata'
 import { MDXProvider } from '@mdx-js/react'
 import { Vega, VegaLite } from 'react-vega'
 
@@ -18,7 +19,8 @@ const components = {
   VegaLite,
   LineChart,
   Head,
-  TableGrid
+  TableGrid,
+  MetaData,
 }
 
 
@@ -26,25 +28,12 @@ export default function DataLiterate({ children }) {
   const { Component, pageProps } = children
 
   return (
-    <Layout title={pageProps.title}>
-      <div className="prose mx-auto">
-        <header>
-          <div className="mb-6">
-            <h1>{pageProps.title}</h1>
-            {pageProps.author && (
-              <div className="-mt-6"><p className="opacity-60 pl-1">{pageProps.author}</p></div>
-            )}
-            {pageProps.description && (
-              <p className="description">{pageProps.description}</p>
-            )}
-          </div>
-        </header>
-        <main>
-          <MDXProvider components={components}>
-            <Component {...pageProps} />
-          </MDXProvider>
-        </main>
-      </div>
+    <Layout>
+      <main>
+        <MDXProvider components={components}>
+          <Component {...pageProps} />
+        </MDXProvider>
+      </main>
     </Layout>
   )
 }
