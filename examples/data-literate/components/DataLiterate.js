@@ -31,7 +31,9 @@ export default function DataLiterate({ children }) {
     <Layout>
       <main>
         <MDXProvider components={components}>
-          <Component {...pageProps} />
+          <div className="prose mx-auto">
+            <Component {...pageProps} />
+          </div>
         </MDXProvider>
       </main>
     </Layout>
