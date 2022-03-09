@@ -1,12 +1,14 @@
 import gfm from 'remark-gfm'
 import toc from 'remark-toc'
 import slug from 'remark-slug'
+import remarkFrontmatter from 'remark-frontmatter'
+import { remarkMdxFrontmatter } from 'remark-mdx-frontmatter'
 import withMDXImp from '@next/mdx'
 
 const withMDX = withMDXImp({
   extension: /\.mdx?$/,
   options: {
-    remarkPlugins: [gfm, toc, slug],
+    remarkPlugins: [remarkFrontmatter, remarkMdxFrontmatter, gfm, toc, slug],
     rehypePlugins: [],
     // If you use `MDXProvider`, uncomment the following line.
     providerImportSource: "@mdx-js/react",
