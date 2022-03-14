@@ -1,0 +1,43 @@
+{
+  "name": "docs",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "export": "next export",
+    "start": "next start"
+  },
+  "engines": {
+    "node": ">12"
+  },
+  "dependencies": {
+    "@headlessui/react": "^1.3.0",
+    "@heroicons/react": "^1.0.3",
+    "@mdx-js/loader": "^2.0.0",
+    "@mdx-js/react": "^2.0.0",
+    "@next/mdx": "^12.1.0",
+    "@tailwindcss/typography": "^0.5.2",
+    "autoprefixer": "^10.4.2",
+    "frictionless.js": "^0.13.4",
+    "next": "12.1.0",
+    "papaparse": "^5.3.1",
+    "portal": "https://github.com/datopian/portal.js.git",
+    "postcss": "^8.4.7",
+    "prop-types": "^15.7.2",
+    "react": "17.0.1",
+    "react-dom": "17.0.1",
+    "react-vega": "^7.4.4",
+    "remark": "^13.0.0",
+    "remark-footnotes": "^3.0.0",
+    "remark-frontmatter": "^4.0.1",
+    "remark-gfm": "^1.0.0",
+    "remark-mdx-frontmatter": "^1.1.1",
+    "remark-slug": "^6.1.0",
+    "remark-toc": "^7.2.0",
+    "tailwindcss": "^3.0.23",
+    "vega": "^5.20.2",
+    "vega-lite": "^5.1.0",
+    "xlsx": "^0.17.0"
+  }
+}
