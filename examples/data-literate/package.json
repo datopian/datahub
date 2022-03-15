@@ -19,6 +19,7 @@
     "next": "12.1.0",
     "next-mdx-remote": "^3.0.4",
     "papaparse": "^5.3.1",
+    "portal": "https://github.com/datopian/portal.js.git",
     "postcss": "^8.2.10",
     "prop-types": "^15.7.2",
     "react": "17.0.2",

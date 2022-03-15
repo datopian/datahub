@@ -1,10 +1,10 @@
 import Layout from '../components/Layout'
-
 import { MDXRemote } from 'next-mdx-remote'
-import dynamic from 'next/dynamic'
 import Head from 'next/head'
-import Link from 'next/link'
-
+import TableGrid from './TableGrid'
+import Table from '../components/Table'
+import Excel from '../components/Excel'
+import LineChart from '../components/LineChart'
 import { Vega, VegaLite } from 'react-vega'
 
 // Custom components/renderers to pass to MDX.
@@ -12,12 +12,12 @@ import { Vega, VegaLite } from 'react-vega'
 // to handle import statements. Instead, you must include components in scope
 // here.
 const components = {
-  Table: dynamic(() => import('../components/Table')),
-  Excel: dynamic(() => import('../components/Excel')),
-  // TODO: try and make these dynamic ...
-  Vega: Vega,
-  VegaLite: VegaLite,
-  LineChart: dynamic(() => import('../components/LineChart')),
+  Table,
+  TableGrid,
+  Excel,
+  Vega,
+  VegaLite,
+  LineChart,
   Head,
 }
 
