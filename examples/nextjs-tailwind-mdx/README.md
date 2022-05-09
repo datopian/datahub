@@ -17,14 +17,14 @@ Pre-configured with the following;
 * Analytics: Google analytics support following https://github.com/vercel/next.js/tree/canary/examples/with-google-analytics
 * SEO: basic SEO out of the box (via https://github.com/garmeeh/next-seo)
 
-## Usage
+## How to use
 
 Execute [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app) with [npm](https://docs.npmjs.com/cli/init) or [Yarn](https://yarnpkg.com/lang/en/docs/cli/create/) to bootstrap the example:
 
 ```bash
-npx create-next-app --example https://github.com/datopian/nextjs-tailwind-mdx myapp
+npx create-next-app --example https://github.com/datopian/portal.js/tree/main/examples/nextjs-tailwind-mdx
 # or
-yarn create next-app --example https://github.com/datopian/nextjs-tailwind-mdx myapp
+yarn create-next-app --example https://github.com/datopian/portal.js/tree/main/examples/nextjs-tailwind-mdx
 ```
 
 Then run the app:
