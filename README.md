@@ -174,8 +174,11 @@ yarn dev
 Visit the Page to view your dataset portal.
 
 ## Build a CKAN powered dataset portal
-TODO
+
+See [the CKAN Portal.JS example](./examples/ckan).
+
 ___
+
 
 # Architecture / Reference
 
