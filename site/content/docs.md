@@ -111,8 +111,8 @@ Now, your page should look like the following:
 
 You can check out the following examples built with Portal.js.
 
-* [A portal for a single Frictionless dataset](#Build-a-single-Frictionless-dataset-portal)
-* [A portal with a CKAN backend](#Build-a-CKAN-powered-dataset-portal)
+* [A portal for a single Frictionless dataset](/learn/ckan)
+* [A portal with a CKAN backend](/learn/single-frictionless-dataset)
 
 > The [`examples` directory](https://github.com/datopian/portal.js/tree/main/examples) is regularly updated with different portal examples. 
 
