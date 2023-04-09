@@ -22,9 +22,9 @@ Pre-configured with the following;
 Execute [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app) with [npm](https://docs.npmjs.com/cli/init) or [Yarn](https://yarnpkg.com/lang/en/docs/cli/create/) to bootstrap the example:
 
 ```bash
-npx create-next-app --example https://github.com/datopian/portal.js/tree/main/examples/nextjs-tailwind-mdx
+npx create-next-app --example https://github.com/datopian/portaljs/tree/main/examples/nextjs-tailwind-mdx
 # or
-yarn create-next-app --example https://github.com/datopian/portal.js/tree/main/examples/nextjs-tailwind-mdx
+yarn create-next-app --example https://github.com/datopian/portaljs/tree/main/examples/nextjs-tailwind-mdx
 ```
 
 Then run the app:
