@@ -1,11 +1,10 @@
-import Layout from '../components/Layout'
+import Layout from '../Layout'
 
 import { MDXRemote } from 'next-mdx-remote'
 import dynamic from 'next/dynamic'
 import Head from 'next/head'
-import Link from 'next/link'
 
-import CustomLink from '../components/CustomLink'
+import CustomLink from '../CustomLink'
 import { Vega, VegaLite } from 'react-vega'
 
 // Custom components/renderers to pass to MDX.
@@ -14,16 +13,16 @@ import { Vega, VegaLite } from 'react-vega'
 // here.
 const components = {
   a: CustomLink,
-  Table: dynamic(() => import('../components/Table')),
-  Excel: dynamic(() => import('../components/Excel')),
+  Table: dynamic(() => import('./Table')),
+  Excel: dynamic(() => import('./Excel')),
   // TODO: try and make these dynamic ...
   Vega: Vega,
   VegaLite: VegaLite,
-  LineChart: dynamic(() => import('../components/LineChart')),
+  LineChart: dynamic(() => import('./LineChart')),
   Head,
 }
 
-export default function DataLiterate({ children, source, frontMatter }) {
+export default function DataLiterate({ source, frontMatter }) {
   return (
     <Layout title={frontMatter.title}>
       <div className="prose mx-auto">

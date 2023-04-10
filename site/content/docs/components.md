@@ -42,7 +42,7 @@ export default function Home(){
 
 Nav component accepts two properties:
 * **logo**: A string to an image path. Can be relative or absolute.
-* **navMenu**: An array of objects with title and path. E.g : [{ title: 'Blog', path: '/blog' },{ title: 'Search', path: '/search' }]
+* **navMenu**: An array of objects with title and path. E.g : {"[{ title: 'Blog', path: '/blog' },{ title: 'Search', path: '/search' }]"}
 
 
 #### [Recent Component](https://github.com/datopian/portal.js/blob/main/src/components/ui/Recent.js)
@@ -346,8 +346,8 @@ export default function Home() {
 #### Table Component Prop Types
 
 Table component accepts two properties:
-* **data**: An array of column names with properties: e.g [{field: "col1", headerName: "col1"}, {field: "col2", headerName: "col2"}]
-* **columns**: An array of data objects e.g. [ {col1: 1, col2: 2}, {col1: 5, col2: 7} ]
+* **data**: An array of column names with properties: e.g {'[{field: "col1", headerName: "col1"}, {field: "col2", headerName: "col2"}]'}
+* **columns**: An array of data objects e.g. {'[ {col1: 1, col2: 2}, {col1: 5, col2: 7} ]'}
 
 
 ### [Search Components](https://github.com/datopian/portal.js/tree/main/src/components/search)

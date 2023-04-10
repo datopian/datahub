@@ -55,7 +55,7 @@ These are the default routes set up in the "starter" app.
 
 You can create new routes in `/pages` directory where each file is associated with a route based on its name. We suggest using [Next.JS docs][] for more detailed information.
 
-[Next.JS docs]: https://nextjs.org/docs/basic-features/pages
+[next.js docs]: https://nextjs.org/docs/basic-features/pages
 
 ### Data fetching
 
@@ -205,10 +205,8 @@ export default function Org({ variables }) {
             }
             className="h-5 w-5 mr-2 inline-block"
           />
-          <Link href={`/@${organization.name}`}>
-            <a className="font-semibold text-primary underline">
+          <Link href={`/@${organization.name}`} className="font-semibold text-primary underline">
               {organization.title || organization.name}
-            </a>
           </Link>
         </>
       ) : (

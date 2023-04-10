@@ -1,3 +1,5 @@
+//  Used by Data Literate
+
 import matter from 'gray-matter'
 import toc from 'remark-toc'
 import slug from 'remark-slug'
