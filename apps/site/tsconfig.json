@@ -1,0 +1,31 @@
+{
+  "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "@flowershow/core": ["node_modules/@flowershow/core/dist/src"],
+      "@flowershow/remark-callouts": [
+        "node_modules/@flowershow/remark-callouts/dist/src"
+      ],
+      "@flowershow/remark-embed": [
+        "node_modules/@flowershow/remark-embed/dist/src"
+      ],
+      "@/*": ["./*"]
+    },
+    "target": "es2020",
+    "lib": ["dom", "dom.iterable", "esnext"],
+    "allowJs": true,
+    "skipLibCheck": true,
+    "strict": false,
+    "forceConsistentCasingInFileNames": true,
+    "noEmit": true,
+    "incremental": true,
+    "esModuleInterop": true,
+    "module": "esnext",
+    "moduleResolution": "node",
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "jsx": "preserve"
+  },
+  "include": ["types.d.ts", "next-env.d.ts", "**/*.tsx", "**/*.ts"],
+  "exclude": ["node_modules"]
+}
