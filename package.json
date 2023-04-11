@@ -18,7 +18,6 @@
     "@mui/icons-material": "^5.11.16",
     "@mui/material": "^5.11.16",
     "@mui/x-data-grid": "^6.1.0",
-    "@nrwl/next": "15.9.2",
     "@tailwindcss/typography": "^0.5.9",
     "filesize": "^10.0.7",
     "gray-matter": "^4.0.3",
@@ -32,6 +31,7 @@
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "react-next-github-btn": "^1.2.1",
+    "react-plotly.js": "^2.6.0",
     "react-plotlyjs": "^0.4.4",
     "react-vega": "^7.6.0",
     "rehype-autolink-headings": "^6.1.1",
@@ -46,6 +46,7 @@
     "remark-toc": "^8.0.1",
     "timeago.js": "^4.0.2",
     "tslib": "^2.3.0",
+    "vega": "^5.24.0",
     "xlsx": "^0.18.5"
   },
   "devDependencies": {
@@ -55,6 +56,7 @@
     "@nrwl/jest": "15.9.2",
     "@nrwl/js": "15.9.2",
     "@nrwl/linter": "15.9.2",
+    "@nrwl/next": "^15.9.2",
     "@nrwl/react": "15.9.2",
     "@nrwl/rollup": "15.9.2",
     "@nrwl/workspace": "15.9.2",
