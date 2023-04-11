@@ -1,15 +1,17 @@
 const defaultTheme = require("tailwindcss/defaultTheme");
-const { createGlobPatternsForDependencies } = require('@nrwl/react/tailwind');
-const { join } = require('path');
 
-/** @type {import('tailwindcss').Config} */
 module.exports = {
-  content: [
-    join(
-      __dirname,
-      '{src,pages,components}/**/*!(*.stories|*.spec).{ts,tsx,html,js,jsx}'
-    ),
-    ...createGlobPatternsForDependencies(__dirname),
+  mode: 'jit',
+  // purge: ['./pages/**/*.{js,ts,jsx,tsx}', './components/**/*.{js,ts,jsx,tsx}'],
+  purge: [
+    "./pages/**/*.js",
+    "./pages/**/*.ts",
+    "./pages/**/*.jsx",
+    "./pages/**/*.tsx",
+    "./components/**/*.js",
+    "./components/**/*.ts",
+    "./components/**/*.jsx",
+    "./components/**/*.tsx"
   ],
   darkMode: false, // or 'media' or 'class'
   theme: {
@@ -28,4 +30,4 @@ module.exports = {
   plugins: [
     require('@tailwindcss/typography'),
   ],
-};
+}
