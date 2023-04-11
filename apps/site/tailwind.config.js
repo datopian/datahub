@@ -1,3 +1,4 @@
+const defaultTheme = require("tailwindcss/defaultTheme");
 const { createGlobPatternsForDependencies } = require('@nrwl/react/tailwind');
 const { join } = require('path');
 
@@ -10,8 +11,21 @@ module.exports = {
     ),
     ...createGlobPatternsForDependencies(__dirname),
   ],
+  darkMode: false, // or 'media' or 'class'
   theme: {
+    container: {
+      center: true,
+    },
+    extend: {
+      fontFamily: {
+        mono: ["Inconsolata", ...defaultTheme.fontFamily.mono]
+      }
+    },
+  },
+  variants: {
     extend: {},
   },
-  plugins: [],
+  plugins: [
+    require('@tailwindcss/typography'),
+  ],
 };

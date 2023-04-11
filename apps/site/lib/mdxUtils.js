@@ -3,7 +3,7 @@ import glob from 'glob'
 import path from 'path'
 
 // POSTS_PATH is useful when you want to get the path to a specific file
-export const POSTS_PATH = path.join(process.cwd(), '/apps/site/content')
+export const POSTS_PATH = path.join(process.cwd(), 'content')
 
 const walkSync = (dir, filelist = []) => {
   fs.readdirSync(dir).forEach(file => {

@@ -1,22 +1,15 @@
-import { Disclosure, Menu, Transition } from '@headlessui/react'
+import { Fragment } from "react";
+import { Disclosure, Menu, Transition } from "@headlessui/react";
+import { siteConfig } from "config/siteConfig";
 import { Bars3Icon, XMarkIcon } from '@heroicons/react/24/outline'
 
-import Link from 'next/link'
-import GitHubButton from 'react-next-github-btn'
+import Link from "next/link";
+import GitHubButton from "react-next-github-btn";
 
-const navigation = [
-  { name: 'Docs', href: '/docs' },
-  { name: 'Components', href: '/docs/components' },
-  { name: 'Learn', href: '/learn' },
-  { name: 'Gallery', href: '/gallery' },
-  { name: 'Data Literate', href: '/data-literate/', current: false },
-  { name: 'DL Demo', href: '/data-literate/demo/', current: false },
-  { name: 'Excel Viewer', href: '/excel-viewer/', current: false },
-  { name: 'Github', href: 'https://github.com/datopian/portal.js', current: false },
-]
+const navigation = siteConfig.navLinks;
 
 function classNames(...classes) {
-  return classes.filter(Boolean).join(' ')
+  return classes.filter(Boolean).join(" ");
 }
 
 export default function Nav() {
@@ -31,29 +24,31 @@ export default function Nav() {
                 <Disclosure.Button className="inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-white hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-white">
                   <span className="sr-only">Open main menu</span>
                   {open ? (
-                    <XMarkIcon className="block h-6 w-6" aria-hidden="true" />
-                  ) : (
                     <Bars3Icon className="block h-6 w-6" aria-hidden="true" />
+                  ) : (
+                    <XMarkIcon className="block h-6 w-6" aria-hidden="true" />
                   )}
                 </Disclosure.Button>
               </div>
               <div className="flex-1 flex items-center justify-center sm:items-stretch sm:justify-start">
                 <div className="flex-shrink-0 flex items-center">
-                  <Link href="/" className="text-white"
-                  >
-                      Portal.JS
+                  <Link href="/" className="text-white">
+                    Portal.JS
                   </Link>
                 </div>
                 <div className="hidden sm:block sm:ml-6">
                   <div className="flex space-x-4">
                     {navigation.map((item) => (
-                      <Link href={item.href}
+                      <Link
+                        href={item.href}
                         key={item.name}
                         className={classNames(
-                          item.current ? 'bg-gray-900 text-white' : 'text-gray-300 hover:bg-gray-700 hover:text-white',
-                          'px-3 py-2 rounded-md text-sm font-medium'
+                          item.current
+                            ? "bg-gray-900 text-white"
+                            : "text-gray-300 hover:bg-gray-700 hover:text-white",
+                          "px-3 py-2 rounded-md text-sm font-medium"
                         )}
-                        aria-current={item.current ? 'page' : undefined}
+                        aria-current={item.current ? "page" : undefined}
                       >
                         {item.name}
                       </Link>
@@ -62,8 +57,16 @@ export default function Nav() {
                 </div>
               </div>
               <div className="mt-2 justify-end">
-                  <GitHubButton href="https://github.com/datopian/portal.js" data-color-scheme="no-preference: light; light: light; dark: dark;" data-size="large" data-show-count="true" aria-label="Star datopian/portal.js on GitHub">Stars</GitHubButton>
-                </div>
+                <GitHubButton
+                  href="https://github.com/datopian/portal.js"
+                  data-color-scheme="no-preference: light; light: light; dark: dark;"
+                  data-size="large"
+                  data-show-count="true"
+                  aria-label="Star datopian/portal.js on GitHub"
+                >
+                  Stars
+                </GitHubButton>
+              </div>
             </div>
           </div>
 
@@ -74,10 +77,12 @@ export default function Nav() {
                   key={item.name}
                   href={item.href}
                   className={classNames(
-                    item.current ? 'bg-gray-900 text-white' : 'text-gray-300 hover:bg-gray-700 hover:text-white',
-                    'block px-3 py-2 rounded-md text-base font-medium'
+                    item.current
+                      ? "bg-gray-900 text-white"
+                      : "text-gray-300 hover:bg-gray-700 hover:text-white",
+                    "block px-3 py-2 rounded-md text-base font-medium"
                   )}
-                  aria-current={item.current ? 'page' : undefined}
+                  aria-current={item.current ? "page" : undefined}
                 >
                   {item.name}
                 </a>
@@ -87,5 +92,5 @@ export default function Nav() {
         </>
       )}
     </Disclosure>
-  )
+  );
 }
