@@ -9,6 +9,9 @@
       }
     }
   },
+  "workspaceLayout": {
+    "libsDir": "packages"
+  },
   "targetDefaults": {
     "build": {
       "dependsOn": ["^build"],
