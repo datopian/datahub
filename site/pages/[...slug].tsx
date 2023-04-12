@@ -62,7 +62,10 @@ export const getStaticProps = async ({ params }) => {
 
 export async function getStaticPaths() {
   const mddb = await clientPromise;
-  const allDocuments = await mddb.getFiles({ extensions: ["md", "mdx"] });
+  let allDocuments = await mddb.getFiles({ extensions: ["md", "mdx"] });
+
+  //  Avoid duplicate path
+  allDocuments = allDocuments.filter(doc => !doc.url_path.startsWith('data-literate/'));
 
   const paths = allDocuments.map((page) => {
     const parts = page.url_path.split("/");

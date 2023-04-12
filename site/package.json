@@ -4,8 +4,9 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "next build",
-    "start": "next start"
+    "build": "npm run mddb && next build",
+    "start": "next start",
+    "mddb": "mddb content"
   },
   "dependencies": {
     "@flowershow/core": "^0.4.9",
@@ -31,7 +32,7 @@
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-next-github-btn": "^1.2.1",
-    "react-vega": "^7.4.4",
+    "react-vega": "^7.6.0",
     "rehype-autolink-headings": "^6.1.1",
     "rehype-katex": "^6.0.2",
     "rehype-prism-plus": "^1.5.1",
