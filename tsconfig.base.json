@@ -15,7 +15,9 @@
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
     "paths": {
-      "@portaljs/portaljs-components": ["packages/portaljs-components/src/index.ts"]
+      "@portaljs/portaljs-components": [
+        "packages/portaljs-components/src/index.ts"
+      ]
     }
   },
   "exclude": ["node_modules", "tmp"]
