@@ -45,7 +45,7 @@
     "remark-smartypants": "^2.0.0",
     "remark-toc": "^7.2.0",
     "tailwindcss": "^2.2.16",
-    "vega": "^5.20.2",
+    "vega": "^5.23.0",
     "vega-lite": "^5.1.0",
     "xlsx": "^0.17.0"
   },
