@@ -4,7 +4,13 @@ It is built on [Next.js](https://nextjs.org/).
 
 ## Getting Started
 
-First, run the development server:
+First, index the markdown pages:
+
+```bash
+npm run mddb
+```
+
+Then, run the development server:
 
 ```bash
 npm run dev
