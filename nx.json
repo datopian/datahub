@@ -10,7 +10,8 @@
     }
   },
   "workspaceLayout": {
-    "libsDir": "packages"
+    "libsDir": "packages",
+    "appsDir": "examples"
   },
   "targetDefaults": {
     "build": {
