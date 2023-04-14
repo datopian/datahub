@@ -1,7 +1,7 @@
 {
-  "name": "ckan",
+  "name": "ckan-2021",
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
-  "sourceRoot": "examples/ckan",
+  "sourceRoot": "examples/ckan-2021",
   "projectType": "application",
   "targets": {
     "build": {
@@ -9,12 +9,12 @@
       "outputs": ["{options.outputPath}"],
       "defaultConfiguration": "production",
       "options": {
-        "root": "examples/ckan",
-        "outputPath": "dist/examples/ckan"
+        "root": "examples/ckan-2021",
+        "outputPath": "dist/examples/ckan-2021"
       },
       "configurations": {
         "development": {
-          "outputPath": "examples/ckan"
+          "outputPath": "examples/ckan-2021"
         },
         "production": {}
       }
@@ -23,16 +23,16 @@
       "executor": "@nrwl/next:server",
       "defaultConfiguration": "development",
       "options": {
-        "buildTarget": "ckan:build",
+        "buildTarget": "ckan-2021:build",
         "dev": true
       },
       "configurations": {
         "development": {
-          "buildTarget": "ckan:build:development",
+          "buildTarget": "ckan-2021:build:development",
           "dev": true
         },
         "production": {
-          "buildTarget": "ckan:build:production",
+          "buildTarget": "ckan-2021:build:production",
           "dev": false
         }
       }
@@ -40,14 +40,14 @@
     "export": {
       "executor": "@nrwl/next:export",
       "options": {
-        "buildTarget": "ckan:build:production"
+        "buildTarget": "ckan-2021:build:production"
       }
     },
     "test": {
       "executor": "@nrwl/jest:jest",
       "outputs": ["{workspaceRoot}/coverage/{projectRoot}"],
       "options": {
-        "jestConfig": "examples/ckan/jest.config.ts",
+        "jestConfig": "examples/ckan-2021/jest.config.ts",
         "passWithNoTests": true
       },
       "configurations": {
@@ -61,7 +61,7 @@
       "executor": "@nrwl/linter:eslint",
       "outputs": ["{options.outputFile}"],
       "options": {
-        "lintFilePatterns": ["examples/ckan/**/*.{ts,tsx,js,jsx}"]
+        "lintFilePatterns": ["examples/ckan-2021/**/*.{ts,tsx,js,jsx}"]
       }
     }
   },
