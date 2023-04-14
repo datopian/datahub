@@ -1,3 +1,5 @@
+> :warning: **This documentation is outdated**: In the coming months this repo has been and will continue to experience a major revamping, this is all in the effort of modernizing and expanding the framework, with that said, not everything shown in the documentation below is going to still be aplicable so thread carefully
+
 <h1 align="center">
 🌀 Portal.JS
 <br />
