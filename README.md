@@ -3,7 +3,7 @@
 <h1 align="center">
 🌀 Portal.JS
 <br />
-Create a gateway to your data
+Rapidly build rich data portals using a modern frontend framework
 </h1>
 
 * [What is Portal.JS ?](#What-is-Portal.JS)
