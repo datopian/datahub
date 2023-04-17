@@ -1,14 +1,20 @@
 const config = {
   title:
-    "Portal.JS - Rapidly build rich data portals using a modern frontend framework",
+    "Portal.JS",
   description:
     "Portal.JS is a framework for rapidly building rich data portal frontends using a modern frontend approach. portal.js can be used to present a single dataset or build a full-scale data catalog/portal.",
   theme: {
-    default: "",
+    default: "dark",
+    toggleIcon: "/images/theme-button.svg",
   },
   author: "Datopian",
   authorLogo: "/datopian-logo.png",
   authorUrl: "https://datopian.com/",
+  navbarTitle: {
+    // logo: "/images/logo.svg",
+    text: "🌀 Portal.JS",
+    // version: "Alpha",
+  },
   navLinks: [
     { name: "Docs", href: "/docs" },
     { name: "Components", href: "/docs/components" },
@@ -44,7 +50,9 @@ const config = {
       cardType: "summary_large_image",
     },
   },
-  // tableOfContents: true,
+  github: "https://github.com/datopian/portaljs",
+  discord: "https://discord.gg/An7Bu5x8",
+  tableOfContents: true,
   // analytics: "xxxxxx",
   // editLinkShow: true,
 };
