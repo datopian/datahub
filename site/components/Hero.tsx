@@ -1,6 +1,7 @@
 import clsx from 'clsx';
 import Highlight, { defaultProps } from 'prism-react-renderer';
 import { Fragment, useRef } from 'react';
+import NewsletterForm from './NewsletterForm';
 
 const codeLanguage = 'javascript';
 const code = `export default {
@@ -49,51 +50,7 @@ export function Hero() {
               present a single dataset or build a full-scale data
               catalog/portal.
             </p>
-            <div className="mt-8 sm:mx-auto sm:text-center lg:text-left lg:mx-0">
-              <p className="text-base font-medium text-slate-400 dark:text-slate-400">
-                Sign up to get notified about updates
-              </p>
-              <form
-                method="POST"
-                name="get-updates"
-                data-netlify="true"
-                action="/subscribed"
-                className="mt-3 sm:flex"
-              >
-                <label htmlFor="name" className="sr-only">
-                  Name
-                </label>
-                <input
-                  name="name"
-                  type="text"
-                  required
-                  placeholder="Your name"
-                  className="block w-full sm:flex-auto sm:w-32 px-2 py-3 text-base rounded-md bg-slate-200 dark:bg-slate-800 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-400 focus:ring-offset-gray-900"
-                />
-                <label htmlFor="email" className="sr-only">
-                  Email address
-                </label>
-                <input
-                  name="email"
-                  type="email"
-                  required
-                  placeholder="Your email"
-                  className="block w-full mt-3 sm:flex-auto sm:w-64 sm:mt-0 sm:ml-3 px-2 py-3 text-base rounded-md bg-slate-200 dark:bg-slate-800 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-400 focus:ring-offset-gray-900"
-                />
-                <input type="hidden" name="form-name" value="get-updates" />
-                <button
-                  type="submit"
-                  className="flex-none mt-3 px-6 py-3 border border-transparent text-base font-medium rounded-md text-slate-900 bg-blue-400 hover:bg-blue-300 focus:outline-none focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-300/50 active:bg-sky-500 sm:mt-0 sm:ml-3"
-                >
-                  Notify me
-                </button>
-              </form>
-              {/* <p className="mt-3 text-sm text-slate-400 dark:text-slate-300 sm:mt-4">
-                We are actively trialling and developing Flowershow. If you'd
-                like to get notified about our progress and important updates,
-                please sign up.
-              </p> */}
-            </div>
+            <NewsletterForm />
             <p className="my-10 text-l tracking-wide">
               <span>A project of</span>
               <a
