@@ -1,7 +1,7 @@
 import { MDXRemote } from "next-mdx-remote";
 import layouts from "layouts";
 
-export default function DRD({ source, frontMatter }) {
+export default function MDXPage({ source, frontMatter }) {
   const Layout = ({ children }) => {
     if (frontMatter.layout) {
       let LayoutComponent = layouts[frontMatter.layout];
@@ -11,7 +11,7 @@ export default function DRD({ source, frontMatter }) {
   };
 
   return (
-    <div className="prose mx-auto">
+    <div className="prose mx-auto prose-a:text-primary dark:prose-a:text-primary-dark prose-strong:text-primary dark:prose-strong:text-primary-dark prose-code:text-primary dark:prose-code:text-primary-dark prose-headings:text-primary dark:prose-headings:text-primary-dark prose text-primary dark:text-primary-dark prose-headings:font-headings dark:prose-invert prose-a:break-words">
       <header>
         <div className="mb-6">
           {/* Default layout */}
