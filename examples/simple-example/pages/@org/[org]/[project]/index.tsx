@@ -1,9 +1,9 @@
 import Head from 'next/head';
 import { useRouter } from 'next/router';
 
-import DRD from '../../../components/drd/DRD';
-import parse from '../../../lib/markdown';
-import Project from '../../../lib/project';
+import DRD from '../../../../components/drd/DRD';
+import parse from '../../../../lib/markdown';
+import Project from '../../../../lib/project';
 import { NextSeo } from 'next-seo';
 import MDLayout from 'examples/simple-example/components/MDLayout';
 import { promises as fs } from 'fs';

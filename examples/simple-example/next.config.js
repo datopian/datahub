@@ -5,16 +5,22 @@ const { withNx } = require('@nrwl/next/plugins/with-nx');
  * @type {import('@nrwl/next/plugins/with-nx').WithNxOptions}
  **/
 const nextConfig = {
-   async rewrites() {
+  async rewrites() {
     return {
       beforeFiles: [
         {
-          source: "/@:org/:project/:file(.+\\..+$)",
+          source: "/@org/:org/:project/:file(\.\+\\\.\.\+\$)",
           destination:
-            "/api/proxy?url=https://raw.githubusercontent.com/:org/:project/main/:file",
-        },       {
-          source: "/@:org/:project*",
-          destination: "/@org/:org/:project*",
+            '/api/proxy?url=https://raw.githubusercontent.com/:org/:project/main/:file',
+        },
+        {
+          source: "/@:org/:project/:file(\.\+\\\.\.\+\$)",
+          destination:
+            '/api/proxy?url=https://raw.githubusercontent.com/:org/:project/main/:file',
+        },
+        {
+          source: '/@:org/:project*',
+          destination: '/@org/:org/:project*',
         },
       ],
     };

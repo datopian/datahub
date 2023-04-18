@@ -3,5 +3,5 @@
   { "owner": "datasets", "repo": "investor-flow-of-funds-us"},
   { "owner": "datasets", "repo": "browser-stats"},
   { "owner": "datasets", "repo": "glacier-mass-balance"},
-  { "owner": "datasets", "repo": "bonds-yields-us-10y"}
+  { "owner": "datasets", "repo": "bond-yields-us-10y"}
 ]

@@ -1,6 +1,7 @@
 import axios from "axios";
 
 export default function handler(req, res) {
+  console.log(req.query.url)
   if (!req.query.url) {
     res.status(200).send({
       error: true,
