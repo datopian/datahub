@@ -14,7 +14,7 @@ export function convertSimpleToVegaLite(view, resource) {
       tooltip: true,
     },
     title: view.title,
-    width: "container",
+    width: 500,
     height: 300,
     selection: {
       grid: {
