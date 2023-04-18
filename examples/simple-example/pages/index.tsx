@@ -7,7 +7,7 @@ import Link from 'next/link';
 export async function getStaticProps() {
   const jsonDirectory = path.join(
     process.cwd(),
-    '/examples/simple-example/repos.json'
+    '/examples/simple-example/datasets.json'
   );
   const repos = await fs.readFile(jsonDirectory, 'utf8');
 

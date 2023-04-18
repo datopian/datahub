@@ -70,7 +70,7 @@ export default function ProjectPage({
 
 // Generates `/posts/1` and `/posts/2`
 export async function getStaticPaths() {
-  const jsonDirectory = path.join(process.cwd(), '/examples/simple-example/repos.json');
+  const jsonDirectory = path.join(process.cwd(), '/examples/simple-example/datasets.json');
   const repos = await fs.readFile(jsonDirectory, 'utf8');
 
   return {
