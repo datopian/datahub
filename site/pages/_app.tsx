@@ -33,6 +33,7 @@ function MyApp({ Component, pageProps }) {
       forcedTheme={siteConfig.theme.default ? null : "light"}
     >
       <DefaultSeo defaultTitle={siteConfig.title} {...siteConfig.nextSeo} />
+
       {/* Global Site Tag (gtag.js) - Google Analytics */}
       {siteConfig.analytics && (
         <>
@@ -56,6 +57,10 @@ function MyApp({ Component, pageProps }) {
           />
         </>
       )}
+      
+      {/* Umami Analytics */}
+      <Script async defer data-website-id="061e14c1-6157-4a93-820c-777c7a937c12" src="https://analytics.datopian.com/umami.js" />
+      
       <Component {...pageProps} />
     </ThemeProvider>
   );
