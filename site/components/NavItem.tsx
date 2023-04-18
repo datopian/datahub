@@ -58,15 +58,13 @@ export default function NavItem({ item }) {
             onMouseLeave={closeDropdown}
           >
             {item.subItems.map((subItem) => (
-              //  TODO: check the onClick error below
-              //  onClick does not exist on Menu.Item
               <Menu.Item
                 key={subItem.name}
-                onClick={() => setshowDropdown(false)}
-              >
+                >
                 <BaseLink
                   href={subItem.href}
                   className="text-slate-500 inline-flex items-center mt-2 px-1 pt-1 text-sm font-medium hover:text-slate-600"
+                  onClick={() => setshowDropdown(false)}
                 >
                   {subItem.name}
                 </BaseLink>

@@ -57,7 +57,7 @@ export default function Layout({
   title?: string;
   tableOfContents?;
 }) {
-  const { toc } = children.props;
+  // const { toc } = children.props;
 
   const currentSection = useTableOfContents(tableOfContents);
 
@@ -94,7 +94,7 @@ export default function Layout({
         </a>
       </footer>
       {/** TABLE OF CONTENTS */}
-      {tableOfContents.length > 0 && (toc ?? siteConfig.tableOfContents) && (
+      {tableOfContents.length > 0 && (siteConfig.tableOfContents) && (
         <div className="hidden xl:fixed xl:right-0 xl:top-[4.5rem] xl:block xl:w-1/5 xl:h-[calc(100vh-4.5rem)] xl:flex-none xl:overflow-y-auto xl:py-16 xl:pr-6 xl:mb-16">
           <nav aria-labelledby="on-this-page-title" className="w-56">
             <h2 className="font-display text-md font-medium text-slate-900 dark:text-white">

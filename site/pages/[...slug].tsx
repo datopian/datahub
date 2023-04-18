@@ -19,11 +19,12 @@ export default function DRDPage({ source, frontMatter }) {
   const [tableOfContents, setTableOfContents] = useState([]);
 
   useEffect(() => {
-    const headingNodes = document.querySelectorAll('h2,h3');
+    const headingNodes = document.querySelectorAll(
+      'h2,h3'
+    ) as NodeListOf<HTMLHeadingElement>;
     const toc = collectHeadings(headingNodes);
     setTableOfContents(toc ?? []);
   }, [router.asPath]); // update table of contents on route change with next/link
-
 
   return (
     <Layout tableOfContents={tableOfContents} title={frontMatter.title}>

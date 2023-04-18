@@ -47,8 +47,11 @@ export default function Features() {
         CKAN.
       </p>
       <div className="not-prose my-12 grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
-        {features.map((feature) => (
-          <div className="group relative rounded-xl border border-slate-200 dark:border-slate-800">
+        {features.map((feature, i) => (
+          <div
+            key={`feature-${i}`}
+            className="group relative rounded-xl border border-slate-200 dark:border-slate-800"
+          >
             <div className="absolute -inset-px rounded-xl border-2 border-transparent opacity-0 [background:linear-gradient(var(--quick-links-hover-bg,theme(colors.sky.50)),var(--quick-links-hover-bg,theme(colors.sky.50)))_padding-box,linear-gradient(to_top,theme(colors.blue.300),theme(colors.blue.400),theme(colors.blue.500))_border-box] group-hover:opacity-100 dark:[--quick-links-hover-bg:theme(colors.slate.800)]" />
             <div className="relative overflow-hidden rounded-xl p-6">
               <img src={feature.icon} alt="" className="h-24 w-auto" />
