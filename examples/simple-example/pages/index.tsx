@@ -50,7 +50,6 @@ const formatter = new Intl.DateTimeFormat('en-US', {
 });
 
 export function Datasets({ projects }) {
-  console.log(projects);
   return (
     <div className="bg-white">
       <div className="mx-auto max-w-7xl px-6 py-16 sm:py-24 lg:px-8">
