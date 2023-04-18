@@ -1,0 +1,7 @@
+[
+  { "owner": "datasets", "repo": "oil-prices"},
+  { "owner": "datasets", "repo": "investor-flow-of-funds-us"},
+  { "owner": "datasets", "repo": "browser-stats"},
+  { "owner": "datasets", "repo": "glacier-mass-balance"},
+  { "owner": "datasets", "repo": "bond-yields-us-10y"}
+]
