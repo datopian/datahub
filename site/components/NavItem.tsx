@@ -29,12 +29,12 @@ export default function NavItem({ item }) {
         {Object.prototype.hasOwnProperty.call(item, "href") ? (
           <Link
             href={item.href}
-            className="text-slate-500 inline-flex items-center mr-2 px-1 pt-1 text-sm font-medium hover:text-slate-600"
+            className="text-slate-600 dark:text-slate-400 inline-flex items-center mr-2 px-1 pt-1 text-sm font-medium hover:text-slate-500"
           >
             {item.name}
           </Link>
         ) : (
-          <div className="text-slate-500 inline-flex items-center mr-2 px-1 pt-1 text-sm font-medium hover:text-slate-600 fill-slate-500 hover:fill-slate-600">
+          <div className="text-slate-600 dark:text-slate-400 inline-flex items-center mr-2 px-1 pt-1 text-sm font-medium hover:text-slate-500 fill-slate-500 hover:fill-slate-600">
             {item.name}
           </div>
         )}

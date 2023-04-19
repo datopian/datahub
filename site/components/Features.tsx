@@ -38,7 +38,7 @@ const features: { title: string; description: string; icon: string }[] = [
 export default function Features() {
   return (
     <div className="lg:max-w-8xl mx-auto px-4 lg:px-8 xl:px-12">
-      <h2 className="text-3xl font-bold">How Portal.JS works?</h2>
+      <h2 className="text-3xl font-bold text-primary dark:text-primary-dark">How Portal.JS works?</h2>
       <p className="text-lg mt-8">
         Portal.JS is built in JavaScript and React on top of the popular Next.js
         framework, assuming a "decoupled" approach where the frontend is a
@@ -55,7 +55,7 @@ export default function Features() {
             <div className="absolute -inset-px rounded-xl border-2 border-transparent opacity-0 [background:linear-gradient(var(--quick-links-hover-bg,theme(colors.sky.50)),var(--quick-links-hover-bg,theme(colors.sky.50)))_padding-box,linear-gradient(to_top,theme(colors.blue.300),theme(colors.blue.400),theme(colors.blue.500))_border-box] group-hover:opacity-100 dark:[--quick-links-hover-bg:theme(colors.slate.800)]" />
             <div className="relative overflow-hidden rounded-xl p-6">
               <img src={feature.icon} alt="" className="h-24 w-auto" />
-              <h2 className="mt-4 font-display text-base text-slate-900 dark:text-white">
+              <h2 className="mt-4 font-display text-base text-primary dark:text-primary-dark">
                 <span className="absolute -inset-px rounded-xl" />
                 {feature.title}
               </h2>
