@@ -32,7 +32,7 @@ export function Hero() {
   const el = useRef(null);
 
   return (
-    <div className="overflow-hidden -mb-32 mt-[-4.5rem] pb-32 pt-[4.5rem] lg:mt-[-4.75rem] lg:pt-[4.75rem]">
+    <div className="overflow-hidden -mb-32 mt-[-4.5rem] pb-32 pt-[4.5rem] lg:mt-[-4.75rem] lg:pt-[4.75rem]" id="hero">
       <div className="py-16 sm:px-2 lg:relative lg:py-20 lg:px-0">
         {/* Commented code on line 37, 39 and 113 will reenable the two columns hero */}
         {/* <div className="mx-auto grid max-w-2xl grid-cols-1 items-center gap-y-16 gap-x-8 px-4 lg:max-w-8xl lg:grid-cols-2 lg:px-8 xl:gap-x-16 xl:px-12"> */}

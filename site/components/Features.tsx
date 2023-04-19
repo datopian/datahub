@@ -1,3 +1,5 @@
+import Container from './Container';
+
 const features: { title: string; description: string; icon: string }[] = [
   {
     title: 'Unified sites',
@@ -37,8 +39,10 @@ const features: { title: string; description: string; icon: string }[] = [
 
 export default function Features() {
   return (
-    <div className="lg:max-w-8xl mx-auto px-4 lg:px-8 xl:px-12">
-      <h2 className="text-3xl font-bold text-primary dark:text-primary-dark">How Portal.JS works?</h2>
+    <Container>
+      <h2 className="text-3xl font-bold text-primary dark:text-primary-dark">
+        How Portal.JS works?
+      </h2>
       <p className="text-lg mt-8">
         Portal.JS is built in JavaScript and React on top of the popular Next.js
         framework, assuming a "decoupled" approach where the frontend is a
@@ -66,6 +70,6 @@ export default function Features() {
           </div>
         ))}
       </div>
-    </div>
+    </Container>
   );
 }
