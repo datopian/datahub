@@ -20,10 +20,9 @@ const config = {
     { name: "Components", href: "/docs/components" },
     { name: "Learn", href: "/learn" },
     { name: "Gallery", href: "/gallery" },
-    { name: "Data Literate", href: "/data-literate" },
-    { name: "DL Demo", href: "/data-literate/demo" },
-    { name: "Excel Viewer", href: "/excel-viewer" },
-    { name: "GitHub", href: "https://github.com/datopian/portal.js" },
+    // { name: "Data Literate", href: "/data-literate" },
+    // { name: "DL Demo", href: "/data-literate/demo" },
+    // { name: "Excel Viewer", href: "/excel-viewer" },
   ],
   footerLinks: [],
   nextSeo: {
