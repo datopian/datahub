@@ -19,6 +19,7 @@ const config = {
     { name: "Docs", href: "/docs" },
     { name: "Components", href: "/docs/components" },
     { name: "Learn", href: "/learn" },
+    { name: "Blog", href: "/blog" },
     // { name: "Gallery", href: "/gallery" },
     // { name: "Data Literate", href: "/data-literate" },
     // { name: "DL Demo", href: "/data-literate/demo" },
