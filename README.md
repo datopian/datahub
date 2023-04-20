@@ -7,6 +7,8 @@ Rapidly build rich data portals using a modern frontend framework
 * [What is Portal.JS ?](#What-is-Portal.JS)
     * [Features](#Features)
       * [For developers](#For-developers)
+* [Docs](#Docs)
+* [Community](#Community)
 * [Appendix](#Appendix)
     * [What happened to Recline?](#What-happened-to-Recline?)
 
