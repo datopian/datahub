@@ -1,5 +1,6 @@
 import { siteConfig } from '@/config/siteConfig';
 import { NextSeo } from 'next-seo';
+import { useTheme } from 'next-themes';
 import Link from 'next/link';
 import { useCallback, useEffect, useState } from 'react';
 
@@ -58,6 +59,7 @@ export default function Layout({
   tableOfContents?;
 }) {
   // const { toc } = children.props;
+  const { theme, setTheme } = useTheme();
 
   const currentSection = useTableOfContents(tableOfContents);
 
@@ -87,17 +89,21 @@ export default function Layout({
         >
           Built by{' '}
           <img
-            src="/datopian-logo.png"
+            src={
+              theme === 'dark'
+                ? '/images/datopian-light-logotype.svg'
+                : '/images/datopian-dark-logotype.svg'
+            }
             alt="Datopian Logo"
             className="h-6 ml-2"
           />
         </a>
       </footer>
       {/** TABLE OF CONTENTS */}
-      {tableOfContents.length > 0 && (siteConfig.tableOfContents) && (
+      {tableOfContents.length > 0 && siteConfig.tableOfContents && (
         <div className="hidden xl:fixed xl:right-0 xl:top-[4.5rem] xl:block xl:w-1/5 xl:h-[calc(100vh-4.5rem)] xl:flex-none xl:overflow-y-auto xl:py-16 xl:pr-6 xl:mb-16">
           <nav aria-labelledby="on-this-page-title" className="w-56">
-            <h2 className="font-display text-md font-medium text-slate-900 dark:text-white">
+            <h2 className="font-display text-md font-medium text-primary dark:text-primary-dark">
               On this page
             </h2>
             <ol className="mt-4 space-y-3 text-sm">
@@ -108,7 +114,7 @@ export default function Layout({
                       href={`#${section.id}`}
                       className={
                         isActive(section)
-                          ? 'text-sky-500'
+                          ? 'text-secondary'
                           : 'font-normal text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-300'
                       }
                     >

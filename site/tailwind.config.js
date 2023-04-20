@@ -32,12 +32,12 @@ module.exports = {
           dark: colors.slate[950],
         },
         primary: {
-          DEFAULT: colors.gray[700],
-          dark: colors.gray[300],
+          DEFAULT: colors.gray[800],
+          dark: colors.gray[100],
         },
         secondary: {
-          DEFAULT: "",
-          dark: "",
+          DEFAULT: "#60a5fa",
+          dark: "#60a5fa",
         },
       },
     },

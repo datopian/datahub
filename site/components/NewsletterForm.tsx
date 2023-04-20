@@ -22,24 +22,7 @@ export default function NewsletterForm() {
             data-type="subscription"
             className="mt-3 sm:flex"
           >
-            <div className="sib-input sib-form-block !p-0 block w-full sm:flex-auto sm:w-32">
-              <div className="form__entry entry_block w-full">
-                <label htmlFor="name" className="sr-only entry__label">
-                  Name
-                </label>
-                <input
-                  id="NAME"
-                  name="NAME"
-                  type="text"
-                  required
-                  placeholder="Your name"
-                  className="input entry__field !w-full px-2 py-3 text-base rounded-md bg-slate-200 dark:bg-slate-800 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-400 focus:ring-offset-gray-900"
-                />
-
-                <label className="entry__error entry__error--primary text-red-400 text-sm"></label>
-              </div>
-            </div>
-            <div className="sib-input sib-form-block !p-0 block w-full sm:flex-auto sm:w-64 mt-3 sm:mt-0 sm:ml-3">
+            <div className="sib-input sib-form-block !p-0 block w-full sm:flex-auto sm:w-64 mt-3 sm:mt-0">
               <div className="form__entry entry_block w-full">
                 <label htmlFor="email" className="sr-only entry__label">
                   Email address
@@ -79,10 +62,7 @@ export default function NewsletterForm() {
             <input type="hidden" name="locale" value="en" />
           </form>
         </div>
-        <div
-          id="error-message"
-          className="sib-form-message-panel !border-none"
-        >
+        <div id="error-message" className="sib-form-message-panel !border-none">
           <div className="sib-form-message-panel__text sib-form-message-panel__text--center !text-red-400 justify-center">
             <svg
               viewBox="0 0 512 512"
