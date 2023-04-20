@@ -20,7 +20,6 @@ const IconButton = ({ Icon, text, href, ...props }) => {
       <a
         className="rounded border border-secondary px-5 py-3 text-primary dark:text-primary-dark flex items-center hover:bg-secondary hover:text-primary dark:hover:text-primary transition-all duration-200"
         href={href}
-        target="_blank"
       >
         <Icon className="w-6 h-6 mr-2" />
         {text}
