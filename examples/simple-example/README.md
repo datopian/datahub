@@ -1,4 +1,4 @@
-This is a repo intended to serve as an simple-example of a data catalog that get its data from a series of github-repos, you can init an example just like this one by.
+This is a repo intended to serve as a simple example of a data catalog that get its data from a series of github repos, you can init an example just like this one by.
 
 - Creating a new file inside o `examples` with `create-next-app` like so:
 ```
