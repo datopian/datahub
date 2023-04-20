@@ -35,8 +35,6 @@ You can check out the following examples built with Portal.js.
 ## Reference Information
 
 * [Full list of the available components that are provided by Portal.JS](/docs/components)
-* [Reference](/docs/references)
-
 
 ## Getting Help
 
