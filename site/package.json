@@ -18,7 +18,6 @@
     "@heroicons/react": "^1.0.3",
     "@mdx-js/loader": "^2.3.0",
     "clsx": "^1.2.1",
-    "frictionless.js": "^0.13.4",
     "gray-matter": "^4.0.3",
     "hastscript": "^7.2.0",
     "next": "^13.2.1",
