@@ -21,17 +21,6 @@ export async function getStaticProps() {
     extensions: ['md', 'mdx'],
   });
 
-  //  Temporary, while MarkdownDB doesn't support filetypes
-  //  Merges docs that have the "blog" filetype
-  let docs = await mddb.getFiles({
-    folder: 'docs',
-    extensions: ['md', 'mdx'],
-  });
-
-  docs = docs.filter((doc) => doc.metadata.filetype === 'blog');
-
-  blogs = [...blogs, ...docs];
-
   const blogsSorted = blogs.sort(
     (a, b) =>
       new Date(b.metadata.date).getTime() - new Date(a.metadata.date).getTime()
