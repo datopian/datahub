@@ -49,12 +49,13 @@ const items = [
 export default function Gallery() {
   return (
     <Container>
-      <h2 className="text-3xl font-bold text-primary dark:text-primary-dark ">
+      <h2
+        className="text-3xl font-bold text-primary dark:text-primary-dark"
+        id="gallery"
+      >
         Gallery
       </h2>
-      <p className="text-lg mt-8 ">
-        Discover what's being powered by Portal.JS
-      </p>
+      <p className="text-lg mt-8">Discover what's being powered by Portal.JS</p>
       <div className="not-prose my-12 grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
         {items.map((item) => {
           return <GalleryItem item={item} />;

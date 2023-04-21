@@ -1,6 +1,7 @@
 import clsx from 'clsx';
 import Highlight, { defaultProps } from 'prism-react-renderer';
 import { Fragment, useRef } from 'react';
+import ButtonLink from './ButtonLink';
 import NewsletterForm from './NewsletterForm';
 
 const codeLanguage = 'javascript';
@@ -53,6 +54,15 @@ export function Hero() {
               present a single dataset or build a full-scale data
               catalog/portal.
             </p>
+
+            <ButtonLink className="mt-8" href="/docs">
+              Get Started
+            </ButtonLink>
+
+            <ButtonLink className="ml-3" href="#gallery" style="secondary">
+              Gallery
+            </ButtonLink>
+
             <div className="md:max-w-md mx-auto">
               <NewsletterForm />
             </div>
