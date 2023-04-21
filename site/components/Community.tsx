@@ -4,6 +4,8 @@ import EmailIcon from './icons/EmailIcon';
 import GitHubIcon from './icons/GitHubIcon';
 
 import { siteConfig } from '@/config/siteConfig';
+import { getContributorsCount, getRepoInfo } from '@/lib/getGitHubData';
+import { useEffect, useState } from 'react';
 
 const Stat = ({ title, value, ...props }) => {
   return (
@@ -29,6 +31,33 @@ const IconButton = ({ Icon, text, href, ...props }) => {
 };
 
 export default function Community() {
+  const [repoInfo, setRepoInfo] = useState<any>();
+  const [contributorsCount, setContributorsCount] = useState('');
+
+  useEffect(() => {
+    //  This runs on client side and it's unlikely that users
+    //  will exceed the GitHub API  usage limit,  but added a
+    //  handling for that just in case.
+
+    getRepoInfo().then((res) => {
+      if (res.success) {
+        res.info.then((data) => setRepoInfo(data));
+      } else {
+        //  If the request fail e.g API usage limit, use
+        //  a placeholder
+        setRepoInfo({ stargazers_count: '+2k' });
+      }
+    });
+
+    getContributorsCount().then((res) => {
+      if (res.success) {
+        setContributorsCount(res.count);
+      } else {
+        setContributorsCount('+70');
+      }
+    });
+  }, []);
+
   return (
     <Container>
       <h2 className="text-3xl font-bold text-primary dark:text-primary-dark ">
@@ -38,8 +67,12 @@ export default function Community() {
         We are growing. Get in touch or become a contributor!
       </p>
       <div className="flex justify-center mt-12">
-        <Stat title="Stars on GitHub" value="+2k" className="mr-10" />
-        <Stat title="Contributors" value="+70" />
+        <Stat
+          title="Stars on GitHub"
+          value={repoInfo?.stargazers_count}
+          className="mr-10"
+        />
+        <Stat title="Contributors" value={contributorsCount} />
       </div>
       <div className="flex flex-wrap justify-center mt-12">
         <IconButton
