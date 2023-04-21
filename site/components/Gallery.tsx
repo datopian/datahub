@@ -32,6 +32,18 @@ const items = [
     image: '/images/showcases/datahub.png',
     description: 'Demo Data Portal by DataHub',
   },
+  {
+    title: 'Example: Simple Data Catalog',
+    href: 'https://example.portaljs.org/',
+    image: '/images/showcases/example-simple-catalog.png',
+    description: 'Simple data catalog',
+  },
+  {
+    title: 'Example: Portal with CKAN',
+    href: 'https://ckan-example.portaljs.org/',
+    image: '/images/showcases/example-ckan.png',
+    description: 'Simple portal with data coming from CKAN',
+  },
 ];
 
 export default function Gallery() {
