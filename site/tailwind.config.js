@@ -12,7 +12,9 @@ module.exports = {
     "./components/**/*.ts",
     "./components/**/*.jsx",
     "./components/**/*.tsx",
-    "./lib/markdown.mjs"
+    "./lib/markdown.mjs",
+    "./node_modules/@flowershow/core/dist/*.js",
+    "./node_modules/@flowershow/core/*.js",
   ],
   darkMode: "class", // or 'media' or 'class'
   theme: {
