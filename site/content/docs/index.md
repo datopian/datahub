@@ -31,6 +31,11 @@ You can check out the following examples built with Portal.js.
 
 > The [`examples` directory](https://github.com/datopian/portal.js/tree/main/examples) is regularly updated with different portal examples. 
 
+
+## Reference Information
+
+* [Full list of the available components that are provided by Portal.JS](/docs/components)
+
 ## Getting Help
 
 If you have questions about anything related to Portal.js, you're always welcome to ask our community on [GitHub Discussions](https://github.com/datopian/portal.js/discussions) or on our [Discord server](https://discord.gg/An7Bu5x8).

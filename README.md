@@ -44,6 +44,7 @@ Access the Portal.JS documentation at:
 
 https://portaljs.org/docs
 
+- [Components](https://portaljs.org/docs/components)
 - [Examples](https://portaljs.org/docs#examples)
 
 # Community
