@@ -17,8 +17,7 @@ const config = {
   },
   navLinks: [
     { name: "Docs", href: "/docs" },
-    { name: "Components", href: "/docs/components" },
-    { name: "Learn", href: "/learn" },
+    // { name: "Components", href: "/docs/components" },
     { name: "Blog", href: "/blog" },
     // { name: "Gallery", href: "/gallery" },
     // { name: "Data Literate", href: "/data-literate" },
