@@ -14,11 +14,11 @@ Below are some screenshots:
 
 ### Front page
 
-![](https://i.imgur.com/wMk3pGf.png)
+![](https://i.imgur.com/jAljJ9C.png)
 
 ### Individual dataset page
 
-![](https://i.imgur.com/UipBNEY.png)
+![](https://i.imgur.com/AoJd4O0.png)
 
 
 ## Links

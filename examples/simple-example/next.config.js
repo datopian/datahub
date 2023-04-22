@@ -9,22 +9,16 @@ const nextConfig = {
     return {
       beforeFiles: [
         {
-          source: "/@org/:org/:project/:file(\.\+\\\.\.\+\$)",
-          destination:
-            '/api/proxy?url=https://raw.githubusercontent.com/:org/:project/main/:file',
-        },
-        {
-          source: "/@:org/:project/:file(\.\+\\\.\.\+\$)",
-          destination:
-            '/api/proxy?url=https://raw.githubusercontent.com/:org/:project/main/:file',
-        },
-        {
           source: '/@:org/:project*',
           destination: '/@org/:org/:project*',
         },
       ],
     };
   },
+  serverRuntimeConfig: {
+    github_pat: process.env.GITHUB_PAT ? process.env.GITHUB_PAT : null,
+    project_name: process.env.PROJECT_NAME ? process.env.PROJECT_NAME : 'simple-example'  
+  }, 
   nx: {
     // Set this to true if you would like to use SVGR
     // See: https://github.com/gregberge/svgr
