@@ -35,10 +35,10 @@ const config = {
       locale: "en_US",
       images: [
         {
-          url: "https://datahub.io/static/img/opendata/product.png",  //  TODO
+          url: "/homepage-screenshot.png",  //  TODO
           alt: "Portal.JS - Rapidly build rich data portals using a modern frontend framework",
-          width: 1200,
-          height: 627,
+          width: 1280,
+          height: 720,
           type: "image/jpg",
         },
       ],
