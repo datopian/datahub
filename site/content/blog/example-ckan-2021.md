@@ -14,7 +14,7 @@ We have created a full data portal demo using PortalJS all backed by a CKAN inst
 To create a Portal app, run the following command in your terminal:
 
 ```console
-npx create-next-app -e https://github.com/datopian/portal.js/tree/main/examples/ckan
+npx create-next-app -e https://github.com/datopian/portaljs/tree/main/examples/ckan
 ```
 
 > NB: Under the hood, this uses the tool called create-next-app, which bootstraps an app for you based on our CKAN example.
@@ -75,7 +75,7 @@ For development/debugging purposes, we suggest installing the Chrome extension -
 
 ### I18n configuration
 
-Portal.js is configured by default to support both `English` and `French` subpath for language translation. But for subsequent users, this following steps can be used to configure i18n for other languages;
+PortalJS is configured by default to support both `English` and `French` subpath for language translation. But for subsequent users, this following steps can be used to configure i18n for other languages;
 
 1.  Update `next.config.js`, to add more languages to the i18n locales
 

@@ -77,7 +77,7 @@ export default function Community() {
       <div className="flex flex-wrap justify-center mt-12">
         <IconButton
           Icon={GitHubIcon}
-          text="Star Portal.JS on GitHub"
+          text="Star PortalJS on GitHub"
           className="sm:mr-4 mb-4 w-full sm:w-auto"
           href={siteConfig.github}
         />
@@ -89,7 +89,7 @@ export default function Community() {
         />
         <IconButton
           Icon={EmailIcon}
-          text="Subscribe to the Portal.JS newsletter"
+          text="Subscribe to the PortalJS newsletter"
           className="w-full sm:w-auto"
           href="#hero"
         />

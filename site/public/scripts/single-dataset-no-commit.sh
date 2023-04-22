@@ -3,7 +3,7 @@ git checkout -b gh-pages
 git rm -r --cached . 
 rm -rf portal
 mkdir -p portal
-npx create-next-app portal -e https://github.com/datopian/portal.js/tree/main/examples/dataset-frictionless 
+npx create-next-app portal -e https://github.com/datopian/portaljs/tree/main/examples/dataset-frictionless 
 mkdir portal/public/dataset
 
 cp -a ./data portal/public/dataset
