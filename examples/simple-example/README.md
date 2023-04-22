@@ -22,7 +22,7 @@ PROJECT_NAME=<app-name>
 - This project uses the github api, which for anonymous users will cap at 50 requests per hour, so you might want to get a [Personal Access Token](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/creating-a-personal-access-token) and add it to your .env file like so
 
 ```
-PAT_TOKEN=<github token>
+GITHUB_PAT=<github token>
 ```
 
 - Edit the file `datasets.json` to your liking, some examples can be found inside this [repo](https://github.com/datasets)
