@@ -32,17 +32,30 @@ const items = [
     image: '/images/showcases/datahub.png',
     description: 'Demo Data Portal by DataHub',
   },
+  {
+    title: 'Example: Simple Data Catalog',
+    href: 'https://example.portaljs.org/',
+    image: '/images/showcases/example-simple-catalog.png',
+    description: 'Simple data catalog',
+  },
+  {
+    title: 'Example: Portal with CKAN',
+    href: 'https://ckan-example.portaljs.org/',
+    image: '/images/showcases/example-ckan.png',
+    description: 'Simple portal with data coming from CKAN',
+  },
 ];
 
 export default function Gallery() {
   return (
     <Container>
-      <h2 className="text-3xl font-bold text-primary dark:text-primary-dark ">
+      <h2
+        className="text-3xl font-bold text-primary dark:text-primary-dark"
+        id="gallery"
+      >
         Gallery
       </h2>
-      <p className="text-lg mt-8 ">
-        Discover what's being powered by Portal.JS
-      </p>
+      <p className="text-lg mt-8">Discover what's being powered by Portal.JS</p>
       <div className="not-prose my-12 grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
         {items.map((item) => {
           return <GalleryItem item={item} />;
