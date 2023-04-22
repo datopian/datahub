@@ -1,4 +1,4 @@
-This the Portal.JS website.
+This the PortalJS website.
 
 It is built on [Next.js](https://nextjs.org/).
 

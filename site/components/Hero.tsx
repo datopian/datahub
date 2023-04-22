@@ -49,14 +49,11 @@ export function Hero() {
               </h1>
             </div>
             <p className="mt-4 text-xl tracking-tight text-slate-400">
-              Portal.JS is a framework for rapidly building rich data portal
-              frontends using a modern frontend approach. It can be used to
-              present a single dataset or build a full-scale data
-              catalog/portal.
+              Rapidly build rich data portals using a modern frontend framework.
             </p>
 
             <ButtonLink className="mt-8" href="/docs">
-              Get Started
+              Get started
             </ButtonLink>
 
             <ButtonLink className="ml-3" href="#gallery" style="secondary">

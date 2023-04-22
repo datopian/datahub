@@ -1,8 +1,8 @@
 const config = {
   title:
-    "Portal.JS",
+    "PortalJS",
   description:
-    "Portal.JS is a framework for rapidly building rich data portal frontends using a modern frontend approach. portal.js can be used to present a single dataset or build a full-scale data catalog/portal.",
+    "PortalJS is a framework for rapidly building rich data portal frontends using a modern frontend approach. PortalJS can be used to present a single dataset or build a full-scale data catalog/portal.",
   theme: {
     default: "dark",
     toggleIcon: "/images/theme-button.svg",
@@ -12,7 +12,7 @@ const config = {
   authorUrl: "https://datopian.com/",
   navbarTitle: {
     // logo: "/images/logo.svg",
-    text: "🌀 Portal.JS",
+    text: "🌀 PortalJS",
     // version: "Alpha",
   },
   navLinks: [
@@ -29,14 +29,14 @@ const config = {
     openGraph: {
       type: "website",
       title:
-        "Portal.JS - Rapidly build rich data portals using a modern frontend framework",
+        "PortalJS - rapidly build rich data portals using a modern frontend framework.",
       description:
-        "Portal.JS is a framework for rapidly building rich data portal frontends using a modern frontend approach. portal.js can be used to present a single dataset or build a full-scale data catalog/portal.",
+        "PortalJS is a framework for rapidly building rich data portal frontends using a modern frontend approach. PortalJS can be used to present a single dataset or build a full-scale data catalog and portal.",
       locale: "en_US",
       images: [
         {
           url: "/homepage-screenshot.png",  //  TODO
-          alt: "Portal.JS - Rapidly build rich data portals using a modern frontend framework",
+          alt: "PortalJS - rapidly build rich data portals using a modern frontend framework.",
           width: 1280,
           height: 720,
           type: "image/jpg",

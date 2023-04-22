@@ -1,7 +1,7 @@
 #!/bin/bash
 rm -rf portal
 mkdir -p portal
-npx create-next-app portal -e https://github.com/datopian/portal.js/tree/main/examples/dataset-frictionless 
+npx create-next-app portal -e https://github.com/datopian/portaljs/tree/main/examples/dataset-frictionless 
 mkdir portal/public/dataset
 
 cp -a ./data portal/public/dataset
@@ -12,7 +12,7 @@ PORTAL_DATASET_PATH=$PWD"/portal/public/dataset"
 export PORTAL_DATASET_PATH
 
 mkdir -p .github && mkdir -p .github/workflows && touch .github/workflows/main.yml
-curl https://raw.githubusercontent.com/datopian/portal.js/main/site/public/scripts/gh-page-builder-action.yml > .github/workflows/main.yml
+curl https://raw.githubusercontent.com/datopian/portaljs/main/site/public/scripts/gh-page-builder-action.yml > .github/workflows/main.yml
 
 cd portal
 assetPrefix='"/'$PORTAL_REPO_NAME'/"'

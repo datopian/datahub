@@ -1,8 +1,8 @@
-# 🌀 Portal.JS: The JavaScript framework for data portals
+# 🌀 PortalJS: The JavaScript framework for data portals
 
-🌀 Portal.JS is a framework for rapidly building rich data portal frontends using a modern frontend approach. Portal.JS can be used to present a single dataset or build a full-scale data catalog/portal.
+🌀 PortalJS is a framework for rapidly building rich data portal frontends using a modern frontend approach. PortalJS can be used to present a single dataset or build a full-scale data catalog/portal.
 
-Built in JavaScript and React on top of the popular [Next.js](https://nextjs.com/) framework. Portal.JS assumes a "decoupled" approach where the frontend is a separate service from the backend and interacts with backend(s) via an API. It can be used with any backend and has out of the box support for [CKAN](https://ckan.org/).
+Built in JavaScript and React on top of the popular [Next.js](https://nextjs.com/) framework. PortalJS assumes a "decoupled" approach where the frontend is a separate service from the backend and interacts with backend(s) via an API. It can be used with any backend and has out of the box support for [CKAN](https://ckan.org/).
 
 ## Features
 
@@ -24,15 +24,15 @@ Built in JavaScript and React on top of the popular [Next.js](https://nextjs.com
 
 ### Examples
 
-You can check out the following examples built with Portal.js.
+You can check out the following examples built with PortalJS.
 
 * [Data catalog with data coming from CKAN](/docs/example-ckan)
 * [Simple data catalog](/docs/example-data-catalog)
 
-> The [`examples` directory](https://github.com/datopian/portal.js/tree/main/examples) is regularly updated with different portal examples. 
+> The [`examples` directory](https://github.com/datopian/portaljs/tree/main/examples) is regularly updated with different portal examples. 
 
 ## Getting Help
 
-If you have questions about anything related to Portal.js, you're always welcome to ask our community on [GitHub Discussions](https://github.com/datopian/portal.js/discussions) or on our [Discord server](https://discord.gg/An7Bu5x8).
+If you have questions about anything related to PortalJS, you're always welcome to ask our community on [GitHub Discussions](https://github.com/datopian/portaljs/discussions) or on our [Discord server](https://discord.gg/An7Bu5x8).
 
 

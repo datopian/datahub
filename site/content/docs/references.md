@@ -1,6 +1,6 @@
 # Concepts and Terms
 
-In this section, we explain some of the terms and concepts used throughtout the portal.js documentation. 
+In this section, we explain some of the terms and concepts used throughtout the PortalJS documentation. 
 
 > Some of these concepts are part of official specs, and when appropriate, we'll link to the sources where you can get more details. 
 
