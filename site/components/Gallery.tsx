@@ -19,6 +19,7 @@ const items = [
     href: 'https://opendata.fcsc.gov.ae/',
     image: '/images/showcases/uae.png',
     description: 'Government Open Data Portal',
+    sourceUrl: 'https://github.com/FCSCOpendata/frontend',
   },
   {
     title: 'Brazil Open Data',
@@ -37,12 +38,18 @@ const items = [
     href: 'https://example.portaljs.org/',
     image: '/images/showcases/example-simple-catalog.png',
     description: 'Simple data catalog',
+    sourceUrl:
+      'https://github.com/datopian/portaljs/tree/main/examples/simple-example',
+    docsUrl: '/docs/example-data-catalog',
   },
   {
     title: 'Example: Portal with CKAN',
     href: 'https://ckan-example.portaljs.org/',
     image: '/images/showcases/example-ckan.png',
     description: 'Simple portal with data coming from CKAN',
+    sourceUrl:
+      'https://github.com/datopian/portaljs/tree/main/examples/ckan-example',
+    docsUrl: '/docs/example-ckan',
   },
 ];
 
