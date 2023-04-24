@@ -4,12 +4,7 @@ This is a repo intended to serve as a simple example of a data catalog that get 
 
 ```
 npx create-next-app <app-name> --example https://github.com/datopian/portaljs/tree/main/ --example-path examples/simple-example
-```
-
-- Install dependencies
-
-```
-npm install
+cd <app-name>
 ```
 
 - This project uses the github api, which for anonymous users will cap at 50 requests per hour, so you might want to get a [Personal Access Token](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/creating-a-personal-access-token) and add it to a `.env` file inside the folder like so
