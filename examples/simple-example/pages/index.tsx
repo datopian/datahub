@@ -82,7 +82,7 @@ export function Datasets({ projects }) {
                 </thead>
                 <tbody className="divide-y divide-gray-200">
                   {projects.map((project) => (
-                    <tr>
+                    <tr key={project.id}>
                       <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
                         {project.repo_config.name
                           ? project.repo_config.name
