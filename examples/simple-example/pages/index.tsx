@@ -4,10 +4,9 @@ import { getProject } from '../lib/octokit';
 import getConfig from 'next/config';
 
 export async function getStaticProps() {
-  const project_name = getConfig().serverRuntimeConfig.project_name;
   const jsonDirectory = path.join(
     process.cwd(),
-    `/examples/${project_name}/datasets.json`
+    '/datasets.json'
   );
   const repos = await fs.readFile(jsonDirectory, 'utf8');
   const github_pat = getConfig().serverRuntimeConfig.github_pat;
