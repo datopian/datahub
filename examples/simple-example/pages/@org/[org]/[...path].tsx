@@ -61,10 +61,9 @@ export default function ProjectPage({ project }) {
 
 // Generates `/posts/1` and `/posts/2`
 export async function getStaticPaths() {
-  const project_name = getConfig().serverRuntimeConfig.project_name;
   const jsonDirectory = path.join(
     process.cwd(),
-    `/examples/${project_name}/datasets.json`
+    'datasets.json'
   );
   const repos = await fs.readFile(jsonDirectory, 'utf8');
 
@@ -89,10 +88,9 @@ export async function getStaticPaths() {
 }
 
 export async function getStaticProps({ params }) {
-  const project_name = getConfig().serverRuntimeConfig.project_name;
   const jsonDirectory = path.join(
     process.cwd(),
-    `/examples/${project_name}/datasets.json`
+    'datasets.json'
   );
   const reposFile = await fs.readFile(jsonDirectory, 'utf8');
   const repos: GithubProject[] = JSON.parse(reposFile);

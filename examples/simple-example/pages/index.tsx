@@ -4,10 +4,9 @@ import { getProject } from '../lib/octokit';
 import getConfig from 'next/config';
 
 export async function getStaticProps() {
-  const project_name = getConfig().serverRuntimeConfig.project_name;
   const jsonDirectory = path.join(
     process.cwd(),
-    `/examples/${project_name}/datasets.json`
+    '/datasets.json'
   );
   const repos = await fs.readFile(jsonDirectory, 'utf8');
   const github_pat = getConfig().serverRuntimeConfig.github_pat;
@@ -83,7 +82,7 @@ export function Datasets({ projects }) {
                 </thead>
                 <tbody className="divide-y divide-gray-200">
                   {projects.map((project) => (
-                    <tr>
+                    <tr key={project.id}>
                       <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
                         {project.repo_config.name
                           ? project.repo_config.name
