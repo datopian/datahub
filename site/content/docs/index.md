@@ -48,6 +48,6 @@ We are working on that! Tutorials coming out soon.
 
 ## Getting Help
 
-If you have questions about anything related to PortalJS, you're always welcome to ask our community on [GitHub Discussions](https://github.com/datopian/portaljs/discussions) or on our [Discord server](https://discord.gg/An7Bu5x8).
+If you have questions about anything related to PortalJS, you're always welcome to ask our community on [GitHub Discussions](https://github.com/datopian/portaljs/discussions) or on our [Discord server](https://discord.gg/EeyfGrGu4U).
 
 
