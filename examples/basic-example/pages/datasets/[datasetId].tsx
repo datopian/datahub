@@ -21,6 +21,7 @@ export const getStaticProps: GetStaticProps = async (context) => {
   );
   const readme = await fs.readFile(jsonDirectory, 'utf8');
   let { mdxSource, frontMatter, excerpt } = await parse(readme, '.mdx');
+  console.log(mdxSource, frontMatter, excerpt)
   return {
     props: {
       mdxSource,

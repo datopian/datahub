@@ -22,6 +22,7 @@ import React, { useEffect, useMemo, useState } from "react";
 
 import parseCsv from "../lib/parseCsv";
 import DebouncedInput from "./DebouncedInput";
+import loadUrlProxied from "../lib/loadUrlProxied";
 
 const Table = ({
   data: ogData = [],
@@ -65,6 +66,17 @@ const Table = ({
     getPaginationRowModel: getPaginationRowModel(),
     getSortedRowModel: getSortedRowModel(),
   });
+
+  useEffect(() => {
+    if (url) {
+      loadUrlProxied(url).then((data) => {
+        console.log(data)
+        const { rows, fields } = parseCsv(data);
+        setData(rows);
+        setCols(fields);
+      });
+    }
+  }, [url]);
 
   return (
     <div className={`${fullWidth ? "w-[90vw] ml-[calc(50%-45vw)]" : "w-full"}`}>
