@@ -22,7 +22,7 @@ import React, { useEffect, useMemo, useState } from "react";
 
 import parseCsv from "../lib/parseCsv";
 import DebouncedInput from "./DebouncedInput";
-import loadUrlProxied from "../lib/loadUrlProxied";
+import loadData from "../lib/loadData";
 
 const Table = ({
   data: ogData = [],
@@ -69,7 +69,7 @@ const Table = ({
 
   useEffect(() => {
     if (url) {
-      loadUrlProxied(url).then((data) => {
+      loadData(url).then((data) => {
         const { rows, fields } = parseCsv(data);
         setData(rows);
         setCols(fields);
