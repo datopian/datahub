@@ -7,11 +7,13 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse<string>
 ) {
+  const contentDir = path.join(process.cwd(), '/content');
+  const datasets = await fs.readdir(contentDir);
   const query = req.query;
-  const { datasetName, fileName } = query;
+  const { fileName } = query;
   const dataFile = path.join(
     process.cwd(),
-    '/content/' + datasetName + '/' + fileName
+    '/content/' + datasets[0] + '/' + fileName
   );
   const data = await fs.readFile(dataFile, 'utf8');
   res.status(200).send(data)
