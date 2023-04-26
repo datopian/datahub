@@ -70,7 +70,6 @@ const Table = ({
   useEffect(() => {
     if (url) {
       loadUrlProxied(url).then((data) => {
-        console.log(data)
         const { rows, fields } = parseCsv(data);
         setData(rows);
         setCols(fields);

@@ -12,17 +12,16 @@ export const getStaticProps: GetStaticProps = async (context) => {
     '/content/' + datasets[0] + '/README.md'
   );
   const readme = await fs.readFile(datasetReadme, 'utf8');
-  let { mdxSource, frontMatter, excerpt } = await parse(readme, '.mdx');
+  let { mdxSource, frontMatter } = await parse(readme, '.mdx');
   return {
     props: {
       mdxSource,
       frontMatter,
-      excerpt,
     },
   };
 };
 
-export default function DatasetPage({ mdxSource, frontMatter, excerpt }) {
+export default function DatasetPage({ mdxSource, frontMatter }) {
   return (
     <div className="prose mx-auto">
       <header>
