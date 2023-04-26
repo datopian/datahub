@@ -35,7 +35,7 @@ Welcome to the PortalJS tutorials series. In this first tutorial, we are going t
 
 The resulting data portal is our _Hello World_ equivalent: a single dataset, and it looks like this:
 
-![](/assets/docs/tutorial-1-img-1.png)
+<img src="/assets/docs/tutorial-1-img-1.png" />
 
 This tutorials series is sequential, so the next tutorials starts from where this one left, don't forget to save your progress, and, finally, let's get started!
 
@@ -45,7 +45,7 @@ First step is to create a new PortalJS project. To do that, please follow the in
 
 Now, make sure you have the project running on your local environment (`npm run dev`) and access http://localhost:3000 on your browser. As you can see, the new project is not empty, it already contains some content which we will use as a base in this tutorial. Here's what the page looks like:
 
-![](/assets/docs/tutorial-1-img-2.png)
+<img src="/assets/docs/tutorial-1-img-2.png" />
 
 
 ### Basics
@@ -232,7 +232,7 @@ _Isn't it interesting that Saul is so below in the ranking? There's even a spin-
 
 Here's how it's going to look like on the page:
 
-![](/assets/docs/tutorial-1-img-3.png)
+<img src="/assets/docs/tutorial-1-img-3.png" />
 
 #### Simple line charts
 
@@ -273,7 +273,7 @@ _Consistently well received by critics_
 
 Here are the results:
 
-![](/assets/docs/tutorial-1-img-4.png)
+<img src="/assets/docs/tutorial-1-img-4.png" />
 
 #### Complex charts
 
@@ -320,7 +320,7 @@ _The producers were able to successfully expand the success of the original seri
 
 It's going to look like this when you navigate to the page again:
 
-![](/assets/docs/tutorial-1-img-5.png)
+<img src="/assets/docs/tutorial-1-img-5.png" />
 
 ### Final results
 
@@ -396,7 +396,7 @@ _The producers were able to successfully expand the success of the original seri
 ```
 And here's a screenshot of what it looks like:
 
-![](/assets/docs/tutorial-1-img-6.png)
+<img src="/assets/docs/tutorial-1-img-6.png" />
 
 ### Next steps
 
