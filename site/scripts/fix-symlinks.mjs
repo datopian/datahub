@@ -10,10 +10,6 @@ if (process.env.VERCEL_ENV) {
 
   
   const pathToAssetsLn = "./public/assets";
-  console.log(fs.readdirSync(process.cwd()))
-  console.log(fs.readdirSync("./public"))
-  
-  fs.unlinkSync(pathToAssetsLn);
 
   fs.symlinkSync("../../public/assets", pathToAssetsLn);
 }
