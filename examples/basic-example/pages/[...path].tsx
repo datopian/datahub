@@ -5,7 +5,7 @@ import parse from '../lib/markdown';
 import DRD from '../components/DRD';
 
 export const getServerSideProps = async (context) => {
-  const indexFile = path.join(process.cwd(), '/content/index.md');
+  const indexFile = path.join(process.cwd(), '/content/' + context.params.path.join('/') + '/index.md');
   const readme = await fs.readFile(indexFile, 'utf8');
   let { mdxSource, frontMatter } = await parse(readme, '.mdx');
   return {

@@ -1,3 +1,8 @@
-# Index
+# My Dataset
 
-- [My awesome dataset](http://localhost:3000/datasets/my-dataset)
+Built with PortalJS 
+
+## Table 
+
+<Table url="data_1.csv" />
+
