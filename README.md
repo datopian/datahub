@@ -48,7 +48,7 @@ https://portaljs.org/docs
 
 # Community
 
-If you have questions about anything related to Portal.JS, you're always welcome to ask our community on [GitHub Discussions](https://github.com/datopian/portal.js/discussions) or on our [Discord server](https://discord.gg/An7Bu5x8).
+If you have questions about anything related to Portal.JS, you're always welcome to ask our community on [GitHub Discussions](https://github.com/datopian/portal.js/discussions) or on our [Discord server](https://discord.gg/EeyfGrGu4U).
 
 # Appendix
 
