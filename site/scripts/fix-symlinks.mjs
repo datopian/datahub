@@ -8,10 +8,11 @@ if (process.env.VERCEL_ENV) {
     "[scripts/fix-symlinks.mjs] Vercel environment detected. Fixing symlinks..."
   );
 
-  console.log(fs.readdirSync(process.cwd()))
-
+  
   const pathToAssetsLn = "./public/assets";
-
+  console.log(fs.readdirSync(process.cwd()))
+  console.log(fs.readdirSync(pathToAssetsLn))
+  
   fs.unlinkSync(pathToAssetsLn);
 
   fs.symlinkSync("../../public/assets", pathToAssetsLn);
