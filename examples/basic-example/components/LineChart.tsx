@@ -15,7 +15,7 @@ export default function LineChart({
   const spec = {
     $schema: "https://vega.github.io/schema/vega-lite/v5.json",
     title,
-    width: "container",
+    width: 500,
     height: 300,
     mark: {
       type: "line",

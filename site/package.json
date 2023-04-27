@@ -4,7 +4,8 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "npm run mddb && next build",
+    "build": "next build",
+    "prebuild": "npm run mddb && node ./scripts/fix-symlinks.mjs",
     "start": "next start",
     "mddb": "mddb content"
   },
