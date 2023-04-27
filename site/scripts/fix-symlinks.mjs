@@ -9,7 +9,7 @@ if (process.env.VERCEL_ENV) {
     "[scripts/fix-symlinks.mjs] Vercel environment detected. Fixing symlinks..."
   );
 
-  fs.unlinkSync('public/assets')
+  // fs.unlinkSync('public/assets')
   exec('cp -r ./content/assets ./public/')
   
 }
