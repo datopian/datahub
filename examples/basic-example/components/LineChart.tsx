@@ -4,6 +4,8 @@ export default function LineChart({
   data = [],
   fullWidth = false,
   title = "",
+  xAxis = "x",
+  yAxis = "y",
 }) {
   var tmp = data;
   if (Array.isArray(data)) {
@@ -15,7 +17,7 @@ export default function LineChart({
   const spec = {
     $schema: "https://vega.github.io/schema/vega-lite/v5.json",
     title,
-    width: 500,
+    width: "container",
     height: 300,
     mark: {
       type: "line",
@@ -34,16 +36,20 @@ export default function LineChart({
     },
     encoding: {
       x: {
-        field: "x",
+        field: xAxis,
         timeUnit: "year",
         type: "temporal",
       },
       y: {
-        field: "y",
+        field: yAxis,
         type: "quantitative",
       },
     },
   };
+  if (typeof data === 'string') {
+    spec.data = { "url": data } as any
+    return <VegaLite fullWidth={fullWidth} spec={spec} />;
+  }
 
   return <VegaLite fullWidth={fullWidth} data={vegaData} spec={spec} />;
 }
