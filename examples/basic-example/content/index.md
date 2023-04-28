@@ -1,4 +1,4 @@
-# My Awesome Dataset 2
+# My Dataset
 
 Built with PortalJS 
 
