@@ -1,11 +1,15 @@
-import { GetStaticProps } from 'next';
 import { promises as fs } from 'fs';
 import path from 'path';
 import parse from '../lib/markdown';
 import DRD from '../components/DRD';
 
 export const getServerSideProps = async (context) => {
-  const indexFile = path.join(process.cwd(), '/content/' + context.params.path.join('/') + '/index.md');
+  let pathToFile = 'index.md';
+  if (context.params.path) {
+    pathToFile = context.params.path.join('/') + '/index.md';
+  }
+
+  const indexFile = path.join(process.cwd(), '/content/' + pathToFile);
   const readme = await fs.readFile(indexFile, 'utf8');
   let { mdxSource, frontMatter } = await parse(readme, '.mdx');
   return {
