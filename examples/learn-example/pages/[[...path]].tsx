@@ -3,7 +3,21 @@ import path from 'path';
 import parse from '../lib/markdown';
 import DRD from '../components/DRD';
 
-export const getServerSideProps = async (context) => {
+export const getStaticPaths = async () => {
+  const contentDir = path.join(process.cwd(), '/content/');
+  const contentFolders = await fs.readdir(contentDir, 'utf8');
+  const paths = contentFolders.map((folder: string) =>
+    folder === 'index.md'
+      ? { params: { path: [] } }
+      : { params: { path: [folder] } }
+  );
+  return {
+    paths,
+    fallback: false,
+  };
+};
+
+export const getStaticProps = async (context) => {
   let pathToFile = 'index.md';
   if (context.params.path) {
     pathToFile = context.params.path.join('/') + '/index.md';
