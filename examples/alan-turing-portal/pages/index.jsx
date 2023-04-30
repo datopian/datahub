@@ -15,7 +15,7 @@ function DatasetCard({ dataset }) {
       <Card.Description>
         <span className="font-semibold">Link to publication: </span>{' '}
         <a
-          className="underline transition hover:text-teal-400 dark:hover:text-teal-900"
+          className="underline transition hover:text-teal-400 dark:hover:text-teal-900 text-ellipsis"
           href={dataset['link-to-publication']}
         >
           {dataset['link-to-publication']}
@@ -24,7 +24,7 @@ function DatasetCard({ dataset }) {
       <Card.Description>
         <span className="font-semibold">Link to data: </span>
         <a
-          className="underline transition hover:text-teal-600 dark:hover:text-teal-900"
+          className="underline transition hover:text-teal-600 dark:hover:text-teal-900 text-ellipsis"
           href={dataset['link-to-data']}
         >
           {dataset['link-to-data']}
@@ -98,11 +98,11 @@ export default function Home({ datasets, indexText, availableLanguages, availabl
       </Container>
       <Container className="mt-24 md:mt-28">
         <div className="mx-auto grid max-w-xl grid-cols-1 gap-y-8 lg:max-w-none">
-          <form className="rounded-2xl border border-zinc-100 p-6 dark:border-zinc-700/40">
+          <form className="rounded-2xl border border-zinc-100 px-4 py-6 sm:p-6 dark:border-zinc-700/40">
             <p className="mt-2 text-lg font-semibold text-zinc-600 dark:text-zinc-100">
               Search for datasets
             </p>
-            <div className="mt-6 flex gap-3">
+            <div className="mt-6 flex flex-col sm:flex-row gap-3">
               <input
                 placeholder="Search here"
                 aria-label="Hate speech on Twitter"
