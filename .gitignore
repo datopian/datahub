@@ -44,3 +44,7 @@ Thumbs.db
 # Env
 .env
 **/.env
+
+# MarkdownDB
+*.db
+**/*.db

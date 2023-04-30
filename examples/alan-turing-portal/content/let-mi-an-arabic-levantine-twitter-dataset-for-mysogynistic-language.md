@@ -9,6 +9,6 @@ percentage-abusive: 48.76
 language: Arabic
 level-of-annotation: ["Posts"]
 platform: ["Twitter"]
-medium: ["Text"]
+medium: ["Text", "Images"]
 reference: "Hala Mulki and Bilal Ghanem. 2021. Let-Mi: An Arabic Levantine Twitter Dataset for Misogynistic Language. In Proceedings of the Sixth Arabic Natural Language Processing Workshop, pages 154–163, Kyiv, Ukraine (Virtual). Association for Computational Linguistics"
 ---

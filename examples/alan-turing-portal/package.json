@@ -18,6 +18,7 @@
     "@mdx-js/loader": "^2.1.5",
     "@mdx-js/react": "^2.1.5",
     "@next/mdx": "^13.0.2",
+    "@tailwindcss/forms": "^0.5.3",
     "@tailwindcss/typography": "^0.5.4",
     "autoprefixer": "^10.4.12",
     "clsx": "^1.2.1",
@@ -27,11 +28,14 @@
     "focus-visible": "^5.2.0",
     "next": "13.3.0",
     "next-router-mock": "^0.9.3",
+    "next-superjson-plugin": "^0.5.7",
     "postcss-focus-visible": "^6.0.4",
     "react": "18.2.0",
     "react-dom": "18.2.0",
+    "react-hook-form": "^7.43.9",
     "react-markdown": "^8.0.7",
     "remark-gfm": "^3.0.1",
+    "superjson": "^1.12.3",
     "tailwindcss": "^3.3.0"
   },
   "devDependencies": {
