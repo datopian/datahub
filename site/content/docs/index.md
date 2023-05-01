@@ -16,7 +16,7 @@ If you have questions about anything related to PortalJS, you're always welcome 
 To create a PortalJS app, open your terminal, cd into the directory you’d like to create the app in, and run the following command:
 
 ```bash
-npx create-next-app my-data-portal --example https://github.com/datopian/portaljs/tree/main/examples/basic-example
+npx create-next-app my-data-portal --example https://github.com/datopian/portaljs/tree/main/examples/learn-example
 ```
 
 > [!tip]
