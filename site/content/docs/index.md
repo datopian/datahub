@@ -135,7 +135,7 @@ If you are not sure about how to do it, follow this guide: https://nextjs.org/le
 
 > [!tip]
 > You can also deploy using our Vercel deploy button. In this case, a new repository will be created under your GitHub account automatically.
-> [Click here](#one-click-deploy) to stroll to the deploy button.
+> [Click here](#one-click-deploy) to scroll to the deploy button.
 
 ### Deploy to Vercel
 
