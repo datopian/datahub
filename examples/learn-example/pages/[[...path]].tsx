@@ -36,7 +36,7 @@ export const getStaticProps = async (context) => {
 
 export default function DatasetPage({ mdxSource, frontMatter }) {
   return (
-    <div className="prose mx-auto">
+    <div className="prose dark:prose-invert mx-auto">
       <header>
         <div className="mb-6">
           <>
