@@ -1,0 +1,72 @@
+{
+  "version": "0.1.0",
+  "license": "MIT",
+  "main": "dist/index.js",
+  "typings": "dist/index.d.ts",
+  "files": [
+    "dist",
+    "src"
+  ],
+  "engines": {
+    "node": ">=10"
+  },
+  "scripts": {
+    "start": "tsdx watch",
+    "build": "tsdx build",
+    "test": "tsdx test --passWithNoTests",
+    "lint": "tsdx lint",
+    "prepare": "tsdx build",
+    "size": "size-limit",
+    "analyze": "size-limit --why",
+    "storybook": "start-storybook -p 6006",
+    "build-storybook": "build-storybook"
+  },
+  "peerDependencies": {
+    "react": ">=16"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "tsdx lint"
+    }
+  },
+  "prettier": {
+    "printWidth": 80,
+    "semi": true,
+    "singleQuote": true,
+    "trailingComma": "es5"
+  },
+  "name": "components",
+  "author": "joaommdemenech@gmail.com",
+  "module": "dist/components.esm.js",
+  "size-limit": [
+    {
+      "path": "dist/components.cjs.production.min.js",
+      "limit": "10 KB"
+    },
+    {
+      "path": "dist/components.esm.js",
+      "limit": "10 KB"
+    }
+  ],
+  "devDependencies": {
+    "@babel/core": "^7.21.5",
+    "@size-limit/preset-small-lib": "^8.2.4",
+    "@storybook/addon-essentials": "^7.0.7",
+    "@storybook/addon-info": "^5.3.21",
+    "@storybook/addon-links": "^7.0.7",
+    "@storybook/addons": "^7.0.7",
+    "@storybook/cli": "^7.0.7",
+    "@storybook/react": "^7.0.7",
+    "@types/react": "^18.2.0",
+    "@types/react-dom": "^18.2.1",
+    "babel-loader": "^9.1.2",
+    "husky": "^8.0.3",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-is": "^18.2.0",
+    "size-limit": "^8.2.4",
+    "tsdx": "^0.14.1",
+    "tslib": "^2.5.0",
+    "typescript": "^5.0.4"
+  }
+}
