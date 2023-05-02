@@ -4,9 +4,6 @@ import { defineConfig } from 'vite';
 import dts from 'vite-plugin-dts';
 
 export default defineConfig({
-    define: {
-        'process.env': {}
-    },
     plugins: [
         react(),
         dts({
