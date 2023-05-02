@@ -4,7 +4,6 @@ import fs from 'fs'
 import { Card } from '../components/Card'
 import { Container } from '../components/Container'
 import clientPromise from '../lib/mddb'
-import ReactMarkdown from 'react-markdown'
 import { Index } from 'flexsearch'
 import { useForm } from 'react-hook-form'
 import Link from 'next/link'
@@ -109,7 +108,6 @@ export default function Home({
   datasets,
   indexText,
   listsOfKeywords,
-  contributingText,
   availableLanguages,
   availablePlatforms,
 }) {
@@ -141,7 +139,7 @@ export default function Home({
           <h1 className="text-4xl font-bold tracking-tight text-zinc-800 dark:text-zinc-100 sm:text-5xl">
             {indexText.frontmatter.title}
           </h1>
-          <article className="mt-6 flex flex-col gap-y-2 text-base text-zinc-600 dark:text-zinc-400">
+          <article className="mt-6 index-text flex flex-col gap-y-2 text-base text-zinc-600 dark:text-zinc-400 prose dark:prose-invert">
             <MDXRemote {...indexText} />
           </article>
         </div>
@@ -236,14 +234,6 @@ export default function Home({
           ))}
         </div>
       </Container>
-      <Container className="mt-16">
-        <h2 className="text-xl font-bold tracking-tight text-zinc-800 dark:text-zinc-100 sm:text-5xl">
-          How to contribute
-        </h2>
-          <article className="mt-6 flex flex-col gap-y-8 text-base text-zinc-600 dark:text-zinc-400 contributing">
-            <MDXRemote {...contributingText} />
-        </article>
-        </Container>
     </>
   )
 }
@@ -270,12 +260,7 @@ export async function getStaticProps() {
   }))
 
   const index = await mddb.getFileByUrl('/')
-  const contributing = await mddb.getFileByUrl('contributing')
   let indexSource = fs.readFileSync(index.file_path, { encoding: 'utf-8' })
-  let contributingSource = fs.readFileSync(contributing.file_path, {
-    encoding: 'utf-8',
-  })
-  contributingSource = await serialize(contributingSource, { parseFrontmatter: true })
   indexSource = await serialize(indexSource, { parseFrontmatter: true })
 
   const availableLanguages = [
@@ -289,7 +274,6 @@ export async function getStaticProps() {
       datasets,
       listsOfKeywords,
       indexText: indexSource,
-      contributingText: contributingSource,
       availableLanguages,
       availablePlatforms,
     },

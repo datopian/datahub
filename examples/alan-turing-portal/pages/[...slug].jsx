@@ -4,6 +4,7 @@ import fs from 'fs'
 import { MDXRemote } from 'next-mdx-remote'
 import { serialize } from 'next-mdx-remote/serialize'
 import { Card } from '../components/Card'
+import Head from 'next/head'
 
 export const getStaticProps = async ({ params }) => {
   const urlPath = params.slug ? params.slug.join('/') : ''
@@ -79,6 +80,9 @@ export default function DRDPage({ mdxSource }) {
   )
   return (
     <>
+      <Head>
+        <title>{meta.title}</title>
+      </Head>
       <Container className="mt-16 lg:mt-32">
         <article>
           <header className="flex flex-col">
