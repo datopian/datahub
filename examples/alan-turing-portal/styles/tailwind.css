@@ -3,6 +3,11 @@
 @import './prism.css';
 @import 'tailwindcss/utilities';
 
-.contributing li {
-  margin-bottom: 1.75rem;
+.index-text ul,
+.index-text p {
+  margin: 0;
+}
+
+.index-text h2 {
+  margin-top: 1rem;
 }

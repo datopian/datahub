@@ -21,7 +21,7 @@ export function Footer() {
           <Container.Inner>
             <div className="flex flex-col items-center justify-between gap-6 sm:flex-row">
               <p className="text-sm font-medium text-zinc-800 dark:text-zinc-200">
-                hatespeechdata maintained by <a href='https://github.com/leondz'>leondz</a>
+                Built with <a href='https://portaljs.org'>PortalJS 🌀</a>
               </p>
               <p className="text-sm text-zinc-400 dark:text-zinc-500">
                 &copy; {new Date().getFullYear()} Leon Derczynski. All rights
