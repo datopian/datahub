@@ -17,7 +17,7 @@ export function LineChart({
 }: LineChartProps) {
   var tmp = data;
   if (Array.isArray(data)) {
-    tmp = data.map((r, i) => {
+    tmp = data.map((r) => {
       return { x: r[0], y: r[1] };
     });
   }
