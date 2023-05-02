@@ -1,3 +1,7 @@
+---
+title: Hate Speech Dataset Catalogue
+---
+
 This page catalogues datasets annotated for hate speech, online abuse, and offensive language. They may be useful for e.g. training a natural language processing system to detect this language.
 
 The list is maintained by Leon Derczynski, Bertie Vidgen, Hannah Rose Kirk, Pica Johansson, Yi-Ling Chung, Mads Guldborg Kjeldgaard Kongsbak, Laila Sprejer, and Philine Zeinert.
