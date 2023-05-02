@@ -2,3 +2,7 @@
 @import 'tailwindcss/components';
 @import './prism.css';
 @import 'tailwindcss/utilities';
+
+.contributing li {
+  margin-bottom: 1.75rem;
+}
