@@ -25,7 +25,7 @@ export async function getStaticPaths() {
   const mddb = await clientPromise
   const allDocuments = await mddb.getFiles({ extensions: ['md', 'mdx'] })
 
-  const paths = allDocuments.map((page) => {
+  const paths = allDocuments.filter(document => document.url_path !== '/').map((page) => {
     const parts = page.url_path.split('/')
     return { params: { slug: parts } }
   })
