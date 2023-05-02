@@ -1,14 +1,18 @@
 import papa from "papaparse";
 
-const parseCsv = (csv) => {
+const parseCsv = (csv: string) => {
   csv = csv.trim();
   const rawdata = papa.parse(csv, { header: true });
-  const cols = rawdata.meta.fields.map((r, i) => {
-    return { key: r, name: r };
-  });
+
+  let cols: any[] = [];
+  if(rawdata.meta.fields) {
+    cols = rawdata.meta.fields.map((r: string) => {
+      return { key: r, name: r };
+    });
+  }
 
   return {
-    rows: rawdata.data,
+    rows: rawdata.data as any,
     fields: cols,
   };
 };

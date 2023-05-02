@@ -7,7 +7,7 @@ import {
   getPaginationRowModel,
   getSortedRowModel,
   useReactTable,
-} from "@tanstack/react-table";
+} from '@tanstack/react-table';
 
 import {
   ArrowDownIcon,
@@ -16,25 +16,29 @@ import {
   ChevronDoubleRightIcon,
   ChevronLeftIcon,
   ChevronRightIcon,
-} from "@heroicons/react/24/solid";
+} from '@heroicons/react/24/solid';
 
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from 'react';
 
-import parseCsv from "./lib/parseCsv";
-import DebouncedInput from "./DebouncedInput";
-import loadData from "./lib/loadData";
+import parseCsv from '../lib/parseCsv';
+import DebouncedInput from './DebouncedInput';
+import loadData from '../lib/loadData';
 
-export interface TableProps {
-
-}
+export type TableProps = {
+  data?: Array<{ [key: string]: number | string }>;
+  cols?: Array<{ [key: string]: string }>;
+  csv?: string;
+  url?: string;
+  fullWidth?: boolean;
+};
 
 export const Table = ({
   data: ogData = [],
   cols: ogCols = [],
-  csv = "",
-  url = "",
+  csv = '',
+  url = '',
   fullWidth = false,
-}) => {
+}: TableProps) => {
   if (csv) {
     const out = parseCsv(csv);
     ogData = out.rows;
@@ -43,19 +47,19 @@ export const Table = ({
 
   const [data, setData] = React.useState(ogData);
   const [cols, setCols] = React.useState(ogCols);
-  const [error, setError] = React.useState(""); //  TODO: add error handling
+  // const [error, setError] = React.useState(""); //  TODO: add error handling
 
   const tableCols = useMemo(() => {
     const columnHelper = createColumnHelper();
     return cols.map((c) =>
-      columnHelper.accessor(c.key, {
+      columnHelper.accessor<any, string>(c.key, {
         header: () => c.name,
         cell: (info) => info.getValue(),
       })
     );
   }, [data, cols]);
 
-  const [globalFilter, setGlobalFilter] = useState("");
+  const [globalFilter, setGlobalFilter] = useState('');
 
   const table = useReactTable({
     data,
@@ -82,24 +86,24 @@ export const Table = ({
   }, [url]);
 
   return (
-    <div className={`${fullWidth ? "w-[90vw] ml-[calc(50%-45vw)]" : "w-full"}`}>
+    <div className={`${fullWidth ? 'w-[90vw] ml-[calc(50%-45vw)]' : 'w-full'}`}>
       <DebouncedInput
-        value={globalFilter ?? ""}
-        onChange={(value) => setGlobalFilter(String(value))}
+        value={globalFilter ?? ''}
+        onChange={(value: any) => setGlobalFilter(String(value))}
         className="p-2 text-sm shadow border border-block"
         placeholder="Search all columns..."
       />
-      <table>
-        <thead>
+      <table className="w-full mt-10">
+        <thead className="text-left border-b border-b-slate-300">
           {table.getHeaderGroups().map((hg) => (
             <tr key={hg.id}>
               {hg.headers.map((h) => (
-                <th key={h.id}>
+                <th key={h.id} className="pr-2 pb-2">
                   <div
                     {...{
                       className: h.column.getCanSort()
-                        ? "cursor-pointer select-none"
-                        : "",
+                        ? 'cursor-pointer select-none'
+                        : '',
                       onClick: h.column.getToggleSortingHandler(),
                     }}
                   >
@@ -122,9 +126,9 @@ export const Table = ({
         </thead>
         <tbody>
           {table.getRowModel().rows.map((r) => (
-            <tr key={r.id}>
+            <tr key={r.id} className="border-b border-b-slate-200">
               {r.getVisibleCells().map((c) => (
-                <td key={c.id}>
+                <td key={c.id} className="py-2">
                   {flexRender(c.column.columnDef.cell, c.getContext())}
                 </td>
               ))}
@@ -132,10 +136,10 @@ export const Table = ({
           ))}
         </tbody>
       </table>
-      <div className="flex gap-2 items-center justify-center">
+      <div className="flex gap-2 items-center justify-center mt-10">
         <button
           className={`w-6 h-6 ${
-            !table.getCanPreviousPage() ? "opacity-25" : "opacity-100"
+            !table.getCanPreviousPage() ? 'opacity-25' : 'opacity-100'
           }`}
           onClick={() => table.setPageIndex(0)}
           disabled={!table.getCanPreviousPage()}
@@ -144,7 +148,7 @@ export const Table = ({
         </button>
         <button
           className={`w-6 h-6 ${
-            !table.getCanPreviousPage() ? "opacity-25" : "opacity-100"
+            !table.getCanPreviousPage() ? 'opacity-25' : 'opacity-100'
           }`}
           onClick={() => table.previousPage()}
           disabled={!table.getCanPreviousPage()}
@@ -154,13 +158,13 @@ export const Table = ({
         <span className="flex items-center gap-1">
           <div>Page</div>
           <strong>
-            {table.getState().pagination.pageIndex + 1} of{" "}
+            {table.getState().pagination.pageIndex + 1} of{' '}
             {table.getPageCount()}
           </strong>
         </span>
         <button
           className={`w-6 h-6 ${
-            !table.getCanNextPage() ? "opacity-25" : "opacity-100"
+            !table.getCanNextPage() ? 'opacity-25' : 'opacity-100'
           }`}
           onClick={() => table.nextPage()}
           disabled={!table.getCanNextPage()}
@@ -169,7 +173,7 @@ export const Table = ({
         </button>
         <button
           className={`w-6 h-6 ${
-            !table.getCanNextPage() ? "opacity-25" : "opacity-100"
+            !table.getCanNextPage() ? 'opacity-25' : 'opacity-100'
           }`}
           onClick={() => table.setPageIndex(table.getPageCount() - 1)}
           disabled={!table.getCanNextPage()}
@@ -185,8 +189,7 @@ const globalFilterFn: FilterFn<any> = (row, columnId, filterValue: string) => {
   const search = filterValue.toLowerCase();
 
   let value = row.getValue(columnId) as string;
-  if (typeof value === "number") value = String(value);
+  if (typeof value === 'number') value = String(value);
 
   return value?.toLowerCase().includes(search);
 };
-

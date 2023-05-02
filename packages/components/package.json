@@ -1,85 +1,70 @@
 {
-  "version": "0.1.0",
-  "license": "MIT",
-  "main": "dist/index.js",
-  "typings": "dist/index.d.ts",
-  "files": [
-    "dist",
-    "src"
-  ],
-  "engines": {
-    "node": ">=10"
-  },
+  "name": "components",
+  "private": true,
+  "version": "0.0.1",
+  "type": "module",
   "scripts": {
-    "start": "tsdx watch",
-    "build": "tsdx build && yarn build-tailwind",
-    "test": "tsdx test --passWithNoTests",
-    "lint": "tsdx lint",
-    "prepare": "tsdx build",
-    "size": "size-limit",
-    "analyze": "size-limit --why",
+    "dev": "yarn storybook",
+    "build": "tsc && vite build && yarn build-tailwind",
+    "lint": "eslint src --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
+    "prepack": "json -f package.json -I -e \"delete this.devDependencies; delete this.dependencies\"",
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build",
-    "build-tailwind": "NODE_ENV=production npx tailwindcss -o ./dist/tailwind.css --minify"
+    "build-tailwind": "NODE_ENV=production npx tailwindcss -o ./dist/styles.css --minify"
   },
   "peerDependencies": {
-    "react": ">=16"
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0"
   },
-  "husky": {
-    "hooks": {
-      "pre-commit": "tsdx lint"
-    }
-  },
-  "prettier": {
-    "printWidth": 80,
-    "semi": true,
-    "singleQuote": true,
-    "trailingComma": "es5"
-  },
-  "name": "components",
-  "author": "Datopian",
-  "module": "dist/components.esm.js",
-  "size-limit": [
-    {
-      "path": "dist/components.cjs.production.min.js",
-      "limit": "10 KB"
-    },
-    {
-      "path": "dist/components.esm.js",
-      "limit": "10 KB"
-    }
-  ],
-  "devDependencies": {
-    "papaparse": "^5.4.1",
-    "@tanstack/react-table": "^8.8.5",
+  "dependencies": {
     "@heroicons/react": "^2.0.17",
-    "@babel/core": "^7.21.5",
-    "@babel/preset-env": "^7.21.5",
-    "@babel/preset-react": "^7.18.6",
-    "@babel/preset-typescript": "^7.21.5",
-    "@size-limit/preset-small-lib": "^8.2.4",
-    "@storybook/addon-essentials": "^7.0.7",
-    "@storybook/addon-info": "^5.3.21",
-    "@storybook/addon-links": "^7.0.7",
-    "@storybook/addon-postcss": "^2.0.0",
-    "@storybook/addons": "^7.0.7",
-    "@storybook/cli": "^7.0.7",
-    "@storybook/react": "^7.0.7",
-    "@storybook/react-webpack5": "^7.0.7",
-    "@types/react": "^18.2.0",
-    "@types/react-dom": "^18.2.1",
-    "autoprefixer": "^10.4.14",
-    "babel-loader": "^9.1.2",
-    "husky": "^8.0.3",
-    "postcss": "^8.4.23",
+    "next-mdx-remote": "^4.4.1",
+    "papaparse": "^5.4.1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "react-is": "^18.2.0",
-    "size-limit": "^8.2.4",
+    "react-vega": "^7.6.0",
+    "vega": "5.20.2",
+    "vega-lite": "5.1.0",
+    "@tanstack/react-table": "^8.8.5"
+  },
+  "devDependencies": {
+    "@storybook/addon-essentials": "^7.0.7",
+    "@storybook/addon-interactions": "^7.0.7",
+    "@storybook/addon-links": "^7.0.7",
+    "@storybook/blocks": "^7.0.7",
+    "@storybook/react": "^7.0.7",
+    "@storybook/react-vite": "^7.0.7",
+    "@storybook/testing-library": "^0.0.14-next.2",
+    "@types/papaparse": "^5.3.7",
+    "@types/react": "^18.0.28",
+    "@types/react-dom": "^18.0.11",
+    "@typescript-eslint/eslint-plugin": "^5.57.1",
+    "@typescript-eslint/parser": "^5.57.1",
+    "@vitejs/plugin-react": "^4.0.0",
+    "autoprefixer": "^10.4.14",
+    "eslint": "^8.38.0",
+    "eslint-plugin-react-hooks": "^4.6.0",
+    "eslint-plugin-react-refresh": "^0.3.4",
+    "eslint-plugin-storybook": "^0.6.11",
+    "json": "^11.0.0",
+    "postcss": "^8.4.23",
+    "prop-types": "^15.8.1",
     "storybook": "^7.0.7",
     "tailwindcss": "^3.3.2",
-    "tsdx": "^0.14.1",
-    "tslib": "^2.5.0",
-    "typescript": "^5.0.4"
+    "typescript": "^5.0.2",
+    "vite": "^4.3.2",
+    "vite-plugin-dts": "^2.3.0"
+  },
+  "files": [
+    "dist"
+  ],
+  "main": "./dist/components.umd.js",
+  "module": "./dist/components.es.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/components.es.js",
+      "require": "./dist/components.umd.js"
+    }
   }
 }
