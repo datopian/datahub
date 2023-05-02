@@ -1,10 +1,12 @@
 import { Container } from '../components/Container'
 import clientPromise from '../lib/mddb'
-import fs from 'fs'
+import { promises as fs } from 'fs';
 import { MDXRemote } from 'next-mdx-remote'
 import { serialize } from 'next-mdx-remote/serialize'
 import { Card } from '../components/Card'
 import Head from 'next/head'
+import parse from '../lib/markdown'
+import { Mermaid } from '@flowershow/core';
 
 export const getStaticProps = async ({ params }) => {
   const urlPath = params.slug ? params.slug.join('/') : ''
@@ -12,8 +14,8 @@ export const getStaticProps = async ({ params }) => {
   const mddb = await clientPromise
   const dbFile = await mddb.getFileByUrl(urlPath)
 
-  const source = fs.readFileSync(dbFile.file_path, { encoding: 'utf-8' })
-  const mdxSource = await serialize(source, { parseFrontmatter: true })
+  const source = await fs.readFile(dbFile.file_path,'utf-8')
+  let mdxSource = await parse(source, '.mdx')
 
   return {
     props: {
@@ -74,7 +76,7 @@ const Meta = ({keyValuePairs}) => {
 }
 
 export default function DRDPage({ mdxSource }) {
-  const meta = mdxSource.frontmatter
+  const meta = mdxSource.frontMatter
   const keyValuePairs = Object.entries(meta).filter(
     (entry) => entry[0] !== 'title'
   )
@@ -94,7 +96,7 @@ export default function DRDPage({ mdxSource }) {
             </Card>
           </header>
           <div className="prose dark:prose-invert">
-            <MDXRemote {...mdxSource} />
+            <MDXRemote {...mdxSource.mdxSource} components={{mermaid: Mermaid}} />
           </div>
         </article>
       </Container>

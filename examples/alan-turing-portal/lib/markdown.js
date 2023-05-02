@@ -23,12 +23,7 @@ import { serialize } from "next-mdx-remote/serialize";
  * @returns: { mdxSource: mdxSource, frontMatter: ...}
  */
 const parse = async function (source, format) {
-  const { content, data, excerpt } = matter(source, {
-    excerpt: (file, options) => {
-      // Generate an excerpt for the file
-      file.excerpt = file.content.split("\n\n")[0];
-    },
-  });
+  const { content, data } = matter(source);
 
   const mdxSource = await serialize(
     { value: content, path: format },
@@ -56,7 +51,7 @@ const parse = async function (source, format) {
           [
             rehypeAutolinkHeadings,
             {
-              properties: { className: 'heading-link' },
+              properties: { className: "heading-link" },
               test(element) {
                 return (
                   ["h2", "h3", "h4", "h5", "h6"].includes(element.tagName) &&
@@ -91,14 +86,12 @@ const parse = async function (source, format) {
         ],
         format,
       },
-      scope: data,
     }
   );
 
   return {
     mdxSource: mdxSource,
     frontMatter: data,
-    excerpt,
   };
 };
 
