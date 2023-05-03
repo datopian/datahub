@@ -1,7 +1,7 @@
 import { promises as fs } from 'fs';
 import path from 'path';
 import parse from '../lib/markdown';
-import DRD from '../components/DRD';
+import DataRichDocument from '../components/DataRichDocument';
 
 export const getStaticPaths = async () => {
   const contentDir = path.join(process.cwd(), '/content/');
@@ -53,7 +53,7 @@ export default function DatasetPage({ mdxSource, frontMatter }) {
         </div>
       </header>
       <main>
-        <DRD source={mdxSource} />
+        <DataRichDocument source={mdxSource} />
       </main>
     </div>
   );

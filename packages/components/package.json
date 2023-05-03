@@ -1,11 +1,18 @@
 {
-  "name": "components",
-  "private": true,
-  "version": "0.0.1",
+  "name": "@portaljs/components",
+  "version": "0.0.3",
   "type": "module",
+  "description": "https://portaljs.org",
+  "keywords": [
+    "data portal",
+    "data catalog",
+    "table",
+    "charts",
+    "visualization"
+  ],
   "scripts": {
-    "dev": "yarn storybook",
-    "build": "tsc && vite build && yarn build-tailwind",
+    "dev": "npm run storybook",
+    "build": "tsc && vite build && npm run build-tailwind",
     "lint": "eslint src --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "prepack": "json -f package.json -I -e \"delete this.devDependencies; delete this.dependencies\"",
     "storybook": "storybook dev -p 6006",
@@ -65,6 +72,12 @@
     ".": {
       "import": "./dist/components.es.js",
       "require": "./dist/components.umd.js"
+    },
+    "./styles.css": {
+      "import": "./dist/styles.css"
     }
+  },
+  "publishConfig": {
+    "access": "public"
   }
 }
