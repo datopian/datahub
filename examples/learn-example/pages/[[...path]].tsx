@@ -1,7 +1,8 @@
-import { promises as fs } from 'fs';
+import { existsSync, promises as fs } from 'fs';
 import path from 'path';
 import parse from '../lib/markdown';
 import DRD from '../components/DRD';
+import clientPromise from '../lib/mddb';
 
 export const getStaticPaths = async () => {
   const contentDir = path.join(process.cwd(), '/content/');
@@ -23,9 +24,28 @@ export const getStaticProps = async (context) => {
     pathToFile = context.params.path.join('/') + '/index.md';
   }
 
+  let datasets = [];
+  const mddbFileExists = existsSync('markdown.db');
+  if (mddbFileExists) {
+    const mddb = await clientPromise;
+    const datasetsFiles = await mddb.getFiles({
+      extensions: ['md', 'mdx'],
+    });
+    datasets = datasetsFiles
+      .filter((dataset) => dataset.url_path !== '/')
+      .map((dataset) => ({
+        _id: dataset._id,
+        url_path: dataset.url_path,
+        file_path: dataset.file_path,
+        metadata: dataset.metadata,
+      }));
+  }
+
   const indexFile = path.join(process.cwd(), '/content/' + pathToFile);
   const readme = await fs.readFile(indexFile, 'utf8');
-  let { mdxSource, frontMatter } = await parse(readme, '.mdx');
+
+  let { mdxSource, frontMatter } = await parse(readme, '.mdx', { datasets });
+
   return {
     props: {
       mdxSource,

@@ -8,6 +8,7 @@ import { Mermaid } from '@flowershow/core';
 // here.
 const components = {
   Table: dynamic(() => import('./Table')),
+  Catalog: dynamic(() => import('./Catalog')),
   mermaid: Mermaid,
   // Excel: dynamic(() => import('../components/Excel')),
   // TODO: try and make these dynamic ...
