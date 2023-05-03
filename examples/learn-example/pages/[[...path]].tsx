@@ -1,7 +1,8 @@
 import { existsSync, promises as fs } from 'fs';
 import path from 'path';
 import parse from '../lib/markdown';
-import DRD from '../components/DRD';
+
+import DataRichDocument from '../components/DataRichDocument';
 import clientPromise from '../lib/mddb';
 
 export const getStaticPaths = async () => {
@@ -73,7 +74,7 @@ export default function DatasetPage({ mdxSource, frontMatter }) {
         </div>
       </header>
       <main>
-        <DRD source={mdxSource} />
+        <DataRichDocument source={mdxSource} />
       </main>
     </div>
   );

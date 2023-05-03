@@ -7,14 +7,12 @@ import { Mermaid } from '@flowershow/core';
 // to handle import statements. Instead, you must include components in scope
 // here.
 const components = {
-  Table: dynamic(() => import('./Table')),
+  Table: dynamic(() => import('@portaljs/components').then(mod => mod.Table)),
   Catalog: dynamic(() => import('./Catalog')),
   mermaid: Mermaid,
-  // Excel: dynamic(() => import('../components/Excel')),
-  // TODO: try and make these dynamic ...
-  Vega: dynamic(() => import('./Vega')),
-  VegaLite: dynamic(() => import('./VegaLite')),
-  LineChart: dynamic(() => import('./LineChart')),
+  Vega: dynamic(() => import('@portaljs/components').then(mod => mod.Vega)),
+  VegaLite: dynamic(() => import('@portaljs/components').then(mod => mod.VegaLite)),
+  LineChart: dynamic(() => import('@portaljs/components').then(mod => mod.LineChart)),
 } as any;
 
 export default function DRD({ source }: { source: any }) {
