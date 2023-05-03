@@ -22,7 +22,7 @@ import { serialize } from "next-mdx-remote/serialize";
  * @format: used to indicate to next-mdx-remote which format to use (md or mdx)
  * @returns: { mdxSource: mdxSource, frontMatter: ...}
  */
-const parse = async function (source, format) {
+const parse = async function (source, format, scope) {
   const { content, data, excerpt } = matter(source, {
     excerpt: (file, options) => {
       // Generate an excerpt for the file
@@ -91,7 +91,7 @@ const parse = async function (source, format) {
         ],
         format,
       },
-      scope: data,
+      scope: { ...scope, ...data},
     }
   );
 
