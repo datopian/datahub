@@ -7,10 +7,13 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "export": "npm run build && next export -o out"
+    "export": "npm run build && next export -o out",
+    "prebuild": "npm run mddb",
+    "mddb": "mddb ./content"
   },
   "dependencies": {
     "@flowershow/core": "^0.4.10",
+    "@flowershow/markdowndb": "^0.1.1",
     "@flowershow/remark-callouts": "^1.0.0",
     "@flowershow/remark-embed": "^1.0.0",
     "@flowershow/remark-wiki-link": "^1.1.2",
@@ -23,6 +26,7 @@
     "@types/react-dom": "18.2.0",
     "eslint": "8.39.0",
     "eslint-config-next": "13.3.1",
+    "flexsearch": "0.7.21",
     "gray-matter": "^4.0.3",
     "hastscript": "^7.2.0",
     "mdx-mermaid": "2.0.0-rc7",
@@ -46,6 +50,7 @@
     "@tailwindcss/typography": "^0.5.9",
     "autoprefixer": "^10.4.14",
     "postcss": "^8.4.23",
-    "tailwindcss": "^3.3.1"
+    "tailwindcss": "^3.3.1",
+    "@types/flexsearch": "^0.7.3"
   }
 }

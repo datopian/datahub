@@ -116,6 +116,52 @@ From the browser, access http://localhost:3000. You should see the following:
 
 <img src="/assets/docs/datasets-index-page.png" />
 
+### Creating a search page
+
+Typing out every link in the index page will get cumbersome eventually, and as the portal grows, finding the datasets you are looking for on the index page will become harder and harder. Luckily we have a component for that. Change your `content/index.md` file to this:
+
+```
+# Welcome to my data portal!
+
+List of available datasets:
+
+<Catalog datasets={datasets} />
+```
+
+Before you refresh the page, however, you will need to run the following command:
+
+```
+npm run mddb
+```
+
+This example makes use of the [markdowndb](https://github.com/datopian/markdowndb) library. For now the only thing you need to know is that you should run the command above everytime you make some change to `/content`.
+
+From the browser, access http://localhost:3000. You should see the following, you now have a searchable automatic list of your datasets:
+
+![](https://i.imgur.com/9HfSPIx.png)
+
+To make this catalog look even better, we can change the text that is being displayed for each dataset to a title. Let's do that by adding the "title" [frontmatter field](https://daily-dev-tips.com/posts/what-exactly-is-frontmatter/) to the first dataset in the list. Change `content/my-awesome-dataset/index.md` to the following:
+
+```
+---
+title: 'My awesome dataset'
+---
+
+# My Awesome Dataset
+
+Built with PortalJS 
+
+## Table 
+
+<Table url="data.csv" />
+```
+
+Rerun `npm run mddb` and, from the browser, access http://localhost:3000. You should see the title appearing instead of the folder name:
+
+![](https://i.imgur.com/nvmSnJ5.png)
+
+Any frontmatter attribute that you add will automatically get indexed and be usable in the search box.
+
 ## Deploying your PortalJS app
 
 Finally, let's learn how to deploy PortalJS apps to Vercel or Cloudflare Pages.

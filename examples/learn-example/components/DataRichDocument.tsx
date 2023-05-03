@@ -8,9 +8,8 @@ import { Mermaid } from '@flowershow/core';
 // here.
 const components = {
   Table: dynamic(() => import('@portaljs/components').then(mod => mod.Table)),
+  Catalog: dynamic(() => import('./Catalog')),
   mermaid: Mermaid,
-  // Excel: dynamic(() => import('../components/Excel')),
-  // TODO: try and make these dynamic ...
   Vega: dynamic(() => import('@portaljs/components').then(mod => mod.Vega)),
   VegaLite: dynamic(() => import('@portaljs/components').then(mod => mod.VegaLite)),
   LineChart: dynamic(() => import('@portaljs/components').then(mod => mod.LineChart)),
