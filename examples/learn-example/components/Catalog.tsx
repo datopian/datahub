@@ -30,7 +30,7 @@ export default function Catalog({ datasets }: { datasets: any[] }) {
               : true
           )
           .map((dataset) => (
-            <li key={dataset.id}>
+            <li key={dataset._id}>
               <a href={dataset.url_path}>{dataset.metadata.title ? dataset.metadata.title : dataset.url_path}</a>
             </li>
           ))}
