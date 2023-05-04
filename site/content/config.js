@@ -19,7 +19,7 @@ const config = {
     { name: "Docs", href: "/docs" },
     // { name: "Components", href: "/docs/components" },
     { name: "Blog", href: "/blog" },
-    // { name: "Gallery", href: "/gallery" },
+    { name: "Gallery", href: "/#gallery" },
     // { name: "Data Literate", href: "/data-literate" },
     // { name: "DL Demo", href: "/data-literate/demo" },
     // { name: "Excel Viewer", href: "/excel-viewer" },
@@ -52,7 +52,7 @@ const config = {
   github: "https://github.com/datopian/portaljs",
   discord: "https://discord.gg/EeyfGrGu4U",
   tableOfContents: true,
-  // analytics: "xxxxxx",
+  analytics: "G-96GWZHMH57",
   // editLinkShow: true,
 };
 export default config;

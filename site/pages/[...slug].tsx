@@ -60,7 +60,10 @@ export const getStaticProps = async ({ params }) => {
   });
 
   // Temporary, so that blogs work properly
-  if (dbFile.url_path.startsWith('blog/')) {
+  if (
+    dbFile.url_path.startsWith('blog/') ||
+    (dbFile.url_path.startsWith('docs/') && dbFile.metadata.filetype === 'blog')
+  ) {
     frontMatter.layout = 'blog';
     frontMatter.authorsDetails = await getAuthorsDetails(
       dbFile.metadata.authors

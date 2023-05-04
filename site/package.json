@@ -46,8 +46,7 @@
     "remark-smartypants": "^2.0.0",
     "remark-toc": "^7.2.0",
     "vega": "^5.20.2",
-    "vega-lite": "^5.1.0",
-    "xlsx": "^0.17.0"
+    "vega-lite": "^5.1.0"
   },
   "devDependencies": {
     "@tailwindcss/typography": "^0.5.9",
