@@ -56,10 +56,6 @@ export function Hero() {
               Get started
             </ButtonLink>
 
-            <ButtonLink className="ml-3" href="#gallery" style="secondary">
-              Gallery
-            </ButtonLink>
-
             <div className="md:max-w-md mx-auto">
               <NewsletterForm />
             </div>
