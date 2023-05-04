@@ -162,6 +162,44 @@ Rerun `npm run mddb` and, from the browser, access http://localhost:3000. You sh
 
 Any frontmatter attribute that you add will automatically get indexed and be usable in the search box.
 
+### Adding filters
+
+Sometimes contextual search is not enough. Let's add a filter. To do so, add a title to your `content/my-incredible-dataset/index.md` like so:
+
+
+```
+---
+title: 'My incredible dataset'
+---
+
+# My Incredible Dataset
+
+This is my incredible dataset.
+
+## Chart 
+
+<LineChart 
+    title="US Population By Decade"  
+    xAxis="Year"
+    yAxis="Population (mi)" 
+    data="my-incredible-data.csv"
+/>
+```
+
+Now on your `content/index.md` you can add a "facet" to the `Catalog` component, like so:
+
+```
+# Welcome to my data portal!
+
+List of available datasets:
+
+<Catalog datasets={datasets} facets={['title']}/>
+```
+
+You now have a filter in your page with all possible values automatically added to it.
+
+![](https://i.imgur.com/vAzJ47h.png)
+
 ## Deploying your PortalJS app
 
 Finally, let's learn how to deploy PortalJS apps to Vercel or Cloudflare Pages.
