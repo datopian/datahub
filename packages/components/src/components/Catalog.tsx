@@ -3,7 +3,7 @@ import { useState } from 'react';
 import DebouncedInput from './DebouncedInput';
 import { useForm } from 'react-hook-form';
 
-export default function Catalog({
+export function Catalog({
   datasets,
   facets,
 }: {
@@ -102,10 +102,10 @@ export default function Catalog({
           )}
         </select>
       ))}
-      <ul>
+      <ul className='mb-5 pl-6 mt-5 list-disc'>
         {filteredDatasets.map((dataset) => (
-          <li key={dataset._id}>
-            <a href={dataset.url_path}>
+          <li className='py-2' key={dataset._id}>
+            <a className='font-medium underline' href={dataset.url_path}>
               {dataset.metadata.title
                 ? dataset.metadata.title
                 : dataset.url_path}
