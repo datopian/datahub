@@ -91,7 +91,7 @@ const parse = async function (source, format, scope) {
         ],
         format,
       },
-      scope: { ...scope, ...data},
+      scope,
     }
   );
 
