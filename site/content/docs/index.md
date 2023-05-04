@@ -51,7 +51,7 @@ As soon as you save the file, the browser automatically updates the page with th
 
 <img src="/assets/docs/editing-the-page-1.png" />
 
-## Displaying data
+## Creating new datasets
 
 So far, the PortalJS app we created only has a single page displaying a dataset. Data catalogs and data portals generally showcase many different datasets.
 
@@ -116,9 +116,13 @@ From the browser, access http://localhost:3000. You should see the following:
 
 <img src="/assets/docs/datasets-index-page.png" />
 
+## Search page
+
+Typing out every link in the index page will get cumbersome eventually, and as the portal grows, finding the datasets you are looking for on the index page will become harder and harder, for that we will need search functionality.
+
 ### Creating a search page
 
-Typing out every link in the index page will get cumbersome eventually, and as the portal grows, finding the datasets you are looking for on the index page will become harder and harder. Luckily we have a component for that. Change your `content/index.md` file to this:
+Luckily we have a component for that. Change your `content/index.md` file to this:
 
 ```
 # Welcome to my data portal!
