@@ -52,7 +52,7 @@ const config = {
   github: "https://github.com/datopian/portaljs",
   discord: "https://discord.gg/EeyfGrGu4U",
   tableOfContents: true,
-  // analytics: "xxxxxx",
+  analytics: "G-96GWZHMH57",
   // editLinkShow: true,
 };
 export default config;
