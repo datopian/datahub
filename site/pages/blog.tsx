@@ -49,8 +49,8 @@ export async function getStaticProps() {
 
   const blogsSorted = blogList.sort(
     (a, b) =>
-      new Date(b.metadata?.date).getTime() -
-      new Date(a.metadata?.date).getTime()
+      new Date(b?.date).getTime() -
+      new Date(a?.date).getTime()
   );
 
 
