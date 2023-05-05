@@ -168,12 +168,12 @@ Any frontmatter attribute that you add will automatically get indexed and be usa
 
 ### Adding filters
 
-Sometimes contextual search is not enough. Let's add a filter. To do so, add a title to your `content/my-incredible-dataset/index.md` like so:
+Sometimes contextual search is not enough. Let's add a filter. To do so, lets add a new metadata field called "groups", add it to your `content/my-incredible-dataset/index.md` like so:
 
 
 ```
 ---
-title: 'My incredible dataset'
+groups: ['Incredible']
 ---
 
 # My Incredible Dataset
@@ -190,6 +190,23 @@ This is my incredible dataset.
 />
 ```
 
+Also add it to your `content/my-awesome-dataset/index.md` like so:
+
+```
+---
+title: 'My awesome dataset'
+groups: ['Awesome']
+---
+
+# My Awesome Dataset
+
+Built with PortalJS 
+
+## Table 
+
+<Table url="data.csv" />
+```
+
 Now on your `content/index.md` you can add a "facet" to the `Catalog` component, like so:
 
 ```
@@ -197,12 +214,12 @@ Now on your `content/index.md` you can add a "facet" to the `Catalog` component,
 
 List of available datasets:
 
-<Catalog datasets={datasets} facets={['title']}/>
+<Catalog datasets={datasets} facets={['groups']}/>
 ```
 
 You now have a filter in your page with all possible values automatically added to it.
 
-![](https://i.imgur.com/vAzJ47h.png)
+![](https://i.imgur.com/72aHZkD.png)
 
 ## Deploying your PortalJS app
 
