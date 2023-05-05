@@ -1,6 +1,6 @@
-import Link from "next/link.js";
-import clsx from "clsx";
-import { Disclosure, Transition } from "@headlessui/react";
+import Link from 'next/link.js';
+import clsx from 'clsx';
+import { Disclosure, Transition } from '@headlessui/react';
 
 export interface NavItem {
   name: string;
@@ -40,15 +40,11 @@ function sortNavGroupChildren(items: Array<NavItem | NavGroup>) {
 }
 
 export const SiteToc: React.FC<Props> = ({ currentPath, nav }) => {
-  function isActiveItem(item: NavItem) {
-    return item.href === currentPath;
-  }
-
   return (
     <nav data-testid="lhs-sidebar" className="flex flex-col space-y-3 text-sm">
       {/* {sortNavGroupChildren(nav).map((n) => ( */}
       {nav.map((n) => (
-        <NavComponent item={n} isActive={false} />
+        <NavComponent item={n} currentPath={currentPath} />
       ))}
     </nav>
   );
@@ -56,30 +52,34 @@ export const SiteToc: React.FC<Props> = ({ currentPath, nav }) => {
 
 const NavComponent: React.FC<{
   item: NavItem | NavGroup;
-  isActive: boolean;
-}> = ({ item, isActive }) => {
+  currentPath: string;
+}> = ({ item, currentPath }) => {
+  function isActiveItem(item: NavItem) {
+    return item.href === "/" + currentPath;
+  }
+
   return !isNavGroup(item) ? (
     <Link
       key={item.name}
       href={item.href}
       className={clsx(
-        isActive
-          ? "text-sky-500"
-          : "font-normal text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-300",
-        "block"
+        isActiveItem(item)
+          ? 'text-secondary'
+          : 'font-normal text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-300',
+        'block'
       )}
     >
       {item.name}
     </Link>
   ) : (
-    <Disclosure as="div" key={item.name} className="flex flex-col space-y-3">
+    <Disclosure as="div" key={item.name} className="flex flex-col space-y-3" defaultOpen={true}>
       {({ open }) => (
         <div>
           <Disclosure.Button className="group w-full flex items-center text-left text-md font-medium text-slate-900 dark:text-white">
             <svg
               className={clsx(
-                open ? "text-slate-400 rotate-90" : "text-slate-300",
-                "h-3 w-3 mr-2 flex-shrink-0 transform transition-colors duration-150 ease-in-out group-hover:text-slate-400"
+                open ? 'text-slate-400 rotate-90' : 'text-slate-300',
+                'h-3 w-3 mr-2 flex-shrink-0 transform transition-colors duration-150 ease-in-out group-hover:text-slate-400'
               )}
               viewBox="0 0 20 20"
               aria-hidden="true"
@@ -99,7 +99,7 @@ const NavComponent: React.FC<{
             <Disclosure.Panel className="flex flex-col space-y-3 pl-5 mt-3">
               {/* {sortNavGroupChildren(item.children).map((subItem) => ( */}
               {item.children.map((subItem) => (
-                <NavComponent item={subItem} isActive={false} />
+                <NavComponent item={subItem} currentPath={currentPath} />
               ))}
             </Disclosure.Panel>
           </Transition>

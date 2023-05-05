@@ -1,0 +1,27 @@
+[
+  {
+    "name": "Getting started",
+    "children": [
+      {
+        "name": "Setup",
+        "href": "/docs"
+      },
+      {
+        "name": "Creating new datasets",
+        "href": "/docs/creating-new-datasets"
+      },
+      {
+        "name": "Searching datasets",
+        "href": "/docs/searching-datasets"
+      },
+      {
+        "name": "Showing metadata",
+        "href": "/docs/showing-metadata"
+      },
+      {
+        "name": "Deploying your PortalJS app",
+        "href": "/docs/deploying-your-portaljs-app"
+      }
+    ]
+  }
+]

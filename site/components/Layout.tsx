@@ -55,13 +55,13 @@ export default function Layout({
   title,
   tableOfContents = [],
   urlPath,
-  siteMap = []
+  sidebarTree = []
 }: {
   children;
   title?: string;
   tableOfContents?;
   urlPath?: string;
-  siteMap?: [];
+  sidebarTree?: [];
 }) {
   // const { toc } = children.props;
   const { theme, setTheme } = useTheme();
@@ -134,7 +134,7 @@ export default function Layout({
                             href={`#${subSection.id}`}
                             className={
                               isActive(subSection)
-                                ? 'text-sky-500'
+                                ? 'text-secondary'
                                 : 'hover:text-slate-600 dark:hover:text-slate-300'
                             }
                           >
@@ -153,7 +153,7 @@ export default function Layout({
       {/* LHS NAVIGATION */}
       {/* {showSidebar && ( */}
         <div className="hidden lg:block fixed z-20 w-[18rem] top-[4.6rem] right-auto bottom-0 left-[max(0px,calc(50%-44rem))] pt-8 pl-8 overflow-y-auto">
-          <SiteToc currentPath={urlPath} nav={siteMap} />
+          <SiteToc currentPath={urlPath} nav={sidebarTree} />
         </div>
       {/* )} */}
     </>

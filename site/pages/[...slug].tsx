@@ -13,7 +13,7 @@ import { CustomAppProps } from './_app.jsx';
 import computeFields from '@/lib/computeFields';
 import { getAuthorsDetails } from '@/lib/getAuthorsDetails';
 
-export default function DRDPage({ source, meta, siteMap }) {
+export default function Page({ source, meta, sidebarTree }) {
   source = JSON.parse(source);
 
   const router = useRouter();
@@ -32,7 +32,8 @@ export default function DRDPage({ source, meta, siteMap }) {
     <Layout
       tableOfContents={tableOfContents}
       title={meta.title}
-      siteMap={siteMap}
+      sidebarTree={sidebarTree}
+      urlPath={meta.urlPath}
     >
       <MDXPage source={source} frontMatter={meta} />
     </Layout>
@@ -61,6 +62,12 @@ export const getStaticProps: GetStaticProps = async ({
     );
   }
 
+  // Temporary, docs pages should present the LHS sidebar
+  if (dbFile.url_path.startsWith('docs')) {
+    frontMatter.showSidebar = true;
+    frontMatter.sidebarTreeFile = 'content/docs/sidebar.json';
+  }
+
   const source = fs.readFileSync(filePath, { encoding: 'utf-8' });
   const { mdxSource } = await parse(source, 'mdx', {});
 
@@ -77,11 +84,12 @@ export const getStaticProps: GetStaticProps = async ({
   if (frontMatterWithComputedFields?.showSidebar) {
     let sidebarTreeFile = frontMatterWithComputedFields?.sidebarTreeFile;
 
+    //  Added this file funcionality so that we can control
+    //  which items appear in the sidebar and the order via
+    //  a json file
     if (sidebarTreeFile) {
-      const tree = fs.readFileSync(sidebarTreeFile, { encoding: "utf-8" });
-
+      const tree = fs.readFileSync(sidebarTreeFile, { encoding: 'utf-8' });
       sidebarTree = JSON.parse(tree);
-
     } else {
       const allPages = await mddb.getFiles({ extensions: ['md', 'mdx'] });
       const pages = allPages.filter((p) => !p.metadata?.isDraft);
@@ -95,7 +103,7 @@ export const getStaticProps: GetStaticProps = async ({
     props: {
       source: JSON.stringify(mdxSource),
       meta: frontMatterWithComputedFields,
-      siteMap: sidebarTree,
+      sidebarTree,
     },
   };
 };
