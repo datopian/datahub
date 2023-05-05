@@ -98,7 +98,6 @@ export default function DatasetPage({ mdxSource, frontMatter }) {
                   <tbody>
                     {frontMatter.files.map((f) => {
                       const fileName = f.split('/').slice(-1);
-                      console.log(fileName);
                       return (
                         <tr key={`resources-list-${f}`}>
                           <td>

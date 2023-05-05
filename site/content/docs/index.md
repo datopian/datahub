@@ -219,7 +219,7 @@ List of available datasets:
 
 You now have a filter in your page with all possible values automatically added to it.
 
-![](https://i.imgur.com/72aHZkD.png)
+![](https://i.imgur.com/p2miSdg.png)
 
 ## Showing metadata
 
