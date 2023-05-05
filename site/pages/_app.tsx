@@ -5,10 +5,24 @@ import Script from "next/script";
 
 import { DefaultSeo } from "next-seo";
 
-import { pageview, ThemeProvider } from "@flowershow/core";
+import { NavGroup, NavItem, pageview, ThemeProvider } from "@flowershow/core";
 import { siteConfig } from "../config/siteConfig";
 import { useEffect } from "react";
 import { useRouter } from "next/dist/client/router";
+
+export interface CustomAppProps {
+  meta: {
+    showToc: boolean;
+    showEditLink: boolean;
+    showSidebar: boolean;
+    showComments: boolean;
+    urlPath: string; // not sure what's this for
+    editUrl?: string;
+    [key: string]: any;
+  };
+  siteMap?: Array<NavItem | NavGroup>;
+  [key: string]: any;
+}
 
 function MyApp({ Component, pageProps }) {
   const router = useRouter();

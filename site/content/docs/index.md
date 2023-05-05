@@ -1,3 +1,7 @@
+---
+showSidebar: true
+---
+
 # Getting Started
 
 Welcome to the PortalJS documentation!
