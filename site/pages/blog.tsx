@@ -1,6 +1,8 @@
 import Layout from '@/components/Layout';
+import computeFields from '@/lib/computeFields';
 import clientPromise from '@/lib/mddb';
 import { BlogsList, SimpleLayout } from '@flowershow/core';
+import * as fs from 'fs';
 
 export default function Blog({ blogs }) {
   return (
@@ -32,19 +34,29 @@ export async function getStaticProps() {
 
   blogs = [...blogs, ...docs];
 
-  const blogsSorted = blogs.sort(
+  const blogsWithComputedFields = blogs.map(async (blog) => {
+    const source = fs.readFileSync(blog.file_path, { encoding: 'utf-8' });
+
+    return await computeFields({
+      frontMatter: blog.metadata,
+      urlPath: blog.url_path,
+      filePath: blog.file_path,
+      source,
+    });
+  });
+
+  const blogList = await Promise.all(blogsWithComputedFields);
+
+  const blogsSorted = blogList.sort(
     (a, b) =>
-      new Date(b.metadata.date).getTime() - new Date(a.metadata.date).getTime()
+      new Date(b.metadata?.date).getTime() -
+      new Date(a.metadata?.date).getTime()
   );
 
-  //  Temporary, flowershow/BlogsList expects the contentlayer fields
-  const blogsObjects = blogsSorted.map((b) => {
-    return { ...b, ...b.metadata };
-  });
 
   return {
     props: {
-      blogs: blogsObjects,
+      blogs: blogsSorted,
     },
   };
 }

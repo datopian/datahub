@@ -23,5 +23,18 @@
         "href": "/docs/deploying-your-portaljs-app"
       }
     ]
+  },
+  {
+    "name": "Examples",
+    "children": [
+      {
+        "name": "Data Catalog w/ CKAN datasets",
+        "href": "/docs/examples/example-ckan"
+      },
+      {
+        "name": "Data Catalog w/ GitHub datasets",
+        "href": "/docs/examples/example-data-catalog"
+      }
+    ]
   }
 ]
