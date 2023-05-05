@@ -172,12 +172,12 @@ Any frontmatter attribute that you add will automatically get indexed and be usa
 
 ### Adding filters
 
-Sometimes contextual search is not enough. Let's add a filter. To do so, add a title to your `content/my-incredible-dataset/index.md` like so:
+Sometimes contextual search is not enough. Let's add a filter. To do so, lets add a new metadata field called "group", add it to your `content/my-incredible-dataset/index.md` like so:
 
 
 ```
 ---
-title: 'My incredible dataset'
+group: 'Incredible'
 ---
 
 # My Incredible Dataset
@@ -194,6 +194,23 @@ This is my incredible dataset.
 />
 ```
 
+Also add it to your `content/my-awesome-dataset/index.md` like so:
+
+```
+---
+title: 'My awesome dataset'
+group: 'Awesome'
+---
+
+# My Awesome Dataset
+
+Built with PortalJS 
+
+## Table 
+
+<Table url="data.csv" />
+```
+
 Now on your `content/index.md` you can add a "facet" to the `Catalog` component, like so:
 
 ```
@@ -201,12 +218,47 @@ Now on your `content/index.md` you can add a "facet" to the `Catalog` component,
 
 List of available datasets:
 
-<Catalog datasets={datasets} facets={['title']}/>
+<Catalog datasets={datasets} facets={['group']}/>
 ```
 
 You now have a filter in your page with all possible values automatically added to it.
 
-![](https://i.imgur.com/vAzJ47h.png)
+![](https://i.imgur.com/p2miSdg.png)
+
+## Showing metadata
+
+If you go now to `http://localhost:3000/my-awesome-dataset`, you will see that we now have two titles on the page. That's because `title` is one of the default metadata fields supported by PortalJS.
+
+![](https://i.imgur.com/O145uuc.png)
+
+Change the content inside `/content/my-awesome-dataset/index.md` to this.
+
+```
+---
+title: 'My awesome dataset'
+author: 'Rufus Pollock'
+description: 'An awesome dataset displaying some awesome data'
+modified: '2023-05-04'
+files: ['data.csv']
+groups: ['Awesome']
+---
+
+Built with PortalJS 
+
+## Table 
+
+<Table url="data.csv" />
+```
+
+Once you refresh the page at `http://localhost:3000/my-awesome-dataset` you should see something like this at the top:
+
+![](https://i.imgur.com/nvDYJQT.png)
+
+These are the standard metadata fields that will be shown at the top of the page if you add them.
+
+- `title` that gets displayed as a big header at the top of the page
+- `author`, `description`, and `modified` which gets displayed below the title
+- `files` that get displayed as a table with two columns: `File` which is linked directly to the file, and `Format` which show the file format. 
 
 ## Deploying your PortalJS app
 

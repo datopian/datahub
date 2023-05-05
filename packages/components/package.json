@@ -26,7 +26,6 @@
   "dependencies": {
     "@heroicons/react": "^2.0.17",
     "@tanstack/react-table": "^8.8.5",
-    "@types/flexsearch": "^0.7.3",
     "flexsearch": "0.7.21",
     "next-mdx-remote": "^4.4.1",
     "papaparse": "^5.4.1",
@@ -38,6 +37,7 @@
     "vega-lite": "5.1.0"
   },
   "devDependencies": {
+    "@types/flexsearch": "^0.7.3",
     "@storybook/addon-essentials": "^7.0.7",
     "@storybook/addon-interactions": "^7.0.7",
     "@storybook/addon-links": "^7.0.7",

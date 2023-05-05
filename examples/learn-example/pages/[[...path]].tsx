@@ -50,25 +50,70 @@ export const getStaticProps = async (context) => {
   return {
     props: {
       mdxSource,
-      frontMatter,
+      frontMatter: JSON.stringify(frontMatter),
     },
   };
 };
 
 export default function DatasetPage({ mdxSource, frontMatter }) {
+  frontMatter = JSON.parse(frontMatter);
   return (
-    <div className="prose dark:prose-invert mx-auto">
+    <div className="prose dark:prose-invert mx-auto py-8">
       <header>
         <div className="mb-6">
           <>
-            <h1>{frontMatter.title}</h1>
+            <h1 className="mb-2">{frontMatter.title}</h1>
             {frontMatter.author && (
-              <div className="-mt-6">
-                <p className="opacity-60 pl-1">{frontMatter.author}</p>
-              </div>
+              <p className="my-0">
+                <span className="font-semibold">Author: </span>
+                <span className="my-0">{frontMatter.author}</span>
+              </p>
             )}
             {frontMatter.description && (
-              <p className="description">{frontMatter.description}</p>
+              <p className="my-0">
+                <span className="font-semibold">Description: </span>
+                <span className="description my-0">
+                  {frontMatter.description}
+                </span>
+              </p>
+            )}
+            {frontMatter.modified && (
+              <p className="my-0">
+                <span className="font-semibold">Modified: </span>
+                <span className="description my-0">
+                  {new Date(frontMatter.modified).toLocaleDateString()}
+                </span>
+              </p>
+            )}
+            {frontMatter.files && (
+              <section className="py-6">
+                <h2 className="mt-0">Data files</h2>
+                <table className="table-auto">
+                  <thead>
+                    <tr>
+                      <th>File</th>
+                      <th>Format</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {frontMatter.files.map((f) => {
+                      const fileName = f.split('/').slice(-1);
+                      return (
+                        <tr key={`resources-list-${f}`}>
+                          <td>
+                            <a target="_blank" href={f}>
+                              {fileName}
+                            </a>
+                          </td>
+                          <td>
+                            {fileName[0].split('.').slice(-1)[0].toUpperCase()}
+                          </td>
+                        </tr>
+                      );
+                    })}
+                  </tbody>
+                </table>
+              </section>
             )}
           </>
         </div>

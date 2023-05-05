@@ -19,12 +19,8 @@
     "@flowershow/remark-wiki-link": "^1.1.2",
     "@heroicons/react": "^2.0.17",
     "@opentelemetry/api": "^1.4.0",
+    "@portaljs/components": "^0.1.0",
     "@tanstack/react-table": "^8.8.5",
-    "@types/node": "18.16.0",
-    "@types/react": "18.2.0",
-    "@types/react-dom": "18.2.0",
-    "eslint": "8.39.0",
-    "eslint-config-next": "13.3.1",
     "flexsearch": "0.7.21",
     "gray-matter": "^4.0.3",
     "hastscript": "^7.2.0",
@@ -44,13 +40,17 @@
     "remark-math": "^5.1.1",
     "remark-smartypants": "^2.0.0",
     "remark-toc": "^8.0.1",
-    "typescript": "5.0.4",
-    "@portaljs/components": "^0.1.0"
+    "typescript": "5.0.4"
   },
   "devDependencies": {
     "@tailwindcss/typography": "^0.5.9",
     "@types/flexsearch": "^0.7.3",
+    "@types/node": "18.16.0",
+    "@types/react": "18.2.0",
+    "@types/react-dom": "18.2.0",
     "autoprefixer": "^10.4.14",
+    "eslint": "8.39.0",
+    "eslint-config-next": "13.3.1",
     "postcss": "^8.4.23",
     "tailwindcss": "^3.3.1"
   }
