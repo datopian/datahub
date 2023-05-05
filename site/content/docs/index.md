@@ -168,12 +168,12 @@ Any frontmatter attribute that you add will automatically get indexed and be usa
 
 ### Adding filters
 
-Sometimes contextual search is not enough. Let's add a filter. To do so, lets add a new metadata field called "groups", add it to your `content/my-incredible-dataset/index.md` like so:
+Sometimes contextual search is not enough. Let's add a filter. To do so, lets add a new metadata field called "group", add it to your `content/my-incredible-dataset/index.md` like so:
 
 
 ```
 ---
-groups: ['Incredible']
+group: 'Incredible'
 ---
 
 # My Incredible Dataset
@@ -195,7 +195,7 @@ Also add it to your `content/my-awesome-dataset/index.md` like so:
 ```
 ---
 title: 'My awesome dataset'
-groups: ['Awesome']
+group: 'Awesome'
 ---
 
 # My Awesome Dataset
@@ -214,7 +214,7 @@ Now on your `content/index.md` you can add a "facet" to the `Catalog` component,
 
 List of available datasets:
 
-<Catalog datasets={datasets} facets={['groups']}/>
+<Catalog datasets={datasets} facets={['group']}/>
 ```
 
 You now have a filter in your page with all possible values automatically added to it.
