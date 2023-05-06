@@ -1,10 +1,10 @@
 import {
   SimpleLayout,
-  DocsLayout,
   UnstyledLayout,
 } from "@flowershow/core";
 import { BlogLayout } from "./blog";
 import DefaultLayout from "./default";
+import { DocsLayout } from "./docs";
 
 export default {
   simple: SimpleLayout,
