@@ -52,5 +52,5 @@ https://developers.cloudflare.com/pages/framework-guides/deploy-a-nextjs-site/#d
 
 Note that you don't have to change anything - just follow the steps, choosing the repository you created.
 
-<DocsPagination prev="/docs/showing-metadata" />
+<DocsPagination prev="/docs/showing-metadata" next="/docs/components-api" />
 
