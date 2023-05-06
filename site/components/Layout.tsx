@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { useCallback, useEffect, useState } from 'react';
 
 import Nav from './Nav';
+import { SiteToc } from '@/components/SiteToc';
 
 function useTableOfContents(tableOfContents) {
   const [currentSection, setCurrentSection] = useState(tableOfContents[0]?.id);
@@ -53,10 +54,14 @@ export default function Layout({
   children,
   title,
   tableOfContents = [],
+  urlPath,
+  sidebarTree = []
 }: {
   children;
   title?: string;
   tableOfContents?;
+  urlPath?: string;
+  sidebarTree?: [];
 }) {
   // const { toc } = children.props;
   const { theme, setTheme } = useTheme();
@@ -129,7 +134,7 @@ export default function Layout({
                             href={`#${subSection.id}`}
                             className={
                               isActive(subSection)
-                                ? 'text-sky-500'
+                                ? 'text-secondary'
                                 : 'hover:text-slate-600 dark:hover:text-slate-300'
                             }
                           >
@@ -145,6 +150,12 @@ export default function Layout({
           </nav>
         </div>
       )}
+      {/* LHS NAVIGATION */}
+      {/* {showSidebar && ( */}
+        <div className="hidden lg:block fixed z-20 w-[18rem] top-[4.6rem] right-auto bottom-0 left-[max(0px,calc(50%-44rem))] pt-8 pl-8 overflow-y-auto">
+          <SiteToc currentPath={urlPath} nav={sidebarTree} />
+        </div>
+      {/* )} */}
     </>
   );
 }
