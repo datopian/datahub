@@ -1,5 +1,6 @@
-import { MDXRemote } from "next-mdx-remote";
-import layouts from "layouts";
+import { MDXRemote } from 'next-mdx-remote';
+import layouts from 'layouts';
+import DocsPagination from './DocsPagination';
 
 export default function MDXPage({ source, frontMatter }) {
   const Layout = ({ children }) => {
@@ -32,7 +33,7 @@ export default function MDXPage({ source, frontMatter }) {
       </header>
       <main>
         <Layout>
-          <MDXRemote {...source} />
+          <MDXRemote {...source} components={{ DocsPagination }} />
         </Layout>
       </main>
     </div>
