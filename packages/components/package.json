@@ -33,7 +33,7 @@
     "react-dom": "^18.2.0",
     "react-hook-form": "^7.43.9",
     "react-vega": "^7.6.0",
-    "vega": "5.20.2",
+    "vega": "5.25.0",
     "vega-lite": "5.1.0"
   },
   "devDependencies": {
