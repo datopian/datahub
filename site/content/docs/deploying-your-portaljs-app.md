@@ -51,3 +51,5 @@ To deploy your PortalJS app to Cloudflare Pages, follow this guide:
 https://developers.cloudflare.com/pages/framework-guides/deploy-a-nextjs-site/#deploy-with-cloudflare-pages-1
 
 Note that you don't have to change anything - just follow the steps, choosing the repository you created.
+
+<DocsPagination prev="/docs/showing-metadata" />
