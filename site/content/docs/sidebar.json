@@ -21,12 +21,12 @@
       {
         "name": "Deploying your PortalJS app",
         "href": "/docs/deploying-your-portaljs-app"
-      },
-      {
-        "name": "Components API",
-        "href": "/docs/components-api"
       }
     ]
+  },
+  {
+    "name": "Components",
+    "href": "/docs/components"
   },
   {
     "name": "Examples",
