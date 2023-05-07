@@ -25,6 +25,10 @@
     ]
   },
   {
+    "name": "Components",
+    "href": "/docs/components"
+  },
+  {
     "name": "Examples",
     "children": [
       {
