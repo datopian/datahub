@@ -13,7 +13,9 @@ import { MDXRemote } from 'next-mdx-remote'
 function DatasetCard({ dataset }) {
   return (
     <Card as="article">
-      <Card.Title><Link href={dataset.url}>{dataset.title}</Link></Card.Title>
+      <Card.Title>
+        <Link href={dataset.url}>{dataset.title}</Link>
+      </Card.Title>
       <Card.Description>
         <span className="font-semibold">Link to publication: </span>{' '}
         <a
@@ -75,7 +77,9 @@ function DatasetCard({ dataset }) {
 function ListOfAbusiveKeywordsCard({ list }) {
   return (
     <Card as="article">
-      <Card.Title><Link href={list.url}>{list.title}</Link></Card.Title>
+      <Card.Title>
+        <Link href={list.url}>{list.title}</Link>
+      </Card.Title>
       {list.description && (
         <Card.Description>
           <span className="font-semibold">List Description: </span>{' '}
@@ -139,17 +143,23 @@ export default function Home({
           <h1 className="text-4xl font-bold tracking-tight text-zinc-800 dark:text-zinc-100 sm:text-5xl">
             {indexText.frontmatter.title}
           </h1>
-          <article className="mt-6 index-text flex flex-col gap-y-2 text-base text-zinc-600 dark:text-zinc-400 prose dark:prose-invert prose-img:rounded-none prose-h3:mt-4">
+          <article className="index-text prose mt-6 flex flex-col gap-y-2 text-base text-zinc-600 dark:prose-invert prose-h3:mt-4 prose-a:font-normal prose-a:text-zinc-600 prose-a:decoration-inherit prose-img:rounded-none dark:text-zinc-400 prose-a:dark:text-zinc-400 hover:prose-a:text-teal-600 hover:prose-a:dark:text-teal-900">
             <MDXRemote {...indexText} />
           </article>
         </div>
       </Container>
-      <Container className="mt-24 md:mt-28">
+      <Container className="mt-12 md:mt-14">
         <div className="mx-auto grid max-w-7xl grid-cols-1 gap-y-8 lg:max-w-none">
-          <h2 id="datasets" className="text-xl font-bold tracking-tight text-zinc-800 dark:text-zinc-100 sm:text-5xl">
+          <h2
+            id="Datasets-header"
+            className="text-xl font-bold tracking-tight text-zinc-800 dark:text-zinc-100 sm:text-5xl"
+          >
             Datasets
           </h2>
-          <form onSubmit={handleSubmit(() => reset())} className="rounded-2xl border border-zinc-100 px-4 py-6 dark:border-zinc-700/40 sm:p-6">
+          <form
+            onSubmit={handleSubmit(() => reset())}
+            className="rounded-2xl border border-zinc-100 px-4 py-6 dark:border-zinc-700/40 sm:p-6"
+          >
             <p className="mt-2 text-lg font-semibold text-zinc-600 dark:text-zinc-100">
               Search for datasets
             </p>
@@ -198,7 +208,12 @@ export default function Home({
                   </option>
                 ))}
               </select>
-              <button type='submit' className='inline-flex items-center gap-2 justify-center rounded-md py-2 px-3 text-sm outline-offset-2 transition active:transition-none bg-zinc-800 font-semibold text-zinc-100 hover:bg-zinc-700 active:bg-zinc-800 active:text-zinc-100/70 dark:bg-zinc-700 dark:hover:bg-zinc-600 dark:active:bg-zinc-700 dark:active:text-zinc-100/70 flex-none'>Clear filters</button>
+              <button
+                type="submit"
+                className="inline-flex flex-none items-center justify-center gap-2 rounded-md bg-zinc-800 px-3 py-2 text-sm font-semibold text-zinc-100 outline-offset-2 transition hover:bg-zinc-700 active:bg-zinc-800 active:text-zinc-100/70 active:transition-none dark:bg-zinc-700 dark:hover:bg-zinc-600 dark:active:bg-zinc-700 dark:active:text-zinc-100/70"
+              >
+                Clear filters
+              </button>
             </div>
           </form>
           <div className="flex flex-col gap-16">
@@ -225,7 +240,7 @@ export default function Home({
         </div>
       </Container>
       <Container className="mt-16">
-        <h2 className="text-xl font-bold tracking-tight text-zinc-800 dark:text-zinc-100 sm:text-5xl">
+        <h2 id="Keywords-header" className="text-xl font-bold tracking-tight text-zinc-800 dark:text-zinc-100 sm:text-5xl">
           Lists of Abusive Keywords
         </h2>
         <div className="mt-3 flex flex-col gap-16">
