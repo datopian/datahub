@@ -2,11 +2,11 @@ import { Container } from '../components/Container'
 import clientPromise from '../lib/mddb'
 import { promises as fs } from 'fs';
 import { MDXRemote } from 'next-mdx-remote'
-import { serialize } from 'next-mdx-remote/serialize'
 import { Card } from '../components/Card'
 import Head from 'next/head'
 import parse from '../lib/markdown'
 import { Mermaid } from '@flowershow/core';
+import { Header } from '../components/Header';
 
 export const getStaticProps = async ({ params }) => {
   const urlPath = params.slug ? params.slug.join('/') : ''
@@ -82,10 +82,12 @@ export default function DRDPage({ mdxSource }) {
   )
   return (
     <>
+      <Header />
       <Head>
         <title>{meta.title}</title>
       </Head>
-      <Container className="mt-16 lg:mt-32">
+      <Container className="mt-16 lg:mt-32 relative">
+        <Header />
         <article>
           <header className="flex flex-col">
             <h1 className="mt-6 text-4xl font-bold tracking-tight text-zinc-800 dark:text-zinc-100 sm:text-5xl">

@@ -139,7 +139,7 @@ export default function Home({
           <h1 className="text-4xl font-bold tracking-tight text-zinc-800 dark:text-zinc-100 sm:text-5xl">
             {indexText.frontmatter.title}
           </h1>
-          <article className="mt-6 index-text flex flex-col gap-y-2 text-base text-zinc-600 dark:text-zinc-400 prose dark:prose-invert">
+          <article className="mt-6 index-text flex flex-col gap-y-2 text-base text-zinc-600 dark:text-zinc-400 prose dark:prose-invert prose-img:rounded-none prose-h3:mt-4">
             <MDXRemote {...indexText} />
           </article>
         </div>
