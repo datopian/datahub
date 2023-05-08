@@ -47,7 +47,7 @@ Let’s try editing the starter page.
 - Find the text that says “My Dataset” and change it to “My Awesome Dataset”.
 - Save the file.
 
-As soon as you save the file, the browser automatically updates the page with the new text:
+After refreshing the page, you should see the new text:
 
 <img src="/assets/docs/editing-the-page-1.png" />
 
