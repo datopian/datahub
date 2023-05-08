@@ -22,12 +22,6 @@ const items = [
     sourceUrl: 'https://github.com/FCSCOpendata/frontend',
   },
   {
-    title: 'Brazil Open Data',
-    href: 'https://dados.gov.br/',
-    image: '/images/showcases/brazil.png',
-    description: 'Government Open Data Portal',
-  },
-  {
     title: 'Datahub Open Data',
     href: 'https://opendata.datahub.io/',
     image: '/images/showcases/datahub.png',
