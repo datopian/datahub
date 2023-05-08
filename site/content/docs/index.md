@@ -8,7 +8,7 @@ If you have questions about anything related to PortalJS, you're always welcome 
 
 ### Prerequisites
 
-- Node.js 14.18.0 or newer
+- Node v16.20.0 LTS or Node.js 18.16.0 LTS (recommended)
 - MacOS, Windows (including WSL), and Linux are supported
 
 ### Create a PortalJS app
@@ -20,7 +20,7 @@ npx create-next-app my-data-portal --example https://github.com/datopian/portalj
 ```
 
 > [!tip]
-> You may have noticed we used the command create-next-app. That’s because PortalJS is built on the awesome NextJS react javascript framework. That’s mean you can do everything you do with NextJS with PortalJS. Check out their docs to learn more.
+> You may have noticed we used the command create-next-app. That’s because PortalJS is built on the awesome NextJS react javascript framework. This means you can do everything you do with NextJS with PortalJS. Check out their docs to learn more.
 
 ### Run the development server
 
