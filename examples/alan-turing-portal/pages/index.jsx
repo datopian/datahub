@@ -146,7 +146,7 @@ export default function Home({
       </Container>
       <Container className="mt-24 md:mt-28">
         <div className="mx-auto grid max-w-7xl grid-cols-1 gap-y-8 lg:max-w-none">
-          <h2 className="text-xl font-bold tracking-tight text-zinc-800 dark:text-zinc-100 sm:text-5xl">
+          <h2 id="datasets" className="text-xl font-bold tracking-tight text-zinc-800 dark:text-zinc-100 sm:text-5xl">
             Datasets
           </h2>
           <form onSubmit={handleSubmit(() => reset())} className="rounded-2xl border border-zinc-100 px-4 py-6 dark:border-zinc-700/40 sm:p-6">
