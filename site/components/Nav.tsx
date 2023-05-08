@@ -5,6 +5,7 @@ import { siteConfig } from '../config/siteConfig';
 import MobileNavigation from './MobileNavigation';
 import NavItem from './NavItem';
 import ThemeSelector from './ThemeSelector';
+import GitHubButton from 'react-next-github-btn';
 // import { SearchContext, SearchField } from "./search/index.jsx";
 
 // const Search = SearchContext(siteConfig.search?.provider);
@@ -110,16 +111,6 @@ export default function Nav() {
           </Search>
         )} */}
         <ThemeSelector />
-        {siteConfig.github && (
-          <Link
-            href={siteConfig.github}
-            target="_blank"
-            className="group"
-            aria-label="GitHub"
-          >
-            <GitHubIcon className="h-6 w-6 dark:fill-slate-400 group-hover:fill-slate-500 dark:group-hover:fill-slate-300" />
-          </Link>
-        )}
         {siteConfig.discord && (
           <Link
             href={siteConfig.discord}
@@ -129,6 +120,19 @@ export default function Nav() {
           >
             <DiscordIcon className="h-8 w-8 dark:fill-slate-400 group-hover:fill-slate-500 dark:group-hover:fill-slate-300" />
           </Link>
+        )}
+        {siteConfig.github && (
+          <div className="mt-1">
+            <GitHubButton
+              href={siteConfig.github}
+              data-color-scheme="no-preference: light; light: light; dark: dark;"
+              data-size="large"
+              data-show-count="true"
+              aria-label="Star PortalJS on GitHub"
+            >
+              Stars
+            </GitHubButton>
+          </div>
         )}
       </div>
     </header>

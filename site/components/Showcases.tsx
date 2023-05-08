@@ -1,5 +1,5 @@
 import Container from './Container';
-import GalleryItem from './GalleryItem';
+import ShowcasesItem from './ShowcasesItem';
 
 const items = [
   {
@@ -27,39 +27,21 @@ const items = [
     image: '/images/showcases/datahub.png',
     description: 'Demo Data Portal by DataHub',
   },
-  {
-    title: 'Example: Simple Data Catalog',
-    href: 'https://example.portaljs.org/',
-    image: '/images/showcases/example-simple-catalog.png',
-    description: 'Simple data catalog',
-    sourceUrl:
-      'https://github.com/datopian/portaljs/tree/main/examples/simple-example',
-    docsUrl: '/docs/example-data-catalog',
-  },
-  {
-    title: 'Example: Portal with CKAN',
-    href: 'https://ckan-example.portaljs.org/',
-    image: '/images/showcases/example-ckan.png',
-    description: 'Simple portal with data coming from CKAN',
-    sourceUrl:
-      'https://github.com/datopian/portaljs/tree/main/examples/ckan-example',
-    docsUrl: '/docs/example-ckan',
-  },
 ];
 
-export default function Gallery() {
+export default function Showcases() {
   return (
     <Container>
       <h2
         className="text-3xl font-bold text-primary dark:text-primary-dark"
-        id="gallery"
+        id="showcases"
       >
-        Gallery
+        Showcases
       </h2>
       <p className="text-lg mt-8">Discover what's being powered by PortalJS</p>
       <div className="not-prose my-12 grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
         {items.map((item) => {
-          return <GalleryItem item={item} />;
+          return <ShowcasesItem item={item} />;
         })}
       </div>
     </Container>
