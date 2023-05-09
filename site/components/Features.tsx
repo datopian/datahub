@@ -40,17 +40,17 @@ const features: { title: string; description: string; icon: string }[] = [
 export default function Features() {
   return (
     <Container>
-      <h2 className="text-3xl font-bold text-primary dark:text-primary-dark">
+      <h2 className="text-3xl font-bold text-primary dark:text-primary-dark" id="how-portaljs-works">
         How PortalJS works?
       </h2>
-      <p className="text-lg mt-8">
+      <p className="text-lg mt-2">
         PortalJS is built in JavaScript and React on top of the popular Next.js
         framework, assuming a "decoupled" approach where the frontend is a
         separate service from the backend and interacts with backend(s) via an
         API. It can be used with any backend and has out of the box support for
         CKAN.
       </p>
-      <div className="not-prose my-12 grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
+      <div className="not-prose my-12 grid grid-cols-1 gap-6 md:grid-cols-2 ">
         {features.map((feature, i) => (
           <div
             key={`feature-${i}`}

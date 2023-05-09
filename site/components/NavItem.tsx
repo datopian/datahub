@@ -1,8 +1,8 @@
-import { Menu, Transition } from "@headlessui/react";
-import Link from "next/link";
-import { Fragment, useRef, useState } from "react";
+import { Menu, Transition } from '@headlessui/react';
+import Link from 'next/link';
+import { Fragment, useRef, useState } from 'react';
 
-import BaseLink from "./BaseLink";
+import BaseLink from './BaseLink';
 
 export default function NavItem({ item }) {
   const dropdownRef = useRef(null);
@@ -21,14 +21,14 @@ export default function NavItem({ item }) {
 
   return (
     <Menu as="div" className="relative">
-      <Menu.Button
-        onClick={() => setshowDropdown(!showDropdown)}
-        onMouseEnter={openDropdown}
-        onMouseLeave={closeDropdown}
-      >
-        {Object.prototype.hasOwnProperty.call(item, "href") ? (
+      <Menu.Item>
+        {Object.prototype.hasOwnProperty.call(item, 'href') ? (
           <Link
             href={item.href}
+            onMouseEnter={openDropdown}
+            onMouseLeave={closeDropdown}
+            target={item.target || '_self'}
+            onClick={() => setshowDropdown(!showDropdown)}
             className="text-slate-600 dark:text-slate-400 inline-flex items-center mr-2 px-1 pt-1 text-sm font-medium hover:text-slate-500"
           >
             {item.name}
@@ -38,9 +38,9 @@ export default function NavItem({ item }) {
             {item.name}
           </div>
         )}
-      </Menu.Button>
+      </Menu.Item>
 
-      {Object.prototype.hasOwnProperty.call(item, "subItems") && (
+      {Object.prototype.hasOwnProperty.call(item, 'subItems') && (
         <Transition
           as={Fragment}
           show={showDropdown}
@@ -58,11 +58,10 @@ export default function NavItem({ item }) {
             onMouseLeave={closeDropdown}
           >
             {item.subItems.map((subItem) => (
-              <Menu.Item
-                key={subItem.name}
-                >
+              <Menu.Item key={subItem.name}>
                 <BaseLink
                   href={subItem.href}
+                  target={item.target || '_self'}
                   className="text-slate-500 inline-flex items-center mt-2 px-1 pt-1 text-sm font-medium hover:text-slate-600"
                   onClick={() => setshowDropdown(false)}
                 >

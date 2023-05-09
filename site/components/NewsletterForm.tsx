@@ -33,7 +33,7 @@ export default function NewsletterForm() {
                   type="email"
                   required
                   placeholder="Your email"
-                  className="input entry__field !w-full px-2 py-3 text-base rounded-md bg-slate-200 dark:bg-slate-800 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-400 focus:ring-offset-gray-900"
+                  className="input entry__field !w-full px-2 py-2 text-base rounded-md bg-slate-200 dark:bg-slate-800 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-400 focus:ring-offset-gray-900"
                 />
 
                 <label className="entry__error entry__error--primary px-2 text-red-400 text-sm"></label>
@@ -43,7 +43,7 @@ export default function NewsletterForm() {
             <input type="hidden" name="form-name" value="get-updates" />
             <button
               type="submit"
-              className="sib-form-block__button sib-form-block__button-with-loader h-12 flex-none mt-3 px-6 py-3 border border-transparent text-base font-medium rounded-md text-slate-900 bg-blue-400 hover:bg-blue-300 focus:outline-none focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-300/50 active:bg-sky-500 sm:mt-0 sm:ml-3"
+              className="sib-form-block__button sib-form-block__button-with-loader flex-none mt-3 px-4 py-2 border border-transparent text-base font-medium rounded-md text-slate-900 bg-blue-400 hover:bg-blue-300 focus:outline-none focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-300/50 active:bg-sky-500 sm:mt-0 sm:ml-3"
             >
               <svg
                 className="icon clickable__icon progress-indicator__icon sib-hide-loader-icon hidden"

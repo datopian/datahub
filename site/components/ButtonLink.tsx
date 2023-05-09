@@ -18,7 +18,7 @@ export default function ButtonLink({
   return (
     <Link
       href={href}
-      className={`inline-block h-12 px-6 py-3 border border-transparent text-base font-medium rounded-md focus:outline-none focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-300/50 active:bg-sky-500 ${styleClassName} ${className}`}
+      className={`inline-block px-4 py-2 border border-transparent text-base font-medium rounded-md focus:outline-none focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-300/50 active:bg-sky-500 ${styleClassName} ${className}`}
     >
       {children}
     </Link>
