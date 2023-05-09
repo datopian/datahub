@@ -123,7 +123,9 @@ export default function Nav() {
         )}
         {siteConfig.github && (
           <div className="mt-1">
-            <GitHubButton
+            <
+              // @ts-ignore
+              GitHubButton
               href={siteConfig.github}
               data-color-scheme="no-preference: light; light: light; dark: dark;"
               data-size="large"
