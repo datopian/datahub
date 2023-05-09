@@ -1,6 +1,3 @@
-import Head from 'next/head';
-import { useRouter } from 'next/router';
-
 import { NextSeo } from 'next-seo';
 import { promises as fs } from 'fs';
 import path from 'path';
@@ -8,15 +5,20 @@ import getConfig from 'next/config';
 import { getProject, GithubProject } from '../../../lib/octokit';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
-import Link from 'next/link';
+import Breadcrumbs from '../../../components/_shared/Breadcrumbs';
 
 export default function ProjectPage({ project }) {
+  const repoId = `@${project.repo_config.owner}/${project.repo_config.repo}`
+
   return (
     <>
-      <NextSeo title={`PortalJS - @${project.repo_config.owner}/${project.repo_config.repo}${project.base_path !== '/' ? '/' + project.base_path : ''}`} />
+      <NextSeo title={`${repoId}${project.base_path !== '/' ? '/' + project.base_path : ''} - GitHub Datasets`} />
       <main className="prose mx-auto my-8">
-        <Link href='/'>Back to homepage</Link>
-        <h1 className="mb-0">Data</h1>
+        <Breadcrumbs links={[{ title: repoId, href: "" }]} />
+        <h1 className="mb-0 mt-16">{project.repo_config.name || repoId}</h1>
+        <p className='mb-8'><span className='font-semibold'>Repository:</span> <a target="_blank" href={project.html_url}>{project.html_url}</a></p>
+
+        <h2 className="mb-0 mt-10">Files</h2>
         <div className="inline-block min-w-full py-2 align-middle">
           <table className="min-w-full divide-y divide-gray-300">
             <thead>
@@ -50,7 +52,9 @@ export default function ProjectPage({ project }) {
           </table>
         </div>
 
-        <h1>Readme</h1>
+        <hr />
+
+        <h2 className='uppercase font-black'>Readme</h2>
         <ReactMarkdown remarkPlugins={[remarkGfm]}>
           {project.readmeContent}
         </ReactMarkdown>

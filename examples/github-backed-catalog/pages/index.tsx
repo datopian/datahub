@@ -2,6 +2,9 @@ import { promises as fs } from 'fs';
 import path from 'path';
 import { getProject } from '../lib/octokit';
 import getConfig from 'next/config';
+import ExternalLinkIcon from '../components/icons/ExternalLinkIcon';
+import TimeAgo from 'react-timeago';
+import Link from 'next/link';
 
 export async function getStaticProps() {
   const jsonDirectory = path.join(
@@ -24,26 +27,18 @@ export async function getStaticProps() {
   };
 }
 
-const formatter = new Intl.DateTimeFormat('en-US', {
-  year: 'numeric',
-  month: 'long',
-  day: 'numeric',
-  hour: 'numeric',
-  minute: 'numeric',
-  second: 'numeric',
-  timeZone: 'UTC',
-});
-
 export function Datasets({ projects }) {
   return (
-    <div className="bg-white">
+    <div className="bg-white min-h-screen">
       <div className="mx-auto max-w-7xl px-6 py-16 sm:py-24 lg:px-8">
-        <h2 className="text-2xl font-bold leading-10 tracking-tight">
-          My Datasets
-        </h2>
-        <p className="mt-6 max-w-2xl text-base leading-7 text-gray-600">
-          Here is a list of all my datasets for easy access and sharing
-        </p>
+        <div className='text-center'>
+          <h2 className="text-3xl font-bold leading-10 tracking-tight">
+            GitHub Datasets
+          </h2>
+          <p className="mt-3 mx-auto max-w-2xl text-base leading-7 text-gray-500">
+            Data catalog with datasets hosted on GitHub by <Link target="_blank" className='underline' href="https://portaljs.org/">🌀 PortalJS</Link>
+          </p>
+        </div>
         <div className="mt-20">
           <div className="-mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
             <div className="inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8">
@@ -60,7 +55,7 @@ export function Datasets({ projects }) {
                       scope="col"
                       className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
                     >
-                      Repo
+                      Repository
                     </th>
                     <th
                       scope="col"
@@ -83,27 +78,28 @@ export function Datasets({ projects }) {
                 <tbody className="divide-y divide-gray-200">
                   {projects.map((project) => (
                     <tr key={project.id}>
-                      <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
+                      <td className="whitespace-nowrap px-3 py-6 text-sm text-gray-500">
                         {project.repo_config.name
                           ? project.repo_config.name
                           : project.full_name + (project.base_path === '/' ? '' : '/' + project.base_path)}
                       </td>
-                      <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
-                        <a href={project.html_url}>{project.full_name}</a>
+                      <td className="whitespace-nowrap px-3 py-6 text-sm group text-gray-500 hover:text-gray-900 transition-all duration-250">
+                        <a href={project.html_url} target="_blank" className='flex items-center'>@{project.full_name} <ExternalLinkIcon className='ml-1' /></a>
                       </td>
                       <td className="px-3 py-4 text-sm text-gray-500">
                         {project.repo_config.description
                           ? project.repo_config.description
                           : project.description}
                       </td>
-                      <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
-                        {formatter.format(new Date(project.last_updated))}
+                      <td className="whitespace-nowrap px-3 py-6 text-sm text-gray-500">
+                        <TimeAgo date={new Date(project.last_updated)} />
                       </td>
-                      <td className="relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-0">
+                      <td className="relative whitespace-nowrap py-6 pl-3 pr-4 text-right text-sm font-medium sm:pr-0">
                         <a
                           href={`/@${project.repo_config.owner}/${project.repo_config.repo}/${project.base_path === '/' ? '' : project.base_path}`}
+                          className='border border-gray-900 text-gray-900 px-4 py-2 transition-all hover:bg-gray-900 hover:text-white'
                         >
-                          More info
+                          info
                         </a>
                       </td>
                     </tr>
