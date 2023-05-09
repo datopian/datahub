@@ -1,5 +1,5 @@
 ---
-title: "Example: Data catalog with data coming from CKAN"
+title: "Example: Data catalog with data on CKAN"
 authors: ['Luccas Mateus']
 date: 2023-04-20
 filetype: blog
