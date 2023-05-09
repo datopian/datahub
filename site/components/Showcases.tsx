@@ -38,8 +38,8 @@ export default function Showcases() {
       >
         Showcases
       </h2>
-      <p className="text-lg mt-8">Discover what's being powered by PortalJS</p>
-      <div className="not-prose my-12 grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
+      <p className="text-lg mt-2">Discover what's being powered by PortalJS</p>
+      <div className="not-prose my-12 grid grid-cols-1 gap-6 md:grid-cols-2">
         {items.map((item) => {
           return <ShowcasesItem item={item} />;
         })}

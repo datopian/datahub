@@ -60,10 +60,13 @@ export default function Community() {
 
   return (
     <Container>
-      <h2 className="text-3xl font-bold text-primary dark:text-primary-dark ">
+      <h2
+        className="text-3xl font-bold text-primary dark:text-primary-dark"
+        id="community"
+      >
         Community
       </h2>
-      <p className="text-lg mt-8 ">
+      <p className="text-lg mt-2">
         We are growing. Get in touch or become a contributor!
       </p>
       <div className="flex justify-center mt-12">
