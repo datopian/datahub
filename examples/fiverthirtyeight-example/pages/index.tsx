@@ -25,7 +25,7 @@ export function MobileItem({dataset} : { dataset: Dataset}) {
       <div className="flex flex-col">
         <span className="font-light">{dataset.name}</span>
         {dataset.articles.map((article) => (
-          <div className='py-1 flex flex-col'>
+          <div key={article.title} className='py-1 flex flex-col'>
             <span className="font-bold hover:underline">{article.title}</span>
             <span className="font-light text-base">{format(article.date)}</span>{' '}
           </div>
@@ -63,7 +63,7 @@ export function DesktopItem({dataset} : { dataset: Dataset}) {
   return (
     <>
       {dataset.articles.map((article, index) => (
-        <tr className={`${index === (dataset.articles.length - 1) ? 'border-b' : ''} border-zinc-400`}>
+        <tr key={article.url} className={`${index === (dataset.articles.length - 1) ? 'border-b' : ''} border-zinc-400`}>
           <td className="py-8 font-light">{index === 0 ? dataset.name : ''}</td>
           <td>
             <a className="py-8 font-bold hover:underline" href={article.url}>
@@ -148,7 +148,7 @@ export default function Home( { datasets }: { datasets: Dataset[] }) {
             stories and visualizations of&nbsp;your&nbsp;own.
           </p>
         </div>
-        <article className="w-full px-2 md:hidden py-4">{datasets.map(dataset => <MobileItem dataset={dataset} />)}</article>
+        <article className="w-full px-2 md:hidden py-4">{datasets.map(dataset => <MobileItem key={dataset.name} dataset={dataset} />)}</article>
         <table className="w-full mt-10 mb-4 hidden md:table">
           <thead className="border-b-4 pb-2 border-zinc-900">
             <tr>
@@ -163,7 +163,7 @@ export default function Home( { datasets }: { datasets: Dataset[] }) {
               </th>
             </tr>
           </thead>
-          <tbody>{datasets.map(dataset => <DesktopItem dataset={dataset} />)}</tbody>
+          <tbody>{datasets.map(dataset => <DesktopItem key={dataset.name} dataset={dataset} />)}</tbody>
         </table>
         <p className="text-[13px] py-8">
           Unless otherwise noted, our data sets are available under the{' '}
