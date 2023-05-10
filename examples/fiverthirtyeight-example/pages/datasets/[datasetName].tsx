@@ -58,9 +58,10 @@ export default function DatasetPage({
         </div>
         {dataset.files && dataset.files.length > 0 && (
           <>
-            <h2 className="mb-0 mt-10">PREVIEWS</h2>
+            <h2 className="mb-0 mt-10">DATA PREVIEWS</h2>
             {dataset.files?.map((file) => (
               <div key={file} className="preview-table my-8">
+                <h3>{file.split('/').slice(-1)}</h3>
                 <Table url={file} />
               </div>
             ))}

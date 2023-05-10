@@ -43,10 +43,10 @@ export function MobileItem({ dataset }: { dataset: Dataset }) {
           info
         </a>
         <a
-          className="border border-zinc-900 font-light px-4 py-1 text-sm transition hover:bg-zinc-900 hover:text-white"
+          className="ml-2 border border-zinc-900 font-light px-4 py-1 text-sm transition hover:bg-zinc-900 hover:text-white"
           href={`/datasets/${dataset.name}`}
         >
-          info
+          explore
         </a>
         {/*
                 <button>
@@ -101,7 +101,7 @@ export function DesktopItem({ dataset }: { dataset: Dataset }) {
           <td className="py-8">
             {index === 0 && (
               <a
-                className="border border-zinc-900 font-light px-[25px] py-2.5 text-sm transition hover:bg-zinc-900 hover:text-white"
+                className="ml-2 border border-zinc-900 font-light px-[25px] py-2.5 text-sm transition hover:bg-zinc-900 hover:text-white"
                 href={`/datasets/${dataset.name}`}
               >
                 explore
