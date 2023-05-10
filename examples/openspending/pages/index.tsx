@@ -19,9 +19,7 @@ export async function getStaticProps() {
 
   const projects = await Promise.all(
     (JSON.parse(repos)).map(async (repo) => {
-      console.log(repo);
       const project = await getProject(repo, github_pat);
-      console.log(project);
       return { ...project, repo_config: repo };
     })
   );
