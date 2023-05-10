@@ -1,0 +1,25 @@
+[
+  {
+    "owner": "os-data",
+    "branch": "main",
+    "repo": "mongolia-budget-2016-2017",
+    "files": [
+      "data/mongolia-2017.csv",
+      "data/mongolia-2017__2017.csv"
+    ]
+  },
+  {
+    "owner": "os-data",
+    "branch": "main",
+    "repo": "gb-country-regional-analysis",
+    "files": [
+      "data/cofog.csv",
+      "data/cofog_dejargonise.csv",
+      "data/cra.csv",
+      "data/departments.csv",
+      "data/nuts_pop.csv",
+      "data/pogs.csv"
+    ],
+    "readme": "README.md"
+  }
+]
