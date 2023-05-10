@@ -14,7 +14,6 @@ module.exports = {
       },
     },
   },
-  plugins: [
-    require('@tailwindcss/typography')
-  ],
-}
+  safelist: ['w-6', 'h-6', 'opacity-100'],
+  plugins: [require('@tailwindcss/typography')],
+};
