@@ -20,28 +20,34 @@ export interface Dataset {
   files?: string[];
 }
 
+// Request a weekday along with a long date
+const options = {
+  year: 'numeric',
+  month: 'long',
+  day: 'numeric',
+} as const;
+
 export function MobileItem({ dataset }: { dataset: Dataset }) {
   return (
     <div className="flex gap-x-2 pb-2 py-4 items-center justify-between border-b border-zinc-600">
       <div className="flex flex-col">
-        <span className="font-light">{dataset.name}</span>
+        <span className="font-mono font-light">
+          <a className="underline" href={dataset.url} target="_blank">
+            {dataset.name}
+          </a>
+        </span>
         {dataset.articles.map((article) => (
           <div key={article.title} className="py-1 flex flex-col">
             <span className="font-bold hover:underline">{article.title}</span>
             <span className="font-light text-base">
-              {format(article.date)}
+              {format(article.date).includes('years')
+                ? new Date(article.date).toLocaleString('en-US', options)
+                : format(article.date)}
             </span>{' '}
           </div>
         ))}
       </div>
       <div className="flex flex-col justify-start">
-        <a
-          className="border border-zinc-900 font-light px-4 py-1 text-sm transition hover:bg-zinc-900 hover:text-white"
-          href={dataset.url}
-          target="_blank"
-        >
-          info
-        </a>
         <a
           className="ml-2 border border-zinc-900 font-light px-4 py-1 text-sm transition hover:bg-zinc-900 hover:text-white"
           href={`/datasets/${dataset.name}`}
@@ -78,25 +84,23 @@ export function DesktopItem({ dataset }: { dataset: Dataset }) {
             index === dataset.articles.length - 1 ? 'border-b' : ''
           } border-zinc-400`}
         >
-          <td className="py-8 font-light">{index === 0 ? dataset.name : ''}</td>
+          <td className="py-8 font-light font-mono text-[14px] text-zinc-700">
+            <a className="underline" href={dataset.url} target="_blank">
+              {index === 0 ? dataset.name : ''}
+            </a>
+          </td>
           <td>
-            <a className="py-8 font-bold hover:underline" href={article.url}>
+            <a
+              className="py-8 font-bold hover:underline pr-2"
+              href={article.url}
+            >
               {article.title}
             </a>
           </td>
-          <td className="py-8 font-light text-base min-w-[120px]">
-            {format(article.date)}
-          </td>
-          <td className="py-8">
-            {index === 0 && (
-              <a
-                className="border border-zinc-900 font-light px-[25px] py-2.5 text-sm transition hover:bg-zinc-900 hover:text-white"
-                href={dataset.url}
-                target="_blank"
-              >
-                info
-              </a>
-            )}
+          <td className="py-8 font-light text-[14px] min-w-[138px] font-mono text-[#999]">
+            {format(article.date).includes('years')
+              ? new Date(article.date).toLocaleString('en-US', options)
+              : format(article.date)}
           </td>
           <td className="py-8">
             {index === 0 && (
@@ -150,7 +154,7 @@ export default function Home({ datasets }: { datasets: Dataset[] }) {
           <h1 className="text-[40px] font-bold text-zinc-800 text-center">
             Our Data
           </h1>
-          <p className="max-w-2xl text-lg text-center text-zinc-700">
+          <p className="max-w-[600px] text-[17px] text-center text-[#6d6f71]">
             We’re sharing the data and code behind some of our articles and
             graphics. We hope you’ll use it to check our work and to create
             stories and visualizations of&nbsp;your&nbsp;own.
@@ -164,13 +168,13 @@ export default function Home({ datasets }: { datasets: Dataset[] }) {
         <table className="w-full mt-10 mb-4 hidden md:table">
           <thead className="border-b-4 pb-2 border-zinc-900">
             <tr>
-              <th className="uppercase text-left font-light text-xs pb-3">
+              <th className="uppercase text-left font-normal text-xs pb-3">
                 data set
               </th>
-              <th className="uppercase text-left font-light text-xs pb-3">
+              <th className="uppercase text-left font-normal text-xs pb-3">
                 related content
               </th>
-              <th className="uppercase text-left font-light text-xs pb-3">
+              <th className="uppercase text-left font-normal text-xs pb-3">
                 last updated
               </th>
             </tr>

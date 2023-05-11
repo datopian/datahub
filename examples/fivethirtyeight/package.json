@@ -17,6 +17,7 @@
     "autoprefixer": "10.4.14",
     "eslint": "8.40.0",
     "eslint-config-next": "13.4.1",
+    "flexsearch": "^0.7.31",
     "next": "13.4.1",
     "next-mdx-remote": "^4.4.1",
     "next-seo": "^6.0.0",
