@@ -29,6 +29,16 @@ export default function Document() {
               </a>
             </h1>
           </div>
+          <div className="mx-2 py-1.5 text-[14px] text-[#3c3c3c]">
+            <ul className='flex gap-x-4'>
+              <li>
+                <a className='hover:opacity-75 transition' href="https://portaljs.org">PortalJS</a>
+              </li>
+              <li>
+                <a className='hover:opacity-75 transition' href="https://github.com/datopian/portaljs/tree/main/examples/fivethirtyeight">View on Github</a>
+              </li>
+            </ul>
+          </div>
         </header>
         <Main />
         <NextScript />

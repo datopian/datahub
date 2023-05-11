@@ -1,46 +1,11 @@
 [
   {
-    "url": "https://github.com/fivethirtyeight/data/tree/master/nba-forecasts",
-    "name": "nba-forecasts",
-    "displayName": "nba-<span class=\"lastword\">forecasts</span>",
-    "articles": [
-      {
-        "date": "2023-05-08T22:33:43.000Z",
-        "title": "2022-23 NBA Predictions",
-        "url": "https://projects.fivethirtyeight.com/2023-nba-predictions/"
-      }
-    ],
-    "files": [
-      "https://projects.fivethirtyeight.com/nba-model/nba_elo.csv",
-      "https://projects.fivethirtyeight.com/nba-model/nba_elo_latest.csv"
-    ]
-  },
-  {
-    "url": "https://github.com/fivethirtyeight/data/tree/master/soccer-spi",
-    "name": "soccer-spi",
-    "displayName": "soccer-<span class=\"lastword\">spi</span>",
-    "articles": [
-      {
-        "date": "2023-05-08T22:17:18.000Z",
-        "title": "Club Soccer Predictions",
-        "url": "https://projects.fivethirtyeight.com/soccer-predictions/"
-      }
-    ],
-    "files": [
-      "https://projects.fivethirtyeight.com/soccer-api/club/spi_matches.csv",
-      "https://projects.fivethirtyeight.com/soccer-api/club/spi_matches_latest.csv",
-      "https://projects.fivethirtyeight.com/soccer-api/club/spi_global_rankings.csv",
-      "https://projects.fivethirtyeight.com/soccer-api/international/spi_matches_intl.csv",
-      "https://projects.fivethirtyeight.com/soccer-api/international/spi_global_rankings_intl.csv"
-    ]
-  },
-  {
     "url": "https://github.com/fivethirtyeight/data/tree/master/polls",
     "name": "polls",
     "displayName": "<span class=\"lastword\">polls</span>",
     "articles": [
       {
-        "date": "2023-05-08T20:36:59.000Z",
+        "date": "2023-05-11T14:35:40.000Z",
         "title": "Latest Polls",
         "url": "https://projects.fivethirtyeight.com/polls/"
       }
@@ -64,12 +29,44 @@
     ]
   },
   {
+    "url": "https://github.com/fivethirtyeight/data/tree/master/congress-generic-ballot",
+    "name": "congress-generic-ballot",
+    "displayName": "congress-generic-<span class=\"lastword\">ballot</span>",
+    "articles": [
+      {
+        "date": "2023-05-11T14:35:40.000Z",
+        "title": "Do Voters Want Democrats Or Republicans In Congress?",
+        "url": "https://projects.fivethirtyeight.com/congress-generic-ballot-polls/"
+      }
+    ],
+    "files": [
+      "https://projects.fivethirtyeight.com/generic-ballot-data/generic_polllist.csv",
+      "https://projects.fivethirtyeight.com/polls/data/generic_ballot_averages.csv"
+    ]
+  },
+  {
+    "url": "https://github.com/fivethirtyeight/data/tree/master/nba-forecasts",
+    "name": "nba-forecasts",
+    "displayName": "nba-<span class=\"lastword\">forecasts</span>",
+    "articles": [
+      {
+        "date": "2023-05-11T11:15:46.000Z",
+        "title": "2022-23 NBA Predictions",
+        "url": "https://projects.fivethirtyeight.com/2023-nba-predictions/"
+      }
+    ],
+    "files": [
+      "https://projects.fivethirtyeight.com/nba-model/nba_elo.csv",
+      "https://projects.fivethirtyeight.com/nba-model/nba_elo_latest.csv"
+    ]
+  },
+  {
     "url": "https://github.com/fivethirtyeight/data/tree/master/nba-raptor",
     "name": "nba-raptor",
     "displayName": "nba-<span class=\"lastword\">raptor</span>",
     "articles": [
       {
-        "date": "2023-05-08T11:15:48.000Z",
+        "date": "2023-05-11T11:13:20.000Z",
         "title": "The Best NBA Players, According To RAPTOR",
         "rowspan": 3,
         "url": "https://projects.fivethirtyeight.com/nba-player-ratings/"
@@ -93,12 +90,31 @@
     ]
   },
   {
+    "url": "https://github.com/fivethirtyeight/data/tree/master/soccer-spi",
+    "name": "soccer-spi",
+    "displayName": "soccer-<span class=\"lastword\">spi</span>",
+    "articles": [
+      {
+        "date": "2023-05-11T05:25:51.000Z",
+        "title": "Club Soccer Predictions",
+        "url": "https://projects.fivethirtyeight.com/soccer-predictions/"
+      }
+    ],
+    "files": [
+      "https://projects.fivethirtyeight.com/soccer-api/club/spi_matches.csv",
+      "https://projects.fivethirtyeight.com/soccer-api/club/spi_matches_latest.csv",
+      "https://projects.fivethirtyeight.com/soccer-api/club/spi_global_rankings.csv",
+      "https://projects.fivethirtyeight.com/soccer-api/international/spi_matches_intl.csv",
+      "https://projects.fivethirtyeight.com/soccer-api/international/spi_global_rankings_intl.csv"
+    ]
+  },
+  {
     "url": "https://github.com/fivethirtyeight/data/tree/master/nhl-forecasts",
     "name": "nhl-forecasts",
     "displayName": "nhl-<span class=\"lastword\">forecasts</span>",
     "articles": [
       {
-        "date": "2023-05-08T04:18:20.000Z",
+        "date": "2023-05-11T04:53:22.000Z",
         "title": "2022-23 NHL Predictions",
         "url": "https://projects.fivethirtyeight.com/2023-nhl-predictions/"
       }
@@ -114,7 +130,7 @@
     "displayName": "mlb-<span class=\"lastword\">elo</span>",
     "articles": [
       {
-        "date": "2023-05-08T02:25:55.000Z",
+        "date": "2023-05-11T02:35:49.000Z",
         "title": "2023 MLB Predictions",
         "url": "https://projects.fivethirtyeight.com/2023-mlb-predictions/"
       }
@@ -122,22 +138,6 @@
     "files": [
       "https://projects.fivethirtyeight.com/mlb-api/mlb_elo.csv",
       "https://projects.fivethirtyeight.com/mlb-api/mlb_elo_latest.csv"
-    ]
-  },
-  {
-    "url": "https://github.com/fivethirtyeight/data/tree/master/congress-generic-ballot",
-    "name": "congress-generic-ballot",
-    "displayName": "congress-generic-<span class=\"lastword\">ballot</span>",
-    "articles": [
-      {
-        "date": "2023-05-02T13:48:41.000Z",
-        "title": "Do Voters Want Democrats Or Republicans In Congress?",
-        "url": "https://projects.fivethirtyeight.com/congress-generic-ballot-polls/"
-      }
-    ],
-    "files": [
-      "https://projects.fivethirtyeight.com/generic-ballot-data/generic_polllist.csv",
-      "https://projects.fivethirtyeight.com/polls/data/generic_ballot_averages.csv"
     ]
   },
   {
@@ -212,6 +212,18 @@
     ]
   },
   {
+    "url": "https://github.com/fivethirtyeight/checking-our-work-data",
+    "name": "checking-our-work-data",
+    "displayName": "checking-our-work-<span class=\"lastword\">data</span>",
+    "articles": [
+      {
+        "date": "2023-02-02T16:30:00.000Z",
+        "title": "How Good Are FiveThirtyEight Forecasts?",
+        "url": "https://projects.fivethirtyeight.com/checking-our-work/"
+      }
+    ]
+  },
+  {
     "url": "https://github.com/fivethirtyeight/data/tree/master/world-cup-2022",
     "name": "world-cup-2022",
     "displayName": "world-cup-<span class=\"lastword\">2022</span>",
@@ -225,6 +237,18 @@
     "files": [
       "https://projects.fivethirtyeight.com/soccer-api/international/2022/wc_matches.csv",
       "https://projects.fivethirtyeight.com/soccer-api/international/2022/wc_forecasts.csv"
+    ]
+  },
+  {
+    "url": "https://github.com/fivethirtyeight/covid-19-polls",
+    "name": "covid-19-polls",
+    "displayName": "covid-19-<span class=\"lastword\">polls</span>",
+    "articles": [
+      {
+        "date": "2022-11-29T20:20:08.000Z",
+        "title": "How Americans View Biden’s Response To The Coronavirus Crisis",
+        "url": "https://projects.fivethirtyeight.com/coronavirus-polls/"
+      }
     ]
   },
   {
@@ -348,6 +372,18 @@
     ]
   },
   {
+    "url": "https://github.com/fivethirtyeight/nfl-elo-game",
+    "name": "nfl-elo-game",
+    "displayName": "nfl-elo-<span class=\"lastword\">game</span>",
+    "articles": [
+      {
+        "date": "2022-02-14T03:03:26.000Z",
+        "title": "Can You Beat FiveThirtyEight’s NFL Forecasts?",
+        "url": "https://projects.fivethirtyeight.com/2021-nfl-forecasting-game/"
+      }
+    ]
+  },
+  {
     "url": "https://github.com/fivethirtyeight/data/tree/master/redlining",
     "name": "redlining",
     "displayName": "<span class=\"lastword\">redlining</span>",
@@ -368,6 +404,42 @@
         "date": "2022-01-12T11:00:00.000Z",
         "title": "The Big Lie’s Long Shadow",
         "url": "https://fivethirtyeight.com/features/the-big-lie-voting-laws/"
+      }
+    ]
+  },
+  {
+    "url": "https://github.com/fivethirtyeight/negro-leagues-player-ratings",
+    "name": "negro-leagues-player-ratings",
+    "displayName": "negro-leagues-player-<span class=\"lastword\">ratings</span>",
+    "articles": [
+      {
+        "date": "2021-02-25T11:00:00.000Z",
+        "title": "The Negro League Stars That MLB Kept Out — And Is Finally Recognizing",
+        "url": "https://projects.fivethirtyeight.com/negro-leagues-mlb/"
+      }
+    ]
+  },
+  {
+    "url": "https://github.com/fivethirtyeight/police-settlements",
+    "name": "police-settlements",
+    "displayName": "police-<span class=\"lastword\">settlements</span>",
+    "articles": [
+      {
+        "date": "2021-02-22T11:00:49.000Z",
+        "title": "Cities Spend Millions On Police Misconduct Every Year. Here’s Why It’s So Difficult to Hold Departments Accountable.",
+        "url": "https://fivethirtyeight.com/features/police-misconduct-costs-cities-millions-every-year-but-thats-where-the-accountability-ends/"
+      }
+    ]
+  },
+  {
+    "url": "https://github.com/fivethirtyeight/superbowl-ads",
+    "name": "superbowl-ads",
+    "displayName": "superbowl-<span class=\"lastword\">ads</span>",
+    "articles": [
+      {
+        "date": "2021-02-04T16:11:00.000Z",
+        "title": "According To Super Bowl Ads, Americans Love America, Animals And Sex",
+        "url": "https://projects.fivethirtyeight.com/super-bowl-ads/"
       }
     ]
   },
@@ -401,6 +473,18 @@
     "files": [
       "https://projects.fivethirtyeight.com/congress-tracker-data/csv/averages.csv",
       "https://projects.fivethirtyeight.com/congress-tracker-data/csv/vote_predictions.csv"
+    ]
+  },
+  {
+    "url": "https://github.com/fivethirtyeight/election-results",
+    "name": "election-results",
+    "displayName": "election-<span class=\"lastword\">results</span>",
+    "articles": [
+      {
+        "date": "2020-11-03T05:33:43.000Z",
+        "title": "2020 Election Forecast",
+        "url": "https://projects.fivethirtyeight.com/2020-election-forecast/"
+      }
     ]
   },
   {
@@ -474,6 +558,18 @@
     ]
   },
   {
+    "url": "https://github.com/fivethirtyeight/WNBA-stats",
+    "name": "WNBA-stats",
+    "displayName": "WNBA-<span class=\"lastword\">stats</span>",
+    "articles": [
+      {
+        "date": "2020-05-27T19:06:43.000Z",
+        "title": "It’s Time To Give Basketball’s Other GOAT Her Due",
+        "url": "https://fivethirtyeight.com/features/its-time-to-give-basketballs-other-goat-her-due/"
+      }
+    ]
+  },
+  {
     "url": "https://github.com/fivethirtyeight/data/tree/master/covid-geography",
     "name": "covid-geography",
     "displayName": "covid-<span class=\"lastword\">geography</span>",
@@ -510,6 +606,18 @@
     ],
     "files": [
       "https://projects.fivethirtyeight.com/endorsements-2020-data/endorsements-2020.csv"
+    ]
+  },
+  {
+    "url": "https://github.com/fivethirtyeight/nba-player-advanced-metrics",
+    "name": "nba-player-advanced-metrics",
+    "displayName": "nba-player-advanced-<span class=\"lastword\">metrics</span>",
+    "articles": [
+      {
+        "date": "2020-03-09T15:27:37.000Z",
+        "title": "Luka Dončić And The Mavs Are Pushing The Limits Of Offensive Efficiency",
+        "url": "https://fivethirtyeight.com/features/luka-doncic-and-the-mavs-are-pushing-the-limits-of-offensive-efficiency/"
+      }
     ]
   },
   {
@@ -604,6 +712,18 @@
     ]
   },
   {
+    "url": "https://github.com/fivethirtyeight/candidate-emails",
+    "name": "candidate-emails",
+    "displayName": "candidate-<span class=\"lastword\">emails</span>",
+    "articles": [
+      {
+        "date": "2019-07-11T15:33:15.000Z",
+        "title": "What Our Inbox Tells Us About How Democrats Are Tackling Trump",
+        "url": "https://fivethirtyeight.com/features/which-democrats-are-campaigning-on-trump/"
+      }
+    ]
+  },
+  {
     "url": "https://github.com/fivethirtyeight/data/tree/master/nba-draymond",
     "name": "nba-draymond",
     "displayName": "nba-<span class=\"lastword\">draymond</span>",
@@ -640,6 +760,18 @@
         "date": "2019-06-13T17:01:58.000Z",
         "title": "The State Of The State Of The States",
         "url": "https://fivethirtyeight.com/features/what-americas-governors-are-talking-about/"
+      }
+    ]
+  },
+  {
+    "url": "https://github.com/fivethirtyeight/twitter-overlap",
+    "name": "twitter-overlap",
+    "displayName": "twitter-<span class=\"lastword\">overlap</span>",
+    "articles": [
+      {
+        "date": "2019-06-12T15:24:07.000Z",
+        "title": "Which 2020 Candidates Have The Most In Common … On Twitter?",
+        "url": "https://fivethirtyeight.com/features/which-2020-candidates-have-the-most-in-common-on-twitter/"
       }
     ]
   },
@@ -823,6 +955,18 @@
     "files": [
       "https://projects.fivethirtyeight.com/congress-model-2018/governor_national_forecast.csv",
       "https://projects.fivethirtyeight.com/congress-model-2018/governor_state_forecast.csv"
+    ]
+  },
+  {
+    "url": "https://github.com/fivethirtyeight/actblue-analysis",
+    "name": "actblue-analysis",
+    "displayName": "actblue-<span class=\"lastword\">analysis</span>",
+    "articles": [
+      {
+        "date": "2018-10-25T17:31:42.000Z",
+        "title": "How ActBlue Is Trying To Turn Small Donations Into A Blue Wave",
+        "url": "https://fivethirtyeight.com/features/how-actblue-is-trying-to-turn-small-donations-into-a-blue-wave"
+      }
     ]
   },
   {
@@ -1032,6 +1176,18 @@
         "date": "2018-01-29T10:55:03.000Z",
         "title": "We’ve Never Seen Congressional Resignations Like This Before",
         "url": "https://fivethirtyeight.com/features/more-people-are-resigning-from-congress-than-at-any-time-in-recent-history/"
+      }
+    ]
+  },
+  {
+    "url": "https://github.com/fivethirtyeight/redistricting-atlas-data",
+    "name": "redistricting-atlas-data",
+    "displayName": "redistricting-atlas-<span class=\"lastword\">data</span>",
+    "articles": [
+      {
+        "date": "2018-01-25T11:00:00.000Z",
+        "title": "The Atlas Of Redistricting",
+        "url": "https://projects.fivethirtyeight.com/redistricting-maps/"
       }
     ]
   },
@@ -1461,6 +1617,37 @@
         "date": "2016-01-06T11:00:57.000Z",
         "title": "You Can’t Trust What You Read About Nutrition",
         "url": "http://fivethirtyeight.com/features/you-cant-trust-what-you-read-about-nutrition"
+      }
+    ]
+  },
+  {
+    "url": "https://github.com/fivethirtyeight/uber-tlc-foil-response",
+    "name": "uber-tlc-foil-response",
+    "displayName": "uber-tlc-foil-<span class=\"lastword\">response</span>",
+    "articles": [
+      {
+        "date": "2015-12-09T16:19:40.000Z",
+        "title": "Is Uber Making NYC Rush-Hour Traffic Worse?",
+        "rowspan": 4,
+        "url": "https://fivethirtyeight.com/features/is-uber-making-nyc-rush-hour-traffic-worse/"
+      },
+      {
+        "date": "2015-10-13T20:44:12.000Z",
+        "title": "Uber Is Taking Millions Of Manhattan Rides Away From Taxis",
+        "rowspan": 0,
+        "url": "https://fivethirtyeight.com/features/uber-is-taking-millions-of-manhattan-rides-away-from-taxis/"
+      },
+      {
+        "date": "2015-08-28T10:30:36.000Z",
+        "title": "Public Transit Should Be Uber’s New Best Friend",
+        "rowspan": 0,
+        "url": "https://fivethirtyeight.com/features/public-transit-should-be-ubers-new-best-friend/"
+      },
+      {
+        "date": "2015-08-10T18:06:17.000Z",
+        "title": "Uber Is Serving New York’s Outer Boroughs More Than Taxis Are",
+        "rowspan": 0,
+        "url": "https://fivethirtyeight.com/features/uber-is-serving-new-yorks-outer-boroughs-more-than-taxis-are/"
       }
     ]
   },
@@ -1979,6 +2166,18 @@
         "date": "2014-06-25T14:40:06.000Z",
         "title": "The FiveThirtyEight International Food Association’s 2014 World Cup",
         "url": "http://fivethirtyeight.com/features/the-fivethirtyeight-international-food-associations-2014-world-cup/"
+      }
+    ]
+  },
+  {
+    "url": "https://github.com/fivethirtyeight/data/tree/master/comma-survey-data",
+    "name": "comma-survey-data",
+    "displayName": "comma-survey-<span class=\"lastword\">data</span>",
+    "articles": [
+      {
+        "date": "2014-06-17T16:28:55.000Z",
+        "title": "Elitist, Superfluous, Or Popular? We Polled Americans on the Oxford Comma",
+        "url": "http://fivethirtyeight.com/features/elitist-superfluous-or-popular-we-polled-americans-on-the-oxford-comma/"
       }
     ]
   },
