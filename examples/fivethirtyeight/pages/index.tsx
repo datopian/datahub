@@ -32,9 +32,7 @@ export function MobileItem({ dataset }: { dataset: Dataset }) {
     <div className="flex gap-x-2 pb-2 py-4 items-center justify-between border-b border-zinc-600">
       <div className="flex flex-col">
         <span className="font-mono font-light">
-          <a className="underline" href={dataset.url} target="_blank">
             {dataset.name}
-          </a>
         </span>
         {dataset.articles.map((article) => (
           <div key={article.title} className="py-1 flex flex-col">
@@ -50,9 +48,9 @@ export function MobileItem({ dataset }: { dataset: Dataset }) {
       <div className="flex flex-col justify-start">
         <a
           className="ml-2 border border-zinc-900 font-light px-4 py-1 text-sm transition hover:bg-zinc-900 hover:text-white"
-          href={`/datasets/${dataset.name}`}
+          href={dataset.url}
         >
-          explore
+          info
         </a>
         {/*
                 <button>
@@ -84,10 +82,8 @@ export function DesktopItem({ dataset }: { dataset: Dataset }) {
             index === dataset.articles.length - 1 ? 'border-b' : ''
           } border-zinc-400`}
         >
-          <td className="py-8 font-light font-mono text-[14px] text-zinc-700">
-            <a className="underline" href={dataset.url} target="_blank">
+          <td className="py-8 font-light font-mono text-[13px] text-zinc-700">
               {index === 0 ? dataset.name : ''}
-            </a>
           </td>
           <td>
             <a
@@ -106,9 +102,9 @@ export function DesktopItem({ dataset }: { dataset: Dataset }) {
             {index === 0 && (
               <a
                 className="ml-2 border border-zinc-900 font-light px-[25px] py-2.5 text-sm transition hover:bg-zinc-900 hover:text-white"
-                href={`/datasets/${dataset.name}`}
+                href={dataset.url}
               >
-                explore
+                info
               </a>
             )}
           </td>
