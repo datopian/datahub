@@ -3,6 +3,7 @@ import { Inter } from 'next/font/google';
 import { format } from 'timeago.js';
 import { promises as fs } from 'fs';
 import path from 'path';
+import { NextSeo } from 'next-seo';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -141,6 +142,7 @@ export async function getStaticProps() {
 export default function Home({ datasets }: { datasets: Dataset[] }) {
   return (
     <>
+      <NextSeo title="FiveThirtyEight tribute by PortalJS" />
       <div className="max-w-5xl mx-auto mt-2 px-2 text-[#3c3c3c]">
         <div className="border border-zinc-600 p-4 text-left">
           This page is a tribute to the{' '}
