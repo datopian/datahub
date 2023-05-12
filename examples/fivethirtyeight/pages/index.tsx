@@ -3,6 +3,7 @@ import { Inter } from 'next/font/google';
 import { format } from 'timeago.js';
 import { promises as fs } from 'fs';
 import path from 'path';
+import { NextSeo } from 'next-seo';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -31,9 +32,7 @@ export function MobileItem({ dataset }: { dataset: Dataset }) {
   return (
     <div className="flex gap-x-2 pb-2 py-4 items-center justify-between border-b border-zinc-600">
       <div className="flex flex-col">
-        <span className="font-mono font-light">
-            {dataset.name}
-        </span>
+        <span className="font-mono font-light">{dataset.name}</span>
         {dataset.articles.map((article) => (
           <div key={article.title} className="py-1 flex flex-col">
             <span className="font-bold hover:underline">{article.title}</span>
@@ -83,7 +82,7 @@ export function DesktopItem({ dataset }: { dataset: Dataset }) {
           } border-zinc-400`}
         >
           <td className="py-8 font-light font-mono text-[13px] text-zinc-700">
-              {index === 0 ? dataset.name : ''}
+            {index === 0 ? dataset.name : ''}
           </td>
           <td>
             <a
@@ -143,6 +142,20 @@ export async function getStaticProps() {
 export default function Home({ datasets }: { datasets: Dataset[] }) {
   return (
     <>
+      <NextSeo title="FiveThirtyEight tribute by PortalJS" />
+      <div className="max-w-5xl mx-auto mt-2 px-2 text-[#3c3c3c]">
+        <div className="border border-zinc-600 p-4 text-left">
+          This page is a tribute to the{' '}
+          <a className='hover:underline font-bold' href="https://data.fivethirtyeight.com">
+            data.fivethirtyeight.com
+          </a>{' '}
+          website  made by the amazing 538 team. All content is credited to the original creators, intended for
+          educational purposes only. Visit their{' '}
+          <a className='hover:underline font-bold' href="https://fivethirtyeight.com/">website</a> for in-depth analyses
+          on politics, sports, culture, and more. No copyright infringement
+          intended.
+        </div>
+      </div>
       <main
         className={`flex min-h-screen flex-col items-center max-w-5xl mx-auto pt-20 px-2.5 ${inter.className}`}
       >
