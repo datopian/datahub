@@ -161,13 +161,14 @@ export default function Layout({
         >
           Built by{' '}
           <img
-            src={
-              theme === 'dark'
-                ? '/images/datopian-light-logotype.svg'
-                : '/images/datopian-dark-logotype.svg'
-            }
+            src="/images/datopian-light-logotype.svg"
             alt="Datopian Logo"
-            className="h-6 ml-2"
+            className="h-6 ml-2 hidden dark:block"
+          />
+          <img
+            src="/images/datopian-dark-logotype.svg"
+            alt="Datopian Logo"
+            className="h-6 ml-2 dark:hidden"
           />
         </a>
       </footer>
