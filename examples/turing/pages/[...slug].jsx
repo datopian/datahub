@@ -6,7 +6,6 @@ import { Card } from '../components/Card'
 import Head from 'next/head'
 import parse from '../lib/markdown'
 import { Mermaid } from '@flowershow/core';
-import { Header } from '../components/Header';
 
 export const getStaticProps = async ({ params }) => {
   const urlPath = params.slug ? params.slug.join('/') : ''
@@ -82,15 +81,13 @@ export default function DRDPage({ mdxSource }) {
   )
   return (
     <>
-      <Header />
       <Head>
         <title>{meta.title}</title>
       </Head>
-      <Container className="mt-16 lg:mt-32 relative">
-        <Header />
+      <Container className="mt-9 relative">
         <article>
           <header className="flex flex-col">
-            <h1 className="mt-6 text-4xl font-bold tracking-tight text-zinc-800 dark:text-zinc-100 sm:text-5xl">
+            <h1 className="text-4xl font-bold tracking-tight text-zinc-800 dark:text-zinc-100 sm:text-5xl">
               {meta.title}
             </h1>
             <Card as="article">
