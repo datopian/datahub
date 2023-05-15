@@ -1,3 +1,0 @@
-# Adding mermaid charts
-
-TBD

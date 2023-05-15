@@ -1,3 +1,0 @@
-# Adding math equations
-
-TBD

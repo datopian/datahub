@@ -1,3 +1,0 @@
-# Adding sitemaps
-
-TBD
