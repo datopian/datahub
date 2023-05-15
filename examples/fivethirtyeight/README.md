@@ -1,4 +1,10 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+This is a replica of the awesome data.fivethirtyeight.com using PortalJS.
+
+You might be asking why we did that, there are three main reasons:
+
+- The website has a great UI, with multiple datasets being displayed elegantly and with simplicity.
+- PortalJS allows us to add more functionality to it e.g dataset previews and search functionality.
+- The project follows our same principles of open sourcing and free data, with every dataset being publicly available on Github.
 
 ## Getting Started
 
