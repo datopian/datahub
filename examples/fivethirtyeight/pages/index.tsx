@@ -143,19 +143,6 @@ export default function Home({ datasets }: { datasets: Dataset[] }) {
   return (
     <>
       <NextSeo title="FiveThirtyEight tribute by PortalJS" />
-      <div className="max-w-5xl mx-auto mt-2 px-2 text-[#3c3c3c]">
-        <div className="border border-zinc-600 p-4 text-left">
-          This page is a tribute to the{' '}
-          <a className='hover:underline font-bold' href="https://data.fivethirtyeight.com">
-            data.fivethirtyeight.com
-          </a>{' '}
-          website  made by the amazing 538 team. All content is credited to the original creators, intended for
-          educational purposes only. Visit their{' '}
-          <a className='hover:underline font-bold' href="https://fivethirtyeight.com/">website</a> for in-depth analyses
-          on politics, sports, culture, and more. No copyright infringement
-          intended.
-        </div>
-      </div>
       <main
         className={`flex min-h-screen flex-col items-center max-w-5xl mx-auto pt-20 px-2.5 ${inter.className}`}
       >

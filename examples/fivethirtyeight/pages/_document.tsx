@@ -13,6 +13,15 @@ export default function Document() {
         <meta property="twitter:image" content="https://portaljs-fivethirtyeight.vercel.app/share_image.png" />
       </Head>
       <body>
+      <div className="max-w-5xl mx-auto mt-2 px-2 text-[#3c3c3c]">
+        <div className="border-b border-zinc-600 p-2 text-left">
+          This is a replica to the awesome{' '}
+          <a className='hover:underline font-bold' href="https://data.fivethirtyeight.com">
+            data.fivethirtyeight.com
+          </a>{' '}
+          website. {' '}
+          <a className='hover:underline font-bold' href="https://github.com/datopian/portaljs/tree/main/examples/fivethirtyeight">Read more here</a>        </div>
+      </div>
         <header className="max-w-5xl mx-auto mt-8 w-full">
           <div className="border-b-2 pb-2.5 mx-2 border-zinc-800 flex justify-between">
             <h1 className="flex gap-x-1 items-end">
