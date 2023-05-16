@@ -19,10 +19,7 @@
     "owner": "datasets",
     "branch": "main",
     "repo": "investor-flow-of-funds-us",
-    "files": [
-      "data/monthly.csv",
-      "data/weekly.csv"
-    ],
+    "files": ["data/monthly.csv", "data/weekly.csv"],
     "readme": "README.md"
   },
   {
@@ -38,7 +35,10 @@
     "owner": "fivethirtyeight",
     "repo": "data",
     "branch": "master",
-    "files": ["nba-raptor/historical_RAPTOR_by_player.csv", "nba-raptor/historical_RAPTOR_by_team.csv"],
+    "files": [
+      "nba-raptor/historical_RAPTOR_by_player.csv",
+      "nba-raptor/historical_RAPTOR_by_team.csv"
+    ],
     "readme": "nba-raptor/README.md"
   }
 ]
