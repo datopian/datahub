@@ -44,19 +44,15 @@ export default function DatasetCard({ dataset }: { dataset: Project }) {
         <div className="flex justify-between gap-x-4 py-3">
           <dt className="text-gray-500">Fiscal Period</dt>
           <dd className="text-gray-700">
-            {dataset.fiscalPeriod?.start && (
-              <time dateTime={dataset.fiscalPeriod.start}>
-                {dataset.fiscalPeriod.start}
-              </time>
-            )}
-            {dataset.fiscalPeriod?.start && (
-              <>
-                {' - '}
-                <time dateTime={dataset.fiscalPeriod.start}>
-                  {dataset.fiscalPeriod.start}
-                </time>
-              </>
-            )}
+            {dataset.fiscalPeriod?.start &&
+              new Date(dataset.fiscalPeriod.start).getFullYear()}
+            {dataset.fiscalPeriod?.end &&
+              dataset.fiscalPeriod?.start !== dataset.fiscalPeriod?.end && (
+                <>
+                  {' - '}
+                  {new Date(dataset.fiscalPeriod.end).getFullYear()}
+                </>
+              )}
           </dd>
         </div>
         <div className="flex justify-between gap-x-4 py-3">

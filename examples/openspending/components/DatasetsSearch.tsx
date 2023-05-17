@@ -16,8 +16,8 @@ export default function DatasetsSearch({ datasets }: { datasets: Project[] }) {
     defaultValues: {
       searchTerm: '',
       country: '',
-      fiscalPeriodStart: '',
-      fiscalPeriodEnd: '',
+      minDate: '',
+      maxDate: '',
     },
   });
 
@@ -31,26 +31,30 @@ export default function DatasetsSearch({ datasets }: { datasets: Project[] }) {
   return (
     <>
       <div className="flex flex-col gap-3 sm:flex-row">
-        <div className="min-w-0 flex-auto relative">
-          <input
-            placeholder="Search datasets"
-            aria-label="Hate speech on Twitter"
-            {...register('searchTerm')}
-            className="relative w-full rounded-lg bg-white py-2 pl-3 pr-10 text-left shadow-md focus:outline-none focus-visible:border-emerald-500 focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 focus-visible:ring-offset-2 focus-visible:ring-offset-emerald-400 sm:text-sm"
-          />
-          {watch().searchTerm !== '' && (
-            <button
-              onClick={() => resetField('searchTerm')}
-              className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500"
-            >
-              <CloseIcon />
-            </button>
-          )}
+        <div className="min-w-0 flex-auto">
+          <br />
+          <div className="relative">
+            <input
+              placeholder="Search datasets"
+              aria-label="Search datasets"
+              {...register('searchTerm')}
+              className="h-[3em] relative w-full rounded-lg bg-white py-2 pl-3 pr-10 text-left shadow-md focus:outline-none focus-visible:border-emerald-500 focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 focus-visible:ring-offset-2 focus-visible:ring-offset-emerald-400 sm:text-sm"
+            />
+            {watch().searchTerm !== '' && (
+              <button
+                onClick={() => resetField('searchTerm')}
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500"
+              >
+                <CloseIcon />
+              </button>
+            )}
+          </div>
         </div>
         <div className="sm:basis-1/6">
           {/* TODO: nicer select e.g. headlessui example */}
+          <label className="text-sm text-gray-600 font-medium">Country</label>
           <select
-            className="w-full h-full rounded-lg bg-white py-2 pl-3 pr-10 text-left shadow-md focus:outline-none focus-visible:border-emerald-500 focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 focus-visible:ring-offset-2 focus-visible:ring-offset-emerald-400 sm:text-sm"
+            className="h-[3em] w-full rounded-lg bg-white py-2 pl-3 pr-10 text-left shadow-md focus:outline-none focus-visible:border-emerald-500 focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 focus-visible:ring-offset-2 focus-visible:ring-offset-emerald-400 sm:text-sm"
             {...register('country')}
           >
             <option value="">All</option>
@@ -62,6 +66,44 @@ export default function DatasetsSearch({ datasets }: { datasets: Project[] }) {
               );
             })}
           </select>
+        </div>
+        <div className="sm:basis-1/6">
+          <label className="text-sm text-gray-600 font-medium">Min. date</label>
+          <div className="relative">
+            <input
+              aria-label="Min. date"
+              type="date"
+              {...register('minDate')}
+              className="h-[3em] w-full rounded-lg bg-white py-2 pl-3 pr-10 text-left shadow-md focus:outline-none focus-visible:border-emerald-500 focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 focus-visible:ring-offset-2 focus-visible:ring-offset-emerald-400 sm:text-sm"
+            />
+            {watch().minDate !== '' && (
+              <button
+                onClick={() => resetField('minDate')}
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500"
+              >
+                <CloseIcon />
+              </button>
+            )}
+          </div>
+        </div>
+        <div className="sm:basis-1/6">
+          <label className="text-sm text-gray-600 font-medium">Max. date</label>
+          <div className="relative">
+            <input
+              aria-label="Max. date"
+              type="date"
+              {...register('maxDate')}
+              className="h-[3em] w-full rounded-lg bg-white py-2 pl-3 pr-10 text-left shadow-md focus:outline-none focus-visible:border-emerald-500 focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 focus-visible:ring-offset-2 focus-visible:ring-offset-emerald-400 sm:text-sm"
+            />
+            {watch().maxDate !== '' && (
+              <button
+                onClick={() => resetField('maxDate')}
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500"
+              >
+                <CloseIcon />
+              </button>
+            )}
+          </div>
         </div>
       </div>
       <div className="min-w-full mt-10 align-middle">
@@ -75,6 +117,20 @@ export default function DatasetsSearch({ datasets }: { datasets: Project[] }) {
             .filter((dataset) =>
               watch().country && watch().country !== ''
                 ? dataset.countryCode === watch().country
+                : true
+            )
+            // TODO: Does that really makes sense?
+            // What if the fiscalPeriod is 2015-2017 and inputs are
+            // set to 2015-2016. It's going to be filtered out but
+            // it shouldn't.
+            .filter((dataset) =>
+              watch().minDate && watch().minDate !== ''
+                ? dataset.fiscalPeriod?.start >= watch().minDate
+                : true
+            )
+            .filter((dataset) =>
+              watch().maxDate && watch().maxDate !== ''
+                ? dataset.fiscalPeriod?.end <= watch().maxDate
                 : true
             )}
         />
