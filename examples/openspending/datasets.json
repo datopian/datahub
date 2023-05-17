@@ -2,24 +2,26 @@
   {
     "owner": "os-data",
     "branch": "main",
-    "repo": "mongolia-budget-2016-2017",
-    "files": [
-      "data/mongolia-2017.csv",
-      "data/mongolia-2017__2017.csv"
-    ]
+    "name": "mongolia-budget-2016-2017"
   },
   {
     "owner": "os-data",
     "branch": "main",
-    "repo": "gb-country-regional-analysis",
-    "files": [
-      "data/cofog.csv",
-      "data/cofog_dejargonise.csv",
-      "data/cra.csv",
-      "data/departments.csv",
-      "data/nuts_pop.csv",
-      "data/pogs.csv"
-    ],
-    "readme": "README.md"
+    "name": "gb-country-regional-analysis"
+  },
+  {
+    "owner": "os-data",
+    "branch": "main",
+    "name": "berlin-berlin"
+  },
+  {
+    "owner": "os-data",
+    "branch": "main",
+    "name": "state-of-minas-gerais-brazil-planned-budget"
+  },
+  {
+    "owner": "os-data",
+    "branch": "main",
+    "name": "wesel"
   }
 ]

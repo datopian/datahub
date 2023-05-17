@@ -140,7 +140,8 @@ export async function getProject(project: GithubProject, github_pat?: string) {
     return null;
   }
 
-  let projectBase = "", last_updated = "";
+  let projectBase = '',
+    last_updated = '';
   if (projectReadme) {
     projectBase =
       project.readme.split('/').length > 1
@@ -161,4 +162,31 @@ export async function getProject(project: GithubProject, github_pat?: string) {
     last_updated,
     base_path: projectBase,
   };
+}
+
+export async function getProjectDataPackage(
+  owner: string,
+  repo: string,
+  branch: string,
+  github_pat?: string
+) {
+  const octokit = new Octokit({ auth: github_pat });
+  try {
+    const response = await octokit.rest.repos.getContent({
+      owner,
+      repo,
+      path: 'datapackage.json',
+      ref: branch,
+    });
+    const data = response.data as { content?: string };
+    const fileContent = data.content ? data.content : '';
+    if (fileContent === '') {
+      return null;
+    }
+    const decodedContent = Buffer.from(fileContent, 'base64').toString();
+    const datapackage = JSON.parse(decodedContent);
+    return {...datapackage, repo };
+  } catch (error) {
+    return null;
+  }
 }

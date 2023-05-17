@@ -6,21 +6,27 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "test": "vitest"
   },
   "dependencies": {
+    "@octokit/plugin-throttling": "^5.2.2",
+    "@types/flexsearch": "^0.7.3",
     "@types/node": "18.16.0",
     "@types/react": "18.0.38",
     "@types/react-dom": "18.0.11",
+    "@vitejs/plugin-react": "^4.0.0",
     "clsx": "^1.2.1",
     "eslint": "8.39.0",
     "eslint-config-next": "13.3.1",
+    "flexsearch": "0.7.21",
     "next": "13.3.1",
     "next-seo": "^6.0.0",
     "octokit": "^2.0.14",
     "prettier": "^2.8.8",
     "react": "18.2.0",
     "react-dom": "18.2.0",
+    "react-hook-form": "^7.43.9",
     "react-markdown": "^8.0.7",
     "react-timeago": "^7.1.0",
     "remark-gfm": "^3.0.1",
@@ -30,6 +36,7 @@
     "@tailwindcss/typography": "^0.5.9",
     "autoprefixer": "^10.4.14",
     "postcss": "^8.4.23",
-    "tailwindcss": "^3.3.1"
+    "tailwindcss": "^3.3.1",
+    "vitest": "^0.31.0"
   }
 }
