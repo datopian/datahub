@@ -63,7 +63,7 @@ export const getStaticProps: GetStaticProps = async ({
   }
 
   // Temporary, docs pages should present the LHS sidebar
-  if (dbFile.url_path.startsWith('docs')) {
+  if (dbFile.url_path.startsWith('docs') || dbFile.url_path.startsWith('howto')) {
     frontMatter.showSidebar = true;
     frontMatter.sidebarTreeFile = 'content/assets/sidebar.json';
   }

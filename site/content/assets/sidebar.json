@@ -10,5 +10,13 @@
       { "title": "Deploying your PortalJS app", "href": "/docs/deploying-your-portaljs-app" }
 
     ]
+  },
+  {
+    "title": "Developer FAQs",
+    "links": [
+      { "title": "Analytics", "href": "/howto/analytics" },
+      { "title": "Page Metadata", "href": "/howto/page-metadata" },
+      { "title": "Sitemaps", "href": "/howto/sitemaps" }
+    ]
   }
 ]
