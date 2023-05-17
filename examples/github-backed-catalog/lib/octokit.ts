@@ -1,4 +1,4 @@
-import { Octokit } from 'octokit';
+import { Octokit } from "octokit";
 
 export interface GithubProject {
   owner: string;
@@ -26,15 +26,16 @@ export async function getProjectReadme(
       ref: branch,
     });
     const data = response.data as { content?: string };
-    const fileContent = data.content ? data.content : '';
-    if (fileContent === '') {
+    const fileContent = data.content ? data.content : "";
+    if (fileContent === "") {
       return null;
     }
-    const decodedContent = Buffer.from(fileContent, 'base64').toString();
+    const decodedContent = Buffer.from(fileContent, "base64").toString();
     return decodedContent;
   } catch (error) {
-    console.log(error);
-    return null;
+    throw new Error(
+      "Couldn't get project readme please make sure that you are pointing to a valid repo and that the repo in question contains a README.md"
+    );
   }
 }
 
@@ -50,13 +51,13 @@ export async function getLastUpdated(
     const response = await octokit.rest.repos.listCommits({
       owner,
       repo,
-      path: readme,
       ref: branch,
     });
     return response.data[0].commit.committer.date;
   } catch (error) {
-    console.log(error);
-    return null;
+    throw new Error(
+      "Couldn't get project list of commits please make sure that you are pointing to a valid repo"
+    );
   }
 }
 export async function getProjectMetadata(
@@ -72,8 +73,9 @@ export async function getProjectMetadata(
     });
     return response.data;
   } catch (error) {
-    console.log(error);
-    return null;
+    throw new Error(
+      "Couldn't get project metadata please make sure that you are pointing to a valid repo"
+    );
   }
 }
 
@@ -94,13 +96,32 @@ export async function getRepoContents(
         ref: branch,
         path: path,
       });
-      const data = response.data as { download_url?: string, name: string, size: number };
-      contents.push({ download_url: data.download_url, name: data.name, size: data.size});
+      const data = response.data as {
+        download_url?: string;
+        name: string;
+        size: number;
+      };
+      contents.push({
+        download_url: data.download_url,
+        name: data.name,
+        size: data.size,
+      });
     }
     return contents;
   } catch (error) {
-    console.log(error);
-    return null;
+    if (
+      error.message ===
+      'This endpoint can only return blobs smaller than 100 MB in size. The requested blob is too large to fetch via the API, but you can always clone the repository via Git to obtain it.: {"resource":"Blob","field":"data","code":"too_large"}'
+    ) {
+      throw new Error(
+        `The requested files ${files.join(
+          ", "
+        )} are too big making it impossible to fetch via Github API`
+      );
+    }
+    throw new Error(
+      "Couldn't get project contents please make sure that you are pointing to a valid repo"
+    );
   }
 }
 
@@ -120,22 +141,20 @@ export async function getProject(project: GithubProject, github_pat?: string) {
     project.readme,
     github_pat
   );
-  if (!projectReadme) {
-    return null;
+  let projectData = [];
+  if (project.files) {
+    projectData = await getRepoContents(
+      project.owner,
+      project.repo,
+      project.branch,
+      project.files,
+      github_pat
+    );
   }
-  const projectData = await getRepoContents(
-    project.owner,
-    project.repo,
-    project.branch,
-    project.files,
-    github_pat
-  );
-  if (!projectData) {
-    return null;
-  }
-  const projectBase = project.readme.split('/').length > 1
-      ? project.readme.split('/').slice(0, -1).join('/')
-      : '/'
+  const projectBase =
+    project.readme && project.readme.split("/").length > 1
+      ? project.readme.split("/").slice(0, -1).join("/")
+      : "/";
   const last_updated = await getLastUpdated(
     project.owner,
     project.repo,
@@ -143,5 +162,11 @@ export async function getProject(project: GithubProject, github_pat?: string) {
     projectBase,
     github_pat
   );
-  return { ...projectMetadata, files: projectData, readmeContent: projectReadme, last_updated, base_path: projectBase };
+  return {
+    ...projectMetadata,
+    files: projectData,
+    readmeContent: projectReadme,
+    last_updated,
+    base_path: projectBase,
+  };
 }

@@ -1,22 +1,31 @@
-import { NextSeo } from 'next-seo';
-import { promises as fs } from 'fs';
-import path from 'path';
-import getConfig from 'next/config';
-import { getProject, GithubProject } from '../../../lib/octokit';
-import ReactMarkdown from 'react-markdown';
-import remarkGfm from 'remark-gfm';
-import Breadcrumbs from '../../../components/_shared/Breadcrumbs';
+import { NextSeo } from "next-seo";
+import { promises as fs } from "fs";
+import path from "path";
+import getConfig from "next/config";
+import { getProject, GithubProject } from "../../../lib/octokit";
+import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
+import Breadcrumbs from "../../../components/_shared/Breadcrumbs";
 
 export default function ProjectPage({ project }) {
-  const repoId = `@${project.repo_config.owner}/${project.repo_config.repo}`
+  const repoId = `@${project.repo_config.owner}/${project.repo_config.repo}`;
 
   return (
     <>
-      <NextSeo title={`${repoId}${project.base_path !== '/' ? '/' + project.base_path : ''} - GitHub Datasets`} />
+      <NextSeo
+        title={`${repoId}${
+          project.base_path !== "/" ? "/" + project.base_path : ""
+        } - GitHub Datasets`}
+      />
       <main className="prose mx-auto my-8">
         <Breadcrumbs links={[{ title: repoId, href: "" }]} />
         <h1 className="mb-0 mt-16">{project.repo_config.name || repoId}</h1>
-        <p className='mb-8'><span className='font-semibold'>Repository:</span> <a target="_blank" href={project.html_url}>{project.html_url}</a></p>
+        <p className="mb-8">
+          <span className="font-semibold">Repository:</span>{" "}
+          <a target="_blank" href={project.html_url}>
+            {project.html_url}
+          </a>
+        </p>
 
         <h2 className="mb-0 mt-10">Files</h2>
         <div className="inline-block min-w-full py-2 align-middle">
@@ -54,7 +63,7 @@ export default function ProjectPage({ project }) {
 
         <hr />
 
-        <h2 className='uppercase font-black'>Readme</h2>
+        <h2 className="uppercase font-black">Readme</h2>
         <ReactMarkdown remarkPlugins={[remarkGfm]}>
           {project.readmeContent}
         </ReactMarkdown>
@@ -65,17 +74,14 @@ export default function ProjectPage({ project }) {
 
 // Generates `/posts/1` and `/posts/2`
 export async function getStaticPaths() {
-  const jsonDirectory = path.join(
-    process.cwd(),
-    'datasets.json'
-  );
-  const repos = await fs.readFile(jsonDirectory, 'utf8');
+  const jsonDirectory = path.join(process.cwd(), "datasets.json");
+  const repos = await fs.readFile(jsonDirectory, "utf8");
 
   return {
     paths: JSON.parse(repos).map((repo) => {
       const projectPath =
-        repo.readme.split('/').length > 1
-          ? repo.readme.split('/').slice(0, -1)
+        repo.readme && repo.readme.split("/").length > 1
+          ? repo.readme.split("/").slice(0, -1)
           : null;
       let path = [repo.repo];
       if (projectPath) {
@@ -92,16 +98,13 @@ export async function getStaticPaths() {
 }
 
 export async function getStaticProps({ params }) {
-  const jsonDirectory = path.join(
-    process.cwd(),
-    'datasets.json'
-  );
-  const reposFile = await fs.readFile(jsonDirectory, 'utf8');
+  const jsonDirectory = path.join(process.cwd(), "datasets.json");
+  const reposFile = await fs.readFile(jsonDirectory, "utf8");
   const repos: GithubProject[] = JSON.parse(reposFile);
   const repo = repos.find((_repo) => {
     const projectPath =
-      _repo.readme.split('/').length > 1
-        ? _repo.readme.split('/').slice(0, -1)
+      _repo.readme && _repo.readme.split("/").length > 1
+        ? _repo.readme.split("/").slice(0, -1)
         : null;
     let path = [_repo.repo];
     if (projectPath) {

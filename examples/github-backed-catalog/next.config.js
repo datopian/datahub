@@ -3,8 +3,8 @@ const nextConfig = {
     return {
       beforeFiles: [
         {
-          source: '/@:org/:project*',
-          destination: '/@org/:org/:project*',
+          source: "/@:org/:project*",
+          destination: "/@org/:org/:project*",
         },
       ],
     };
