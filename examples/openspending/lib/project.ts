@@ -13,8 +13,7 @@ export interface GithubProject {
 export async function getProjectReadme(
   owner: string,
   repo: string,
-  branch: string,
-  readme: string,
+  branch: string = 'main',
   github_pat?: string
 ) {
   const octokit = new Octokit({ auth: github_pat });
@@ -22,7 +21,7 @@ export async function getProjectReadme(
     const response = await octokit.rest.repos.getContent({
       owner,
       repo,
-      path: readme,
+      path: 'README.md',
       ref: branch,
     });
     const data = response.data as { content?: string };
@@ -125,7 +124,6 @@ export async function getProject(project: GithubProject, github_pat?: string) {
     project.owner,
     project.repo,
     project.branch,
-    project.readme,
     github_pat
   );
 
@@ -185,8 +183,43 @@ export async function getProjectDataPackage(
     }
     const decodedContent = Buffer.from(fileContent, 'base64').toString();
     const datapackage = JSON.parse(decodedContent);
-    return {...datapackage, repo };
+
+    return { ...datapackage, repo };
   } catch (error) {
     return null;
   }
+}
+
+export async function getAllProjectsFromOrg(
+  org: string,
+  branch?: string,
+  github_pat?: string
+) {
+  const octokit = new Octokit({ auth: github_pat });
+  const repos = await octokit.rest.repos.listForOrg({
+    org,
+    type: 'public',
+    per_page: 100,
+  });
+  let failedProjects = [];
+  const projects = await Promise.all(
+    repos.data.map(async (_repo) => {
+      const project = await getProjectDataPackage(
+        org,
+        _repo.name,
+        branch ? branch : 'main',
+        github_pat
+      );
+      if (!project) {
+        failedProjects.push(_repo.name);
+        return null;
+      }
+
+      return { datapackage: project, repo: _repo };
+    })
+  );
+  return {
+    results: projects.filter((item) => item !== null),
+    failed: failedProjects,
+  };
 }

@@ -1,65 +1,58 @@
-import { promises as fs } from 'fs';
-import path from 'path';
-import {
-  GithubProject,
-  getProjectDataPackage,
-  getProjectMetadata,
-} from '../lib/octokit';
+import { getAllProjectsFromOrg } from '../lib/project';
 import getConfig from 'next/config';
-import ExternalLinkIcon from '../components/icons/ExternalLinkIcon';
-import TimeAgo from 'react-timeago';
-import Link from 'next/link';
 import { Hero } from '../components/Hero';
-import { Header } from '../components/Header';
 import { Container } from '../components/Container';
 import { FiscalDataPackage } from '../lib/datapackage.interface';
 import { loadDataPackage } from '../lib/loader';
 import DatasetsSearch from '../components/DatasetsSearch';
+import Layout from '../components/_shared/Layout';
 
 export async function getStaticProps() {
-  const jsonDirectory = path.join(process.cwd(), '/datasets.json');
-  const repos = await fs.readFile(jsonDirectory, 'utf8');
-  const github_pat = getConfig().serverRuntimeConfig.github_pat;
-  const datapackages = await Promise.all(
-    JSON.parse(repos).map(async (_repo: GithubProject) => {
-      const datapackage = await getProjectDataPackage(
-        _repo.owner,
-        _repo.name,
-        'main',
-        github_pat
-      );
-      const repo = await getProjectMetadata(
-        _repo.owner,
-        _repo.name,
-        github_pat
-      );
+  //  TODO: support other orgs
+  // const orgsListPath = path.join(process.cwd(), '/orgs.json');
+  // const orgs = await fs.readFile(orgsListPath, 'utf8');
 
-      return {
-        datapackage,
-        repo,
-      };
-    })
+  const github_pat = getConfig().serverRuntimeConfig.github_pat;
+
+  const allProjects = await getAllProjectsFromOrg(
+    'os-data',
+    'main',
+    github_pat
   );
 
-  const projects = datapackages.map(
+  const projects = allProjects.results.map(
     (item: { datapackage: FiscalDataPackage & { repo: string }; repo: any }) =>
       loadDataPackage(item.datapackage, item.repo)
   );
 
+  const availableCountries = projects
+    .map((item) => item.countryCode)
+    .filter((v) => v) //  Filters false values
+    .filter((v, i, a) => a.indexOf(v) === i) //  Remove duplicates
+    //  TODO: title should be the full name
+    .map((code) => ({ code, title: code }));
+
   return {
     props: {
       projects: JSON.stringify(projects),
+      availableCountries,
     },
   };
 }
 
-export function Datasets({ projects }) {
+export function Home({ projects, availableCountries }) {
   projects = JSON.parse(projects);
 
   return (
-    <div className="bg-white min-h-screen">
-      <Header />
-      <Hero />
+    <Layout>
+      <Hero
+        countriesCount={availableCountries.length}
+        datasetsCount={projects.length}
+        filesCount={projects.reduce(
+          (partialSum, a) => partialSum + a.files.length,
+          0
+        )}
+      />
       <section className="py-20 sm:py-32">
         <Container>
           <div className="mx-auto max-w-2xl lg:mx-0">
@@ -74,12 +67,15 @@ export function Datasets({ projects }) {
             </p>
           </div>
           <div className="mt-10">
-            <DatasetsSearch datasets={projects} />
+            <DatasetsSearch
+              datasets={projects}
+              availableCountries={availableCountries}
+            />
           </div>
         </Container>
       </section>
-    </div>
+    </Layout>
   );
 }
 
-export default Datasets;
+export default Home;

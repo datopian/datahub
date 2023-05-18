@@ -1,13 +1,11 @@
 import { AppProps } from 'next/app';
-import Head from 'next/head';
 import './styles.css';
+import { NextSeo } from 'next-seo';
 
 function CustomApp({ Component, pageProps }: AppProps) {
   return (
     <>
-      <Head>
-        <title>GitHub Datasets</title>
-      </Head>
+      <NextSeo title="OpenSpending" />
       <main className="app">
         <Component {...pageProps} />
       </main>
