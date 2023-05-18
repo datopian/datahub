@@ -200,7 +200,8 @@ A wrapper around the [Vega Lite specification](https://vega.github.io/vega-lite/
 />
 ```
 
-- More info on the [storybook page](https://storybook.portaljs.org/?path=/docs/components-vegalite--docs)
+>[!info]
+> More info on the [storybook page](https://storybook.portaljs.org/?path=/docs/components-vegalite--docs)
 
 ## Catalog
 
