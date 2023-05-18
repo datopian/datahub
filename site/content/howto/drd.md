@@ -1,9 +1,9 @@
 # How to have data rich documents with charts and tables?
 
 
-## Tables 
+## Data previews 
 
-- You can use the table component
+- If you want to have data previews, you can use the `<Table>` component
 ![](https://hackmd.io/_uploads/HyrtR_mS2.png)
 
 - It can be used with raw data
@@ -43,7 +43,8 @@
   ]}
 />
 ```
-- It can be used with a raw csv string
+
+- It can be used by passing a raw csv string
 ![](https://hackmd.io/_uploads/SJglXtQrh.png)
 ```
 <Table
@@ -54,17 +55,20 @@
     "
  />
 ```
-- It can be used with a URL string
+
+- It can be used by passing a URL string
 ![](https://hackmd.io/_uploads/S19GXYXBn.png)
 ```
 <Table url="https://raw.githubusercontent.com/datasets/finance-vix/main/data/vix-daily.csv" />
 ```
+- More info on the [storybook page](https://storybook.portaljs.org/?path=/docs/components-table--docs)
 
 ## Charts
 
 ### Linecharts
 
-- You can add LineCharts passing in a array of data
+- You can add simple line charts with the `<LineChart>` component 
+- Here is an example passing in a array of data
 ![](https://hackmd.io/_uploads/S1TBXYXH3.png)
 ```
 <LineChart
@@ -92,7 +96,7 @@
   ]}
  />
 ```
-- You can pass a URL
+- And here passing an url
 ![](https://hackmd.io/_uploads/SkHd7KXS3.png)
 ```
 <LineChart
@@ -102,6 +106,7 @@
   yAxis="Price"
 />
 ```
+- More info on the [storybook page](https://storybook.portaljs.org/?path=/docs/components-linechart--docs)
 
 ### Vega Charts
 
@@ -141,6 +146,7 @@ You can add Vega charts with the `<Vega />` component like this, it supports all
   }}
 />
 ```
+- More info on the [storybook page](https://storybook.portaljs.org/?path=/docs/components-vega--docs)
 
 ### VegaLite Charts
 
@@ -179,3 +185,19 @@ You can add Vega charts with the `<Vega />` component like this, it supports all
   }}
 />
 ```
+- More info on the [storybook page](https://storybook.portaljs.org/?path=/docs/components-vegalite--docs)
+
+## Catalog
+
+- You can add a `<Catalog>` component that takes a list of dataset and will provide you with a searchable interface.
+![](https://hackmd.io/_uploads/rJv-d3Xr3.png)
+- The dataset object requires the following structure
+```
+_id //A unique identifique for the item in the catalog
+metadata //The dataset metadata
+url_path //The url for the dataset showcase page
+```
+- You can also add facets that are going to act as filters for your metadata
+![](https://hackmd.io/_uploads/HygOF3XH2.png)
+  
+- More info on the [storybook page](https://storybook.portaljs.org/?path=/docs/components-catalog--docs)
