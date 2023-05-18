@@ -1,8 +1,11 @@
-import { FiscalDataPackage, TabularDataResource } from "./datapackage.interface";
+import {
+  FiscalDataPackage,
+  TabularDataResource,
+} from './datapackage.interface';
 
 export interface Project {
-  owner: { name: string; logo?: string }; // Info about the owner of the data repo
-  repo: { name: string; logo?: string }; // Info about the the data repo
+  owner: { name: string; logo?: string; title?: string }; // Info about the owner of the data repo
+  repo: { name: string; full_name: string }; // Info about the the data repo
   files: TabularDataResource[];
   name: string;
   title?: string;
@@ -14,5 +17,5 @@ export interface Project {
     end: string;
   };
   readme?: string;
-  datapackage: FiscalDataPackage
+  datapackage: FiscalDataPackage;
 }
