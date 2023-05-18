@@ -16,7 +16,8 @@
     "links": [
       { "title": "Analytics", "href": "/howto/analytics" },
       { "title": "Page Metadata", "href": "/howto/page-metadata" },
-      { "title": "Sitemaps", "href": "/howto/sitemaps" }
+      { "title": "Sitemaps", "href": "/howto/sitemaps" },
+      { "title": "Data Rich Documents", "href": "/howto/drd" }
     ]
   }
 ]
