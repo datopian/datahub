@@ -15,6 +15,7 @@ import { Container } from '../components/Container';
 import { FiscalDataPackage } from '../lib/datapackage.interface';
 import { loadDataPackage } from '../lib/loader';
 import DatasetsSearch from '../components/DatasetsSearch';
+import { Table } from '../components/Table';
 
 export async function getStaticProps() {
   const jsonDirectory = path.join(process.cwd(), '/datasets.json');
