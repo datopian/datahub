@@ -153,10 +153,12 @@ You can add Vega charts with the `<Vega />` component like this, it supports all
 ```
 - More info on the [storybook page](https://storybook.portaljs.org/?path=/docs/components-vega--docs)
 
-### VegaLite Charts
+## VegaLite chart
 
-- You can add VegaLite charts with the `<VegaLite />` component like this, it supports all the VegaLite specification:
+A wrapper around the [Vega Lite specification](https://vega.github.io/vega-lite/) which allows for a more concise grammar than Vega around the building of charts.
+
 ![](https://hackmd.io/_uploads/rJ2nQt7B3.png)
+
 ```
 <VegaLite
   data={{
