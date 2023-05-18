@@ -1,5 +1,9 @@
 # How to have data rich documents with charts and tables?
+PortalJS comes with a library of components that provides essential pieces for your data portal. The best way to explore the components is to look at our [Storybook](https://storybook.portaljs.org/) that contains all the details on how to use them. Below is an overview of available components.
 
+You can install the library with:
+```sh
+npm i @portaljs/components
 
 ## Table
 
