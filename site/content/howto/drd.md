@@ -4,6 +4,7 @@ PortalJS comes with a library of components that provides essential pieces for y
 You can install the library with:
 ```sh
 npm i @portaljs/components
+```
 
 ## Table
 
@@ -12,7 +13,7 @@ An easy-to-use table component with built-in pagination, search, and sorting.
 
 ### Use with raw data
 
-```
+```js
 <Table
   cols={[
     {
@@ -51,7 +52,8 @@ An easy-to-use table component with built-in pagination, search, and sorting.
 
 - It can be used by passing a raw csv string
 ![](https://hackmd.io/_uploads/SJglXtQrh.png)
-```
+
+```js
 <Table
   csv="
     Year,Temp Anomaly
@@ -63,9 +65,11 @@ An easy-to-use table component with built-in pagination, search, and sorting.
 
 - It can be used by passing a URL string
 ![](https://hackmd.io/_uploads/S19GXYXBn.png)
-```
+
+```js
 <Table url="https://raw.githubusercontent.com/datasets/finance-vix/main/data/vix-daily.csv" />
 ```
+
 - More info on the [storybook page](https://storybook.portaljs.org/?path=/docs/components-table--docs)
 
 ## Charts
@@ -75,7 +79,8 @@ An easy-to-use table component with built-in pagination, search, and sorting.
 - You can add simple line charts with the `<LineChart>` component 
 - Here is an example passing in a array of data
 ![](https://hackmd.io/_uploads/S1TBXYXH3.png)
-```
+
+```js
 <LineChart
   data={[
     [
@@ -103,7 +108,8 @@ An easy-to-use table component with built-in pagination, search, and sorting.
 ```
 - And here passing an url
 ![](https://hackmd.io/_uploads/SkHd7KXS3.png)
-```
+
+```js
 <LineChart
   data="https://raw.githubusercontent.com/datasets/oil-prices/main/data/wti-year.csv"
   title="Oil Price x Year"
@@ -111,14 +117,15 @@ An easy-to-use table component with built-in pagination, search, and sorting.
   yAxis="Price"
 />
 ```
+
 - More info on the [storybook page](https://storybook.portaljs.org/?path=/docs/components-linechart--docs)
 
 ### Vega Charts
 
 You can add Vega charts with the `<Vega />` component like this, it supports all the Vega specification:
 ![](https://hackmd.io/_uploads/ryN5mYmSh.png)
-```
 
+```js
 <Vega
   data={{
     table: [
@@ -159,7 +166,7 @@ A wrapper around the [Vega Lite specification](https://vega.github.io/vega-lite/
 
 ![](https://hackmd.io/_uploads/rJ2nQt7B3.png)
 
-```
+```js
 <VegaLite
   data={{
     table: [
@@ -192,20 +199,82 @@ A wrapper around the [Vega Lite specification](https://vega.github.io/vega-lite/
   }}
 />
 ```
+
 - More info on the [storybook page](https://storybook.portaljs.org/?path=/docs/components-vegalite--docs)
 
 ## Catalog
 
 A searchable catalog that will index a list of datasets and allow for contextual searching + filters.
 ![](https://hackmd.io/_uploads/rJv-d3Xr3.png)
-- The dataset object requires the following structure
+- The dataset object requires the following structure(the metadata field can have any structure that you may want)
+
+```js
+<Catalog
+  datasets={[
+    {
+      _id: '07026b22d49916754df1dc8ffb9ccd1c31878aae',
+      metadata: {
+        'details-of-task': 'Detect and categorise abusive language in social media data',
+        language: 'Albanian',
+        'level-of-annotation': [
+          'Posts'
+        ],
+        'link-to-data': 'https://doi.org/10.6084/m9.figshare.19333298.v1',
+        'link-to-publication': 'https://arxiv.org/abs/2107.13592',
+        medium: [
+          'Text'
+        ],
+        'percentage-abusive': 13.2,
+        platform: [
+          'Instagram',
+          'Youtube'
+        ],
+        reference: 'Nurce, E., Keci, J., Derczynski, L., 2021. Detecting Abusive Albanian. arXiv:2107.13592',
+        'size-of-dataset': 11874,
+        'task-description': 'Hierarchical (offensive/not; untargeted/targeted; person/group/other)',
+        title: 'Detecting Abusive Albanian'
+      },
+      url_path: 'dataset-4'
+    },
+  ]}
+ />
 ```
-_id //A unique identifique for the item in the catalog
-metadata //The dataset metadata
-url_path //The url for the dataset showcase page
-```
+
 - You can also add facets that are going to act as filters for your metadata
 ![](https://hackmd.io/_uploads/HygOF3XH2.png)
+
+```js
+<Catalog
+  datasets={[
+    {
+      _id: '07026b22d49916754df1dc8ffb9ccd1c31878aae',
+      metadata: {
+        'details-of-task': 'Detect and categorise abusive language in social media data',
+        language: 'Albanian',
+        'level-of-annotation': [
+          'Posts'
+        ],
+        'link-to-data': 'https://doi.org/10.6084/m9.figshare.19333298.v1',
+        'link-to-publication': 'https://arxiv.org/abs/2107.13592',
+        medium: [
+          'Text'
+        ],
+        'percentage-abusive': 13.2,
+        platform: [
+          'Instagram',
+          'Youtube'
+        ],
+        reference: 'Nurce, E., Keci, J., Derczynski, L., 2021. Detecting Abusive Albanian. arXiv:2107.13592',
+        'size-of-dataset': 11874,
+        'task-description': 'Hierarchical (offensive/not; untargeted/targeted; person/group/other)',
+        title: 'Detecting Abusive Albanian'
+      },
+      url_path: 'dataset-4'
+    },
+  ]}
+  facets={['platform', 'language']}
+ />
+```
   
 >[!info]
 > More info on the [storybook page](https://storybook.portaljs.org/?path=/docs/components-catalog--docs)
