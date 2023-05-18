@@ -6,7 +6,8 @@
 An easy-to-use table component with built-in pagination, search, and sorting.
 ![](https://hackmd.io/_uploads/HyrtR_mS2.png)
 
-- It can be used with raw data
+### Use with raw data
+
 ```
 <Table
   cols={[
