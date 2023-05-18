@@ -196,7 +196,7 @@ A wrapper around the [Vega Lite specification](https://vega.github.io/vega-lite/
 
 ## Catalog
 
-- You can add a `<Catalog>` component that takes a list of dataset and will provide you with a searchable interface.
+A searchable catalog that will index a list of datasets and allow for contextual searching + filters.
 ![](https://hackmd.io/_uploads/rJv-d3Xr3.png)
 - The dataset object requires the following structure
 ```
