@@ -1,7 +1,7 @@
 # How to have data rich documents with charts and tables?
 
 
-## Data previews 
+## Table
 
 - If you want to have data previews, you can use the `<Table>` component
 ![](https://hackmd.io/_uploads/HyrtR_mS2.png)
