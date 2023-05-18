@@ -207,4 +207,5 @@ url_path //The url for the dataset showcase page
 - You can also add facets that are going to act as filters for your metadata
 ![](https://hackmd.io/_uploads/HygOF3XH2.png)
   
-- More info on the [storybook page](https://storybook.portaljs.org/?path=/docs/components-catalog--docs)
+>[!info]
+> More info on the [storybook page](https://storybook.portaljs.org/?path=/docs/components-catalog--docs)
