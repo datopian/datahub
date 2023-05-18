@@ -1,6 +1,6 @@
 # How to add user comments?
 
-![[comments.png]]
+![[comments-example.png]]
 
 ## Setup
 
