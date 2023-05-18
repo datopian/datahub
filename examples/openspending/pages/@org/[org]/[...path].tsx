@@ -38,7 +38,7 @@ export default function ProjectPage({ project }) {
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-200">
-              {project.files.map((file) => (
+              {project.files?.map((file) => (
                 <tr key={file.download_url}>
                   <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
                     <a href={file.download_url}>{file.name}</a>
@@ -79,7 +79,7 @@ export async function getStaticPaths() {
         repo.readme && repo.readme.split('/').length > 1
           ? repo.readme.split('/').slice(0, -1)
           : null;
-      let path = [repo.repo];
+      let path = [repo.name];
       if (projectPath) {
         projectPath.forEach((element) => {
           path.push(element);
@@ -105,7 +105,7 @@ export async function getStaticProps({ params }) {
       _repo.readme && _repo.readme.split('/').length > 1
         ? _repo.readme.split('/').slice(0, -1)
         : null;
-    let path = [_repo.repo];
+    let path = [_repo.name];
     if (projectPath) {
       projectPath.forEach((element) => {
         path.push(element);
