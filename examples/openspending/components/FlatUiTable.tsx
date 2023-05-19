@@ -62,7 +62,7 @@ const Spinning = () => {
   );
 };
 
-export const Table: React.FC<{ url: string }> = ({ url }) => {
+export const FlatUiTable: React.FC<{ url: string }> = ({ url }) => {
   return (
     // Provide the client to your App
     <QueryClientProvider client={queryClient}>
@@ -87,7 +87,7 @@ const TableInner: React.FC<{ url: string }> = ({ url }) => {
     </div>;
   if (parsedData)
     return (
-      <div className="h-[500px] overflow-scroll">
+      <div className="h-[500px] w-full">
         <Grid data={parsedData.data} />
       </div>
     );
