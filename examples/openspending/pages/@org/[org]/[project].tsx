@@ -192,9 +192,10 @@ export async function getStaticPaths() {
     github_pat
   );
 
+  console.log(allProjects)
   const paths = allProjects.results.map((project) => ({
     params: {
-      // TODO: dybamize the org
+      // TODO: dynamize the org
       org: 'os-data',
       project: project.repo.name,
     },
@@ -219,10 +220,10 @@ export async function getStaticProps({ params }) {
 
   const repo = await getProjectMetadata(orgName, projectName, github_pat);
 
-  const project = await loadDataPackage(datapackage, repo);
+  const project = loadDataPackage(datapackage, repo);
 
   // TODO: should this be moved to the loader?
-  const readme = await getProjectReadme(orgName, projectName);
+  const readme = await getProjectReadme(orgName, projectName, 'main', github_pat);
 
   return {
     props: {

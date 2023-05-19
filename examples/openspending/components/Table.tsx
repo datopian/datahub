@@ -9,7 +9,7 @@ import { Grid } from '@githubocto/flat-ui';
 
 const queryClient = new QueryClient();
 
-async function getCsv(url: string) {
+export async function getCsv(url: string) {
   const response = await fetch(url, {
     headers: {
       Range: 'bytes=0-5132288',
