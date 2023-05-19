@@ -49,20 +49,35 @@ export default function DatasetsSearch({
         ? dataset.countryCode === watch().country
         : true
     )
-    // TODO: Does that really makes sense?
-    // What if the fiscalPeriod is 2015-2017 and inputs are
-    // set to 2015-2016. It's going to be filtered out but
-    // it shouldn't.
-    .filter((dataset) =>
-      watch().minDate && watch().minDate !== ''
-        ? dataset.fiscalPeriod?.start >= watch().minDate
-        : true
-    )
-    .filter((dataset) =>
-      watch().maxDate && watch().maxDate !== ''
-        ? dataset.fiscalPeriod?.end <= watch().maxDate
-        : true
-    );
+    .filter((dataset) => {
+      const filterMinDate = watch().minDate;
+      const filterMaxDate = watch().maxDate;
+
+      const datasetMinDate = dataset.fiscalPeriod?.start;
+      const datasetMaxDate = dataset.fiscalPeriod?.end;
+
+      let datasetStartOverlaps = false;
+      if (datasetMinDate) {
+        datasetStartOverlaps =
+          datasetMinDate >= filterMinDate && datasetMinDate <= filterMaxDate;
+      }
+
+      let datasetEndOverlaps = false;
+      if (datasetMaxDate) {
+        datasetEndOverlaps =
+          datasetMaxDate >= filterMinDate && datasetMaxDate <= filterMaxDate;
+      }
+
+      if (filterMinDate && filterMaxDate) {
+        return datasetStartOverlaps || datasetEndOverlaps;
+      } else if (filterMinDate) {
+        return datasetMinDate >= filterMinDate;
+      } else if (filterMaxDate) {
+        return datasetMinDate <= filterMaxDate;
+      }
+
+      return true;
+    });
 
   const paginatedDatasets = filteredDatasets.slice(
     (page - 1) * itemsPerPage,
@@ -111,7 +126,9 @@ export default function DatasetsSearch({
           </select>
         </div>
         <div className="sm:basis-1/6">
-          <label className="text-sm text-gray-600 font-medium">Min. date</label>
+          <label className="text-sm text-gray-600 font-medium">
+            Fiscal Period Start
+          </label>
           <div className="relative">
             <input
               aria-label="Min. date"
@@ -122,7 +139,9 @@ export default function DatasetsSearch({
           </div>
         </div>
         <div className="sm:basis-1/6">
-          <label className="text-sm text-gray-600 font-medium">Max. date</label>
+          <label className="text-sm text-gray-600 font-medium">
+            Fiscal Period End
+          </label>
           <div className="relative">
             <input
               aria-label="Max. date"
@@ -196,9 +215,9 @@ const CloseIcon = () => {
           id="Vector"
           d="M18 18L12 12M12 12L6 6M12 12L18 6M12 12L6 18"
           stroke="currentColor"
-          stroke-width="2"
-          stroke-linecap="round"
-          stroke-linejoin="round"
+          strokeWidth="2"
+          strokeLinecap="round"
+          strokeLinejoin="round"
         />
       </g>
     </svg>

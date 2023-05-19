@@ -13,6 +13,7 @@ import Layout from '../../../components/_shared/Layout';
 import Link from 'next/link';
 import { Project } from '../../../lib/project.interface';
 import ExternalLinkIcon from '../../../components/icons/ExternalLinkIcon';
+import { FlatUiTable } from '@/components/FlatUiTable';
 
 export default function ProjectPage({
   project,
@@ -21,7 +22,6 @@ export default function ProjectPage({
   project: Project;
   readme: string;
 }) {
-
   //  Get description from datapackage or  calculate
   //  excerpt from README by getting all the content
   //  up to the first dot.
@@ -98,7 +98,7 @@ export default function ProjectPage({
         <h3 className="mb-1 mt-10">Data files</h3>
         <p>
           This dataset contains {project.files.length} file
-          {project.files.length != 1 ? '' : 's'}
+          {project.files.length == 1 ? '' : 's'}
         </p>
         <div className="inline-block min-w-full py-2 align-middle">
           <table className="mt-0 min-w-full divide-y divide-gray-300">
@@ -137,7 +137,6 @@ export default function ProjectPage({
                     }
                   }
                 }
-
                 return (
                   <tr key={file.name}>
                     <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
@@ -169,6 +168,44 @@ export default function ProjectPage({
           </table>
         </div>
 
+        <div className="flex flex-col gap-y-16 ">
+          {project.files?.map((file) => {
+            let size: number | string = file.size;
+
+            if (!size) {
+              if (file.bytes) {
+                if (file.bytes > 1000000) {
+                  size = (file.bytes / 1000000).toFixed(2) + ' MB';
+                } else {
+                  size = (file.bytes / 1000).toFixed(2) + ' kB';
+                }
+              }
+            }
+            return (
+              <div key={file.name}>
+                {file.path && (
+                  <>
+                    <h4>
+                      {file.name}
+                      {file.format ? `.${file.format}` : ''}
+                    </h4>
+                    {file.bytes >= 5132288 && (
+                      <span>Previewing 5MB out of {size}</span>
+                    )}
+                    <FlatUiTable
+                      url={
+                        file.path.startsWith('http')
+                          ? file.path
+                          : `https://raw.githubusercontent.com/${project.owner.name}/${project.repo.name}/main/${file.path}`
+                      }
+                    />
+                  </>
+                )}
+              </div>
+            );
+          })}
+        </div>
+
         {readme && (
           <>
             <hr />
@@ -192,7 +229,6 @@ export async function getStaticPaths() {
     github_pat
   );
 
-  console.log(allProjects)
   const paths = allProjects.results.map((project) => ({
     params: {
       // TODO: dynamize the org
@@ -223,7 +259,12 @@ export async function getStaticProps({ params }) {
   const project = loadDataPackage(datapackage, repo);
 
   // TODO: should this be moved to the loader?
-  const readme = await getProjectReadme(orgName, projectName, 'main', github_pat);
+  const readme = await getProjectReadme(
+    orgName,
+    projectName,
+    'main',
+    github_pat
+  );
 
   return {
     props: {
