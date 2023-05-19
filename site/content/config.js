@@ -21,6 +21,7 @@ const config = {
     { name: "Blog", href: "/blog" },
     { name: "Showcases", href: "/#showcases" },
     { name: "Examples", href: "https://github.com/datopian/portaljs/tree/main/examples", target: "_blank" },
+    { name: "Components", href: "https://storybook.portaljs.org", target: "_blank" },
     // { name: "DL Demo", href: "/data-literate/demo" },
     // { name: "Excel Viewer", href: "/excel-viewer" },
   ],
