@@ -9,7 +9,7 @@ export default function DatasetCard({ dataset }: { dataset: Project }) {
       className="overflow-hidden rounded-xl border border-gray-200"
     >
       <Link
-        href=""
+        href={`/@${dataset.owner.name}/${dataset.repo.name}`}
         className="flex items-center gap-x-4 border-b border-gray-900/5 bg-gray-50 p-6"
       >
         <img
@@ -60,8 +60,8 @@ export default function DatasetCard({ dataset }: { dataset: Project }) {
           <dd className="flex items-start gap-x-2">
             <div className="font-medium text-gray-900">
               <Link
-                // TODO: where do we get the info needed for this link?
-                href=""
+                // TODO: this link may be incorrect for some datasets
+                href={`https://github.com/${dataset.owner.name}/${dataset.repo.name}/blob/main/datapackage.json`}
                 target="_blank"
                 className="flex items-center hover:text-gray-700"
               >

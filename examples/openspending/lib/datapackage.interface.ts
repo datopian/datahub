@@ -98,6 +98,7 @@ export interface TabularDataResource {
   key?: string;
   path?: string;
   size?: number;
+  bytes?: number;
 }
 
 export interface Field {
