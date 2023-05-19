@@ -10,6 +10,7 @@
     "test": "vitest"
   },
   "dependencies": {
+    "@flowershow/core": "^0.4.13",
     "@githubocto/flat-ui": "^0.14.1",
     "@heroicons/react": "^2.0.18",
     "@octokit/plugin-throttling": "^5.2.2",
@@ -22,7 +23,7 @@
     "eslint": "8.39.0",
     "eslint-config-next": "13.3.1",
     "flexsearch": "0.7.21",
-    "next": "13.3.1",
+    "next": "13.3.0",
     "next-seo": "^6.0.0",
     "octokit": "^2.0.14",
     "papaparse": "^5.4.1",
