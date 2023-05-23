@@ -1,0 +1,41 @@
+{
+  "name": "@portaljs/ckan",
+  "version": "0.1.2",
+  "type": "module",
+  "description": "https://portaljs.org",
+  "keywords": [
+    "data portal",
+    "data catalog",
+    "table",
+    "charts",
+    "visualization"
+  ],
+  "scripts": {
+    "build": "tsc && vite build && npm run build-tailwind",
+    "lint": "eslint src --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
+    "prepack": "json -f package.json -I -e \"delete this.devDependencies; delete this.dependencies\"",
+    "build-tailwind": "NODE_ENV=production npx tailwindcss -o ./dist/styles.css --minify"
+  },
+  "peerDependencies": {
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0"
+  },
+  "files": [
+    "dist"
+  ],
+  "main": "./dist/components.umd.js",
+  "module": "./dist/components.es.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/components.es.js",
+      "require": "./dist/components.umd.js"
+    },
+    "./styles.css": {
+      "import": "./dist/styles.css"
+    }
+  },
+  "publishConfig": {
+    "access": "public"
+  }
+}
