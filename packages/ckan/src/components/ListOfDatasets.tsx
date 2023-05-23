@@ -70,7 +70,7 @@ function ListItems({
   setOptions: Dispatch<SetStateAction<PackageSearchOptions>>;
   urlPrefix?: string;
 }) {
-  const { data } = useSWR(['package_search', options], async () =>
+  const { data, isLoading } = useSWR(['package_search', options], async () =>
     ckan.packageSearch({ ...options })
   );
   //Define which page buttons are going to be displayed in the pagination list
@@ -78,25 +78,31 @@ function ListItems({
 
   return (
     <>
-      <h2 className="text-4xl capitalize font-bold text-zinc-900">
-        {data?.count} Datasets
-      </h2>
-      {data?.datasets?.map((dataset) => (
-        <DatasetCard
-          key={dataset.id}
-          dataset={dataset}
-          showOrg={true}
-          urlPrefix={urlPrefix}
-        />
-      ))}
-      {data?.count && (
-        <Pagination
-          options={options}
-          subsetOfPages={subsetOfPages}
-          setSubsetOfPages={setSubsetOfPages}
-          setOptions={setOptions}
-          count={data.count}
-        />
+      {isLoading ? (
+        <div className="loader mb-4 h-12 w-12 rounded-full border-4 border-t-4 border-gray-200 ease-linear"></div>
+      ) : (
+        <>
+          <h2 className="text-4xl capitalize font-bold text-zinc-900">
+            {data?.count} Datasets
+          </h2>
+          {data?.datasets?.map((dataset) => (
+            <DatasetCard
+              key={dataset.id}
+              dataset={dataset}
+              showOrg={true}
+              urlPrefix={urlPrefix}
+            />
+          ))}
+          {data?.count && (
+            <Pagination
+              options={options}
+              subsetOfPages={subsetOfPages}
+              setSubsetOfPages={setSubsetOfPages}
+              setOptions={setOptions}
+              count={data.count}
+            />
+          )}
+        </>
       )}
     </>
   );

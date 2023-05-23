@@ -10,7 +10,7 @@
   },
   "dependencies": {
     "@heroicons/react": "^2.0.18",
-    "@portaljs/ckan": "*",
+    "@portaljs/ckan": "file:portaljs-ckan-0.1.4.tgz",
     "@types/node": "20.2.3",
     "@types/react": "18.2.6",
     "@types/react-dom": "18.2.4",
