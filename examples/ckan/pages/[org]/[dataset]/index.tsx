@@ -6,6 +6,9 @@ import {
   PaperClipIcon,
 } from "@heroicons/react/20/solid";
 import Link from "next/link";
+import getConfig from "next/config";
+
+const backend_url = getConfig().publicRuntimeConfig.DMS
 
 export const getServerSideProps = async (context: any) => {
   try {
@@ -15,7 +18,7 @@ export const getServerSideProps = async (context: any) => {
         notFound: true,
       };
     }
-    const ckan = new CKAN("https://demo.dev.datopian.com");
+    const ckan = new CKAN(backend_url);
     const dataset = await ckan.getDatasetDetails(datasetName as string);
     if (!dataset) {
       return {
