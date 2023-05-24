@@ -13,7 +13,7 @@ import Layout from '../../../components/_shared/Layout';
 import Link from 'next/link';
 import { Project } from '../../../lib/project.interface';
 import ExternalLinkIcon from '../../../components/icons/ExternalLinkIcon';
-import { FlatUiTable } from '@/components/FlatUiTable';
+import { FlatUiTable } from '@portaljs/components';
 
 export default function ProjectPage({
   project,
