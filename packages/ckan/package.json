@@ -1,6 +1,6 @@
 {
   "name": "@portaljs/ckan",
-  "version": "0.1.4",
+  "version": "0.0.2",
   "type": "module",
   "description": "https://portaljs.org",
   "keywords": [
