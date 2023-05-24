@@ -1,7 +1,8 @@
 import getConfig from 'next/config';
 import styles from './index.module.css';
+import { CKAN } from '@portaljs/ckan';
 
-const dms = getConfig().publicRuntimeConfig.DMS
+const backend_url = getConfig().publicRuntimeConfig.DMS
 
 const formatter = new Intl.DateTimeFormat('en-US', {
   year: 'numeric',
@@ -15,12 +16,11 @@ const formatter = new Intl.DateTimeFormat('en-US', {
 
 
 export async function getServerSideProps() {
-  const response = await fetch(`${dms}/api/3/action/package_search`)
-  const datasets = await response.json()
-  const datasetsWithDetails = await Promise.all(datasets.result.results.map(async (dataset) => {
-    const response = await fetch(`${dms}/api/3/action/package_show?id=` + dataset.name)
-    const json = await response.json()
-    return json.result
+  const ckan = new CKAN(backend_url)
+  const { datasets } = await ckan.packageSearch({ limit: 1000, offset: 0, groups:[], orgs: [], tags: []})
+  const datasetsWithDetails = await Promise.all(datasets.map(async (dataset) => {
+    const _dataset = await ckan.getDatasetDetails(dataset.name)
+    return _dataset
   }))
 
   return {

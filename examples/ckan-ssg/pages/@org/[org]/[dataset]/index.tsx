@@ -11,8 +11,9 @@ import {
   ServerIcon,
   UserIcon,
 } from '@heroicons/react/20/solid';
+import { CKAN } from '@portaljs/ckan';
 
-const dms = getConfig().publicRuntimeConfig.DMS;
+const backend_url = getConfig().publicRuntimeConfig.DMS;
 
 const formatter = new Intl.DateTimeFormat('en-US', {
   year: 'numeric',
@@ -25,14 +26,12 @@ const formatter = new Intl.DateTimeFormat('en-US', {
 });
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
+  const ckan = new CKAN(backend_url)
   const { dataset } = context.query;
-  const response = await fetch(
-    `${dms}/api/3/action/package_show?id=${dataset}`
-  );
-  const _dataset = await response.json();
+  const _dataset = await ckan.getDatasetDetails(dataset as string)
   return {
     props: {
-      dataset: _dataset.result,
+      dataset: _dataset,
     },
   };
 };
