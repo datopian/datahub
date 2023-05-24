@@ -1,6 +1,6 @@
 {
   "name": "@portaljs/components",
-  "version": "0.1.0",
+  "version": "0.1.3",
   "type": "module",
   "description": "https://portaljs.org",
   "keywords": [
@@ -22,48 +22,6 @@
   "peerDependencies": {
     "react": "^18.2.0",
     "react-dom": "^18.2.0"
-  },
-  "dependencies": {
-    "@heroicons/react": "^2.0.17",
-    "@tanstack/react-table": "^8.8.5",
-    "flexsearch": "0.7.21",
-    "next-mdx-remote": "^4.4.1",
-    "papaparse": "^5.4.1",
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0",
-    "react-hook-form": "^7.43.9",
-    "react-vega": "^7.6.0",
-    "vega": "5.25.0",
-    "vega-lite": "5.1.0"
-  },
-  "devDependencies": {
-    "@types/flexsearch": "^0.7.3",
-    "@storybook/addon-essentials": "^7.0.7",
-    "@storybook/addon-interactions": "^7.0.7",
-    "@storybook/addon-links": "^7.0.7",
-    "@storybook/blocks": "^7.0.7",
-    "@storybook/react": "^7.0.7",
-    "@storybook/react-vite": "^7.0.7",
-    "@storybook/testing-library": "^0.0.14-next.2",
-    "@types/papaparse": "^5.3.7",
-    "@types/react": "^18.0.28",
-    "@types/react-dom": "^18.0.11",
-    "@typescript-eslint/eslint-plugin": "^5.57.1",
-    "@typescript-eslint/parser": "^5.57.1",
-    "@vitejs/plugin-react": "^4.0.0",
-    "autoprefixer": "^10.4.14",
-    "eslint": "^8.38.0",
-    "eslint-plugin-react-hooks": "^4.6.0",
-    "eslint-plugin-react-refresh": "^0.3.4",
-    "eslint-plugin-storybook": "^0.6.11",
-    "json": "^11.0.0",
-    "postcss": "^8.4.23",
-    "prop-types": "^15.8.1",
-    "storybook": "^7.0.7",
-    "tailwindcss": "^3.3.2",
-    "typescript": "^5.0.2",
-    "vite": "^4.3.2",
-    "vite-plugin-dts": "^2.3.0"
   },
   "files": [
     "dist"
