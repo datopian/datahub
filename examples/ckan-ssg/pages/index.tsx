@@ -79,7 +79,7 @@ export function Index({ datasets }) {
                 </thead>
                 <tbody className="divide-y divide-gray-200">
                   {datasets.map((dataset) => (
-                    <tr>
+                    <tr key={dataset.name}>
                       <td className="px-3 py-4 text-sm text-gray-500">
                           {dataset.title}
                       </td>
