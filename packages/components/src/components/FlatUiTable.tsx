@@ -4,7 +4,10 @@ import { Grid } from '@githubocto/flat-ui';
 
 const queryClient = new QueryClient();
 
-export async function getCsv(url: string) {
+export async function getCsv(url: string, corsProxy?: string) {
+  if (corsProxy) {
+    url = corsProxy + url
+  }
   const response = await fetch(url, {
     headers: {
       Range: 'bytes=0-5132288',
@@ -61,21 +64,23 @@ export interface FlatUiTableProps {
   url?: string;
   data?: { [key: string]: number | string }[];
   rawCsv?: string;
+  corsProxy?: string;
 }
 export const FlatUiTable: React.FC<FlatUiTableProps> = ({
   url,
   data,
   rawCsv,
+  corsProxy,
 }) => {
   return (
     // Provide the client to your App
     <QueryClientProvider client={queryClient}>
-      <TableInner url={url} data={data} rawCsv={rawCsv} />
+      <TableInner corsProxy={corsProxy} url={url} data={data} rawCsv={rawCsv} />
     </QueryClientProvider>
   );
 };
 
-const TableInner: React.FC<FlatUiTableProps> = ({ url, data, rawCsv }) => {
+const TableInner: React.FC<FlatUiTableProps> = ({ url, data, rawCsv, corsProxy }) => {
   if (data) {
     return (
       <div className="w-full" style={{height: '500px'}}>
@@ -85,11 +90,12 @@ const TableInner: React.FC<FlatUiTableProps> = ({ url, data, rawCsv }) => {
   }
   const { data: csvString, isLoading: isDownloadingCSV } = useQuery(
     ['dataCsv', url],
-    () => getCsv(url)
+    () => getCsv(url as string, corsProxy),
+    { enabled: !!url }
   );
   const { data: parsedData, isLoading: isParsing } = useQuery(
     ['dataPreview', csvString],
-    () => parseCsv(rawCsv ? rawCsv : csvString),
+    () => parseCsv(rawCsv ? rawCsv as string : csvString as string),
     { enabled: rawCsv ? true : !!csvString }
   );
   if (isParsing || isDownloadingCSV)
@@ -102,4 +108,6 @@ const TableInner: React.FC<FlatUiTableProps> = ({ url, data, rawCsv }) => {
         <Grid data={parsedData.data} />
       </div>
     );
+  return <Spinning />
 };
+

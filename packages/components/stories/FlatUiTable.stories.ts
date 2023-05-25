@@ -16,6 +16,9 @@ const meta: Meta = {
     },
     url: {
       description: "Fetch the data from a CSV file remotely. only the first 5MB of data will be displayed"
+    },
+    corsProxy: {
+      description: "Optionally you cant set a CORS Proxy to which all your requests you be redirected"
     }
   },
 };
