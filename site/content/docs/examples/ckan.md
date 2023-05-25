@@ -5,19 +5,19 @@ date: 2023-05-24
 filetype: blog
 ---
 
-The PortalJS CKAN example intendeds to provide users with an easy way to bootstrap a data catalog and share data stories backed by a CKAN back end, simply by setting a simple environment variable pointing to a CKAN instance.
+The PortalJS CKAN example intends to provide users with an easy way to bootstrap a data catalog and share data stories backed by a CKAN back end.
 
 ## Demo
 
-To get a feel of the project, users can check the [live deployment](https://ckan-example.portaljs.org).
+To get a feel of the project, check out the demo at [live deployment](https://ckan-example.portaljs.org).
 
 #### Front page
 
-![](https://hackmd.io/_uploads/S1CsQ9jr2.png)
+![](/assets/examples/example-ckan-1.png)
 
 #### Individual dataset page
 
-![](https://hackmd.io/_uploads/ryZRXcorn.png)
+![](/assets/examples/example-ckan-2.png)
 
 ## How to use this example as a template
 
@@ -48,11 +48,11 @@ npm run dev
 
 Congratulations, you now have something similar to this running on `http://localhost:3000`:
 
-![](https://hackmd.io/_uploads/S1CsQ9jr2.png)
+![](/assets/examples/example-ckan-3.png)
 
 If you navigate to any of the dataset pages by clicking on the dataset title you will see something similar to this:
 
-![](https://hackmd.io/_uploads/ryZRXcorn.png)
+![](/assets/examples/example-ckan-4.png)
 
 ## Deployment
 
@@ -73,6 +73,51 @@ And run using the production build like so:
 ```
 npm run start
 ```
+
+## CORS Issues
+
+The template has a built-in CORS proxy, in case you have any CORS issues when fetching files. All you need to do is route your HTTP request through the proxy.
+
+Basically instead of calling given URL you will call `/api/cors?url={your url}`, and the CORS issue shall be gone. 
+
+# Data Rich Documents
+
+In this example there is a `content` folder. Markdown files in this folder are going to be rendered as pages in the application.
+
+Those, however, are not ordinary Markdown pages: they are what we call Data Rich Documents. This means that besides common Markdown, those pages are also capable of rendering data components. This capability allows for the creation of data stories.
+
+The way it works is that these documents support the [MDX syntax](https://mdxjs.com/docs/what-is-mdx/), which allows React components in Markdown files, in the case of this example, making all the components in the [PortalJS components library](https://storybook.portaljs.org/) available on Markdown pages.
+
+So, for example, you can add the following content to the `/content/test.md` file:
+
+```mdx 
+# VIX Daily Report
+
+<FlatUiTable url="https://raw.githubusercontent.com/datasets/finance-vix/main/data/vix-daily.csv" />
+```
+
+And from your browser go to `/stories/test`. You will see the following:
+
+![](/assets/examples/example-ckan-5.png)
+
+In this file you also have access to the available datasets metadata by simply editing the file's frontmatter e.g. replace the content of `/content/test.md` with this:
+
+```md
+---
+datasets: ['population-figures-for-countries-regions-e-g-asia-and-the-world', 'major-cities-of-the-world']
+---
+
+# My datasets
+
+## Names
+<span>{datasets.map(dataset => dataset.title).join(', ')}</span>
+```
+
+Now run `npm run mddb` (always run this command after updating frontmatter, this example is using MarkdownDB to index the Markdown files and this command tells MarkdownDB to reindex the metadata) and you should see something like this:
+
+![](/assets/examples/example-ckan-6.png)
+
+Note that what's happening here is that  the "datasets" variable becabe available in the Markdown file, containing the metadata of the datasets whose name was passed to the Frontmatter section.
 
 ## Extra steps
 
@@ -115,5 +160,4 @@ Thanks to TypeScript, you can get a list of all the API methods in `@portaljs/ck
 
 - [Repo](https://github.com/datopian/portaljs/tree/main/examples/ckan)  
 - [Live Demo](http://ckan.portaljs.org/)  
-
 
