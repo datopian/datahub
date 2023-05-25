@@ -30,16 +30,16 @@ export const getStaticProps = async (context) => {
   );
 
   const ckan = new CKAN(backend_url);
-  const datasets = await Promise.all(
+  const datasets = storyFile.metadata.datasets ? await Promise.all(
     storyFile.metadata.datasets.map(
       async (datasetName: string) => await ckan.getDatasetDetails(datasetName)
     )
-  );
-  const orgs = await Promise.all(
+  ) : [];
+  const orgs = storyFile.metadata.orgs ? await Promise.all(
     storyFile.metadata.orgs.map(
       async (orgName: string) => await ckan.getOrgDetails(orgName)
     )
-  );
+  ) : [];
 
   let { mdxSource, frontMatter } = await parse(md, '.mdx', { datasets, orgs });
 

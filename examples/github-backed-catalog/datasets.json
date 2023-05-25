@@ -16,6 +16,13 @@
     "readme": "README.md"
   },
   {
+    "owner": "luccasmmg",
+    "branch": "main",
+    "repo": "test-data-repo-1",
+    "files": ["data_1.csv", "data_2.csv"],
+    "readme": "README.md"
+  },
+  {
     "owner": "datasets",
     "branch": "main",
     "repo": "investor-flow-of-funds-us",

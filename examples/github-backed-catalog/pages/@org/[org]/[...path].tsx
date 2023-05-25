@@ -6,6 +6,8 @@ import { getProject, GithubProject } from "../../../lib/octokit";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import Breadcrumbs from "../../../components/_shared/Breadcrumbs";
+import parse from '../../../lib/markdown';
+import DataRichDocument from '../../../components/DataRichDocument'
 
 export default function ProjectPage({ project }) {
   const repoId = `@${project.repo_config.owner}/${project.repo_config.repo}`;
@@ -64,9 +66,7 @@ export default function ProjectPage({ project }) {
         <hr />
 
         <h2 className="uppercase font-black">Readme</h2>
-        <ReactMarkdown remarkPlugins={[remarkGfm]}>
-          {project.readmeContent}
-        </ReactMarkdown>
+        <DataRichDocument source={project.mdxSource} />
       </main>
     </>
   );
@@ -119,9 +119,10 @@ export async function getStaticProps({ params }) {
   });
   const github_pat = getConfig().serverRuntimeConfig.github_pat;
   const project = await getProject(repo, github_pat);
+  let { mdxSource, frontMatter } = await parse(project.readmeContent, '.mdx', { project });
   return {
     props: {
-      project: { ...project, repo_config: repo },
+      project: { ...project, repo_config: repo, mdxSource },
     },
   };
 }
