@@ -5,11 +5,11 @@ import {
   PackageSearchOptions,
   Organization,
   Group,
-} from "@portaljs/ckan";
-import getConfig from "next/config";
-import { useState } from "react";
+} from '@portaljs/ckan';
+import getConfig from 'next/config';
+import { useState } from 'react';
 
-const backend_url = getConfig().publicRuntimeConfig.DMS
+const backend_url = getConfig().publicRuntimeConfig.DMS;
 
 export async function getServerSideProps() {
   const ckan = new CKAN(backend_url);
@@ -48,7 +48,7 @@ export default function Home({
         orgs={orgs}
       />
       <div className="bg-white p-8 my-4 rounded-lg">
-        <ListOfDatasets options={options} setOptions={setOptions} ckan={ckan} />{" "}
+        <ListOfDatasets options={options} setOptions={setOptions} ckan={ckan} />{' '}
       </div>
     </main>
   );

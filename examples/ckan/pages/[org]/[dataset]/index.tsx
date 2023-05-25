@@ -158,7 +158,7 @@ export default function DatasetPage({
                             <div className="ml-4 flex-shrink-0">
                               <a
                                 href={resource.url}
-                                className="font-medium hover:text-indigo-500"
+                                className="font-medium hover:text-indigo-500 mr-4"
                               >
                                 Download
                               </a>
