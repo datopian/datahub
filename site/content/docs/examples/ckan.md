@@ -80,7 +80,7 @@ The template has a built-in CORS proxy, in case you have any CORS issues when fe
 
 Basically instead of calling given URL you will call `/api/cors?url={your url}`, and the CORS issue shall be gone. 
 
-# Data Rich Documents
+## Data-Rich Documents
 
 In this example there is a `content` folder. Markdown files in this folder are going to be rendered as pages in the application.
 
