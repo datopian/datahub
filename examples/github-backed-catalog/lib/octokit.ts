@@ -39,6 +39,32 @@ export async function getProjectReadme(
   }
 }
 
+export async function getProjectDatapackage(
+  owner: string,
+  repo: string,
+  branch: string,
+  github_pat?: string
+) {
+  const octokit = new Octokit({ auth: github_pat });
+  try {
+    const response = await octokit.rest.repos.getContent({
+      owner,
+      repo,
+      path: "datapackage.json",
+      ref: branch,
+    });
+    const data = response.data as { content?: string };
+    const fileContent = data.content ? data.content : "";
+    if (fileContent === "") {
+      return null;
+    }
+    const decodedContent = Buffer.from(fileContent, "base64").toString();
+    return JSON.parse(decodedContent);
+  } catch (error) {
+    return null
+  }
+}
+
 export async function getLastUpdated(
   owner: string,
   repo: string,
@@ -162,11 +188,20 @@ export async function getProject(project: GithubProject, github_pat?: string) {
     projectBase,
     github_pat
   );
+
+  const projectDatapackage = await getProjectDatapackage(
+    project.owner,
+    project.repo,
+    project.branch,
+    github_pat
+  );
+
   return {
     ...projectMetadata,
     files: projectData,
     readmeContent: projectReadme,
     last_updated,
     base_path: projectBase,
+    datapackage: projectDatapackage
   };
 }
