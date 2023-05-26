@@ -32,6 +32,8 @@ Key highlights from the tutorial include:
 
 By the end of the tutorial, you'll have a simple catalog of a few of our GitHub projects using markdown files and the MarkdownDB package.
 
+[👉 Check it out!](https://github.com/datopian/markdowndb/blob/main/examples/basic-example/README.md)
+
 ---
 
 We look forward to seeing the amazing applications you'll build with this tool!
