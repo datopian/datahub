@@ -1,0 +1,73 @@
+{
+  "name": "core",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "packages/core/src",
+  "projectType": "library",
+  "tags": [],
+  "targets": {
+    "build": {
+      "executor": "@nrwl/web:rollup",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "outputPath": "packages/core/dist",
+        "tsConfig": "packages/core/tsconfig.lib.json",
+        "project": "packages/core/package.json",
+        "entryFile": "packages/core/src/index.ts",
+        "format": ["esm"],
+        "external": [
+          "react/jsx-runtime",
+          "react",
+          "next/link",
+          "next/head",
+          "next/router",
+          "next/dynamic",
+          "next-contentlayer",
+          "next-themes"
+        ],
+        "generateExportsField": true,
+        "rollupConfig": "@nrwl/react/plugins/bundle-rollup",
+        "compiler": "babel",
+        "assets": [
+          {
+            "glob": "packages/core/README.md",
+            "input": ".",
+            "output": "."
+          }
+        ]
+      }
+    },
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": ["packages/core/**/*.{ts,tsx,js,jsx}"]
+      }
+    },
+    "test": {
+      "executor": "@nrwl/jest:jest",
+      "outputs": ["{workspaceRoot}/coverage/{projectRoot}"],
+      "options": {
+        "jestConfig": "packages/core/jest.config.ts",
+        "passWithNoTests": true
+      }
+    },
+    "publish:dry": {
+      "executor": "nx:run-commands",
+      "options": {
+        "commands": ["npm publish --dry-run"],
+        "parallel": false,
+        "cwd": "packages/core/dist"
+      },
+      "dependsOn": ["build"]
+    },
+    "publish": {
+      "executor": "nx:run-commands",
+      "options": {
+        "commands": ["npm publish"],
+        "parallel": false,
+        "cwd": "packages/core/dist"
+      },
+      "dependsOn": ["build"]
+    }
+  }
+}
