@@ -1,5 +1,5 @@
 ---
-title: "Example: Data catalog with data on CKAN"
+title: "A Comprehensive Guide to Building a Robust Data Portal using CKAN"
 authors: ['Luccas Mateus']
 date: 2023-05-24
 filetype: blog
