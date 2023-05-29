@@ -10,10 +10,22 @@ This is also a Next.JS project so you can use the following steps to run the web
 
 ## Getting started
 
-To get started first install the npm dependencies:
+To get started first clone this repo in your local machine like so:
+
+```bash
+npx create-next-app turing --example https://github.com/datopian/portaljs/tree/main/examples/turing
+cd turing
+```
+
+Then install the npm dependencies:
 
 ```bash
 npm install
+```
+
+Next, run this command, its related to [markdowndb](https://github.com/datopian/markdowndb):
+```bash
+npm run mddb
 ```
 
 Next, run the development server:
