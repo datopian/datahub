@@ -12,6 +12,7 @@
   },
   "dependencies": {
     "@flowershow/core": "^0.4.13",
+    "@flowershow/markdowndb": "^0.1.5",
     "@heroicons/react": "^2.0.18",
     "@octokit/plugin-throttling": "^5.2.2",
     "@portaljs/components": "0.1.4",
