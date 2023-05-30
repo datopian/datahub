@@ -7,6 +7,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
+    "prebuild": "npm run mddb",
     "mddb": "mddb ./content",
     "test": "vitest"
   },
