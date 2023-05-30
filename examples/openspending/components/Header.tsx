@@ -54,16 +54,8 @@ export function Header() {
       href: '/resources',
       children: [
         {
-          title: 'IATI',
-          href: '/resources/iati',
-        },
-        {
           title: 'Follow the money',
           href: '/resources/journo',
-        },
-        {
-          title: 'OpenSpending.Mobi',
-          href: '/resources/mobi/',
         },
         {
           title: 'Map of Spending Projects',
@@ -125,7 +117,6 @@ function classNames(...classes) {
 
 function Dropdown({ navItem }: { navItem: any }) {
   const [showDropDown, setShowDropDown] = useState(false);
-  console.log(showDropDown);
   return (
     <Menu as="div" className="relative inline-block text-left">
       {({ open }) => (
