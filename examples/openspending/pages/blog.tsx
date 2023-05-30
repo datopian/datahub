@@ -30,14 +30,17 @@ export const getStaticProps: GetStaticProps = async () => {
   const blogFiles = await mddb.getFiles({ folder: 'blog' });
 
   const blogs = blogFiles.map((item) => ({
-  _id: item._id,
-  file_path: item.file_path,
-  urlPath: item.url_path,
-  date: item.url_path.split('/').slice(-1)[0].split('-').slice(0,3).join('-'),
-    ...item.metadata
+    _id: item._id,
+    file_path: item.file_path,
+    urlPath: item.url_path,
+    date: item.url_path
+      .split('/')
+      .slice(-1)[0]
+      .split('-')
+      .slice(0, 3)
+      .join('-'),
+    ...item.metadata,
   }));
-
-  console.log(blogs[0].date)
 
   return {
     props: {
@@ -49,7 +52,11 @@ export const getStaticProps: GetStaticProps = async () => {
         showEditLink: false,
         urlPath: '/blog',
       },
-      blogs,
+      blogs: blogs.sort((a, b) => {
+        const bDate = new Date(b.date);
+        const aDate = new Date(a.date);
+        return bDate.getTime() - aDate.getTime();
+      }),
     },
   };
 };
