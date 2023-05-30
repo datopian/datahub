@@ -27,7 +27,7 @@ export function Hero({ countriesCount, datasetsCount, filesCount }) {
           <Button href="#datasets" className="mt-10">
             Search datasets
           </Button>
-          <dl className="mt-10 grid grid-cols-2 gap-x-10 gap-y-6 sm:mt-16 sm:gap-x-16 sm:gap-y-10 sm:text-center lg:auto-cols-auto lg:grid-flow-col lg:grid-cols-none lg:justify-start lg:text-left">
+          <dl className="mt-10 grid grid-cols-1 sm:grid-cols-3 gap-x-10 gap-y-6 sm:mt-16 sm:gap-x-16 sm:gap-y-10 sm:text-center lg:auto-cols-auto lg:grid-flow-col lg:grid-cols-none lg:justify-start lg:text-left">
             {[
               //  Added the plus sign because some datasets do not
               //  contain defined countries
@@ -36,10 +36,18 @@ export function Hero({ countriesCount, datasetsCount, filesCount }) {
               ['Files', filesCount],
             ].map(([name, value]) => (
               <div key={name}>
-                <dt className="font-mono text-sm text-emerald-600">{name}</dt>
-                <dd className="mt-0.5 text-2xl font-semibold tracking-tight text-emerald-900">
-                  {value}
-                </dd>
+                <div className='flex gap-x-2 items-center sm:hidden' key={name}>
+                  <dd className="mt-0.5 text-2xl font-semibold tracking-tight text-emerald-900">
+                    {value}
+                  </dd>
+                  <dt className="font-mono text-sm text-emerald-600">{name}</dt>
+                </div>
+                <div className='hidden sm:block' key={name}>
+                  <dt className="font-mono text-sm text-emerald-600">{name}</dt>
+                  <dd className="mt-0.5 text-2xl font-semibold tracking-tight text-emerald-900">
+                    {value}
+                  </dd>
+                </div>
               </div>
             ))}
           </dl>

@@ -17,17 +17,21 @@ export function Header() {
 
   const navLinks = [
     {
-      title: 'Home',
-      href: '/',
-    },
-    {
       title: 'Datasets',
       href: '/#datasets',
     },
-    // {
-    //   title: "Community",
-    //   href: "https://community.openspending.org/"
-    // }
+    {
+       title: "Blog",
+       href: "/blog"
+    },
+    {
+       title: "About",
+       href: "/about"
+    },
+    {
+       title: "Resources",
+       href: "/resources"
+    }
   ];
 
   return (
@@ -51,7 +55,7 @@ export function Header() {
             </li>
           ))}
         </ul>
-        <div className="hidden xl:block xl:grow"></div>
+        <div className='hidden aria-hidden xl:block xl:grow'></div>
         <div className="sm:hidden sm:mt-10 lg:mt-0 lg:grow lg:basis-0 lg:justify-end">
           <button onClick={() => setMenuOpen(!menuOpen)}>
             <Bars3Icon className="w-8 h-8" />

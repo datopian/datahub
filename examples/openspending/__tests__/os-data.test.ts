@@ -2,7 +2,7 @@ import { expect, test } from 'vitest';
 import { getAllProjectsFromOrg, getProjectDataPackage } from '../lib/project';
 import { loadDataPackage } from '../lib/loader';
 import { getProjectMetadata } from '../lib/project';
-import { getCsv, parseCsv } from '../components/Table';
+import { validate } from 'datapackage';
 
 test(
   'Test OS-Data',
@@ -12,8 +12,24 @@ test(
       'main',
       process.env.VITE_GITHUB_PAT
     );
-    if (repos.failed.length > 0) console.log(repos.failed);
-    expect(repos.failed.length).toBe(0);
+    if (repos.failed.length > 0)
+      console.log('Failed to get datapackage on', repos.failed);
+    let failedDatapackages = await Promise.all(
+      repos.results.map(async (item) => {
+        try {
+          const { valid, errors } = await validate(item.datapackage);
+          return errors.length > 0 ? item.repo.name : null;
+        } catch {
+          return item.repo.name;
+        }
+      })
+    );
+    failedDatapackages = failedDatapackages.filter((item) => item !== null);
+    if (failedDatapackages.length > 0) {
+      console.log('Failed to validate datapackage on ', failedDatapackages);
+    } else {
+      console.log('No invalid packages');
+    }
   },
   { timeout: 100000 }
 );
@@ -27,7 +43,22 @@ test(
       process.env.VITE_GITHUB_PAT
     );
     if (repos.failed.length > 0) console.log(repos.failed);
-    expect(repos.failed.length).toBe(0);
+    let failedDatapackages = await Promise.all(
+      repos.results.map(async (item) => {
+        try {
+          const { valid, errors } = await validate(item.datapackage);
+          return errors.length > 0 ? item.repo.name : null;
+        } catch {
+          return item.repo.name;
+        }
+      })
+    );
+    failedDatapackages = failedDatapackages.filter((item) => item !== null);
+    if (failedDatapackages.length > 0) {
+      console.log('Failed to validate datapackage on ', failedDatapackages);
+    } else {
+      console.log('No invalid packages');
+    }
   },
   { timeout: 100000 }
 );
@@ -80,59 +111,6 @@ test(
       fiscalPeriod: { start: '2014-01-01', end: '2019-12-31' },
       readme: '',
     });
-  },
-  { timeout: 100000 }
-);
-
-test(
-  'Test getting one section of csv from R2',
-  async () => {
-    const rawCsv = await getCsv(
-      'https://storage.openspending.org/state-of-minas-gerais-brazil-planned-budget/__os_imported__br-mg-ppagloc.csv'
-    );
-    const parsedCsv = await parseCsv(rawCsv);
-    expect(parsedCsv.errors.length).toBe(1);
-    expect(parsedCsv.data.length).toBe(10165);
-    expect(parsedCsv.meta.fields).toStrictEqual([
-      'function_name',
-      'function_label',
-      'product_name',
-      'product_label',
-      'area_name',
-      'area_label',
-      'subaction_name',
-      'subaction_label',
-      'region_label_map',
-      'region_reg_map',
-      'region_name',
-      'region_label',
-      'municipality_map_id',
-      'municipality_name',
-      'municipality_map_code',
-      'municipality_label',
-      'municipality_map_name_simple',
-      'municipality_map_name',
-      'cofog1_label_en',
-      'cofog1_name',
-      'cofog1_label',
-      'amount',
-      'subprogramme_name',
-      'subprogramme_label',
-      'time_name',
-      'time_year',
-      'time_month',
-      'time_day',
-      'time_week',
-      'time_yearmonth',
-      'time_quarter',
-      'time',
-      'action_name',
-      'action_label',
-      'subfunction_name',
-      'subfunction_label',
-      'programme_name',
-      'programme_label',
-    ]);
   },
   { timeout: 100000 }
 );

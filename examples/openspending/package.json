@@ -7,6 +7,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
+    "mddb": "mddb ./content",
     "test": "vitest"
   },
   "dependencies": {
@@ -20,6 +21,7 @@
     "@types/react-dom": "18.0.11",
     "@vitejs/plugin-react": "^4.0.0",
     "clsx": "^1.2.1",
+    "datapackage": "^1.1.10",
     "eslint": "8.39.0",
     "eslint-config-next": "13.3.1",
     "flexsearch": "0.7.21",
@@ -32,7 +34,10 @@
     "react-hook-form": "^7.43.9",
     "react-markdown": "^8.0.7",
     "react-timeago": "^7.1.0",
+    "rehype-raw": "^6.1.1",
+    "remark": "^14.0.3",
     "remark-gfm": "^3.0.1",
+    "strip-markdown": "^5.0.1",
     "typescript": "5.0.4"
   },
   "devDependencies": {
