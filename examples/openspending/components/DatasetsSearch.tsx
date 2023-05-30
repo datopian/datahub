@@ -13,9 +13,13 @@ import { useState } from 'react';
 export default function DatasetsSearch({
   datasets,
   availableCountries,
+  minPeriod,
+  maxPeriod,
 }: {
   datasets: Project[];
   availableCountries;
+  minPeriod: string;
+  maxPeriod: string;
 }) {
   const itemsPerPage = 6;
   const [page, setPage] = useState(1);
@@ -132,7 +136,10 @@ export default function DatasetsSearch({
           <div className="relative">
             <input
               aria-label="Min. date"
-              type="date"
+              type="text"
+              placeholder={minPeriod}
+              onFocus={(e) => (e.target.type = 'date')}
+              onBlur={(e) => (e.target.type = 'text')}
               {...register('minDate', { onChange: () => setPage(1) })}
               className="h-[3em] w-full rounded-lg bg-white py-2 pl-3 pr-10 text-left shadow-md focus:outline-none focus-visible:border-emerald-500 focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 focus-visible:ring-offset-2 focus-visible:ring-offset-emerald-400 sm:text-sm"
             />
@@ -145,7 +152,10 @@ export default function DatasetsSearch({
           <div className="relative">
             <input
               aria-label="Max. date"
-              type="date"
+              type="text"
+              placeholder={maxPeriod}
+              onFocus={(e) => (e.target.type = 'date')}
+              onBlur={(e) => (e.target.type = 'text')}
               {...register('maxDate', { onChange: () => setPage(1) })}
               className="h-[3em] w-full rounded-lg bg-white py-2 pl-3 pr-10 text-left shadow-md focus:outline-none focus-visible:border-emerald-500 focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 focus-visible:ring-offset-2 focus-visible:ring-offset-emerald-400 sm:text-sm"
             />

@@ -32,15 +32,20 @@ export async function getStaticProps() {
     //  TODO: title should be the full name
     .map((code) => ({ code, title: code }));
 
+  const minPeriod = projects.map(project => project.fiscalPeriod ? project.fiscalPeriod.start : null).filter(item => item !== null).sort()[0]
+  const maxPeriod = projects.map(project => project.fiscalPeriod ? project.fiscalPeriod.end : null).filter(item => item !== null).sort().slice(-1)[0]
+
   return {
     props: {
       projects: JSON.stringify(projects),
       availableCountries,
+      minPeriod,
+      maxPeriod
     },
   };
 }
 
-export function Home({ projects, availableCountries }) {
+export function Home({ projects, availableCountries, minPeriod, maxPeriod }) {
   projects = JSON.parse(projects);
 
   return (
@@ -70,6 +75,8 @@ export function Home({ projects, availableCountries }) {
             <DatasetsSearch
               datasets={projects}
               availableCountries={availableCountries}
+              minPeriod={minPeriod}
+              maxPeriod={maxPeriod}
             />
           </div>
         </Container>

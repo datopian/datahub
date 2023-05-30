@@ -78,3 +78,7 @@ pre {
   color: rgba(55, 65, 81, 1);
   width: 100%;
 }
+
+.blog-list button {
+  color: black;
+}
