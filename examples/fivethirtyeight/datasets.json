@@ -1170,18 +1170,6 @@
     ]
   },
   {
-    "url": "https://github.com/fivethirtyeight/data/tree/master/undefeated-boxers",
-    "name": "undefeated-boxers",
-    "displayName": "undefeated-<span class=\"lastword\">boxers</span>",
-    "articles": [
-      {
-        "date": "2017-08-18T18:47:32.000Z",
-        "title": "Mayweather Is Defined By The Zero Next To His Name",
-        "url": "https://fivethirtyeight.com/features/mayweather-is-defined-by-the-zero-next-to-his-name/"
-      }
-    ]
-  },
-  {
     "url": "https://github.com/fivethirtyeight/data/tree/master/chess-transfers",
     "name": "chess-transfers",
     "displayName": "chess-<span class=\"lastword\">transfers</span>",
@@ -2136,6 +2124,18 @@
         "date": "2014-03-27T15:24:21.000Z",
         "title": "The NCAA Bracket: Checking Our Work",
         "url": "http://fivethirtyeight.com/features/the-ncaa-bracket-checking-our-work"
+      }
+    ]
+  },
+  {
+    "url": "https://github.com/fivethirtyeight/data/tree/master/undefeated-boxers",
+    "name": "undefeated-boxers",
+    "displayName": "undefeated-<span class=\"lastword\">boxers</span>",
+    "articles": [
+      {
+        "date": "2017-08-18T18:47:32.000Z",
+        "title": "Mayweather Is Defined By The Zero Next To His Name",
+        "url": "https://fivethirtyeight.com/features/mayweather-is-defined-by-the-zero-next-to-his-name/"
       }
     ]
   },

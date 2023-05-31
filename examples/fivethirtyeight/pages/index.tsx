@@ -4,6 +4,7 @@ import { format } from 'timeago.js';
 import { promises as fs } from 'fs';
 import path from 'path';
 import { NextSeo } from 'next-seo';
+import Layout from '@/components/Layout';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -51,21 +52,12 @@ export function MobileItem({ dataset }: { dataset: Dataset }) {
         >
           info
         </a>
-        {/*
-                <button>
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    viewBox="0 0 24 24"
-                    fill="currentColor"
-                    className="w-12 h-12 text-blue-400 hover:text-blue-300 transition mt-1"
-                  >
-                    <path
-                      fillRule="evenodd"
-                      d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25zm-.53 14.03a.75.75 0 001.06 0l3-3a.75.75 0 10-1.06-1.06l-1.72 1.72V8.25a.75.75 0 00-1.5 0v5.69l-1.72-1.72a.75.75 0 00-1.06 1.06l3 3z"
-                      clipRule="evenodd"
-                    />
-                  </svg>
-                </button> */}
+        <a
+          className="ml-2 border border-[#3c3c3c] px-[25px] py-2.5 text-sm transition bg-[#3c3c3c] text-white hover:bg-zinc-900"
+          href={`/datasets/${dataset.name}`}
+        >
+          explore
+        </a>
       </div>
     </div>
   );
@@ -97,6 +89,16 @@ export function DesktopItem({ dataset }: { dataset: Dataset }) {
               ? new Date(article.date).toLocaleString('en-US', options)
               : format(article.date)}
           </td>
+          <td>
+            {index === 0 && (
+            <a
+              className="ml-2 border border-[#3c3c3c] px-[25px] py-2.5 text-sm transition bg-[#3c3c3c] text-white hover:bg-zinc-900"
+              href={`/datasets/${dataset.name}`}
+            >
+              explore
+            </a>
+            )}
+          </td>
           <td className="py-8">
             {index === 0 && (
               <a
@@ -107,23 +109,6 @@ export function DesktopItem({ dataset }: { dataset: Dataset }) {
               </a>
             )}
           </td>
-          {/*
-              <td>
-                <button>
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    viewBox="0 0 24 24"
-                    fill="currentColor"
-                    className="w-12 h-12 text-blue-400 hover:text-blue-300 transition mt-1"
-                  >
-                    <path
-                      fillRule="evenodd"
-                      d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25zm-.53 14.03a.75.75 0 001.06 0l3-3a.75.75 0 10-1.06-1.06l-1.72 1.72V8.25a.75.75 0 00-1.5 0v5.69l-1.72-1.72a.75.75 0 00-1.06 1.06l3 3z"
-                      clipRule="evenodd"
-                    />
-                  </svg>
-                </button>
-              </td>*/}
         </tr>
       ))}
     </>
@@ -143,6 +128,7 @@ export default function Home({ datasets }: { datasets: Dataset[] }) {
   return (
     <>
       <NextSeo title="FiveThirtyEight tribute by PortalJS" />
+      <Layout>
       <main
         className={`flex min-h-screen flex-col items-center max-w-5xl mx-auto pt-20 px-2.5 ${inter.className}`}
       >
@@ -206,6 +192,7 @@ export default function Home({ datasets }: { datasets: Dataset[] }) {
           .
         </p>
       </main>
+      </Layout>
     </>
   );
 }
