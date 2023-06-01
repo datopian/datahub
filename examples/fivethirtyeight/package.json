@@ -9,6 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@flowershow/core": "^0.4.13",
     "@headlessui/react": "^1.7.14",
     "@heroicons/react": "^2.0.18",
     "@portaljs/components": "^0.1.7",
