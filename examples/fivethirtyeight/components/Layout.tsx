@@ -27,7 +27,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
             website.{' '}
             <a
               className="hover:underline font-bold"
-              href="https://github.com/datopian/portaljs/tree/main/examples/fivethirtyeight"
+              href="https://github.com/datopian/portaljs/tree/main/examples/fivethirtyeight#readme"
             >
               Read more here
             </a>{' '}
