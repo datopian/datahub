@@ -184,7 +184,7 @@ export default function ProjectPage({
             return (
               <div key={file.name}>
                 {file.path && (
-                  <>
+                  <div className="lg:ml-[calc(50%-37vw)] lg:w-[74vw]">
                     <h4>
                       {file.name}
                       {file.format ? `.${file.format}` : ''}
@@ -192,14 +192,16 @@ export default function ProjectPage({
                     {file.bytes >= 5132288 && (
                       <span>Previewing 5MB out of {size}</span>
                     )}
-                    <FlatUiTable
-                      url={
-                        file.path.startsWith('http')
-                          ? file.path
-                          : `https://raw.githubusercontent.com/${project.owner.name}/${project.repo.name}/main/${file.path}`
-                      }
-                    />
-                  </>
+                    <div className="mt-5">
+                      <FlatUiTable
+                        url={
+                          file.path.startsWith('http')
+                            ? file.path
+                            : `https://raw.githubusercontent.com/${project.owner.name}/${project.repo.name}/main/${file.path}`
+                        }
+                      />
+                    </div>
+                  </div>
                 )}
               </div>
             );
