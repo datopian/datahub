@@ -1,34 +1,5 @@
 [
   {
-    "url": "https://github.com/fivethirtyeight/data/tree/master/polls",
-    "name": "polls",
-    "displayName": "<span class=\"lastword\">polls</span>",
-    "articles": [
-      {
-        "date": "2023-05-11T14:35:40.000Z",
-        "title": "Latest Polls",
-        "url": "https://projects.fivethirtyeight.com/polls/"
-      }
-    ],
-    "files": [
-      "https://projects.fivethirtyeight.com/polls-page/data/president_primary_polls.csv",
-      "https://projects.fivethirtyeight.com/polls-page/data/president_primary_polls_historical.csv",
-      "https://projects.fivethirtyeight.com/polls-page/data/president_polls.csv",
-      "https://projects.fivethirtyeight.com/polls-page/data/president_polls_historical.csv",
-      "https://projects.fivethirtyeight.com/polls-page/data/senate_polls.csv",
-      "https://projects.fivethirtyeight.com/polls-page/data/senate_polls_historical.csv",
-      "https://projects.fivethirtyeight.com/polls-page/data/house_polls.csv",
-      "https://projects.fivethirtyeight.com/polls-page/data/house_polls_historical.csv",
-      "https://projects.fivethirtyeight.com/polls-page/data/governor_polls.csv",
-      "https://projects.fivethirtyeight.com/polls-page/data/governor_polls_historical.csv",
-      "https://projects.fivethirtyeight.com/polls-page/data/president_approval_polls.csv",
-      "https://projects.fivethirtyeight.com/polls-page/data/generic_ballot_polls.csv",
-      "https://projects.fivethirtyeight.com/polls-page/data/generic_ballot_polls_historical.csv",
-      "https://projects.fivethirtyeight.com/2020-primary-data/pres_primary_avgs_2020.csv",
-      "https://projects.fivethirtyeight.com/2020-general-data/presidential_poll_averages_2020.csv"
-    ]
-  },
-  {
     "url": "https://github.com/fivethirtyeight/data/tree/master/congress-generic-ballot",
     "name": "congress-generic-ballot",
     "displayName": "congress-generic-<span class=\"lastword\">ballot</span>",
@@ -193,6 +164,35 @@
         "rowspan": 0,
         "url": "http://fivethirtyeight.com/features/how-fivethirtyeight-calculates-pollster-ratings"
       }
+    ]
+  },
+  {
+    "url": "https://github.com/fivethirtyeight/data/tree/master/polls",
+    "name": "polls",
+    "displayName": "<span class=\"lastword\">polls</span>",
+    "articles": [
+      {
+        "date": "2023-05-11T14:35:40.000Z",
+        "title": "Latest Polls",
+        "url": "https://projects.fivethirtyeight.com/polls/"
+      }
+    ],
+    "files": [
+      "https://projects.fivethirtyeight.com/polls-page/data/president_primary_polls.csv",
+      "https://projects.fivethirtyeight.com/polls-page/data/president_primary_polls_historical.csv",
+      "https://projects.fivethirtyeight.com/polls-page/data/president_polls.csv",
+      "https://projects.fivethirtyeight.com/polls-page/data/president_polls_historical.csv",
+      "https://projects.fivethirtyeight.com/polls-page/data/senate_polls.csv",
+      "https://projects.fivethirtyeight.com/polls-page/data/senate_polls_historical.csv",
+      "https://projects.fivethirtyeight.com/polls-page/data/house_polls.csv",
+      "https://projects.fivethirtyeight.com/polls-page/data/house_polls_historical.csv",
+      "https://projects.fivethirtyeight.com/polls-page/data/governor_polls.csv",
+      "https://projects.fivethirtyeight.com/polls-page/data/governor_polls_historical.csv",
+      "https://projects.fivethirtyeight.com/polls-page/data/president_approval_polls.csv",
+      "https://projects.fivethirtyeight.com/polls-page/data/generic_ballot_polls.csv",
+      "https://projects.fivethirtyeight.com/polls-page/data/generic_ballot_polls_historical.csv",
+      "https://projects.fivethirtyeight.com/2020-primary-data/pres_primary_avgs_2020.csv",
+      "https://projects.fivethirtyeight.com/2020-general-data/presidential_poll_averages_2020.csv"
     ]
   },
   {
