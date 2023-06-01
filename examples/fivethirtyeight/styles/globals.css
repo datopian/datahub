@@ -3,6 +3,5 @@
 @tailwind utilities;
 
 .preview-table > div {
-  overflow-x: scroll;
   overflow-y: hidden;
 }
