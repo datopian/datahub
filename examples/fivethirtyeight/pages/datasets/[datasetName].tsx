@@ -32,10 +32,10 @@ export default function DatasetPage({
     <>
       <NextSeo title={`${dataset.name} page`} />
       <Layout>
-        <main className="max-w-5xl px-2 prose mx-auto my-8 prose-thead:border-b-4 prose-table:max-w-5xl prose-table:overflow-scroll prose-thead:overflow-scroll prose-tbody:overflow-scroll prose-thead:pb-2 prose-thead:border-zinc-900 prose-th:uppercase prose-th:text-left prose-th:font-light prose-th:text-xs prose-a:no-underline">
+        <main className="max-w-5xl px-2 prose mx-auto my-8 pb-8 prose-thead:border-b-4 prose-table:max-w-5xl prose-table:overflow-scroll prose-thead:overflow-scroll prose-tbody:overflow-scroll prose-thead:pb-2 prose-thead:border-zinc-900 prose-th:uppercase prose-th:text-left prose-th:font-light prose-th:text-xs prose-a:no-underline">
           <Breadcrumbs links={[{ title: dataset.name, href: '' }]} />
           <h1 className="uppercase mb-0 mt-16">{dataset.name}</h1>
-          <table className="w-full my-10 mb-4 hidden md:table">
+          <table className="w-full my-10 mb-8 hidden md:table">
             <thead className="border-b-4 pb-2 border-zinc-900">
               <tr>
                 <th className="uppercase text-left font-normal text-xs pb-3">
@@ -53,7 +53,6 @@ export default function DatasetPage({
 
           {dataset.readme && (
             <>
-              <h1 className="uppercase font-black mt-10">Readme</h1>
               {dataset.readme && (
                 <ReactMarkdown
                   remarkPlugins={[
@@ -68,7 +67,7 @@ export default function DatasetPage({
             </>
           )}
 
-          <h2 className="mb-0 mt-10">FILES</h2>
+          <h2 className="mb-0 mt-10">Files</h2>
           <div className="inline-block min-w-full py-2 align-middle">
             <table className="min-w-full divide-y divide-gray-300">
               <thead className="border-b-4 pb-2 border-zinc-900">
@@ -118,7 +117,7 @@ export default function DatasetPage({
           </div>
           {dataset.files && dataset.files.length > 0 && (
             <>
-              <h2 className="mb-0 mt-10">DATA PREVIEWS</h2>
+              <h2 className="mb-0 mt-8">Data Previews</h2>
               {dataset.files?.map((file) => (
                 <div
                   key={file}
