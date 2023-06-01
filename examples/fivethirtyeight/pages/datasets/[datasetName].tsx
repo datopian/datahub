@@ -53,7 +53,6 @@ export default function DatasetPage({
 
           {dataset.readme && (
             <>
-              <h1 className="uppercase font-black mt-10">Readme</h1>
               {dataset.readme && (
                 <ReactMarkdown
                   remarkPlugins={[
@@ -68,7 +67,7 @@ export default function DatasetPage({
             </>
           )}
 
-          <h2 className="mb-0 mt-10">FILES</h2>
+          <h2 className="mb-0 mt-10">Files</h2>
           <div className="inline-block min-w-full py-2 align-middle">
             <table className="min-w-full divide-y divide-gray-300">
               <thead className="border-b-4 pb-2 border-zinc-900">
@@ -118,7 +117,7 @@ export default function DatasetPage({
           </div>
           {dataset.files && dataset.files.length > 0 && (
             <>
-              <h2 className="mb-0 mt-10">DATA PREVIEWS</h2>
+              <h2 className="mb-0 mt-10">Data Previews</h2>
               {dataset.files?.map((file) => (
                 <div
                   key={file}
