@@ -45,12 +45,12 @@ export default function DatasetCard({ dataset }: { dataset: Project }) {
           <dt className="text-gray-500">Fiscal Period</dt>
           <dd className="text-gray-700">
             {dataset.fiscalPeriod?.start &&
-              new Date(dataset.fiscalPeriod.start).getFullYear()}
+              new Date(dataset.fiscalPeriod.start).getUTCFullYear()}
             {dataset.fiscalPeriod?.end &&
               dataset.fiscalPeriod?.start !== dataset.fiscalPeriod?.end && (
                 <>
                   {' - '}
-                  {new Date(dataset.fiscalPeriod.end).getFullYear()}
+                  {new Date(dataset.fiscalPeriod.end).getUTCFullYear()}
                 </>
               )}
           </dd>
