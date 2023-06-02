@@ -81,7 +81,7 @@ export default function DatasetPage({ mdxSource, frontMatter }) {
               <p className="my-0">
                 <span className="font-semibold">Modified: </span>
                 <span className="description my-0">
-                  {new Date(frontMatter.modified).toLocaleDateString()}
+                  {new Date(frontMatter.modified).toLocaleDateString("en-US")}
                 </span>
               </p>
             )}

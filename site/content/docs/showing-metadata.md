@@ -1,3 +1,5 @@
+<NextSeo title="Showing metadata - PortalJS" />
+
 # Showing metadata
 
 If you go now to `http://localhost:3000/my-awesome-dataset`, you will see that we now have two titles on the page. That's because `title` is one of the default metadata fields supported by PortalJS.
@@ -32,5 +34,7 @@ These are the standard metadata fields that will be shown at the top of the page
 - `title` that gets displayed as a big header at the top of the page
 - `author`, `description`, and `modified` which gets displayed below the title
 - `files` that get displayed as a table with two columns: `File` which is linked directly to the file, and `Format` which show the file format.
+
+Feel free to experiment with these metadata fields. At this point, you might want to deploy the app, and that's what you are gonna learn in the next lesson. 
 
 <DocsPagination prev="/docs/searching-datasets" next="/docs/deploying-your-portaljs-app" />

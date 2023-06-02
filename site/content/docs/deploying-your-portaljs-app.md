@@ -1,3 +1,5 @@
+<NextSeo title="Deploying your PortalJS app - PortalJS" />
+
 # Deploying your PortalJS app
 
 Finally, let's learn how to deploy PortalJS apps to Vercel or Cloudflare Pages.
@@ -31,7 +33,7 @@ To deploy your PortalJS app:
 
 When you deploy, your PortalJS app will start building. It should finish in under a minute.
 
-When it’s done, you’ll get deployment URLs. Click on one of the URLs and you should see your PortaJS app live.
+When it’s done, you’ll get deployment URLs. Click on one of the URLs and you should see your PortalJS app live.
 
 >[!tip]
 > You can find a more in-depth explanation about this process at https://nextjs.org/learn/basics/deploying-nextjs-app/deploy

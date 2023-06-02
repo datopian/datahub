@@ -1,3 +1,5 @@
+<NextSeo title="Getting Started - PortalJS" />
+
 # Getting Started
 
 Welcome to the PortalJS documentation!
@@ -50,5 +52,7 @@ Let’s try editing the starter page.
 After refreshing the page, you should see the new text:
 
 <img src="/assets/docs/editing-the-page-1.png" />
+
+Congratulations! The app is up and running and you learned how to edit a page. In the next lesson, you are going to learn how to create new datasets. 
 
 <DocsPagination next="/docs/creating-new-datasets" />

@@ -1,3 +1,5 @@
+<NextSeo title="Creating new datasets - PortalJS" />
+
 # Creating new datasets
 
 So far, the PortalJS app we created only has a single page displaying a dataset. Data catalogs and data portals generally showcase many different datasets.
@@ -62,5 +64,7 @@ List of available datasets:
 From the browser, access http://localhost:3000. You should see the following:
 
 <img src="/assets/docs/datasets-index-page.png" />
+
+At this point, the app has multiple datasets, and users can find and navigate to any dataset they want. In the next lesson, you are gonna learn how to improve this experience with search.
 
 <DocsPagination prev="/docs" next="/docs/searching-datasets" />

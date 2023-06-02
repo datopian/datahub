@@ -1,3 +1,5 @@
+<NextSeo title="Searching datasets - PortalJS" />
+
 # Searching datasets
 
 Typing out every link in the index page will get cumbersome eventually, and as the portal grows, finding the datasets you are looking for on the index page will become harder and harder, for that we will need search functionality.
@@ -101,5 +103,7 @@ List of available datasets:
 You now have a filter in your page with all possible values automatically added to it.
 
 ![](https://i.imgur.com/p2miSdg.png)
+
+In the next lesson, you are gonna learn how to display metadata on the dataset page.
 
 <DocsPagination prev="/docs/creating-new-datasets" next="/docs/showing-metadata" />
