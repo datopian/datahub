@@ -189,8 +189,8 @@ export default function ProjectPage({
                       {file.name}
                       {file.format ? `.${file.format}` : ''}
                     </h4>
-                    {file.bytes >= 5132288 && (
-                      <span>Previewing 5MB out of {size}</span>
+                    {file.bytes >= 512000 && (
+                      <span>Previewing 500KB out of {size}</span>
                     )}
                     <div className="mt-5">
                       <FlatUiTable
