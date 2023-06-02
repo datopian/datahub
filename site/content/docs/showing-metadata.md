@@ -35,6 +35,6 @@ These are the standard metadata fields that will be shown at the top of the page
 - `author`, `description`, and `modified` which gets displayed below the title
 - `files` that get displayed as a table with two columns: `File` which is linked directly to the file, and `Format` which show the file format.
 
-Feel free to experiment with these metadata fields. At this point, you might want to deploy the app, and that's what you are gonna learn in the next lesson. 
+Feel free to experiment with these metadata fields. At this point, you might want to deploy the app, and that's what you are going to learn in the next lesson. 
 
 <DocsPagination prev="/docs/searching-datasets" next="/docs/deploying-your-portaljs-app" />

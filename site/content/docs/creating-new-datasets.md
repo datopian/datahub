@@ -65,6 +65,6 @@ From the browser, access http://localhost:3000. You should see the following:
 
 <img src="/assets/docs/datasets-index-page.png" />
 
-At this point, the app has multiple datasets, and users can find and navigate to any dataset they want. In the next lesson, you are gonna learn how to improve this experience with search.
+At this point, the app has multiple datasets, and users can find and navigate to any dataset they want. In the next lesson, you are going to learn how to improve this experience with search.
 
 <DocsPagination prev="/docs" next="/docs/searching-datasets" />

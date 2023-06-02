@@ -104,6 +104,6 @@ You now have a filter in your page with all possible values automatically added 
 
 ![](https://i.imgur.com/p2miSdg.png)
 
-In the next lesson, you are gonna learn how to display metadata on the dataset page.
+In the next lesson, you are going to learn how to display metadata on the dataset page.
 
 <DocsPagination prev="/docs/creating-new-datasets" next="/docs/showing-metadata" />
