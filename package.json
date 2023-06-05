@@ -1,12 +1,12 @@
 {
   "name": "portaljs",
+  "workspaces": ["./packages/*"],
   "version": "0.0.0",
   "license": "MIT",
   "scripts": {},
   "private": true,
   "devDependencies": {
     "@babel/preset-react": "^7.14.5",
-    "@changesets/cli": "^2.26.1",
     "@nrwl/cypress": "15.9.2",
     "@nrwl/eslint-plugin-nx": "^16.0.2",
     "@nrwl/jest": "15.9.2",
