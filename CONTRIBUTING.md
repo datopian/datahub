@@ -13,7 +13,7 @@ Structure:
   - **dataset-frictionless**: Example utilizing a frictionless dataset as an example
 - **site**: the website for the project, with a landing page and the docs
 - **packages**:
-    - **portaljs-components**: the library of components for creating a data portal
+  - **portaljs-components**: the library of components for creating a data portal
 
 ## How to contribute
 
@@ -26,10 +26,11 @@ If you'd like to work on one of the issues you can:
 3. Clone the forked repository to your machine.
 4. Create a feature branch (e.g. `50-update-readme`, where `50` is the number of the related issue).
 5. Commit your changes to the feature branch.
-6. Push the feature branch to your forked repository.
-7. Create a Pull Request against the original repository.
+6. Add changeset file describing the changes. (See section below)
+7. Push the feature branch to your forked repository.
+8. Create a Pull Request against the original repository.
    - add a short description of the changes included in the PR
-8. Address review comments if requested by our demanding reviewers 😜.
+9. Address review comments if requested by our demanding reviewers 😜.
 
 If you have an idea for improvement, and it doesn't have a corresponding issue yet, simply submit a new one.
 
@@ -62,6 +63,7 @@ or you can use just:
 nx <target> <project>
 # e.g. npx nx serve ckan
 ```
+
 if you have the `nx` binary installed globally in your machine
 
 #### Running multiple tasks
@@ -109,7 +111,7 @@ To check code formatting in selected projects:
 
 ```sh
 npx nx format:check --projects=<array of projects>
-# npx nx format:check --projects=ckan,dataset-frictionless 
+# npx nx format:check --projects=ckan,dataset-frictionless
 ```
 
 To check code formatting in all projects:
@@ -124,7 +126,7 @@ To fix code formatting in selected projects:
 
 ```sh
 npx nx format:write --projects=<array projects>
-# npx nx format:write --projects=ckan,dataset-frictionless 
+# npx nx format:write --projects=ckan,dataset-frictionless
 ```
 
 To fix formatting in all projects:
@@ -174,3 +176,23 @@ To learn more see this [offical docs page](https://nx.dev/reference/nx-json).
 Each project also has it's own configuration file - `project.json`, where you can define and configure it's targets (and more).
 
 To learn more see this [offical docs page](https://nx.dev/reference/project-configuration).
+
+## Changesets and publishing packages
+
+> This monorepo is set up with changesets versioning tool. See their [github repository](https://github.com/changesets/changesets) to learn more.
+
+### What are Changesets?
+
+Changesets are files that describe the intention of a contributor to bump a version of the package according to their changes. Changeset file holds two key bits of information: a version type (following semver), and change information to be added to a changelog.
+
+### Adding changesets
+
+In the root directory of the repo, run:
+
+```
+npx changeset
+```
+
+Select the package that has been changed, the semver version that should be bumped with it and a description of your changes. Please make sure to add the most accurate but also concise information.
+
+To learn about semantic versioning standards see [this semver doc page](https://semver.org/).
