@@ -69,6 +69,10 @@ By clicking on this button, you will be redirected to a page which will allows y
 
 You have to set up `GITHUB_PATH` as an environment variable on Vercel. To do that, go to the project's page on Vercel, then click settings, look for "Environment variables" and create a new environment variable. Refer back to the [previous section](#setup-a-github-token) if you are not sure about how to create a GitHub token.
 
+### Editing the new deployment
+
+You can now clone the new repo on your machine and start changing it. Simply follow the ["How to use this example as a template" section](#how-to-use-this-example-as-a-template) skipping the first step. 
+
 > [!tip]
 > Note that whenever you push changes to the new repo these are going to be automatically deployed by Vercel.
 
