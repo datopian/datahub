@@ -6,7 +6,7 @@
   "tags": [],
   "targets": {
     "build": {
-      "executor": "@nrwl/web:rollup",
+      "executor": "@nrwl/rollup:rollup",
       "outputs": ["{options.outputPath}"],
       "options": {
         "outputPath": "packages/core/dist",
@@ -14,16 +14,6 @@
         "project": "packages/core/package.json",
         "entryFile": "packages/core/src/index.ts",
         "format": ["esm"],
-        "external": [
-          "react/jsx-runtime",
-          "react",
-          "next/link",
-          "next/head",
-          "next/router",
-          "next/dynamic",
-          "next-contentlayer",
-          "next-themes"
-        ],
         "generateExportsField": true,
         "rollupConfig": "@nrwl/react/plugins/bundle-rollup",
         "compiler": "babel",
