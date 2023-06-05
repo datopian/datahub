@@ -5,6 +5,5 @@ export default {
   transform: {
     "^.+\\.[tj]sx?$": "babel-jest",
   },
-  moduleFileExtensions: ["ts", "tsx", "js", "jsx"],
-  coverageDirectory: "../../coverage/packages/core",
+  moduleFileExtensions: ["ts", "tsx", "js", "jsx"]
 };
