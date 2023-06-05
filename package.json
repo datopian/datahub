@@ -1,11 +1,13 @@
 {
   "name": "portaljs",
-  "workspaces": [
-    "./packages/*"
-  ],
+  "workspaces": ["./packages/*"],
   "version": "0.0.0",
   "license": "MIT",
-  "scripts": {},
+  "scripts": {
+    "changeset": "changeset",
+    "prerelease": "nx affected --targets=lint,test",
+    "release": "changeset publish"
+  },
   "private": true,
   "devDependencies": {
     "@babel/preset-react": "^7.14.5",
