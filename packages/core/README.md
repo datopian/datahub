@@ -1,3 +1,3 @@
-# @flowershow/core
+# @datopian/core
 
-Core Flowershow package containing components, styles, utils etc. used by Flowershow templates.
+Core Portal.JS package containing components, styles, and utils.

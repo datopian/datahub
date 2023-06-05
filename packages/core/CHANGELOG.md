@@ -1,4 +1,4 @@
-# @flowershow/core
+# @portaljs/core
 
 ## 0.4.13
 

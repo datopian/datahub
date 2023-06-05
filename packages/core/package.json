@@ -1,18 +1,18 @@
 {
-  "name": "@flowershow/core",
-  "version": "0.4.13",
-  "description": "Core Flowershow components, configs and utils.",
+  "name": "@portaljs/core",
+  "version": "1.0.0",
+  "description": "Core Portal.JS components, configs and utils.",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/flowershow/flowershow.git",
+    "url": "git+https://github.com/datopian/portaljs.git",
     "directory": "packages/core"
   },
   "author": "Rufus Pollock",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/flowershow/flowershow/issues"
+    "url": "https://github.com/datopian/portaljs/issues"
   },
-  "homepage": "https://github.com/flowershow/flowershow#readme",
+  "homepage": "https://github.com/datopian/portaljs#readme",
   "publishConfig": {
     "access": "public"
   },
