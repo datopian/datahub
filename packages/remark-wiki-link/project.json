@@ -20,7 +20,7 @@
       }
     },
     "build": {
-      "executor": "@nrwl/web:rollup",
+      "executor": "@nrwl/rollup:rollup",
       "outputs": ["{options.outputPath}"],
       "options": {
         "entryFile": "packages/remark-wiki-link/src/index.ts",
@@ -39,24 +39,6 @@
           }
         ]
       }
-    },
-    "publish:dry": {
-      "executor": "nx:run-commands",
-      "options": {
-        "commands": ["npm publish --dry-run"],
-        "parallel": false,
-        "cwd": "packages/remark-wiki-link/dist"
-      },
-      "dependsOn": ["build"]
-    },
-    "publish": {
-      "executor": "nx:run-commands",
-      "options": {
-        "commands": ["npm publish"],
-        "parallel": false,
-        "cwd": "packages/remark-wiki-link/dist"
-      },
-      "dependsOn": ["build"]
     }
   },
   "tags": []
