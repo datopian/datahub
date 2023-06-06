@@ -57,7 +57,7 @@ function CustomApp({ Component, pageProps }: AppProps) {
         <NextSeo title="OpenSpending" />
         <Script
           strategy="afterInteractive"
-          src={`https://www.googletagmanager.com/gtag/js?id=${GA_TOKEN}`}
+          src="https://www.googletagmanager.com/gtag/js?id=G-GXZF7NRXX6"
         />
         <Script
           id="gtag-init"
@@ -67,7 +67,7 @@ function CustomApp({ Component, pageProps }: AppProps) {
           window.dataLayer = window.dataLayer || [];
           function gtag(){dataLayer.push(arguments);}
           gtag('js', new Date());
-          gtag('config', ${GA_TOKEN}, {
+          gtag('config', 'G-GXZF7NRXX6', {
             page_path: window.location.pathname,
           });
         `,

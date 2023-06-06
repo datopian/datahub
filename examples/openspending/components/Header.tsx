@@ -24,6 +24,10 @@ export function Header() {
       href: '/#datasets',
     },
     {
+      title: 'Data Stories',
+      href: '/stories',
+    },
+    {
       title: 'Blog',
       href: '/blog',
     },
@@ -157,7 +161,7 @@ function Dropdown({ navItem }: { navItem: any }) {
                 >
                   <div className="py-1">
                     {navItem.children.map((item) => (
-                      <Menu.Item>
+                      <Menu.Item key={item.href}>
                         {({ active }) => (
                           <a
                             key={item.href}
