@@ -28,7 +28,7 @@ Future support:
 ## Installation
 
 ```bash
-npm install @flowershow/remark-wiki-link
+npm install @portaljs/remark-wiki-link
 ```
 
 ## Usage
@@ -36,7 +36,7 @@ npm install @flowershow/remark-wiki-link
 ```javascript
 import unified from "unified";
 import markdown from "remark-parse";
-import wikiLinkPlugin from "@flowershow/remark-wiki-link";
+import wikiLinkPlugin from "@portaljs/remark-wiki-link";
 
 const processor = unified().use(markdown).use(wikiLinkPlugin);
 ```
@@ -114,8 +114,8 @@ If you're using shortened path format for your Obsidian wiki links, in order to 
 ```javascript {4,6,11-12}
 import unified from "unified";
 import markdown from "remark-parse";
-import wikiLinkPlugin from "@flowershow/remark-wiki-link";
-import { getPermalinks } from "@flowershow/remark-wiki-link";
+import wikiLinkPlugin from "@portaljs/remark-wiki-link";
+import { getPermalinks } from "@portaljs/remark-wiki-link";
 
 const permalinks = await getPermalinks("path-to-your-content-folder");
 
