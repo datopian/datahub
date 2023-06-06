@@ -1,4 +1,4 @@
-# remark-callouts
+# @portaljs/remark-callouts
 
 Remark plugin to add support for blockquote-based callouts/admonitions similar to the approach of [Obsidian](https://help.obsidian.md/How+to/Use+callouts) and [Microsoft Learn](https://learn.microsoft.com/en-us/contribute/markdown-reference#alerts-note-tip-important-caution-warning) style.
 
