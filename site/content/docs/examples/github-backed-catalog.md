@@ -23,33 +23,58 @@ Below are some screenshots:
 
 ## How to use this example as a template
 
-- Create a new app with `create-next-app`:
-```
+> [!tip]
+> You can also create a new project by clicking on the "Deploy" button below. Vercel will clone the example on a new repo under your user or organization on GitHub and set up a deployment  for it.
+> Then, you can clone the new repo on your machine and start editing it. 
+
+### Create a new app with `create-next-app`
+
+Run the following commands:
+
+
+```bash
 npx create-next-app <app-name> --example https://github.com/datopian/portaljs/tree/main/examples/github-backed-catalog
 cd <app-name>
 ```
 
-- This project uses the github api, which for anonymous users will cap at 50 requests per hour, so you might want to get a [Personal Access Token](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/creating-a-personal-access-token) and add it to a `.env` file inside the folder like so
+### Setup a GitHub token
 
-```
+This project uses the GitHub API, which for anonymous users will cap at 50 requests per hour, so you might want to get a [Personal Access Token](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/creating-a-personal-access-token) and add it to a `.env` file inside the folder, like so:
+
+```bash
 GITHUB_PAT=<github token>
 ```
 
-- Edit the file `datasets.json` to your liking, some examples can be found inside this [repo](https://github.com/datasets)
-- Run the app using:
+### Setup the datasets list
 
-```
+The `datasets.json` file serves as a list of datasets that should be in your data portal. Edit the this file to your liking. Some examples can be found inside this [repo](https://github.com/datasets):
+
+### Run the app
+
+Run the app by executing the following command:
+
+```bash
 npm run dev
 ```
 
-Congratulations, you now have something similar to this running on `http://localhost:3000`
+Congratulations, your new app is now running at http://localhost:3000.
 
 ## Deployment
 
 [![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fdatopian%2Fportaljs%2Ftree%2Fmain%2Fexamples%2Fgithub-backed-catalog)
 
-By clicking on this button, you will be redirected to a page which will allow you to clone the content into your own github/gitlab/bitbucket account and automatically deploy everything.
+By clicking on this button, you will be redirected to a page which will allows you to clone the example into your own GitHub/GitLab/BitBucket account and automatically deploy it.
 
+### GitHub token
+
+You have to set up `GITHUB_PATH` as an environment variable on Vercel. To do that, go to the project's page on Vercel, then click settings, look for "Environment variables" and create a new environment variable. Refer back to the [previous section](#setup-a-github-token) if you are not sure about how to create a GitHub token.
+
+### Editing the new deployment
+
+You can now clone the new repo on your machine and start changing it. Simply follow the ["How to use this example as a template" section](#how-to-use-this-example-as-a-template) skipping the first step. 
+
+> [!tip]
+> Note that whenever you push changes to the new repo these are going to be automatically deployed by Vercel.
 
 ## Structure of `datasets.json`
 
