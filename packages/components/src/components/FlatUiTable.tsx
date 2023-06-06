@@ -81,7 +81,7 @@ const TableInner: React.FC<FlatUiTableProps> = ({
     { enabled: rawCsv ? true : !!csvString }
   );
   if (isParsing || isDownloadingCSV)
-    <div className="w-full">
+    <div className="w-full flex justify-center items-center h-[500px]">
       <LoadingSpinner />
     </div>;
   if (parsedData)
@@ -90,5 +90,9 @@ const TableInner: React.FC<FlatUiTableProps> = ({
         <Grid data={parsedData.data} />
       </div>
     );
-  return <LoadingSpinner />;
+  return (
+    <div className="w-full flex justify-center items-center h-[500px]">
+      <LoadingSpinner />
+    </div>
+  );
 };
