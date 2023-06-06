@@ -1,10 +1,10 @@
 {
-  "name": "@flowershow/remark-wiki-link",
-  "version": "1.2.0",
+  "name": "@portaljs/remark-wiki-link",
+  "version": "1.0.0",
   "description": "Parse and render wiki-style links in markdown especially Obsidian style links.",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/flowershow/flowershow.git",
+    "url": "git+https://github.com/datopian/portaljs.git",
     "directory": "packages/remark-wiki-link"
   },
   "keywords": [
@@ -17,9 +17,9 @@
   "author": "Rufus Pollock",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/flowershow/flowershow/issues"
+    "url": "https://github.com/datopian/portaljs/issues"
   },
-  "homepage": "https://github.com/flowershow/flowershow#readme",
+  "homepage": "https://github.com/datopian/portaljs#readme",
   "publishConfig": {
     "access": "public"
   },
