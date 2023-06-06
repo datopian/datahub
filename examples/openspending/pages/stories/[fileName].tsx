@@ -1,11 +1,10 @@
 import fs from 'fs';
 import clientPromise from '@/lib/mddb';
 import { GetStaticProps } from 'next';
-import Layout from '../components/_shared/Layout';
-import ReactMarkdown from 'react-markdown';
+import Layout from '../../components/_shared/Layout';
 import { formatDate } from '@/utils/formatDate';
-import rehypeRaw from "rehype-raw";
-import matter from 'gray-matter'
+import parse from '../../lib/markdown';
+import DataRichDocument from '../../components/DataRichDocument';
 
 export default function Page({ source, meta }) {
   return (
@@ -24,7 +23,7 @@ export default function Page({ source, meta }) {
           </div>
         </header>
         <section>
-          <ReactMarkdown rehypePlugins={[rehypeRaw]}>{source}</ReactMarkdown>
+          <DataRichDocument source={source} />
         </section>
       </article>
     </Layout>
@@ -32,16 +31,14 @@ export default function Page({ source, meta }) {
 }
 
 export const getStaticProps: GetStaticProps = async ({ params }) => {
-  const urlPath = params?.slug ? (params.slug as string[]).join('/') : '/';
-
   const mddb = await clientPromise;
-  const dbFile = await mddb.getFileByUrl(urlPath);
+  const dbFile = await mddb.getFileByUrl('stories/' + params?.fileName);
 
   let source = fs.readFileSync(dbFile.file_path, { encoding: 'utf-8' });
-  let {content } = matter(source);
+  let { mdxSource } = await parse(source, '.mdx', {});
   return {
     props: {
-      source: content,
+      source: mdxSource,
       meta: dbFile.metadata,
     },
   };
@@ -49,14 +46,13 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
 
 export async function getStaticPaths() {
   const mddb = await clientPromise;
-  let allDocuments = await mddb.getFiles({ extensions: ['md', 'mdx'] });
+  let allDocuments = await mddb.getFiles({ extensions: ['mdx'], folder: 'stories' });
 
   const paths = allDocuments
     .filter((page) => page.metadata?.isDraft !== true)
-    .filter((page) => !page.file_path.startsWith('content/stories/'))
     .map((page) => {
-      const parts = page.url_path!.split('/');
-      return { params: { slug: parts } };
+      const parts = page.url_path!.split('/').slice(-1)[0];
+      return { params: { fileName: parts } };
     });
 
   return {
