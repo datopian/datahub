@@ -24,6 +24,10 @@ export function Header() {
       href: '/#datasets',
     },
     {
+      title: 'Data Stories',
+      href: '/stories',
+    },
+    {
       title: 'Blog',
       href: '/blog',
     },
