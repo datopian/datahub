@@ -18,7 +18,7 @@
     "@flowershow/remark-embed": "^1.0.0",
     "@flowershow/remark-wiki-link": "^1.1.2",
     "@opentelemetry/api": "^1.4.0",
-    "@portaljs/components": "^0.1.0",
+    "@portaljs/components": "^0.1.8",
     "gray-matter": "^4.0.3",
     "hastscript": "^7.2.0",
     "mdx-mermaid": "2.0.0-rc7",

@@ -36,7 +36,7 @@
     "@headlessui/react": "^1.7.14",
     "@heroicons/react": "^2.0.18",
     "@portaljs/ckan": "^0.0.2",
-    "@portaljs/components": "0.1.7",
+    "@portaljs/components": "^0.1.8",
     "@tailwindcss/typography": "^0.5.9",
     "@types/node": "20.2.3",
     "@types/react": "18.2.6",
