@@ -90,5 +90,5 @@ const TableInner: React.FC<FlatUiTableProps> = ({
         <Grid data={parsedData.data} />
       </div>
     );
-  return <Spinning />;
+  return <LoadingSpinner />;
 };
