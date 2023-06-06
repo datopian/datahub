@@ -14,7 +14,7 @@
     "test": {
       "executor": "nx:run-commands",
       "options": {
-        "command": "TS_NODE_PROJECT='packages/remark-callouts/tsconfig.spec.json' mocha --config packages/remark-callouts/.mocharc.yaml packages/remark-callouts/test/remark-callouts.spec.ts"
+        "command": "TS_NODE_PROJECT='packages/remark-callouts/tsconfig.spec.json' mocha --config packages/remark-callouts/.mocharc.yaml packages/remark-callouts/test/**"
       }
     },
     "build": {
