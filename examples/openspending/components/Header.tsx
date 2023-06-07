@@ -54,6 +54,10 @@ export function Header() {
       ],
     },
     {
+      title: 'Contributing',
+      href: '/contributing',
+    },
+    {
       title: 'Resources',
       href: '/resources',
       children: [
