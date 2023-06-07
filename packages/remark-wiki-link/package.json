@@ -23,6 +23,7 @@
   "publishConfig": {
     "access": "public"
   },
+  "files": ["dist"],
   "dependencies": {
     "mdast-util-to-markdown": "^1.5.0",
     "mdast-util-wiki-link": "^0.0.2",
