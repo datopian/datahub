@@ -29,15 +29,7 @@
         "tsConfig": "packages/remark-wiki-link/tsconfig.lib.json",
         "project": "packages/remark-wiki-link/package.json",
         "format": ["esm", "cjs"],
-        "external": ["mdast-util-wiki-link"],
-        "generateExportsField": true,
-        "assets": [
-          {
-            "glob": "packages/remark-wiki-link/README.md",
-            "input": ".",
-            "output": "."
-          }
-        ]
+        "external": ["mdast-util-wiki-link"]
       }
     }
   },
