@@ -1,0 +1,10 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "types": ["node"],
+    "outDir": "dist",
+    "forceConsistentCasingInFileNames": true
+  },
+  "exclude": ["**/*.spec.ts"],
+  "include": ["**/*.ts", "**/*.js"]
+}
