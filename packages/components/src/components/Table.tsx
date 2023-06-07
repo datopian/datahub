@@ -23,6 +23,7 @@ import React, { useEffect, useMemo, useState } from 'react';
 import parseCsv from '../lib/parseCsv';
 import DebouncedInput from './DebouncedInput';
 import loadData from '../lib/loadData';
+import LoadingSpinner from './LoadingSpinner';
 
 export type TableProps = {
   data?: Array<{ [key: string]: number | string }>;
@@ -39,6 +40,8 @@ export const Table = ({
   url = '',
   fullWidth = false,
 }: TableProps) => {
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+
   if (csv) {
     const out = parseCsv(csv);
     ogData = out.rows;
@@ -77,15 +80,22 @@ export const Table = ({
 
   useEffect(() => {
     if (url) {
+      setIsLoading(true);
+      //  TODO: exception handling. What if the file doesn't exist? What if fetching was not possible?
       loadData(url).then((data) => {
         const { rows, fields } = parseCsv(data);
         setData(rows);
         setCols(fields);
+        setIsLoading(false);
       });
     }
   }, [url]);
 
-  return (
+  return isLoading ? (
+    <div className="w-full h-full min-h-[500px] flex items-center justify-center">
+      <LoadingSpinner />
+    </div>
+  ) : (
     <div className={`${fullWidth ? 'w-[90vw] ml-[calc(50%-45vw)]' : 'w-full'}`}>
       <DebouncedInput
         value={globalFilter ?? ''}

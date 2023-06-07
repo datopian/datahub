@@ -19,9 +19,18 @@ const meta: Meta = {
       description:
         'Name of the X axis on the data. Required when the "data" parameter is an URL.',
     },
+    xAxisType: {
+      description: 'Type of the X axis',
+    },
+    xAxisTimeUnit: {
+      description: 'Time unit of the X axis (optional)',
+    },
     yAxis: {
       description:
         'Name of the Y axis on the data. Required when the "data" parameter is an URL.',
+    },
+    yAxisType: {
+      description: 'Type of the Y axis',
     },
     fullWidth: {
       description:
