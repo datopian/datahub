@@ -24,6 +24,7 @@
   "publishConfig": {
     "access": "public"
   },
+  "files": ["dist"],
   "dependencies": {
     "mdast-util-from-markdown": "^1.2.0",
     "svg-parser": "^2.0.4",
