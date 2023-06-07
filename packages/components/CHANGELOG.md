@@ -1,5 +1,11 @@
 # @portaljs/components
 
+## 0.1.9
+
+### Patch Changes
+
+- [#933](https://github.com/datopian/portaljs/pull/933) [`683159d`](https://github.com/datopian/portaljs/commit/683159da02708ce520e9aad9707f2b96b598ec8b) Thanks [@demenech](https://github.com/demenech)! - More params added to <LineChart />, loading spinners added to <Table /> and <LineChart />, minor fixes
+
 ## 0.1.8
 
 ### Patch Changes
