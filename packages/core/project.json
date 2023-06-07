@@ -17,13 +17,7 @@
         "generateExportsField": true,
         "rollupConfig": "@nrwl/react/plugins/bundle-rollup",
         "compiler": "babel",
-        "assets": [
-          {
-            "glob": "packages/core/README.md",
-            "input": ".",
-            "output": "."
-          }
-        ]
+        "assets": []
       }
     },
     "lint": {
