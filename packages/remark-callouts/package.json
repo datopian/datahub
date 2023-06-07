@@ -1,6 +1,6 @@
 {
   "name": "@portaljs/remark-callouts",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Remark plugin to add support for blockquote-based admonitions/callouts",
   "repository": {
     "type": "git",
@@ -24,7 +24,9 @@
   "publishConfig": {
     "access": "public"
   },
-  "files": ["dist"],
+  "files": [
+    "dist"
+  ],
   "dependencies": {
     "mdast-util-from-markdown": "^1.2.0",
     "svg-parser": "^2.0.4",

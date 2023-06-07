@@ -1,6 +1,6 @@
 {
   "name": "@portaljs/core",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Core Portal.JS components, configs and utils.",
   "repository": {
     "type": "git",
@@ -16,7 +16,9 @@
   "publishConfig": {
     "access": "public"
   },
-  "files": ["dist"],
+  "files": [
+    "dist"
+  ],
   "type": "module",
   "main": "./dist/index.js",
   "dependencies": {
