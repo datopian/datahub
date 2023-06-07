@@ -1,13 +1,11 @@
 {
   "name": "portaljs",
-  "workspaces": [
-    "./packages/*"
-  ],
+  "workspaces": ["./packages/*"],
   "version": "0.0.0",
   "license": "MIT",
   "scripts": {
     "changeset": "changeset",
-    "prerelease": "nx affected --targets=lint,test",
+    "prerelease": "nx affected --targets=lint,test,build",
     "release": "changeset publish"
   },
   "private": true,
