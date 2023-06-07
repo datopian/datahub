@@ -28,13 +28,7 @@
         "project": "packages/remark-callouts/package.json",
         "format": ["esm", "cjs"],
         "extractCss": true,
-        "generateExportsField": true,
         "assets": [
-          {
-            "glob": "packages/remark-callouts/README.md",
-            "input": ".",
-            "output": "."
-          },
           {
             "glob": "packages/remark-callouts/styles.css",
             "input": ".",
