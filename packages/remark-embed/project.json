@@ -29,15 +29,7 @@
         "tsConfig": "packages/remark-embed/tsconfig.lib.json",
         "project": "packages/remark-embed/package.json",
         "format": ["esm", "cjs"],
-        "external": ["unist-util-visit"],
-        "generateExportsField": true,
-        "assets": [
-          {
-            "glob": "packages/remark-embed/README.md",
-            "input": ".",
-            "output": "."
-          }
-        ]
+        "external": ["unist-util-visit"]
       }
     }
   },
