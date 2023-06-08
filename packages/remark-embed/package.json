@@ -23,7 +23,7 @@
     "access": "public"
   },
   "scripts": {
-    "prepublish": "nx build remark-embed"
+    "prepare": "nx build remark-embed"
   },
   "files": [
     "dist"

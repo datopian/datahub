@@ -17,7 +17,7 @@
     "access": "public"
   },
   "scripts": {
-    "prepublish": "nx build core"
+    "prepare": "nx build core"
   },
   "files": [
     "dist"

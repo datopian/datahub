@@ -24,7 +24,7 @@
     "access": "public"
   },
   "scripts": {
-    "prepublish": "nx build remark-wiki-link"
+    "prepare": "nx build remark-wiki-link"
   },
   "files": [
     "dist"

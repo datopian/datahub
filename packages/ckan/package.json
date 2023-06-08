@@ -14,7 +14,7 @@
     "build": "tsc && vite build && npm run build-tailwind",
     "lint": "eslint src --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "build-tailwind": "NODE_ENV=production npx tailwindcss -o ./dist/styles.css --minify",
-    "prepublish": "npm run build"
+    "prepare": "npm run build"
   },
   "peerDependencies": {
     "react": "^18.2.0",

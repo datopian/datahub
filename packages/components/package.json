@@ -17,7 +17,7 @@
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build",
     "build-tailwind": "NODE_ENV=production npx tailwindcss -o ./dist/styles.css --minify",
-    "prepublish": "npm run build"
+    "prepare": "npm run build"
   },
   "peerDependencies": {
     "react": "^18.2.0",

@@ -25,7 +25,7 @@
     "access": "public"
   },
   "scripts": {
-    "prepublish": "nx build remark-callouts"
+    "prepare": "nx build remark-callouts"
   },
   "files": [
     "dist"
