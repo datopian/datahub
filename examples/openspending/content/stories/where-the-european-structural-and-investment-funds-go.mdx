@@ -48,8 +48,11 @@ SI,EUR,4576151396.24,603377015.25,0.0
 SK,EUR,12295960193.92,20697057515.74,0.0
 UK,GBP,11028613316.0,5414125414.9,2821099889.98" />
 
+Quick observations:
+
 - The Czech Republic has the EU cofinancing amount of CZK 2,731,165,279,234 which is approximately EUR 115 billions.
 - Poland has the EU cofinancing amount of PLN 302,958,765,476 which is approximately EUR 67 billions.
+- Other countries that use local currencies do not have significant amounts when comparing to above two nations.
 
 So let's convert all currencies to ~EUR but only include 'eu_cofinancing_amount' values as we will use it for comparison:
 
@@ -81,5 +84,94 @@ RO,19970864938.12
 SE,0.0
 SI,4576151396.24
 SK,12295960193.92
-UK,12829255012.10
-" />
+UK,12829255012.10" />
+
+With this data table we can easily see top countries by funding. Let's build a quick visualization to make it even more obvious:
+
+<Vega
+  data={{
+    table: [
+      {
+        x: "LU",
+        y: 30852529.89
+      },
+      {
+        x: "DK",
+        y: 492017672
+      },
+      {
+        x: "BE",
+        y: 858388537.42
+      },
+      {
+        x: "DE",
+        y: 912803359.21
+      },
+      {
+        x: "FI",
+        y: 2858282488
+      },
+      {
+        x: "SI",
+        y: 4576151396.24
+      },
+      {
+        x: "EE",
+        y: 5419641772
+      },
+      {
+        x: "LT",
+        y: 6750675528.74
+      },
+      {
+        x: "SK",
+        y: 12295960193.92
+      },
+      {
+        x: "UK",
+        y: 12829255012.1
+      },
+      {
+        x: "FR",
+        y: 15027864492.94
+      },
+      {
+        x: "RO",
+        y: 19970864938.12
+      },
+      {
+        x: "PT",
+        y: 23800568868.02
+      },
+      {
+        x: "IT",
+        y: 34860253672.98
+      },
+      {
+        x: "PL",
+        y: 67537688711
+      },
+      {
+        x: "CZ",
+        y: 115591108113
+      }
+    ]
+  }}
+  spec={{
+    $schema: 'https://vega.github.io/schema/vega-lite/v4.json',
+    data: {
+      name: 'table'
+    },
+    encoding: {
+      x: {
+        field: 'x',
+        type: 'ordinal'
+      },
+      y: {
+        field: 'y',
+        type: 'quantitative'
+      }
+    },
+    mark: 'bar'
+  }}
+/>
