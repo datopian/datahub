@@ -5,7 +5,7 @@
   "license": "MIT",
   "scripts": {
     "changeset": "changeset",
-    "prerelease": "nx affected --targets=lint,test,build",
+    "prerelease": "nx run-many --targets=lint,test,build --projects=tag:test",
     "release": "changeset publish"
   },
   "private": true,
