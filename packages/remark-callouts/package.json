@@ -42,6 +42,6 @@
       "import": "./dist/index.js",
       "require": "./dist/index.cjs"
     },
-    "./styles.css": "./styles.css"
+    "./styles.css": "./dist/styles.css"
   }
 }
