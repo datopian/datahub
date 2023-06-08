@@ -1,6 +1,7 @@
 ---
 title: Where the European Structural and Investment Funds go?
 date: 2023-06-08
+authors: ['Anuar Ustayev']
 ---
 
 European Structural and Investment Funds (ESIF) is a financial instrument used by the European Union (EU) to support regional development and economic cohesion among its member states. The ESIF combines several funds to provide financial assistance to regions and cities in the EU with the aim of reducing economic disparities and promoting sustainable growth.
@@ -58,7 +59,7 @@ SI,4576151396.24
 SK,12295960193.92
 UK,12829255012.10" />
 
-With this data table we can easily see top countries by funding. Let's build a quick visualization to make it even more obvious:
+With this data table we can easily see top countries by funding. Note that you can use the table component above to sort values by values in 'eu_cofinancing_amount' column which helps you to quickly see top countries. Let's build a quick visualization to make it even more obvious:
 
 <Vega
   data={{
@@ -147,3 +148,11 @@ With this data table we can easily see top countries by funding. Let's build a q
     mark: 'bar'
   }}
 />
+
+Based on the bar chart above we can conclude that the following 3 countries have received the most amounts from ESIF fund:
+
+1. Czech Republic - EUR ~116b.
+2. Poland - EUR ~68b.
+3. Italy - EUR ~35b.
+
+_This data story was created by using Datopian's PortalJS framework. You can learn more about the framework by visiting https://portaljs.org/_
