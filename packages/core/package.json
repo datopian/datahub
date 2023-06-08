@@ -16,6 +16,9 @@
   "publishConfig": {
     "access": "public"
   },
+  "scripts": {
+    "prepublish": "nx build core"
+  },
   "files": [
     "dist"
   ],
