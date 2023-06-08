@@ -1,5 +1,11 @@
 # @portaljs/components
 
+## 0.1.10
+
+### Patch Changes
+
+- [`40d80d2`](https://github.com/datopian/portaljs/commit/40d80d2282bf8464c1aafb393975065078ad9ea3) Thanks [@olayway](https://github.com/olayway)! - Fix: missing files in the published package.
+
 ## 0.1.9
 
 ### Patch Changes
