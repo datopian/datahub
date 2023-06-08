@@ -1,5 +1,11 @@
 # @portaljs/remark-callouts
 
+## 1.0.4
+
+### Patch Changes
+
+- [`affca05`](https://github.com/datopian/portaljs/commit/affca0505851a87a4295045b60a78926d34eef78) Thanks [@olayway](https://github.com/olayway)! - Fix: incorrect path to styles.css in package.json exports field.
+
 ## 1.0.3
 
 ### Patch Changes
