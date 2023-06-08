@@ -16,6 +16,70 @@ The data provides insights into the financial assistance provided by the Europea
 
 <FlatUiTable url="https://storage.openspending.org/complete-european-esif-funds-beneficiaries-2007-2020/eu-esif-funds-beneficiaries-2007-2020-full.csv" />
 
-After processing the available datasets we have derived an aggregated data resource:
+After processing the available datasets we have derived an aggregated data resource that groups data by country which enables us to understand where is the most funding went between 2007 and 2020. Notice that maximum amounts in each column are highlighted in the table but they might be in local currencies so check the 'currency' field:
 
-<FlatUiTable url="https://storage.openspending.org/eu-esif-funds-beneficiaries-2007-2020-full-aggregated-by-country-sorted.csv" />
+<FlatUiTable rawCsv="beneficiary_country_code,currency,eu_cofinancing_amount,total_amount_eligible,eu_cofinancing_amount_eligible
+AT,EUR,0.0,251881540.85999998,0.0
+BE,EUR,858388537.42,1812299153.02,3499891.69
+BG,EUR,0.0,0.0,0.0
+CY,EUR,0.0,733589369.24,0.0
+CZ,CZK,2731165279233.54,48011431146.78,1931220581393.95
+DE,EUR,912803359.21,18474104815.33,291905777.56
+DK,DKK,3665372950.47,2055800683.0,945817621.0
+EE,EUR,5419641772.0,0.0,0.0
+EL,EUR,0.0,17838572754.83,0.0
+ES,EUR,0.0,78967640596.06999,0.0
+FI,EUR,2858282488.0,164451634.76,3119958801.69
+FR,EUR,15027864492.94,1169057981.58,0.0
+HR,HRK,0.0,13524621721.7,0.0
+HU,HUF,0.0,5454631442236.0,0.0
+IE,EUR,0.0,0.0,0.0
+IT,EUR,34860253672.98,110377523161.44,31686254104.0
+LT,EUR,6750675528.74,1848018079.63,7142618169.7
+LU,EUR,30852529.89,68478393.46,0.0
+LV,EUR,0.0,1357261225.98,1137691776.0
+MT,EUR,0.0,133841971.39,0.0
+NL,EUR,0.0,2595393607.0,1851272010.0
+PL,PLN,302958765476.18,45400339989.659996,28879244037.91
+PT,EUR,23800568868.02,43399843857.55,5570797378.57
+RO,EUR,19970864938.12,0.0,0.0
+SE,SEK,0.0,4354438151.0,0.0
+SI,EUR,4576151396.24,603377015.25,0.0
+SK,EUR,12295960193.92,20697057515.74,0.0
+UK,GBP,11028613316.0,5414125414.9,2821099889.98" />
+
+- The Czech Republic has the EU cofinancing amount of CZK 2,731,165,279,234 which is approximately EUR 115 billions.
+- Poland has the EU cofinancing amount of PLN 302,958,765,476 which is approximately EUR 67 billions.
+
+So let's convert all currencies to ~EUR but only include 'eu_cofinancing_amount' values as we will use it for comparison:
+
+<FlatUiTable rawCsv="beneficiary_country_code,eu_cofinancing_amount
+AT,0.0
+BE,858388537.42
+BG,0.0
+CY,0.0
+CZ,115591108113
+DE,912803359.21
+DK,492017672
+EE,5419641772.0
+EL,0.0
+ES,0.0
+FI,2858282488.0
+FR,15027864492.94
+HR,0.0
+HU,0.0
+IE,0.0
+IT,34860253672.98
+LT,6750675528.74
+LU,30852529.89
+LV,0.0
+MT,0.0
+NL,0.0
+PL,67537688711
+PT,23800568868.02
+RO,19970864938.12
+SE,0.0
+SI,4576151396.24
+SK,12295960193.92
+UK,12829255012.10
+" />
