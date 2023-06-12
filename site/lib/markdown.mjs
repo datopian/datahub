@@ -7,7 +7,7 @@ import remarkGfm from "remark-gfm";
 import remarkMath from "remark-math";
 import remarkSmartypants from "remark-smartypants";
 import remarkToc from "remark-toc";
-import remarkWikiLink from "@flowershow/remark-wiki-link";
+import remarkWikiLink from "@portaljs/remark-wiki-link";
 import rehypeAutolinkHeadings from "rehype-autolink-headings";
 import rehypeKatex from "rehype-katex";
 import rehypeSlug from "rehype-slug";
