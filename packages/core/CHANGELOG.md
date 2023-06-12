@@ -1,5 +1,11 @@
 # @portaljs/core
 
+## 1.0.4
+
+### Patch Changes
+
+- [`6bf6c8fa`](https://github.com/datopian/portaljs/commit/6bf6c8faf4eefc2b0a7f309d83ba8aac19141bb7) Thanks [@olayway](https://github.com/olayway)! - Bump mdx-mermaid to v2.0.0-rc7 as a workaround for [mermaid import tag showing at the top of pages as plain text](https://github.com/sjwall/mdx-mermaid/issues/88), and move it to peer-dependencies.
+
 ## 1.0.3
 
 ### Patch Changes
