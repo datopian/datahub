@@ -3,8 +3,8 @@
     "baseUrl": ".",
     "paths": {
       "@portaljs/core": ["node_modules/@portaljs/core/dist/src"],
-      "@flowershow/remark-callouts": [
-        "node_modules/@flowershow/remark-callouts/dist/src"
+      "@portaljs/remark-callouts": [
+        "node_modules/@portaljs/remark-callouts/dist/src"
       ],
       "@flowershow/remark-embed": [
         "node_modules/@flowershow/remark-embed/dist/src"
