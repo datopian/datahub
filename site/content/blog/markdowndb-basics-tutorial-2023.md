@@ -45,8 +45,8 @@ MarkdownDB is a javascript library for treating markdown files as a database -- 
 Once we have prepared our markdown files, we can store them (or more precisely - their metadata) in a database, so that we can then query it later for specific project files.
 
 ```bash
-# npx @flowershow/markdowndb <path-to-folder-with-md-files>
-npx @flowershow/markdowndb ./projects
+# npx mddb <path-to-folder-with-md-files>
+npx mddb ./projects
 ```
 
 The above command will output a `markdown.db` file in the directory where it was executed. So, in our case, the folder structure will look like this:
@@ -108,16 +108,16 @@ cd projects-list
 npm init -y
 ```
 
-Then, let's install the `@flowershow/markdowndb` package:
+Then, let's install the `mddb` package:
 
 ```bash
-npm install @flowershow/markdowndb
+npm install mddb
 ```
 
 Now, let's create a new file `index.js` and add the following code:
 
 ```js
-import { MarkdownDB } from '@flowershow/markdowndb';
+import { MarkdownDB } from 'mddb';
 
 // change this to the path to your markdown.db file
 const dbPath = 'markdown.db';
@@ -141,7 +141,7 @@ process.exit(0);
 
 Since we're using ES6 modules, we also need to add `"type": "module"` to our `package.json` file.
 
-Before we run the above script, we need to make sure that the `dbPath` variable is pointing to our `markdown.db` file. If you want to store the database outside of your project folder, you can update the `dbPath` variable to point to the correct location. If you want to have it inside your project folder, you can copy it there, or simply re-run the `npx @flowershow/markdowndb <path-to-markdown-folder>` command from within your project folder.
+Before we run the above script, we need to make sure that the `dbPath` variable is pointing to our `markdown.db` file. If you want to store the database outside of your project folder, you can update the `dbPath` variable to point to the correct location. If you want to have it inside your project folder, you can copy it there, or simply re-run the `npx mddb` <path-to-markdown-folder>` command from within your project folder.
 
 Now, let's run the script:
 
@@ -181,7 +181,7 @@ forks: 0
 After adding the metadata, we need to re-index our markdown files into the database:
 
 ```bash
-npx @flowershow/markdowndb ../projects
+npx mddb ../projects
 ```
 
 Now, if we run our script again, we'll see that the `metadata` field in the output contains the metadata we've added to our project files:
@@ -215,7 +215,7 @@ npm install columnify
 And then we'll update our `index.js` file:
 
 ```js {2,16-38}
-import { MarkdownDB } from '@flowershow/markdowndb';
+import { MarkdownDB } from 'mddb';
 import columnify from 'columnify';
 
 const dbPath = 'markdown.db';
