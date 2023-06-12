@@ -13,7 +13,7 @@ mkdir content
 Install [MarkdownDB](https://github.com/datopian/markdowndb) package:
 
 ```
-npm i @flowershow/markdowndb
+npm i mddb
 ```
 
 And add the following to your `package.json`:
@@ -23,7 +23,7 @@ And add the following to your `package.json`:
   "scripts": {
     "mddb": "mddb <path-to-your-content-folder>",
     "prebuild": "npm run mddb"
-  },
+  }
 }
 ```
 
@@ -33,16 +33,16 @@ Now, once the data is in the database, you can add the following script to your 
 
 ```ts
 // lib/mddb.ts
-import { MarkdownDB } from "@flowershow/markdowndb";
+import { MarkdownDB } from 'mddb;
 
 // path to the markdown.db file created by the mddb script
-const dbPath = "markdown.db";
+const dbPath = 'markdown.db';
 
 const client = new MarkdownDB({
-    client: "sqlite3",
-    connection: {
-        filename: dbPath,
-    },
+  client: 'sqlite3',
+  connection: {
+    filename: dbPath,
+  },
 });
 
 const clientPromise = client.init();
@@ -53,12 +53,12 @@ export default clientPromise;
 Now you can import it across your project to query the database, e.g.:
 
 ```ts
-import clientPromise from "@/lib/mddb";
+import clientPromise from '@/lib/mddb';
 
 const mddb = await clientPromise;
 const blogs = await mddb.getFiles({
-  folder: "blog",
-  extensions: ["md", "mdx"],
+  folder: 'blog',
+  extensions: ['md', 'mdx'],
 });
 ```
 
@@ -70,13 +70,12 @@ Install [next-mdx-remote](https://github.com/hashicorp/next-mdx-remote) package,
 npm i next-mdx-remote
 ```
 
-Create the following basic parser for your markdown files, e.g. in  `/lib/markdown.ts`:
+Create the following basic parser for your markdown files, e.g. in `/lib/markdown.ts`:
 
 ```ts
-import matter from "gray-matter";
-import remarkGfm from "remark-gfm";
-import { serialize } from "next-mdx-remote/serialize";
-
+import matter from 'gray-matter';
+import remarkGfm from 'remark-gfm';
+import { serialize } from 'next-mdx-remote/serialize';
 
 const parse = async function (source) {
   const { content } = matter(source);
@@ -93,17 +92,16 @@ const parse = async function (source) {
           // ... your plugins
         ],
         format,
-      }
+      },
     }
   );
 
   return {
-    mdxSource
+    mdxSource,
   };
 };
 
 export default parse;
-
 ```
 
 ## Import, parse and render your markdown files
@@ -111,59 +109,55 @@ export default parse;
 Create a page in the `/pages` folder that will render your markdown content, e.g. `pages/blog/[[...slug]].tsx`:
 
 ```tsx
-import fs from "fs";
+import fs from 'fs';
 
-import { MdxRemote } from "next-mdx-remote";
-import clientPromise from "@/lib/mddb.mjs";
-import parse from "@/lib/markdown";
-
+import { MdxRemote } from 'next-mdx-remote';
+import clientPromise from '@/lib/mddb.mjs';
+import parse from '@/lib/markdown';
 
 export default function Page({ source }) {
-    source = JSON.parse(source);
+  source = JSON.parse(source);
 
-    return (
-        <>
-            <MdxRemote source={source} />
-        </>
-    );
+  return (
+    <>
+      <MdxRemote source={source} />
+    </>
+  );
 }
 
 // Import metadata of a file matching the static path and return its parsed source and frontmatter object
 export const getStaticProps = async ({ params }) => {
-    const urlPath = params?.slug ? (params.slug as string[]).join("/") : "/";
+  const urlPath = params?.slug ? (params.slug as string[]).join('/') : '/';
 
-    const mddb = await clientPromise;
-    const dbFile = await mddb.getFileByUrl(urlPath);
-    const filePath = dbFile!.file_path;
-    // const frontMatter = dbFile!.metadata ?? {};
+  const mddb = await clientPromise;
+  const dbFile = await mddb.getFileByUrl(urlPath);
+  const filePath = dbFile!.file_path;
+  // const frontMatter = dbFile!.metadata ?? {};
 
-    const source = fs.readFileSync(filePath, { encoding: "utf-8" });
-    const { mdxSource } = await parse(source, "mdx", {});
+  const source = fs.readFileSync(filePath, { encoding: 'utf-8' });
+  const { mdxSource } = await parse(source, 'mdx', {});
 
-    return {
-        props: {
-            source: JSON.stringify(mdxSource),
-            // frontMatter
-        },
-    };
+  return {
+    props: {
+      source: JSON.stringify(mdxSource),
+      // frontMatter
+    },
+  };
 };
-
 
 // Import metadata of your markdown files from MarkdownDB and return a list of static paths
 export const getStaticPaths = async () => {
-    const mddb = await clientPromise;
-    const allDocuments = await mddb.getFiles({ extensions: ["md", "mdx"] });
-    const paths = allDocuments
-        .map((page) => {
-            const url = decodeURI(page.url_path);
-            const parts = url.split("/");
-            return { params: { slug: parts } };
-        });
+  const mddb = await clientPromise;
+  const allDocuments = await mddb.getFiles({ extensions: ['md', 'mdx'] });
+  const paths = allDocuments.map((page) => {
+    const url = decodeURI(page.url_path);
+    const parts = url.split('/');
+    return { params: { slug: parts } };
+  });
 
-    return {
-        paths,
-        fallback: false,
-    };
+  return {
+    paths,
+    fallback: false,
+  };
 };
 ```
-
