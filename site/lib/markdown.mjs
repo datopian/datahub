@@ -2,7 +2,7 @@ import matter from "gray-matter";
 import mdxmermaid from "mdx-mermaid";
 import { h } from "hastscript";
 import remarkCallouts from "@portaljs/remark-callouts";
-import remarkEmbed from "@flowershow/remark-embed";
+import remarkEmbed from "@portaljs/remark-embed";
 import remarkGfm from "remark-gfm";
 import remarkMath from "remark-math";
 import remarkSmartypants from "remark-smartypants";
