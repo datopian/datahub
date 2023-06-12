@@ -2,7 +2,8 @@
 title: Learn how to use MarkdownDB with our First Tutorial!
 description: We've just released our first tutorial that covers the fundamentals of MarkdownDB - our new package for treating markdown files as a database. If you've been curious about how to manage your markdown files more effectively, check it out!
 date: 2023-05-26
-author: Ola Rubaj
+authors: ['Ola Rubaj']
+filetype: 'blog'
 ---
 
 We've just released our first tutorial that covers the fundamentals of [MarkdownDB](https://github.com/datopian/markdowndb) - our new package for treating markdown files as a database. If you've been curious about how to manage your markdown files more effectively, this tutorial is an excellent starting point!
@@ -141,7 +142,7 @@ process.exit(0);
 
 Since we're using ES6 modules, we also need to add `"type": "module"` to our `package.json` file.
 
-Before we run the above script, we need to make sure that the `dbPath` variable is pointing to our `markdown.db` file. If you want to store the database outside of your project folder, you can update the `dbPath` variable to point to the correct location. If you want to have it inside your project folder, you can copy it there, or simply re-run the `npx mddb` <path-to-markdown-folder>` command from within your project folder.
+Before we run the above script, we need to make sure that the `dbPath` variable is pointing to our `markdown.db` file. If you want to store the database outside of your project folder, you can update the `dbPath` variable to point to the correct location. If you want to have it inside your project folder, you can copy it there, or simply re-run the `npx mddb` {'<'}path-to-markdown-folder{'>'}` command from within your project folder.
 
 Now, let's run the script:
 

@@ -5,7 +5,7 @@ date: 2023-05-24
 filetype: blog
 ---
 
-The PortalJS CKAN example intends to provide users with an easy way to bootstrap a data catalog and share data stories backed by a CKAN back end.
+The PortalJS CKAN example intends to provide users with an easy way to bootstrap a data catalog and share data stories backed by a CKAN back end. The configuration is simple, being a matter of simply setting up an environment variable, which determines from which CKAN instance the data is going to be pulled.
 
 ## Demo
 
