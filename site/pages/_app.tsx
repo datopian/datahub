@@ -5,7 +5,7 @@ import Script from "next/script";
 
 import { DefaultSeo } from "next-seo";
 
-import { NavGroup, NavItem, pageview, ThemeProvider } from "@flowershow/core";
+import { NavGroup, NavItem, pageview, ThemeProvider } from "@portaljs/core";
 import { siteConfig } from "../config/siteConfig";
 import { useEffect } from "react";
 import { useRouter } from "next/dist/client/router";

@@ -75,10 +75,10 @@ NEXT_PUBLIC_DISQUS_SHORTNAME=
 
 ## Add comments to your page layout
 
-You can use `@flowershow/core` to import the comments section component. Install it with:
+You can use `@portaljs/core` to import the comments section component. Install it with:
 
 ```sh
-npm i @flowershow/core
+npm i @portaljs/core
 ```
 
 Then, add the following to your custom layout (or directly to your pages):

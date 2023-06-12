@@ -6,7 +6,7 @@ import Showcases from '@/components/Showcases';
 import Layout from '../components/Layout';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
-import { collectHeadings } from '@flowershow/core';
+import { collectHeadings } from '@portaljs/core';
 
 export default function Home({ sidebarTree }) {
   const router = useRouter();

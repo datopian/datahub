@@ -2,7 +2,7 @@
   "compilerOptions": {
     "baseUrl": ".",
     "paths": {
-      "@flowershow/core": ["node_modules/@flowershow/core/dist/src"],
+      "@portaljs/core": ["node_modules/@portaljs/core/dist/src"],
       "@flowershow/remark-callouts": [
         "node_modules/@flowershow/remark-callouts/dist/src"
       ],

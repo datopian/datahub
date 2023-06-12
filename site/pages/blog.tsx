@@ -1,7 +1,7 @@
 import Layout from '@/components/Layout';
 import computeFields from '@/lib/computeFields';
 import clientPromise from '@/lib/mddb';
-import { BlogsList, SimpleLayout } from '@flowershow/core';
+import { BlogsList, SimpleLayout } from '@portaljs/core';
 import * as fs from 'fs';
 
 export default function Blog({ blogs }) {

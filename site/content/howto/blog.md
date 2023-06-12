@@ -2,10 +2,10 @@
 
 ## Setup
 
-The following example uses components imported from the [`@flowershow/core` package](https://github.com/datopian/flowershow). If you want to follow along install it too:
+The following example uses components imported from the [`@portaljs/core` package](https://www.npmjs.com/package/@portaljs/core). If you want to follow along install it too:
 
 ```sh
-npm i @flowershow/core
+npm i @portaljs/core
 ```
 
 ## Create home page for your blogs
@@ -13,7 +13,7 @@ npm i @flowershow/core
 Add the following code to the Next.js page that is going to be your blog home page, e.g. to `/pages/blog/index.tsx`:
 
 ```tsx
-import { BlogsList, SimpleLayout } from "@flowershow/core";
+import { BlogsList, SimpleLayout } from "@portaljs/core";
 
 // pass a list of blogs, home page title and home page description, e.g. from `getStaticProps`
 export default function BlogIndex({ blogs, title, description }) {
@@ -47,7 +47,7 @@ interface Blog {
 Add the following code to your blog pages, e.g. to `/pages/blog/[...slug].tsx`:
 
 ```tsx
-import { BlogLayout } from "@flowershow/core";
+import { BlogLayout } from "@portaljs/core";
 
 export default BlogPost({ content, title, date, authors }) {
 	return (
