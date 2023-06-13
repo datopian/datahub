@@ -3,8 +3,9 @@
   "compilerOptions": {
     "types": ["node"],
     "outDir": "dist",
-    "forceConsistentCasingInFileNames": true
+    "forceConsistentCasingInFileNames": true,
+    "declaration": true
   },
   "exclude": ["**/*.spec.ts"],
-  "include": ["**/*.ts", "**/*.js"]
+  "include": ["src/**/*.ts"]
 }
