@@ -1,5 +1,11 @@
 # @portaljs/remark-callouts
 
+## 1.0.5
+
+### Patch Changes
+
+- [`6f0da8c3`](https://github.com/datopian/portaljs/commit/6f0da8c3a3cde4dc7512c6529eb662de6f4fe56a) Thanks [@olayway](https://github.com/olayway)! - Fix public API (`exports`, `types`, and `main` fields in `package.json`).
+
 ## 1.0.4
 
 ### Patch Changes
