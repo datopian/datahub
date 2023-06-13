@@ -1,6 +1,6 @@
 import { MDXRemote } from 'next-mdx-remote';
 import dynamic from 'next/dynamic';
-import { Mermaid } from '@flowershow/core';
+import { Mermaid } from '@portaljs/core';
 
 // Custom components/renderers to pass to MDX.
 // Since the MDX files aren't loaded by webpack, they have no knowledge of how
