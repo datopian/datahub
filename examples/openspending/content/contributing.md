@@ -16,6 +16,8 @@ We welcome contributions from anyone who is interested in improving OpenSpending
 
 The main platform for communication and collaboration for OpenSpending is Github, if you want to interact with us you can o so by submitting an issue.
 
+**Repo for issues:** [https://github.com/os-data/registry/issues](https://github.com/os-data/registry/issues)
+
 If you want to submit a dataset for evaluation and inclusion in OpenSpending, you will need to create an issue on Github using this template:
 
 ```markdown
