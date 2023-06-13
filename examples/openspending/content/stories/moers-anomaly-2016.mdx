@@ -3,8 +3,8 @@ title: An Exploration of Moers' 2016 Budget Anomaly
 date: 06/13/2023
 ---
 
-_Note: The currency in this post has been converted to USD using an average exchange rate of 1 EUR = 1.20 USD. 
-Additionally, the text values for account groups have been loosely translated to English. You can find the 
+_Note: The currency in this post has been converted to USD using an average exchange rate of 1 EUR = 1.20 USD.
+Additionally, the text values for account groups have been loosely translated to English. You can find the
 original dataset here: [Moers budget dataset](https://www.openspending.org/@os-data/moers-all)_
 
 In the fiscal landscape of Moers, Germany, 2016 stands out as an anomaly. An examination of the budget allocations
@@ -19,7 +19,7 @@ underlying causes of this fiscal fluctuation.
     title: 'Spending by Account Group',
     description: 'Spending by Account Group',
     data: {
-      url: 'https://gist.githubusercontent.com/mpolidori/6148c2a6a669194d5955a30f4605f756/raw/8df7fda117dce5d62b94738b65cbe7153a4c2378/moers-sums.csv',
+      url: 'https://storage.openspending.org/moers-all/moers-sums.csv',
     },
     transform: [
       {
@@ -117,7 +117,7 @@ at this point.
     title: 'Donations and General Levies',
     description: 'Donations and General Levies',
     data: {
-      url: 'https://gist.githubusercontent.com/mpolidori/6148c2a6a669194d5955a30f4605f756/raw/8df7fda117dce5d62b94738b65cbe7153a4c2378/moers-sums.csv',
+      url: 'https://storage.openspending.org/moers-all/moers-sums.csv',
     },
     transform: [
       { filter: "datum['account group']==='Donations And General Levies'" },
@@ -179,18 +179,18 @@ The rise in "Personnel Expenses" may suggest an expansion of the town's workforc
 staffing in areas like interpretation, social work, healthcare, and administration would be necessary to handle
 the influx of refugees.
 
-The two account groups that experienced the most substantial raw monetary increases were "Taxes and Similar Charges" 
-and "Transfer Expenses". Both these categories more than doubled in size during the year, a significant surge 
+The two account groups that experienced the most substantial raw monetary increases were "Taxes and Similar Charges"
+and "Transfer Expenses". Both these categories more than doubled in size during the year, a significant surge
 especially considering their already high baseline spending. This could be for a variety of reasons.
 
-For "Taxes and Similar Charges", the hike could indicate the town adjusting local taxation to meet the additional 
-expenditures, or it could reflect an increase in income from other sources falling under this group. The influx 
-of refugees and the resulting uptick in economic activity may have also led to a rise in the collection of certain 
+For "Taxes and Similar Charges", the hike could indicate the town adjusting local taxation to meet the additional
+expenditures, or it could reflect an increase in income from other sources falling under this group. The influx
+of refugees and the resulting uptick in economic activity may have also led to a rise in the collection of certain
 local taxes or fees.
 
-Concurrently, the "Transfer Expenses" spike could be an indication of heightened social welfare payments, costs 
-associated with refugee integration, and funds transferred to other entities managing the crisis. These financial 
-escalations are a testament to the extensive and multifaceted financial impact the refugee crisis had on the town's 
+Concurrently, the "Transfer Expenses" spike could be an indication of heightened social welfare payments, costs
+associated with refugee integration, and funds transferred to other entities managing the crisis. These financial
+escalations are a testament to the extensive and multifaceted financial impact the refugee crisis had on the town's
 budget.
 
 <VegaLite
@@ -199,17 +199,17 @@ budget.
     title: 'Largest Spending by Account Group',
     description: 'Largest Spending by Account Group',
     data: {
-      url: 'https://gist.githubusercontent.com/mpolidori/6148c2a6a669194d5955a30f4605f756/raw/8df7fda117dce5d62b94738b65cbe7153a4c2378/moers-sums.csv',
+      url: 'https://storage.openspending.org/moers-all/moers-sums.csv',
     },
     transform: [
-      { 
+      {
         filter: {
           field: 'account group',
           oneOf: [
-            'Donations And General Levies', 
-            'Expenses For Material And Services', 
-            'Personnel Expenses', 
-            'Taxes And Similar Charges', 
+            'Donations And General Levies',
+            'Expenses For Material And Services',
+            'Personnel Expenses',
+            'Taxes And Similar Charges',
             'Transfer Expenses'
           ]
         }
