@@ -5,7 +5,7 @@ import { MDXRemote } from 'next-mdx-remote'
 import { Card } from '../components/Card'
 import Head from 'next/head'
 import parse from '../lib/markdown'
-import { Mermaid } from '@flowershow/core';
+import { Mermaid } from '@portaljs/core';
 
 export const getStaticProps = async ({ params }) => {
   const urlPath = params.slug ? params.slug.join('/') : ''
