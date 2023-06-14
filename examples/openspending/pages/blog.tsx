@@ -1,7 +1,7 @@
 import fs from 'fs';
 import React from 'react';
 import { GetStaticProps } from 'next';
-import { BlogsList, SimpleLayout } from '@flowershow/core';
+import { BlogsList, SimpleLayout } from '@portaljs/core';
 import clientPromise from '../lib/mddb';
 import type { CustomAppProps } from './_app';
 import Layout from '@/components/_shared/Layout';

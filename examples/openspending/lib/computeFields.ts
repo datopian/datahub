@@ -2,7 +2,7 @@
 import { remark } from "remark";
 import stripMarkdown, { Options } from "strip-markdown";
 
-import { defaultConfig as siteConfig } from '@flowershow/core'
+import { defaultConfig as siteConfig } from '@portaljs/core'
 
 // TODO return type
 const sluggify = (urlPath: string) => {
