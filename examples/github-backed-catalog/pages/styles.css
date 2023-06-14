@@ -79,7 +79,7 @@ pre {
   width: 100%;
 }
 
-@import "@flowershow/remark-callouts/styles.css";
+@import "@portaljs/remark-callouts/styles.css";
 
 /* mathjax */
 .math-inline > mjx-container > svg {
