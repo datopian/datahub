@@ -1,5 +1,5 @@
 ---
-title: "Example: Data catalog with data on GitHub"
+title: "Setup Guide: Create a data catalog to display and share your GitHub datasets with PortalJS"
 authors: ['Luccas Mateus']
 date: 2023-04-20
 filetype: blog

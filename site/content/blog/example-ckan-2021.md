@@ -1,5 +1,5 @@
 ---
-title: "PortalJS example 1: Create a full-featured custom data portal frontend for CKAN with PortalJS"
+title: "Setup Guide: How to create a full-featured custom data portal frontend for CKAN with PortalJS"
 authors: ['Luccas Mateus']
 date: 2021-04-20
 ---

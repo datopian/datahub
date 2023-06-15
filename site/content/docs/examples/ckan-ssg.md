@@ -1,5 +1,5 @@
 ---
-title: "Example: Data catalog with data on CKAN"
+title: "Setup Guide: Create a data catalog with PortalJS and CKAN to share your data stories"
 authors: ['Luccas Mateus']
 date: 2023-04-20
 filetype: blog
