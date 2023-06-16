@@ -1,4 +1,4 @@
-import { MarkdownDB } from "@flowershow/markdowndb";
+import { MarkdownDB } from "mddb";
 
 const dbPath = "markdown.db";
 

@@ -4,8 +4,8 @@ module.exports = {
     "./app/**/*.{js,ts,jsx,tsx,mdx}",
     "./pages/**/*.{js,ts,jsx,tsx,mdx}",
     "./components/**/*.{js,ts,jsx,tsx,mdx}",
-    "./node_modules/@flowershow/core/dist/*.js",
-    "./node_modules/@flowershow/core/*.js",
+    "./node_modules/@portaljs/core/dist/*.js",
+    "./node_modules/@portaljs/core/*.js",
   ],
   darkMode: "class",
   theme: {

@@ -1,4 +1,4 @@
-import { MarkdownDB } from "@flowershow/markdowndb";
+import { MarkdownDB } from "mddb";
 // import config from "./markdowndb.config.js";
 
 // TODO get this path from markdowndb.config.js or something

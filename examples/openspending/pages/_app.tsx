@@ -13,7 +13,7 @@ import {
   ThemeProvider,
   NavItem,
   NavGroup,
-} from '@flowershow/core';
+} from '@portaljs/core';
 
 export interface CustomAppProps {
   meta: {

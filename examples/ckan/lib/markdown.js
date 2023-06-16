@@ -1,13 +1,13 @@
 import matter from "gray-matter";
 import mdxmermaid from "mdx-mermaid";
 import { h } from "hastscript";
-import remarkCallouts from "@flowershow/remark-callouts";
-import remarkEmbed from "@flowershow/remark-embed";
+import remarkCallouts from "@portaljs/remark-callouts";
+import remarkEmbed from "@portaljs/remark-embed";
 import remarkGfm from "remark-gfm";
 import remarkMath from "remark-math";
 import remarkSmartypants from "remark-smartypants";
 import remarkToc from "remark-toc";
-import remarkWikiLink from "@flowershow/remark-wiki-link";
+import remarkWikiLink from "@portaljs/remark-wiki-link";
 import rehypeAutolinkHeadings from "rehype-autolink-headings";
 import rehypeKatex from "rehype-katex";
 import rehypeSlug from "rehype-slug";

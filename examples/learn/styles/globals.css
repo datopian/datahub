@@ -1,7 +1,7 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-@import "@flowershow/remark-callouts/styles.css";
+@import "@portaljs/remark-callouts/styles.css";
 
 .w-5 {
   width: 1.25rem

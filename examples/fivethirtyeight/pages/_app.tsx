@@ -1,7 +1,7 @@
 import '@/styles/globals.css';
 import '@portaljs/components/styles.css';
 import { useEffect } from 'react';
-import { pageview } from '@flowershow/core';
+import { pageview } from '@portaljs/core';
 import Script from 'next/script';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
