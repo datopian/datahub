@@ -11,6 +11,7 @@
   "dependencies": {
     "@heroicons/react": "^2.0.17",
     "@portaljs/ckan": "^0.0.2",
+    "@portaljs/remark-wiki-link": "^1.0.4",
     "next": "13.3.1",
     "next-seo": "^6.0.0",
     "octokit": "^2.0.14",

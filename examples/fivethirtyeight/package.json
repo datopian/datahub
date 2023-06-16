@@ -13,6 +13,7 @@
     "@heroicons/react": "^2.0.18",
     "@portaljs/components": "^0.1.8",
     "@portaljs/core": "^1.0.5",
+    "@portaljs/remark-wiki-link": "^1.0.4",
     "@tailwindcss/typography": "^0.5.9",
     "@types/node": "20.1.1",
     "@types/react": "18.2.6",
