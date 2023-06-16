@@ -14,6 +14,7 @@
     "@portaljs/core": "^1.0.5",
     "@portaljs/remark-callouts": "^1.0.5",
     "@portaljs/remark-embed": "^1.0.4",
+    "@portaljs/remark-wiki-link": "^1.0.4",
     "@types/node": "18.16.0",
     "@types/react": "18.0.38",
     "@types/react-dom": "18.0.11",
