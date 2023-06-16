@@ -1,4 +1,4 @@
-import { defaultConfig } from "@flowershow/core";
+import { defaultConfig } from "@portaljs/core";
 import userConfig from "../content/config";
 
 export const siteConfig: any = {

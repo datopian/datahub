@@ -2,12 +2,12 @@
   "compilerOptions": {
     "baseUrl": ".",
     "paths": {
-      "@flowershow/core": ["node_modules/@flowershow/core/dist/src"],
-      "@flowershow/remark-callouts": [
-        "node_modules/@flowershow/remark-callouts/dist/src"
+      "@portaljs/core": ["node_modules/@portaljs/core/dist/src"],
+      "@portaljs/remark-callouts": [
+        "node_modules/@portaljs/remark-callouts/dist/src"
       ],
-      "@flowershow/remark-embed": [
-        "node_modules/@flowershow/remark-embed/dist/src"
+      "@portaljs/remark-embed": [
+        "node_modules/@portaljs/remark-embed/dist/src"
       ],
       "@/*": ["./*"]
     },

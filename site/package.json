@@ -10,18 +10,18 @@
     "mddb": "mddb content"
   },
   "dependencies": {
-    "@flowershow/core": "^0.4.11",
-    "@flowershow/markdowndb": "^0.1.1",
-    "@flowershow/remark-callouts": "^1.0.0",
-    "@flowershow/remark-embed": "^1.0.0",
-    "@flowershow/remark-wiki-link": "^1.0.1",
     "@headlessui/react": "^1.3.0",
     "@heroicons/react": "^1.0.3",
     "@mdx-js/loader": "^2.3.0",
+    "@portaljs/core": "^1.0.5",
+    "@portaljs/remark-callouts": "^1.0.5",
+    "@portaljs/remark-embed": "^1.0.4",
+    "@portaljs/remark-wiki-link": "^1.0.4",
     "axios": "^1.3.6",
     "clsx": "^1.2.1",
     "gray-matter": "^4.0.3",
     "hastscript": "^7.2.0",
+    "mddb": "^0.1.9",
     "next": "^13.2.1",
     "next-mdx-remote": "^4.4.1",
     "next-seo": "^5.15.0",
@@ -45,17 +45,17 @@
     "remark-slug": "^6.1.0",
     "remark-smartypants": "^2.0.0",
     "remark-toc": "^7.2.0",
+    "strip-markdown": "^5.0.0",
     "vega": "^5.20.2",
-    "vega-lite": "^5.1.0",
-    "strip-markdown": "^5.0.0"
+    "vega-lite": "^5.1.0"
   },
   "devDependencies": {
     "@tailwindcss/typography": "^0.5.9",
     "autoprefixer": "^10.4.14",
     "postcss": "^8.4.22",
     "prettier": "^2.8.7",
+    "remark": "^14.0.2",
     "tailwindcss": "^3.3.1",
-    "typescript": "^5.0.4",
-    "remark": "^14.0.2"
+    "typescript": "^5.0.4"
   }
 }

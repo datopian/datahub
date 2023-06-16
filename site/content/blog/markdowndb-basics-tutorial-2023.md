@@ -142,7 +142,7 @@ process.exit(0);
 
 Since we're using ES6 modules, we also need to add `"type": "module"` to our `package.json` file.
 
-Before we run the above script, we need to make sure that the `dbPath` variable is pointing to our `markdown.db` file. If you want to store the database outside of your project folder, you can update the `dbPath` variable to point to the correct location. If you want to have it inside your project folder, you can copy it there, or simply re-run the `npx mddb` {'<'}path-to-markdown-folder{'>'}` command from within your project folder.
+Before we run the above script, we need to make sure that the `dbPath` variable is pointing to our `markdown.db` file. If you want to store the database outside of your project folder, you can update the `dbPath` variable to point to the correct location. If you want to have it inside your project folder, you can copy it there, or simply re-run the `npx mddb <path-to-markdown-folder>` command from within your project folder.
 
 Now, let's run the script:
 

@@ -1,4 +1,4 @@
-@import "@flowershow/remark-callouts/styles.css";
+@import "@portaljs/remark-callouts/styles.css";
 @import './prism.css';
 
 html,

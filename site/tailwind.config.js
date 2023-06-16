@@ -13,8 +13,8 @@ module.exports = {
     "./components/**/*.jsx",
     "./components/**/*.tsx",
     "./lib/markdown.mjs",
-    "./node_modules/@flowershow/core/dist/*.js",
-    "./node_modules/@flowershow/core/*.js",
+    "./node_modules/@portaljs/core/dist/*.js",
+    "./node_modules/@portaljs/core/*.js",
   ],
   darkMode: "class", // or 'media' or 'class'
   theme: {

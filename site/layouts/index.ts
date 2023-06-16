@@ -1,7 +1,7 @@
 import {
   SimpleLayout,
   UnstyledLayout,
-} from "@flowershow/core";
+} from "@portaljs/core";
 import { BlogLayout } from "./blog";
 import DefaultLayout from "./default";
 import { DocsLayout } from "./docs";
