@@ -1,5 +1,11 @@
 # @portaljs/components
 
+## 0.1.12
+
+### Patch Changes
+
+- [#960](https://github.com/datopian/portaljs/pull/960) [`add2f6d0`](https://github.com/datopian/portaljs/commit/add2f6d0f372434eb996d59d6faf5cd06530c932) Thanks [@demenech](https://github.com/demenech)! - Fix width of the <LineChart /> component
+
 ## 0.1.11
 
 ### Patch Changes
