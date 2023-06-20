@@ -35,7 +35,7 @@ export function LineChart({
   const spec = {
     $schema: 'https://vega.github.io/schema/vega-lite/v5.json',
     title,
-    width: 600,
+    width: 'container',
     height: 300,
     mark: {
       type: 'line',
