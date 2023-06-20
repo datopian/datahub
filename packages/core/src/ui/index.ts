@@ -18,5 +18,5 @@ export { BlogLayout } from "./BlogLayout";
 export { Mermaid } from "./Mermaid";
 export { SiteToc, NavItem, NavGroup } from "./SiteToc";
 export { Comments, CommentsConfig } from "./Comments";
-
 export { AuthorConfig } from "./types";
+export { Hero } from "./Hero";
