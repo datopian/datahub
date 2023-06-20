@@ -1,5 +1,11 @@
 # @portaljs/core
 
+## 1.0.6
+
+### Patch Changes
+
+- [#958](https://github.com/datopian/portaljs/pull/958) [`c4bf5bd0`](https://github.com/datopian/portaljs/commit/c4bf5bd05401982125750e61a27ed31f9bb14a4d) Thanks [@olayway](https://github.com/olayway)! - Add basic Hero component.
+
 ## 1.0.5
 
 ### Patch Changes
