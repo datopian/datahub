@@ -1,20 +1,21 @@
+import { h } from "hastscript";
 import matter from "gray-matter";
 import mdxmermaid from "mdx-mermaid";
-import { h } from "hastscript";
 import remarkCallouts from "@portaljs/remark-callouts";
 import remarkEmbed from "@portaljs/remark-embed";
 import remarkGfm from "remark-gfm";
 import remarkMath from "remark-math";
 import remarkSmartypants from "remark-smartypants";
 import remarkToc from "remark-toc";
-import remarkWikiLink from "@portaljs/remark-wiki-link";
+import remarkWikiLink, { getPermalinks } from "@portaljs/remark-wiki-link";
 import rehypeAutolinkHeadings from "rehype-autolink-headings";
 import rehypeKatex from "rehype-katex";
 import rehypeSlug from "rehype-slug";
 import rehypePrismPlus from "rehype-prism-plus";
-import * as tw from "../tailwind.config";
-
 import { serialize } from "next-mdx-remote/serialize";
+
+import * as tw from "../tailwind.config";
+import { siteConfig } from "../config/siteConfig";
 
 /**
  * Parse a markdown or MDX file to an MDX source form + front matter data
@@ -25,6 +26,7 @@ import { serialize } from "next-mdx-remote/serialize";
  */
 const parse = async function (source, format, scope) {
   const { content, data } = matter(source);
+  const permalinks = getPermalinks(siteConfig.content);
 
   const mdxSource = await serialize(
     { value: content, path: format },
@@ -37,7 +39,7 @@ const parse = async function (source, format, scope) {
           [remarkSmartypants, { quotes: false, dashes: "oldschool" }],
           remarkMath,
           remarkCallouts,
-          remarkWikiLink,
+          [remarkWikiLink, { permalinks, pathFormat: "obsidian-short" }],
           [
             remarkToc,
             {
