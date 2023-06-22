@@ -1,21 +1,50 @@
 ---
-title: 'Tutorial 2: Edit your PortalJS website locally on your computer'
+title: 'Tutorial 2: Edit your Flowershow website locally on your computer'
 date: 2023-06-22
 authors: ['Ola Rubaj']
 filetype: 'blog'
-isDraft: true
 ---
 
-In this tutorial we will walk you through ...
+In this tutorial, we will walk you through the process of editing your Flowershow website locally on your computer. 
 
-By the end of this tutorial you will:
+By the end of this tutorial, you will:
 
-- ...
-- ...
+- Understand what is Markdown and why you should use Obsidian to edit content on your Flowershow websites in most cases.
+- Gain a deeper understanding of working with Git and GitHub Desktop.
+- Learn how to clone your website's repository to your computer.
+- Learn how to edit content using Obsidian and what are the benefits of it.
+- Learn how to commit (save) your changes and push them back to the GitHub repository.
 
 Below is a screenshot of how the final website will look like:
 
 ![[live-home-page.png]]
+
+Let's start by understanding why using GitHub UI as we did in tutorial 1 is not always a good choice.
+
+## What is Markdown and why use Obsidian for editing it in Flowershow-based websites
+
+While editing on the GitHub UI is convenient, there are certain limitations and drawbacks to consider. For example, you can't work offline, can't add or edit multiple files simultaneously, and the GitHub UI's preview doesn't render all the Markdown syntax elements that are supported by Flowershow-based websites.
+
+Ok, so, what exactly is Markdown?
+
+Markdown is a simple and intuitive syntax, that allows you to format and structure your text. It's widely used for creating content on the web.
+
+BUT, there is no single version of Markdown. It comes in different "flavours", with CommonMark and GitHub Flavoured Markdown (GFM) being the most popular ones. Furthermore, different tools may support their own subsets or supersets of Markdown, one of which is Obsidian.
+
+Obsidian supports an extended version of Markdown that includes majority of elements from CommonMark and GFM, while also introducing its own unique features, like [wiki-links](https://help.obsidian.md/Linking+notes+and+files/Internal+links) or [callouts](https://help.obsidian.md/Editing+and+formatting/Callouts). And Flowershow template is Obsidian-compatible, meaning it supports (or aims to support) all of the Obsidian Markdown features.
+
+To make things a bit clearer, there are:
+
+- CommonMark
+- GitHub Flavored Markdown (GFM) - superset of CommonMark
+- "Obsidian flavoured Markdown" - majority of the GFM + some extra elements, like wiki-links or callouts
+- "Flowershow flavoured Markdown" - majority of Obsidian-supported syntax
+
+As you might have guessed by now, GitHub UI will only preview GitHub Flavoured Markdown. And while it's a majority of Markdown you would write, it won't be able to render Obsidian-only (or Flowershow-only) syntax elements, like callouts, wiki-links or inline table of contents.
+
+Another drawback of GitHub UI, is that it doesn't allow you to make changes (or to add) multiple files at once. Changes to each file will have to be commited (saved) separately, which can introduce a bit of a mess to your GitHub history, the more so if the changes you're making are some minor changes that are logically related to each other in multiple places (e.g. you want to update a link to some page on 10 different pages... with GitHub UI that would be pretty cumbersome).
+
+Ok, now we have this sorted, let's dive in and start editing your Flowershow website locally!
 
 ## Prerequisites
 
@@ -23,13 +52,14 @@ Below is a screenshot of how the final website will look like:
 - A [Vercel](https://vercel.com/) account. You can set it up using your GitHub account.
 - [Obsidian](https://obsidian.md/) installed
 - [GitHub Desktop](https://desktop.github.com/) installed
-- [[create-a-website-from-scratch|Tutorial 1: Create a website from scratch using Markdown and PortalJS]] - this one is recommended so that you have the same sandbox website we're working on
+- [[create-a-website-from-scratch|Tutorial 1: Create a website from scratch using Markdown and PortalJS]] completed - this one is recommended so that you have the same sandbox website we're working on in this tutorial.
 
 ## Clone the GitHub repository on your computer
 
-Open GitHub Desktop app
+### 1. Open GitHub Desktop app
 
-Click on "Clone a Repository from the Internet...".
+## 2.  Click on "Clone a Repository from the Internet..."
+
 Or click on "File" -> "Clone repository".
 
 ![[gh-desktop-starting-screen.png]]
@@ -38,38 +68,43 @@ If this is the first time you're using GitHub Desktop, it will prompt you to log
 
 ![[gh-desktop-clone-signin.png]]
 
-Once you're done and you've authorised GitHub Desktop to access your repositories, go back to GitHub Desktop. You should now see a list of all your GitHub repositories. Select the one we created in the last tutorial.
+Once you're done and you've authorised GitHub Desktop to access your repositories, go back to GitHub Desktop. You should now see a list of all your GitHub repositories. 
+
+### 3. Select the repository you want to clone
 
 ![[gh-desktop-clone.png]]
 
-Then, click on "Choose..." under "Local Path" to select where the repository should be copied to on your computer.
+### 4. Choose where your repository should be saved
+
+Type the path manually or click "Choose..." to find it using file explorer.
 
 ![[gh-desktop-clone-path-select.png]]
 
-Then, click "Clone" and wait for the process to complete. You should now see the following screen:
+### 5. Click "Clone" and wait for the process to complete
+
+You should now see the following screen:
 
 ![[gh-desktop-no-local-changes.png]]
 
 Done! You've successfully cloned your website's repository on your computer! 🎉
 
+## Edit your site in Obsidian
 
+### 1. Open Obsidian
 
----
+### 2. Open your repository's `/content` folder as vault
 
-## Open the content folder in Obsidian
-
-Click on "Open" in "Open folder as vault" section.
+Click on "Open" in "Open folder as vault" section and select the path to the `/content` of the cloned repository.
 
 ![[obsidian-starting.png]]
-Done! You're now ready to edit and add multiple Markdown-based pages in your website! 🎉
+Now you're ready to edit your site! In the left-hand side panel you should see the two files we created in [[create-a-website-from-scratch|tutorial 1]]: `index.md` and `about.md`.
 
 ![[obsidian-content-start.png]]
 
----
+### 3. Edit your site's content
 
-## Edit your site in Obsidian
+Now, let's add some more stuff to the home page.
 
-Let's add some more info about you and your website to the home page.
 Click on `index.md` to open it and replace the dummy text with "About Me" section, .e.g.:
 
 ```md
@@ -80,40 +115,40 @@ Hey there! I'm Your Name, a passionate learner and explorer of ideas.
 
 ![[obsidian-content-index-edit.png]]
 
-Now, let's say for more information about me and my site, I want to link to the about page. We can do so, by creating a wiki-link to it, like so:
+Now, let's say for more information about you and your site, you want to add link to the about page. You can do so, by creating a wiki-link to that page, like so:
 
 ```md
 [[about]]
 ```
 
-When you start typing, after adding `[[]]`, Obsidian will suggest all the available pages you can link to, and will create the link automatically for you.
+When you start typing, after writing empty double brackets `[[]]`, Obsidian will suggest all the available pages you can link to, and after you select one it will create the link automatically for you.
 
 ![[obsidian-content-index-add-link.png]]
 ![[obsidian-content-index-add-link-2.png]]
 
-Now, let's say we want to show people what books you've read and share your reviews and other information of each one. And let's say information on each book should be available at `/books/abc` path on our website. To achieve this, we need to create a folder called `books` in our vault and add all the project-related files in there.
+Now, let's say you want to show people what books you've read and share your reviews and other information on each one. And let's say information on each book should be available at `/books/abc` path on our website. To achieve this, you need to create a folder called `books` in your vault and add all the project-related files in there.
 
-To create new folder in Obsidian, click on the "New folder" icon, and give your folder a name:
+To create a new folder in Obsidian, click on the "New folder" icon, and give your folder a name:
 
 ![[obsidian-content-add-folder.png]]
 
 ![[obsidian-content-add-folder-2.png]]
 
-Now, let's write some book reviews. You can do this by right-clicking on the `/books` folder, and selecting "New note" option. Rename it and add some information to it. Then add some more books.
+Now, let's write some book reviews. You can do this by right-clicking on the `/books` folder, and selecting "New note" option. Rename the newly created `Untitled.md` file and add some review in it. Then add some other reviews.
 
 ![[obsidian-content-book.png]]
 
-Ok, now let's make a page that will list all your books reviews so that people can find them! It would be nice to have it available under `/books` path on the website, since each of our books will be available under `/books/abc`. To achieve this, we have to create an index page **inside** our `/books` folder, like so:
+Ok, now let's make a page that will list all your books reviews - our Bookshelf! It would be nice to have it available under `/books` path on the website, since each of our books will be available under `/books/abc`. To achieve this, we have to create an index page **inside** our `/books` folder, like so:
 
 ![[obsidian-content-book-index.png]]
 
-Then, let's list our book reviews here:
+Then, let's list our book reviews with wiki-links to their pages:
 
 ![[obsidian-content-book-index-2.png]]
 
 ![[obsidian-content-book-index-3.png]]
 
-Now, let's link to this books index page on our home page, so that it's easy to find.
+Now, let's add a link to our Bookshelf page on our home page, so that it's easy to find.
 
 ![[obsidian-content-index-bookshelf-link.png]]
 
@@ -131,36 +166,40 @@ Let's also do this for the about page:
 
 ![[obsidian-content-index-link-aliases.png]]
 
-Let's maybe add a short info at the bottom, that this site is new and is currently being worked on, in form of an Obsidian callout:
+That's better!
+
+Now, let's maybe add a short info at the bottom, that this site is new and is currently being worked on, in form of an Obsidian callout:
 
 ```md
->[!info]
->🚧 This site it pretty new and I'm enhancing it every day. Stay tuned!
+> [!info]
+> 🚧 This site it pretty new and I'm enhancing it every day. Stay tuned!
 ```
 
 ![[obsidian-content-index-callout.png]]
 
-Great, our updated site is ready to be published!
-
----
+Great, our updated site is ready to be published! 🔥
 
 ## Save and publish your changes
 
-Navigate to GitHub Desktop app. In the "Changes" tab, you'll see all the changes that have been made to the repository.
+### 1. Navigate to GitHub Desktop app
+
+In the "Changes" tab, you'll see all the changes that have been made to the repository.
 
 ![[github-desktop-all-changed-files.png]]
 
 All the new files will have `[+]` sign next to them, and all the edited files will have `[•]`.
 
-Now, to save these changes we need to "commit" them, which is a fancy term for make a checkpoint of the state at which your repository is currently in.
+### 2. Commit your changes
 
-Ok, so let's make this checkpoint. In the bottom left corner there is a "Summary (required)" field, which is the place for a commit message - a concise description of the changes. The "Description" field is optional, and it's only needed if you need to add some more information about your changes that doesn't fit in the commit message.
+Now, to save these changes we need to "commit" them, which is a fancy term for making a checkpoint of the state at which your repository is currently in.
+
+Let's make this checkpoint! In the bottom left corner there is a "Summary (required)" field, which is the place for a commit message - a concise description of the changes you made. The "Description" field is optional, and it's only needed if you need to add some more information about your changes that doesn't fit in the commit message.
 
 ![[github-desktop-add-commit-message.png]]
 
-Now, hit the "Commit to main" button. Done! Now GitHub Desktop should say there are no local changes again. And that's correct, as all the changes we made have successfully been saved, and no other changes have been made since then.
+Now, hit the "Commit to main" button, and done! Now GitHub Desktop should say there are no local changes again. And that's correct, as all the changes we made have successfully been saved, and no other changes have been made since then.
 
-However, you should see the last commit message under the button:
+You should see the last commit message under the button:
 
 ![[github-desktop-commit-message.png]]
 
@@ -170,30 +209,34 @@ You can also inspect the whole history of past commits in the "History tab".
 
 The very fist commit on top is the commit we've just made, but you can also see all the commits to the repository we made in [[create-a-website-from-scratch|tutorial 1]], via GitHub UI.
 
+### 3. Push your changes to the remote repository
+
 The commit we've just crated has ↑ sign next to it. It means it hasn't yet been pushed to our remote version of the repository - the changes you made has been saved, but only locally on your computer. In order to push them to the cloud copy of the repository (aka "remote"), click "↑ Push origin (1 ↑)" tab.
 
 When the "push" is complete, the arrow next to the last commit message should disappear, and there should be no `(1 )` indicator next to "Push origin" button.
 
 ![[github-desktop-history-after-push.png]]
 
----
-
-## See updated site live!
+### 4. See updated site live!
 
 Navigate to your [vercel dashboard](https://vercel.com/dashboard).
 
 ![[vercel-dashboard.png]]
 
-Click on the project repository to go to the project dashboard.
+Click on the project repository to go to its dashboard.
 
 You may have to wait a bit until the site builds, but once it's ready, you should see the preview with our latest changes.
 
 ![[vercel-project-dashboard.png]]
 
-Note that, under "SOURCE" section (next to the preview) there is also our last commit message, indicating that the latest deployment has been triggered by this commit.
+Note, that under "SOURCE" section (next to the preview) there is also our last commit message, indicating that the latest deployment has been triggered by this commit.
 
 Click on the preview to see the updated site live!
 
 ![[live-home-page.png]]
 ![[live-book-home-page.png]]
 ![[live-book.png]]
+
+Congratulations!
+
+You have successfully completed the tutorial on editing your Flowershow website locally on your computer. By utilising Obsidian and GitHub Desktop, you have unlocked powerful editing capabilities and improved the overall publishing process. Now, you can enjoy the benefits of offline editing, simultaneous file editing, and previewing the extended Markdown syntax provided by Obsidian.
