@@ -1,15 +1,15 @@
 ---
-title: 'Tutorial 1: Create a website from scratch using Markdown and PortalJS'
+title: 'Tutorial 1: Create a website from scratch using Markdown and Flowershow'
 date: 2023-06-20
 authors: ['Ola Rubaj']
 filetype: 'blog'
 ---
 
-In this tutorial we will walk you through creating an elegant, fully functional website written in simple markdown and published with PortalJS.
+In this tutorial we will walk you through creating an elegant, fully functional website written in simple markdown and published with Flowershow.
 
 By the end of this tutorial you will:
 
-- have a working markdown-based website powered by PortalJS.
+- have a working markdown-based website powered by Flowershow.
 - be able to edit the text and add pages, all from an online interface without installing anything.
 
 Below is a screenshot of how the final website will look like:
