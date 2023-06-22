@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
+    "dev": "npm run mddb && next dev",
     "build": "next build",
     "prebuild": "npm run mddb && node ./scripts/fix-symlinks.mjs",
     "start": "next start",
