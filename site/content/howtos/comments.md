@@ -12,8 +12,8 @@ Page comments can be setup with any one of the following supported providers:
 
 Each provider has it's own configuration options that you should add to your `.env` file.
 
->[!Info]
->If you are hosting your website on hosting providers like Netlify, Vercel or Cloudflare, you will also need to add the environment variables there.
+> [!Info]
+> If you are hosting your website on hosting providers like Netlify, Vercel or Cloudflare, you will also need to add the environment variables there.
 
 ### Giscus
 
@@ -26,7 +26,7 @@ Each provider has it's own configuration options that you should add to your `.e
 
 Once the above steps are completed, head over to [https://giscus.app](https://giscus.app/) and follow the steps there by filling out the fields to get your config values.
 
->[!important]
+> [!important]
 > Make sure to choose `pathname` under page discussions mapping.
 
 After filling out the fields, you will be provided with a script tag that contains your config values. Add them to your `.env` file, like so:
@@ -86,21 +86,17 @@ Then, add the following to your custom layout (or directly to your pages):
 ```tsx
 import Navbar from './navbar';
 import Footer from './footer';
- 
+
 export default function Layout({ children }) {
   return (
     <>
-	    <Navbar />
-	    <main>{children}</main>
-	    <div>
-			<Comments commentsConfig={commentsConfig} slug={urlPath} />
-		</div>
-		<Footer />
+      <Navbar />
+      <main>{children}</main>
+      <div>
+        <Comments commentsConfig={commentsConfig} slug={urlPath} />
+      </div>
+      <Footer />
     </>
   );
 }
 ```
-
-## Add user comments
-
-Learn how to add support for user comments in [[comments|this guide]].
