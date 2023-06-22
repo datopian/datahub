@@ -20,7 +20,7 @@ const config = {
     // { name: "Components", href: "/docs/components" },
     { name: "Blog", href: "/blog" },
     { name: "Showcases", href: "/#showcases" },
-    { name: "Howtos", href: "/howto" },
+    { name: "Howtos", href: "/howtos" },
     { name: "Guide", href: "/guide" },
     { name: "Examples", href: "https://github.com/datopian/portaljs/tree/main/examples", target: "_blank" },
     { name: "Components", href: "https://storybook.portaljs.org", target: "_blank" },
