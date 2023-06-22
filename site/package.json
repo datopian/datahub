@@ -13,7 +13,7 @@
     "@headlessui/react": "^1.3.0",
     "@heroicons/react": "^1.0.3",
     "@mdx-js/loader": "^2.3.0",
-    "@portaljs/core": "^1.0.5",
+    "@portaljs/core": "^1.0.6",
     "@portaljs/remark-callouts": "^1.0.5",
     "@portaljs/remark-embed": "^1.0.4",
     "@portaljs/remark-wiki-link": "^1.0.4",
