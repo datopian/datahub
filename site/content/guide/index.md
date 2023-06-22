@@ -7,37 +7,42 @@ showSidebar: false
 
 # Tutorial 1: Create a website from scratch using markdown and PortalJS
 
-In this tutorial we will walk you through creating an elegant fully functional website written in simple markdown and published with PortalJS.
+In this tutorial we will walk you through creating an elegant, fully functional website written in simple markdown and published with PortalJS.
 
-By the end of this tutorial you will
+By the end of this tutorial you will:
 
 - have a working markdown-based website powered by PortalJS.
-- be able to edit the text and add pages all from an online interface without installing anything.
+- be able to edit the text and add pages, all from an online interface without installing anything.
 
-🖼️ [SCREENSHOT of final website]
+Below is a screenshot of how the final website will look like:
+![[tutorial-1-result.png]]
 
-### Setup a sandbox website including live publishing 💃
+### Setup a sandbox website including live publishing
 
-https://app.tango.us/app/workflow/Setup-a-Flowershow-sandbox-website-including-publishing-9bef984b9dd14c07ae3288bb426c306e
+- Prerequisites: sign up for GitHub and Vercel
+- Navigate to [datopian/flowershow repository](https://github.com/datopian/flowershow)
+- Click on "Deploy"
+- Let the site build on Vercel
+- Visit the site! Yay! Your site is working! 🎉
 
-- Prerequisites: sign up for github (and vercel?)
-- Navigate to datopian flowershow: [link] 🖼️
-- Fork this? or click on deploy vercel
-- Let it build
-- Visit the site! Yay! your site is working 🖼️
+### Now, let's edit the front page
 
-### Now let's edit the page
-
-💃 https://app.tango.us/app/workflow/Edit-a-single-Markdown-based-page-4aa9bd806829415eb3a86136bfb176eb
-
-- Add some text: let's change the front page
-  - (save and watch it redeploy)
-- Add a remote image??
-- Add an image??? (is it worth it or could come later)
+- Navigate to `content/index.md` file in the site repository
+- Add some text to it
+- Save and watch the site redeploy
+- Visit the site! Yay! Your changes are live! 🎉
 
 ### Let's add a page: e.g. about page
 
-💃 https://app.tango.us/app/workflow/Add-a-single-Markdown-based-page-c14ae6dc9e1549f5af87b513daa701ba
+- Navigate to the `content` folder in the site repository
+- Add `about.md` file with some text
+- Save and watch the site redeploy
+- Visit the site! Yay! Your changes are live! 🎉
+
+> [!tip]
+> Read full tutorial [[create-a-website-from-scratch|here!]]
+
+# Tutorial 2: Editing your site locally on your computer
 
 ### What is this markdown stuff?
 
@@ -47,8 +52,6 @@ https://app.tango.us/app/workflow/Setup-a-Flowershow-sandbox-website-including-p
 - Explain we offer "markdown plus"
 - ?? Explain about PFM (vs GFM ...)
 
-### Trailer for tutorial 2
+### Why go local?
 
-[Optional] Intro to Part II: What's next and why are we going to install to go local ...
-
-Editing on github UI is ok but there are some issues e.g. can't work offline; can't add multiple files at same times, no "WYSIWYG" markdown editing; github markdown is subtlye different etc etc.
+While editing on GitHub UI is acceptable, it has its limitations – it doesn't support working offline, adding multiple files simultaneously, or previewing many markdown syntax elements supported by Flowershow-based websites.
