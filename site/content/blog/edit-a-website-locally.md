@@ -17,7 +17,7 @@ By the end of this tutorial, you will:
 
 Below is a screenshot of how the final website will look like:
 
-![[live-home-page.png]]
+![[tutorial-2-result.png]]
 
 Let's start by understanding why using GitHub UI as we did in tutorial 1 is not always a good choice.
 
@@ -241,7 +241,7 @@ Note, that under "SOURCE" section (next to the preview) there is also our last c
 
 Click on the preview to see the updated site live!
 
-![[live-home-page.png]]
+![[tutorial-2-result.png]]
 ![[live-book-home-page.png]]
 ![[live-book.png]]
 
