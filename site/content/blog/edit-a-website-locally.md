@@ -13,7 +13,7 @@ By the end of this tutorial, you will:
 - Gain a deeper understanding of working with Git and GitHub Desktop.
 - Learn how to clone your website's repository to your computer.
 - Learn how to edit content using Obsidian and what are the benefits of it.
-- Learn how to commit (save) your changes and push them back to the GitHub repository.
+- Learn how to commit (save) your changes locally and push them back to the GitHub repository.
 
 Below is a screenshot of how the final website will look like:
 
@@ -25,11 +25,19 @@ Let's start by understanding why using GitHub UI as we did in tutorial 1 is not 
 
 While editing on the GitHub UI is convenient, there are certain limitations and drawbacks to consider. For example, you can't work offline, can't add or edit multiple files simultaneously, and the GitHub UI's preview doesn't render all the Markdown syntax elements that are supported by Flowershow-based websites.
 
-Ok, so, what exactly is Markdown?
+Ok, but, what exactly is Markdown?
 
-Markdown is a simple and intuitive syntax, that allows you to format and structure your text. It's widely used for creating content on the web.
+[Markdown](https://en.wikipedia.org/wiki/Markdown) is a simple and intuitive syntax, that allows you to structure your text documents. It's widely used for creating content on the web. As Wikipedia puts it:
 
-BUT, there is no single version of Markdown. It comes in different "flavours", with CommonMark and GitHub Flavoured Markdown (GFM) being the most popular ones. Furthermore, different tools may support their own subsets or supersets of Markdown, one of which is Obsidian.
+> *Markdown is a lightweight [**markup language**](https://en.wikipedia.org/wiki/Markup_language) for creating [**formatted text**](https://en.wikipedia.org/wiki/Formatted_text) using a **plain-text editor**.*
+
+The key term here is "markup language". In simple terms, it is a way to annotate or "mark up" a plain text document with symbols that describe how the document is structured and so, how it should be understood, processed, or displayed. These tags can tell a computer program that supports this syntax (e.g. a website) how to format the rendered text, for example: which words should be bold or italic, where to insert images, when to start new paragraphs, how to create tables, and so forth. It's important to note, that even though Markdown symbols change how the text is displayed when it's rendered by a Markdown-compatible viewer, the underlying document in still just a plain text. For instance, if you want to create a heading in Markdown, you use the "#" symbol before your heading text, like this:
+
+```md
+# This is a Heading
+```
+
+BUT, there is no single version of Markdown. It comes in different "flavours", with CommonMark and GitHub Flavoured Markdown (GFM) being the most popular ones. And different tools supporting Markdown may use their own specific versions of Markdown. The two tools relevant in the context of this guide are Obsidian and Flowershow.
 
 Obsidian supports an extended version of Markdown that includes majority of elements from CommonMark and GFM, while also introducing its own unique features, like [wiki-links](https://help.obsidian.md/Linking+notes+and+files/Internal+links) or [callouts](https://help.obsidian.md/Editing+and+formatting/Callouts). And Flowershow template is Obsidian-compatible, meaning it supports (or aims to support) all of the Obsidian Markdown features.
 
@@ -42,7 +50,7 @@ To make things a bit clearer, there are:
 
 As you might have guessed by now, GitHub UI will only preview GitHub Flavoured Markdown. And while it's a majority of Markdown you would write, it won't be able to render Obsidian-only (or Flowershow-only) syntax elements, like callouts, wiki-links or inline table of contents.
 
-Another drawback of GitHub UI, is that it doesn't allow you to make changes (or to add) multiple files at once. Changes to each file will have to be commited (saved) separately, which can introduce a bit of a mess to your GitHub history, the more so if the changes you're making are some minor changes that are logically related to each other in multiple places (e.g. you want to update a link to some page on 10 different pages... with GitHub UI that would be pretty cumbersome).
+Another drawback of GitHub UI, is that it doesn't allow you to make changes (or to add) multiple files at once. Changes to each file will have to be commited (saved) separately, which can introduce a bit of a mess to your GitHub history, and may be cumbersome (e.g. if you want to update a link to some page on 10 other pages...).
 
 Ok, now we have this sorted, let's dive in and start editing your Flowershow website locally!
 
