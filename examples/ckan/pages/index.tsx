@@ -40,16 +40,25 @@ export default function Home({
   });
 
   return (
-    <main className="flex min-h-screen flex-col items-center p-24 bg-zinc-900">
-      <DatasetSearchForm
-        options={options}
-        setOptions={setOptions}
-        groups={groups}
-        orgs={orgs}
-      />
-      <div className="bg-white p-8 my-4 rounded-lg">
-        <ListOfDatasets options={options} setOptions={setOptions} ckan={ckan} />{' '}
-      </div>
-    </main>
+    <div>
+      <main className="py-12 bg-zinc-900">
+        <DatasetSearchForm
+          options={options}
+          setOptions={setOptions}
+          groups={groups}
+          orgs={orgs}
+        />
+        <div
+          className="bg-white p-8 mx-auto my-4 rounded-lg"
+          style={{ width: 'min(1100px, 95vw)' }}
+        >
+          <ListOfDatasets
+            options={options}
+            setOptions={setOptions}
+            ckan={ckan}
+          />{' '}
+        </div>
+      </main>
+    </div>
   );
 }
