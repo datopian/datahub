@@ -63,7 +63,7 @@ Congratulations, your new app is now running at http://localhost:3000.
 
 [![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fdatopian%2Fportaljs%2Ftree%2Fmain%2Fexamples%2Fgithub-backed-catalog)
 
-By clicking on this button, you will be redirected to a page which will allows you to clone the example into your own GitHub/GitLab/BitBucket account and automatically deploy it.
+By clicking on this button, you will be redirected to a page which will allow you to clone the example into your own GitHub/GitLab/BitBucket account and automatically deploy it.
 
 ### GitHub token
 
@@ -101,7 +101,7 @@ It has
 You can also add
 
 - A `description` which is useful if you have more than one dataset for each repo, if not provided we are just going to use the repo description
-- A `Name` which is useful if you want to give your dataset a nice name, if not provided we are going to use the junction of the `owner` the `repo` + the path of the README, in the exaple above it will be `fivethirtyeight/data/nba-raptor`
+- A `Name` which is useful if you want to give your dataset a nice name, if not provided we are going to use the junction of the `owner` the `repo` + the path of the README, in the example above it will be `fivethirtyeight/data/nba-raptor`
 
 ## Extra commands
 
