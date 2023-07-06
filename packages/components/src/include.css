@@ -1,0 +1,6 @@
+/* Temporary fix for a size issue with FlatUiTable loading indicator on Firefox */
+@layer base {
+  svg[tw^='animate-pulse w-12'] {
+    max-width: 100px;
+  }
+}

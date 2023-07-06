@@ -6,7 +6,6 @@ import {
   MapContainer,
   TileLayer,
   GeoJSON as GeoJSONLayer,
-  useMap,
 } from 'react-leaflet';
 
 import * as L from 'leaflet';
@@ -37,7 +36,6 @@ export function Map({
 }: MapProps) {
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
-  title;
   //  By default, assumes data is an Array...
   const [geoJsonData, setGeoJsonData] = useState<any>(null);
 
@@ -69,8 +67,6 @@ export function Map({
   }, []);
 
   const onEachFeature = (feature, layer) => {
-    const map = useMap();
-
     const geometryType = feature.type;
 
     if (tooltip.prop)
@@ -105,29 +101,32 @@ export function Map({
       center={[center.latitude, center.longitude]}
       zoom={zoom}
       scrollWheelZoom={false}
-      className="h-[500px]"
-      whenReady={(map) => {
+      className="h-80 w-full"
+      // @ts-ignore
+      whenReady={(map: any) => {
         map.target.scrollWheelZoom.enable();
 
-        var info = L.control();
+        var info = new L.Control() as any;
 
-        info.onAdd = function (map) {
+        info.onAdd = function () {
           this._div = L.DomUtil.create('div', 'info');
           this.update();
           return this._div;
         };
 
-        info.update = function (props) {
+        info.update = function () {
           this._div.innerHTML = `<h4 style="font-weight: 600; background: #f9f9f9; padding: 5px; border-radius: 5px; color: #464646;">${title}</h4>`;
         };
 
         if (title) info.addTo(map.target);
+
+        setTimeout(() => map.target.invalidateSize(), 5000);
       }}
     >
       <GeoJSONLayer
         data={geoJsonData}
-        style={(geoJsonFeature) => {
-          return { color: geoJsonFeature.color };
+        style={(geoJsonFeature: any) => {
+          return { color: geoJsonFeature?.color };
         }}
         onEachFeature={onEachFeature}
       />

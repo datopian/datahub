@@ -41,12 +41,13 @@ const app = async (): Promise<UserConfigExport> => {
         fileName: (format) => `components.${format}.js`,
       },
       rollupOptions: {
-        external: ['react', 'react-dom', 'tailwindcss', 'vega-lite', 'vega', 'react-vega'],
+        external: ['react', 'react-dom', 'tailwindcss', 'vega-lite', 'vega', 'react-vega', 'leaflet'],
         output: {
           globals: {
             react: 'React',
             'react-dom': 'ReactDOM',
             tailwindcss: 'tailwindcss',
+            leaflet: 'leaflet'
           },
         },
       },

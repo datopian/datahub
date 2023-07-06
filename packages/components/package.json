@@ -12,12 +12,14 @@
   ],
   "scripts": {
     "dev": "npm run storybook",
-    "build": "tsc && vite build && npm run build-tailwind",
+    "example": "vite",
+    "build": "tsc && vite build && npm run build-tailwind && npm run fix-leaflet",
     "lint": "eslint src --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build",
-    "build-tailwind": "NODE_ENV=production npx tailwindcss -o ./dist/styles.css --minify",
-    "prepare": "npm run build"
+    "build-tailwind": "NODE_ENV=production npx tailwindcss --postcss -c tailwind.config.js -i src/index.css -o ./dist/styles.css --minify",
+    "prepare": "npm run build",
+    "fix-leaflet": "node ./scripts/fix-leaflet.cjs"
   },
   "peerDependencies": {
     "react": "^18.2.0",
@@ -66,6 +68,8 @@
     "eslint-plugin-storybook": "^0.6.11",
     "json": "^11.0.0",
     "postcss": "^8.4.23",
+    "postcss-import": "^15.1.0",
+    "postcss-import-url": "^7.2.0",
     "prop-types": "^15.8.1",
     "storybook": "^7.0.7",
     "tailwindcss": "^3.3.2",

@@ -1,10 +1,7 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
 
-/* Temporary fix for a size issue with FlatUiTable loading indicator on Firefox */
-@layer base {
-  svg[tw^='animate-pulse w-12'] {
-    max-width: 100px;
-  }
-}
+@import "tailwindcss/base";
+@import "tailwindcss/components";
+@import "leaflet";
+@import "include";
+@import "tailwindcss/utilities";
+
