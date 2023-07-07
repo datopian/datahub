@@ -121,7 +121,7 @@ export function Map({
         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
       />
       <LayersControl position="bottomright">
-        {layers.map((layer, idx) => {
+        {layers.map((layer) => {
           const data = layersData.find(
             (layerData) => layerData.name === layer.name
           )?.data;
