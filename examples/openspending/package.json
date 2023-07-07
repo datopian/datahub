@@ -18,7 +18,7 @@
     "@heroicons/react": "^2.0.18",
     "@octokit/plugin-throttling": "^5.2.2",
     "@portaljs/ckan": "^0.0.2",
-    "@portaljs/components": "file:portaljs-components-0.1.12.tgz",
+    "@portaljs/components": "file:../../packages/components/portaljs-components-0.1.12.tgz",
     "@portaljs/core": "^1.0.5",
     "@portaljs/remark-callouts": "^1.0.5",
     "@portaljs/remark-embed": "^1.0.4",

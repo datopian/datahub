@@ -34,7 +34,7 @@ interface OpenLayersProps {
   popup?: (selected: any) => JSX.Element;
 }
 
-export function OpenLayers({
+export default function OpenLayers({
   layers,
   center = [0, 0],
   zoom = 1,
