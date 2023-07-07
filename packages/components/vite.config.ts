@@ -1,29 +1,15 @@
-import react from '@vitejs/plugin-react'
-import path from 'node:path'
-import { defineConfig } from 'vitest/config'
-import dts from 'vite-plugin-dts'
-import tailwindcss from 'tailwindcss'
-import { UserConfigExport } from 'vite'
-import replace from "rollup-plugin-re"
+import react from '@vitejs/plugin-react-swc';
+import path from 'node:path';
+import { defineConfig } from 'vitest/config';
+import dts from 'vite-plugin-dts';
+import tailwindcss from 'tailwindcss';
+import { UserConfigExport } from 'vite';
+import replace from 'rollup-plugin-re';
 
 const app = async (): Promise<UserConfigExport> => {
   return defineConfig({
     plugins: [
       react(),
-      replace({
-          patterns: [
-            {
-              match: /js-sha256/,
-              test: `eval("require('crypto')")`,
-              replace: `require('crypto')`,
-            },
-            {
-              match: /js-sha256/,
-              test: `eval("require('buffer').Buffer")`,
-              replace: `require('buffer').Buffer`,
-            },
-          ],
-        }),
       dts({
         insertTypesEntry: true,
       }),
@@ -34,6 +20,7 @@ const app = async (): Promise<UserConfigExport> => {
       },
     },
     build: {
+      target: 'es2020',
       lib: {
         entry: path.resolve(__dirname, 'src/index.ts'),
         name: 'components',
@@ -41,10 +28,24 @@ const app = async (): Promise<UserConfigExport> => {
         fileName: (format) => `components.${format}.js`,
       },
       rollupOptions: {
-        external: ['react', 'react-dom', 'tailwindcss', 'vega-lite', 'vega', 'react-vega', 'leaflet'],
+        external: [
+          'react',
+          'ol-mapbox-style',
+          'react-dom',
+          'tailwindcss',
+          'vega-lite',
+          'vega',
+          'react-vega',
+          'ol',
+          'leaflet'
+        ],
         output: {
+          manualChunks: undefined,
           globals: {
             react: 'React',
+            ol: 'ol',
+            'ol-mapbox-style': 'ol-mapbox-style',
+            'react-vega': 'react-vega',
             'react-dom': 'ReactDOM',
             tailwindcss: 'tailwindcss',
             leaflet: 'leaflet'
@@ -56,7 +57,7 @@ const app = async (): Promise<UserConfigExport> => {
       globals: true,
       environment: 'jsdom',
     },
-  })
-}
+  });
+};
 // https://vitejs.dev/config/
-export default app
+export default app;
