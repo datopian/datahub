@@ -6,93 +6,86 @@ import {
   MapContainer,
   TileLayer,
   GeoJSON as GeoJSONLayer,
+  LayersControl
 } from 'react-leaflet';
 
 import * as L from 'leaflet';
 
 export type MapProps = {
-  data: string | GeoJSON.GeoJSON;
+  layers: {
+    data: string | GeoJSON.GeoJSON;
+    name: string;
+    colorScale?: {
+      starting: string;
+      ending: string;
+    };
+    tooltip?:
+      | {
+          propNames: string[];
+        }
+      | boolean;
+    _id?: number;
+  }[];
   title?: string;
-  colorScale?: {
-    starting: string;
-    ending: string;
-  };
   center?: { latitude: number | undefined; longitude: number | undefined };
   zoom?: number;
-  tooltip?: {
-    prop: string;
-  };
 };
 
 export function Map({
-  data,
-  title = '',
-  colorScale = { starting: 'blue', ending: 'red' },
+  layers = [
+    {
+      data: null,
+      name: null,
+      colorScale: { starting: 'blue', ending: 'red' },
+      tooltip: true,
+    },
+  ],
   center = { latitude: 45, longitude: 45 },
   zoom = 2,
-  tooltip = {
-    prop: '',
-  },
+  title = '',
 }: MapProps) {
   const [isLoading, setIsLoading] = useState<boolean>(false);
-
-  //  By default, assumes data is an Array...
-  const [geoJsonData, setGeoJsonData] = useState<any>(null);
+  const [layersData, setLayersData] = useState<any>([]);
 
   useEffect(() => {
-    //  If data is string, assume it's a URL
-    if (typeof data === 'string') {
-      setIsLoading(true);
+    const loadDataPromises = layers.map(async (layer) => {
+      let layerData: any;
 
-      loadData(data).then((res: any) => {
-        const geoJsonObject = JSON.parse(res);
+      if (typeof layer.data === 'string') {
+        //  If "data" is string, assume it's a URL
+        setIsLoading(true);
+        layerData = await loadData(layer.data).then((res: any) => {
+          return JSON.parse(res);
+        });
+      } else {
+        //  Else, expect raw GeoJSON
+        layerData = layer.data;
+      }
 
+      if (layer.colorScale) {
         const colorScaleAr = chroma
-          .scale([colorScale.starting, colorScale.ending])
+          .scale([layer.colorScale.starting, layer.colorScale.ending])
           .mode('lch')
-          .colors(geoJsonObject.features.length);
+          .colors(layerData.features.length);
 
-        geoJsonObject.features.forEach((feature, i) => {
+        layerData.features.forEach((feature, i) => {
+          //  Only style if the feature doesn't have a color prop
           if (feature.color === undefined) {
             feature.color = colorScaleAr[i];
           }
         });
+      }
 
-        setGeoJsonData(geoJsonObject);
-        setIsLoading(false);
-      });
-    } else {
-      setGeoJsonData(data);
-    }
+      return { name: layer.name, data: layerData };
+    });
+
+    Promise.all(loadDataPromises).then((values) => {
+      setLayersData(values);
+      setIsLoading(false);
+    });
   }, []);
 
-  const onEachFeature = (feature, layer) => {
-    const geometryType = feature.type;
-
-    if (tooltip.prop)
-      layer.bindTooltip(feature.properties[tooltip.prop], {
-        direction: 'center',
-      });
-
-    layer.on({
-      mouseover: (event) => {
-        if (['Polygon', 'MultiPolygon'].includes(geometryType)) {
-          event.target.setStyle({
-            fillColor: '#B85042',
-          });
-        }
-      },
-      mouseout: (event) => {
-        if (['Polygon', 'MultiPolygon'].includes(geometryType)) {
-          event.target.setStyle({
-            fillColor: '#A7BEAE',
-          });
-        }
-      },
-    });
-  };
-
-  return isLoading || !geoJsonData ? (
+  return isLoading ? (
     <div className="w-full flex items-center justify-center w-[600px] h-[300px]">
       <LoadingSpinner />
     </div>
@@ -104,8 +97,10 @@ export function Map({
       className="h-80 w-full"
       // @ts-ignore
       whenReady={(map: any) => {
+        //  Enable zoom using scroll wheel
         map.target.scrollWheelZoom.enable();
 
+        //  Create the title box
         var info = new L.Control() as any;
 
         info.onAdd = function () {
@@ -119,21 +114,98 @@ export function Map({
         };
 
         if (title) info.addTo(map.target);
-
-        setTimeout(() => map.target.invalidateSize(), 5000);
       }}
     >
-      <GeoJSONLayer
-        data={geoJsonData}
-        style={(geoJsonFeature: any) => {
-          return { color: geoJsonFeature?.color };
-        }}
-        onEachFeature={onEachFeature}
-      />
       <TileLayer
         attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
       />
+      <LayersControl position="bottomright">
+        {layers.map((layer, idx) => {
+          const data = layersData.find(
+            (layerData) => layerData.name === layer.name
+          )?.data;
+
+          return (
+            data && (
+              <LayersControl.Overlay key={layer.name} checked name={layer.name}>
+                <GeoJSONLayer
+                  data={data}
+                  style={(geoJsonFeature: any) => {
+                    //  Set the fill color of each feature when appliable
+                    if (
+                      !['Point', 'MultiPoint'].includes(geoJsonFeature.type)
+                    ) {
+                      return { color: geoJsonFeature?.color };
+                    }
+                  }}
+                  eventHandlers={{
+                    add: (e) => {
+                      const featureGroup = e.target;
+                      const tooltip = layer.tooltip;
+
+                      featureGroup.eachLayer((featureLayer) => {
+                        const feature = featureLayer.feature;
+                        const geometryType = feature.geometry.type;
+
+                        if (tooltip) {
+                          const featurePropNames = Object.keys(
+                            feature.properties
+                          );
+                          let includedFeaturePropNames;
+
+                          if (tooltip === true) {
+                            includedFeaturePropNames = featurePropNames;
+                          } else {
+                            includedFeaturePropNames = tooltip.propNames.filter(
+                              (name) => featurePropNames.includes(name)
+                            );
+                          }
+
+                          if (includedFeaturePropNames) {
+                            const tooltipContent = includedFeaturePropNames
+                              .map(
+                                (name) =>
+                                  `<b>${name}:</b> ${feature.properties[name]}`
+                              )
+                              .join('<br />');
+
+                            featureLayer.bindTooltip(tooltipContent, {
+                              direction: 'center',
+                            });
+                          }
+                        }
+
+                        featureLayer.on({
+                          mouseover: (event) => {
+                            if (
+                              ['Polygon', 'MultiPolygon'].includes(geometryType)
+                            ) {
+                              event.target.setStyle({
+                                fillOpacity: 0.5,
+                              });
+                            }
+                          },
+                          mouseout: (event) => {
+                            if (
+                              ['Polygon', 'MultiPolygon'].includes(geometryType)
+                            ) {
+                              event.target.setStyle({
+                                fillOpacity: 0.2,
+                              });
+                            }
+                          },
+                        });
+                      });
+                    },
+                  }}
+                />
+                ;
+              </LayersControl.Overlay>
+            )
+          );
+        })}
+      </LayersControl>
     </MapContainer>
   );
 }
