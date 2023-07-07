@@ -15,6 +15,17 @@ helps to bring this data to life. It maps out the city's annual spending across 
 the education slice has grown noticeably over the years, indicating Frankfurt's intention to prioritize this space.
 The city's commitment to education is abundantly clear.
 
+<Map data="https://openlayers.org/data/vector/ecoregions.json" />
+
+<OpenLayers
+  layers={[
+    {
+      url: 'https://openlayers.org/data/vector/ecoregions.json',
+      name: 'Teste',
+    },
+  ]}
+/>
+
 <VegaLite
   spec={{
     $schema: 'https://vega.github.io/schema/vega-lite/v5.json',
@@ -156,8 +167,8 @@ the key to a prosperous future.
         title: '',
         field: 'label',
         scale: {
-          domain: ["Education"],
-          range: ['#64b5f6']
+          domain: ['Education'],
+          range: ['#64b5f6'],
         },
       },
       tooltip: [
@@ -189,4 +200,3 @@ Frankfurt is a city that's recognized the power of education, and it's using tha
 One can only hope that more cities follow suit.
 
 [^1]: https://worldpopulationreview.com/world-cities/frankfurt-population
-
