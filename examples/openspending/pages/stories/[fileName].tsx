@@ -4,7 +4,12 @@ import { GetStaticProps } from 'next';
 import Layout from '../../components/_shared/Layout';
 import { formatDate } from '@/utils/formatDate';
 import parse from '../../lib/markdown';
-import DataRichDocument from '../../components/DataRichDocument';
+import dynamic from 'next/dynamic';
+
+const DataRichDocument = dynamic(
+  () => import('../../components/DataRichDocument'),
+  { ssr: false }
+);
 
 export default function Page({ source, meta }) {
   return (
@@ -46,7 +51,10 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
 
 export async function getStaticPaths() {
   const mddb = await clientPromise;
-  let allDocuments = await mddb.getFiles({ extensions: ['mdx'], folder: 'stories' });
+  let allDocuments = await mddb.getFiles({
+    extensions: ['mdx'],
+    folder: 'stories',
+  });
 
   const paths = allDocuments
     .filter((page) => page.metadata?.isDraft !== true)

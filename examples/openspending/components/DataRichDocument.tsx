@@ -7,13 +7,25 @@ import { Mermaid } from '@portaljs/core';
 // to handle import statements. Instead, you must include components in scope
 // here.
 const components = {
-  Table: dynamic(() => import('@portaljs/components').then(mod => mod.Table)),
-  Catalog: dynamic(() => import('@portaljs/components').then(mod => mod.Catalog)),
+  Table: dynamic(() => import('@portaljs/components').then((mod) => mod.Table)),
+  Catalog: dynamic(() =>
+    import('@portaljs/components').then((mod) => mod.Catalog)
+  ),
   mermaid: Mermaid,
-  Vega: dynamic(() => import('@portaljs/components').then(mod => mod.Vega)),
-  VegaLite: dynamic(() => import('@portaljs/components').then(mod => mod.VegaLite)),
-  LineChart: dynamic(() => import('@portaljs/components').then(mod => mod.LineChart)),
-  FlatUiTable: dynamic(() => import('@portaljs/components').then(mod => mod.FlatUiTable)),
+  Vega: dynamic(() => import('@portaljs/components').then((mod) => mod.Vega)),
+  VegaLite: dynamic(() =>
+    import('@portaljs/components').then((mod) => mod.VegaLite)
+  ),
+  LineChart: dynamic(() =>
+    import('@portaljs/components').then((mod) => mod.LineChart)
+  ),
+  FlatUiTable: dynamic(() =>
+    import('@portaljs/components').then((mod) => mod.FlatUiTable)
+  ),
+  Map: dynamic(() => import('@portaljs/components').then((mod) => mod.Map)),
+  OpenLayers: dynamic(() =>
+    import('@portaljs/components').then((mod) => mod.OpenLayers)
+  ),
 } as any;
 
 export default function DRD({ source }: { source: any }) {
