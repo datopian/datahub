@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import React from 'react';
-import { OpenLayers } from '../src/components/OpenLayers/OpenLayers';
+import OpenLayers from '../src/components/OpenLayers/OpenLayers';
 
 const meta: Meta = {
   title: 'Components/OpenLayers',
