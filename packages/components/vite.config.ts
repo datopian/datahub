@@ -37,8 +37,7 @@ const app = async (): Promise<UserConfigExport> => {
           'vega',
           'react-vega',
           'ol',
-          'ol/dom.js',
-          'ol/reproj.js',
+          'leaflet'
         ],
         output: {
           manualChunks: undefined,
@@ -46,11 +45,10 @@ const app = async (): Promise<UserConfigExport> => {
             react: 'React',
             ol: 'ol',
             'ol-mapbox-style': 'ol-mapbox-style',
-            'ol/dom.js': 'ol/dom.js',
-            'ol/reproj.js': 'ol/reproj.js',
             'react-vega': 'react-vega',
             'react-dom': 'ReactDOM',
             tailwindcss: 'tailwindcss',
+            leaflet: 'leaflet'
           },
         },
       },
