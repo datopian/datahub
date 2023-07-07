@@ -22,10 +22,6 @@ const components = {
   FlatUiTable: dynamic(() =>
     import('@portaljs/components').then((mod) => mod.FlatUiTable)
   ),
-  OpenLayers: dynamic(() =>
-    import('@portaljs/components').then((mod) => mod.OpenLayers)
-  ),
-  Map: dynamic(() => import('@portaljs/components').then((mod) => mod.Map)),
 } as any;
 
 export default function DRD({ source }: { source: any }) {
