@@ -8,7 +8,7 @@ const meta: Meta = {
   component: Map,
   tags: ['autodocs'],
   argTypes: {
-    data: {
+    layers: {
       description:
         'Data to be displayed.\n\n GeoJSON Object \n\nOR\n\n URL to GeoJSON Object',
     },
@@ -21,9 +21,6 @@ const meta: Meta = {
     zoom: {
       description: 'Zoom level',
     },
-    tooltip: {
-      description: 'Tooltip settings'
-    }
   },
 };
 
@@ -35,21 +32,60 @@ type Story = StoryObj<MapProps>;
 export const GeoJSONPolygons: Story = {
   name: 'GeoJSON polygons map',
   args: {
-    data: 'https://d2ad6b4ur7yvpq.cloudfront.net/naturalearth-3.3.0/ne_10m_geography_marine_polys.geojson',
+    layers: [
+      {
+        data: 'https://d2ad6b4ur7yvpq.cloudfront.net/naturalearth-3.3.0/ne_10m_geography_marine_polys.geojson',
+        name: 'Polygons',
+        tooltip: { propNames: ['name'] },
+        colorScale: {
+          starting: '#ff0000',
+          ending: '#00ff00',
+        },
+      },
+    ],
     title: 'Seas and Oceans Map',
     center: { latitude: 45, longitude: 0 },
     zoom: 2,
-    tooltip: { prop: 'name' },
   },
 };
 
 export const GeoJSONPoints: Story = {
   name: 'GeoJSON points map',
   args: {
-    data: 'https://opendata.arcgis.com/datasets/9c58741995174fbcb017cf46c8a42f4b_25.geojson',
+    layers: [
+      {
+        data: 'https://opendata.arcgis.com/datasets/9c58741995174fbcb017cf46c8a42f4b_25.geojson',
+        name: 'Points',
+        tooltip: { propNames: ['Location'] },
+      },
+    ],
     title: 'Roads in York',
     center: { latitude: 53.9614, longitude: -1.0739 },
     zoom: 12,
-    tooltip: { prop: 'Location' },
+  },
+};
+
+export const GeoJSONMultipleLayers: Story = {
+  name: 'GeoJSON polygons and points map',
+  args: {
+    layers: [
+      {
+        data: 'https://opendata.arcgis.com/datasets/9c58741995174fbcb017cf46c8a42f4b_25.geojson',
+        name: 'Points',
+        tooltip: true,
+      },
+      {
+        data: 'https://d2ad6b4ur7yvpq.cloudfront.net/naturalearth-3.3.0/ne_10m_geography_marine_polys.geojson',
+        name: 'Polygons',
+        tooltip: true,
+        colorScale: {
+          starting: '#ff0000',
+          ending: '#00ff00',
+        },
+      },
+    ],
+    title: 'Polygons and points',
+    center: { latitude: 45, longitude: 0 },
+    zoom: 2,
   },
 };
