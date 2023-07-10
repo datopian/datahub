@@ -1,4 +1,5 @@
 import { AppProps } from 'next/app';
+import '@portaljs/components/styles.css';
 import './styles.css';
 import { NextSeo } from 'next-seo';
 
