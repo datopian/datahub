@@ -1,5 +1,11 @@
 # @portaljs/components
 
+## 0.2.0
+
+### Minor Changes
+
+- [`80c6221a`](https://github.com/datopian/portaljs/commit/80c6221a05733f8c1dd0431bed4d72b1f9d7d636) Thanks [@luccasmmg](https://github.com/luccasmmg)! - Added the OpenLayers and the Map(Leaflet based) component
+
 ## 0.1.12
 
 ### Patch Changes
