@@ -44,14 +44,39 @@ Below is a screenshot of how the final website will look like:
 
 # Tutorial 2: Editing your site locally on your computer
 
-### What is this markdown stuff?
+In this tutorial, we will walk you through the process of editing your Flowershow website locally on your computer.
 
-- Idea of "markup" - how is this different from plain text
-- Brief info about markdown
-- Link to markdown tutorials
-- Explain we offer "markdown plus"
-- ?? Explain about PFM (vs GFM ...)
+By the end of this tutorial, you will:
 
-### Why go local?
+- Understand what is Markdown and why you should use Obsidian to edit content on your Flowershow websites in most cases.
+- Gain a deeper understanding of working with Git and GitHub Desktop.
+- Learn how to clone your website's repository to your computer.
+- Learn how to edit content using Obsidian and what are the benefits of it.
+- Learn how to commit (save) your changes locally and push them back to the GitHub repository.
 
-While editing on GitHub UI is acceptable, it has its limitations – it doesn't support working offline, adding multiple files simultaneously, or previewing many markdown syntax elements supported by Flowershow-based websites.
+Below is a screenshot of how the final website will look like:
+
+![[tutorial-2-result.png]]
+
+### Clone the repository to your computer
+
+- Setup GitHub Desktop app with your GitHub account
+- Grab your site's repository URL
+- Open GitHub Desktop app and clone the repository
+- Yay! You have a copy of your website's repository on your computer! 🎉
+
+### Now, let's edit in Obsidian
+
+- Open the `/content` folder of the cloned repository in Obsidian
+- Edit the home page and the about page
+- Create a folder with the reviews of books you've read
+
+### Commit your changes
+
+- Commit the changes in GitHub Desktop app
+- Push the changes to the remote repository
+- Watch the site redeploy
+- Visit the site! Yay! Your changes are live! 🎉
+
+> [!tip]
+> Read full tutorial [[edit-a-website-locally|here!]]
