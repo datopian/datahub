@@ -66,7 +66,7 @@ Ok, now we have this sorted, let's dive in and start editing your Flowershow web
 
 ### 1. Open GitHub Desktop app
 
-## 2.  Click on "Clone a Repository from the Internet..."
+### 2.  Click on "Clone a Repository from the Internet..."
 
 Or click on "File" -> "Clone repository".
 
