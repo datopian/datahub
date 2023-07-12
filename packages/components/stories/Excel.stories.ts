@@ -10,7 +10,7 @@ const meta: Meta = {
   argTypes: {
     url: {
       description:
-        'Data to be displayed.\n\n E.g.: [["1990", 1], ["1991", 2]] \n\nOR\n\n "https://url.to/data.csv"',
+        'Url of the file to be displayed e.g.: "https://url.to/data.csv"',
     },
   },
 };
@@ -19,9 +19,16 @@ export default meta;
 
 type Story = StoryObj<ExcelProps>;
 
-export const FromURL: Story = {
-  name: 'Excel spreadsheet from URL',
+export const SingleSheet: Story = {
+  name: 'Excel file with just one sheet',
   args: {
     url: 'https://sheetjs.com/pres.xlsx',
+  },
+};
+
+export const MultipleSheet: Story = {
+  name: 'Excel file with multiple sheets',
+  args: {
+    url: 'https://www.smartsheet.com/sites/default/files/IC-Gantt-Chart-Project-Template-8857.xlsx',
   },
 };

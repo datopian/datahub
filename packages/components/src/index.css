@@ -1,7 +1,9 @@
 
 @import "tailwindcss/base";
 @import "tailwindcss/components";
-@import "leaflet";
 @import "include";
+@import "leaflet";
+@import 'ag-grid-community/styles/ag-grid.css';
+@import 'ag-grid-community/styles/ag-theme-alpine.css';
 @import "tailwindcss/utilities";
 

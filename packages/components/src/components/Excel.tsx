@@ -1,8 +1,9 @@
 import { useEffect, useState } from 'react';
 import LoadingSpinner from './LoadingSpinner';
 import { read, utils } from 'xlsx';
-import DataGrid, { Column, textEditor } from 'react-data-grid';
-import 'react-data-grid/lib/styles.css';
+import { AgGridReact } from 'ag-grid-react';
+import 'ag-grid-community/styles/ag-grid.css';
+import 'ag-grid-community/styles/ag-theme-alpine.css';
 
 export type ExcelProps = {
   url: string;
@@ -16,17 +17,23 @@ export function Excel({ url }: ExcelProps) {
   const [cols, setCols] = useState<any>();
 
   const loadSpreadsheet = (wb: any, name: string) => {
-    console.log(name)
     setActiveSheetName(name);
     const ws = wb.Sheets[name];
-    const rows = utils.sheet_to_json(ws, { header: 1 });
 
     const range = utils.decode_range(ws['!ref'] || 'A1');
     const columns = Array.from({ length: range.e.c + 1 }, (_, i) => ({
-      key: String(i),
-      name: utils.encode_col(i),
-      editor: textEditor,
+      field: utils.encode_col(i),
     }));
+
+    const rowsAr = utils.sheet_to_json(ws, { header: 1 });
+    const rows = rowsAr.map((row) => {
+      const obj = {};
+      columns.forEach((col, i) => {
+        obj[col.field] = row[i];
+      });
+      return obj;
+    });
+
     setRows(rows);
     setCols(columns);
   };
@@ -52,18 +59,36 @@ export function Excel({ url }: ExcelProps) {
     <>
       {cols && rows && (
         <div>
-          <DataGrid columns={cols} rows={rows} onRowsChange={setRows} />
+          <div
+            className="ag-theme-alpine"
+            style={{ height: 400, width: '100%' }}
+          >
+            <AgGridReact
+              rowData={rows}
+              columnDefs={cols}
+              defaultColDef={{
+                resizable: true,
+                minWidth: 200,
+                flex: 1,
+                sortable: true,
+                filter: true,
+              }}
+            ></AgGridReact>
+          </div>
           <div className="border-t">
             {workbook.SheetNames.map((name: string, idx: number) => {
               return (
-                <button
-                  className={`px-3 pb-1 pt-2 border-b border-l border-r ${
-                    name == activeSheetName ? 'font-bold' : ''
-                  }`}
-                  onClick={() => loadSpreadsheet(workbook, name)}
-                >
-                  {name}
-                </button>
+                <>
+                  <button
+                    key={idx}
+                    className={`text-sm px-3 pb-2 pt-4 border-b border-l border-r ${
+                      name == activeSheetName ? 'font-semibold' : ''
+                    }`}
+                    onClick={() => loadSpreadsheet(workbook, name)}
+                  >
+                    {name}
+                  </button>
+                </>
               );
             })}
           </div>

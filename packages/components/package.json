@@ -17,7 +17,7 @@
     "lint": "eslint src --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build",
-    "build-tailwind": "NODE_ENV=production npx tailwindcss --postcss -c tailwind.config.js -i src/index.css -o ./dist/styles.css --minify",
+    "build-tailwind": "NODE_ENV=production npx tailwindcss --postcss -c tailwind.config.js -i src/index.css -o ./dist/style.css --minify",
     "prepare": "npm run build",
     "fix-leaflet": "node ./scripts/fix-leaflet.cjs"
   },
@@ -30,14 +30,15 @@
     "@heroicons/react": "^2.0.17",
     "@planet/maps": "^8.1.0",
     "@tanstack/react-table": "^8.8.5",
+    "ag-grid-react": "^30.0.4",
     "chroma-js": "^2.4.2",
     "flexsearch": "0.7.21",
     "leaflet": "^1.9.4",
     "next-mdx-remote": "^4.4.1",
     "ol": "^7.4.0",
     "papaparse": "^5.4.1",
+    "postcss-url": "^10.1.3",
     "react": "^18.2.0",
-    "react-data-grid": "^7.0.0-beta.34",
     "react-dom": "^18.2.0",
     "react-hook-form": "^7.43.9",
     "react-leaflet": "^4.2.1",
@@ -95,7 +96,7 @@
       "require": "./dist/components.umd.js"
     },
     "./styles.css": {
-      "import": "./dist/styles.css"
+      "import": "./dist/style.css"
     }
   },
   "publishConfig": {
