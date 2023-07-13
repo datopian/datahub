@@ -4,7 +4,6 @@ import { defineConfig } from 'vitest/config';
 import dts from 'vite-plugin-dts';
 import tailwindcss from 'tailwindcss';
 import { UserConfigExport } from 'vite';
-import replace from 'rollup-plugin-re';
 
 const app = async (): Promise<UserConfigExport> => {
   return defineConfig({
@@ -37,7 +36,7 @@ const app = async (): Promise<UserConfigExport> => {
           'vega',
           'react-vega',
           'ol',
-          'leaflet'
+          'leaflet',
         ],
         output: {
           manualChunks: undefined,
@@ -48,7 +47,7 @@ const app = async (): Promise<UserConfigExport> => {
             'react-vega': 'react-vega',
             'react-dom': 'ReactDOM',
             tailwindcss: 'tailwindcss',
-            leaflet: 'leaflet'
+            leaflet: 'leaflet',
           },
         },
       },

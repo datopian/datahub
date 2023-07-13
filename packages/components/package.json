@@ -47,6 +47,9 @@
     "vega": "5.25.0",
     "vega-lite": "5.1.0",
     "vitest": "^0.31.4",
+    "@react-pdf-viewer/core": "3.6.0",
+    "@react-pdf-viewer/default-layout": "3.6.0",
+    "pdfjs-dist": "2.15.349",
     "xlsx": "^0.18.5"
   },
   "devDependencies": {
