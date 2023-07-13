@@ -29,6 +29,6 @@ export const SingleSheet: Story = {
 export const MultipleSheet: Story = {
   name: 'Excel file with multiple sheets',
   args: {
-    url: 'https://www.smartsheet.com/sites/default/files/IC-Gantt-Chart-Project-Template-8857.xlsx',
+    url: 'https://storage.portaljs.org/IC-Gantt-Chart-Project-Template-8857.xlsx',
   },
 };
