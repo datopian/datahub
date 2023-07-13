@@ -6,9 +6,10 @@ import {
   MapContainer,
   TileLayer,
   GeoJSON as GeoJSONLayer,
-  LayersControl
+  LayersControl,
 } from 'react-leaflet';
 
+import 'leaflet/dist/leaflet.css';
 import * as L from 'leaflet';
 
 export type MapProps = {
@@ -131,6 +132,27 @@ export function Map({
               <LayersControl.Overlay key={layer.name} checked name={layer.name}>
                 <GeoJSONLayer
                   data={data}
+                  //  @ts-ignore
+                  pointToLayer={(feature, latlng) => {
+                    //  This resolver an issue in which the bundled map was
+                    //  not finding the images
+                    const leafletBase =
+                      'https://unpkg.com/leaflet@1.9.4/dist/images/';
+
+                    const icon = new L.Icon({
+                      iconUrl: leafletBase + 'marker-icon.png',
+                      iconRetinaUrl: leafletBase + 'marker-icon-2x.png',
+                      shadowUrl: leafletBase + 'marker-shadow.png',
+                      iconSize: [25, 41],
+                      iconAnchor: [12, 41],
+                      popupAnchor: [1, -34],
+                      tooltipAnchor: [16, -28],
+                      shadowSize: [41, 41],
+                    });
+
+                    const iconMarker = L.marker(latlng, { icon });
+                    return iconMarker;
+                  }}
                   style={(geoJsonFeature: any) => {
                     //  Set the fill color of each feature when appliable
                     if (

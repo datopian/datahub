@@ -7,3 +7,4 @@ export * from './components/FlatUiTable';
 export * from './components/OpenLayers/OpenLayers';
 export * from './components/Map';
 export * from './components/PdfViewer';
+export * from "./components/Excel";
