@@ -1,5 +1,13 @@
 # @portaljs/components
 
+## 0.3.0
+
+### Minor Changes
+
+- [`2e13c1b7`](https://github.com/datopian/portaljs/commit/2e13c1b738ddac91a9419f5c0484406328bd1cd3) Thanks [@demenech](https://github.com/demenech)! - PDF and Excel components
+
+- [#973](https://github.com/datopian/portaljs/pull/973) [`f3c2a2ff`](https://github.com/datopian/portaljs/commit/f3c2a2ffa7dcf9693bd25318c719ce58d27070b8) Thanks [@demenech](https://github.com/demenech)! - Implement <Excel /> component
+
 ## 0.2.0
 
 ### Minor Changes
