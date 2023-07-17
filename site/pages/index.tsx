@@ -7,6 +7,7 @@ import Layout from '../components/Layout';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import { collectHeadings } from '@portaljs/core';
+import Head from 'next/head';
 
 export default function Home({ sidebarTree }) {
   const router = useRouter();
@@ -23,7 +24,11 @@ export default function Home({ sidebarTree }) {
 
   return (
     <>
-      <Layout isHomePage={true} tableOfContents={tableOfContents} sidebarTree={sidebarTree} >
+      <Layout
+        isHomePage={true}
+        tableOfContents={tableOfContents}
+        sidebarTree={sidebarTree}
+      >
         <Features />
         <Showcases />
         <Community />

@@ -2,7 +2,7 @@ import { useRef } from 'react';
 import ButtonLink from './ButtonLink';
 import NewsletterForm from './NewsletterForm';
 import Image from 'next/image';
-import DatahubExampleImg from "@/public/images/showcases/datahub.png"
+import DatahubExampleImg from '@/public/images/showcases/datahub.webp';
 
 const codeLanguage = 'javascript';
 const code = `export default {
@@ -72,9 +72,11 @@ export function Hero() {
                 target="_blank"
                 rel="noopener noreferrer"
               >
-                <img
+                <Image
                   src="/images/datopian_logo.png"
                   alt="Datopian"
+                  width={24}
+                  height={20}
                   className="mx-2 mb-1 h-6 inline bg-black rounded-full"
                 />
                 <span>Datopian</span>
@@ -85,7 +87,12 @@ export function Hero() {
             <div className="relative rounded-2xl bg-[#0A101F]/80 ring-1 ring-white/10 backdrop-blur">
               <div className="absolute -top-px left-20 right-11 h-px bg-gradient-to-r from-sky-300/0 via-sky-300/70 to-sky-300/0" />
               <div className="absolute -bottom-px left-11 right-20 h-px bg-gradient-to-r from-blue-400/0 via-blue-400 to-blue-400/0" />
-                <Image src={DatahubExampleImg} alt="opendata.datahub.io" />
+              <Image
+                height={400}
+                width={600}
+                src={DatahubExampleImg}
+                alt="opendata.datahub.io"
+              />
             </div>
           </div>
         </div>

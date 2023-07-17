@@ -5,26 +5,26 @@ const items = [
   {
     title: 'Open Data Northern Ireland',
     href: 'https://www.opendatani.gov.uk/',
-    image: '/images/showcases/odni.png',
+    image: '/images/showcases/odni.webp',
     description: 'Government Open Data Portal',
   },
   {
     title: 'Birmingham City Observatory',
     href: 'https://www.cityobservatory.birmingham.gov.uk/',
-    image: '/images/showcases/birmingham.png',
+    image: '/images/showcases/birmingham.webp',
     description: 'Government Open Data Portal',
   },
   {
     title: 'UAE Open Data',
     href: 'https://opendata.fcsc.gov.ae/',
-    image: '/images/showcases/uae.png',
+    image: '/images/showcases/uae.webp',
     description: 'Government Open Data Portal',
     sourceUrl: 'https://github.com/FCSCOpendata/frontend',
   },
   {
     title: 'Datahub Open Data',
     href: 'https://opendata.datahub.io/',
-    image: '/images/showcases/datahub.png',
+    image: '/images/showcases/datahub.webp',
     description: 'Demo Data Portal by DataHub',
   },
 ];

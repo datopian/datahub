@@ -3,10 +3,6 @@ import Script from 'next/script';
 export default function NewsletterForm() {
   return (
     <div>
-      <link
-        rel="stylesheet"
-        href="https://sibforms.com/forms/end-form/build/sib-styles.css"
-      />
       <div
         id="sib-form-container"
         className="mt-8 sm:mx-auto sm:text-center lg:text-left lg:mx-0"
@@ -119,6 +115,7 @@ export default function NewsletterForm() {
         }}
       />
       <Script
+        strategy="worker"
         id="newsletter-submit-form"
         src="https://sibforms.com/forms/end-form/build/main.js"
       />
