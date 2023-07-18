@@ -37,6 +37,7 @@ const config = {
   footerLinks: [],
   nextSeo: {
     additionalLinkTags: [
+      { rel: 'icon', href: '/favicon.ico' },
       { rel: 'apple-touch-icon', href: '/icon.png', sizes: '120x120' },
     ],
     openGraph: {
