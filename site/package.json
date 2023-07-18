@@ -53,6 +53,7 @@
   "devDependencies": {
     "@tailwindcss/typography": "^0.5.9",
     "autoprefixer": "^10.4.14",
+    "next-sitemap": "^4.1.8",
     "postcss": "^8.4.22",
     "prettier": "^2.8.7",
     "remark": "^14.0.2",
