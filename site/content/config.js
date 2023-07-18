@@ -1,7 +1,7 @@
 const config = {
   title: 'PortalJS - The JavaScript framework for data portals.',
   description:
-    'PortalJS is a framework for rapidly building rich data portal frontends using a modern frontend approach. PortalJS can be used to present a single dataset or build a full-scale data catalog/portal.',
+    'PortalJS is a framework for rapidly building rich data portal frontends using a modern frontend approach.',
   theme: {
     default: 'dark',
     toggleIcon: '/images/theme-button.svg',
@@ -36,6 +36,9 @@ const config = {
   ],
   footerLinks: [],
   nextSeo: {
+    additionalLinkTags: [
+      { rel: 'apple-touch-icon', href: '/icon.png', sizes: '120x120' },
+    ],
     openGraph: {
       type: 'website',
       title:
