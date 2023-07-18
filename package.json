@@ -64,8 +64,5 @@
     "typescript": "~4.9.5",
     "unist-util-select": "^4.0.3",
     "unist-util-visit": "^4.1.2"
-  },
-  "dependencies": {
-    "next-sitemap": "^4.1.8"
   }
 }
