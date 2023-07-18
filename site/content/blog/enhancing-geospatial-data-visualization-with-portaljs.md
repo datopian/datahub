@@ -15,7 +15,7 @@ We are now eager to share our latest enhancement to [PortalJS](https://portaljs.
 
 Maps play a crucial role in geospatial data visualization. Several formats exist for storing and sharing this type of data, with GeoJSON, KML, and shapefiles being among the most popular. As a prominent figure in the field of open-source data portal platforms, [PortalJS](https://portaljs.org/) strives to support as many map formats as possible.
 
-Taking inspiration from the ckanext-geoview extension, we currently support KML and GeoJSON formats in [PortalJS](https://portaljs.org/]. This remarkable extension is a plugin for CKAN, the world’s leading open source data management system, that enables users to visualize geospatial data in diverse formats on an interactive map. Apart from KML and GeoJSON formats support, our roadmap entails extending compatibility to encompass all other formats supported by ckanext-geoview. Rest assured, we are committed to empowering users with a wide array of map format options in the future.
+Taking inspiration from the ckanext-geoview extension, we currently support KML and GeoJSON formats in [PortalJS](https://portaljs.org/). This remarkable extension is a plugin for CKAN, the world’s leading open source data management system, that enables users to visualize geospatial data in diverse formats on an interactive map. Apart from KML and GeoJSON formats support, our roadmap entails extending compatibility to encompass all other formats supported by ckanext-geoview. Rest assured, we are committed to empowering users with a wide array of map format options in the future.
 
 So, what makes these formats special?
 
