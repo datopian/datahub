@@ -6,6 +6,7 @@
     "dev": "npm run mddb && next dev",
     "build": "next build",
     "prebuild": "npm run mddb && node ./scripts/fix-symlinks.mjs",
+    "postbuild": "next-sitemap",
     "start": "next start",
     "mddb": "mddb content"
   },
