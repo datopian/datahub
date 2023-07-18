@@ -1,5 +1,5 @@
 const config = {
-  title: 'PortalJS',
+  title: 'PortalJS - The JavaScript framework for data portals.',
   description:
     'PortalJS is a framework for rapidly building rich data portal frontends using a modern frontend approach. PortalJS can be used to present a single dataset or build a full-scale data catalog/portal.',
   theme: {
