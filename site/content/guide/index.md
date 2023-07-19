@@ -1,6 +1,8 @@
 ---
 showToc: false
 showSidebar: false
+title: "Markdown-based Websites Guide"
+disableTitle: true
 ---
 
 <Hero title="Markdown-based Websites" subtitle="Create markdown-based website, update it, add collaborators and discover markdown superpowers" />

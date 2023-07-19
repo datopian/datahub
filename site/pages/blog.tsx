@@ -3,10 +3,12 @@ import computeFields from '@/lib/computeFields';
 import clientPromise from '@/lib/mddb';
 import { BlogsList, SimpleLayout } from '@portaljs/core';
 import * as fs from 'fs';
+import {NextSeo} from 'next-seo';
 
 export default function Blog({ blogs }) {
   return (
     <>
+      <NextSeo title="Blog posts" />
       <Layout>
         <SimpleLayout title="Blog posts">
           <BlogsList blogs={blogs} />

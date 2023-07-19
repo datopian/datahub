@@ -35,3 +35,8 @@ yarn-error.log*
 
 # markdowndb
 markdown.db
+
+# seo
+robots.txt
+sitemap-0.xml
+sitemap.xml

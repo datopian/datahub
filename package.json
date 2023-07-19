@@ -1,6 +1,8 @@
 {
   "name": "portaljs",
-  "workspaces": ["./packages/*"],
+  "workspaces": [
+    "./packages/*"
+  ],
   "version": "0.0.0",
   "license": "MIT",
   "scripts": {

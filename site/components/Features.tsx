@@ -58,7 +58,7 @@ export default function Features() {
           >
             <div className="absolute -inset-px rounded-xl border-2 border-transparent opacity-0 [background:linear-gradient(var(--quick-links-hover-bg,theme(colors.sky.50)),var(--quick-links-hover-bg,theme(colors.sky.50)))_padding-box,linear-gradient(to_top,theme(colors.blue.300),theme(colors.blue.400),theme(colors.blue.500))_border-box] group-hover:opacity-100 dark:[--quick-links-hover-bg:theme(colors.slate.800)]" />
             <div className="relative overflow-hidden rounded-xl p-6">
-              <img src={feature.icon} alt="" className="h-24 w-auto" />
+              <img src={feature.icon} alt={feature.title} className="h-24 w-auto" />
               <h2 className="mt-4 font-display text-base text-primary dark:text-primary-dark">
                 <span className="absolute -inset-px rounded-xl" />
                 {feature.title}

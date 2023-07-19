@@ -1,4 +1,6 @@
-# Guides and tutorials
+---
+title: Guides and Tutorials
+---
 
 - [[howtos/analytics|How to add web analytics?]]
 - [[howtos/seo|How to customize page metadata for SEO?]]
