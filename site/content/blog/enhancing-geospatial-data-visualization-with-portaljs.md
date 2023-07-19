@@ -1,7 +1,7 @@
 ---
 title: 'Enhancing Geospatial Data Visualization with PortalJS'
 date: 2023-07-18
-authors: ['Yoana Popova', 'João Demenech', 'Luccas Mateus']
+authors: ['João Demenech', 'Luccas Mateus', 'Yoana Popova']
 filetype: 'blog'
 ---
 
