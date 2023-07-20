@@ -1,4 +1,7 @@
-# How to add markdown-based content pages?
+---
+title: How to add markdown-based content pages?
+description: Learn how to add markdown-based content pages on PortalJS data portals
+---
 
 ## Add content layer to your app
 

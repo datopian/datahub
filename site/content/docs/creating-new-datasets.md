@@ -1,6 +1,7 @@
-<NextSeo title="Creating new datasets - PortalJS" />
-
-# Creating new datasets
+---
+title: 'Creating new datasets'
+description: 'PortalJS Tutorial II - Learn how to create new datasets on a data portal'
+---
 
 So far, the PortalJS app we created only has a single page displaying a dataset. Data catalogs and data portals generally showcase many different datasets.
 
@@ -10,7 +11,7 @@ Let's explore how to add and display more datasets to our portal.
 
 As you have seen, in this example a dataset page is just a markdown file on disk plus a data file.
 
-To create a new data showcase page we just create a new markdown file in the `content/` folder and a new data file in the `public/` folder. 
+To create a new data showcase page we just create a new markdown file in the `content/` folder and a new data file in the `public/` folder.
 
 Let's do that now. Create a `content/my-incredible-dataset` folder, and inside this new folder create a `index.md` file with the following content:
 
@@ -19,7 +20,7 @@ Let's do that now. Create a `content/my-incredible-dataset` folder, and inside t
 
 This is my incredible dataset.
 
-## Chart 
+## Chart
 
 <LineChart 
     title="US Population By Decade"  
@@ -42,7 +43,7 @@ Year,Population (mi)
 
 Note that pages are associated with a route based on their pathname, so, to see the new data page, access http://localhost:3000/my-incredible-dataset from the browser. You should see the following:
 
-<img src="/assets/docs/my-incredible-dataset.png" />
+<img src="/assets/docs/my-incredible-dataset.png" alt="Page of a new dataset created on a PortalJS data portal" />
 
 > [!tip]
 > In this tutorial we opted for storing content as markdown files and data as CSV files in the app, but PortalJS can have metadata, data and content stored anywhere.
@@ -58,12 +59,11 @@ List of available datasets:
 
 - [My Awesome Dataset](/my-awesome-dataset)
 - [My Incredible Dataset](/my-incredible-dataset)
-
 ```
 
 From the browser, access http://localhost:3000. You should see the following:
 
-<img src="/assets/docs/datasets-index-page.png" />
+<img src="/assets/docs/datasets-index-page.png" alt="PortalJS data portal with multiple datasets" />
 
 At this point, the app has multiple datasets, and users can find and navigate to any dataset they want. In the next lesson, you are going to learn how to improve this experience with search.
 

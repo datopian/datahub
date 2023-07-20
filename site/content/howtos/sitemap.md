@@ -1,4 +1,7 @@
-# How to build a sitemap?
+---
+title: How to build a sitemap?
+description: Learn how to build a sitemap for a data portal with PortalJS
+---
 
 ## Setup
 

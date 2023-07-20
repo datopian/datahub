@@ -1,4 +1,7 @@
-# How to add Google Analytics?
+---
+title: How to add Google Analytics?
+description: Learn to implement Google Analytics on PortalJS data portals
+---
 
 >[!todo] Prerequisites
 >- [Google Analytics account](https://support.google.com/analytics/answer/9304153?hl=en)

@@ -264,7 +264,7 @@ The above script will output the following to the terminal:
 
 ## Done!
 
-That's it! We've just created a simple catalog of our GitHub projects using markdown files and the MarkdownDB package. You can find the full code for this tutorial [here](https://github.com/datopian/markdowndb/tree/main/examples/basic-example).
+That's it! We've just created a simple catalog of our GitHub projects using markdown files and the MarkdownDB package. You can find the [full code for this tutorial here](https://github.com/datopian/markdowndb/tree/main/examples/basic-example).
 
 We look forward to seeing the amazing applications you'll build with this tool!
 

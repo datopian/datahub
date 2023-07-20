@@ -1,6 +1,6 @@
 ---
 title: Getting Started
-description: "Getting started guide and tutorial about data portal-building with PortalJS"
+description: 'Getting started guide and tutorial about data portal-building with PortalJS'
 ---
 
 Welcome to the PortalJS documentation!
@@ -39,7 +39,7 @@ Let's check it's working and what we have! Open http://localhost:3000 from your 
 
 You should see a page like this when you access http://localhost:3000. This is the starter template page which shows the most simple data portal you could have: a simple README plus csv file.
 
-<img src="/assets/examples/basic-example.png" />
+<img src="/assets/examples/basic-example.png" alt="Initial state of the PortalJS tutorial project" />
 
 ### Editing the Page
 
@@ -52,7 +52,7 @@ Let’s try editing the starter page.
 
 After refreshing the page, you should see the new text:
 
-<img src="/assets/docs/editing-the-page-1.png" />
+<img src="/assets/docs/editing-the-page-1.png" alt="PortalJS tutorial project after a simple change is made by a user" />
 
 Congratulations! The app is up and running and you learned how to edit a page. In the next lesson, you are going to learn how to create new datasets.
 

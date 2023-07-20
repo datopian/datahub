@@ -1,4 +1,7 @@
-# How to add a simple blog?
+---
+title: How to add a simple blog?
+description: How to add a simple blog on a PortalJS data portal
+---
 
 ## Setup
 
