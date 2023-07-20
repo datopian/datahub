@@ -32,6 +32,7 @@ export default function Page({ source, meta, sidebarTree }) {
     <Layout
       tableOfContents={tableOfContents}
       title={meta.title}
+      description={meta.description}
       sidebarTree={sidebarTree}
       urlPath={meta.urlPath}
     >

@@ -3,12 +3,15 @@ import computeFields from '@/lib/computeFields';
 import clientPromise from '@/lib/mddb';
 import { BlogsList, SimpleLayout } from '@portaljs/core';
 import * as fs from 'fs';
-import {NextSeo} from 'next-seo';
+import { NextSeo } from 'next-seo';
 
 export default function Blog({ blogs }) {
   return (
     <>
-      <NextSeo title="Blog posts" />
+      <NextSeo
+        title="Blog posts"
+        description="Find news and more information about rapidly building rich data portals using a modern frontend framework in the PortalJS blog"
+      />
       <Layout>
         <SimpleLayout title="Blog posts">
           <BlogsList blogs={blogs} />
@@ -50,11 +53,8 @@ export async function getStaticProps() {
   const blogList = await Promise.all(blogsWithComputedFields);
 
   const blogsSorted = blogList.sort(
-    (a, b) =>
-      new Date(b?.date).getTime() -
-      new Date(a?.date).getTime()
+    (a, b) => new Date(b?.date).getTime() - new Date(a?.date).getTime()
   );
-
 
   return {
     props: {
