@@ -20,7 +20,7 @@ export default function NavItem({ item }) {
   };
 
   return (
-    <Menu as="div" className="relative">
+    <Menu as="div" role="menu" className="relative">
       <Menu.Item>
         {Object.prototype.hasOwnProperty.call(item, 'href') ? (
           <Link

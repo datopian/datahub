@@ -41,7 +41,7 @@ export function Hero() {
         {/* Commented code on line 37, 39 and 113 will reenable the two columns hero */}
         <div className="mx-auto grid max-w-2xl grid-cols-1 gap-y-16 gap-x-8 px-4 lg:max-w-8xl lg:grid-cols-2 lg:px-8 xl:gap-x-16 xl:px-12">
           <div className="relative mb-10 lg:mb-0 md:text-center lg:text-left">
-            <div role="heading">
+            <div>
               <h1 className="inline bg-gradient-to-r from-blue-500 via-blue-300 to-blue-500 bg-clip-text text-5xl tracking-tight text-transparent">
                 The JavaScript framework for data portals
               </h1>
