@@ -1,14 +1,14 @@
-import "../styles/globals.css";
-import "../styles/tailwind.css";
+import '../styles/globals.css';
+import '../styles/tailwind.css';
 
-import Script from "next/script";
+import Script from 'next/script';
 
-import { DefaultSeo } from "next-seo";
+import { DefaultSeo } from 'next-seo';
 
-import { NavGroup, NavItem, pageview, ThemeProvider } from "@portaljs/core";
-import { siteConfig } from "../config/siteConfig";
-import { useEffect } from "react";
-import { useRouter } from "next/dist/client/router";
+import { NavGroup, NavItem, pageview, ThemeProvider } from '@portaljs/core';
+import { siteConfig } from '../config/siteConfig';
+import { useEffect } from 'react';
+import { useRouter } from 'next/dist/client/router';
 
 export interface CustomAppProps {
   meta: {
@@ -32,9 +32,9 @@ function MyApp({ Component, pageProps }) {
       const handleRouteChange = (url) => {
         pageview(url);
       };
-      router.events.on("routeChangeComplete", handleRouteChange);
+      router.events.on('routeChangeComplete', handleRouteChange);
       return () => {
-        router.events.off("routeChangeComplete", handleRouteChange);
+        router.events.off('routeChangeComplete', handleRouteChange);
       };
     }
   }, [router.events]);
@@ -44,7 +44,7 @@ function MyApp({ Component, pageProps }) {
       disableTransitionOnChange
       attribute="class"
       defaultTheme={siteConfig.theme.default}
-      forcedTheme={siteConfig.theme.default ? null : "light"}
+      forcedTheme={siteConfig.theme.default ? null : 'light'}
     >
       <DefaultSeo defaultTitle={siteConfig.title} {...siteConfig.nextSeo} />
 
@@ -57,7 +57,7 @@ function MyApp({ Component, pageProps }) {
           />
           <Script
             id="gtag-init"
-            strategy="afterInteractive"
+            strategy="lazyOnload"
             dangerouslySetInnerHTML={{
               __html: `
           window.dataLayer = window.dataLayer || [];
@@ -71,10 +71,15 @@ function MyApp({ Component, pageProps }) {
           />
         </>
       )}
-      
+
       {/* Umami Analytics */}
-      <Script async defer data-website-id="061e14c1-6157-4a93-820c-777c7a937c12" src="https://analytics.datopian.com/umami.js" />
-      
+      <Script
+        async
+        defer
+        data-website-id="061e14c1-6157-4a93-820c-777c7a937c12"
+        src="https://analytics.datopian.com/umami.js"
+      />
+
       <Component {...pageProps} />
     </ThemeProvider>
   );
