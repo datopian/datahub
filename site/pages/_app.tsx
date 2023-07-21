@@ -63,7 +63,7 @@ function MyApp({ Component, pageProps }) {
           />
           <Script
             id="gtag-init"
-            strategy="afterInteractive"
+            strategy="lazyOnload"
             dangerouslySetInnerHTML={{
               __html: `
           window.dataLayer = window.dataLayer || [];
