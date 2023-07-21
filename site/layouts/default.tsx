@@ -6,7 +6,7 @@ export default function DefaultLayout({ children, ...frontMatter }) {
           {/* Default layout */}
           {!frontMatter.layout && (
             <>
-              <h1>{frontMatter.title}</h1>
+              {!frontMatter.disableTitle && <h1>{frontMatter.title}</h1>}
               {frontMatter.author && (
                 <div className="-mt-6">
                   <p className="opacity-60 pl-1">{frontMatter.author}</p>

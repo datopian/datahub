@@ -13,7 +13,7 @@ export const DocsLayout: React.FC<any> = ({ children, ...frontMatter }) => {
               <time dateTime={created}>{formatDate(created)}</time>
             </p>
           )}
-          {title && <h1>{title}</h1>}
+          {!frontMatter.disableTitle && title && <h1>{title}</h1>}
         </div>
       </header>
       <section>{children}</section>

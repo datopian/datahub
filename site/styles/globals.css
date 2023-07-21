@@ -1,4 +1,4 @@
-@import "@portaljs/remark-callouts/styles.css";
+@import '@portaljs/remark-callouts/styles.css';
 @import './prism.css';
 
 html,
@@ -31,7 +31,7 @@ html {
 
 /* tooltip fade-out clip */
 .tooltip-body::after {
-  content: "";
+  content: '';
   position: absolute;
   right: 0;
   top: 3.6rem; /* multiple of $line-height used on the tooltip body (defined in tooltipBodyStyle) */

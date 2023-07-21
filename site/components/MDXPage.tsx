@@ -12,7 +12,6 @@ export default function MDXPage({ source, frontMatter }) {
         return <LayoutComponent {...frontMatter}>{children}</LayoutComponent>;
     };
 
-
     return (
         <Layout>
             <MDXRemote {...source} components={{ DocsPagination, NextSeo, Hero }} />

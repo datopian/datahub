@@ -1,5 +1,11 @@
 # @portaljs/components
 
+## 0.3.1
+
+### Patch Changes
+
+- [#980](https://github.com/datopian/portaljs/pull/980) [`38738525`](https://github.com/datopian/portaljs/commit/3873852567b1aab4827a716bd588bd5de3223e2b) Thanks [@demenech](https://github.com/demenech)! - Fix missing CSS styles for PDF component
+
 ## 0.3.0
 
 ### Minor Changes

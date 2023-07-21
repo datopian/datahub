@@ -38,7 +38,7 @@ Let's check it's working and what we have! Open http://localhost:3000 from your 
 
 You should see a page like this when you access http://localhost:3000. This is the starter template page which shows the most simple data portal you could have: a simple README plus csv file.
 
-<img src="/assets/examples/basic-example.png" />
+<img src="/assets/examples/basic-example.png" alt="Basic example" />
 
 ### Editing the Page
 
@@ -51,8 +51,8 @@ Let’s try editing the starter page.
 
 After refreshing the page, you should see the new text:
 
-<img src="/assets/docs/editing-the-page-1.png" />
+<img src="/assets/docs/editing-the-page-1.png" alt="Editing base example" />
 
-Congratulations! The app is up and running and you learned how to edit a page. In the next lesson, you are going to learn how to create new datasets. 
+Congratulations! The app is up and running and you learned how to edit a page. In the next lesson, you are going to learn how to create new datasets.
 
 <DocsPagination next="/docs/creating-new-datasets" />
