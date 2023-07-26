@@ -52,12 +52,7 @@ Let’s try editing the starter page.
 
 After refreshing the page, you should see the new text:
 
-<<<<<<< HEAD
 <img src="/assets/docs/editing-the-page-1.png" alt="PortalJS tutorial project after a simple change is made by a user" />
-=======
-<img src="/assets/docs/editing-the-page-1.png" alt="Editing base example" />
-
-> > > > > > > da226ef2056391bc2f710b6229645c25488485fb
 
 Congratulations! The app is up and running and you learned how to edit a page. In the next lesson, you are going to learn how to create new datasets.
 

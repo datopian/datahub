@@ -12,6 +12,7 @@ import { GetStaticProps, GetStaticPropsResult } from 'next';
 import { CustomAppProps } from './_app.jsx';
 import computeFields from '@/lib/computeFields';
 import { getAuthorsDetails } from '@/lib/getAuthorsDetails';
+import JSONLD from '@/components/JSONLD';
 
 export default function Page({ source, meta, sidebarTree }) {
   source = JSON.parse(source);
@@ -29,15 +30,18 @@ export default function Page({ source, meta, sidebarTree }) {
   }, [router.asPath]); // update table of contents on route change with next/link
 
   return (
-    <Layout
-      tableOfContents={tableOfContents}
-      title={meta.title}
-      description={meta.description}
-      sidebarTree={sidebarTree}
-      urlPath={meta.urlPath}
-    >
-      <MDXPage source={source} frontMatter={meta} />
-    </Layout>
+    <>
+      <JSONLD meta={meta} source={source.compiledSource} />
+      <Layout
+        tableOfContents={tableOfContents}
+        title={meta.title}
+        description={meta.description}
+        sidebarTree={sidebarTree}
+        urlPath={meta.urlPath}
+      >
+        <MDXPage source={source} frontMatter={meta} />
+      </Layout>
+    </>
   );
 }
 
