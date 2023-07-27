@@ -1,7 +1,7 @@
 ---
 title: How to quickly create a sandbox website
 date: 2023-07-27
-authors: ['Ola Rubaj']
+authors: ['Lauren Wigmore', 'Ola Rubaj']
 filetype: 'blog'
 ---
 

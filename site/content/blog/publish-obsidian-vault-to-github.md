@@ -1,7 +1,7 @@
 ---
 title: How to push an Obsidian vault to a GitHub repository
 date: 2023-07-27
-authors: ['Ola Rubaj']
+authors: ['Jake Hirsch', 'Ola Rubaj']
 filetype: 'blog'
 ---
 

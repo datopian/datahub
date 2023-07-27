@@ -1,7 +1,7 @@
 ---
 title: How to edit or add Markdown-based pages locally on your computer
 date: 2023-07-27
-authors: ['Ola Rubaj']
+authors: ['Jake Hirsch', 'Ola Rubaj']
 filetype: 'blog'
 ---
 

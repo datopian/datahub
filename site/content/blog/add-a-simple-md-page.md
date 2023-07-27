@@ -1,5 +1,8 @@
 ---
 title: How to quickly add a simple Markdown-based page
+date: 2023-07-27
+authors: ['Lauren Wigmore', 'Ola Rubaj']
+filetype: 'blog'
 ---
 
 Welcome to this howto on how to quickly add a simple Markdown-based page to your website. The steps here are designed for non-technical contributors. There's no need to know how to code!
