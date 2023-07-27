@@ -1,4 +1,7 @@
-# How to create data-rich documents with charts and tables?
+---
+title: How to create data-rich documents with charts and tables?
+description: Learn how to create a data-rich document with charts and tables on a PortalJS data portal
+---
 
 > [!info] Prerequisites
 > If you want to enrich your markdown content with charts and tables, you first need to add support for rendering markdown files in your PortalJS app. Follow [[markdown|this guide]] to learn how to do this.
@@ -15,12 +18,12 @@ Now, in order to use these components in your markdown files, we need to pass th
 
 ```tsx
 // e.g. /blog/[[...slug]].tsx
-import fs from "fs";
-import { LineChart, Table, Catalog, Vega, VegaLite } from "@portaljs/components";
+import fs from 'fs';
+import { LineChart, Table, Catalog, Vega, VegaLite } from '@portaljs/components';
 
-import { MdxRemote } from "next-mdx-remote";
-import clientPromise from "@/lib/mddb.mjs";
-import parse from "@/lib/markdown";
+import { MdxRemote } from 'next-mdx-remote';
+import clientPromise from '@/lib/mddb.mjs';
+import parse from '@/lib/markdown';
 
 const components = {
   Table: Table,
@@ -29,37 +32,35 @@ const components = {
   LineChart: LineChart,
 };
 
-
 export default function Page({ source }) {
-    source = JSON.parse(source);
+  source = JSON.parse(source);
 
-    return (
-        <>
-            <MdxRemote source={source} components={components} />
-        </>
-    );
+  return (
+    <>
+      <MdxRemote source={source} components={components} />
+    </>
+  );
 }
 
 // Import metadata of a file matching the static path and return its parsed source and frontmatter object
 export const getStaticProps = async ({ params }) => {
-    const urlPath = params?.slug ? (params.slug as string[]).join("/") : "/";
+  const urlPath = params?.slug ? (params.slug as string[]).join('/') : '/';
 
-    const mddb = await clientPromise;
-    const dbFile = await mddb.getFileByUrl(urlPath);
-    const filePath = dbFile!.file_path;
-    // const frontMatter = dbFile!.metadata ?? {};
+  const mddb = await clientPromise;
+  const dbFile = await mddb.getFileByUrl(urlPath);
+  const filePath = dbFile!.file_path;
+  // const frontMatter = dbFile!.metadata ?? {};
 
-    const source = fs.readFileSync(filePath, { encoding: "utf-8" });
-    const { mdxSource } = await parse(source, "mdx", {});
+  const source = fs.readFileSync(filePath, { encoding: 'utf-8' });
+  const { mdxSource } = await parse(source, 'mdx', {});
 
-    return {
-        props: {
-            source: JSON.stringify(mdxSource),
-            // frontMatter
-        },
-    };
+  return {
+    props: {
+      source: JSON.stringify(mdxSource),
+      // frontMatter
+    },
+  };
 };
-
 ```
 
 You can now use these components in your markdown, like so:
@@ -93,39 +94,39 @@ Example usage:
   cols={[
     {
       key: 'id',
-      name: 'ID'
+      name: 'ID',
     },
     {
       key: 'firstName',
-      name: 'First name'
+      name: 'First name',
     },
     {
       key: 'lastName',
-      name: 'Last name'
+      name: 'Last name',
     },
     {
       key: 'age',
-      name: 'Age'
-    }
+      name: 'Age',
+    },
   ]}
   data={[
     {
       age: 35,
       firstName: 'Jon',
       id: 1,
-      lastName: 'Snow'
+      lastName: 'Snow',
     },
     {
       age: 42,
       firstName: 'Cersei',
       id: 2,
-      lastName: 'Lannister'
-    }
+      lastName: 'Lannister',
+    },
   ]}
 />
 ```
 
->[!info]
+> [!info]
 > More info on the [storybook page](https://storybook.portaljs.org/?path=/docs/components-table--docs)
 
 ### Linechart
@@ -139,31 +140,16 @@ Example usage:
 ```js
 <LineChart
   data={[
-    [
-      '1850',
-      -0.41765878
-    ],
-    [
-      '1851',
-      -0.2333498
-    ],
-    [
-      '1852',
-      -0.22939907
-    ],
-    [
-      '1853',
-      -0.27035445
-    ],
-    [
-      '1854',
-      -0.29163003
-    ]
+    ['1850', -0.41765878],
+    ['1851', -0.2333498],
+    ['1852', -0.22939907],
+    ['1853', -0.27035445],
+    ['1854', -0.29163003],
   ]}
- />
+/>
 ```
 
->[!info]
+> [!info]
 > More info on the [storybook page](https://storybook.portaljs.org/?path=/docs/components-linechart--docs)
 
 ### Vega chart
@@ -179,30 +165,30 @@ Example usage:
     table: [
       {
         x: 1850,
-        y: -0.418
+        y: -0.418,
       },
       {
         x: 2020,
-        y: 0.923
-      }
-    ]
+        y: 0.923,
+      },
+    ],
   }}
   spec={{
     $schema: 'https://vega.github.io/schema/vega-lite/v4.json',
     data: {
-      name: 'table'
+      name: 'table',
     },
     encoding: {
       x: {
         field: 'x',
-        type: 'ordinal'
+        type: 'ordinal',
       },
       y: {
         field: 'y',
-        type: 'quantitative'
-      }
+        type: 'quantitative',
+      },
     },
-    mark: 'bar'
+    mark: 'bar',
   }}
 />
 ```
@@ -222,35 +208,35 @@ Example usage:
     table: [
       {
         x: 1850,
-        y: -0.418
+        y: -0.418,
       },
       {
         x: 2020,
-        y: 0.923
-      }
-    ]
+        y: 0.923,
+      },
+    ],
   }}
   spec={{
     $schema: 'https://vega.github.io/schema/vega-lite/v4.json',
     data: {
-      name: 'table'
+      name: 'table',
     },
     encoding: {
       x: {
         field: 'x',
-        type: 'ordinal'
+        type: 'ordinal',
       },
       y: {
         field: 'y',
-        type: 'quantitative'
-      }
+        type: 'quantitative',
+      },
     },
-    mark: 'bar'
+    mark: 'bar',
   }}
 />
 ```
 
->[!info]
+> [!info]
 > More info on the [storybook page](https://storybook.portaljs.org/?path=/docs/components-vegalite--docs)
 
 ### Catalog
@@ -269,28 +255,21 @@ Example usage:
       metadata: {
         'details-of-task': 'Detect and categorise abusive language in social media data',
         language: 'Albanian',
-        'level-of-annotation': [
-          'Posts'
-        ],
+        'level-of-annotation': ['Posts'],
         'link-to-data': 'https://doi.org/10.6084/m9.figshare.19333298.v1',
         'link-to-publication': 'https://arxiv.org/abs/2107.13592',
-        medium: [
-          'Text'
-        ],
+        medium: ['Text'],
         'percentage-abusive': 13.2,
-        platform: [
-          'Instagram',
-          'Youtube'
-        ],
+        platform: ['Instagram', 'Youtube'],
         reference: 'Nurce, E., Keci, J., Derczynski, L., 2021. Detecting Abusive Albanian. arXiv:2107.13592',
         'size-of-dataset': 11874,
         'task-description': 'Hierarchical (offensive/not; untargeted/targeted; person/group/other)',
-        title: 'Detecting Abusive Albanian'
+        title: 'Detecting Abusive Albanian',
       },
-      url_path: 'dataset-4'
+      url_path: 'dataset-4',
     },
   ]}
- />
+/>
 ```
 
 You can also add facets that are going to act as filters for your metadata.
@@ -305,30 +284,23 @@ You can also add facets that are going to act as filters for your metadata.
       metadata: {
         'details-of-task': 'Detect and categorise abusive language in social media data',
         language: 'Albanian',
-        'level-of-annotation': [
-          'Posts'
-        ],
+        'level-of-annotation': ['Posts'],
         'link-to-data': 'https://doi.org/10.6084/m9.figshare.19333298.v1',
         'link-to-publication': 'https://arxiv.org/abs/2107.13592',
-        medium: [
-          'Text'
-        ],
+        medium: ['Text'],
         'percentage-abusive': 13.2,
-        platform: [
-          'Instagram',
-          'Youtube'
-        ],
+        platform: ['Instagram', 'Youtube'],
         reference: 'Nurce, E., Keci, J., Derczynski, L., 2021. Detecting Abusive Albanian. arXiv:2107.13592',
         'size-of-dataset': 11874,
         'task-description': 'Hierarchical (offensive/not; untargeted/targeted; person/group/other)',
-        title: 'Detecting Abusive Albanian'
+        title: 'Detecting Abusive Albanian',
       },
-      url_path: 'dataset-4'
+      url_path: 'dataset-4',
     },
   ]}
   facets={['platform', 'language']}
- />
+/>
 ```
-  
->[!info]
+
+> [!info]
 > More info on the [storybook page](https://storybook.portaljs.org/?path=/docs/components-catalog--docs)

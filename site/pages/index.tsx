@@ -8,6 +8,7 @@ import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import { collectHeadings } from '@portaljs/core';
 import Head from 'next/head';
+import { LogoJsonLd } from 'next-seo';
 
 export default function Home({ sidebarTree }) {
   const router = useRouter();
@@ -24,6 +25,10 @@ export default function Home({ sidebarTree }) {
 
   return (
     <>
+      <LogoJsonLd
+        url="https://portaljs.org"
+        logo="https://portaljs.org/icon.png"
+      />
       <Layout
         isHomePage={true}
         tableOfContents={tableOfContents}

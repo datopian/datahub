@@ -1,5 +1,6 @@
 ---
 title: Guides and Tutorials
+description: Learn more about how you can achieve different data portal features with PortalJS
 ---
 
 - [[howtos/analytics|How to add web analytics?]]

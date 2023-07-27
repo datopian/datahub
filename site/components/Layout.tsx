@@ -54,12 +54,14 @@ function useTableOfContents(tableOfContents) {
 export default function Layout({
   children,
   title,
+  description,
   tableOfContents = [],
   isHomePage = false,
   sidebarTree = [],
 }: {
   children;
   title?: string;
+  description?: string;
   tableOfContents?;
   urlPath?: string;
   sidebarTree?: [];
@@ -82,7 +84,7 @@ export default function Layout({
 
   return (
     <>
-      {title && <NextSeo title={title} />}
+      {title && <NextSeo title={title} description={description} />}
       <Nav />
       <div className="mx-auto p-6 bg-background dark:bg-background-dark">
         {isHomePage && <Hero />}

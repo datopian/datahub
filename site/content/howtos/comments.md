@@ -1,4 +1,7 @@
-# How to add user comments?
+---
+title: How to add user comments?
+description: Learn how to add user comments on a PortalJS data portal
+---
 
 ![[comments-example.png]]
 

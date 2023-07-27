@@ -1,4 +1,7 @@
-# How to customize page metadata for SEO?
+---
+title: How to customize page metadata for SEO?
+description: Learn to customize page metadata for SEO on data portals with PortalJS
+---
 
 >[!info]
 >See [`next-seo` documentation](https://github.com/garmeeh/next-seo) to learn more.

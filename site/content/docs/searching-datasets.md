@@ -26,7 +26,7 @@ This example makes use of the [markdowndb](https://github.com/datopian/markdownd
 
 From the browser, access http://localhost:3000. You should see the following, you now have a searchable automatic list of your datasets:
 
-![](https://i.imgur.com/9HfSPIx.png)
+![Simple data catalog built with PortalJS](https://i.imgur.com/9HfSPIx.png)
 
 To make this catalog look even better, we can change the text that is being displayed for each dataset to a title. Let's do that by adding the "title" [frontmatter field](https://daily-dev-tips.com/posts/what-exactly-is-frontmatter/) to the first dataset in the list. Change `content/my-awesome-dataset/index.md` to the following:
 
@@ -46,7 +46,7 @@ Built with PortalJS
 
 Rerun `npm run mddb` and, from the browser, access http://localhost:3000. You should see the title appearing instead of the folder name:
 
-![](https://i.imgur.com/nvmSnJ5.png)
+![Example of a newly added dataset on a data catalog built with PortalJS](https://i.imgur.com/nvmSnJ5.png)
 
 Any frontmatter attribute that you add will automatically get indexed and be usable in the search box.
 
@@ -102,7 +102,7 @@ List of available datasets:
 
 You now have a filter in your page with all possible values automatically added to it.
 
-![](https://i.imgur.com/p2miSdg.png)
+![Data catalog with facets built with PortalJS](https://i.imgur.com/p2miSdg.png)
 
 In the next lesson, you are going to learn how to display metadata on the dataset page.
 
