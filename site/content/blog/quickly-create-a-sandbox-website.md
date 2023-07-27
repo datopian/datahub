@@ -25,13 +25,8 @@ The website will then be deployed. This takes approximately 1 minute.
 
 Once you are on the Congratulations screen, click on the preview of your sandbox website to see the live/published version.
 
-For instructions on how to add and edit pages, we recommend these tutorials:
+For instructions on how to add and edit pages, we recommend these howtos:
 
-- [[edit-a-page-with-code-editor-or-obsidian|How to edit text content on a single Markdown-based page]]
-- [[add-a-simple-md-page|How to add a simple Markdown-based page]]
-
-Here are some other links Vercel links that might be useful for you:
-
-- [Dashboard Features Overview](https://vercel.com/docs/concepts/dashboard-features/overview)
-- [Dashboard Features](https://vercel.com/docs/concepts/dashboard-features)
-- [Projects](https://vercel.com/docs/concepts/projects/project-dashboard)
+- [[howtos/add-a-simple-md-page|add-a-simple-md-page|How to add a simple markdown page]]
+- [[blog/edit-text-on-a-single-md-page|edit-text-on-a-single-md-page|How to edit text on a single markdown-based page]]
+- [[blog/edit-or-add-md-pages-locally|edit-or-add-md-pages-locally|How to edit or add a markdown page locally on your computer]]
