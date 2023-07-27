@@ -65,13 +65,6 @@ const parse = async function (source, format, scope) {
               content(node) {
                 return [
                   h(
-                    'span.invisible.block.h-0.w-0',
-                    { ariaLabel: node.properties.id },
-                    'Read the “',
-                    node.properties.id,
-                    '” section'
-                  ),
-                  h(
                     'svg',
                     {
                       xmlns: 'http:www.w3.org/2000/svg',
