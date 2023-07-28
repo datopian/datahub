@@ -1,13 +1,16 @@
 ---
 title: How to quickly edit text content on a single Markdown-based page
+date: 2023-07-27
+authors: ['Ola Rubaj']
+filetype: 'blog'
 ---
 
-Welcome to this tutorial on how to quickly edit text content on a single Markdown-based page.  The steps here are designed for non-technical contributors. There's no need to know how to code!
+Welcome to this tutorial on how to quickly edit text content on a single Markdown-based page. The steps here are designed for non-technical contributors. There's no need to know how to code!
 
 > [!important]
-> This "How to" is only recommended for text changes only, e.g. those that don't include adding images, links to other pages, diagrams, or other elements that can't be previewed in GitHub preview mode. 
+> This "How to" is only recommended for text changes only, e.g. those that don't include adding images, links to other pages, diagrams, or other elements that can't be previewed in GitHub preview mode.
 
->[!tip]
+> [!tip]
 > If you are unfamiliar with Markdown (and its different flavours and extra elements supported by Flowershow based websites), check out [this short guide](https://flowershow.app/docs/syntax) on available syntax elements.
 
 ## Steps
