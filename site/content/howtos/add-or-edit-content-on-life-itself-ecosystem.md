@@ -3,13 +3,6 @@ title: How to add or edit content on the Life Itself ecosystem page
 isDraft: true
 ---
 
-## Contents
-
-1. [Introduction](#introduction)
-2. [How to edit and add to the site](#how-to-edit-and-add-to-the-site)
-3. [Glossary](#glossary)
-4. [Contact](#contact)
-
 ## Introduction
 
 From the outset, we have argued that any successful mapping effort must be collaborative and participatory. To make it as simple as possible to contribute, we have opened up the site, giving it a wiki-like structure, meaning people can contribute and add items directly - no coding required. We hope this can support the ongoing growth of our contributor community, and empower users to continue in collective efforts to make the map ever more useful and informative.
