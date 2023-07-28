@@ -7,7 +7,7 @@ disableTitle: true
 
 <Hero title="Markdown-based Websites" subtitle="Create markdown-based website, update it, add collaborators and discover markdown superpowers" />
 
-# Tutorial 1: Create a website from scratch using markdown and PortalJS
+## Tutorial 1: Create a website from scratch using markdown and PortalJS
 
 In this tutorial we will walk you through creating an elegant, fully functional website written in simple markdown and published with PortalJS.
 
@@ -44,7 +44,7 @@ Below is a screenshot of how the final website will look like:
 > [!tip]
 > Read full tutorial [[create-a-website-from-scratch|here!]]
 
-# Tutorial 2: Editing your site locally on your computer
+## Tutorial 2: Editing your site locally on your computer
 
 In this tutorial, we will walk you through the process of editing your Flowershow website locally on your computer.
 
@@ -82,3 +82,13 @@ Below is a screenshot of how the final website will look like:
 
 > [!tip]
 > Read full tutorial [[edit-a-website-locally|here!]]
+
+## Howtos
+
+- [[quickly-create-a-sandbox-website|How to quickly create a sandbox website]]
+- [[edit-text-on-a-single-md-page|How to quickly edit text on a single Markdown-based page]]
+- [[add-a-simple-md-page|How to add a simple Markdown page]]
+- [[edit-or-add-md-pages-locally|How to edit or add Markdown-based pages locally on your computer]]
+- [[how-to-add-images-to-a-md-page|How to add images to a Markdown-based page]]
+- [[publish-obsidian-vault-to-github|How to push an Obsidian vault to a GitHub repository]]
+- [[create-a-simple-catalog-of-anything|How to create a simple catalog of anything in Obsidian]]

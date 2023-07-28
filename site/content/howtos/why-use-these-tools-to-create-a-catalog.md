@@ -1,5 +1,6 @@
 ---
 title: "Why use these tools to create a catalog?"
+isDraft: true
 ---
 
 On this site, we offer a “recipe” which uses a combination of free tools to easily create a directory of information that can be used for multiple purposes. With this method, you can start capturing information quickly and intuitively in a format that is flexible and usable later for various needs. Why does this help us? Because to map information – to collect, organise, structure, and classify it – and present it clearly is a way to make more sense of it and therefore of the world around us. 

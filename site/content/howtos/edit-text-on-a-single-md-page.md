@@ -1,5 +1,5 @@
 ---
-title: How to quickly edit text content on a single Markdown-based page
+title: How to quickly edit text on a single Markdown-based page
 date: 2023-07-27
 authors: ['Ola Rubaj']
 filetype: 'blog'
