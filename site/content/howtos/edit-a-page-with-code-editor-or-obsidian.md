@@ -1,5 +1,8 @@
 ---
-title: "How to edit a page with a code editor or Obsidian"
+title: 'How to edit a page with a code editor or Obsidian'
+date: 2023-07-27
+authors: ['Jake Hirsch', 'Ola Rubaj']
+filetype: 'blog'
 isDraft: true
 ---
 
