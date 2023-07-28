@@ -1,5 +1,8 @@
 ---
 title: How to push an Obsidian vault to a GitHub repository
+date: 2023-07-27
+authors: ['Jake Hirsch', 'Ola Rubaj']
+filetype: 'blog'
 ---
 
 This howto walks you through the process of setting up your Obsidian vault as a GitHub repository. Here are some of the benefits of doing so:
@@ -34,7 +37,7 @@ In this howto, we will use the GitHub Desktop application, an easy-to-use interf
 
 2.6. Add an optional description.
 
-2.7. Make sure the checkbox "Initialize this repository with a README" is unchecked, and "Git Ignore" and "License" are set to "None".
+2.7. Make sure the checkbox "Initialise this repository with a README" is unchecked, and "Git Ignore" and "License" are set to "None".
 
 2.8. Click on "Create Repository".
 
