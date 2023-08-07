@@ -16,7 +16,7 @@
     "build": "tsc && vite build && npm run build-tailwind && npm run fix-leaflet",
     "lint": "eslint src --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "storybook": "storybook dev -p 6006",
-    "build-storybook": "storybook build",
+    "build-storybook": "storybook build && cp ./.storybook/robots.txt ./storybook-static",
     "build-tailwind": "NODE_ENV=production npx tailwindcss --postcss -c tailwind.config.js -i src/index.css -o ./dist/style.css --minify",
     "prepare": "npm run build",
     "fix-leaflet": "node ./scripts/fix-leaflet.cjs"
