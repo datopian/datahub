@@ -1,6 +1,8 @@
 {
   "name": "portaljs",
-  "workspaces": ["./packages/*"],
+  "workspaces": [
+    "./packages/*"
+  ],
   "version": "0.0.0",
   "license": "MIT",
   "scripts": {
@@ -18,11 +20,12 @@
     "@nrwl/js": "15.9.2",
     "@nrwl/linter": "15.9.2",
     "@nrwl/next": "15.9.2",
-    "@nrwl/react": "15.9.2",
+    "@nrwl/react": "^15.9.2",
     "@nrwl/rollup": "15.9.2",
+    "@nrwl/storybook": "15.9.2",
+    "@nrwl/webpack": "15.9.2",
     "@nrwl/workspace": "15.9.2",
     "@nx/js": "16.6.0",
-    "@nx/storybook": "16.6.0",
     "@rollup/plugin-url": "^7.0.0",
     "@storybook/addon-essentials": "7.0.18",
     "@storybook/addon-interactions": "7.0.18",
