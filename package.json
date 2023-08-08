@@ -1,8 +1,6 @@
 {
   "name": "portaljs",
-  "workspaces": [
-    "./packages/*"
-  ],
+  "workspaces": ["./packages/*"],
   "version": "0.0.0",
   "license": "MIT",
   "scripts": {
@@ -23,7 +21,16 @@
     "@nrwl/react": "15.9.2",
     "@nrwl/rollup": "15.9.2",
     "@nrwl/workspace": "15.9.2",
+    "@nx/js": "16.6.0",
+    "@nx/storybook": "16.6.0",
     "@rollup/plugin-url": "^7.0.0",
+    "@storybook/addon-essentials": "7.0.18",
+    "@storybook/addon-interactions": "7.0.18",
+    "@storybook/core-server": "7.0.18",
+    "@storybook/jest": "~0.1.0",
+    "@storybook/react-webpack5": "^7.0.18",
+    "@storybook/test-runner": "^0.11.0",
+    "@storybook/testing-library": "~0.2.0",
     "@svgr/rollup": "^6.1.2",
     "@swc/core": "^1.2.173",
     "@swc/helpers": "~0.5.0",
@@ -39,6 +46,7 @@
     "@typescript-eslint/parser": "^5.36.1",
     "babel-jest": "^29.4.1",
     "chai": "^4.3.7",
+    "core-js": "^3.6.5",
     "cypress": "^12.2.0",
     "eslint": "~8.15.0",
     "eslint-config-next": "13.1.1",
@@ -64,5 +72,9 @@
     "typescript": "~4.9.5",
     "unist-util-select": "^4.0.3",
     "unist-util-visit": "^4.1.2"
+  },
+  "dependencies": {
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0"
   }
 }
