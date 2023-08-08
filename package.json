@@ -69,6 +69,7 @@
     "react-test-renderer": "18.2.0",
     "rehype-stringify": "^9.0.3",
     "remark": "^14.0.3",
+    "storybook-tailwind-dark-mode": "^1.0.22",
     "swc-loader": "0.1.15",
     "ts-jest": "^29.0.5",
     "ts-node": "10.9.1",
