@@ -1,6 +1,7 @@
-<NextSeo title="Searching datasets - PortalJS" />
-
-# Searching datasets
+---
+title: Searching datasets
+description: "Learn how to create a searchable datasets index"
+---
 
 Typing out every link in the index page will get cumbersome eventually, and as the portal grows, finding the datasets you are looking for on the index page will become harder and harder, for that we will need search functionality.
 
