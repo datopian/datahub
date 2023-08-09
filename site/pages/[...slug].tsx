@@ -13,6 +13,7 @@ import { CustomAppProps } from './_app.jsx';
 import computeFields from '@/lib/computeFields';
 import { getAuthorsDetails } from '@/lib/getAuthorsDetails';
 import JSONLD from '@/components/JSONLD';
+import { BreadcrumbJsonLd } from 'next-seo';
 
 export default function Page({ source, meta, sidebarTree }) {
   source = JSON.parse(source);
@@ -29,9 +30,19 @@ export default function Page({ source, meta, sidebarTree }) {
     setTableOfContents(toc ?? []);
   }, [router.asPath]); // update table of contents on route change with next/link
 
+  const urlSegments = meta.urlPath.split('/');
+  const breadcrumbs = urlSegments.map((segment, i) => {
+    return {
+      position: i + 1,
+      name: i == urlSegments.length - 1 ? meta.title || segment : segment,
+      item: '/' + urlSegments.slice(0, i + 1).join('/'),
+    };
+  });
+
   return (
     <>
       <JSONLD meta={meta} source={source.compiledSource} />
+      <BreadcrumbJsonLd itemListElements={breadcrumbs} />
       <Layout
         tableOfContents={tableOfContents}
         title={meta.title}

@@ -1,6 +1,6 @@
 ---
 title: 'Creating new datasets'
-description: 'PortalJS Tutorial II - Learn how to create new datasets on a data portal'
+description: 'Learn how to create new datasets on a data portal'
 ---
 
 So far, the PortalJS app we created only has a single page displaying a dataset. Data catalogs and data portals generally showcase many different datasets.
