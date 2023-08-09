@@ -1,5 +1,6 @@
 {
   "compilerOptions": {
+    "baseUrl": ".",
     "jsx": "react-jsx",
     "module": "es2020",
     "moduleResolution": "node",
@@ -22,6 +23,9 @@
     },
     {
       "path": "./tsconfig.spec.json"
+    },
+    {
+      "path": "./.storybook/tsconfig.json"
     }
   ]
 }
