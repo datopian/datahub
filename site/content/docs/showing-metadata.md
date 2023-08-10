@@ -1,6 +1,6 @@
 ---
 title: Showing metadata 
-description: "Learn how to display metadata on the dataset page of a data portal"
+description: "Learn how to display metadata on the dataset page of a data portal built with PortalJS"
 ---
 
 If you go now to `http://localhost:3000/my-awesome-dataset`, you will see that we now have two titles on the page. That's because `title` is one of the default metadata fields supported by PortalJS.

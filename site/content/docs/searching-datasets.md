@@ -1,6 +1,6 @@
 ---
 title: Searching datasets
-description: "Learn how to create a searchable datasets index"
+description: 'Learn how to create a searchable datasets index with facets on a PortalJs data portal'
 ---
 
 Typing out every link in the index page will get cumbersome eventually, and as the portal grows, finding the datasets you are looking for on the index page will become harder and harder, for that we will need search functionality.

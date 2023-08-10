@@ -1,6 +1,6 @@
 ---
 title: How to add a simple blog?
-description: How to add a simple blog on a PortalJS data portal
+description: Learn how to add a simple blog on a PortalJS data portal
 ---
 
 ## Setup
@@ -16,15 +16,15 @@ npm i @portaljs/core
 Add the following code to the Next.js page that is going to be your blog home page, e.g. to `/pages/blog/index.tsx`:
 
 ```tsx
-import { BlogsList, SimpleLayout } from "@portaljs/core";
+import { BlogsList, SimpleLayout } from '@portaljs/core';
 
 // pass a list of blogs, home page title and home page description, e.g. from `getStaticProps`
 export default function BlogIndex({ blogs, title, description }) {
-    return (
-        <SimpleLayout title={title} description={description}>
-            <BlogsList blogs={blogs} />
-        </SimpleLayout>
-    );
+  return (
+    <SimpleLayout title={title} description={description}>
+      <BlogsList blogs={blogs} />
+    </SimpleLayout>
+  );
 }
 ```
 
@@ -32,16 +32,16 @@ export default function BlogIndex({ blogs, title, description }) {
 
 ```ts
 interface BlogsListProps {
-	blogs: Blog;
+  blogs: Blog;
 }
 
 interface Blog {
-	title: string;
-	date: string;
-	urlPath: string;
-	description?: string;
-	authors?: Array<string>;
-	tags?: Array<string>;	
+  title: string;
+  date: string;
+  urlPath: string;
+  description?: string;
+  authors?: Array<string>;
+  tags?: Array<string>;
 }
 ```
 
@@ -57,7 +57,7 @@ export default BlogPost({ content, title, date, authors }) {
 		<BlogLayout title={title} date={date} authors={authors}
 			{content}
 		</BlogLayout>
-	)	
+	)
 }
 ```
 
@@ -65,14 +65,14 @@ export default BlogPost({ content, title, date, authors }) {
 
 ```ts
 interface BlogLayoutProps {
-	title?: string;
-	date?: string;
-	authors?: Array<Author>;
+  title?: string;
+  date?: string;
+  authors?: Array<Author>;
 }
 
 interface Author {
-	name: string;
-	avatar: string; // avatar image path
-	urlPath?: string; // author page
+  name: string;
+  avatar: string; // avatar image path
+  urlPath?: string; // author page
 }
 ```

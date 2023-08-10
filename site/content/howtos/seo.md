@@ -1,6 +1,6 @@
 ---
 title: How to customize page metadata for SEO?
-description: Learn to customize page metadata for SEO on data portals with PortalJS
+description: Learn how to customize page metadata for SEO on data portals built with PortalJS
 ---
 
 >[!info]

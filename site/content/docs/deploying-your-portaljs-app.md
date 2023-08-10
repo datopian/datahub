@@ -1,6 +1,6 @@
 ---
 title: Deploying your PortalJS app
-description: 'Learn to deploy PortalJS apps'
+description: 'Learn how to deploy PortalJS apps to Vercel and Cloudflare'
 ---
 
 Finally, let's learn how to deploy PortalJS apps to Vercel or Cloudflare Pages.

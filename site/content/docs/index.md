@@ -1,6 +1,6 @@
 ---
 title: Getting Started
-description: 'Getting started guide and tutorial about data portal-building with PortalJS'
+description: 'Getting started guide and tutorial about data portal-building with PortalJS!'
 ---
 
 Welcome to the PortalJS documentation!
