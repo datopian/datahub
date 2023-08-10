@@ -95,7 +95,10 @@ export default function Nav() {
         <MobileNavigation navigation={siteConfig.navLinks} />
       </div>
       <div className="flex flex-none items-center">
-        <NavbarTitle />
+        <div className='hidden sm:block'>
+          <NavbarTitle />
+        </div>
+
         <div className="hidden lg:flex ml-8 mr-6 sm:mr-8 md:mr-0">
           {siteConfig.navLinks.map((item) => (
             <NavItem item={item} key={item.name} />
@@ -123,9 +126,8 @@ export default function Nav() {
         )}
         {siteConfig.github && (
           <div className="mt-1">
-            <
-              // @ts-ignore
-              GitHubButton
+            <// @ts-ignore
+            GitHubButton
               href={siteConfig.github}
               data-color-scheme="no-preference: light; light: light; dark: dark;"
               data-size="large"

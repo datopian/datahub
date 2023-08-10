@@ -10,7 +10,7 @@ import { useEffect, useState } from 'react';
 const Stat = ({ title, value, ...props }) => {
   return (
     <div {...props}>
-      <span className="text-6xl font-bold text-secondary">{value}</span>
+      <span className="text-4xl sm:text-6xl font-bold text-secondary">{value}</span>
       <p className="text-lg font-medium">{title}</p>
     </div>
   );

@@ -92,7 +92,7 @@ export default function MobileNavigation({ navigation }) {
             >
               {/* <Logomark className="h-9 w-9" /> */}
               <div className="font-extrabold text-slate-900 dark:text-white text-2xl ml-6">
-                {siteConfig.title}
+                PortalJS
               </div>
             </Link>
           </div>

@@ -86,7 +86,7 @@ export default function Layout({
     <>
       {title && <NextSeo title={title} description={description} />}
       <Nav />
-      <div className="mx-auto p-6 bg-background dark:bg-background-dark">
+      <div className="mx-auto p-2 sm:p-6 bg-background dark:bg-background-dark">
         {isHomePage && <Hero />}
 
         <div className="relative mx-auto flex max-w-8xl justify-center sm:px-2 lg:px-8 xl:px-12">
