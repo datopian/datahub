@@ -95,7 +95,7 @@ export default function Nav() {
         <MobileNavigation navigation={siteConfig.navLinks} />
       </div>
       <div className="flex flex-none items-center">
-        <div className='hidden sm:block'>
+        <div className="hidden sm:block">
           <NavbarTitle />
         </div>
 
@@ -126,8 +126,8 @@ export default function Nav() {
         )}
         {siteConfig.github && (
           <div className="mt-1">
-            <// @ts-ignore
-            GitHubButton
+            {/* @ts-ignore */}
+            <GitHubButton
               href={siteConfig.github}
               data-color-scheme="no-preference: light; light: light; dark: dark;"
               data-size="large"
