@@ -15,9 +15,9 @@ const defaultWikiLinkResolver = (target: string) => {
 
 export interface FromMarkdownOptions {
   pathFormat?:
-    | "raw" // default; use for regular relative or absolute paths
-    | "obsidian-absolute" // use for Obsidian-style absolute paths (with no leading slash)
-    | "obsidian-short"; // use for Obsidian-style shortened paths (shortest path possible)
+  | "raw" // default; use for regular relative or absolute paths
+  | "obsidian-absolute" // use for Obsidian-style absolute paths (with no leading slash)
+  | "obsidian-short"; // use for Obsidian-style shortened paths (shortest path possible)
   permalinks?: string[]; // list of permalinks to match possible permalinks of a wiki link against
   wikiLinkResolver?: (name: string) => string[]; // function to resolve wiki links to an array of possible permalinks
   newClassName?: string; // class name to add to links that don't have a matching permalink
@@ -125,13 +125,24 @@ function fromMarkdown(opts: FromMarkdownOptions = {}) {
     if (isEmbed) {
       const [isSupportedFormat, format] = isSupportedFileFormat(target);
       if (!isSupportedFormat) {
-        wikiLink.data.hName = "p";
-        wikiLink.data.hChildren = [
-          {
-            type: "text",
-            value: `![[${target}]]`,
-          },
-        ];
+        // Temporarily render note transclusion as a regular wiki link
+        if (!format) {
+          wikiLink.data.hName = "a";
+          wikiLink.data.hProperties = {
+            className: classNames + " " + "transclusion",
+            href: hrefTemplate(link) + headingId,
+          };
+          wikiLink.data.hChildren = [{ type: "text", value: displayName }];
+
+        } else {
+          wikiLink.data.hName = "p";
+          wikiLink.data.hChildren = [
+            {
+              type: "text",
+              value: `![[${target}]]`,
+            },
+          ];
+        }
       } else if (format === "pdf") {
         wikiLink.data.hName = "iframe";
         wikiLink.data.hProperties = {

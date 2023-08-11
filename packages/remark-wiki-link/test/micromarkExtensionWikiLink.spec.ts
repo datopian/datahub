@@ -309,4 +309,16 @@ describe("micromark-extension-wiki-link", () => {
       expect(serialized).toBe('<p><a href="/" class="internal">/index</a></p>');
     });
   });
+
+  describe("transclusions", () => {
+    test("parsers a transclusion as a regular wiki link", () => {
+      const serialized = micromark("![[Some Page]]", "ascii", {
+        extensions: [syntax()],
+        htmlExtensions: [html() as any], // TODO type fix
+      });
+      expect(serialized).toBe(
+        '<p><a href="Some Page" class="internal new transclusion">Some Page</a></p>'
+      );
+    });
+  });
 });

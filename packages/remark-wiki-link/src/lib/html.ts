@@ -15,9 +15,9 @@ const defaultWikiLinkResolver = (target: string) => {
 
 export interface HtmlOptions {
   pathFormat?:
-    | "raw" // default; use for regular relative or absolute paths
-    | "obsidian-absolute" // use for Obsidian-style absolute paths (with no leading slash)
-    | "obsidian-short"; // use for Obsidian-style shortened paths (shortest path possible)
+  | "raw" // default; use for regular relative or absolute paths
+  | "obsidian-absolute" // use for Obsidian-style absolute paths (with no leading slash)
+  | "obsidian-short"; // use for Obsidian-style shortened paths (shortest path possible)
   permalinks?: string[]; // list of permalinks to match possible permalinks of a wiki link against
   wikiLinkResolver?: (name: string) => string[]; // function to resolve wiki links to an array of possible permalinks
   newClassName?: string; // class name to add to links that don't have a matching permalink
@@ -108,7 +108,16 @@ function html(opts: HtmlOptions = {}) {
     if (isEmbed) {
       const [isSupportedFormat, format] = isSupportedFileFormat(target);
       if (!isSupportedFormat) {
-        this.raw(`![[${target}]]`);
+        // Temporarily render note transclusion as a regular wiki link
+        if (!format) {
+          this.tag(
+            `<a href="${hrefTemplate(link + headingId)}" class="${classNames} transclusion">`
+          );
+          this.raw(displayName);
+          this.tag("</a>");
+        } else {
+          this.raw(`![[${target}]]`);
+        }
       } else if (format === "pdf") {
         this.tag(
           `<iframe width="100%" src="${hrefTemplate(

@@ -535,4 +535,28 @@ describe("remark-wiki-link", () => {
       });
     });
   });
+
+  describe("transclusions", () => {
+    test("replaces a transclusion with a regular wiki link", () => {
+      const processor = unified().use(markdown).use(wikiLinkPlugin);
+
+      let ast = processor.parse("![[Some Page]]");
+      ast = processor.runSync(ast);
+
+      expect(select("wikiLink", ast)).not.toEqual(null);
+
+      visit(ast, "wikiLink", (node: Node) => {
+        expect(node.data?.isEmbed).toEqual(true);
+        expect(node.data?.exists).toEqual(false);
+        expect(node.data?.permalink).toEqual("Some Page");
+        expect(node.data?.alias).toEqual(null);
+        expect(node.data?.hName).toEqual("a");
+        expect((node.data?.hProperties as any).className).toEqual(
+          "internal new transclusion"
+        );
+        expect((node.data?.hProperties as any).href).toEqual("Some Page");
+        expect((node.data?.hChildren as any)[0].value).toEqual("Some Page");
+      });
+    });
+  });
 });
