@@ -42,6 +42,7 @@ export interface FlatUiTableProps {
   data?: { [key: string]: number | string }[];
   rawCsv?: string;
   corsProxy?: string;
+  randomId?: number;
 }
 export const FlatUiTable: React.FC<FlatUiTableProps> = ({
   url,
@@ -49,10 +50,17 @@ export const FlatUiTable: React.FC<FlatUiTableProps> = ({
   rawCsv,
   corsProxy,
 }) => {
+  const randomId = Math.random();
   return (
     // Provide the client to your App
     <QueryClientProvider client={queryClient}>
-      <TableInner corsProxy={corsProxy} url={url} data={data} rawCsv={rawCsv} />
+      <TableInner
+        corsProxy={corsProxy}
+        url={url}
+        data={data}
+        rawCsv={rawCsv}
+        randomId={randomId}
+      />
     </QueryClientProvider>
   );
 };
@@ -62,6 +70,7 @@ const TableInner: React.FC<FlatUiTableProps> = ({
   data,
   rawCsv,
   corsProxy,
+  randomId,
 }) => {
   if (data) {
     return (
@@ -71,12 +80,12 @@ const TableInner: React.FC<FlatUiTableProps> = ({
     );
   }
   const { data: csvString, isLoading: isDownloadingCSV } = useQuery(
-    ['dataCsv', url],
+    ['dataCsv', url, randomId],
     () => getCsv(url as string, corsProxy),
     { enabled: !!url }
   );
   const { data: parsedData, isLoading: isParsing } = useQuery(
-    ['dataPreview', csvString],
+    ['dataPreview', csvString, randomId],
     () => parseCsv(rawCsv ? (rawCsv as string) : (csvString as string)),
     { enabled: rawCsv ? true : !!csvString }
   );
