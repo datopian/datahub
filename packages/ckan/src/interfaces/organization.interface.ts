@@ -1,6 +1,6 @@
-import { Activity } from "./activity.interface";
-import { Dataset, Tag } from "./dataset.interface";
-import { User } from "./user.interface";
+import { Activity } from './activity.interface';
+import { Dataset, Tag } from './dataset.interface';
+import { User } from './user.interface';
 
 export interface Organization {
   id: string;
@@ -13,8 +13,9 @@ export interface Organization {
   image_display_url?: string;
   created?: string;
   is_organization: boolean;
-  approval_status?: "approved";
-  state: "active";
+  package_count: number;
+  approval_status?: 'approved';
+  state: 'active';
   packages?: Array<Dataset>;
   activity_stream?: Array<Activity>;
   users?: Array<User>;
