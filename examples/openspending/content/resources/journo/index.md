@@ -15,8 +15,8 @@ From the point at which funds come into the government's possession to when they
 
 Here are the guides we'll publish in the coming weeks:
 
-- [A guide to tax avoidance and evasion](/resources/journo/resources/tax-avoidance-evasion/) with a full set of choices of stories from shadow markets in Africa to big companies setting up overseas shell companies;
-- [A guide to reading accounts both public and business](/resources/journo/resources/reading-accounts/)
+- [A guide to tax avoidance and evasion](resources/tax-avoidance-evasion/) with a full set of choices of stories from shadow markets in Africa to big companies setting up overseas shell companies;
+- [A guide to reading accounts both public and business](resources/reading-accounts/)
 - The decisions for how to allocate public funds to different projects are often completely open. We provide a list of the allocation formulas and suggest what it would be sensible to correlate the allocation of funds with;
 - A guide to the many ways of grouping spending in the U.K. and beyond to help you find what you're looking for;
 - A guide to tax models. The U.K. uses a model called the General Computation Model -- we look at it in detail through contact with researchers involved;

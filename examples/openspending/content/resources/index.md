@@ -18,21 +18,21 @@ this ongoing work.
 
 ### Reports
 
-- [Where Does the European Union's Money Go?](/resources/eu/)
-- [Mapping the Open Spending Data Community](/resources/mappingcommunity/)
-- [Technology for Transparent and Accountable Public Finance](resources/gift/)
+- [Where Does the European Union's Money Go?](./eu/)
+- [Mapping the Open Spending Data Community](./mappingcommunity/)
+- [Technology for Transparent and Accountable Public Finance](./gift/)
 
 ### Guides
 
-- [Connecting the International Aid Flows](resources/iati/)
-- [Follow the money](resources/journo/)
-- [UK Departmental Spending](resources/gb-spending/)
+- [Connecting the International Aid Flows](./iati/)
+- [Follow the money](./journo/)
+- [UK Departmental Spending](./gb-spending/)
 
 ### Other
 
-- [OpenSpending.mobi](resources/mobi/)
-- [Map of Spending Projects](resources/map-of-spending-projects/)
-- [Working Group on Open Spending Data](resources/wg/)
+- [OpenSpending.mobi](./mobi/)
+- [Map of Spending Projects](./map-of-spending-projects/)
+- [Working Group on Open Spending Data](./wg/)
 - [Spending Data Standard [Fiscal Data Package] (current)](https://frictionlessdata.io/specs/fiscal-data-package/)
-- [Spending Data Standard (deprecated)](resources/standard/)
+- [Spending Data Standard (deprecated)](./standard/)
 
