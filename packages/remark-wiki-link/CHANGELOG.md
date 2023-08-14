@@ -1,5 +1,11 @@
 # @portaljs/remark-wiki-link
 
+## 1.1.0
+
+### Minor Changes
+
+- [#1006](https://github.com/datopian/portaljs/pull/1006) [`6418dbb7`](https://github.com/datopian/portaljs/commit/6418dbb7e246fa17b56840c64daa043112dc9189) Thanks [@olayway](https://github.com/olayway)! - Parse note embeds as regular wiki links (until we add proper support for note embeds).
+
 ## 1.0.4
 
 ### Patch Changes

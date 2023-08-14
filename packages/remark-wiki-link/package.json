@@ -1,6 +1,6 @@
 {
   "name": "@portaljs/remark-wiki-link",
-  "version": "1.0.4",
+  "version": "1.1.0",
   "description": "Parse and render wiki-style links in markdown especially Obsidian style links.",
   "repository": {
     "type": "git",
