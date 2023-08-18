@@ -1,5 +1,11 @@
 # @portaljs/ckan
 
+## 0.0.5
+
+### Patch Changes
+
+- [#1009](https://github.com/datopian/portaljs/pull/1009) [`88ccee6f`](https://github.com/datopian/portaljs/commit/88ccee6f0aa05decd3efbe7279925340ae817127) Thanks [@luccasmmg](https://github.com/luccasmmg)! - added package_count to organization type
+
 ## 0.0.4
 
 ### Patch Changes
