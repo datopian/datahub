@@ -1,6 +1,27 @@
+import { loadScripts } from '@/lib/loadNewsletterScripts';
 import Script from 'next/script';
+import { useEffect } from 'react';
 
 export default function NewsletterForm() {
+  useEffect(() => {
+    /*
+     * The newsletter scripts MUST be loaded after
+     * the document is loaded, as they depend on
+     * the presence of some elements
+     *
+     */
+    if (document.readyState === 'complete') {
+      const { resetElements } = loadScripts();
+
+      return () => {
+        resetElements();
+      };
+    } else {
+      window.addEventListener('load', loadScripts);
+      return () => window.removeEventListener('load', loadScripts);
+    }
+  }, []);
+
   return (
     <div>
       <div
@@ -88,37 +109,6 @@ export default function NewsletterForm() {
           </div>
         </div>
       </div>
-      <Script
-        id="newsletter-form-validation-message"
-        dangerouslySetInnerHTML={{
-          __html: `  
-          window.REQUIRED_CODE_ERROR_MESSAGE = 'Please choose a country code';
-          window.LOCALE = 'en';
-          window.EMAIL_INVALID_MESSAGE = window.SMS_INVALID_MESSAGE = "The information provided is invalid. Please review the field format and try again.";
-        
-          window.REQUIRED_ERROR_MESSAGE = "This field cannot be left blank. ";
-        
-          window.GENERIC_INVALID_MESSAGE = "The information provided is invalid. Please review the field format and try again.";
-        
-        
-        
-        
-          window.translation = {
-            common: {
-              selectedList: '{quantity} list selected',
-              selectedLists: '{quantity} lists selected'
-            }
-          };
-        
-          var AUTOHIDE = Boolean(0);
-        `,
-        }}
-      />
-      <Script
-        strategy="worker"
-        id="newsletter-submit-form"
-        src="https://sibforms.com/forms/end-form/build/main.js"
-      />
     </div>
   );
 }

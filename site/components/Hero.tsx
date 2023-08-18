@@ -3,31 +3,6 @@ import ButtonLink from './ButtonLink';
 import NewsletterForm from './NewsletterForm';
 import Image from 'next/image';
 import DatahubExampleImg from '@/public/images/showcases/datahub.webp';
-
-const codeLanguage = 'javascript';
-const code = `export default {
-  strategy: 'predictive',
-  engine: {
-    cpus: 12,
-    backups: ['./storage/cache.wtf'],
-  },
-}`;
-
-const tabs = [
-  { name: 'cache-advance.config.js', isActive: true },
-  { name: 'package.json', isActive: false },
-];
-
-function TrafficLightsIcon(props) {
-  return (
-    <svg aria-hidden="true" viewBox="0 0 42 10" fill="none" {...props}>
-      <circle cx="5" cy="5" r="4.5" />
-      <circle cx="21" cy="5" r="4.5" />
-      <circle cx="37" cy="5" r="4.5" />
-    </svg>
-  );
-}
-
 /* eslint jsx-a11y/label-has-associated-control: off */
 export function Hero() {
   const el = useRef(null);
