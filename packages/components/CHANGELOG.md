@@ -1,5 +1,11 @@
 # @portaljs/components
 
+## 0.3.2
+
+### Patch Changes
+
+- [#1011](https://github.com/datopian/portaljs/pull/1011) [`8e896138`](https://github.com/datopian/portaljs/commit/8e896138c622615d9bd9bd1d4a18de0cf38d85ec) Thanks [@luccasmmg](https://github.com/luccasmmg)! - fix bug when there were multiple flatuitable components at the same time
+
 ## 0.3.1
 
 ### Patch Changes
