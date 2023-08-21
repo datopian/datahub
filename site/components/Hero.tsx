@@ -25,7 +25,7 @@ export function Hero() {
               Rapidly build rich data portals using a modern frontend framework.
             </p>
 
-            <ButtonLink className="mt-8" href="/docs">
+            <ButtonLink style="secondary" className="mt-8" href="/docs">
               Get started
             </ButtonLink>
 
