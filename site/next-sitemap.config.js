@@ -4,6 +4,7 @@ module.exports = {
   generateRobotsTxt: true,
   robotsTxtOptions: {
     policies: [
+      { userAgent: '*', disallow: '/people/' },
       { userAgent: '*', disallow: '/people' },
       { userAgent: '*', disallow: '/?amp=1' },
     ],
