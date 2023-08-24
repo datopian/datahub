@@ -41,7 +41,7 @@ export interface Resource {
   description?: string;
   format?: string;
   hash?: string;
-  id?: string;
+  id: string;
   last_modified?: string;
   metadata_modified?: string;
   mimetype?: string;
