@@ -69,6 +69,7 @@ export interface PackageSearchOptions {
   query?: string;
   resFormat?: Array<string>;
   sort?: string;
+  include_private?: boolean;
 }
 
 export interface Tag {
