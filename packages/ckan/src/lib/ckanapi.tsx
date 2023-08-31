@@ -31,11 +31,7 @@ export default class CKAN {
 
   async getDatasetsListWithDetails(options: DatasetListQueryOptions) {
     const response = await fetchRetry(
-      `${
-        this.DMS
-      }/api/3/action/current_package_list_with_resources?offset=${
-        options.offset
-      }&limit=${options.limit}`,
+      `${this.DMS}/api/3/action/current_package_list_with_resources?offset=${options.offset}&limit=${options.limit}`,
       3
     );
     const responseData = await response.json();
@@ -44,7 +40,8 @@ export default class CKAN {
   }
 
   async packageSearch(
-    options: PackageSearchOptions
+    options: PackageSearchOptions,
+    reqOptions: Partial<RequestInit> = {}
   ): Promise<{ datasets: Dataset[]; count: number }> {
     function buildGroupsQuery(groups: Array<string>) {
       if (groups.length > 0) {
@@ -99,16 +96,18 @@ export default class CKAN {
       options.groups,
       options?.resFormat
     );
-    const response = await fetchRetry(
-      `${
-        this.DMS
-      }/api/3/action/package_search?start=${options.offset}&rows=${
-        options.limit
-      }${fq ? fq : ''}${options.query ? '&q=' + options.query : ''}${
-        options.sort ? '&sort=' + options.sort : ''
-      }`,
-      3
-    );
+
+    let url = `${this.DMS}/api/3/action/package_search?`;
+    url += `start=${options.offset}`;
+    url += `&rows=${options.limit}`;
+    url += fq ? fq : '';
+    url += options.query ? '&q=' + options.query : '';
+    url += options.sort ? '&sort=' + options.sort : '';
+    url += options.include_private
+      ? '&include_private=' + options.include_private
+      : '';
+
+    const response = await fetchRetry(url, 3, reqOptions);
     const responseData = await response.json();
     const datasets: Array<Dataset> = responseData.result.results;
     return { datasets, count: responseData.result.count };
@@ -116,9 +115,7 @@ export default class CKAN {
 
   async getDatasetDetails(datasetName: string) {
     const response = await fetchRetry(
-      `${
-        this.DMS
-      }/api/3/action/package_show?id=${datasetName}`,
+      `${this.DMS}/api/3/action/package_show?id=${datasetName}`,
       1
     );
     const responseData = await response.json();
@@ -131,9 +128,7 @@ export default class CKAN {
 
   async getDatasetActivityStream(datasetName: string) {
     const response = await fetchRetry(
-      `${
-        this.DMS
-      }/api/3/action/package_activity_list?id=${datasetName}`,
+      `${this.DMS}/api/3/action/package_activity_list?id=${datasetName}`,
       3
     );
     const responseData = await response.json();
@@ -151,9 +146,7 @@ export default class CKAN {
   async getUser(userId: string) {
     try {
       const response = await fetchRetry(
-        `${
-          this.DMS
-        }/api/3/action/user_show?id=${userId}`,
+        `${this.DMS}/api/3/action/user_show?id=${userId}`,
         3
       );
       const responseData = await response.json();
@@ -166,10 +159,7 @@ export default class CKAN {
   }
 
   async getGroupList() {
-    const response = await fetchRetry(
-      `${this.DMS}/api/3/action/group_list`,
-      3
-    );
+    const response = await fetchRetry(`${this.DMS}/api/3/action/group_list`, 3);
     const responseData = await response.json();
     const groups: Array<string> = responseData.result;
     return groups;
@@ -177,9 +167,7 @@ export default class CKAN {
 
   async getGroupsWithDetails() {
     const response = await fetchRetry(
-      `${
-        this.DMS
-      }/api/3/action/group_list?all_fields=True`,
+      `${this.DMS}/api/3/action/group_list?all_fields=True`,
       3
     );
     const responseData = await response.json();
@@ -189,9 +177,7 @@ export default class CKAN {
 
   async getGroupDetails(groupName: string) {
     const response = await fetchRetry(
-      `${
-        this.DMS
-      }/api/3/action/group_show?id=${groupName}&include_datasets=True`,
+      `${this.DMS}/api/3/action/group_show?id=${groupName}&include_datasets=True`,
       3
     );
     const responseData = await response.json();
@@ -201,9 +187,7 @@ export default class CKAN {
 
   async getGroupActivityStream(groupName: string) {
     const response = await fetchRetry(
-      `${
-        this.DMS
-      }/api/3/action/group_activity_list?id=${groupName}`,
+      `${this.DMS}/api/3/action/group_activity_list?id=${groupName}`,
       3
     );
     const responseData = await response.json();
@@ -230,9 +214,7 @@ export default class CKAN {
   async getOrgsWithDetails(accrossPages?: boolean) {
     if (!accrossPages) {
       const response = await fetchRetry(
-        `${
-          this.DMS
-        }/api/3/action/organization_list?all_fields=True`,
+        `${this.DMS}/api/3/action/organization_list?all_fields=True`,
         3
       );
       const responseData = await response.json();
@@ -251,9 +233,7 @@ export default class CKAN {
 
     for (let i = 0; i < pages; i++) {
       let allOrgListResponse = await fetchRetry(
-        `${
-          this.DMS
-        }/api/3/action/organization_list?all_fields=True&offset=${
+        `${this.DMS}/api/3/action/organization_list?all_fields=True&offset=${
           i * 25
         }&limit=25`,
         3
@@ -267,9 +247,7 @@ export default class CKAN {
 
   async getOrgDetails(orgName: string) {
     const response = await fetchRetry(
-      `${
-        this.DMS
-      }/api/3/action/organization_show?id=${orgName}&include_datasets=True`,
+      `${this.DMS}/api/3/action/organization_show?id=${orgName}&include_datasets=True`,
       3
     );
     const responseData = await response.json();
@@ -279,9 +257,7 @@ export default class CKAN {
 
   async getOrgActivityStream(orgName: string) {
     const response = await fetchRetry(
-      `${
-        this.DMS
-      }/api/3/action/organization_activity_list?id=${orgName}`,
+      `${this.DMS}/api/3/action/organization_activity_list?id=${orgName}`,
       3
     );
     const responseData = await response.json();
@@ -297,9 +273,7 @@ export default class CKAN {
 
   async getAllTags() {
     const response = await fetchRetry(
-      `${
-        this.DMS
-      }/api/3/action/tag_list?all_fields=True`,
+      `${this.DMS}/api/3/action/tag_list?all_fields=True`,
       3
     );
     const responseData = await response.json();
@@ -308,49 +282,41 @@ export default class CKAN {
   }
 
   async getResourcesWithAliasList() {
-    const response = await fetch(
-      `${this.DMS}/api/3/action/datastore_search`,
-      {
-        method: 'POST',
-        headers: {
-          Accept: 'application/json',
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          id: '_table_metadata',
-          limit: '32000',
-        }),
-      }
-    );
+    const response = await fetch(`${this.DMS}/api/3/action/datastore_search`, {
+      method: 'POST',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        id: '_table_metadata',
+        limit: '32000',
+      }),
+    });
     const responseData = await response.json();
     const tableMetadata: Array<TableMetadata> = responseData.result.records;
     return tableMetadata.filter((item) => item.alias_of);
   }
 
   async datastoreSearch(resourceId: string) {
-    const response = await fetch(
-      `${this.DMS}/api/3/action/datastore_search`,
-      {
-        method: 'POST',
-        headers: {
-          Accept: 'application/json',
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          id: resourceId,
-          limit: '32000',
-        }),
-      }
-    );
+    const response = await fetch(`${this.DMS}/api/3/action/datastore_search`, {
+      method: 'POST',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        id: resourceId,
+        limit: '32000',
+      }),
+    });
     const responseData = await response.json();
     return responseData.result.records;
   }
 
   async getResourceMetadata(resourceId: string) {
     const response = await fetchRetry(
-      `${
-        this.DMS
-      }/api/3/action/resource_show?id=${resourceId}`,
+      `${this.DMS}/api/3/action/resource_show?id=${resourceId}`,
       3
     );
     const responseData = await response.json();
@@ -359,17 +325,14 @@ export default class CKAN {
   }
 
   async getResourceInfo(resourceId: string) {
-    const response = await fetch(
-      `${this.DMS}/api/3/action/datastore_info`,
-      {
-        method: 'POST',
-        headers: {
-          Accept: 'application/json',
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ resource_id: resourceId }),
-      }
-    );
+    const response = await fetch(`${this.DMS}/api/3/action/datastore_info`, {
+      method: 'POST',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ resource_id: resourceId }),
+    });
     const responseData = await response.json();
     const resourceInfo: Array<ResourceInfo> = responseData.result;
     return resourceInfo;
@@ -377,9 +340,7 @@ export default class CKAN {
 
   async getFacetFields(field: 'res_format' | 'tags') {
     const response = await fetchRetry(
-      `${
-        this.DMS
-      }/api/3/action/package_search?facet.field=["${field}"]&rows=0`,
+      `${this.DMS}/api/3/action/package_search?facet.field=["${field}"]&rows=0`,
       3
     );
     const responseData = await response.json();

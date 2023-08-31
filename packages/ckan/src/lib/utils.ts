@@ -9,10 +9,14 @@ export function getDaysAgo(date: string) {
   return (+today - +createdOn) / msInDay;
 }
 
-export default async function fetchRetry(url: string, n: number): Promise<any> {
+export default async function fetchRetry(
+  url: string,
+  n: number,
+  opts: Partial<RequestInit> = {}
+): Promise<any> {
   const abortController = new AbortController();
   const id = setTimeout(() => abortController.abort(), 30000);
-  const res = await fetch(url, { signal: abortController.signal });
+  const res = await fetch(url, { signal: abortController.signal, ...opts });
   clearTimeout(id);
   if (!res.ok && n && n > 0) {
     return await fetchRetry(url, n - 1);
@@ -21,13 +25,13 @@ export default async function fetchRetry(url: string, n: number): Promise<any> {
 }
 
 export function removeTag(tag?: string) {
-  if (tag === "{{description}}" || !tag) {
+  if (tag === '{{description}}' || !tag) {
     return undefined;
   }
-  if (typeof window !== "undefined") {
-    const div = document.createElement("div");
+  if (typeof window !== 'undefined') {
+    const div = document.createElement('div');
     div.innerHTML = tag;
-    return div.textContent || div.innerText || "";
+    return div.textContent || div.innerText || '';
   }
   return tag;
 }
@@ -38,10 +42,10 @@ export function convertFieldSchema(
 ) {
   function convertToGraphqlString(fieldName: string) {
     return fieldName
-      .replaceAll(" ", "_")
-      .replaceAll("(", "_")
-      .replaceAll(")", "_")
-      .replace(/[^\w\s]|(_)\1/gi, "_");
+      .replaceAll(' ', '_')
+      .replaceAll('(', '_')
+      .replaceAll(')', '_')
+      .replace(/[^\w\s]|(_)\1/gi, '_');
   }
   const entries = Object.entries(schema);
   return {
