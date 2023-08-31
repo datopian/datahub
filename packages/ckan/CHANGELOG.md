@@ -1,5 +1,15 @@
 # @portaljs/ckan
 
+## 0.1.0
+
+### Minor Changes
+
+- [#1018](https://github.com/datopian/portaljs/pull/1018) [`50122cd0`](https://github.com/datopian/portaljs/commit/50122cd0cbbf68bdadc641341279b30b22538cfd) Thanks [@demenech](https://github.com/demenech)! - package_search method now supports custom headers and include_private parameter
+
+### Patch Changes
+
+- [#1016](https://github.com/datopian/portaljs/pull/1016) [`91217f32`](https://github.com/datopian/portaljs/commit/91217f325657e2f298b0e632793ae9bb8b08e870) Thanks [@luccasmmg](https://github.com/luccasmmg)! - remove optional from id in resource interface
+
 ## 0.0.5
 
 ### Patch Changes
