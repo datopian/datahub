@@ -101,7 +101,7 @@ List of available datasets:
 <Catalog datasets={datasets} facets={['group']}/>
 ```
 
-You now have a filter in your page with all possible values automatically added to it.
+Rerun `npm run mddb`. You now have a filter in your page with all possible values automatically added to it.
 
 ![Data catalog with facets built with PortalJS](https://i.imgur.com/p2miSdg.png)
 
