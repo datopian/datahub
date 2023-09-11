@@ -79,7 +79,7 @@ function fromMarkdown(opts: FromMarkdownOptions = {}) {
       data: { isEmbed, target, alias },
     } = wikiLink;
     // eslint-disable-next-line no-useless-escape
-    const wikiLinkWithHeadingPattern = /([\w\s\/\.-]*)(#.*)?/;
+    const wikiLinkWithHeadingPattern = /([\p{Letter}\d\s\/\.-_]*)(#.*)?/u;
     const [, path, heading = ""] = target.match(wikiLinkWithHeadingPattern);
 
     const possibleWikiLinkPermalinks = wikiLinkResolver(path);
