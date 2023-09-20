@@ -1,5 +1,11 @@
 # @portaljs/components
 
+## 0.4.0
+
+### Minor Changes
+
+- [#1022](https://github.com/datopian/portaljs/pull/1022) [`83fd7727`](https://github.com/datopian/portaljs/commit/83fd7727bafb4902218777597e9848a3e3a71d87) Thanks [@luccasmmg](https://github.com/luccasmmg)! - FlatUiTables now accepts a bytes param and a parsingConfig param for CSV links
+
 ## 0.3.2
 
 ### Patch Changes
