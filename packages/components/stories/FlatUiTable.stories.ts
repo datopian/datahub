@@ -9,17 +9,24 @@ const meta: Meta = {
   tags: ['autodocs'],
   argTypes: {
     data: {
-      description: "Data to be displayed in the table, must be setup as an array of key value pairs"
+      description:
+        'Data to be displayed in the table, must be setup as an array of key value pairs',
     },
     csv: {
-      description: "CSV data as string.",
+      description: 'CSV data as string.',
     },
     url: {
-      description: "Fetch the data from a CSV file remotely. only the first 5MB of data will be displayed"
+      description:
+        'Fetch the data from a CSV file remotely. only the first 5MB of data will be displayed',
     },
-    corsProxy: {
-      description: "Optionally you cant set a CORS Proxy to which all your requests you be redirected"
-    }
+    bytes: {
+      description:
+        'Fetch the data from a CSV file remotely. only the first <bytes> of data will be displayed',
+    },
+    parsingConfig: {
+      description:
+        'Configuration for parsing the CSV data. See https://www.papaparse.com/docs#config for more details',
+    },
   },
 };
 
@@ -29,7 +36,7 @@ type Story = StoryObj<FlatUiTableProps>;
 
 // More on writing stories with args: https://storybook.js.org/docs/react/writing-stories/args
 export const FromColumnsAndData: Story = {
-  name: "Table data",
+  name: 'Table data',
   args: {
     data: [
       { id: 1, lastName: 'Snow', firstName: 'Jon', age: 35 },
@@ -44,20 +51,19 @@ export const FromColumnsAndData: Story = {
 };
 
 export const FromRawCSV: Story = {
-  name: "Table from raw CSV",
+  name: 'Table from raw CSV',
   args: {
     rawCsv: `
     Year,Temp Anomaly
     1850,-0.418
     2020,0.923
-    `
-  }
+    `,
+  },
 };
 
 export const FromURL: Story = {
-  name: "Table from URL",
+  name: 'Table from URL',
   args: {
-    url: "https://raw.githubusercontent.com/datasets/finance-vix/main/data/vix-daily.csv"
-  }
+    url: 'https://ckan-dev.sse.datopian.com/datastore/dump/601c9cf0-595e-46d8-88fc-d1ab2904e2db',
+  },
 };
-

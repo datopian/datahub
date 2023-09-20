@@ -5,22 +5,20 @@ import LoadingSpinner from './LoadingSpinner';
 
 const queryClient = new QueryClient();
 
-export async function getCsv(url: string, corsProxy?: string) {
-  if (corsProxy) {
-    url = corsProxy + url;
-  }
+export async function getCsv(url: string, bytes) {
   const response = await fetch(url, {
     headers: {
-      Range: 'bytes=0-5132288',
+      Range: `bytes=0-${bytes}`,
     },
   });
   const data = await response.text();
   return data;
 }
 
-export async function parseCsv(file: string): Promise<any> {
+export async function parseCsv(file: string, parsingConfig): Promise<any> {
   return new Promise((resolve, reject) => {
     Papa.parse(file, {
+      ...parsingConfig,
       header: true,
       dynamicTyping: true,
       skipEmptyLines: true,
@@ -41,25 +39,28 @@ export interface FlatUiTableProps {
   url?: string;
   data?: { [key: string]: number | string }[];
   rawCsv?: string;
-  corsProxy?: string;
   randomId?: number;
+  bytes: number;
+  parsingConfig: any;
 }
 export const FlatUiTable: React.FC<FlatUiTableProps> = ({
   url,
   data,
   rawCsv,
-  corsProxy,
+  bytes = 5132288,
+  parsingConfig = {},
 }) => {
   const randomId = Math.random();
   return (
     // Provide the client to your App
     <QueryClientProvider client={queryClient}>
       <TableInner
-        corsProxy={corsProxy}
+        bytes={bytes}
         url={url}
         data={data}
         rawCsv={rawCsv}
         randomId={randomId}
+        parsingConfig={parsingConfig}
       />
     </QueryClientProvider>
   );
@@ -69,8 +70,9 @@ const TableInner: React.FC<FlatUiTableProps> = ({
   url,
   data,
   rawCsv,
-  corsProxy,
   randomId,
+  bytes,
+  parsingConfig,
 }) => {
   if (data) {
     return (
@@ -81,12 +83,16 @@ const TableInner: React.FC<FlatUiTableProps> = ({
   }
   const { data: csvString, isLoading: isDownloadingCSV } = useQuery(
     ['dataCsv', url, randomId],
-    () => getCsv(url as string, corsProxy),
+    () => getCsv(url as string, bytes),
     { enabled: !!url }
   );
   const { data: parsedData, isLoading: isParsing } = useQuery(
     ['dataPreview', csvString, randomId],
-    () => parseCsv(rawCsv ? (rawCsv as string) : (csvString as string)),
+    () =>
+      parseCsv(
+        rawCsv ? (rawCsv as string) : (csvString as string),
+        parsingConfig
+      ),
     { enabled: rawCsv ? true : !!csvString }
   );
   if (isParsing || isDownloadingCSV)
