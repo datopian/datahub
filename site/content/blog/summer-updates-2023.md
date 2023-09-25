@@ -1,12 +1,14 @@
 ---
 title: What We Shipped in Jul-Aug 2023
 authors: ['ola-rubaj']
-date: 2023-09-22
+date: 2023-09-2
 ---
 
 Hey everyone! 👋 Summer has been in full swing, and while I've managed to catch some vacation vibes, I've also been deep into code. I'm super excited to share some of the latest updates and features we've rolled out over the past two months. Let's dive in:
 
-## 🌷 [Flowershow](https://flowershow.app/)
+## 🌷 Flowershow
+
+https://flowershow.app/
 
 1. **CLI is old news**: the Flowershow CLI has been deprecated in favor of our new [Flowershow Obsidian plugin](https://github.com/datopian/obsidian-flowershow).
 
@@ -18,19 +20,25 @@ Hey everyone! 👋 Summer has been in full swing, and while I've managed to catc
 
 5. **New Obsidian tags list format support**: I added support for Obsidian's new tag list format, so now your notes can be even more organized. [Learn more](https://github.com/datopian/flowershow/issues/543)
 
-## 🗂️ [MarkdownDB](https://github.com/datopian/markdowndb)
+## 🗂️ MarkdownDB
+
+https://github.com/datopian/markdowndb
 
 1. **Auto-Publishing to npm**: Changesets now trigger auto-publishing, so we're always up to date.
 2. **Obsidian-style wiki links**: Extracting wiki links with Obsidian-style shortest paths is supported now.
 
-## 📚 [The Guide](https://portaljs.org/guide)
+## 📚 The Guide
+
+https://portaljs.org/guide
 
 I’ve sketched overviews for two upcoming tutorials:
 
 1. **Collaborating with others on your website**: Learn how to make your website projects a team effort. [See it here](https://portaljs.org/guide#tutorial-3-collaborating-with-others-on-your-website-project)
 2. **Customising your website and previewing your changes locally**: Customize and preview your site changes locally, without headaches. [See it here](https://portaljs.org/guide#tutorial-4-customising-your-website-locally-and-previewing-your-changes-locally)
 
-## 🌐 [LifeItself.org](https://lifeitself.org/)
+## 🌐 LifeItself.org
+
+https://lifeitself.org/
 
 LifeItself.org is our website built on the Flowershow template, and it's been getting some extra care too.
 
