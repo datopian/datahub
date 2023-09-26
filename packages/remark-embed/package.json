@@ -1,6 +1,6 @@
 {
   "name": "@portaljs/remark-embed",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "description": "Converts youtube link in mdx to an iframe embed",
   "repository": {
     "type": "git",
