@@ -1,14 +1,29 @@
 import { visit } from "unist-util-visit";
 
+// https://youtu.be/vDuh7vDgGIg
+
+// TODO write tests!
 function transformer(tree) {
   visit(tree, "paragraph", (node) => {
     visit(node, "text", (textNode) => {
       if (
-        textNode.value.includes("https://www.youtube.com") &&
+        (textNode.value.includes("https://www.youtube.com") ||
+          textNode.value.includes("https://youtu.be")
+        ) &&
         !textNode.value.includes("\n")
       ) {
-        const urlSplit = textNode.value.split(/[=&]+/);
-        const iframeUrl = `https://www.youtube.com/embed/${urlSplit[1]}`;
+        let videoId: string;
+
+        if (textNode.value.includes("https://youtu.be")) {
+          // Extract video ID for short YT URLs
+          videoId = textNode.value.split("/").pop();
+        } else {
+          // Extract video ID for full YT URLs
+          const urlSplit = textNode.value.split(/[=&]+/);
+          videoId = urlSplit[1];
+        }
+
+        const iframeUrl = `https://www.youtube.com/embed/${videoId}`;
         Object.assign(node, {
           ...node,
           type: "element",
