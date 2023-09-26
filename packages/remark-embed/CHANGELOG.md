@@ -1,5 +1,11 @@
 # @portaljs/remark-embed
 
+## 1.0.5
+
+### Patch Changes
+
+- [`71716ab0`](https://github.com/datopian/portaljs/commit/71716ab01875f04f51bc23ba551c7a6a9a24a335) Thanks [@olayway](https://github.com/olayway)! - Add support for shortened yt links (https://youtu.be).
+
 ## 1.0.4
 
 ### Patch Changes
