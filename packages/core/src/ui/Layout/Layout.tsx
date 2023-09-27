@@ -105,8 +105,7 @@ export const Layout: React.FC<Props> = ({
         <div
           className={clsx(
             "max-w-8xl mx-auto px-4 md:px-8",
-            showSidebar && "lg:ml-[18rem]",
-            showToc && "xl:mr-[18rem]"
+            showSidebar && "lg:ml-[18rem]"
           )}
         >
           {/* SIDEBAR */}
