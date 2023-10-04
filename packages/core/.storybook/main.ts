@@ -5,12 +5,16 @@ const config: StorybookConfig = {
   addons: [
     '@storybook/addon-essentials',
     '@storybook/addon-interactions',
+    '@storybook/addon-a11y',
     '@nrwl/react/plugins/storybook',
     'storybook-tailwind-dark-mode'
   ],
   framework: {
     name: '@storybook/react-webpack5',
     options: {},
+  },
+  docs: {
+    autodocs: 'tag',
   },
 };
 

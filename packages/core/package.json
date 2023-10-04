@@ -46,10 +46,13 @@
     "prop-types": "^15.8.1"
   },
   "peerDependencies": {
+    "mdx-mermaid": "2.0.0-rc7",
     "next": "^13.2.1",
     "next-themes": "^0.2.1",
     "react": "^18.2.0",
-    "react-dom": "^18.2.0",
-    "mdx-mermaid": "2.0.0-rc7"
+    "react-dom": "^18.2.0"
+  },
+  "devDependencies": {
+    "@storybook/addon-a11y": "^7.4.6"
   }
 }

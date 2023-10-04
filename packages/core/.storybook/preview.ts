@@ -1,6 +1,9 @@
 import './tailwind-imports.css';
 
 const preview = {
+    parameters: {
+        actions: { argTypesRegex: "^on[A-Z].*" },
+    },
     globalTypes: {
         darkMode: {
             defaultValue: false, // Enable dark mode by default on all stories
