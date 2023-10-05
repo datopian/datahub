@@ -7,6 +7,7 @@ export {
   TocSection,
   EditThisPage,
   useTableOfContents,
+  Footer
 } from "./Layout";
 export { Pre } from "./Pre";
 export { CustomLink } from "./Base/CustomLink";

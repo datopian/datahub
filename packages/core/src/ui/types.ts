@@ -9,8 +9,8 @@ export interface NavLink {
 
 export interface AuthorConfig {
   name: string;
-  url: string;
-  logo: string;
+  url?: string;
+  logo?: string;
 }
 
 // social
