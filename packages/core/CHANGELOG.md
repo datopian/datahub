@@ -1,5 +1,11 @@
 # @portaljs/core
 
+## 1.0.7
+
+### Patch Changes
+
+- [`8d74fd98`](https://github.com/datopian/portaljs/commit/8d74fd98443bb3c0a28325be27b41281b59f3581) Thanks [@olayway](https://github.com/olayway)! - Minor footer style fixes.
+
 ## 1.0.6
 
 ### Patch Changes
