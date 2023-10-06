@@ -58,6 +58,10 @@ export function Header() {
       href: '/contributing',
     },
     {
+      title: 'Help',
+      href: '/help',
+    },
+    {
       title: 'Resources',
       href: '/resources',
       children: [
@@ -72,6 +76,10 @@ export function Header() {
         {
           title: 'Working Group On Open Spending Data',
           href: '/resources/wg/',
+        },
+        {
+          title: 'UK Departamental Spending',
+          href: '/resources/gb-spending',
         },
       ],
     },

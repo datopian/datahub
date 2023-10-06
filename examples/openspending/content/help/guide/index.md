@@ -5,23 +5,16 @@ title: The OpenSpending Guide
 authors:
 - Neil Ashton
 ---
-The OpenSpending Guide is the manual for OpenSpending, covering the entire process of finding, adding, and using data with OpenSpending in detail.
+The OpenSpending Guide is the complete manual for OpenSpending. Whether you wish to find, clean, add, or use spending data with OpenSpending we've got you covered.
 
-* Introduction
-    * [What is OpenSpending?](./what-is-openspending)
-    * [What types of financial data can go into OpenSpending?](./financial-data-types)
-    * [How does OpenSpending represent data?](./data-model)
-* Adding Data to OpenSpending
-    * [Overview](./adding-data-overview)
-    * [Gathering data](./gathering-data)
-    * [Formatting data](./formatting-data)
-    * [Publishing data on the web](./publishing-data)
-    * [Creating a dataset on OpenSpending](./creating-dataset)
-    * [Modelling your data in OpenSpending](./modelling-data)
-* Visualizations
-    * [Create a visualization](./create-viz)
-    * [Embed a visualization on your website](./embed-viz)
+The OpenSpending Guide is available in multiple languages:
 
-**Begin**: [What is OpenSpending?](./what-is-openspending/)
+* [English](guide/en)
+* [French](guide/fr)
+* [Italian](guide/it)
+* [Romanian](guide/rom)
+* [Spanish](guide/esp)
+* [Turkish](guide/tur) (still in progress)
+* <a href="https://trello.com/c/abfAVgBC/14-permanent-openspending-guide-translation">Add your language</a> by translating the guide available in <a href="https://docs.google.com/a/okfn.org/document/d/1-RhyBc7rFgBW78160BA0mxD6cpVZ-PtfM8QL_WEoPqY/edit#heading=h.79vyyu8n203g">this Google Doc</a>!
 
-**Up**: [OpenSpending guides](../)
+**Up**: [OpenSpending help](../)

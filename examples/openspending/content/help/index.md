@@ -11,12 +11,12 @@ of our guides and get rolling! If you have questions,
 
 The OpenSpending Guide is available in multiple languages:
 
-* [English](./guide/en)
-* [French](./guide/fr)
-* [Italian](./guide/it)
-* [Nepali](./guide/npl)
-* [Romanian](./guide/rom)
-* [Spanish](./guide/esp)
+* [English](./help/guide/en)
+* [French](./help/guide/fr)
+* [Italian](./help/guide/it)
+* [Nepali](./help/guide/npl)
+* [Romanian](./help/guide/rom)
+* [Spanish](./help/guide/esp)
 
 Many other translations are under development. Check back for new
 translations or
