@@ -1,5 +1,11 @@
 # @portaljs/core
 
+## 1.0.8
+
+### Patch Changes
+
+- [`c63551a5`](https://github.com/datopian/portaljs/commit/c63551a54eb92f946777fb912d992fde6e07d816) Thanks [@olayway](https://github.com/olayway)! - Fix Navbar version not showing.
+
 ## 1.0.7
 
 ### Patch Changes
