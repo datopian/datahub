@@ -30,16 +30,13 @@ export function Hero() {
             </ButtonLink>
 
             <ButtonLink
-              style="secondary"
+              style="primary"
               className="mt-8 ml-3"
-              href="https://github.com/datopian/portaljs"
+              href="https://portaljs.com/"
             >
-              View on GitHub
+              PortalJS Cloud
             </ButtonLink>
 
-            <div className="md:max-w-md mx-auto lg:mx-0 ">
-              <NewsletterForm />
-            </div>
             <p className="my-10 text-l tracking-wide">
               <span>A project of</span>
               <a
