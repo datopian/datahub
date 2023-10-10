@@ -1,5 +1,11 @@
 # @portaljs/remark-wiki-link
 
+## 1.1.1
+
+### Patch Changes
+
+- [`e4624c35`](https://github.com/datopian/portaljs/commit/e4624c35cb559c7eb17efe1f9def9d8a0b18a859) - Fix links with accents resolving to empty links
+
 ## 1.1.0
 
 ### Minor Changes
