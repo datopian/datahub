@@ -30,7 +30,7 @@ export function Hero() {
             </ButtonLink>
 
             <ButtonLink
-              style="secondary"
+              style="primary"
               className="mt-8 ml-3"
               href="https://portaljs.com/"
             >
