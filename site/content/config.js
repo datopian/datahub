@@ -31,6 +31,12 @@ const config = {
       href: 'https://storybook.portaljs.org',
       target: '_blank',
     },
+    {
+      name: 'Cloud ☁️',
+      href: 'https://portaljs.com/',
+      target: '_blank',
+      style: 'text-blue-600 dark:text-blue-400'
+    },
     // { name: "DL Demo", href: "/data-literate/demo" },
     // { name: "Excel Viewer", href: "/excel-viewer" },
   ],

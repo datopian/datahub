@@ -29,7 +29,7 @@ export default function NavItem({ item }) {
             onMouseLeave={closeDropdown}
             target={item.target || '_self'}
             onClick={() => setshowDropdown(!showDropdown)}
-            className="text-slate-600 dark:text-slate-400 inline-flex items-center mr-2 px-1 pt-1 text-sm font-medium hover:text-slate-500"
+            className={`${item?.style ? item.style : "text-slate-600 dark:text-slate-400"} inline-flex items-center mr-2 px-1 pt-1 text-sm font-medium hover:text-slate-500`}
           >
             {item.name}
           </Link>
