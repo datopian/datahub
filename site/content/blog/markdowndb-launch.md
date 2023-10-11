@@ -1,5 +1,5 @@
 ---
-title: Announcing the official launch of MarkdownDB!
+title: Announcing the official launch of MarkdownDB! 🚀
 description: We're excited to announce the official launch of MarkdownDB, an open library to transform markdown content into SQLite database. And now, it has a dedicated website at markdowndb.com
 date: 2023-10-11
 authors: ['Ola Rubaj']
