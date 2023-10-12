@@ -64,6 +64,6 @@ export const FromRawCSV: Story = {
 export const FromURL: Story = {
   name: 'Table from URL',
   args: {
-    url: 'https://ckan-dev.sse.datopian.com/datastore/dump/601c9cf0-595e-46d8-88fc-d1ab2904e2db',
+    url: 'https://storage.openspending.org/alberta-budget/__os_imported__alberta_total.csv',
   },
 };
