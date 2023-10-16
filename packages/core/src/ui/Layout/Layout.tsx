@@ -103,20 +103,17 @@ export const Layout: React.FC<Props> = ({
                     </div>
                 </div>
                 {/* wrapper for sidebar, main content and ToC */}
-                <div
-                    className={clsx(
-                        "max-w-8xl mx-auto px-4 md:px-8",
-                        showSidebar && "lg:ml-[18rem]"
-                    )}
-                >
+                <div className="max-w-8xl mx-auto px-4 md:px-8">
                     {/* SIDEBAR */}
                     {showSidebar && (
-                        <div className="hidden lg:block fixed z-20 w-[18rem] top-[4.6rem] right-auto bottom-0 left-[max(0px,calc(50%-44rem))] pt-8 pl-8 overflow-y-auto">
+                        <div className="hidden lg:block fixed z-20 w-[18rem] top-[4.6rem] pt-8 pl-8 overflow-y-auto">
                             <SiteToc currentPath={urlPath} nav={siteMap} />
                         </div>
                     )}
                     {/* MAIN CONTENT & FOOTER */}
-                    <main className="mx-auto pt-8">
+                    <main
+                        className={clsx("mx-auto pt-8", showSidebar && "lg:ml-[18rem]")}
+                    >
                         {children}
                         {/* EDIT THIS PAGE LINK */}
                         {showEditLink && editUrl && <EditThisPage url={editUrl} />}
@@ -133,7 +130,7 @@ export const Layout: React.FC<Props> = ({
                     <Footer links={nav.links} author={author} />
                     {/** TABLE OF CONTENTS */}
                     {showToc && tableOfContents.length > 0 && (
-                        <div className="hidden xl:block fixed z-20 w-[18rem] top-[4.6rem] bottom-0 right-[max(0px,calc(50%-44rem))] left-auto pt-8 pr-8 overflow-y-auto">
+                        <div className="hidden xl:block fixed z-20 w-[18rem] top-[4.6rem] right-[0] pt-8 pr-8 overflow-y-auto">
                             <TableOfContents
                                 tableOfContents={tableOfContents}
                                 currentSection={currentSection}
