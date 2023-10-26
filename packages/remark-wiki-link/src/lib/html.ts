@@ -64,7 +64,7 @@ function html(opts: HtmlOptions = {}) {
     const { target, alias } = wikiLink;
     const isEmbed = token.isType === "embed";
     // eslint-disable-next-line no-useless-escape
-    const wikiLinkWithHeadingPattern = /([\w\s\/\.-]*)(#.*)?/;
+    const wikiLinkWithHeadingPattern = /^(.*?)(#.*)?$/u;
     const [, path, heading = ""] = target.match(wikiLinkWithHeadingPattern);
 
     const possibleWikiLinkPermalinks = wikiLinkResolver(path);

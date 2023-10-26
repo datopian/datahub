@@ -6,7 +6,7 @@ import { getPermalinks } from "../src/utils";
 // const markdownFolder = path.join(__dirname, "/fixtures/content");
 const markdownFolder = path.join(
   ".",
-  "/packages/remark-wiki-link/test/fixtures/content"
+  "test/fixtures/content"
 );
 
 describe("getPermalinks", () => {

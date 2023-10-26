@@ -6,10 +6,14 @@ import { Node } from "unist";
 
 import wikiLinkPlugin from "../src/lib/remarkWikiLink";
 
+function createMarkdownProcessorWithWikiLinkPlugin() {
+  return unified().use(markdown).use(wikiLinkPlugin);
+}
+
 describe("remark-wiki-link", () => {
   describe("parses a wikilink", () => {
     test("with 'raw' file format (default) that has no matching permalink", () => {
-      const processor = unified().use(markdown).use(wikiLinkPlugin);
+      const processor = createMarkdownProcessorWithWikiLinkPlugin();
 
       let ast = processor.parse("[[Wiki Link]]");
       ast = processor.runSync(ast);
@@ -161,7 +165,7 @@ describe("remark-wiki-link", () => {
 
   describe("aliases and headings", () => {
     test("parses a wiki link with heading", () => {
-      const processor = unified().use(markdown).use(wikiLinkPlugin);
+      const processor = createMarkdownProcessorWithWikiLinkPlugin();
 
       let ast = processor.parse("[[Wiki Link#Some Heading]]");
       ast = processor.runSync(ast);
@@ -185,8 +189,32 @@ describe("remark-wiki-link", () => {
       });
     });
 
+    test("Alias with accent", () => {
+      const processor = createMarkdownProcessorWithWikiLinkPlugin();
+
+      let ast = processor.parse("[[link|Alias with àcèôíã]]");
+      ast = processor.runSync(ast);
+      expect(select("wikiLink", ast)).not.toEqual(null);
+
+      visit(ast, "wikiLink", (node: Node) => {
+        expect(node.data?.exists).toEqual(false);
+        expect(node.data?.permalink).toEqual("link");
+        expect(node.data?.alias).toEqual("Alias with àcèôíã");
+        expect(node.data?.hName).toEqual("a");
+        expect((node.data?.hProperties as any).className).toEqual(
+          "internal new"
+        );
+        expect((node.data?.hProperties as any).href).toEqual(
+          "link"
+        );
+        expect((node.data?.hChildren as any)[0].value).toEqual(
+          "Alias with àcèôíã"
+        );
+      })
+    })
+
     test("parses a wiki link with heading and alias", () => {
-      const processor = unified().use(markdown).use(wikiLinkPlugin);
+      const processor = createMarkdownProcessorWithWikiLinkPlugin();
 
       let ast = processor.parse("[[Wiki Link#Some Heading|Alias]]");
       ast = processor.runSync(ast);
@@ -209,7 +237,7 @@ describe("remark-wiki-link", () => {
     });
 
     test("parses a wiki link to a heading on the same page", () => {
-      const processor = unified().use(markdown).use(wikiLinkPlugin);
+      const processor = createMarkdownProcessorWithWikiLinkPlugin();
 
       let ast = processor.parse("[[#Some Heading]]");
       ast = processor.runSync(ast);
@@ -228,11 +256,35 @@ describe("remark-wiki-link", () => {
         expect((node.data?.hChildren as any)[0].value).toEqual("Some Heading");
       });
     });
+
+    test("parses a link and alias with accent", () => {
+      const processor = createMarkdownProcessorWithWikiLinkPlugin();
+
+      let ast = processor.parse("[[link|Alias-with-dashes]]");
+      ast = processor.runSync(ast);
+      expect(select("wikiLink", ast)).not.toEqual(null);
+
+      visit(ast, "wikiLink", (node: Node) => {
+        expect(node.data?.exists).toEqual(false);
+        expect(node.data?.permalink).toEqual("link");
+        expect(node.data?.alias).toEqual("Alias-with-dashes");
+        expect(node.data?.hName).toEqual("a");
+        expect((node.data?.hProperties as any).className).toEqual(
+          "internal new"
+        );
+        expect((node.data?.hProperties as any).href).toEqual(
+          "link"
+        );
+        expect((node.data?.hChildren as any)[0].value).toEqual(
+          "Alias-with-dashes"
+        );
+      })
+    })
   });
 
   describe("image embeds", () => {
     test("parses an image embed of supported file format", () => {
-      const processor = unified().use(markdown).use(wikiLinkPlugin);
+      const processor = createMarkdownProcessorWithWikiLinkPlugin();
 
       let ast = processor.parse("![[My Image.png]]");
       ast = processor.runSync(ast);
@@ -250,7 +302,7 @@ describe("remark-wiki-link", () => {
     });
 
     test("parses an image embed of unsupported file format", () => {
-      const processor = unified().use(markdown).use(wikiLinkPlugin);
+      const processor = createMarkdownProcessorWithWikiLinkPlugin();
 
       let ast = processor.parse("![[My Image.xyz]]");
       ast = processor.runSync(ast);
@@ -324,7 +376,7 @@ describe("remark-wiki-link", () => {
     });
 
     test("parses an image embed with an alt text", () => {
-      const processor = unified().use(markdown).use(wikiLinkPlugin);
+      const processor = createMarkdownProcessorWithWikiLinkPlugin();
 
       let ast = processor.parse("![[My Image.png|Alt Text]]");
       ast = processor.runSync(ast);
@@ -342,7 +394,7 @@ describe("remark-wiki-link", () => {
     });
 
     test("parses a pdf embed", () => {
-      const processor = unified().use(markdown).use(wikiLinkPlugin);
+      const processor = createMarkdownProcessorWithWikiLinkPlugin();
 
       let ast = processor.parse("![[My Document.pdf]]");
       ast = processor.runSync(ast);
@@ -361,9 +413,131 @@ describe("remark-wiki-link", () => {
     });
   });
 
+  describe("Links with special characters", () => {
+    test("parses a link with accent", () => {
+      const processor = createMarkdownProcessorWithWikiLinkPlugin();
+
+      let ast = processor.parse("[[link with àcèôíã]]");
+      ast = processor.runSync(ast);
+      expect(select("wikiLink", ast)).not.toEqual(null);
+
+      visit(ast, "wikiLink", (node: Node) => {
+        expect(node.data?.exists).toEqual(false);
+        expect(node.data?.permalink).toEqual("link with àcèôíã");
+        expect(node.data?.alias).toEqual(null);
+        expect(node.data?.hName).toEqual("a");
+        expect((node.data?.hProperties as any).className).toEqual(
+          "internal new"
+        );
+        expect((node.data?.hProperties as any).href).toEqual(
+          "link with àcèôíã"
+        );
+        expect((node.data?.hChildren as any)[0].value).toEqual(
+          "link with àcèôíã"
+        );
+      })
+    });
+
+    test("parses a link with dashes", () => {
+      const processor = createMarkdownProcessorWithWikiLinkPlugin();
+
+      let ast = processor.parse("[[link-with-dashes]]");
+      ast = processor.runSync(ast);
+      expect(select("wikiLink", ast)).not.toEqual(null);
+
+      visit(ast, "wikiLink", (node: Node) => {
+        expect(node.data?.exists).toEqual(false);
+        expect(node.data?.permalink).toEqual("link-with-dashes");
+        expect(node.data?.alias).toEqual(null);
+        expect(node.data?.hName).toEqual("a");
+        expect((node.data?.hProperties as any).className).toEqual(
+          "internal new"
+        );
+        expect((node.data?.hProperties as any).href).toEqual(
+          "link-with-dashes"
+        );
+        expect((node.data?.hChildren as any)[0].value).toEqual(
+          "link-with-dashes"
+        );
+      })
+    });
+
+    test("parses a link with underline", () => {
+      const processor = createMarkdownProcessorWithWikiLinkPlugin();
+
+      let ast = processor.parse("[[link_with_dashes]]");
+      ast = processor.runSync(ast);
+      expect(select("wikiLink", ast)).not.toEqual(null);
+
+      visit(ast, "wikiLink", (node: Node) => {
+        expect(node.data?.exists).toEqual(false);
+        expect(node.data?.permalink).toEqual("link_with_dashes");
+        expect(node.data?.alias).toEqual(null);
+        expect(node.data?.hName).toEqual("a");
+        expect((node.data?.hProperties as any).className).toEqual(
+          "internal new"
+        );
+        expect((node.data?.hProperties as any).href).toEqual(
+          "link_with_dashes"
+        );
+        expect((node.data?.hChildren as any)[0].value).toEqual(
+          "link_with_dashes"
+        );
+      })
+    });
+
+    test("parses a link with parenthesis", () => {
+      const processor = createMarkdownProcessorWithWikiLinkPlugin();
+
+      let ast = processor.parse("[[(link wi(th) (p)arenthesis)]]");
+      ast = processor.runSync(ast);
+      expect(select("wikiLink", ast)).not.toEqual(null);
+
+      visit(ast, "wikiLink", (node: Node) => {
+        expect(node.data?.exists).toEqual(false);
+        expect(node.data?.permalink).toEqual("(link wi(th) (p)arenthesis)");
+        expect(node.data?.alias).toEqual(null);
+        expect(node.data?.hName).toEqual("a");
+        expect((node.data?.hProperties as any).className).toEqual(
+          "internal new"
+        );
+        expect((node.data?.hProperties as any).href).toEqual(
+          "(link wi(th) (p)arenthesis)"
+        );
+        expect((node.data?.hChildren as any)[0].value).toEqual(
+          "(link wi(th) (p)arenthesis)"
+        );
+      })
+    });
+
+    test("parses a link with random symbols", () => {
+      const processor = createMarkdownProcessorWithWikiLinkPlugin();
+
+      let ast = processor.parse("[[my file !:ª%@'*º$#°~./\\]]");
+      ast = processor.runSync(ast);
+      expect(select("wikiLink", ast)).not.toEqual(null);
+
+      visit(ast, "wikiLink", (node: Node) => {
+        expect(node.data?.exists).toEqual(false);
+        expect(node.data?.permalink).toEqual("my file !:ª%@'*º$");
+        expect(node.data?.alias).toEqual(null);
+        expect(node.data?.hName).toEqual("a");
+        expect((node.data?.hProperties as any).className).toEqual(
+          "internal new"
+        );
+        expect((node.data?.hProperties as any).href).toEqual(
+          "my file !:ª%@'*º$#°~./\\"
+        );
+        expect((node.data?.hChildren as any)[0].value).toEqual(
+          "my file !:ª%@'*º$#°~./\\"
+        );
+      })
+    });
+  })
+
   describe("invalid wiki links", () => {
     test("doesn't parse a wiki link with two missing closing brackets", () => {
-      const processor = unified().use(markdown).use(wikiLinkPlugin);
+      const processor = createMarkdownProcessorWithWikiLinkPlugin();
 
       let ast = processor.parse("[[Wiki Link");
       ast = processor.runSync(ast);
@@ -372,7 +546,7 @@ describe("remark-wiki-link", () => {
     });
 
     test("doesn't parse a wiki link with one missing closing bracket", () => {
-      const processor = unified().use(markdown).use(wikiLinkPlugin);
+      const processor = createMarkdownProcessorWithWikiLinkPlugin();
 
       let ast = processor.parse("[[Wiki Link]");
       ast = processor.runSync(ast);
@@ -381,7 +555,7 @@ describe("remark-wiki-link", () => {
     });
 
     test("doesn't parse a wiki link with a missing opening bracket", () => {
-      const processor = unified().use(markdown).use(wikiLinkPlugin);
+      const processor = createMarkdownProcessorWithWikiLinkPlugin();
 
       let ast = processor.parse("Wiki Link]]");
       ast = processor.runSync(ast);
@@ -390,7 +564,7 @@ describe("remark-wiki-link", () => {
     });
 
     test("doesn't parse a wiki link in single brackets", () => {
-      const processor = unified().use(markdown).use(wikiLinkPlugin);
+      const processor = createMarkdownProcessorWithWikiLinkPlugin();
 
       let ast = processor.parse("[Wiki Link]");
       ast = processor.runSync(ast);
@@ -434,7 +608,7 @@ describe("remark-wiki-link", () => {
   });
 
   test("parses wiki links to index files", () => {
-    const processor = unified().use(markdown).use(wikiLinkPlugin);
+    const processor = createMarkdownProcessorWithWikiLinkPlugin();
 
     let ast = processor.parse("[[/some/folder/index]]");
     ast = processor.runSync(ast);
@@ -456,7 +630,7 @@ describe("remark-wiki-link", () => {
 
   describe("other", () => {
     test("parses a wiki link to some index page in a folder with no matching permalink", () => {
-      const processor = unified().use(markdown).use(wikiLinkPlugin);
+      const processor = createMarkdownProcessorWithWikiLinkPlugin();
 
       let ast = processor.parse("[[/some/folder/index]]");
       ast = processor.runSync(ast);
@@ -498,7 +672,7 @@ describe("remark-wiki-link", () => {
     });
 
     test("parses a wiki link to home index page with no matching permalink", () => {
-      const processor = unified().use(markdown).use(wikiLinkPlugin);
+      const processor = createMarkdownProcessorWithWikiLinkPlugin();
 
       let ast = processor.parse("[[/index]]");
       ast = processor.runSync(ast);
@@ -538,7 +712,7 @@ describe("remark-wiki-link", () => {
 
   describe("transclusions", () => {
     test("replaces a transclusion with a regular wiki link", () => {
-      const processor = unified().use(markdown).use(wikiLinkPlugin);
+      const processor = createMarkdownProcessorWithWikiLinkPlugin();
 
       let ast = processor.parse("![[Some Page]]");
       ast = processor.runSync(ast);
@@ -560,3 +734,4 @@ describe("remark-wiki-link", () => {
     });
   });
 });
+
