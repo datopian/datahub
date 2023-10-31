@@ -23,8 +23,7 @@ const config = {
     { name: 'Guide', href: '/guide' },
     {
       name: 'Examples',
-      href: 'https://github.com/datopian/portaljs/tree/main/examples',
-      target: '_blank',
+      href: '/examples/'
     },
     {
       name: 'Components',
