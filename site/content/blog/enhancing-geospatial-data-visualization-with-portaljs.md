@@ -1,15 +1,17 @@
 ---
-title: 'Enhancing Geospatial Data Visualization with PortalJS'
+title: 'Adding Maps to PortalJS: Enhancing Geospatial Data Visualization with PortalJS'
 date: 2023-07-18
 authors: ['João Demenech', 'Luccas Mateus', 'Yoana Popova']
 filetype: 'blog'
 ---
 
-Are you keen on building rich and interactive data portals? Do you find value in the power and flexibility of JavaScript, Nextjs, and React? In that case, allow us to introduce you to [PortalJS](https://portaljs.org/), a state-of-the-art framework leveraging these technologies to help you build amazing data portals.
+This post walks you though adding maps and geospatial visualizations to PortalJS.
 
-Perhaps you already understand that the effective data visualization lies in the adept utilization of various data components. Within [PortalJS](https://portaljs.org/), we take data visualization a step further. It's not just about displaying data - it's about telling a captivating story through the strategic orchestration of a diverse array of data components.
+Are you interested in building rich and interactive data portals? Do you find value in the power and flexibility of JavaScript, Nextjs, and React? If so, [PortalJS](https://portaljs.org/) is for you. It's a state-of-the-art framework leveraging these technologies to help you build rich data portals.
 
-We are now eager to share our latest enhancement to [PortalJS](https://portaljs.org/): maps, a powerful tool for visualizing geospatial data. In this post, we will to take you on a tour of our experiments and progress in enhancing map functionalities on [PortalJS](https://portaljs.org/). Our journey into this innovative feature is still in its early stages, with new facets being unveiled and refined as we perfect our API. Still, this exciting development opens a new avenue for visualizing data, enhancing your ability to convey complex geospatial information with clarity and precision.
+Effective data visualization lies in the use  of various data components. Within [PortalJS](https://portaljs.org/), we take data visualization a step further. It's not just about displaying data - it's about telling a story through combining a variety of data components.
+
+In this post we will share our latest enhancement to PortalJS: maps, a powerful tool for visualizing geospatial data. In this post, we will to take you on a tour of our experiments and progress in enhancing map functionalities on PortalJS. The journey is still in its early stages, with new facets being unveiled and refined as we perfect our API.
 
 ## Exploring Map Formats
 
