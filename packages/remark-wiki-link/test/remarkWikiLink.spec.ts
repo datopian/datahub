@@ -365,7 +365,7 @@ describe("remark-wiki-link", () => {
     test("parses a link with special characters and symbols", () => {
       const processor = unified().use(markdown).use(wikiLinkPlugin);
 
-      let ast = processor.parse("[[li nk-w(i)th-àcèô íã_a(n)d_underline!:ª%@'*º$ °~./\\#li-nk-w(i)th-àcèô íã_a(n)d_underline!:ª%@'*º$ °~./\\]]");
+      let ast = processor.parse("[[li nk-w(i)th-àcèô íã_a(n)d_underline!:ª%@'*º$ °~./\\#li-nk-w(i)th-àcèô íã_a(n)D_UNDERLINE!:ª%@'*º$ °~./\\]]");
       ast = processor.runSync(ast);
       expect(select("wikiLink", ast)).not.toEqual(null);
 
@@ -378,10 +378,10 @@ describe("remark-wiki-link", () => {
           "internal new"
         );
         expect((node.data?.hProperties as any).href).toEqual(
-          "li nk-w(i)th-àcèô íã_a(n)d_underline!:ª%@'*º$ °~./\\#li-nk-w(i)th-àcèô-íã_a(n)d_underline!:ª%@'*º$ °~./\\"
+          "li nk-w(i)th-àcèô íã_a(n)d_underline!:ª%@'*º$ °~./\\#li-nk-w(i)th-àcèô-íã_a(n)d_underline!:ª%@'*º$-°~./\\"
         );
         expect((node.data?.hChildren as any)[0].value).toEqual(
-          "li nk-w(i)th-àcèô íã_a(n)d_underline!:ª%@'*º$ °~./\\#li-nk-w(i)th-àcèô íã_a(n)d_underline!:ª%@'*º$ °~./\\"
+          "li nk-w(i)th-àcèô íã_a(n)d_underline!:ª%@'*º$ °~./\\#li-nk-w(i)th-àcèô íã_a(n)D_UNDERLINE!:ª%@'*º$ °~./\\"
         );
       })
     });

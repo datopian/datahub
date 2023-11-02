@@ -116,7 +116,7 @@ function fromMarkdown(opts: FromMarkdownOptions = {}) {
 
     // remove leading # if the target is a heading on the same page
     const displayName = alias || target.replace(/^#/, "");
-    const headingId = heading.replace(/\s+/, "-").toLowerCase();
+    const headingId = heading.replace(/\s+/g, "-").toLowerCase();
     let classNames = wikiLinkClassName;
     if (!matchingPermalink) {
       classNames += " " + newClassName;

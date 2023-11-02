@@ -324,12 +324,11 @@ describe("micromark-extension-wiki-link", () => {
 
   describe("Links with special characters", () => {
     test("parses a link with special characters and symbols", () => {
-      const serialized = micromark("[[li nk-w(i)th-àcèô íã_a(n)d_underline!:ª%@'*º$ °~./\\#li nk-w(i)th-àcèô íã_a(n)d_underline!:ª%@'*º$ °~./\\]]", "ascii", {
+      const serialized = micromark("[[li nk-w(i)th-àcèô íã_a(n)d_underline!:ª%@'*º$ °~./\\#LI NK-W(i)th-àcèô íã_a(n)d_uNdErlinE!:ª%@'*º$ °~./\\]]", "ascii", {
         extensions: [syntax()],
         htmlExtensions: [html() as any],
       });
-      const prefixExpected = '<p><a href="li nk-w(i)th-àcèô íã_a(n)d_underline!:ª%@\'*º$ °~./\\#'; // after the '#' symbol it's replacing spaces with dashes randomly not permiting create expected output after the symbol
-      expect(serialized).toBe(prefixExpected + serialized.substring(prefixExpected.length, serialized.length));
+      expect(serialized).toBe(`<p><a href="li nk-w(i)th-àcèô íã_a(n)d_underline!:ª%@'*º$ °~./\\#li-nk-w(i)th-àcèô-íã_a(n)d_underline!:ª%@'*º$-°~./\\" class="internal new">li nk-w(i)th-àcèô íã_a(n)d_underline!:ª%@'*º$ °~./\\#LI NK-W(i)th-àcèô íã_a(n)d_uNdErlinE!:ª%@'*º$ °~./\\</a></p>`);
     });
   })
 });
