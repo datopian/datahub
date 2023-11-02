@@ -361,6 +361,32 @@ describe("remark-wiki-link", () => {
     });
   });
 
+  describe("Links with special characters", () => {
+    test("parses a link with special characters and symbols", () => {
+      const processor = unified().use(markdown).use(wikiLinkPlugin);
+
+      let ast = processor.parse("[[li nk-w(i)th-àcèô íã_a(n)d_underline!:ª%@'*º$ °~./\\#li-nk-w(i)th-àcèô íã_a(n)D_UNDERLINE!:ª%@'*º$ °~./\\]]");
+      ast = processor.runSync(ast);
+      expect(select("wikiLink", ast)).not.toEqual(null);
+
+      visit(ast, "wikiLink", (node: Node) => {
+        expect(node.data?.exists).toEqual(false);
+        expect(node.data?.permalink).toEqual("li nk-w(i)th-àcèô íã_a(n)d_underline!:ª%@'*º$ °~./\\");
+        expect(node.data?.alias).toEqual(null);
+        expect(node.data?.hName).toEqual("a");
+        expect((node.data?.hProperties as any).className).toEqual(
+          "internal new"
+        );
+        expect((node.data?.hProperties as any).href).toEqual(
+          "li nk-w(i)th-àcèô íã_a(n)d_underline!:ª%@'*º$ °~./\\#li-nk-w(i)th-àcèô-íã_a(n)d_underline!:ª%@'*º$-°~./\\"
+        );
+        expect((node.data?.hChildren as any)[0].value).toEqual(
+          "li nk-w(i)th-àcèô íã_a(n)d_underline!:ª%@'*º$ °~./\\#li-nk-w(i)th-àcèô íã_a(n)D_UNDERLINE!:ª%@'*º$ °~./\\"
+        );
+      })
+    });
+  })
+
   describe("invalid wiki links", () => {
     test("doesn't parse a wiki link with two missing closing brackets", () => {
       const processor = unified().use(markdown).use(wikiLinkPlugin);
@@ -560,3 +586,4 @@ describe("remark-wiki-link", () => {
     });
   });
 });
+

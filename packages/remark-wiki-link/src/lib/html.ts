@@ -64,7 +64,7 @@ function html(opts: HtmlOptions = {}) {
     const { target, alias } = wikiLink;
     const isEmbed = token.isType === "embed";
     // eslint-disable-next-line no-useless-escape
-    const wikiLinkWithHeadingPattern = /([\w\s\/\.-]*)(#.*)?/;
+    const wikiLinkWithHeadingPattern = /^(.*?)(#.*)?$/u;
     const [, path, heading = ""] = target.match(wikiLinkWithHeadingPattern);
 
     const possibleWikiLinkPermalinks = wikiLinkResolver(path);
@@ -99,7 +99,7 @@ function html(opts: HtmlOptions = {}) {
     // remove leading # if the target is a heading on the same page
     const displayName = alias || target.replace(/^#/, "");
     // replace spaces with dashes and lowercase headings
-    const headingId = heading.replace(/\s+/, "-").toLowerCase();
+    const headingId = heading.replace(/\s+/g, "-").toLowerCase();
     let classNames = wikiLinkClassName;
     if (!matchingPermalink) {
       classNames += " " + newClassName;
