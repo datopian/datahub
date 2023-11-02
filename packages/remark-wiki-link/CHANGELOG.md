@@ -1,5 +1,11 @@
 # @portaljs/remark-wiki-link
 
+## 1.1.2
+
+### Patch Changes
+
+- [#1040](https://github.com/datopian/portaljs/pull/1040) [`85bb6cb9`](https://github.com/datopian/portaljs/commit/85bb6cb98c53bedc2add3d014927570b5dd1bbdf) Thanks [@Gutts-n](https://github.com/Gutts-n)! - Changed regex to permit any symbols other than #
+
 ## 1.1.1
 
 ### Patch Changes
