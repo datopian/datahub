@@ -1,6 +1,6 @@
-import type { Meta, StoryObj } from '@storybook/react';
+import { raw, type Meta, type StoryObj } from '@storybook/react';
 
-import { BucketViewer, BucketViewerProps } from '../src/components/BucketViewer';
+import { BucketViewer, BucketViewerData, BucketViewerProps } from '../src/components/BucketViewer';
 
 // More on how to set up stories at: https://storybook.js.org/docs/react/writing-stories/introduction
 const meta: Meta = {
@@ -27,8 +27,20 @@ type Story = StoryObj<BucketViewerProps>;
 export const Normal: Story = {
   name: 'Bucket viewer',
   args: {
-    domain: 'https://nwguide.fra1.digitaloceanspaces.com',
-    suffix: '/'
+    domain: 'https://ssen-smart-meter.datopian.workers.dev',
+    suffix: '/',
+    dataMapperFn: async (rawData: Response) => {
+      const result = await rawData.json();
+      return result.objects.map(
+        e => ({
+          downloadFileUri: e.downloadLink,
+          fileName: e.key.replace(/^(\w+\/)/g, '') ,
+          dateProps: {
+            date: new Date(e.uploaded),
+            dateFormatter: (date) => date.toLocaleDateString()
+          }
+        })
+      )
+    }
   },
 };
-
