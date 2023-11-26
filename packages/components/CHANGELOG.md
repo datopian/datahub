@@ -1,5 +1,13 @@
 # @portaljs/components
 
+## 0.5.0
+
+### Minor Changes
+
+- [#1055](https://github.com/datopian/portaljs/pull/1055) [`712f4a3b`](https://github.com/datopian/portaljs/commit/712f4a3b0f074e654879bb75059f51e06b422b32) Thanks [@Gutts-n](https://github.com/Gutts-n)! - Creation of BucketViewer component to show the data of public buckets
+
+- [#1057](https://github.com/datopian/portaljs/pull/1057) [`61c750b7`](https://github.com/datopian/portaljs/commit/61c750b7e11fe52bf04d25f192440ee1bb307404) Thanks [@Gutts-n](https://github.com/Gutts-n)! - Exporting BucketViewer to be accessed out of the folder
+
 ## 0.4.0
 
 ### Minor Changes
