@@ -8,3 +8,4 @@ export * from './components/OpenLayers/OpenLayers';
 export * from './components/Map';
 export * from './components/PdfViewer';
 export * from "./components/Excel";
+export * from "./components/BucketViewer";
