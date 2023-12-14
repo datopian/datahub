@@ -247,7 +247,7 @@ export const callouts: Plugin = function (providedConfig?: Partial<Config>) {
       blockquote.data = config.dataMaps.block({
         ...blockquote.data,
         hProperties: {
-          className: formatClassNameMap(classList),
+          className: classList.join(" "),
           style: `border-left-color:${entry?.color};`,
         },
       });
