@@ -113,7 +113,7 @@ export const callouts: Plugin = function (providedConfig?: Partial<Config>) {
       const [t, ...rest] = paragraph.children;
 
       const regex = new RegExp(
-        `^\\[!(?<keyword>(.*?))\\][\t\f ]?(?<title>.*?)$`,
+        `^\\[!(?<keyword>(.*?))\\](?<foldChar>[+-]?)[\t\f ]?(?<title>.*?)$`,
         "gi"
       );
       const m = regex.exec(t.value);
@@ -121,7 +121,7 @@ export const callouts: Plugin = function (providedConfig?: Partial<Config>) {
       // if no callout syntax, forget about it.
       if (!m) return;
 
-      const [key, title] = [m.groups?.keyword, m.groups?.title];
+      const [key, foldChar, title] = [m.groups?.keyword, m.groups?.foldChar, m.groups?.title];
 
       // if there's nothing inside the brackets, is it really a callout ?
       if (!key) return;
@@ -228,6 +228,7 @@ export const callouts: Plugin = function (providedConfig?: Partial<Config>) {
                 border-bottom:1px solid ${entry?.color}33;`
                 : "",
           },
+          foldChar: foldChar,
         },
       };
 
@@ -236,12 +237,17 @@ export const callouts: Plugin = function (providedConfig?: Partial<Config>) {
       blockquote.children.unshift(titleNode as BlockContent);
 
       // Add classes for the callout block
+      let classList = [formatClassNameMap(config.classNameMaps.block)(keyword.toLowerCase())]
+      if (foldChar) {
+        classList.push('callout-foldable')
+        if (foldChar === '-') {
+          classList.push('callout-folded')
+        }
+      }
       blockquote.data = config.dataMaps.block({
         ...blockquote.data,
         hProperties: {
-          className: formatClassNameMap(config.classNameMaps.block)(
-            keyword.toLowerCase()
-          ),
+          className: formatClassNameMap(classList),
           style: `border-left-color:${entry?.color};`,
         },
       });

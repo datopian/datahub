@@ -62,3 +62,19 @@ p:after {
 p:after {
   display: none;
 }
+
+blockquote.callout-foldable {
+  cursor: pointer;
+  display: grid;
+  grid-template-rows: min-content 1fr;
+  transition: all 0.3s ease-in-out; 
+}
+
+blockquote.callout-foldable.callout-folded {
+  grid-template-rows: min-content 0fr;
+}
+
+blockquote.callout-foldable .callout-content {
+  overflow: hidden;
+  padding: 0px 10px;
+}
