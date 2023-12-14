@@ -78,3 +78,21 @@ blockquote.callout-foldable .callout-content {
   overflow: hidden;
   padding: 0px 10px;
 }
+
+blockquote.callout-foldable .callout-title strong::after {
+  content: "";
+  display: inline-block;
+  height: 10px;
+  width: 10px;
+  border-style: solid;
+  border-width: 0 3px 3px 0;
+  position: absolute;
+  top: 0.8em;
+  right: 1em;
+  transform: rotate(45deg);
+  transition: all 0.3s ease-in-out;
+}
+
+blockquote.callout-foldable.callout-folded .callout-title strong::after {
+  transform: rotate(-45deg);
+}
