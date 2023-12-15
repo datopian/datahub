@@ -228,7 +228,6 @@ export const callouts: Plugin = function (providedConfig?: Partial<Config>) {
                 border-bottom:1px solid ${entry?.color}33;`
                 : "",
           },
-          foldChar: foldChar,
         },
       };
 
@@ -237,7 +236,7 @@ export const callouts: Plugin = function (providedConfig?: Partial<Config>) {
       blockquote.children.unshift(titleNode as BlockContent);
 
       // Add classes for the callout block
-      let classList = [formatClassNameMap(config.classNameMaps.block)(keyword.toLowerCase())]
+      const classList = [formatClassNameMap(config.classNameMaps.block)(keyword.toLowerCase())]
       if (foldChar) {
         classList.push('callout-foldable')
         if (foldChar === '-') {
