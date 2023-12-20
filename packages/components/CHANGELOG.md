@@ -1,5 +1,11 @@
 # @portaljs/components
 
+## 0.5.1
+
+### Patch Changes
+
+- [#1061](https://github.com/datopian/portaljs/pull/1061) [`4ddfc112`](https://github.com/datopian/portaljs/commit/4ddfc1126a3f0b8137ea47a08a36c56b7373b8f6) Thanks [@Gutts-n](https://github.com/Gutts-n)! - Created the style property in the Map component
+
 ## 0.5.0
 
 ### Minor Changes
