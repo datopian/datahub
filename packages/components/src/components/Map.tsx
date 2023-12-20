@@ -21,15 +21,16 @@ export type MapProps = {
       ending: string;
     };
     tooltip?:
-      | {
-          propNames: string[];
-        }
-      | boolean;
+    | {
+      propNames: string[];
+    }
+    | boolean;
     _id?: number;
   }[];
   title?: string;
   center?: { latitude: number | undefined; longitude: number | undefined };
   zoom?: number;
+  style?: Object;
 };
 
 export function Map({
@@ -44,6 +45,7 @@ export function Map({
   center = { latitude: 45, longitude: 45 },
   zoom = 2,
   title = '',
+  style = {}
 }: MapProps) {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [layersData, setLayersData] = useState<any>([]);
@@ -96,6 +98,7 @@ export function Map({
       zoom={zoom}
       scrollWheelZoom={false}
       className="h-80 w-full"
+      style={style ?? {}}
       // @ts-ignore
       whenReady={(map: any) => {
         //  Enable zoom using scroll wheel
@@ -104,13 +107,13 @@ export function Map({
         //  Create the title box
         var info = new L.Control() as any;
 
-        info.onAdd = function () {
+        info.onAdd = function() {
           this._div = L.DomUtil.create('div', 'info');
           this.update();
           return this._div;
         };
 
-        info.update = function () {
+        info.update = function() {
           this._div.innerHTML = `<h4 style="font-weight: 600; background: #f9f9f9; padding: 5px; border-radius: 5px; color: #464646;">${title}</h4>`;
         };
 

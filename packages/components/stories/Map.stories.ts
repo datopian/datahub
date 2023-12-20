@@ -21,6 +21,9 @@ const meta: Meta = {
     zoom: {
       description: 'Zoom level',
     },
+    style: {
+      description: "Styles for the container"
+    }
   },
 };
 
