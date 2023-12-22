@@ -1,5 +1,11 @@
 # @portaljs/components
 
+## 0.5.2
+
+### Patch Changes
+
+- [#1063](https://github.com/datopian/portaljs/pull/1063) [`b13e3ade`](https://github.com/datopian/portaljs/commit/b13e3ade3ccefe7dffe84f824bdedd3e512ce499) Thanks [@Gutts-n](https://github.com/Gutts-n)! - Created auto zoom configuration for the map component
+
 ## 0.5.1
 
 ### Patch Changes
