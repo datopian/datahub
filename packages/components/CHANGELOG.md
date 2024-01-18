@@ -1,5 +1,11 @@
 # @portaljs/components
 
+## 0.5.3
+
+### Patch Changes
+
+- [#1066](https://github.com/datopian/portaljs/pull/1066) [`dd03a493`](https://github.com/datopian/portaljs/commit/dd03a493beca5459d1ef447b2df505609fc64e95) Thanks [@Gutts-n](https://github.com/Gutts-n)! - Created Iframe component
+
 ## 0.5.2
 
 ### Patch Changes
