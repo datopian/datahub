@@ -86,6 +86,7 @@ blockquote.callout-foldable .callout-title strong::after {
   width: 10px;
   border-style: solid;
   border-width: 0 3px 3px 0;
+  border-color: var(--tw-prose-body);
   position: absolute;
   top: 0.8em;
   right: 1em;
