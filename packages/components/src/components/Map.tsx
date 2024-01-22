@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { CSSProperties, useEffect, useState } from 'react';
 import LoadingSpinner from './LoadingSpinner';
 import loadData from '../lib/loadData';
 import chroma from 'chroma-js';
@@ -21,15 +21,19 @@ export type MapProps = {
       ending: string;
     };
     tooltip?:
-      | {
-          propNames: string[];
-        }
-      | boolean;
+    | {
+      propNames: string[];
+    }
+    | boolean;
     _id?: number;
   }[];
   title?: string;
   center?: { latitude: number | undefined; longitude: number | undefined };
   zoom?: number;
+  style?: CSSProperties;
+  autoZoomConfiguration?: {
+    layerName: string
+  }
 };
 
 export function Map({
@@ -44,6 +48,8 @@ export function Map({
   center = { latitude: 45, longitude: 45 },
   zoom = 2,
   title = '',
+  style = {},
+  autoZoomConfiguration = undefined,
 }: MapProps) {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [layersData, setLayersData] = useState<any>([]);
@@ -96,6 +102,7 @@ export function Map({
       zoom={zoom}
       scrollWheelZoom={false}
       className="h-80 w-full"
+      style={style ?? {}}
       // @ts-ignore
       whenReady={(map: any) => {
         //  Enable zoom using scroll wheel
@@ -104,17 +111,35 @@ export function Map({
         //  Create the title box
         var info = new L.Control() as any;
 
-        info.onAdd = function () {
+        info.onAdd = function() {
           this._div = L.DomUtil.create('div', 'info');
           this.update();
           return this._div;
         };
 
-        info.update = function () {
+        info.update = function() {
           this._div.innerHTML = `<h4 style="font-weight: 600; background: #f9f9f9; padding: 5px; border-radius: 5px; color: #464646;">${title}</h4>`;
         };
 
         if (title) info.addTo(map.target);
+        if(!autoZoomConfiguration) return;
+
+        let layerToZoomBounds = L.latLngBounds(L.latLng(0, 0), L.latLng(0, 0));
+
+        layers.forEach((layer) => {
+          if(layer.name === autoZoomConfiguration.layerName) {
+            const data = layersData.find(
+              (layerData) => layerData.name === layer.name
+            )?.data;
+
+            if (data) {
+              layerToZoomBounds = L.geoJSON(data).getBounds();
+              return;
+            }
+          }
+        });
+
+        map.target.fitBounds(layerToZoomBounds);
       }}
     >
       <TileLayer
