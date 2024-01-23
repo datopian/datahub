@@ -1,5 +1,11 @@
 # @portaljs/components
 
+## 0.5.5
+
+### Patch Changes
+
+- [#1073](https://github.com/datopian/portaljs/pull/1073) [`cf24042a`](https://github.com/datopian/portaljs/commit/cf24042a910567e98eeb75ade42ce0149bdb62d1) Thanks [@Gutts-n](https://github.com/Gutts-n)! - Fixed filter by startDate error
+
 ## 0.5.4
 
 ### Patch Changes
