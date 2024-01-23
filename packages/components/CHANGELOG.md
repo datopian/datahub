@@ -1,5 +1,11 @@
 # @portaljs/components
 
+## 0.5.4
+
+### Patch Changes
+
+- [#1071](https://github.com/datopian/portaljs/pull/1071) [`27c99add`](https://github.com/datopian/portaljs/commit/27c99adde8fa36ad2c2e03f227f93aa62454eefa) Thanks [@Gutts-n](https://github.com/Gutts-n)! - Added pagination and filter properties for the BucketViewer component
+
 ## 0.5.3
 
 ### Patch Changes
