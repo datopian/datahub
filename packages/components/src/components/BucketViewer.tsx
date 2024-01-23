@@ -93,7 +93,7 @@ export function BucketViewer({
   useEffect(() => {
       if(!filterState) return;
 
-      if(filterState.startDate && filterState.startDate) {
+      if (filterState.startDate && filterState.endDate) {
         setFilteredData(bucketFiles.filter(({ dateProps }) => 
           dateProps 
             ? 
