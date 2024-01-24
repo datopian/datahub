@@ -1,5 +1,11 @@
 # @portaljs/components
 
+## 0.5.6
+
+### Patch Changes
+
+- [#1075](https://github.com/datopian/portaljs/pull/1075) [`26dcffc2`](https://github.com/datopian/portaljs/commit/26dcffc279057f80a579134e862085ba042c06c3) Thanks [@Gutts-n](https://github.com/Gutts-n)! - Fixed problem presenting the download component in the first load of the bucket viewer
+
 ## 0.5.5
 
 ### Patch Changes
