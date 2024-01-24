@@ -1,6 +1,9 @@
 import { type Meta, type StoryObj } from '@storybook/react';
 
-import { BucketViewer, BucketViewerProps } from '../src/components/BucketViewer';
+import {
+  BucketViewer,
+  BucketViewerProps,
+} from '../src/components/BucketViewer';
 import LoadingSpinner from '../src/components/LoadingSpinner';
 
 // More on how to set up stories at: https://storybook.js.org/docs/react/writing-stories/introduction
@@ -10,19 +13,16 @@ const meta: Meta = {
   tags: ['autodocs'],
   argTypes: {
     domain: {
-      description:
-        'Bucket domain URI',
+      description: 'Bucket domain URI',
     },
     suffix: {
-      description:
-        'Suffix of bucket domain',
+      description: 'Suffix of bucket domain',
     },
-    downloadComponent: {
-      description:
-        'Component to be displayed on hover of each bucket data',
+    downloadConfig: {
+      description: `Bucket file download configuration`,
     },
     filterState: {
-      description: `State with values used to filter the bucket files`
+      description: `State with values used to filter the bucket files`,
     },
     paginationConfig: {
       description: `Configuration to show and stylise the pagination on the component`,
@@ -42,17 +42,15 @@ export const Normal: Story = {
     suffix: '/',
     dataMapperFn: async (rawData: Response) => {
       const result = await rawData.json();
-      return result.objects.map(
-        e => ({
-          downloadFileUri: e.downloadLink,
-          fileName: e.key.replace(/^(\w+\/)/g, '') ,
-          dateProps: {
-            date: new Date(e.uploaded),
-            dateFormatter: (date) => date.toLocaleDateString()
-          }
-        })
-      )
-    }
+      return result.objects.map((e) => ({
+        downloadFileUri: e.downloadLink,
+        fileName: e.key.replace(/^(\w+\/)/g, ''),
+        dateProps: {
+          date: new Date(e.uploaded),
+          dateFormatter: (date) => date.toLocaleDateString(),
+        },
+      }));
+    },
   },
 };
 
@@ -62,21 +60,19 @@ export const WithPagination: Story = {
     domain: 'https://ssen-smart-meter.datopian.workers.dev',
     suffix: '/',
     paginationConfig: {
-      itemsPerPage: 3
+      itemsPerPage: 3,
     },
     dataMapperFn: async (rawData: Response) => {
       const result = await rawData.json();
-      return result.objects.map(
-        e => ({
-          downloadFileUri: e.downloadLink,
-          fileName: e.key.replace(/^(\w+\/)/g, '') ,
-          dateProps: {
-            date: new Date(e.uploaded),
-            dateFormatter: (date) => date.toLocaleDateString()
-          }
-        })
-      )
-    }
+      return result.objects.map((e) => ({
+        downloadFileUri: e.downloadLink,
+        fileName: e.key.replace(/^(\w+\/)/g, ''),
+        dateProps: {
+          date: new Date(e.uploaded),
+          dateFormatter: (date) => date.toLocaleDateString(),
+        },
+      }));
+    },
   },
 };
 
@@ -85,19 +81,37 @@ export const WithComponentOnHoverOfEachBucketFile: Story = {
   args: {
     domain: 'https://ssen-smart-meter.datopian.workers.dev',
     suffix: '/',
-    downloadComponent: LoadingSpinner(),
+    downloadConfig: { hoverOfTheFileComponent: `HOVER COMPONENT` },
     dataMapperFn: async (rawData: Response) => {
       const result = await rawData.json();
-      return result.objects.map(
-        e => ({
-          downloadFileUri: e.downloadLink,
-          fileName: e.key.replace(/^(\w+\/)/g, '') ,
-          dateProps: {
-            date: new Date(e.uploaded),
-            dateFormatter: (date) => date.toLocaleDateString()
-          }
-        })
-      )
-    }
+      return result.objects.map((e) => ({
+        downloadFileUri: e.downloadLink,
+        fileName: e.key.replace(/^(\w+\/)/g, ''),
+        dateProps: {
+          date: new Date(e.uploaded),
+          dateFormatter: (date) => date.toLocaleDateString(),
+        },
+      }));
+    },
+  },
+};
+
+export const WithLoadingComponentWhileDownloadTheBucketFile: Story = {
+  name: 'With loading component while download the bucket file',
+  args: {
+    domain: 'https://ssen-smart-meter.datopian.workers.dev',
+    suffix: '/',
+    downloadConfig: { downloadingMessageComponent: 'COMPONENT....' },
+    dataMapperFn: async (rawData: Response) => {
+      const result = await rawData.json();
+      return result.objects.map((e) => ({
+        downloadFileUri: e.downloadLink,
+        fileName: e.key.replace(/^(\w+\/)/g, ''),
+        dateProps: {
+          date: new Date(e.uploaded),
+          dateFormatter: (date) => date.toLocaleDateString(),
+        },
+      }));
+    },
   },
 };
