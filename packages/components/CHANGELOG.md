@@ -1,5 +1,11 @@
 # @portaljs/components
 
+## 0.5.7
+
+### Patch Changes
+
+- [#1077](https://github.com/datopian/portaljs/pull/1077) [`6d7acd27`](https://github.com/datopian/portaljs/commit/6d7acd27ed9299cbcc14eab906f2f0eb414656b8) Thanks [@Gutts-n](https://github.com/Gutts-n)! - Created property to present a component while is loading the download of the file and fixed download bug on pagination
+
 ## 0.5.6
 
 ### Patch Changes
