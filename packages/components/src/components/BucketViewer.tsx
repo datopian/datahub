@@ -47,7 +47,7 @@ export function BucketViewer({
   downloadComponent = downloadComponent ?? <></>;
 
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [showDownloadComponentOnLine, setShowDownloadComponentOnLine] = useState(0);
+  const [showDownloadComponentOnLine, setShowDownloadComponentOnLine] = useState(-1);
   const [currentPage, setCurrentPage] = useState<number>(0);
   const [lastPage, setLastPage] = useState<number>(0);
   const [bucketFiles, setBucketFiles] = useState<BucketViewerData[]>([]);
