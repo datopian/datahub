@@ -1,5 +1,11 @@
 # @portaljs/components
 
+## 0.5.9
+
+### Patch Changes
+
+- [#1081](https://github.com/datopian/portaljs/pull/1081) [`2bbf3134`](https://github.com/datopian/portaljs/commit/2bbf3134896df3ecc66560bdf95bece143614c7b) Thanks [@Gutts-n](https://github.com/Gutts-n)! - Fixed error to remove anchor from document
+
 ## 0.5.8
 
 ### Patch Changes
