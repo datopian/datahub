@@ -137,7 +137,7 @@ export function BucketViewer({
               a.download = data.fileName;
               document.body.appendChild(a);
               a.click();
-              document.removeChild(a);
+              document.body.removeChild(a);
             }}
             key={i}
             onMouseEnter={() => setShowDownloadComponentOnLine(i)}
