@@ -10,7 +10,6 @@ export interface BucketViewerProps {
   onLoadTotalNumberOfItems?: (total: number) => void;
   domain: string;
   downloadConfig?: {
-    downloadingMessageComponent?: ReactNode;
     hoverOfTheFileComponent?: ReactNode;
   };
   suffix?: string;
@@ -47,14 +46,10 @@ export function BucketViewer({
 }: BucketViewerProps) {
   suffix = suffix ?? '/';
 
-  const { downloadingMessageComponent, hoverOfTheFileComponent } =
-    downloadConfig ?? {};
+  const { hoverOfTheFileComponent } = downloadConfig ?? {};
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [showDownloadComponentOnLine, setShowDownloadComponentOnLine] =
     useState(-1);
-  const [showDownloadLoadingOnFile, setShowDownloadLoadingOnFile] = useState(
-    new Map<string, boolean>()
-  );
   const [currentPage, setCurrentPage] = useState<number>(0);
   const [lastPage, setLastPage] = useState<number>(0);
   const [bucketFiles, setBucketFiles] = useState<BucketViewerData[]>([]);
@@ -136,31 +131,13 @@ export function BucketViewer({
         (data, i) => (
           <ul
             onClick={() => {
-              const anchorId = `download_anchor_${data.fileName} `;
-              const a: HTMLAnchorElement =
-                (document.getElementById(
-                  anchorId
-                ) as HTMLAnchorElement | null) ?? document.createElement('a');
-              a.id = anchorId;
-              if (a.download) a.click();
-              else {
-                setShowDownloadLoadingOnFile((lastState) => {
-                  lastState.set(data.fileName, true);
-                  return new Map(lastState);
-                });
-                fetch(data.downloadFileUri)
-                  .then((res) => res.blob())
-                  .then((res) => {
-                    setShowDownloadLoadingOnFile((lastState) => {
-                      lastState.set(data.fileName, false);
-                      return new Map(lastState);
-                    });
-                    a.href = URL.createObjectURL(res);
-                    a.download = res.name ?? data.fileName;
-                    document.body.appendChild(a);
-                    a.click();
-                  });
-              }
+              const a: HTMLAnchorElement = document.createElement('a');
+              a.href = data.downloadFileUri;
+              a.target = `_blank`;
+              a.download = data.fileName;
+              document.body.appendChild(a);
+              a.click();
+              document.removeChild(a);
             }}
             key={i}
             onMouseEnter={() => setShowDownloadComponentOnLine(i)}
@@ -184,13 +161,6 @@ export function BucketViewer({
                   <></>
                 )}
               </div>
-              {showDownloadLoadingOnFile.get(data.fileName) ? (
-                downloadingMessageComponent ?? (
-                  <label>Downloading file...</label>
-                )
-              ) : (
-                <></>
-              )}
             </div>
           </ul>
         )

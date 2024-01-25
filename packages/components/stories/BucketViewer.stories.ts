@@ -95,23 +95,3 @@ export const WithComponentOnHoverOfEachBucketFile: Story = {
     },
   },
 };
-
-export const WithLoadingComponentWhileDownloadTheBucketFile: Story = {
-  name: 'With loading component while download the bucket file',
-  args: {
-    domain: 'https://ssen-smart-meter.datopian.workers.dev',
-    suffix: '/',
-    downloadConfig: { downloadingMessageComponent: 'COMPONENT....' },
-    dataMapperFn: async (rawData: Response) => {
-      const result = await rawData.json();
-      return result.objects.map((e) => ({
-        downloadFileUri: e.downloadLink,
-        fileName: e.key.replace(/^(\w+\/)/g, ''),
-        dateProps: {
-          date: new Date(e.uploaded),
-          dateFormatter: (date) => date.toLocaleDateString(),
-        },
-      }));
-    },
-  },
-};
