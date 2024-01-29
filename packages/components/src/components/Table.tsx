@@ -6,6 +6,8 @@ import {
   getFilteredRowModel,
   getPaginationRowModel,
   getSortedRowModel,
+  PaginationState,
+  Table as ReactTable,
   useReactTable,
 } from '@tanstack/react-table';
 
@@ -25,12 +27,19 @@ import DebouncedInput from './DebouncedInput';
 import loadData from '../lib/loadData';
 import LoadingSpinner from './LoadingSpinner';
 
+export type TableData = { cols: {key: string, name: string}[]; data: any[]; total: number };
+
 export type TableProps = {
   data?: Array<{ [key: string]: number | string }>;
   cols?: Array<{ [key: string]: string }>;
   csv?: string;
   url?: string;
   fullWidth?: boolean;
+  datastoreConfig?: {
+    dataStoreURI: string;
+    rowsPerPage?: number;
+    dataMapperFn: (data) => Promise<TableData> | TableData;
+  };
 };
 
 export const Table = ({
@@ -39,8 +48,28 @@ export const Table = ({
   csv = '',
   url = '',
   fullWidth = false,
+  datastoreConfig,
 }: TableProps) => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [pageMap, setPageMap] = useState(new Map<number, boolean>());
+  const {
+    dataMapperFn,
+    dataStoreURI,
+    rowsPerPage = 10,
+  } = datastoreConfig ?? {};
+
+  const [globalFilter, setGlobalFilter] = useState('');
+  const [isLoadingPage, setIsLoadingPage] = useState<boolean>(false);
+  const [totalOfRows, setTotalOfRows] = useState<number>(0);
+
+  const [{ pageIndex, pageSize }, setPagination] = useState<PaginationState>({
+    pageIndex: 0,
+    pageSize: rowsPerPage,
+  });
+
+  const [lastIndex, setLastIndex] = useState(pageSize);
+  const [startIndex, setStartIndex] = useState(0);
+  const [hasSorted, setHasSorted] = useState(false);
 
   if (csv) {
     const out = parseCsv(csv);
@@ -62,21 +91,56 @@ export const Table = ({
     );
   }, [data, cols]);
 
-  const [globalFilter, setGlobalFilter] = useState('');
+  let table: ReactTable<unknown>;
 
-  const table = useReactTable({
-    data,
-    columns: tableCols,
-    getCoreRowModel: getCoreRowModel(),
-    state: {
-      globalFilter,
-    },
-    globalFilterFn: globalFilterFn,
-    onGlobalFilterChange: setGlobalFilter,
-    getFilteredRowModel: getFilteredRowModel(),
-    getPaginationRowModel: getPaginationRowModel(),
-    getSortedRowModel: getSortedRowModel(),
-  });
+  if (datastoreConfig) {
+    useEffect(() => {
+      setIsLoading(true);
+      fetch(`${dataStoreURI}&limit=${rowsPerPage}&offset=0`)
+        .then((res) => res.json())
+        .then(async (res) => {
+          const { data, cols, total } = await dataMapperFn(res);
+          setData(data);
+          setCols(cols);
+          setTotalOfRows(Math.ceil(total / rowsPerPage));
+          pageMap.set(0, true);
+        })
+        .finally(() => setIsLoading(false));
+    }, [dataStoreURI]);
+
+    table = useReactTable({
+      data,
+      pageCount: totalOfRows,
+      columns: tableCols,
+      getCoreRowModel: getCoreRowModel(),
+      state: {
+        pagination: { pageIndex, pageSize },
+      },
+      getFilteredRowModel: getFilteredRowModel(),
+      manualPagination: true,
+      onPaginationChange: setPagination,
+      getSortedRowModel: getSortedRowModel(),
+    });
+
+    useEffect(() => {
+      if (!hasSorted) return;
+      queryDataByText(globalFilter);
+    }, [table.getState().sorting]);
+  } else {
+    table = useReactTable({
+      data,
+      columns: tableCols,
+      getCoreRowModel: getCoreRowModel(),
+      state: {
+        globalFilter,
+      },
+      globalFilterFn: globalFilterFn,
+      onGlobalFilterChange: setGlobalFilter,
+      getFilteredRowModel: getFilteredRowModel(),
+      getPaginationRowModel: getPaginationRowModel(),
+      getSortedRowModel: getSortedRowModel(),
+    });
+  }
 
   useEffect(() => {
     if (url) {
@@ -91,6 +155,70 @@ export const Table = ({
     }
   }, [url]);
 
+  const queryDataByText = (filter) => {
+    setIsLoadingPage(true);
+    const sortedParam = getSortParam();
+    fetch(
+      `${dataStoreURI}&limit=${rowsPerPage}&offset=0&q=${filter}${sortedParam}`
+    )
+      .then((res) => res.json())
+      .then(async (res) => {
+        const { data, total = 0 } = await dataMapperFn(res);
+        setTotalOfRows(Math.ceil(total / rowsPerPage));
+        setData(data);
+        const newMap = new Map();
+        newMap.set(0, true);
+        setPageMap(newMap);
+        table.setPageIndex(0);
+        setStartIndex(0);
+        setLastIndex(pageSize);
+      })
+      .finally(() => setIsLoadingPage(false));
+  };
+
+  const getSortParam = () => {
+    const sort = table.getState().sorting;
+    return sort.length == 0
+      ? ``
+      : '&sort=' +
+          sort
+            .map(
+              (x, i) =>
+                `${x.id}${
+                  i === sort.length - 1 ? (x.desc ? ` desc` : ` asc`) : `,`
+                }`
+            )
+            .reduce((x1, x2) => x1 + x2);
+  };
+
+  const queryPaginatedData = (newPageIndex) => {
+    let newStartIndex = newPageIndex * pageSize;
+    setStartIndex(newStartIndex);
+    setLastIndex(newStartIndex + pageSize);
+
+    if (!pageMap.get(newPageIndex)) pageMap.set(newPageIndex, true);
+    else return;
+
+    const sortedParam = getSortParam();
+
+    setIsLoadingPage(true);
+    fetch(
+      `${dataStoreURI}&limit=${rowsPerPage}&offset=${
+        newStartIndex + pageSize
+      }&q=${globalFilter}${sortedParam}`
+    )
+      .then((res) => res.json())
+      .then(async (res) => {
+        const { data: responseData } = await dataMapperFn(res);
+        responseData.forEach((e) => {
+          data[newStartIndex] = e;
+          newStartIndex++;
+        });
+        setData([...data]);
+      })
+      .finally(() => setIsLoadingPage(false));
+  };
+
   return isLoading ? (
     <div className="w-full h-full min-h-[500px] flex items-center justify-center">
       <LoadingSpinner />
@@ -99,7 +227,10 @@ export const Table = ({
     <div className={`${fullWidth ? 'w-[90vw] ml-[calc(50%-45vw)]' : 'w-full'}`}>
       <DebouncedInput
         value={globalFilter ?? ''}
-        onChange={(value: any) => setGlobalFilter(String(value))}
+        onChange={(value: any) => {
+          if (datastoreConfig) queryDataByText(String(value));
+          setGlobalFilter(String(value));
+        }}
         className="p-2 text-sm shadow border border-block"
         placeholder="Search all columns..."
       />
@@ -114,7 +245,10 @@ export const Table = ({
                       className: h.column.getCanSort()
                         ? 'cursor-pointer select-none'
                         : '',
-                      onClick: h.column.getToggleSortingHandler(),
+                      onClick: (v) => {
+                        setHasSorted(true);
+                        h.column.getToggleSortingHandler()(v);
+                      },
                     }}
                   >
                     {flexRender(h.column.columnDef.header, h.getContext())}
@@ -135,15 +269,28 @@ export const Table = ({
           ))}
         </thead>
         <tbody>
-          {table.getRowModel().rows.map((r) => (
-            <tr key={r.id} className="border-b border-b-slate-200">
-              {r.getVisibleCells().map((c) => (
-                <td key={c.id} className="py-2">
-                  {flexRender(c.column.columnDef.cell, c.getContext())}
-                </td>
-              ))}
+          {datastoreConfig && isLoadingPage ? (
+            <tr>
+              <td colSpan={cols.length} rowSpan={cols.length}>
+                <div className="w-full h-full flex items-center justify-center pt-6">
+                  <LoadingSpinner />
+                </div>
+              </td>
             </tr>
-          ))}
+          ) : (
+            (datastoreConfig
+              ? table.getRowModel().rows.slice(startIndex, lastIndex)
+              : table.getRowModel().rows
+            ).map((r) => (
+              <tr key={r.id} className="border-b border-b-slate-200">
+                {r.getVisibleCells().map((c) => (
+                  <td key={c.id} className="py-2">
+                    {flexRender(c.column.columnDef.cell, c.getContext())}
+                  </td>
+                ))}
+              </tr>
+            ))
+          )}
         </tbody>
       </table>
       <div className="flex gap-2 items-center justify-center mt-10">
@@ -151,7 +298,10 @@ export const Table = ({
           className={`w-6 h-6 ${
             !table.getCanPreviousPage() ? 'opacity-25' : 'opacity-100'
           }`}
-          onClick={() => table.setPageIndex(0)}
+          onClick={() => {
+            if (datastoreConfig) queryPaginatedData(0);
+            table.setPageIndex(0);
+          }}
           disabled={!table.getCanPreviousPage()}
         >
           <ChevronDoubleLeftIcon />
@@ -160,7 +310,12 @@ export const Table = ({
           className={`w-6 h-6 ${
             !table.getCanPreviousPage() ? 'opacity-25' : 'opacity-100'
           }`}
-          onClick={() => table.previousPage()}
+          onClick={() => {
+            if (datastoreConfig) {
+              queryPaginatedData(table.getState().pagination.pageIndex - 1);
+            }
+            table.previousPage();
+          }}
           disabled={!table.getCanPreviousPage()}
         >
           <ChevronLeftIcon />
@@ -176,7 +331,11 @@ export const Table = ({
           className={`w-6 h-6 ${
             !table.getCanNextPage() ? 'opacity-25' : 'opacity-100'
           }`}
-          onClick={() => table.nextPage()}
+          onClick={() => {
+            if (datastoreConfig)
+              queryPaginatedData(table.getState().pagination.pageIndex + 1);
+            table.nextPage();
+          }}
           disabled={!table.getCanNextPage()}
         >
           <ChevronRightIcon />
@@ -185,7 +344,11 @@ export const Table = ({
           className={`w-6 h-6 ${
             !table.getCanNextPage() ? 'opacity-25' : 'opacity-100'
           }`}
-          onClick={() => table.setPageIndex(table.getPageCount() - 1)}
+          onClick={() => {
+            const pageIndexToNavigate = table.getPageCount() - 1;
+            if (datastoreConfig) queryPaginatedData(pageIndexToNavigate);
+            table.setPageIndex(pageIndexToNavigate);
+          }}
           disabled={!table.getCanNextPage()}
         >
           <ChevronDoubleRightIcon />
