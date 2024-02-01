@@ -5,8 +5,6 @@ const Callout = ({ className, children }) => {
     if (!className.includes("callout-foldable")) {
         return <blockquote className={className}>{children}</blockquote>;
     }
-
-    // If we're here, it's a foldable callout
     
     const elem = useRef(null);
 

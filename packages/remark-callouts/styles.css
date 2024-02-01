@@ -88,12 +88,14 @@ blockquote.callout-foldable .callout-title strong::after {
   border-width: 0 3px 3px 0;
   border-color: var(--tw-prose-body);
   position: absolute;
-  top: 0.8em;
+  top: 50%;
   right: 1em;
-  transform: rotate(45deg);
+  transform: translateY(-50%) rotate(45deg);
+  transform-origin: center;
   transition: all 0.3s ease-in-out;
 }
 
 blockquote.callout-foldable.callout-folded .callout-title strong::after {
-  transform: rotate(-45deg);
+  transform: translateY(-50%) rotate(-45deg);
+  transform-origin: center;
 }
