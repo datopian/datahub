@@ -69,7 +69,7 @@ const config = {
     },
   },
   github: 'https://github.com/datopian/portaljs',
-  discord: 'https://discord.gg/EeyfGrGu4U',
+  discord: 'https://discord.gg/xfFDMPU9dC',
   tableOfContents: true,
   analytics: 'G-96GWZHMH57',
   // editLinkShow: true,
