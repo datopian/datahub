@@ -96,6 +96,9 @@ function html(opts: HtmlOptions = {}) {
         : possibleWikiLinkPermalinks[0]) ||
       "";
 
+    const isExternal = /^https?:\/\//.test(link);
+    const openInNewTab = isExternal ? 'target="_blank"' : '';
+
     // remove leading # if the target is a heading on the same page
     const displayName = alias || target.replace(/^#/, "");
     // replace spaces with dashes and lowercase headings

@@ -331,4 +331,14 @@ describe("micromark-extension-wiki-link", () => {
       expect(serialized).toBe(`<p><a href="li nk-w(i)th-àcèô íã_a(n)d_underline!:ª%@'*º$ °~./\\#li-nk-w(i)th-àcèô-íã_a(n)d_underline!:ª%@'*º$-°~./\\" class="internal new">li nk-w(i)th-àcèô íã_a(n)d_underline!:ª%@'*º$ °~./\\#LI NK-W(i)th-àcèô íã_a(n)d_uNdErlinE!:ª%@'*º$ °~./\\</a></p>`);
     });
   })
+
+  describe("External links", () => {
+    test("parses an external link that opens in a new tab", () => {
+      const serialized = micromark("[google](https://www.google.com/)", "ascii", {
+        extensions: [syntax()],
+        htmlExtensions: [html() as any],
+      });
+      expect(serialized).toBe(`<p><a href="https://www.google.com/" target="_blank">google</a></p>`);
+    });
+  })
 });

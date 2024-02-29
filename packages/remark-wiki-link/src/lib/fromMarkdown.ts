@@ -110,6 +110,7 @@ function fromMarkdown(opts: FromMarkdownOptions = {}) {
         ? "/" + possibleWikiLinkPermalinks[0]
         : possibleWikiLinkPermalinks[0]) ||
       "";
+    const isExternal = /^https?:\/\//.test(link);
 
     wikiLink.data.exists = !!matchingPermalink;
     wikiLink.data.permalink = link;
@@ -130,7 +131,7 @@ function fromMarkdown(opts: FromMarkdownOptions = {}) {
           wikiLink.data.hName = "a";
           wikiLink.data.hProperties = {
             className: classNames + " " + "transclusion",
-            href: hrefTemplate(link) + headingId,
+            href: hrefTemplate(link) + headingId
           };
           wikiLink.data.hChildren = [{ type: "text", value: displayName }];
 
@@ -163,7 +164,11 @@ function fromMarkdown(opts: FromMarkdownOptions = {}) {
       wikiLink.data.hProperties = {
         className: classNames,
         href: hrefTemplate(link) + headingId,
+        target: "_blank",
       };
+      if(isExternal){
+        wikiLink.data.hProperties.target = "_blank"; // Open in a new tab
+      }
       wikiLink.data.hChildren = [{ type: "text", value: displayName }];
     }
   }
