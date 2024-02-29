@@ -17,7 +17,8 @@
     "access": "public"
   },
   "scripts": {
-    "prepare": "nx build core"
+    "prepare": "nx build core",
+    "storybook": "storybook dev"
   },
   "files": [
     "dist"
@@ -53,6 +54,10 @@
     "react-dom": "^18.2.0"
   },
   "devDependencies": {
-    "@storybook/addon-a11y": "^7.4.6"
+    "@storybook/addon-a11y": "^7.4.6",
+    "@storybook/nextjs": "^7.6.12"
+  },
+  "browser": {
+    "crypto": false
   }
 }
