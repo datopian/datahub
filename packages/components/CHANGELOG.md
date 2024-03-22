@@ -1,5 +1,11 @@
 # @portaljs/components
 
+## 0.6.0
+
+### Minor Changes
+
+- [`a044f56e`](https://github.com/datopian/portaljs/commit/a044f56e3cbe0519ddf9d24d78b0bb7eac917e1c) Thanks [@luccasmmg](https://github.com/luccasmmg)! - Added plotly components
+
 ## 0.5.10
 
 ### Patch Changes
