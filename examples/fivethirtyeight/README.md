@@ -1,3 +1,9 @@
+# PortalJS Demo replicating the FiveThirtyEight data portal
+
+## 👉 https://fivethirtyeight.portaljs.org 👈
+
+Here's a blog post we wrote about it: https://www.datopian.com/blog/fivethirtyeight-replica
+
 This is a replica of the awesome data.fivethirtyeight.com using PortalJS.
 
 You might be asking why we did that, there are three main reasons:

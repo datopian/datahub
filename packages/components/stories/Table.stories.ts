@@ -9,17 +9,22 @@ const meta: Meta = {
   tags: ['autodocs'],
   argTypes: {
     data: {
-      description: "Data to be displayed in the table, must also set \"cols\" to work."
+      description:
+        'Data to be displayed in the table, must also set "cols" to work.',
     },
     cols: {
-      description: "Columns to be displayed in the table, must also set \"data\" to work."
+      description:
+        'Columns to be displayed in the table, must also set "data" to work.',
     },
     csv: {
-      description: "CSV data as string.",
+      description: 'CSV data as string.',
     },
     url: {
-      description: "Fetch the data from a CSV file remotely."
-    }
+      description: 'Fetch the data from a CSV file remotely.',
+    },
+    datastoreConfig: {
+      description: `Configuration to use CKAN's datastore API extension integrated with the component`,
+    },
   },
 };
 
@@ -29,7 +34,7 @@ type Story = StoryObj<TableProps>;
 
 // More on writing stories with args: https://storybook.js.org/docs/react/writing-stories/args
 export const FromColumnsAndData: Story = {
-  name: "Table from columns and data",
+  name: 'Table from columns and data',
   args: {
     data: [
       { id: 1, lastName: 'Snow', firstName: 'Jon', age: 35 },
@@ -49,21 +54,40 @@ export const FromColumnsAndData: Story = {
   },
 };
 
+export const WithDataStoreIntegration: Story = {
+  name: 'Table with datastore integration',
+  args: {
+    datastoreConfig: {
+      dataStoreURI: `https://www.civicdata.com/api/action/datastore_search?resource_id=46ec0807-31ff-497f-bfa0-f31c796cdee8`,
+      dataMapperFn: ({
+        result,
+      }: {
+        result: { fields: { id }[]; records: []; total: number };
+      }) => {
+        return {
+          data: result.records,
+          cols: result.fields.map((x) => ({ key: x.id, name: x.id })),
+          total: result.total,
+        };
+      },
+    },
+  },
+};
+
 export const FromRawCSV: Story = {
-  name: "Table from raw CSV",
+  name: 'Table from raw CSV',
   args: {
     csv: `
     Year,Temp Anomaly
     1850,-0.418
     2020,0.923
-    `
-  }
+    `,
+  },
 };
 
 export const FromURL: Story = {
-  name: "Table from URL",
+  name: 'Table from URL',
   args: {
-    url: "https://raw.githubusercontent.com/datasets/finance-vix/main/data/vix-daily.csv"
-  }
+    url: 'https://raw.githubusercontent.com/datasets/finance-vix/main/data/vix-daily.csv',
+  },
 };
-

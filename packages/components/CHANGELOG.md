@@ -1,5 +1,17 @@
 # @portaljs/components
 
+## 0.6.0
+
+### Minor Changes
+
+- [`a044f56e`](https://github.com/datopian/portaljs/commit/a044f56e3cbe0519ddf9d24d78b0bb7eac917e1c) Thanks [@luccasmmg](https://github.com/luccasmmg)! - Added plotly components
+
+## 0.5.10
+
+### Patch Changes
+
+- [#1083](https://github.com/datopian/portaljs/pull/1083) [`86a2945e`](https://github.com/datopian/portaljs/commit/86a2945ee68dfcea0299984ca9cc9070d68fe1c2) Thanks [@Gutts-n](https://github.com/Gutts-n)! - Created integration with datastore api for table component
+
 ## 0.5.9
 
 ### Patch Changes

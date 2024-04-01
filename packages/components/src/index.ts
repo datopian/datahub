@@ -10,3 +10,6 @@ export * from './components/PdfViewer';
 export * from "./components/Excel";
 export * from "./components/BucketViewer";
 export * from "./components/Iframe";
+export * from "./components/Plotly";
+export * from "./components/PlotlyLineChart";
+export * from "./components/PlotlyBarChart";
