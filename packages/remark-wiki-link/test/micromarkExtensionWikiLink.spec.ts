@@ -150,7 +150,20 @@ describe("micromark-extension-wiki-link", () => {
         '<p><img src="My Image.jpg" alt="My Image.jpg" class="internal" /></p>'
       );
     });
+
+    // TODO: Fix alt attribute
     test("Can identify the dimensions of the image if exists", () => {
+      const serialized = micromark("![[My Image.jpg|200]]", "ascii", {
+        extensions: [syntax()],
+        htmlExtensions: [html({ permalinks: ["My Image.jpg"] }) as any], // TODO type fix
+      });
+      expect(serialized).toBe(
+        '<p><img src="My Image.jpg" alt="My Image.jpg" class="internal" width="200" height="200" /></p>'
+        );
+      });
+      
+    // TODO: Fix alt attribute
+      test("Can identify the dimensions of the image if exists", () => {
       const serialized = micromark("![[My Image.jpg|200x200]]", "ascii", {
         extensions: [syntax()],
         htmlExtensions: [html({ permalinks: ["My Image.jpg"] }) as any], // TODO type fix

@@ -33,6 +33,7 @@ export function getImageSize(size: string) {
 
   return { width, height };
 }
+
 // mdas-util-from-markdown extension
 // https://github.com/syntax-tree/mdast-util-from-markdown#extension
 function fromMarkdown(opts: FromMarkdownOptions = {}) {
@@ -122,7 +123,7 @@ function fromMarkdown(opts: FromMarkdownOptions = {}) {
     wikiLink.data.exists = !!matchingPermalink;
     wikiLink.data.permalink = link;
     // remove leading # if the target is a heading on the same page
-    let displayName = alias || target.replace(/^#/, '');
+    const displayName = alias || target.replace(/^#/, '');
     const headingId = heading.replace(/\s+/g, '-').toLowerCase();
     let classNames = wikiLinkClassName;
     if (!matchingPermalink) {
@@ -157,25 +158,23 @@ function fromMarkdown(opts: FromMarkdownOptions = {}) {
           src: `${hrefTemplate(link)}#toolbar=0`,
         };
       } else {
-        if (!alias || !/^\d+(x\d+)?$/.test(alias)) {
-          wikiLink.data.hName = 'img';
-          wikiLink.data.hProperties = {
-            className: classNames,
-            src: hrefTemplate(link),
-            alt: displayName,
-          };
-        } else {
-          const { width, height } = getImageSize(alias as string);
-          displayName = target;
-          wikiLink.data.hName = 'img';
-          wikiLink.data.hProperties = {
-            className: classNames,
-            src: hrefTemplate(link),
-            alt: displayName,
-            width,
-            height,
-            style: `width: ${width}px;height: ${height}px;`
-          };
+        const hasDimensions = alias && /^\d+(x\d+)?$/.test(alias);
+        // Take the target as alt text except if alt name was provided [[target|alt text]]
+        const altText = hasDimensions || !alias ? target : alias;
+
+        wikiLink.data.hName = 'img';  
+        wikiLink.data.hProperties = {  
+            className: classNames,  
+            src: hrefTemplate(link),  
+            alt: altText
+        };  
+
+        if (hasDimensions) {  
+          const { width, height } = getImageSize(alias as string);  
+          Object.assign(wikiLink.data.hProperties, {  
+            width,  
+            height,  
+          }); 
         }
       }
     } else {

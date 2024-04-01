@@ -98,7 +98,7 @@ function html(opts: HtmlOptions = {}) {
       "";
 
     // remove leading # if the target is a heading on the same page
-    let displayName = alias || target.replace(/^#/, "");
+    const displayName = alias || target.replace(/^#/, "");
     // replace spaces with dashes and lowercase headings
     const headingId = heading.replace(/\s+/g, "-").toLowerCase();
     let classNames = wikiLinkClassName;
@@ -128,24 +128,18 @@ function html(opts: HtmlOptions = {}) {
           )}#toolbar=0" class="${classNames}" />`
         );
       } else {
-        if (!alias || !/^\d+(x\d+)?$/.test(alias)) {
-          this.tag(
-            `<img src="${hrefTemplate(
-              link
-            )}" alt="${displayName}" class="${classNames}" />`
-          );
-        } else {
+        const hasDimensions = alias && /^\d+(x\d+)?$/.test(alias);
+        // Take the target as alt text except if alt name was provided [[target|alt text]]
+        const altText = hasDimensions || !alias ? target : alias;
+        let imgAttributes = `src="${hrefTemplate(
+          link
+        )}" alt="${altText}" class="${classNames}"`;
+
+        if (hasDimensions) {
           const { width, height } = getImageSize(alias as string);
-          displayName = target;
-          this.tag(
-            `<img src="${hrefTemplate(
-              link
-            )}" alt="${displayName}" class="${classNames}" width="${width}" height="${height}" style="
-              width: ${width}px;
-              height: ${height}px;
-            "/>`
-          );
+          imgAttributes += ` width="${width}" height="${height}"`;
         }
+        this.tag(`<img ${imgAttributes} />`);
       }
     } else {
       this.tag(
