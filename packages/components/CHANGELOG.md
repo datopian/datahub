@@ -1,5 +1,71 @@
 # @portaljs/components
 
+## 0.6.0
+
+### Minor Changes
+
+- [`a044f56e`](https://github.com/datopian/portaljs/commit/a044f56e3cbe0519ddf9d24d78b0bb7eac917e1c) Thanks [@luccasmmg](https://github.com/luccasmmg)! - Added plotly components
+
+## 0.5.10
+
+### Patch Changes
+
+- [#1083](https://github.com/datopian/portaljs/pull/1083) [`86a2945e`](https://github.com/datopian/portaljs/commit/86a2945ee68dfcea0299984ca9cc9070d68fe1c2) Thanks [@Gutts-n](https://github.com/Gutts-n)! - Created integration with datastore api for table component
+
+## 0.5.9
+
+### Patch Changes
+
+- [#1081](https://github.com/datopian/portaljs/pull/1081) [`2bbf3134`](https://github.com/datopian/portaljs/commit/2bbf3134896df3ecc66560bdf95bece143614c7b) Thanks [@Gutts-n](https://github.com/Gutts-n)! - Fixed error to remove anchor from document
+
+## 0.5.8
+
+### Patch Changes
+
+- [#1079](https://github.com/datopian/portaljs/pull/1079) [`058d2367`](https://github.com/datopian/portaljs/commit/058d23678a024890f8a6d909ded9fc8fc11cf145) Thanks [@Gutts-n](https://github.com/Gutts-n)! - Changed the download behaviour of the bucket viewer component and removed loading component while downloading
+
+## 0.5.7
+
+### Patch Changes
+
+- [#1077](https://github.com/datopian/portaljs/pull/1077) [`6d7acd27`](https://github.com/datopian/portaljs/commit/6d7acd27ed9299cbcc14eab906f2f0eb414656b8) Thanks [@Gutts-n](https://github.com/Gutts-n)! - Created property to present a component while is loading the download of the file and fixed download bug on pagination
+
+## 0.5.6
+
+### Patch Changes
+
+- [#1075](https://github.com/datopian/portaljs/pull/1075) [`26dcffc2`](https://github.com/datopian/portaljs/commit/26dcffc279057f80a579134e862085ba042c06c3) Thanks [@Gutts-n](https://github.com/Gutts-n)! - Fixed problem presenting the download component in the first load of the bucket viewer
+
+## 0.5.5
+
+### Patch Changes
+
+- [#1073](https://github.com/datopian/portaljs/pull/1073) [`cf24042a`](https://github.com/datopian/portaljs/commit/cf24042a910567e98eeb75ade42ce0149bdb62d1) Thanks [@Gutts-n](https://github.com/Gutts-n)! - Fixed filter by startDate error
+
+## 0.5.4
+
+### Patch Changes
+
+- [#1071](https://github.com/datopian/portaljs/pull/1071) [`27c99add`](https://github.com/datopian/portaljs/commit/27c99adde8fa36ad2c2e03f227f93aa62454eefa) Thanks [@Gutts-n](https://github.com/Gutts-n)! - Added pagination and filter properties for the BucketViewer component
+
+## 0.5.3
+
+### Patch Changes
+
+- [#1066](https://github.com/datopian/portaljs/pull/1066) [`dd03a493`](https://github.com/datopian/portaljs/commit/dd03a493beca5459d1ef447b2df505609fc64e95) Thanks [@Gutts-n](https://github.com/Gutts-n)! - Created Iframe component
+
+## 0.5.2
+
+### Patch Changes
+
+- [#1063](https://github.com/datopian/portaljs/pull/1063) [`b13e3ade`](https://github.com/datopian/portaljs/commit/b13e3ade3ccefe7dffe84f824bdedd3e512ce499) Thanks [@Gutts-n](https://github.com/Gutts-n)! - Created auto zoom configuration for the map component
+
+## 0.5.1
+
+### Patch Changes
+
+- [#1061](https://github.com/datopian/portaljs/pull/1061) [`4ddfc112`](https://github.com/datopian/portaljs/commit/4ddfc1126a3f0b8137ea47a08a36c56b7373b8f6) Thanks [@Gutts-n](https://github.com/Gutts-n)! - Created the style property in the Map component
+
 ## 0.5.0
 
 ### Minor Changes
