@@ -1,24 +1,48 @@
 <h1 align="center">
-🌀 Portal.JS
-<br />
-Rapidly build rich data portals using a modern frontend framework
+  <p>
+  <a href="https://datahub.io/">
+    <img alt="datahub" src="http://datahub.io/datahub-cube.svg" width="146">
+  </a>
+  </p>
+  DataHub Cloud ☁️
+  <small>Simple cloud-based data publishing</small>
+  <br />
+  DataHub OpenSource 🌀
+  <br />
+  <small>Rapidly create rich data portals using a modern frontend framework</small>
 </h1>
 
-* [What is Portal.JS ?](#What-is-Portal.JS)
-    * [Features](#Features)
-      * [For developers](#For-developers)
-* [Docs](#Docs)
-* [Community](#Community)
-* [Appendix](#Appendix)
-    * [What happened to Recline?](#What-happened-to-Recline?)
+<p align="center">
+  <a href="https://discord.gg/xfFDMPU9dC"><img src="https://dcbadge.vercel.app/api/server/xfFDMPU9dC" /></a>
+</p>
 
-# What is Portal.JS
+## Issues
 
-🌀 Portal.JS is a framework for rapidly building rich data portal frontends using a modern frontend approach. Portal.JS can be used to present a single dataset or build a full-scale data catalog/portal.
+Found a bug: 👉 https://github.com/datahubio/datahub/issues/new
 
-Built in JavaScript and React on top of the popular [Next.js](https://nextjs.com/) framework. Portal.JS assumes a "decoupled" approach where the frontend is a separate service from the backend and interacts with backend(s) via an API. It can be used with any backend and has out of the box support for [CKAN](https://ckan.org/).
+## Discussions
 
-## Features
+Got a suggestion, a question, want some support or just want to shoot the breeze 🙂
+
+Head to the discussion forum: 👉 https://github.com/datahubio/datahub/discussions
+
+## Chat on Discord
+
+If you would prefer to get help via live chat check out our discord 👉
+
+[Discord](https://discord.gg/xfFDMPU9dC)
+
+## Docs
+
+https://datahub.io/docs
+
+## About DataHub OpenSource
+
+🌀 DataHub OpenSource is a framework for rapidly building rich data portal frontends using a modern frontend approach. Datahub can be used to present a single dataset or build a full-scale data catalog/portal.
+
+Built in JavaScript and React on top of the popular [Next.js](https://nextjs.com/) framework. Portal.JS assumes a "decoupled" approach where the frontend is a separate service from the backend and interacts with backend(s) via an API. It can be used with any backend and has out of the box support for [CKAN](https://ckan.org/), GitHub, Frictionless Data Packages and more.
+
+### Features
 
 - 🗺️ Unified sites: present data and content in one seamless site, pulling datasets from a DMS (e.g. CKAN) and content from a CMS (e.g. Wordpress) with a common internal API.
 - 👩‍💻 Developer friendly: built with familiar frontend tech (JavaScript, React, Next.js).
@@ -33,25 +57,3 @@ Built in JavaScript and React on top of the popular [Next.js](https://nextjs.com
 - 🚀 Next.js framework: so everything in Next.js for free: Server Side Rendering, Static Site Generation, huge number of examples and integrations, etc.
   - Server Side Rendering (SSR) => Unlimited number of pages, SEO and more whilst still using React.
   - Static Site Generation (SSG) => Ultra-simple deployment, great performance, great lighthouse scores and more (good for small sites)
-
-#### **Check out the [Portal.JS website](https://portaljs.org/) for a gallery of live portals**
-
-___
-
-# Docs
-
-Access the Portal.JS documentation at:
-
-https://portaljs.org/docs
-
-- [Examples](https://portaljs.org/docs#examples)
-
-# Community
-
-If you have questions about anything related to Portal.JS, you're always welcome to ask our community on [GitHub Discussions](https://github.com/datopian/portal.js/discussions) or on our [Discord server](https://discord.gg/EeyfGrGu4U).
-
-# Appendix
-
-## What happened to Recline?
-
-Portal.JS used to be Recline(JS). If you are looking for the old Recline codebase it still exists:  see the [`recline` branch](https://github.com/datopian/portal.js/tree/recline). If you want context for the rename see [this issue](https://github.com/datopian/portal.js/issues/520).
