@@ -4,7 +4,7 @@ import { PlotlyLineChart, PlotlyLineChartProps } from '../src/components/PlotlyL
 
 // More on how to set up stories at: https://storybook.js.org/docs/react/writing-stories/introduction
 const meta: Meta = {
-  title: 'Components/PlotlyLineChart',
+  title: 'Components/Charts/PlotlyLineChart',
   component: PlotlyLineChart,
   tags: ['autodocs'],
   argTypes: {

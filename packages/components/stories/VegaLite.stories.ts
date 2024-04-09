@@ -4,7 +4,7 @@ import { VegaLite } from '../src/components/VegaLite';
 
 // More on how to set up stories at: https://storybook.js.org/docs/react/writing-stories/introduction
 const meta: Meta = {
-  title: 'Components/VegaLite',
+  title: 'Components/Charts/VegaLite',
   component: VegaLite,
   tags: ['autodocs'],
   argTypes: {

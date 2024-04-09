@@ -4,7 +4,7 @@ import { Plotly } from '../src/components/Plotly';
 
 // More on how to set up stories at: https://storybook.js.org/docs/react/writing-stories/introduction
 const meta: Meta = {
-  title: 'Components/Plotly',
+  title: 'Components/Charts/Plotly',
   component: Plotly,
   tags: ['autodocs'],
 };

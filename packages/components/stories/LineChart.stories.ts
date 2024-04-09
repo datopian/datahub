@@ -4,7 +4,7 @@ import { LineChart, LineChartProps } from '../src/components/LineChart';
 
 // More on how to set up stories at: https://storybook.js.org/docs/react/writing-stories/introduction
 const meta: Meta = {
-  title: 'Components/LineChart',
+  title: 'Components/Charts/LineChart',
   component: LineChart,
   tags: ['autodocs'],
   argTypes: {

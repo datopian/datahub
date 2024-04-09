@@ -4,7 +4,7 @@ import { Table, TableProps } from '../src/components/Table';
 
 // More on how to set up stories at: https://storybook.js.org/docs/react/writing-stories/introduction
 const meta: Meta = {
-  title: 'Components/Table',
+  title: 'Components/Tabular/Table',
   component: Table,
   tags: ['autodocs'],
   argTypes: {

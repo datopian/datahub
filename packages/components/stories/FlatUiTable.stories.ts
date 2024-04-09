@@ -4,7 +4,7 @@ import { FlatUiTable, FlatUiTableProps } from '../src/components/FlatUiTable';
 
 // More on how to set up stories at: https://storybook.js.org/docs/react/writing-stories/introduction
 const meta: Meta = {
-  title: 'Components/FlatUiTable',
+  title: 'Components/Tabular/FlatUiTable',
   component: FlatUiTable,
   tags: ['autodocs'],
   argTypes: {

@@ -4,7 +4,7 @@ import { Map, MapProps } from '../src/components/Map';
 
 // More on how to set up stories at: https://storybook.js.org/docs/react/writing-stories/introduction
 const meta: Meta = {
-  title: 'Components/Map',
+  title: 'Components/Geospatial/Map',
   component: Map,
   tags: ['autodocs'],
   argTypes: {

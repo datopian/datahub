@@ -3,7 +3,7 @@ import { type Meta, type StoryObj } from '@storybook/react';
 import { Iframe, IframeProps } from '../src/components/Iframe';
 
 const meta: Meta = {
-  title: 'Components/Iframe',
+  title: 'Components/Embedding/Iframe',
   component: Iframe,
   tags: ['autodocs'],
   argTypes: {

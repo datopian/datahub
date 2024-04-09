@@ -4,7 +4,7 @@ import { Excel, ExcelProps } from '../src/components/Excel';
 
 // More on how to set up stories at: https://storybook.js.org/docs/react/writing-stories/introduction
 const meta: Meta = {
-  title: 'Components/Excel',
+  title: 'Components/Tabular/Excel',
   component: Excel,
   tags: ['autodocs'],
   argTypes: {

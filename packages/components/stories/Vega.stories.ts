@@ -4,7 +4,7 @@ import { Vega } from '../src/components/Vega';
 
 // More on how to set up stories at: https://storybook.js.org/docs/react/writing-stories/introduction
 const meta: Meta = {
-  title: 'Components/Vega',
+  title: 'Components/Charts/Vega',
   component: Vega,
   tags: ['autodocs'],
 };

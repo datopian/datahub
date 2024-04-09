@@ -3,7 +3,7 @@ import type { Meta, StoryObj } from '@storybook/react';
 import { PdfViewer, PdfViewerProps } from '../src/components/PdfViewer';
 
 const meta: Meta = {
-  title: 'Components/PdfViewer',
+  title: 'Components/Embedding/PdfViewer',
   component: PdfViewer,
   tags: ['autodocs'],
   argTypes: {
