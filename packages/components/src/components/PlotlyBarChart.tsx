@@ -1,7 +1,8 @@
-import { QueryClient, QueryClientProvider, useQuery } from "react-query";
-import { Plotly } from "./Plotly";
-import Papa, { ParseConfig } from "papaparse";
-import LoadingSpinner from "./LoadingSpinner";
+import { QueryClient, QueryClientProvider, useQuery } from 'react-query';
+import { Plotly } from './Plotly';
+import Papa, { ParseConfig } from 'papaparse';
+import LoadingSpinner from './LoadingSpinner';
+import { Data } from '../types/properties';
 
 const queryClient = new QueryClient();
 
@@ -17,7 +18,7 @@ async function getCsv(url: string, bytes: number) {
 
 async function parseCsv(
   file: string,
-  parsingConfig: ParseConfig,
+  parsingConfig: ParseConfig
 ): Promise<any> {
   return new Promise((resolve, reject) => {
     Papa.parse(file, {
@@ -39,43 +40,40 @@ async function parseCsv(
 }
 
 export interface PlotlyBarChartProps {
-  url?: string;
-  data?: { [key: string]: number | string }[];
-  rawCsv?: string;
-  randomId?: number;
+  data: Data;
+  uniqueId?: number;
   bytes?: number;
   parsingConfig?: ParseConfig;
   xAxis: string;
   yAxis: string;
-  lineLabel?: string;
+  // TODO: commented out because this doesn't work. I believe
+  // this would only make any difference on charts with multiple
+  // traces.
+  // lineLabel?: string;
   title?: string;
 }
 
 export const PlotlyBarChart: React.FC<PlotlyBarChartProps> = ({
-  url,
   data,
-  rawCsv,
   bytes = 5132288,
   parsingConfig = {},
   xAxis,
   yAxis,
-  lineLabel,
-  title = "",
+  // lineLabel,
+  title = '',
 }) => {
-  const randomId = Math.random();
+  const uniqueId = Math.random();
   return (
     // Provide the client to your App
     <QueryClientProvider client={queryClient}>
       <PlotlyBarChartInner
-        url={url}
         data={data}
-        rawCsv={rawCsv}
-        randomId={randomId}
+        uniqueId={uniqueId}
         bytes={bytes}
         parsingConfig={parsingConfig}
         xAxis={xAxis}
         yAxis={yAxis}
-        lineLabel={lineLabel ?? yAxis}
+        // lineLabel={lineLabel ?? yAxis}
         title={title}
       />
     </QueryClientProvider>
@@ -83,30 +81,28 @@ export const PlotlyBarChart: React.FC<PlotlyBarChartProps> = ({
 };
 
 const PlotlyBarChartInner: React.FC<PlotlyBarChartProps> = ({
-  url,
   data,
-  rawCsv,
-  randomId,
+  uniqueId,
   bytes,
   parsingConfig,
   xAxis,
   yAxis,
-  lineLabel,
+  // lineLabel,
   title,
 }) => {
-  if (data) {
+  if (data.values) {
     return (
-      <div className="w-full" style={{ height: "500px" }}>
+      <div className="w-full" style={{ height: '500px' }}>
         <Plotly
           layout={{
             title,
           }}
           data={[
             {
-              x: data.map((d) => d[xAxis]),
-              y: data.map((d) => d[yAxis]),
-              type: "bar",
-              name: lineLabel,
+              x: data.values.map((d) => d[xAxis]),
+              y: data.values.map((d) => d[yAxis]),
+              type: 'bar',
+              // name: lineLabel,
             },
           ]}
         />
@@ -114,18 +110,18 @@ const PlotlyBarChartInner: React.FC<PlotlyBarChartProps> = ({
     );
   }
   const { data: csvString, isLoading: isDownloadingCSV } = useQuery(
-    ["dataCsv", url, randomId],
-    () => getCsv(url as string, bytes ?? 5132288),
-    { enabled: !!url },
+    ['dataCsv', data.url, uniqueId],
+    () => getCsv(data.url as string, bytes ?? 5132288),
+    { enabled: !!data.url }
   );
   const { data: parsedData, isLoading: isParsing } = useQuery(
-    ["dataPreview", csvString, randomId],
+    ['dataPreview', csvString, uniqueId],
     () =>
       parseCsv(
-        rawCsv ? (rawCsv as string) : (csvString as string),
-        parsingConfig ?? {},
+        data.csv ? (data.csv as string) : (csvString as string),
+        parsingConfig ?? {}
       ),
-    { enabled: rawCsv ? true : !!csvString },
+    { enabled: data.csv ? true : !!csvString }
   );
   if (isParsing || isDownloadingCSV)
     <div className="w-full flex justify-center items-center h-[500px]">
@@ -133,7 +129,7 @@ const PlotlyBarChartInner: React.FC<PlotlyBarChartProps> = ({
     </div>;
   if (parsedData)
     return (
-      <div className="w-full" style={{ height: "500px" }}>
+      <div className="w-full" style={{ height: '500px' }}>
         <Plotly
           layout={{
             title,
@@ -142,8 +138,8 @@ const PlotlyBarChartInner: React.FC<PlotlyBarChartProps> = ({
             {
               x: parsedData.data.map((d: any) => d[xAxis]),
               y: parsedData.data.map((d: any) => d[yAxis]),
-              type: "bar",
-              name: lineLabel,
+              type: 'bar',
+              // name: lineLabel, TODO: commented out because this doesn't work
             },
           ]}
         />

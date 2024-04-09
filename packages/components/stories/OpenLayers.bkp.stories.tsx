@@ -1,3 +1,6 @@
+// NOTE: this component was renamed with .bkp so that it's hidden
+// from the Storybook app
+
 import type { Meta, StoryObj } from '@storybook/react';
 import React from 'react';
 import OpenLayers from '../src/components/OpenLayers/OpenLayers';

@@ -8,7 +8,8 @@ export * from './components/OpenLayers/OpenLayers';
 export * from './components/Map';
 export * from './components/PdfViewer';
 export * from "./components/Excel";
-export * from "./components/BucketViewer";
+// NOTE: hidden for now
+// export * from "./components/BucketViewer";
 export * from "./components/Iframe";
 export * from "./components/Plotly";
 export * from "./components/PlotlyLineChart";
