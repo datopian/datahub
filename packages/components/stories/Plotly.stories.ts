@@ -7,6 +7,16 @@ const meta: Meta = {
   title: 'Components/Charts/Plotly',
   component: Plotly,
   tags: ['autodocs'],
+  argTypes: {
+    data: {
+      description:
+        "Plotly's `data` prop. You can find references on how to use these props at https://github.com/plotly/react-plotly.js/#basic-props.",
+    },
+    layout: {
+      description:
+        "Plotly's `layout` prop. You can find references on how to use these props at https://github.com/plotly/react-plotly.js/#basic-props.",
+    },
+  },
 };
 
 export default meta;
@@ -15,7 +25,7 @@ type Story = StoryObj<any>;
 
 // More on writing stories with args: https://storybook.js.org/docs/react/writing-stories/args
 export const Primary: Story = {
-  name: 'Chart built with Plotly',
+  name: 'Line chart',
   args: {
     data: [
       {
