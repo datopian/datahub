@@ -7,7 +7,7 @@ import 'ag-grid-community/styles/ag-theme-alpine.css';
 import { Data } from '../types/properties';
 
 export type ExcelProps = {
-  data: Pick<Data, 'url'>;
+  data: Required<Pick<Data, 'url'>>;
 };
 
 export function Excel({ data }: ExcelProps) {
