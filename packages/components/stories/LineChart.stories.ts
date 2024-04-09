@@ -35,10 +35,6 @@ Must be an object with one of the following properties: `url` or `values` \n\n \
     yAxisType: {
       description: 'Type of the Y-axis',
     },
-    fullWidth: {
-      description:
-        'Whether the component should be rendered as full bleed or not',
-    },
   },
 };
 

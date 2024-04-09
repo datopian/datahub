@@ -20,7 +20,6 @@ export type LineChartProps = {
 
 export function LineChart({
   data,
-  fullWidth = false,
   title = '',
   xAxis,
   xAxisType = 'temporal',
@@ -89,6 +88,6 @@ export function LineChart({
       <LoadingSpinner />
     </div>
   ) : (
-    <VegaLite fullWidth={fullWidth} data={vegaData} spec={spec} />
+    <VegaLite data={vegaData} spec={spec} />
   );
 }
