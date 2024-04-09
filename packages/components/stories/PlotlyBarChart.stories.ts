@@ -28,10 +28,10 @@ Must be an object with one of the following properties: `url`, `values` or `csv`
     },
     parsingConfig: {
       description:
-        'If using URL or CSV, this parsing config will be used to parse the data. Optional, check https://www.papaparse.com/ for more info.',
+        'If using URL or CSV, this parsing config will be used to parse the data. Check https://www.papaparse.com/ for more info.',
     },
     title: {
-      description: 'Title to display on the chart. Optional.',
+      description: 'Title to display on the chart.',
     },
     // TODO: commented out because this doesn't work
     // lineLabel: {

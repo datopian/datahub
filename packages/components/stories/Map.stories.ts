@@ -13,7 +13,7 @@ const meta: Meta = {
         'Data to be displayed.\n\n GeoJSON Object \n\nOR\n\n URL to GeoJSON Object',
     },
     title: {
-      description: 'Title to display on the map. Optional.',
+      description: 'Title to display on the map.',
     },
     center: {
       description: 'Initial coordinates of the center of the map',
