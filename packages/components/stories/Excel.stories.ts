@@ -8,9 +8,9 @@ const meta: Meta = {
   component: Excel,
   tags: ['autodocs'],
   argTypes: {
-    url: {
+    data: {
       description:
-        'Url of the file to be displayed e.g.: "https://url.to/data.csv"',
+        'Object with a `url` property pointing to the Excel file to be displayed, e.g.: `{ url: "https://url.to/data.csv" }`',
     },
   },
 };
@@ -22,13 +22,17 @@ type Story = StoryObj<ExcelProps>;
 export const SingleSheet: Story = {
   name: 'Excel file with just one sheet',
   args: {
-    url: 'https://sheetjs.com/pres.xlsx',
+    data: {
+      url: 'https://sheetjs.com/pres.xlsx',
+    },
   },
 };
 
 export const MultipleSheet: Story = {
   name: 'Excel file with multiple sheets',
   args: {
-    url: 'https://storage.portaljs.org/IC-Gantt-Chart-Project-Template-8857.xlsx',
+    data: {
+      url: 'https://storage.portaljs.org/IC-Gantt-Chart-Project-Template-8857.xlsx',
+    },
   },
 };

@@ -4,12 +4,14 @@ import { read, utils } from 'xlsx';
 import { AgGridReact } from 'ag-grid-react';
 import 'ag-grid-community/styles/ag-grid.css';
 import 'ag-grid-community/styles/ag-theme-alpine.css';
+import { Data } from '../types/properties';
 
 export type ExcelProps = {
-  url: string;
+  data: Pick<Data, 'url'>;
 };
 
-export function Excel({ url }: ExcelProps) {
+export function Excel({ data }: ExcelProps) {
+  const url = data.url;
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [activeSheetName, setActiveSheetName] = useState<string>();
   const [workbook, setWorkbook] = useState<any>();
