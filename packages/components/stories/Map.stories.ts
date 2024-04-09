@@ -10,7 +10,11 @@ const meta: Meta = {
   argTypes: {
     layers: {
       description:
-        'Data to be displayed.\n\n GeoJSON Object \n\nOR\n\n URL to GeoJSON Object',
+        'Array of layers to be displayed on the map. Should be an object with: \n\n \
+`data`: object with either a `url` property pointing to a GeoJSON file or a `geojson` property with a GeoJSON object. \n\n \
+`name`: name of the layer. \n\n \
+`colorscale`: object with a `starting` and `ending` colors that will be used to create a gradient and color the map. \n\n \
+`tooltip`: `true` to show all available features on the tooltip, object with a `propNames` property as an array of strings to choose which features to display. \n\n',
     },
     title: {
       description: 'Title to display on the map.',
@@ -19,14 +23,15 @@ const meta: Meta = {
       description: 'Initial coordinates of the center of the map',
     },
     zoom: {
-      description: 'Zoom level',
+      description: 'Initial zoom level',
     },
     style: {
-      description: "Styles for the container"
+      description: "CSS styles to be applied to the map's container.",
     },
     autoZoomConfiguration: {
-      description: "Configuration to auto zoom in the specified layer data"
-    }
+      description:
+        "Pass a layer's name to automatically zoom to the bounding area of a layer.",
+    },
   },
 };
 
@@ -40,7 +45,9 @@ export const GeoJSONPolygons: Story = {
   args: {
     layers: [
       {
-        data: 'https://d2ad6b4ur7yvpq.cloudfront.net/naturalearth-3.3.0/ne_10m_geography_marine_polys.geojson',
+        data: {
+          url: 'https://d2ad6b4ur7yvpq.cloudfront.net/naturalearth-3.3.0/ne_10m_geography_marine_polys.geojson',
+        },
         name: 'Polygons',
         tooltip: { propNames: ['name'] },
         colorScale: {
@@ -60,7 +67,9 @@ export const GeoJSONPoints: Story = {
   args: {
     layers: [
       {
-        data: 'https://opendata.arcgis.com/datasets/9c58741995174fbcb017cf46c8a42f4b_25.geojson',
+        data: {
+          url: 'https://opendata.arcgis.com/datasets/9c58741995174fbcb017cf46c8a42f4b_25.geojson',
+        },
         name: 'Points',
         tooltip: { propNames: ['Location'] },
       },
@@ -76,12 +85,16 @@ export const GeoJSONMultipleLayers: Story = {
   args: {
     layers: [
       {
-        data: 'https://opendata.arcgis.com/datasets/9c58741995174fbcb017cf46c8a42f4b_25.geojson',
+        data: {
+          url: 'https://opendata.arcgis.com/datasets/9c58741995174fbcb017cf46c8a42f4b_25.geojson',
+        },
         name: 'Points',
         tooltip: true,
       },
       {
-        data: 'https://d2ad6b4ur7yvpq.cloudfront.net/naturalearth-3.3.0/ne_10m_geography_marine_polys.geojson',
+        data: {
+          url: 'https://d2ad6b4ur7yvpq.cloudfront.net/naturalearth-3.3.0/ne_10m_geography_marine_polys.geojson',
+        },
         name: 'Polygons',
         tooltip: true,
         colorScale: {
@@ -94,19 +107,23 @@ export const GeoJSONMultipleLayers: Story = {
     center: { latitude: 45, longitude: 0 },
     zoom: 2,
   },
-}
+};
 
 export const GeoJSONMultipleLayersWithAutoZoomInSpecifiedLayer: Story = {
   name: 'GeoJSON polygons and points map with auto zoom in the points layer',
   args: {
     layers: [
       {
-        data: 'https://opendata.arcgis.com/datasets/9c58741995174fbcb017cf46c8a42f4b_25.geojson',
+        data: {
+          url: 'https://opendata.arcgis.com/datasets/9c58741995174fbcb017cf46c8a42f4b_25.geojson',
+        },
         name: 'Points',
         tooltip: true,
       },
       {
-        data: 'https://d2ad6b4ur7yvpq.cloudfront.net/naturalearth-3.3.0/ne_10m_geography_marine_polys.geojson',
+        data: {
+          url: 'https://d2ad6b4ur7yvpq.cloudfront.net/naturalearth-3.3.0/ne_10m_geography_marine_polys.geojson',
+        },
         name: 'Polygons',
         tooltip: true,
         colorScale: {
@@ -119,7 +136,7 @@ export const GeoJSONMultipleLayersWithAutoZoomInSpecifiedLayer: Story = {
     center: { latitude: 45, longitude: 0 },
     zoom: 2,
     autoZoomConfiguration: {
-      layerName: 'Points'
-    }
+      layerName: 'Points',
+    },
   },
 };
