@@ -7,6 +7,16 @@ const meta: Meta = {
   title: 'Components/Charts/Vega',
   component: Vega,
   tags: ['autodocs'],
+  argTypes: {
+    data: {
+      description:
+        "Vega's `data` prop. You can find references on how to use this prop at https://vega.github.io/vega/docs/data/",
+    },
+    spec: {
+      description:
+        "Vega's `spec` prop. You can find references on how to use this prop at https://vega.github.io/vega/docs/specification/",
+    },
+  },
 };
 
 export default meta;
@@ -15,7 +25,7 @@ type Story = StoryObj<any>;
 
 // More on writing stories with args: https://storybook.js.org/docs/react/writing-stories/args
 export const Primary: Story = {
-  name: 'Chart built with Vega',
+  name: 'Bar chart',
   args: {
     data: {
       table: [

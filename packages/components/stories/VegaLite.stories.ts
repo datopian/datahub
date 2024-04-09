@@ -25,7 +25,7 @@ type Story = StoryObj<any>;
 
 // More on writing stories with args: https://storybook.js.org/docs/react/writing-stories/args
 export const Primary: Story = {
-  name: 'Chart built with Vega Lite',
+  name: 'Bar chart',
   args: {
     data: {
       table: [
