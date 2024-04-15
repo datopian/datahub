@@ -48,7 +48,7 @@ describe("micromark-extension-wiki-link", () => {
           html({
             permalinks: ["/some/folder/Wiki Link"],
             pathFormat: "obsidian-short",
-          }) as any // TODO type fix
+          }) as any, // TODO type fix
         ],
       });
       expect(serialized).toBe(
@@ -75,7 +75,7 @@ describe("micromark-extension-wiki-link", () => {
           html({
             permalinks: ["/some/folder/Wiki Link"],
             pathFormat: "obsidian-absolute",
-          }) as any // TODO type fix
+          }) as any, // TODO type fix
         ],
       });
       expect(serialized).toBe(
@@ -97,10 +97,14 @@ describe("micromark-extension-wiki-link", () => {
     });
 
     test("parses a wiki link with heading and alias", () => {
-      const serialized = micromark("[[Wiki Link#Some Heading|Alias]]", "ascii", {
-        extensions: [syntax()],
-        htmlExtensions: [html() as any], // TODO type fix
-      });
+      const serialized = micromark(
+        "[[Wiki Link#Some Heading|Alias]]",
+        "ascii",
+        {
+          extensions: [syntax()],
+          htmlExtensions: [html() as any], // TODO type fix
+        }
+      );
       // note: lowercased and hyphenated heading
       expect(serialized).toBe(
         '<p><a href="Wiki Link#some-heading" class="internal new">Alias</a></p>'
@@ -134,7 +138,7 @@ describe("micromark-extension-wiki-link", () => {
         extensions: [syntax()],
         htmlExtensions: [html() as any], // TODO type fix
       });
-      expect(serialized).toBe("<p>![[My Image.xyz]]</p>");
+      expect(serialized).toBe('<p>![[My Image.xyz]]</p>');
     });
 
     test("parses and image ambed with a matching permalink", () => {
@@ -147,6 +151,28 @@ describe("micromark-extension-wiki-link", () => {
       );
     });
 
+    // TODO: Fix alt attribute
+    test("Can identify the dimensions of the image if exists", () => {
+      const serialized = micromark("![[My Image.jpg|200]]", "ascii", {
+        extensions: [syntax()],
+        htmlExtensions: [html({ permalinks: ["My Image.jpg"] }) as any], // TODO type fix
+      });
+      expect(serialized).toBe(
+        '<p><img src="My Image.jpg" alt="My Image.jpg" class="internal" width="200" height="200" /></p>'
+        );
+      });
+      
+    // TODO: Fix alt attribute
+      test("Can identify the dimensions of the image if exists", () => {
+      const serialized = micromark("![[My Image.jpg|200x200]]", "ascii", {
+        extensions: [syntax()],
+        htmlExtensions: [html({ permalinks: ["My Image.jpg"] }) as any], // TODO type fix
+      });
+      expect(serialized).toBe(
+        '<p><img src="My Image.jpg" alt="My Image.jpg" class="internal" width="200" height="200" /></p>'
+      );
+    });
+
     test("parses an image embed with a matching permalink and Obsidian-style shortedned path", () => {
       const serialized = micromark("![[My Image.jpg]]", {
         extensions: [syntax()],
@@ -154,7 +180,7 @@ describe("micromark-extension-wiki-link", () => {
           html({
             permalinks: ["/assets/My Image.jpg"],
             pathFormat: "obsidian-short",
-          }) as any // TODO type fix
+          }) as any, // TODO type fix
         ],
       });
       expect(serialized).toBe(
@@ -189,7 +215,7 @@ describe("micromark-extension-wiki-link", () => {
         extensions: [syntax()],
         htmlExtensions: [html() as any], // TODO type fix
       });
-      expect(serialized).toBe("<p>[[Wiki Link</p>");
+      expect(serialized).toBe('<p>[[Wiki Link</p>');
     });
 
     test("doesn't parse a wiki link with one missing closing bracket", () => {
@@ -197,7 +223,7 @@ describe("micromark-extension-wiki-link", () => {
         extensions: [syntax()],
         htmlExtensions: [html() as any], // TODO type fix
       });
-      expect(serialized).toBe("<p>[[Wiki Link]</p>");
+      expect(serialized).toBe('<p>[[Wiki Link]</p>');
     });
 
     test("doesn't parse a wiki link with a missing opening bracket", () => {
@@ -205,7 +231,7 @@ describe("micromark-extension-wiki-link", () => {
         extensions: [syntax()],
         htmlExtensions: [html() as any], // TODO type fix
       });
-      expect(serialized).toBe("<p>[Wiki Link]]</p>");
+      expect(serialized).toBe('<p>[Wiki Link]]</p>');
     });
 
     test("doesn't parse a wiki link in single brackets", () => {
@@ -213,7 +239,7 @@ describe("micromark-extension-wiki-link", () => {
         extensions: [syntax()],
         htmlExtensions: [html() as any], // TODO type fix
       });
-      expect(serialized).toBe("<p>[Wiki Link]</p>");
+      expect(serialized).toBe('<p>[Wiki Link]</p>');
     });
   });
 
@@ -225,7 +251,7 @@ describe("micromark-extension-wiki-link", () => {
           html({
             newClassName: "test-new",
             wikiLinkClassName: "test-wiki-link",
-          }) as any // TODO type fix
+          }) as any, // TODO type fix
         ],
       });
       expect(serialized).toBe(
@@ -251,7 +277,7 @@ describe("micromark-extension-wiki-link", () => {
             wikiLinkResolver: (page) => [
               page.replace(/\s+/, "-").toLowerCase(),
             ],
-          }) as any // TODO type fix
+          }) as any, // TODO type fix
         ],
       });
       expect(serialized).toBe(
@@ -330,5 +356,5 @@ describe("micromark-extension-wiki-link", () => {
       });
       expect(serialized).toBe(`<p><a href="li nk-w(i)th-àcèô íã_a(n)d_underline!:ª%@'*º$ °~./\\#li-nk-w(i)th-àcèô-íã_a(n)d_underline!:ª%@'*º$-°~./\\" class="internal new">li nk-w(i)th-àcèô íã_a(n)d_underline!:ª%@'*º$ °~./\\#LI NK-W(i)th-àcèô íã_a(n)d_uNdErlinE!:ª%@'*º$ °~./\\</a></p>`);
     });
-  })
+  });
 });
