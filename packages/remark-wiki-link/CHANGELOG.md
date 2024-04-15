@@ -1,5 +1,11 @@
 # @portaljs/remark-wiki-link
 
+## 1.2.0
+
+### Minor Changes
+
+- [#1084](https://github.com/datopian/datahub/pull/1084) [`57952e08`](https://github.com/datopian/datahub/commit/57952e0817770138881e7492dc9f43e9910b56a8) Thanks [@mohamedsalem401](https://github.com/mohamedsalem401)! - Add image resize feature
+
 ## 1.1.2
 
 ### Patch Changes
