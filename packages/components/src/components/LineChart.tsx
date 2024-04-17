@@ -2,31 +2,33 @@ import { useEffect, useState } from 'react';
 import LoadingSpinner from './LoadingSpinner';
 import { VegaLite } from './VegaLite';
 import loadData from '../lib/loadData';
+import { Data } from '../types/properties';
 
 type AxisType = 'quantitative' | 'temporal';
 type TimeUnit = 'year' | undefined; // or ...
 
 export type LineChartProps = {
-  data: Array<Array<string | number>> | string | { x: string; y: number }[];
+  data: Omit<Data, 'csv'>;
   title?: string;
-  xAxis?: string;
+  xAxis: string;
   xAxisType?: AxisType;
-  xAxisTimeUnit: TimeUnit;
-  yAxis?: string;
+  xAxisTimeUnit?: TimeUnit;
+  yAxis: string;
   yAxisType?: AxisType;
   fullWidth?: boolean;
 };
 
 export function LineChart({
-  data = [],
-  fullWidth = false,
+  data,
   title = '',
-  xAxis = 'x',
+  xAxis,
   xAxisType = 'temporal',
   xAxisTimeUnit = 'year', //  TODO: defaults to undefined would probably work better... keeping it as it's for compatibility purposes
-  yAxis = 'y',
+  yAxis,
   yAxisType = 'quantitative',
 }: LineChartProps) {
+  const url = data.url;
+  const values = data.values;
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
   //  By default, assumes data is an Array...
@@ -64,13 +66,12 @@ export function LineChart({
   } as any;
 
   useEffect(() => {
-    //  If data is string, assume it's a URL
-    if (typeof data === 'string') {
+    if (url) {
       setIsLoading(true);
 
       //  Manualy loading the data allows us to do other kinds
       //  of stuff later e.g. load a file partially
-      loadData(data).then((res: any) => {
+      loadData(url).then((res: any) => {
         setSpecData({ values: res, format: { type: 'csv' } });
         setIsLoading(false);
       });
@@ -78,12 +79,8 @@ export function LineChart({
   }, []);
 
   var vegaData = {};
-  if (Array.isArray(data)) {
-    var dataObj;
-    dataObj = data.map((r) => {
-      return { x: r[0], y: r[1] };
-    });
-    vegaData = { table: dataObj };
+  if (values) {
+    vegaData = { table: values };
   }
 
   return isLoading ? (
@@ -91,6 +88,6 @@ export function LineChart({
       <LoadingSpinner />
     </div>
   ) : (
-    <VegaLite fullWidth={fullWidth} data={vegaData} spec={spec} />
+    <VegaLite data={vegaData} spec={spec} />
   );
 }

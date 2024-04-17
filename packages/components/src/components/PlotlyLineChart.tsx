@@ -1,7 +1,8 @@
-import { QueryClient, QueryClientProvider, useQuery } from "react-query";
-import { Plotly } from "./Plotly";
-import Papa, { ParseConfig } from "papaparse";
-import LoadingSpinner from "./LoadingSpinner";
+import { QueryClient, QueryClientProvider, useQuery } from 'react-query';
+import { Plotly } from './Plotly';
+import Papa, { ParseConfig } from 'papaparse';
+import LoadingSpinner from './LoadingSpinner';
+import { Data } from '../types/properties';
 
 const queryClient = new QueryClient();
 
@@ -17,7 +18,7 @@ async function getCsv(url: string, bytes: number) {
 
 async function parseCsv(
   file: string,
-  parsingConfig: ParseConfig,
+  parsingConfig: ParseConfig
 ): Promise<any> {
   return new Promise((resolve, reject) => {
     Papa.parse(file, {
@@ -39,38 +40,33 @@ async function parseCsv(
 }
 
 export interface PlotlyLineChartProps {
-  url?: string;
-  data?: { [key: string]: number | string }[];
-  rawCsv?: string;
-  randomId?: number;
+  data: Data;
   bytes?: number;
   parsingConfig?: ParseConfig;
   xAxis: string;
   yAxis: string;
   lineLabel?: string;
   title?: string;
+  uniqueId?: number;
 }
 
 export const PlotlyLineChart: React.FC<PlotlyLineChartProps> = ({
-  url,
   data,
-  rawCsv,
   bytes = 5132288,
   parsingConfig = {},
   xAxis,
   yAxis,
   lineLabel,
-  title = "",
+  title = '',
+  uniqueId,
 }) => {
-  const randomId = Math.random();
+  uniqueId = uniqueId ?? Math.random();
   return (
     // Provide the client to your App
     <QueryClientProvider client={queryClient}>
       <LineChartInner
-        url={url}
         data={data}
-        rawCsv={rawCsv}
-        randomId={randomId}
+        uniqueId={uniqueId}
         bytes={bytes}
         parsingConfig={parsingConfig}
         xAxis={xAxis}
@@ -83,10 +79,8 @@ export const PlotlyLineChart: React.FC<PlotlyLineChartProps> = ({
 };
 
 const LineChartInner: React.FC<PlotlyLineChartProps> = ({
-  url,
   data,
-  rawCsv,
-  randomId,
+  uniqueId,
   bytes,
   parsingConfig,
   xAxis,
@@ -94,18 +88,22 @@ const LineChartInner: React.FC<PlotlyLineChartProps> = ({
   lineLabel,
   title,
 }) => {
-  if (data) {
+  const values = data.values;
+  const url = data.url;
+  const csv = data.csv;
+
+  if (values) {
     return (
-      <div className="w-full" style={{ height: "500px" }}>
+      <div className="w-full" style={{ height: '500px' }}>
         <Plotly
           layout={{
             title,
           }}
           data={[
             {
-              x: data.map((d) => d[xAxis]),
-              y: data.map((d) => d[yAxis]),
-              mode: "lines",
+              x: values.map((d) => d[xAxis]),
+              y: values.map((d) => d[yAxis]),
+              mode: 'lines',
               name: lineLabel,
             },
           ]}
@@ -114,18 +112,18 @@ const LineChartInner: React.FC<PlotlyLineChartProps> = ({
     );
   }
   const { data: csvString, isLoading: isDownloadingCSV } = useQuery(
-    ["dataCsv", url, randomId],
+    ['dataCsv', url, uniqueId],
     () => getCsv(url as string, bytes ?? 5132288),
-    { enabled: !!url },
+    { enabled: !!url }
   );
   const { data: parsedData, isLoading: isParsing } = useQuery(
-    ["dataPreview", csvString, randomId],
+    ['dataPreview', csvString, uniqueId],
     () =>
       parseCsv(
-        rawCsv ? (rawCsv as string) : (csvString as string),
-        parsingConfig ?? {},
+        csv ? (csv as string) : (csvString as string),
+        parsingConfig ?? {}
       ),
-    { enabled: rawCsv ? true : !!csvString },
+    { enabled: csv ? true : !!csvString }
   );
   if (isParsing || isDownloadingCSV)
     <div className="w-full flex justify-center items-center h-[500px]">
@@ -133,7 +131,7 @@ const LineChartInner: React.FC<PlotlyLineChartProps> = ({
     </div>;
   if (parsedData)
     return (
-      <div className="w-full" style={{ height: "500px" }}>
+      <div className="w-full" style={{ height: '500px' }}>
         <Plotly
           layout={{
             title,
@@ -142,7 +140,7 @@ const LineChartInner: React.FC<PlotlyLineChartProps> = ({
             {
               x: parsedData.data.map((d: any) => d[xAxis]),
               y: parsedData.data.map((d: any) => d[yAxis]),
-              mode: "lines",
+              mode: 'lines',
               name: lineLabel,
             },
           ]}

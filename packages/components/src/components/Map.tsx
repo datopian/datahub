@@ -2,6 +2,7 @@ import { CSSProperties, useEffect, useState } from 'react';
 import LoadingSpinner from './LoadingSpinner';
 import loadData from '../lib/loadData';
 import chroma from 'chroma-js';
+import { GeospatialData } from '../types/properties';
 import {
   MapContainer,
   TileLayer,
@@ -14,26 +15,25 @@ import * as L from 'leaflet';
 
 export type MapProps = {
   layers: {
-    data: string | GeoJSON.GeoJSON;
+    data: GeospatialData;
     name: string;
     colorScale?: {
       starting: string;
       ending: string;
     };
     tooltip?:
-    | {
-      propNames: string[];
-    }
-    | boolean;
-    _id?: number;
+      | {
+          propNames: string[];
+        }
+      | boolean;
   }[];
   title?: string;
   center?: { latitude: number | undefined; longitude: number | undefined };
   zoom?: number;
   style?: CSSProperties;
   autoZoomConfiguration?: {
-    layerName: string
-  }
+    layerName: string;
+  };
 };
 
 export function Map({
@@ -56,17 +56,19 @@ export function Map({
 
   useEffect(() => {
     const loadDataPromises = layers.map(async (layer) => {
+      const url = layer.data.url;
+      const geojson = layer.data.geojson;
       let layerData: any;
 
-      if (typeof layer.data === 'string') {
+      if (url) {
         //  If "data" is string, assume it's a URL
         setIsLoading(true);
-        layerData = await loadData(layer.data).then((res: any) => {
+        layerData = await loadData(url).then((res: any) => {
           return JSON.parse(res);
         });
       } else {
         //  Else, expect raw GeoJSON
-        layerData = layer.data;
+        layerData = geojson;
       }
 
       if (layer.colorScale) {
@@ -111,23 +113,23 @@ export function Map({
         //  Create the title box
         var info = new L.Control() as any;
 
-        info.onAdd = function() {
+        info.onAdd = function () {
           this._div = L.DomUtil.create('div', 'info');
           this.update();
           return this._div;
         };
 
-        info.update = function() {
+        info.update = function () {
           this._div.innerHTML = `<h4 style="font-weight: 600; background: #f9f9f9; padding: 5px; border-radius: 5px; color: #464646;">${title}</h4>`;
         };
 
         if (title) info.addTo(map.target);
-        if(!autoZoomConfiguration) return;
+        if (!autoZoomConfiguration) return;
 
         let layerToZoomBounds = L.latLngBounds(L.latLng(0, 0), L.latLng(0, 0));
 
         layers.forEach((layer) => {
-          if(layer.name === autoZoomConfiguration.layerName) {
+          if (layer.name === autoZoomConfiguration.layerName) {
             const data = layersData.find(
               (layerData) => layerData.name === layer.name
             )?.data;

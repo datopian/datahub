@@ -7,7 +7,12 @@ export function Catalog({
   datasets,
   facets,
 }: {
-  datasets: any[];
+  datasets: {
+    _id: string | number;
+    metadata: { title: string; [k: string]: string | number };
+    url_path: string;
+    [k: string]: any;
+  }[];
   facets: string[];
 }) {
   const [indexFilter, setIndexFilter] = useState('');
@@ -56,7 +61,7 @@ export function Catalog({
     //Then check if the selectedValue for the given facet is included in the dataset metadata
     .filter((dataset) => {
       //Avoids a server rendering breakage
-      if (!watch() || Object.keys(watch()).length === 0) return true
+      if (!watch() || Object.keys(watch()).length === 0) return true;
       //This will filter only the key pairs of the metadata values that were selected as facets
       const datasetFacets = Object.entries(dataset.metadata).filter((entry) =>
         facets.includes(entry[0])
@@ -86,9 +91,7 @@ export function Catalog({
           className="p-2 ml-1 text-sm shadow border border-block"
           {...register(elem[0] + '.selectedValue')}
         >
-          <option value="">
-            Filter by {elem[0]}
-          </option>
+          <option value="">Filter by {elem[0]}</option>
           {(elem[1] as { possibleValues: string[] }).possibleValues.map(
             (val) => (
               <option
@@ -102,10 +105,10 @@ export function Catalog({
           )}
         </select>
       ))}
-      <ul className='mb-5 pl-6 mt-5 list-disc'>
+      <ul className="mb-5 pl-6 mt-5 list-disc">
         {filteredDatasets.map((dataset) => (
-          <li className='py-2' key={dataset._id}>
-            <a className='font-medium underline' href={dataset.url_path}>
+          <li className="py-2" key={dataset._id}>
+            <a className="font-medium underline" href={dataset.url_path}>
               {dataset.metadata.title
                 ? dataset.metadata.title
                 : dataset.url_path}
@@ -116,4 +119,3 @@ export function Catalog({
     </>
   );
 }
-

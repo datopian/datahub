@@ -2,6 +2,7 @@ import { QueryClient, QueryClientProvider, useQuery } from 'react-query';
 import Papa from 'papaparse';
 import { Grid } from '@githubocto/flat-ui';
 import LoadingSpinner from './LoadingSpinner';
+import { Data } from '../types/properties';
 
 const queryClient = new QueryClient();
 
@@ -36,30 +37,25 @@ export async function parseCsv(file: string, parsingConfig): Promise<any> {
 }
 
 export interface FlatUiTableProps {
-  url?: string;
-  data?: { [key: string]: number | string }[];
-  rawCsv?: string;
-  randomId?: number;
+  data: Data;
+  uniqueId?: number;
   bytes: number;
   parsingConfig: any;
 }
 export const FlatUiTable: React.FC<FlatUiTableProps> = ({
-  url,
   data,
-  rawCsv,
+  uniqueId,
   bytes = 5132288,
   parsingConfig = {},
 }) => {
-  const randomId = Math.random();
+  uniqueId = uniqueId ?? Math.random();
   return (
     // Provide the client to your App
     <QueryClientProvider client={queryClient}>
       <TableInner
         bytes={bytes}
-        url={url}
         data={data}
-        rawCsv={rawCsv}
-        randomId={randomId}
+        uniqueId={uniqueId}
         parsingConfig={parsingConfig}
       />
     </QueryClientProvider>
@@ -67,33 +63,32 @@ export const FlatUiTable: React.FC<FlatUiTableProps> = ({
 };
 
 const TableInner: React.FC<FlatUiTableProps> = ({
-  url,
   data,
-  rawCsv,
-  randomId,
+  uniqueId,
   bytes,
   parsingConfig,
 }) => {
-  if (data) {
+  const url = data.url;
+  const csv = data.csv;
+  const values = data.values;
+
+  if (values) {
     return (
       <div className="w-full" style={{ height: '500px' }}>
-        <Grid data={data} />
+        <Grid data={values} />
       </div>
     );
   }
   const { data: csvString, isLoading: isDownloadingCSV } = useQuery(
-    ['dataCsv', url, randomId],
+    ['dataCsv', url, uniqueId],
     () => getCsv(url as string, bytes),
     { enabled: !!url }
   );
   const { data: parsedData, isLoading: isParsing } = useQuery(
-    ['dataPreview', csvString, randomId],
+    ['dataPreview', csvString, uniqueId],
     () =>
-      parseCsv(
-        rawCsv ? (rawCsv as string) : (csvString as string),
-        parsingConfig
-      ),
-    { enabled: rawCsv ? true : !!csvString }
+      parseCsv(csv ? (csv as string) : (csvString as string), parsingConfig),
+    { enabled: csv ? true : !!csvString }
   );
   if (isParsing || isDownloadingCSV)
     <div className="w-full flex justify-center items-center h-[500px]">
