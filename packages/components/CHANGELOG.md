@@ -1,5 +1,11 @@
 # @portaljs/components
 
+## 1.0.0
+
+### Major Changes
+
+- [#1103](https://github.com/datopian/datahub/pull/1103) [`48cd812a`](https://github.com/datopian/datahub/commit/48cd812a488a069a419d8ecc67f24f94d4d1d1d6) Thanks [@demenech](https://github.com/demenech)! - Components API tidying up and storybook docs improvements.
+
 ## 0.6.0
 
 ### Minor Changes
