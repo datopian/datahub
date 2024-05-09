@@ -1,9 +1,6 @@
 import * as path from "path";
-// import * as url from "url";
 import { getPermalinks } from "../src/utils";
 
-// const __dirname = url.fileURLToPath(new URL(".", import.meta.url));
-// const markdownFolder = path.join(__dirname, "/fixtures/content");
 const markdownFolder = path.join(
   ".",
   "test/fixtures/content"
@@ -12,12 +9,12 @@ const markdownFolder = path.join(
 describe("getPermalinks", () => {
   test("should return an array of permalinks", () => {
     const expectedPermalinks = [
-      "/", // /index.md
+      "/README",
       "/abc",
       "/blog/first-post",
       "/blog/Second Post",
       "/blog/third-post",
-      "/blog", // /blog/index.md
+      "/blog/README",
       "/blog/tutorials/first-tutorial",
       "/assets/Pasted Image 123.png",
     ];
