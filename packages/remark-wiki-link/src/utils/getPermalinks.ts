@@ -38,6 +38,5 @@ const defaultPathToPermalinkFunc = (
     .replace(markdownFolder, "") // make the permalink relative to the markdown folder
     .replace(/\.(mdx|md)/, "")
     .replace(/\\/g, "/") // replace windows backslash with forward slash
-    .replace(/\/index$/, ""); // remove index from the end of the permalink
   return permalink.length > 0 ? permalink : "/"; // for home page
 };

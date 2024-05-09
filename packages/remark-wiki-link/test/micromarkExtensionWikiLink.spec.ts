@@ -159,11 +159,11 @@ describe("micromark-extension-wiki-link", () => {
       });
       expect(serialized).toBe(
         '<p><img src="My Image.jpg" alt="My Image.jpg" class="internal" width="200" height="200" /></p>'
-        );
-      });
-      
+      );
+    });
+
     // TODO: Fix alt attribute
-      test("Can identify the dimensions of the image if exists", () => {
+    test("Can identify the dimensions of the image if exists", () => {
       const serialized = micromark("![[My Image.jpg|200x200]]", "ascii", {
         extensions: [syntax()],
         htmlExtensions: [html({ permalinks: ["My Image.jpg"] }) as any], // TODO type fix
@@ -283,56 +283,6 @@ describe("micromark-extension-wiki-link", () => {
       expect(serialized).toBe(
         '<p><a href="wiki-link" class="internal new">Wiki Link</a></p>'
       );
-    });
-  });
-
-  test("parses wiki links to index files", () => {
-    const serialized = micromark("[[/some/folder/index]]", "ascii", {
-      extensions: [syntax()],
-      htmlExtensions: [html() as any], // TODO type fix
-    });
-    expect(serialized).toBe(
-      '<p><a href="/some/folder" class="internal new">/some/folder/index</a></p>'
-    );
-  });
-
-  describe("other", () => {
-    test("parses a wiki link to some index page in a folder with no matching permalink", () => {
-      const serialized = micromark("[[/some/folder/index]]", "ascii", {
-        extensions: [syntax()],
-        htmlExtensions: [html() as any], // TODO type fix
-      });
-      expect(serialized).toBe(
-        '<p><a href="/some/folder" class="internal new">/some/folder/index</a></p>'
-      );
-    });
-
-    test("parses a wiki link to some index page in a folder with a matching permalink", () => {
-      const serialized = micromark("[[/some/folder/index]]", "ascii", {
-        extensions: [syntax()],
-        htmlExtensions: [html({ permalinks: ["/some/folder"] }) as any], // TODO type fix
-      });
-      expect(serialized).toBe(
-        '<p><a href="/some/folder" class="internal">/some/folder/index</a></p>'
-      );
-    });
-
-    test("parses a wiki link to home index page with no matching permalink", () => {
-      const serialized = micromark("[[/index]]", "ascii", {
-        extensions: [syntax()],
-        htmlExtensions: [html() as any], // TODO type fix
-      });
-      expect(serialized).toBe(
-        '<p><a href="/" class="internal new">/index</a></p>'
-      );
-    });
-
-    test("parses a wiki link to home index page with a matching permalink", () => {
-      const serialized = micromark("[[/index]]", "ascii", {
-        extensions: [syntax()],
-        htmlExtensions: [html({ permalinks: ["/"] }) as any], // TODO type fix
-      });
-      expect(serialized).toBe('<p><a href="/" class="internal">/index</a></p>');
     });
   });
 
