@@ -14,6 +14,11 @@ import 'leaflet/dist/leaflet.css';
 import * as L from 'leaflet';
 
 export type MapProps = {
+  tile?: {
+    attribution?: string;
+    url: string;
+    data?: any;
+  };
   layers: {
     data: GeospatialData;
     name: string;
@@ -37,6 +42,11 @@ export type MapProps = {
 };
 
 export function Map({
+  tile = {
+    url: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+    attribution:
+      '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+  },
   layers = [
     {
       data: null,
@@ -144,10 +154,7 @@ export function Map({
         map.target.fitBounds(layerToZoomBounds);
       }}
     >
-      <TileLayer
-        attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-        url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-      />
+      <TileLayer url={tile.url} attribution={tile.attribution} {...tile.data} />
       <LayersControl position="bottomright">
         {layers.map((layer) => {
           const data = layersData.find(
