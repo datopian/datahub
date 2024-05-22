@@ -8,17 +8,14 @@ import {
   TileLayer,
   GeoJSON as GeoJSONLayer,
   LayersControl,
+  TileLayerProps,
 } from 'react-leaflet';
 
 import 'leaflet/dist/leaflet.css';
 import * as L from 'leaflet';
 
 export type MapProps = {
-  tile?: {
-    attribution?: string;
-    url: string;
-    data?: any;
-  };
+  tile?: TileLayerProps;
   layers: {
     data: GeospatialData;
     name: string;
@@ -63,6 +60,30 @@ export function Map({
 }: MapProps) {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [layersData, setLayersData] = useState<any>([]);
+
+  /*
+  tileEnvVars
+  extract all environment variables thats starts with NEXT_PUBLIC_MAP_TILE_.
+    the variables names are the same as the TileLayer object properties:
+    - url:
+    - attribution
+    - accessToken
+    - id
+    - ext
+    - bounds
+    - maxZoom
+    - minZoom
+    see TileLayerOptions inteface
+   */
+  const tileEnvVars = Object.keys(process?.env)
+    .filter((key) => key.startsWith('NEXT_PUBLIC_MAP_TILE_'))
+    .reduce((obj, key) => {
+      obj[key.split('NEXT_PUBLIC_MAP_TILE_')[1]] = process.env[key];
+      return obj;
+    }, {});
+
+  //tileData prioritizes properties passed through component over those passed through .env variables
+  const tileData = Object.assign(tileEnvVars, tile);
 
   useEffect(() => {
     const loadDataPromises = layers.map(async (layer) => {
@@ -154,7 +175,8 @@ export function Map({
         map.target.fitBounds(layerToZoomBounds);
       }}
     >
-      <TileLayer url={tile.url} attribution={tile.attribution} {...tile.data} />
+      {tileData.url && <TileLayer {...tileData} />}
+
       <LayersControl position="bottomright">
         {layers.map((layer) => {
           const data = layersData.find(

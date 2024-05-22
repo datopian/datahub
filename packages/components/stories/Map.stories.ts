@@ -44,11 +44,10 @@ export const GeoJSONPolygons: Story = {
   name: 'GeoJSON polygons map',
   args: {
     tile : {
-      url : 'https://tiles.stadiamaps.com/tiles/alidade_satellite/{z}/{x}/{y}{r}.{ext}',
-      attribution:'&copy; CNES, Distribution Airbus DS, © Airbus DS, © PlanetObserver (Contains Copernicus Data) | &copy; <a href="https://www.stadiamaps.com/" target="_blank">Stadia Maps</a> &copy; <a href="https://openmaptiles.org/" target="_blank">OpenMapTiles</a> &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
-      data: {
-        ext: 'jpg'
-      }
+      url : 'https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}',
+      attribution:'&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://www.mapbox.com/about/maps/">Mapbox</a>',
+      accessToken : 'pk.eyJ1Ijoid2lsbHktcGFsbWFyZWpvIiwiYSI6ImNqNzk5NmRpNDFzb2cyeG9sc2luMHNjajUifQ.lkoVRFSI8hOLH4uJeOzwXw',
+      id: 'mapbox/streets-v10'
     },
     layers: [
       {
