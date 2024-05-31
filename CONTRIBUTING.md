@@ -4,7 +4,7 @@ title: Developer docs for contributors
 
 ## Our repository
 
-https://github.com/datopian/portaljs
+https://github.com/datopian/datahub
 
 Structure:
 
@@ -17,7 +17,7 @@ Structure:
 
 ## How to contribute
 
-You can start by checking our [issues board](https://github.com/datopian/portaljs/issues).
+You can start by checking our [issues board](https://github.com/datopian/datahub/issues).
 
 If you'd like to work on one of the issues you can:
 
@@ -35,7 +35,7 @@ If you'd like to work on one of the issues you can:
 If you have an idea for improvement, and it doesn't have a corresponding issue yet, simply submit a new one.
 
 > [!note]
-> Join our [Discord channel](https://discord.gg/rTxfCutu) do discuss existing issues and to ask for help.
+> Join our [Discord channel](https://discord.gg/KZSf3FG4EZ) do discuss existing issues and to ask for help.
 
 ## Nx
 
