@@ -100,6 +100,7 @@ export function Map({
     </div>
   ) : (
     <MapContainer
+      key={layersData}
       center={[center.latitude, center.longitude]}
       zoom={zoom}
       scrollWheelZoom={false}
