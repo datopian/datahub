@@ -39,11 +39,7 @@ export type MapProps = {
 };
 
 export function Map({
-  tile = {
-    url: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
-    attribution:
-      '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
-  },
+  tile = undefined,
   layers = [
     {
       data: null,
@@ -63,7 +59,7 @@ export function Map({
 
   /*
   tileEnvVars
-  extract all environment variables thats starts with NEXT_PUBLIC_MAP_TILE_.
+  extract all environment variables thats starts with NEXT_PUBLIC_MAP_TILE_PROVIDER_.
     the variables names are the same as the TileLayer object properties:
     - url:
     - attribution
@@ -76,14 +72,22 @@ export function Map({
     see TileLayerOptions inteface
    */
   const tileEnvVars = Object.keys(process?.env)
-    .filter((key) => key.startsWith('NEXT_PUBLIC_MAP_TILE_'))
+    .filter((key) => key.startsWith('NEXT_PUBLIC_MAP_TILE_PROVIDER_'))
     .reduce((obj, key) => {
-      obj[key.split('NEXT_PUBLIC_MAP_TILE_')[1]] = process.env[key];
+      obj[key.split('NEXT_PUBLIC_MAP_TILE_PROVIDER_')[1]] = process.env[key];
       return obj;
     }, {});
 
   //tileData prioritizes properties passed through component over those passed through .env variables
-  const tileData = Object.assign(tileEnvVars, tile);
+  let tileData = Object.assign(tileEnvVars, tile);
+
+  tileData = tileData.url
+    ? tileData
+    : {
+        url: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+        attribution:
+          '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+      };
 
   useEffect(() => {
     const loadDataPromises = layers.map(async (layer) => {
