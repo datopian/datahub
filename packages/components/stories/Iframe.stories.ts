@@ -28,6 +28,6 @@ export const Normal: Story = {
     data: {
       url: 'https://app.powerbi.com/view?r=eyJrIjoiYzBmN2Q2MzYtYzE3MS00ODkxLWE5OWMtZTQ2MjBlMDljMDk4IiwidCI6Ijk1M2IwZjgzLTFjZTYtNDVjMy04MmM5LTFkODQ3ZTM3MjMzOSIsImMiOjh9',
     },
-    style: { width: `100%`, height: `100%` },
+    style: { width: `100%`, height: `600px` },
   },
 };
