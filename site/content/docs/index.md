@@ -3,9 +3,9 @@ title: Getting Started
 description: 'Getting started guide and tutorial about data portal-building with PortalJS!'
 ---
 
-Welcome to the PortalJS documentation!
+Welcome to the DataHub PortalJS documentation!
 
-If you have questions about anything related to PortalJS, you're always welcome to ask our community on [GitHub Discussions](https://github.com/datopian/portaljs/discussions) or on [our chat channel on Discord](https://discord.gg/EeyfGrGu4U).
+If you have questions about anything related to PortalJS, you're always welcome to ask our community on [GitHub Discussions](https://github.com/datopian/datahub/discussions) or on [our chat channel on Discord](https://discord.com/invite/KrRzMKU).
 
 ## Setup
 
@@ -16,10 +16,10 @@ If you have questions about anything related to PortalJS, you're always welcome 
 
 ### Create a PortalJS app
 
-To create a PortalJS app, open your terminal, cd into the directory you’d like to create the app in, and run the following command:
+To create a DataHub PortalJS app, open your terminal, cd into the directory you’d like to create the app in, and run the following command:
 
 ```bash
-npx create-next-app my-data-portal --example https://github.com/datopian/portaljs/tree/main/examples/learn
+npx create-next-app my-data-portal --example https://github.com/datopian/datahub/tree/main/examples/learn
 ```
 
 > [!tip]
