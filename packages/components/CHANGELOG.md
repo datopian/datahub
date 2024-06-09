@@ -1,5 +1,11 @@
 # @portaljs/components
 
+## 1.0.1
+
+### Patch Changes
+
+- [#1170](https://github.com/datopian/datahub/pull/1170) [`9ff25ed7`](https://github.com/datopian/datahub/commit/9ff25ed7c47c8c02cc078c64f76ae35d6754c508) Thanks [@lucasmbispo](https://github.com/lucasmbispo)! - iFrame component: change height
+
 ## 1.0.0
 
 ### Major Changes
