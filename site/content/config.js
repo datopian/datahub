@@ -1,7 +1,7 @@
 const config = {
-  title: 'PortalJS - The JavaScript framework for data portals.',
+  title: 'DataHub PortalJS - The JavaScript framework for data portals.',
   description:
-    'PortalJS is a JavaScript framework for rapidly building rich data portal frontends using a modern frontend approach.',
+    'DataHub PortalJS is a JavaScript framework for rapidly building rich data portal frontends using a modern frontend approach.',
   theme: {
     default: 'dark',
     toggleIcon: '/images/theme-button.svg',
@@ -11,7 +11,7 @@ const config = {
   authorUrl: 'https://datopian.com/',
   navbarTitle: {
     // logo: "/images/logo.svg",
-    text: '🌀 PortalJS',
+    text: '🌀 DataHub PortalJS',
     // version: "Alpha",
   },
   navLinks: [
@@ -68,8 +68,8 @@ const config = {
       cardType: 'summary_large_image',
     },
   },
-  github: 'https://github.com/datopian/portaljs',
-  discord: 'https://discord.gg/xfFDMPU9dC',
+  github: 'https://github.com/datopian/datahub',
+  discord: 'https://discord.gg/KrRzMKU',
   tableOfContents: true,
   analytics: 'G-96GWZHMH57',
   // editLinkShow: true,

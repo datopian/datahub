@@ -11,5 +11,5 @@ description: Learn more about how you can achieve different data portal features
 - [[howtos/drd|How to create data-rich documents with charts and tables?]]
 - [[howtos/comments|How to add user comments?]]
 
-If you have questions about anything related to PortalJS, you're always welcome to ask our community on [GitHub Discussions](https://github.com/datopian/portaljs/discussions) or on [our chat channel on Discord](https://discord.gg/EeyfGrGu4U).
+If you have questions about anything related to PortalJS, you're always welcome to ask our community on [GitHub Discussions](https://github.com/datopian/datahub/discussions) or on [our chat channel on Discord](https://discord.gg/EeyfGrGu4U).
 

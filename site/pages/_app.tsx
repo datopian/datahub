@@ -50,7 +50,7 @@ function MyApp({ Component, pageProps }) {
       <DefaultSeo
         defaultTitle={siteConfig.title}
         description={siteConfig.description}
-        titleTemplate="PortalJS - %s"
+        titleTemplate="DataHub PortalJS - %s"
         {...siteConfig.nextSeo}
       />
 
