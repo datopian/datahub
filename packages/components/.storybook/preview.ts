@@ -5,7 +5,12 @@ import type { Preview } from '@storybook/react';
 window.process = {
  ...window.process,
  env:{
-  ...window.process?.env
+  ...window.process?.env,
+  
+  NEXT_PUBLIC_MAP_TILE_LAYER_NAME:'MapBox',
+  NEXT_PUBLIC_MAP_TILE_LAYER_OPTION_accessToken: 'pk.eyJ1Ijoid2lsbHktcGFsbWFyZWpvIiwiYSI6ImNqNzk5NmRpNDFzb2cyeG9sc2luMHNjajUifQ.lkoVRFSI8hOLH4uJeOzwXw',
+  
+  
  }
 };
 
