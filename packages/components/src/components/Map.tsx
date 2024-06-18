@@ -159,7 +159,8 @@ export function Map({
       }
       return attr.replace(
         /\{attribution.(\w*)\}/g,
-        function (match, attributionName) {
+        function (match: any, attributionName: string) {
+          match;
           return attributionReplacer(
             providers[attributionName].options.attribution
           );
