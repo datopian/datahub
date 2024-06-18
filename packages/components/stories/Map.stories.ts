@@ -43,7 +43,7 @@ type Story = StoryObj<MapProps>;
 export const GeoJSONPolygons: Story = {
   name: 'GeoJSON polygons map',
   args: {
-    tileLayerName:'OpenStreetMap',
+    tileLayerName:'MapBox',
     tileLayerOptions:{
       accessToken : 'pk.eyJ1Ijoid2lsbHktcGFsbWFyZWpvIiwiYSI6ImNqNzk5NmRpNDFzb2cyeG9sc2luMHNjajUifQ.lkoVRFSI8hOLH4uJeOzwXw',
     },
