@@ -122,8 +122,6 @@ export function Map({
     if (providers[providerName].url?.includes('{variant}') && !variantName)
       variantName = Object.keys(providers[providerName].variants)[0];
 
-    console.log(variantName);
-
     if (!providers[providerName]) {
       throw 'No such provider (' + providerName + ')';
     }
