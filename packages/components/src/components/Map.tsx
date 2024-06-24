@@ -12,8 +12,32 @@ import {
 
 import 'leaflet/dist/leaflet.css';
 import * as L from 'leaflet';
+import providers from '../lib/tileLayerPresets';
+
+type VariantKeys<T> = T extends { variants: infer V }
+  ? {
+      [K in keyof V]: K extends string
+        ? `${K}` | `${K}.${VariantKeys<V[K]>}`
+        : never;
+    }[keyof V]
+  : never;
+
+type ProviderVariantKeys<T> = {
+  [K in keyof T]: K extends string
+    ? `${K}` | `${K}.${VariantKeys<T[K]>}`
+    : never;
+}[keyof T];
+
+type TileLayerPreset = ProviderVariantKeys<typeof providers> | 'custom';
+
+interface TileLayerSettings extends L.TileLayerOptions {
+  url?: string;
+  variant?: string | any;
+}
 
 export type MapProps = {
+  tileLayerName: TileLayerPreset;
+  tileLayerOptions?: TileLayerSettings | undefined;
   layers: {
     data: GeospatialData;
     name: string;
@@ -36,7 +60,19 @@ export type MapProps = {
   };
 };
 
+const tileLayerDefaultName = process?.env
+  .NEXT_PUBLIC_MAP_TILE_LAYER_NAME as TileLayerPreset;
+
+const tileLayerDefaultOptions = Object.keys(process?.env)
+  .filter((key) => key.startsWith('NEXT_PUBLIC_MAP_TILE_LAYER_OPTION_'))
+  .reduce((obj, key) => {
+    obj[key.split('NEXT_PUBLIC_MAP_TILE_LAYER_OPTION_')[1]] = process.env[key];
+    return obj;
+  }, {}) as TileLayerSettings;
+
 export function Map({
+  tileLayerName = tileLayerDefaultName || 'OpenStreetMap',
+  tileLayerOptions,
   layers = [
     {
       data: null,
@@ -53,6 +89,95 @@ export function Map({
 }: MapProps) {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [layersData, setLayersData] = useState<any>([]);
+
+  /*
+  tileLayerDefaultOptions
+  extract all environment variables thats starts with NEXT_PUBLIC_MAP_TILE_LAYER_OPTION_.
+    the variables names are the same as the TileLayer object properties:
+    - NEXT_PUBLIC_MAP_TILE_LAYER_OPTION_url:
+    - NEXT_PUBLIC_MAP_TILE_LAYER_OPTION_attribution
+    - NEXT_PUBLIC_MAP_TILE_LAYER_OPTION_accessToken
+    - NEXT_PUBLIC_MAP_TILE_LAYER_OPTION_id
+    - NEXT_PUBLIC_MAP_TILE_LAYER_OPTION_ext
+    - NEXT_PUBLIC_MAP_TILE_LAYER_OPTION_bounds
+    - NEXT_PUBLIC_MAP_TILE_LAYER_OPTION_maxZoom
+    - NEXT_PUBLIC_MAP_TILE_LAYER_OPTION_minZoom
+    see TileLayerOptions inteface
+   */
+
+  //tileLayerData prioritizes properties passed through component over those passed through .env variables
+  tileLayerOptions = Object.assign(tileLayerDefaultOptions, tileLayerOptions);
+
+  let provider = {
+    url: tileLayerOptions.url,
+    options: tileLayerOptions,
+  };
+
+  if (tileLayerName != 'custom') {
+    var parts = tileLayerName.split('.');
+    var providerName = parts[0];
+    var variantName: string = parts[1];
+
+    //make sure to declare a variant if url depends on a variant: assume first
+    if (providers[providerName].url?.includes('{variant}') && !variantName)
+      variantName = Object.keys(providers[providerName].variants)[0];
+
+    if (!providers[providerName]) {
+      throw 'No such provider (' + providerName + ')';
+    }
+
+    provider = {
+      url: providers[providerName].url,
+      options: providers[providerName].options,
+    };
+
+    // overwrite values in provider from variant.
+    if (variantName && 'variants' in providers[providerName]) {
+      if (!(variantName in providers[providerName].variants)) {
+        throw 'No such variant of ' + providerName + ' (' + variantName + ')';
+      }
+      var variant = providers[providerName].variants[variantName];
+      var variantOptions;
+      if (typeof variant === 'string') {
+        variantOptions = {
+          variant: variant,
+        };
+      } else {
+        variantOptions = variant.options;
+      }
+      provider = {
+        url: variant.url || provider.url,
+        options: L.Util.extend({}, provider.options, variantOptions),
+      };
+    }
+
+    var attributionReplacer = function (attr) {
+      if (attr.indexOf('{attribution.') === -1) {
+        return attr;
+      }
+      return attr.replace(
+        /\{attribution.(\w*)\}/g,
+        function (match: any, attributionName: string) {
+          match;
+          return attributionReplacer(
+            providers[attributionName].options.attribution
+          );
+        }
+      );
+    };
+
+    provider.options.attribution = attributionReplacer(
+      provider.options.attribution
+    );
+  }
+
+  var tileLayerData = L.Util.extend(
+    {
+      url: provider.url,
+    },
+    provider.options,
+    tileLayerOptions
+  );
 
   useEffect(() => {
     const loadDataPromises = layers.map(async (layer) => {
@@ -145,10 +270,8 @@ export function Map({
         map.target.fitBounds(layerToZoomBounds);
       }}
     >
-      <TileLayer
-        attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-        url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-      />
+      {tileLayerData.url && <TileLayer {...tileLayerData} />}
+
       <LayersControl position="bottomright">
         {layers.map((layer) => {
           const data = layersData.find(

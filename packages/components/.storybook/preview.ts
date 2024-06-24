@@ -1,8 +1,15 @@
 import 'tailwindcss/tailwind.css'
 import '../src/index.css'
-
-
 import type { Preview } from '@storybook/react';
+
+window.process = {
+ ...window.process,
+ env:{
+  ...window.process?.env,
+
+  
+ }
+};
 
 const preview: Preview = {
   parameters: {
