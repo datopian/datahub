@@ -1,5 +1,11 @@
 # @portaljs/components
 
+## 1.1.0
+
+### Minor Changes
+
+- [#1122](https://github.com/datopian/datahub/pull/1122) [`8e349678`](https://github.com/datopian/datahub/commit/8e3496782c022b0653e07f217c6b315ba84e0e61) Thanks [@willy1989cv](https://github.com/willy1989cv)! - Map: allow users to choose a base layer setting
+
 ## 1.0.1
 
 ### Patch Changes
