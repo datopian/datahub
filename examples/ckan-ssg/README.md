@@ -1,7 +1,7 @@
 This is a repo intended to serve as an example of a data catalog that get its data from a CKAN Instance.
 
 ```
-npx create-next-app <app-name> --example https://github.com/datopian/portaljs/tree/main/examples/ckan-example
+npx create-next-app <app-name> --example https://github.com/datopian/datahub/tree/main/examples/ckan-ssg
 cd <app-name>
 ```
 
@@ -19,7 +19,7 @@ npm run dev
 
 Congratulations, you now have something similar to this running on `http://localhost:4200`
 ![](https://media.discordapp.net/attachments/1069718983604977754/1098252297726865408/image.png?width=853&height=461)
-If yo go to any one of those pages by clicking on `More info` you will see something similar to this
+If you go to any one of those pages by clicking on `More info` you will see something similar to this
 ![](https://media.discordapp.net/attachments/1069718983604977754/1098252298074988595/image.png?width=853&height=461)
 
 ## Deployment
