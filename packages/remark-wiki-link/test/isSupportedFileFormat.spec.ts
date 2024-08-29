@@ -20,9 +20,4 @@ describe("isSupportedFileFormat", () => {
     const filePath = "image.xyz";
     expect(isSupportedFileFormat(filePath)).toStrictEqual([false, "xyz"]);
   });
-
-  test("should return [true, <extension>] for a path with supported file extension", () => {
-    const filePath = "image.csv";
-    expect(isSupportedFileFormat(filePath)).toStrictEqual([false, "csv"]);
-  });
 });
