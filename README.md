@@ -41,7 +41,7 @@ https://datahub.io/docs
 
 DataHub 🌀 is a platform for rapidly creating rich data portal and publishing systems using a modern frontend approach. Datahub can be used to publish a single dataset or build a full-scale data catalog/portal.
 
-DataHub is built in JavaScript and React on top of the popular [Next.js](https://nextjs.com/) framework. DataHub assumes a "decoupled" approach where the frontend is a separate service from the backend and interacts with backend(s) via an API. It can be used with any backend and has out of the box support for [CKAN](https://ckan.org/), GitHub, Frictionless Data Packages and more.
+DataHub is built in JavaScript and React on top of the popular [Next.js](https://nextjs.org) framework. DataHub assumes a "decoupled" approach where the frontend is a separate service from the backend and interacts with backend(s) via an API. It can be used with any backend and has out of the box support for [CKAN](https://ckan.org/), GitHub, Frictionless Data Packages and more.
 
 ### Features
 
