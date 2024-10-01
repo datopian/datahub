@@ -22,11 +22,20 @@ const items = [
     sourceUrl: 'https://github.com/FCSCOpendata/frontend',
   },
   {
-    title: 'Datahub Open Data',
-    href: 'https://opendata.datahub.io/',
-    image: '/images/showcases/datahub.webp',
-    description: 'Demo Data Portal by DataHub',
+    title: 'Frictionless Data',
+    href: 'https://frictionlessdata.io',
+    repository: 'https://github.com/datopian/datahub/tree/main/examples/dataset-frictionless',
+    image: '/images/showcases/frictionless-capture.png',
+    description: 'Open-source toolkit that brings simplicity to the data experience',
   },
+  {
+    title: "OpenSpending",
+    image: "/images/showcases/openspending.png",
+    href: "https://www.openspending.org",
+    repository: 'https://github.com/datopian/datahub/tree/main/examples/openspending',
+    description: "Public Financial Data Portal"
+  },
+  
 ];
 
 export default function Showcases() {
