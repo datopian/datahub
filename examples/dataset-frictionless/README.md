@@ -1,6 +1,6 @@
 This example creates a portal/showcase for a single dataset. The dataset should be a [Frictionless dataset (data package)][fd] i.e. there should be a `datapackage.json`.
 
-[fd]: https://frictionlessdata.io/data-packages/
+[fd]: https://specs.frictionlessdata.io/data-package/
 
 ## How to use
 
