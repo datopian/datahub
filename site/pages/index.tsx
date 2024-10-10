@@ -35,7 +35,7 @@ export default function Home({ sidebarTree }) {
         sidebarTree={sidebarTree}
       >
         <Features />
-        <Showcases />
+
         <Community />
       </Layout>
     </>
