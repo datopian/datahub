@@ -18,12 +18,11 @@ const config = {
     { name: 'Docs', href: '/docs' },
     // { name: "Components", href: "/docs/components" },
     { name: 'Blog', href: '/blog' },
-    { name: 'Showcases', href: '/#showcases' },
     { name: 'Howtos', href: '/howtos' },
     { name: 'Guide', href: '/guide' },
     {
-      name: 'Examples',
-      href: '/examples/'
+      name: 'Showcases',
+      href: '/showcases/'
     },
     {
       name: 'Components',
