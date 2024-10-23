@@ -36,8 +36,9 @@ Must be an object with one of the following properties: `url` or `values` \n\n \
       description: 'Type of the Y-axis',
     },
     symbol: {
-      description: 'Name of the column header or object property that represents a series for multiple series.',
-    }
+      description:
+        'Name of the column header or object property that represents a series for multiple series.',
+    },
   },
 };
 
@@ -91,7 +92,6 @@ export const MultiSeries: Story = {
   },
 };
 
-
 export const MultiColumns: Story = {
   name: 'Line chart with multiple series (with multiple columns)',
   args: {
@@ -105,7 +105,7 @@ export const MultiColumns: Story = {
       ],
     },
     xAxis: 'year',
-    yAxis: ['A', 'B', 'C']
+    yAxis: ['A', 'B', 'C'],
   },
 };
 
