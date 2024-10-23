@@ -1,5 +1,11 @@
 # @portaljs/components
 
+## 1.2.0
+
+### Minor Changes
+
+- [#1338](https://github.com/datopian/datahub/pull/1338) [`63d9e3b7`](https://github.com/datopian/datahub/commit/63d9e3b7543c38154e6989ef1cc1d694ae9fc4f8) Thanks [@olayway](https://github.com/olayway)! - Support for plotting multiple series in LineChart component.
+
 ## 1.1.0
 
 ### Minor Changes
