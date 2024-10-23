@@ -13,9 +13,10 @@ export type LineChartProps = {
   xAxis: string;
   xAxisType?: AxisType;
   xAxisTimeUnit?: TimeUnit;
-  yAxis: string;
+  yAxis: string | string[];
   yAxisType?: AxisType;
   fullWidth?: boolean;
+  symbol?: string;
 };
 
 export function LineChart({
@@ -26,6 +27,7 @@ export function LineChart({
   xAxisTimeUnit = 'year', //  TODO: defaults to undefined would probably work better... keeping it as it's for compatibility purposes
   yAxis,
   yAxisType = 'quantitative',
+  symbol,
 }: LineChartProps) {
   const url = data.url;
   const values = data.values;
@@ -33,6 +35,7 @@ export function LineChart({
 
   //  By default, assumes data is an Array...
   const [specData, setSpecData] = useState<any>({ name: 'table' });
+  const isMultiYAxis = Array.isArray(yAxis);
 
   const spec = {
     $schema: 'https://vega.github.io/schema/vega-lite/v5.json',
@@ -46,6 +49,11 @@ export function LineChart({
       tooltip: true,
     },
     data: specData,
+    ...(isMultiYAxis
+      ? {
+          transform: [{ fold: yAxis, as: ['key', 'value'] }],
+        }
+      : {}),
     selection: {
       grid: {
         type: 'interval',
@@ -59,9 +67,25 @@ export function LineChart({
         type: xAxisType,
       },
       y: {
-        field: yAxis,
+        field: isMultiYAxis ? 'value' : yAxis,
         type: yAxisType,
       },
+      ...(symbol
+        ? {
+            color: {
+              field: symbol,
+              type: 'nominal',
+            },
+          }
+        : {}),
+      ...(isMultiYAxis
+        ? {
+            color: {
+              field: 'key',
+              type: 'nominal',
+            },
+          }
+        : {}),
     },
   } as any;
 

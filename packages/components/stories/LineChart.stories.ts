@@ -30,10 +30,14 @@ Must be an object with one of the following properties: `url` or `values` \n\n \
     },
     yAxis: {
       description:
-        'Name of the column header or object property that represents the Y-axis on the data.',
+        'Name of the column headers or object properties that represent the Y-axis on the data.',
     },
     yAxisType: {
       description: 'Type of the Y-axis',
+    },
+    symbol: {
+      description:
+        'Name of the column header or object property that represents a series for multiple series.',
     },
   },
 };
@@ -57,6 +61,51 @@ export const FromDataPoints: Story = {
     },
     xAxis: 'year',
     yAxis: 'value',
+  },
+};
+
+export const MultiSeries: Story = {
+  name: 'Line chart with multiple series (specifying symbol)',
+  args: {
+    data: {
+      values: [
+        { year: '1850', value: -0.41765878, z: 'A' },
+        { year: '1851', value: -0.2333498, z: 'A' },
+        { year: '1852', value: -0.22939907, z: 'A' },
+        { year: '1853', value: -0.27035445, z: 'A' },
+        { year: '1854', value: -0.29163003, z: 'A' },
+        { year: '1850', value: -0.42993882, z: 'B' },
+        { year: '1851', value: -0.30365549, z: 'B' },
+        { year: '1852', value: -0.27905189, z: 'B' },
+        { year: '1853', value: -0.22939704, z: 'B' },
+        { year: '1854', value: -0.25688013, z: 'B' },
+        { year: '1850', value: -0.4757164, z: 'C' },
+        { year: '1851', value: -0.41971018, z: 'C' },
+        { year: '1852', value: -0.40724799, z: 'C' },
+        { year: '1853', value: -0.45049156, z: 'C' },
+        { year: '1854', value: -0.41896583, z: 'C' },
+      ],
+    },
+    xAxis: 'year',
+    yAxis: 'value',
+    symbol: 'z',
+  },
+};
+
+export const MultiColumns: Story = {
+  name: 'Line chart with multiple series (with multiple columns)',
+  args: {
+    data: {
+      values: [
+        { year: '1850', A: -0.41765878, B: -0.42993882, C: -0.4757164 },
+        { year: '1851', A: -0.2333498, B: -0.30365549, C: -0.41971018 },
+        { year: '1852', A: -0.22939907, B: -0.27905189, C: -0.40724799 },
+        { year: '1853', A: -0.27035445, B: -0.22939704, C: -0.45049156 },
+        { year: '1854', A: -0.29163003, B: -0.25688013, C: -0.41896583 },
+      ],
+    },
+    xAxis: 'year',
+    yAxis: ['A', 'B', 'C'],
   },
 };
 
