@@ -1,5 +1,11 @@
 # @portaljs/components
 
+## 1.2.1
+
+### Patch Changes
+
+- [`836b143a`](https://github.com/datopian/datahub/commit/836b143a3178b893b1aae3fb511d795dd3a63545) Thanks [@olayway](https://github.com/olayway)! - Fix: make tileLayerName in Map optional.
+
 ## 1.2.0
 
 ### Minor Changes
