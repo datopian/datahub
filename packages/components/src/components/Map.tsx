@@ -91,19 +91,19 @@ export function Map({
   const [layersData, setLayersData] = useState<any>([]);
 
   /*
-  tileLayerDefaultOptions
-  extract all environment variables thats starts with NEXT_PUBLIC_MAP_TILE_LAYER_OPTION_.
-    the variables names are the same as the TileLayer object properties:
-    - NEXT_PUBLIC_MAP_TILE_LAYER_OPTION_url:
-    - NEXT_PUBLIC_MAP_TILE_LAYER_OPTION_attribution
-    - NEXT_PUBLIC_MAP_TILE_LAYER_OPTION_accessToken
-    - NEXT_PUBLIC_MAP_TILE_LAYER_OPTION_id
-    - NEXT_PUBLIC_MAP_TILE_LAYER_OPTION_ext
-    - NEXT_PUBLIC_MAP_TILE_LAYER_OPTION_bounds
-    - NEXT_PUBLIC_MAP_TILE_LAYER_OPTION_maxZoom
-    - NEXT_PUBLIC_MAP_TILE_LAYER_OPTION_minZoom
-    see TileLayerOptions inteface
-   */
+    tileLayerDefaultOptions
+    extract all environment variables thats starts with NEXT_PUBLIC_MAP_TILE_LAYER_OPTION_.
+      the variables names are the same as the TileLayer object properties:
+      - NEXT_PUBLIC_MAP_TILE_LAYER_OPTION_url:
+      - NEXT_PUBLIC_MAP_TILE_LAYER_OPTION_attribution
+      - NEXT_PUBLIC_MAP_TILE_LAYER_OPTION_accessToken
+      - NEXT_PUBLIC_MAP_TILE_LAYER_OPTION_id
+      - NEXT_PUBLIC_MAP_TILE_LAYER_OPTION_ext
+      - NEXT_PUBLIC_MAP_TILE_LAYER_OPTION_bounds
+      - NEXT_PUBLIC_MAP_TILE_LAYER_OPTION_maxZoom
+      - NEXT_PUBLIC_MAP_TILE_LAYER_OPTION_minZoom
+      see TileLayerOptions inteface
+     */
 
   //tileLayerData prioritizes properties passed through component over those passed through .env variables
   tileLayerOptions = Object.assign(tileLayerDefaultOptions, tileLayerOptions);
