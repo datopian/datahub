@@ -36,7 +36,7 @@ interface TileLayerSettings extends L.TileLayerOptions {
 }
 
 export type MapProps = {
-  tileLayerName: TileLayerPreset;
+  tileLayerName?: TileLayerPreset;
   tileLayerOptions?: TileLayerSettings | undefined;
   layers: {
     data: GeospatialData;
