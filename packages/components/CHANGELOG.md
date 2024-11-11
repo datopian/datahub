@@ -1,5 +1,11 @@
 # @portaljs/components
 
+## 1.2.2
+
+### Patch Changes
+
+- [`eeb480e8`](https://github.com/datopian/datahub/commit/eeb480e8cff2d11072ace55ad683a65f54f5d07a) Thanks [@olayway](https://github.com/olayway)! - Adjust `xAxisTimeUnit` property in LineChart to allow for passing `yearmonth`.
+
 ## 1.2.1
 
 ### Patch Changes
