@@ -5,7 +5,7 @@ import loadData from '../lib/loadData';
 import { Data } from '../types/properties';
 
 type AxisType = 'quantitative' | 'temporal';
-type TimeUnit = 'year' | undefined; // or ...
+type TimeUnit = 'year' | 'yearmonth' | undefined; // or ...
 
 export type LineChartProps = {
   data: Omit<Data, 'csv'>;
