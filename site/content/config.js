@@ -1,7 +1,7 @@
 const config = {
-  title: 'DataHub PortalJS - The JavaScript framework for data portals.',
+  title: 'PortalJS - The JavaScript framework for data portals.',
   description:
-    'DataHub PortalJS is a JavaScript framework for rapidly building rich data portal frontends using a modern frontend approach.',
+    'PortalJS is a JavaScript framework for rapidly building rich data portal frontends using a modern frontend approach.',
   theme: {
     default: 'dark',
     toggleIcon: '/images/theme-button.svg',
@@ -44,6 +44,7 @@ const config = {
       { rel: 'icon', href: '/favicon.ico' },
       { rel: 'apple-touch-icon', href: '/icon.png', sizes: '120x120' },
     ],
+    canonical: 'https://portaljs.com/',
     openGraph: {
       type: 'website',
       title:
