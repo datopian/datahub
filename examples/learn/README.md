@@ -1,1 +1,1 @@
-PortalJS Learn Example - https://portaljs.org/docs
+PortalJS Learn Example - https://portaljs.com/docs

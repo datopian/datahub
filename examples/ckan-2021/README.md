@@ -2,7 +2,7 @@
 
 **🚩 UPDATE April 2023: This example is now deprecated - though still works!. Please use the [new CKAN examples](https://github.com/datopian/portaljs/tree/main/examples)**
 
-This example shows how you can build a full data portal using a CKAN Backend with a Next.JS Frontend powered by Apollo, a full fledged guide is available as a [blog post](https://portaljs.org/blog/example-ckan-2021)
+This example shows how you can build a full data portal using a CKAN Backend with a Next.JS Frontend powered by Apollo, a full fledged guide is available as a [blog post](https://portaljs.com/blog/example-ckan-2021)
 
 ## Developers
 

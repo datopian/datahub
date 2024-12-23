@@ -29,5 +29,5 @@ It would be too complicated (and long) to explain all of the formatting aspects 
 
 ## Other useful pages
 
-[How to quickly add a simple Markdown-based page](https://guide.portaljs.org/guides/add-a-simple-md-page)
-[How to quickly edit text content on a single Markdown-based page](https://guide.portaljs.org/guides/edit-text-on-a-single-md-page)
+[How to quickly add a simple Markdown-based page](https://www.portaljs.com/opensource/howtos/markdown)
+[How to quickly edit text content on a single Markdown-based page](https://www.portaljs.com/opensource/howtos/markdown)

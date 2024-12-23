@@ -6,7 +6,7 @@ A `datasets.json` file is used to specify which datasets are going to be part of
 
 The application contains an index page, which lists all the datasets specified in the `datasets.json` file, and users can see more information about each dataset, such as the list of data files in it and the README, by clicking the "info" button on the list.
 
-You can read more about it on the [Data catalog with data on GitHub](https://portaljs.org/docs/examples/github-backed-catalog) blog post.
+You can read more about it on the [Data catalog with data on GitHub](https://portaljs.com/docs/examples/github-backed-catalog) blog post.
 
 ## Demo
 

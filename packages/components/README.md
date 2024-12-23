@@ -1,7 +1,7 @@
 # PortalJS React Components
 
 **Storybook:** https://storybook.portaljs.org  
-**Docs**: https://portaljs.org/docs  
+**Docs**: https://portaljs.com/opensource  
 
 ## Usage
 

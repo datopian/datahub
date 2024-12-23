@@ -59,7 +59,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
           <div className="md:flex items-center gap-x-3 text-[#3c3c3c] -mb-1 hidden">
             <a
               className="hover:opacity-75 transition"
-              href="https://portaljs.org"
+              href="https://portaljs.com"
             >
               Built with 🌀PortalJS
             </a>
@@ -77,7 +77,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
             <li>
               <a
                 className="hover:opacity-75 transition"
-                href="https://portaljs.org"
+                href="https://portaljs.com"
               >
                 PortalJS
               </a>
