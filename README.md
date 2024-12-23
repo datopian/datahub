@@ -1,21 +1,15 @@
-<h1 align="center">
-  <a href="https://datahub.io/">
-    <img alt="datahub" src="http://datahub.io/datahub-cube.svg" width="146">
-  </a>
-</h1>
-
 <p align="center">
-  Bugs, issues and suggestions re DataHub Cloud ☁️ and DataHub OpenSource 🌀
+  Bugs, issues and suggestions re DataHub framework
   <br />
   <br /><a href="https://discord.gg/xfFDMPU9dC"><img src="https://dcbadge.vercel.app/api/server/xfFDMPU9dC" /></a>
 </p>
 
 ## DataHub
 
-This repo and issue tracker are for 
+This repo and issue tracker are for
 
 - DataHub Cloud ☁️ - https://datahub.io/
-- DataHub 🌀 - https://datahub.io/opensource
+- PortalJS 🌀 - https://www.portaljs.com/
 
 ### Issues
 
@@ -35,13 +29,14 @@ If you would prefer to get help via live chat check out our discord 👉
 
 ### Docs
 
-https://datahub.io/docs
+- DataHub Cloud https://datahub.io/docs
+- PortalJS https://www.portaljs.com/opensource
 
-## DataHub OpenSource 🌀
+## PortalJS Cloud 🌀
 
-DataHub 🌀 is a platform for rapidly creating rich data portal and publishing systems using a modern frontend approach. Datahub can be used to publish a single dataset or build a full-scale data catalog/portal.
+PortalJS Cloud 🌀 is a platform for rapidly creating rich data portal and publishing systems using a modern frontend approach. PortalJS Cloud can be used to publish a single dataset or build a full-scale data catalog/portal.
 
-DataHub is built in JavaScript and React on top of the popular [Next.js](https://nextjs.org) framework. DataHub assumes a "decoupled" approach where the frontend is a separate service from the backend and interacts with backend(s) via an API. It can be used with any backend and has out of the box support for [CKAN](https://ckan.org/), GitHub, Frictionless Data Packages and more.
+PortalJS Cloud is built in JavaScript and React on top of the popular [Next.js](https://nextjs.org) framework. PortalJS Cloud assumes a "decoupled" approach where the frontend is a separate service from the backend and interacts with backend(s) via an API. It can be used with any backend and has out of the box support for [CKAN](https://ckan.org/), GitHub, Frictionless Data Packages and more.
 
 ### Features
 
