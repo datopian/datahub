@@ -1,25 +1,25 @@
 <p align="center">
-  Bugs, issues and suggestions re DataHub framework
+  Bugs, issues and suggestions re PortalJS framework
   <br />
   <br /><a href="https://discord.gg/xfFDMPU9dC"><img src="https://dcbadge.vercel.app/api/server/xfFDMPU9dC" /></a>
 </p>
 
-## DataHub
+## PortalJS framework
 
 This repo and issue tracker are for
 
-- DataHub Cloud ☁️ - https://datahub.io/
 - PortalJS 🌀 - https://www.portaljs.com/
+- DataHub Cloud ☁️ - https://datahub.io/
 
 ### Issues
 
-Found a bug: 👉 https://github.com/datopian/datahub/issues/new
+Found a bug: 👉 https://github.com/datopian/portaljs/issues/new
 
 ### Discussions
 
 Got a suggestion, a question, want some support or just want to shoot the breeze 🙂
 
-Head to the discussion forum: 👉 https://github.com/datopian/datahub/discussions
+Head to the discussion forum: 👉 https://github.com/datopian/portaljs/discussions
 
 ### Chat on Discord
 
@@ -29,8 +29,8 @@ If you would prefer to get help via live chat check out our discord 👉
 
 ### Docs
 
-- DataHub Cloud https://datahub.io/docs
-- PortalJS https://www.portaljs.com/opensource
+- For PortalJS go to https://www.portaljs.com/opensource
+- For DataHub Cloud – https://datahub.io/docs
 
 ## PortalJS Cloud 🌀
 
