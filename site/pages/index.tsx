@@ -26,8 +26,8 @@ export default function Home({ sidebarTree }) {
   return (
     <>
       <LogoJsonLd
-        url="https://portaljs.org"
-        logo="https://portaljs.org/icon.png"
+        url="https://portaljs.com"
+        logo="https://portaljs.com/icon.png"
       />
       <Layout
         isHomePage={true}

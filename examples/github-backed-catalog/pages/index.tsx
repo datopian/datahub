@@ -40,7 +40,7 @@ export function Datasets({ projects }) {
               <Link
                 target="_blank"
                 className="underline"
-                href="https://portaljs.org/"
+                href="https://portaljs.com/"
               >
                 🌀 PortalJS
               </Link>

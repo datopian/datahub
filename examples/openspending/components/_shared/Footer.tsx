@@ -17,7 +17,7 @@ export default function Footer() {
           </a>
         </div>
         <div className="flex gap-x-2 items-center mx-auto h-20">
-          <p className="mt-8 text-base text-slate-500 md:mt-0">Built with <a href="https://portaljs.org" target="_blank" className='text-xl font-medium'>🌀 PortalJS</a></p>
+          <p className="mt-8 text-base text-slate-500 md:mt-0">Built with <a href="https://portaljs.com" target="_blank" className='text-xl font-medium'>🌀 PortalJS</a></p>
         </div>
       </div>
     </footer>
